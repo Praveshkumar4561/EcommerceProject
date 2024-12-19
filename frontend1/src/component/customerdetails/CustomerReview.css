@@ -1,0 +1,111 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "SanDiego";
+  position: relative;
+}
+
+.customer-dashboard {
+  width: 100%;
+  max-width: 35%;
+  margin-left: 12px;
+}
+.customer-dashboard1 {
+  width: 100%;
+  max-width: 63%;
+}
+
+@media (max-width: 576px) {
+  .customer-dashboard {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+  .customer-dashboard1 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+  .customer-dashboard {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+  .customer-dashboard1 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .customer-dashboard {
+    width: 100%;
+    max-width: 35%;
+    margin-left: 12px;
+  }
+  .customer-dashboard1 {
+    width: 100%;
+    max-width: 62%;
+  }
+}
+
+.customer-dashboard li {
+  list-style: none;
+}
+
+.profile-lyte1 {
+  position: relative;
+  left: 0.9rem;
+  width: 30px;
+}
+
+.addcarts-lyte1 {
+  position: absolute;
+  top: 0.7rem;
+  font-family: Verdana, Tahoma, sans-serif;
+}
+
+.list-lyte li {
+  line-height: 50px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+.list-lyte li img:hover {
+  color: #0c55aa;
+}
+.list-lyte li:hover {
+  color: #0c55aa;
+}
+
+.list-round {
+  border-radius: 100%;
+}
+
+.button-orders {
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+
+
+.input-welcome4 {
+  position: absolute;
+  right: 20.3%;
+  top: 3.7%;
+}
+
+@media (max-width: 576px) {
+  .input-welcome4 {
+    position: absolute;
+    right: 2%;
+    top: 7%;
+  }
+}

@@ -1,0 +1,368 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "SanDiego";
+  position: relative;
+}
+
+/* body{
+  display: inline;
+} */
+
+#container-custom {
+  width: 100vw;
+  height: 180px;
+  background-color: #f2f5f7;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+.container-custom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin-top: 3.4rem;
+}
+@media (max-width: 992px) {
+  #container-custom {
+    height: auto;
+    min-height: 340px;
+    width: 100%;
+  }
+  .container-custom {
+    position: relative;
+    bottom: 5rem;
+  }
+}
+
+.container-custom1 {
+  width: 72rem;
+  max-width: 100%;
+  position: relative;
+  top: 2.4rem;
+  margin: 0 auto;
+}
+
+@media (max-width: 992px) {
+  .container-custom1 {
+    width: 100%;
+    margin: 0;
+  }
+  .container-custom1 {
+    width: 100%;
+    margin-left: -1.9rem;
+    margin-right: 0;
+    padding: 0;
+  }
+}
+
+/* nav */
+
+.custom-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0.2rem;
+  width: 303px;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1050;
+  border-radius: 10px;
+}
+
+.custom-dropdown ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.custom-dropdown .nav-item {
+  margin: 0;
+}
+
+.custom-dropdown .nav-link {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
+.custom-dropdown .nav-link:hover {
+  background-color: #f0f0f0;
+}
+
+.navbar-toggler {
+  position: relative;
+  z-index: 1050;
+  border: none;
+}
+
+@media (max-width: 992px) {
+  .custom-dropdown {
+    display: block;
+  }
+
+  .navbar-brand.d-lg-none {
+    display: block;
+  }
+
+  .navbar-toggler {
+    display: block;
+  }
+
+  .navbar-collapse {
+    display: none;
+  }
+  .hamburger-image {
+    position: relative;
+    bottom: 0.9rem;
+    right: -2rem;
+  }
+  .navbar-icons {
+    position: absolute;
+    top: 1.4rem;
+    right: 5rem;
+  }
+  .addcarts {
+    margin-top: -1.2rem;
+  }
+}
+/* 1111111 */
+
+.profiles {
+  width: 25px;
+  height: 25px;
+}
+.profiles1 {
+  width: 25px;
+  height: 25px;
+}
+
+.addcarts {
+  position: absolute;
+  top: 0.6rem;
+  font-family: Verdana, Tahoma, sans-serif;
+}
+
+@media (max-width: 450px) {
+  .navbar-icons {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+}
+
+/* 11111111111 */
+
+@media (min-width: 993px) {
+  .custom-dropdown {
+    display: none;
+  }
+
+  .navbar-collapse {
+    display: flex;
+  }
+
+  .navbar-brand.d-lg-none {
+    display: none;
+  }
+}
+
+.navbar-toggler:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Navbar */
+
+.container-contact {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  bottom: 42%;
+}
+
+#container-contact1 {
+  font-family: "SanDiego";
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  bottom: 100%;
+  left: 21%;
+}
+
+.breadcrumb {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.breadcrumb-item {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .container-contact {
+    font-size: 1.5rem;
+  }
+
+  #container-contact1 {
+    text-align: center;
+    margin-top: 1rem;
+    white-space: nowrap;
+  }
+
+  .breadcrumb {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .container-contact {
+    font-size: 1.75rem;
+  }
+
+  #container-contact1 {
+    text-align: left;
+    margin-top: 1.5rem;
+    white-space: nowrap;
+  }
+
+  .breadcrumb {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 992px) {
+  .container-contact {
+    font-size: 2rem;
+  }
+
+  #container-contact1 {
+    text-align: left;
+    margin-top: 2rem;
+    white-space: nowrap;
+  }
+
+  .breadcrumb {
+    flex-direction: row;
+  }
+}
+
+/* font */
+
+@font-face {
+  font-family: "SanDiego";
+  src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
+  /* format('truetype'); */
+}
+
+/* font */
+
+.heading {
+  font-size: 20rem;
+  line-height: 1.2;
+  color: #dde1e4;
+  font-family: "SanDiego";
+}
+
+.opps {
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin-top: -2.8rem;
+  font-family: "SanDiego";
+}
+
+.sorry-para {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #5c727d;
+  margin-top: 0.1rem;
+  font-family: "SanDiego";
+}
+
+.home-button {
+  background-color: #0a9a73;
+  border: none;
+  padding: 0rem 2rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  margin-top: 0.2rem;
+  width: 172.36px;
+  height: 52.49px;
+  font-family: "SanDiego";
+}
+
+.home-button:hover {
+  background-color: #087d62;
+}
+
+@media (max-width: 576px) {
+  .heading {
+    font-size: 13rem;
+  }
+
+  .opps {
+    font-size: 1.5rem;
+  }
+
+  .sorry-para {
+    font-size: 1rem;
+  }
+
+  .home-button {
+    width: 172.36px;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 376px) {
+  .heading {
+    font-size: 12rem;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .heading {
+    font-size: 18rem;
+  }
+
+  .opps {
+    font-size: 1.75rem;
+  }
+
+  .sorry-para {
+    font-size: 1.2rem;
+  }
+
+  .home-button {
+    width: auto;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .home-button {
+    width: auto;
+  }
+}
