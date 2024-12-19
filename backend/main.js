@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
@@ -49,10 +50,10 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "123",
-  database: "figma",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
 });
 
 db.connect((err) => {
