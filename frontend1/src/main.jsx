@@ -9,9 +9,7 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import HomePage from "./component/homepage/HomePage.jsx";
-
 import AboutPage from "./component/aboutpage/AboutPage.jsx";
-
 import Shop from "./component/shop/Shop.jsx";
 import ProductDetail from "./component/productdetail/ProductDetail.jsx";
 import Cart from "./component/cart/Cart.jsx";
@@ -20,9 +18,7 @@ import Login from "./component/login/Login.jsx";
 import BlogPage from "./component/blogpage/BlogPage.jsx";
 import BlogDetails from "./component/blogdetails/BlogDetails.jsx";
 import Faqs from "./component/faqs/Faqs.jsx";
-
 import ErrorPage from "./component/errorpage/ErrorPage.jsx";
-
 import ContactUs from "./component/contactus/ContactUs.jsx";
 import AddCart from "./component/addcart/AddCart.jsx";
 import User from "./User.jsx";
