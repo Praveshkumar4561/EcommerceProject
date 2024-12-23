@@ -1,6 +1,6 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
@@ -53,7 +53,7 @@ const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE
+  database: process.env.DB_DATABASE,
 });
 
 db.connect((err) => {
@@ -3419,6 +3419,6 @@ app.get("/wishlistdata", (req, res) => {
   });
 });
 
-app.listen(1600,'0.0.0.0', () => {
+app.listen(1600, "0.0.0.0", () => {
   console.log("server is running on port 1600");
 });
