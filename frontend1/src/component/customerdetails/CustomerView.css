@@ -1,0 +1,130 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "SanDiego";
+  position: relative;
+}
+
+.customer-dashboard {
+  width: 100%;
+  max-width: 35%;
+  margin-left: 12px;
+}
+.customer-dashboard1 {
+  width: 100%;
+  max-width: 63%;
+}
+.file-choose {
+  width: 100%;
+  max-width: 80%;
+}
+.order-invoice1 {
+  width: 100%;
+  max-width: 70%;
+}
+
+@media (max-width: 576px) {
+  .customer-dashboard {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+  .customer-dashboard1 {
+    width: 100%;
+    max-width: 100%;
+  }
+  .file-choose {
+    width: 100%;
+    max-width: 70%;
+  }
+  .order-invoice1 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+  .customer-dashboard {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+  }
+  .customer-dashboard1 {
+    width: 100%;
+    max-width: 100%;
+  }
+  .file-choose {
+    width: 100%;
+    max-width: 79%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .customer-dashboard {
+    width: 100%;
+    max-width: 35%;
+    margin-left: 12px;
+  }
+  .customer-dashboard1 {
+    width: 100%;
+    max-width: 62%;
+  }
+}
+
+.order-border {
+  width: 100%;
+}
+
+.input-welcome-view {
+  position: absolute;
+  right: 20.3%;
+  top: 2.5%;
+}
+
+@media (max-width: 576px) {
+  .input-welcome-view {
+    position: absolute;
+    right: 2%;
+    top: 7%;
+  }
+}
+
+.order-invoice {
+  width: 100%;
+  max-width: 100%;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 5s ease, transform 5s ease;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 20px;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 0px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cart-cart1 {
+  letter-spacing: 2px;
+}
