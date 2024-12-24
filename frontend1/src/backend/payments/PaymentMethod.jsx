@@ -3,7 +3,7 @@ import "./PaymentMethod.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Logo.png";
 import Credit from "../../assets/credit.png";
-import Cutting from "../../assets/cutting.png";
+import Cutting from "../../assets/Cutting.png";
 import {
   faBell,
   faEnvelope,

@@ -16,7 +16,7 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import Cutting from "../../assets/cutting.png";
+import Cutting from "../../assets/Cutting.png";
 import UserContext from "../../context/UserContext";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";

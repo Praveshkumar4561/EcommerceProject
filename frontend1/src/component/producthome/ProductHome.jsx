@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import Point from "../../assets/point.png";
-import Over from "../../assets/over.png";
+import Over from "../../assets/Over.png";
 import Electronic from "../../assets/Electronic.png";
 import gift from "../../assets/gift.png";
 import computer from "../../assets/computer.png";

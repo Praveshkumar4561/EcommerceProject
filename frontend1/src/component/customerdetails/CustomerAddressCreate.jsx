@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Profile from "../../assets/image.png";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
-import Over from "../../assets/over.png";
+import Over from "../../assets/Over.png";
 import Address from "../../assets/Cart_address.png";
 import Cart_order from "../../assets/Cart_request.png";
 import Cart_reviews from "../../assets/Cart_reviews.png";

@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import Profile from "../../assets/image.png";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
-import Over from "../../assets/over.png";
+import Over from "../../assets/Over.png";
 import Address from "../../assets/Cart_address.png";
 import Cart_order from "../../assets/Cart_request.png";
 import Cart_reviews from "../../assets/Cart_reviews.png";
@@ -82,11 +82,11 @@ function CustomerVendor() {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  let [vendor,setVendor]=useState([])
+  let [vendor, setVendor] = useState([]);
 
   let vendor_data = async () => {
-   let response=await axios.get("http://localhost:1600/vendordata", user);
-   setVendor(response.data)
+    let response = await axios.get("http://localhost:1600/vendordata", user);
+    setVendor(response.data);
   };
   vendor_data();
 
@@ -475,15 +475,15 @@ function CustomerVendor() {
 
                 <div className="mt-3 fw-bold fs-5">Store Information</div>
                 <div className="d-flex flex-column" key={key}>
-                <div className="border rounded px-2 py-2 mt-3">
-                  <span className="fw-bold">Store Name:{user.shop_name}</span>
-                </div>
-                <div className="border rounded px-2 border-top-0 py-2">
-                  <span className="fw-bold">Owner:{user.shop_url}</span>
-                </div>
-                <div className="border rounded px-2 border-top-0 py-2">
-                  <span className="fw-bold">Phone:{user.shop_phone}</span>
-                </div>
+                  <div className="border rounded px-2 py-2 mt-3">
+                    <span className="fw-bold">Store Name:{user.shop_name}</span>
+                  </div>
+                  <div className="border rounded px-2 border-top-0 py-2">
+                    <span className="fw-bold">Owner:{user.shop_url}</span>
+                  </div>
+                  <div className="border rounded px-2 border-top-0 py-2">
+                    <span className="fw-bold">Phone:{user.shop_phone}</span>
+                  </div>
                 </div>
               </form>
             </div>

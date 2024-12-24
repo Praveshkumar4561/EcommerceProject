@@ -14,7 +14,7 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import cutting from "../../../assets/cutting.png";
+import cutting from "../../../assets/Cutting.png";
 import UserContext from "../../../context/UserContext";
 
 function ProductAttributesCreate() {
@@ -1413,7 +1413,7 @@ function ProductAttributesCreate() {
                 </div>
               )}
             </div>
-            
+
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg

@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import Cutting from "../../../assets/cutting.png";
+import Cutting from "../../../assets/Cutting.png";
 import Grid from "../../../assets/grid.png";
 import Slider from "../../../assets/slider.png";
 import UserContext from "../../../context/UserContext";

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import "./CustomersCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Logo.png";
-import Cutting from "../../../assets/cutting.png";
+import Cutting from "../../../assets/Cutting.png";
 import {
   faAngleDown,
   faBell,
