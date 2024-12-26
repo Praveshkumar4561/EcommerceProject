@@ -67,8 +67,6 @@ body {
   }
 }
 
-/* nav */
-
 .custom-dropdown {
   display: none;
   position: absolute;
@@ -145,7 +143,6 @@ body {
     margin-top: -1.2rem;
   }
 }
-/* 1111111 */
 
 .profiles {
   width: 25px;
@@ -187,8 +184,6 @@ body {
   outline: none;
   box-shadow: none;
 }
-
-/* Navbar */
 
 .container-contact {
   text-align: center;
@@ -270,20 +265,14 @@ body {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-
-/* font */
 
 .query {
   width: 100%;
   max-width: 36rem;
-  /* height: auto; */
   height: 33rem;
   background-color: #ffffff;
   padding: 1rem;
@@ -355,13 +344,10 @@ body {
   background-color: #0a9a73;
 }
 
-/* form */
-
 .query {
   width: 100%;
   max-width: 36rem;
   background-color: #ffffff;
-  /* border: 1px solid black; */
   padding: 1rem;
 }
 
@@ -389,9 +375,6 @@ button.button-btn {
   .col-12 {
     text-align: center;
   }
-  /* .first-texts{
-          
-        } */
 
   .form-group {
     width: 100%;
@@ -427,8 +410,6 @@ button.button-btn {
   max-width: 100%;
 }
 
-/* 55555555555 */
-
 .full-width-container {
   width: 100vw;
   margin: 0;
@@ -442,8 +423,6 @@ button.button-btn {
   position: relative;
   top: -10rem;
 }
-
-/* add to cart */
 
 .lorem-contact {
   letter-spacing: 1px;

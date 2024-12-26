@@ -34,16 +34,16 @@ function BlogTagsEdit() {
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   let [edit, setEdit] = useState(false);
-    let [Specification, setSpecifcation] = useState(false);
-    let [payment, setPayment] = useState(false);
-  
-    let paymentgateway = () => {
-      setPayment(!payment);
-    };
-  
-    let togglespecification = () => {
-      setSpecifcation(!Specification);
-    };
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
+
+  let togglespecification = () => {
+    setSpecifcation(!Specification);
+  };
 
   let seodataedit = () => {
     setEdit(!edit);
@@ -1013,130 +1013,130 @@ function BlogTagsEdit() {
               )}
             </div>
 
-             <div>
-                          <li onClick={togglespecification} style={{ cursor: "pointer" }}>
-                            <svg
-                              class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                              <path d="M12 21h-7a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7"></path>
-                              <path d="M3 10h18"></path>
-                              <path d="M10 3v18"></path>
-                              <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                              <path d="M19.001 15.5v1.5"></path>
-                              <path d="M19.001 21v1.5"></path>
-                              <path d="M22.032 17.25l-1.299 .75"></path>
-                              <path d="M17.27 20l-1.3 .75"></path>
-                              <path d="M15.97 17.25l1.3 .75"></path>
-                              <path d="M20.733 20l1.3 .75"></path>
-                            </svg>
-                            Product Specification
-                            <FontAwesomeIcon
-                              icon={faAngleDown}
-                              className={`float-lg-end mt-2 pt-1 me-4 icon-down ${
-                                Specification ? "rotate" : ""
-                              }`}
-                              onClick={togglespecification}
-                            />
-                          </li>
-            
-                          {Specification && (
-                            <div className="faq-content d-flex flex-column ms-1 ps-2">
-                              <Link
-                                to="/admin/ecommerce/specification-groups"
-                                className="text-light text-decoration-none"
-                              >
-                                <li>
-                                  <svg
-                                    class="icon  svg-icon-ti-ti-point me-2"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path
-                                      stroke="none"
-                                      d="M0 0h24v24H0z"
-                                      fill="none"
-                                    ></path>
-                                    <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                                  </svg>
-                                  Specification Groups
-                                </li>
-                              </Link>
-            
-                              <Link
-                                to="/admin/ecommerce/specification-attributes"
-                                className="text-light text-decoration-none"
-                              >
-                                <li>
-                                  <svg
-                                    class="icon  svg-icon-ti-ti-point me-1"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path
-                                      stroke="none"
-                                      d="M0 0h24v24H0z"
-                                      fill="none"
-                                    ></path>
-                                    <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                                  </svg>
-                                  Specification Attributes
-                                </li>
-                              </Link>
-            
-                              <Link
-                                to="/admin/ecommerce/specification-tables"
-                                className="text-light text-decoration-none"
-                              >
-                                <li>
-                                  <svg
-                                    class="icon  svg-icon-ti-ti-point me-2"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  >
-                                    <path
-                                      stroke="none"
-                                      d="M0 0h24v24H0z"
-                                      fill="none"
-                                    ></path>
-                                    <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                                  </svg>
-                                  Specification Tables
-                                </li>
-                              </Link>
-                            </div>
-                          )}
-                        </div>
+            <div>
+              <li onClick={togglespecification} style={{ cursor: "pointer" }}>
+                <svg
+                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M12 21h-7a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7"></path>
+                  <path d="M3 10h18"></path>
+                  <path d="M10 3v18"></path>
+                  <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                  <path d="M19.001 15.5v1.5"></path>
+                  <path d="M19.001 21v1.5"></path>
+                  <path d="M22.032 17.25l-1.299 .75"></path>
+                  <path d="M17.27 20l-1.3 .75"></path>
+                  <path d="M15.97 17.25l1.3 .75"></path>
+                  <path d="M20.733 20l1.3 .75"></path>
+                </svg>
+                Product Specification
+                <FontAwesomeIcon
+                  icon={faAngleDown}
+                  className={`float-lg-end mt-2 pt-1 me-4 icon-down ${
+                    Specification ? "rotate" : ""
+                  }`}
+                  onClick={togglespecification}
+                />
+              </li>
+
+              {Specification && (
+                <div className="faq-content d-flex flex-column ms-1 ps-2">
+                  <Link
+                    to="/admin/ecommerce/specification-groups"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        class="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Specification Groups
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/ecommerce/specification-attributes"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        class="icon  svg-icon-ti-ti-point me-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Specification Attributes
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/ecommerce/specification-tables"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        class="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Specification Tables
+                    </li>
+                  </Link>
+                </div>
+              )}
+            </div>
 
             <li>
               <Link to="/admin/pages" className="text-light">
@@ -1284,123 +1284,123 @@ function BlogTagsEdit() {
               )}
             </div>
 
-              <div>
-                         <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
-                           <svg
-                             class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
-                             xmlns="http://www.w3.org/2000/svg"
-                             width="24"
-                             height="24"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             strokeWidth="2"
-                             strokeLinecap="round"
-                             strokeLinejoin="round"
-                           >
-                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                             <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                             <path d="M3 10l18 0"></path>
-                             <path d="M7 15l.01 0"></path>
-                             <path d="M11 15l2 0"></path>
-                           </svg>
-                           Payments
-                           <FontAwesomeIcon
-                             icon={faAngleDown}
-                             className={`float-end mt-2 pt-1 me-4 icon-down ${
-                               payment ? "rotate" : ""
-                             }`}
-                             onClick={paymentgateway}
-                           />
-                         </li>
-                         {payment && (
-                           <div className="faq-content d-flex flex-column ms-3 ps-2">
-                             <Link
-                               to="/admin/payments/transactions"
-                               className="text-light text-decoration-none"
-                             >
-                               <li>
-                                 <svg
-                                   className="icon  svg-icon-ti-ti-point me-2"
-                                   xmlns="http://www.w3.org/2000/svg"
-                                   width="24"
-                                   height="24"
-                                   viewBox="0 0 24 24"
-                                   fill="none"
-                                   stroke="currentColor"
-                                   stroke-width="2"
-                                   stroke-linecap="round"
-                                   stroke-linejoin="round"
-                                 >
-                                   <path
-                                     stroke="none"
-                                     d="M0 0h24v24H0z"
-                                     fill="none"
-                                   ></path>
-                                   <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                                 </svg>
-                                 Transactions
-                               </li>
-                             </Link>
-           
-                             <Link
-                               to="/admin/payments/logs"
-                               className="text-light text-decoration-none"
-                             >
-                               <li>
-                                 <svg
-                                   className="icon  svg-icon-ti-ti-point me-2"
-                                   xmlns="http://www.w3.org/2000/svg"
-                                   width="24"
-                                   height="24"
-                                   viewBox="0 0 24 24"
-                                   fill="none"
-                                   stroke="currentColor"
-                                   stroke-width="2"
-                                   stroke-linecap="round"
-                                   stroke-linejoin="round"
-                                 >
-                                   <path
-                                     stroke="none"
-                                     d="M0 0h24v24H0z"
-                                     fill="none"
-                                   ></path>
-                                   <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                                 </svg>
-                                 Payment Logs
-                               </li>
-                             </Link>
-           
-                             <Link
-                               to="/admin/payments/methods"
-                               className="text-light text-decoration-none"
-                             >
-                               <li>
-                                 <svg
-                                   className="icon  svg-icon-ti-ti-point me-2"
-                                   xmlns="http://www.w3.org/2000/svg"
-                                   width="24"
-                                   height="24"
-                                   viewBox="0 0 24 24"
-                                   fill="none"
-                                   stroke="currentColor"
-                                   stroke-width="2"
-                                   stroke-linecap="round"
-                                   stroke-linejoin="round"
-                                 >
-                                   <path
-                                     stroke="none"
-                                     d="M0 0h24v24H0z"
-                                     fill="none"
-                                   ></path>
-                                   <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-                                 </svg>
-                                 Payment Methods
-                               </li>
-                             </Link>
-                           </div>
-                         )}
-                       </div>
+            <div>
+              <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
+                <svg
+                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
+                  <path d="M3 10l18 0"></path>
+                  <path d="M7 15l.01 0"></path>
+                  <path d="M11 15l2 0"></path>
+                </svg>
+                Payments
+                <FontAwesomeIcon
+                  icon={faAngleDown}
+                  className={`float-end mt-2 pt-1 me-4 icon-down ${
+                    payment ? "rotate" : ""
+                  }`}
+                  onClick={paymentgateway}
+                />
+              </li>
+              {payment && (
+                <div className="faq-content d-flex flex-column ms-3 ps-2">
+                  <Link
+                    to="/admin/payments/transactions"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Transactions
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/payments/logs"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Payment Logs
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/payments/methods"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Payment Methods
+                    </li>
+                  </Link>
+                </div>
+              )}
+            </div>
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
@@ -2159,147 +2159,147 @@ function BlogTagsEdit() {
         </ol>
       </nav>
 
-     <div className="container-fluid">
-            <div className="container">
-              <div className="row">
-                <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
-                  <svg
-                    class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                    <path d="M12 9h.01"></path>
-                    <path d="M11 12h1v4h1"></path>
-                  </svg>
-                  You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-                  version
-                </div>
-              </div>
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
+              <svg
+                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 9h.01"></path>
+                <path d="M11 12h1v4h1"></path>
+              </svg>
+              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
+              version
             </div>
           </div>
-    
-          <div className="container-fluid">
-            <div className="container">
-              <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
-                <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
-                  <form>
-                    <div className="d-flex flex-column gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
-                      <div className="d-flex flex-column mb-1 mt-3 w-100">
-                        <label htmlFor="">Name</label>
-                        <input
-                          type="text"
-                          className="form-control mt-2 py-4"
-                          placeholder="Name"
-                          name="name"
-                          value={name}
-                          onChange={onInputChange}
-                        />
-                      </div>
-    
-                      <div className="d-flex flex-column mb-1 mt-0 w-100">
-                        <label htmlFor="">Permalink</label>
-                        <input
-                          type="text"
-                          className="form-control mt-2 py-4"
-                          placeholder="https://shofy.botble.com/tag/"
-                          name="permalink"
-                          value={permalink}
-                          onChange={onInputChange}
-                        />
-                      </div>
-    
-                      <div className="d-flex flex-column mb-1 mt-0 w-100">
-                        <label htmlFor="">Description</label>
-                        <textarea
-                          type="text"
-                          class="form-control py-3 h mt-2"
-                          placeholder="short description"
-                          name="description"
-                          value={description}
-                          onChange={onInputChange}
-                          style={{ height: "100px" }}
-                        />
-                      </div>
-    
-                      <div className="d-flex flex-column mb-1 mt-0 w-100">
-                        <label htmlFor="">Start date</label>
-                        <input
-                          type="date"
-                          class="form-control py-4 mt-2"
-                          id="name-create1"
-                          name="date"
-                          value={date}
-                          onChange={onInputChange}
-                        />
-                      </div>
-    
-                      <div className="d-flex flex-row mb-3 mt-1 w-100 form-check form-switch">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="has-action"
-                          name="feature"
-                          onChange={onInputChange}
-                        />
-                        <label
-                          className="form-check-label ms-3 mt-1"
-                          htmlFor="has-action"
-                        >
-                          Is featured?
-                        </label>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-    
-                <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
-                  <div className="border rounded p-2 customer-page1">
-                    <h4 className="mt-0 text-start">Publish</h4>
-                    <hr />
-                    <div className="d-flex flex-row gap-3 mb-3">
-                      <button
-                        type="button"
-                        className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
-                        onClick={handleSubmit}
-                      >
-                        <FontAwesomeIcon icon={faSave} className="me-2" /> Save
-                      </button>
-                      <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                        <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                        Save & Exit
-                      </button>
-                    </div>
-                  </div>
-    
-                  <div className="border rounded p-3 customer-page1">
-                    <h4 className="mt-0 text-start">Status</h4>
-                    <hr />
-                    <select
-                      className="form-select w-100"
-                      style={{ height: "45px" }}
-                      name="status"
-                      value={status}
+        </div>
+      </div>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
+              <form>
+                <div className="d-flex flex-column gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-1 mt-3 w-100">
+                    <label htmlFor="">Name</label>
+                    <input
+                      type="text"
+                      className="form-control mt-2 py-4"
+                      placeholder="Name"
+                      name="name"
+                      value={name}
                       onChange={onInputChange}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-column mb-1 mt-0 w-100">
+                    <label htmlFor="">Permalink</label>
+                    <input
+                      type="text"
+                      className="form-control mt-2 py-4"
+                      placeholder="https://shofy.botble.com/tag/"
+                      name="permalink"
+                      value={permalink}
+                      onChange={onInputChange}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-column mb-1 mt-0 w-100">
+                    <label htmlFor="">Description</label>
+                    <textarea
+                      type="text"
+                      class="form-control py-3 h mt-2"
+                      placeholder="short description"
+                      name="description"
+                      value={description}
+                      onChange={onInputChange}
+                      style={{ height: "100px" }}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-column mb-1 mt-0 w-100">
+                    <label htmlFor="">Start date</label>
+                    <input
+                      type="date"
+                      class="form-control py-4 mt-2"
+                      id="name-create1"
+                      name="date"
+                      value={date}
+                      onChange={onInputChange}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-row mb-3 mt-1 w-100 form-check form-switch">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="has-action"
+                      name="feature"
+                      onChange={onInputChange}
+                    />
+                    <label
+                      className="form-check-label ms-3 mt-1"
+                      htmlFor="has-action"
                     >
-                      <option value="">Select an option</option>
-                      <option value="Published">Published</option>
-                      <option value="Draft">Draft</option>
-                      <option value="Pending">Pending</option>
-                    </select>
+                      Is featured?
+                    </label>
                   </div>
                 </div>
+              </form>
+            </div>
+
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
+                <h4 className="mt-0 text-start">Publish</h4>
+                <hr />
+                <div className="d-flex flex-row gap-3 mb-3">
+                  <button
+                    type="button"
+                    className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
+                    onClick={handleSubmit}
+                  >
+                    <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                  </button>
+                  <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
+                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                    Save & Exit
+                  </button>
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Status</h4>
+                <hr />
+                <select
+                  className="form-select w-100"
+                  style={{ height: "45px" }}
+                  name="status"
+                  value={status}
+                  onChange={onInputChange}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
+                </select>
               </div>
             </div>
           </div>
+        </div>
+      </div>
     </>
   );
 }

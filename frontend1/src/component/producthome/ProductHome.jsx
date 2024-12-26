@@ -8,7 +8,7 @@ import Over from "../../assets/Over.png";
 import Electronic from "../../assets/Electronic.png";
 import gift from "../../assets/gift.png";
 import computer from "../../assets/computer.png";
-import Smart from "../../assets/smart.png";
+import Smart from "../../assets/Smart.png";
 import camera from "../../assets/camera.png";
 import cook from "../../assets/cook.png";
 import access from "../../assets/access.png";

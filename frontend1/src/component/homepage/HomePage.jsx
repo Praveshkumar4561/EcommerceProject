@@ -7,8 +7,6 @@ import {
   faPhoneVolume,
   faArrowRightLong,
   faBars,
-  faAngleRight,
-  faStar,
   faMagnifyingGlass,
   faArrowLeft,
   faArrowRight,
@@ -24,8 +22,6 @@ import Support from "../../assets/Support.svg";
 import Payments from "../../assets/Payments.svg";
 import Returns from "../../assets/Returns.svg";
 import Shipping from "../../assets/Shipping.svg";
-import Lyte from "../../assets/Lyte.svg";
-import Yoga from "../../assets/Yoga.png";
 import Profile from "../../assets/image.png";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";

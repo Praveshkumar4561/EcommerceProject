@@ -46,6 +46,7 @@ function PagesEdit() {
   let togglespecification = () => {
     setSpecifcation(!Specification);
   };
+  
   const routes = {
     "/admin/welcome": "# Dashboard",
     "/admin/pages": "# Pages",
@@ -319,22 +320,7 @@ function PagesEdit() {
     });
   };
 
-  let [addproducts, setAddProducts] = useState([]);
 
-  let addProduct = () => {
-    setAddProducts([...addproducts, { question: "", answer: "" }]);
-  };
-
-  let handleInputChange = (index, type, value) => {
-    const updatedProducts = [...addproducts];
-    updatedProducts[index][type] = value;
-    setAddProducts(updatedProducts);
-  };
-
-  let removeProduct = (index) => {
-    const updatedProducts = addproducts.filter((_, i) => i !== index);
-    setAddProducts(updatedProducts);
-  };
 
   return (
     <>

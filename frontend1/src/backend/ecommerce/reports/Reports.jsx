@@ -3,8 +3,8 @@ import "./Reports.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Logo.png";
 import Viewer from "../../../assets/Viewer.png";
-import Viewer1 from "../../../assets/viewer1.png";
-import Viewer2 from "../../../assets/viewer2.png";
+import Viewer1 from "../../../assets/Viewer1.png";
+import Viewer2 from "../../../assets/Viewer2.png";
 import {
   faAngleDown,
   faBell,

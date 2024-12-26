@@ -18,7 +18,6 @@ import UserContext from "../../context/UserContext";
 
 function BlogCategory() {
   let [user, setUser] = useState([]);
-
   let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
@@ -189,14 +188,7 @@ function BlogCategory() {
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
-  const onInputChange = (e, index) => {
-    const { name, value } = e.target;
-    setUser((prevUsers) => {
-      const newUsers = [...prevUsers];
-      newUsers[index] = { ...newUsers[index], [name]: value };
-      return newUsers;
-    });
-  };
+ 
 
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -2665,15 +2657,6 @@ function BlogCategory() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="container">
-        <div class="footer">
-          <div class="left">
-            Copyright 2024 © Botble Technologies. Version 1.2.1
-          </div>
-          <div class="right">Page loaded in 0.27 seconds</div>
         </div>
       </div>
     </>
