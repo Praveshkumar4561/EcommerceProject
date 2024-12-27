@@ -36,7 +36,7 @@ function TermsCondition() {
 
   return (
     <>
-      {/* navbar */}
+      {}
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom ms-4 ms-lg-0">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
@@ -97,7 +97,7 @@ function TermsCondition() {
                   </ul>
                 </div>
 
-                {/* 1111111111 */}
+                {}
 
                 <div className="navbar-icons d-sm-flex cart-cart">
                   <Link to="/login" className="nav-link">
@@ -117,7 +117,7 @@ function TermsCondition() {
                   </Link>
                 </div>
 
-                {/* 1111111111 */}
+                {}
               </div>
             </nav>
 
@@ -159,7 +159,7 @@ function TermsCondition() {
             )}
           </header>
 
-          {/* navbar */}
+          {}
 
           <main className="container mt-5">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2 lorem-space">
@@ -434,7 +434,7 @@ function TermsCondition() {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

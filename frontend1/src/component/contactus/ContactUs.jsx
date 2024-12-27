@@ -139,7 +139,7 @@ function ContactUs() {
 
   return (
     <>
-      {/* navbar */}
+      {}
 
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom">
@@ -219,7 +219,7 @@ function ContactUs() {
                   </Link>
                 </div>
 
-                {/* 1111111111 */}
+                {}
               </div>
             </nav>
 
@@ -261,7 +261,7 @@ function ContactUs() {
             )}
           </header>
 
-          {/* navbar */}
+          {}
 
           <main className="container mt-5 lorem-contact">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
@@ -474,7 +474,7 @@ function ContactUs() {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

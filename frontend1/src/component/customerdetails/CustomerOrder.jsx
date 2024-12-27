@@ -538,7 +538,7 @@ function CustomerOrder() {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

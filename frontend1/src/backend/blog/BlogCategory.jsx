@@ -2515,7 +2515,7 @@ function BlogCategory() {
                   </div>
                 </form>
 
-                <div class="card tags-seo tags-engine">
+                <div class="card tags-seo tags-engine ms-1 mt-3">
                   <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
                     <div>
                       <h5 class="card-title1">Search Engine Optimize</h5>

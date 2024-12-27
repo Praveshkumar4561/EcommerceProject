@@ -11,8 +11,6 @@ body {
   position: relative;
 }
 
-/* 11111111 */
-
 .navbar-back {
   width: 100%;
   max-width: 100%;
@@ -26,7 +24,6 @@ body {
 }
 
 .navbar-back.expanded {
-  /* height: 60rem; */
   height: 60rem;
   z-index: 1000;
   opacity: 1;
@@ -73,12 +70,9 @@ input[type="search"] {
     display: none;
   }
   .sidebar-back {
-    /* height: 110rem; */
     height: 60rem;
   }
 }
-
-/* 111111111 */
 
 .search-box1 {
   width: 32px;
@@ -92,8 +86,6 @@ input[type="search"] {
   left: 0.6rem;
   top: 0.22rem;
 }
-
-/* 111111111 */
 
 @media (max-width: 768px) {
   .hamburger {
@@ -115,7 +107,6 @@ input[type="search"] {
 
 .sidebar-container.expanded {
   transform: translateX(0);
-  /* height: 100%; */
 }
 
 .sidebar-back {
@@ -172,10 +163,6 @@ input[type="search"] {
   }
 }
 
-/* sidebar */
-
-/* 1111111111 */
-
 .breadcrumb-container {
   margin-left: 26rem;
   margin-top: 3rem;
@@ -229,8 +216,6 @@ input[type="search"] {
     padding-right: 0.25rem;
   }
 }
-
-/* 11111111 */
 
 #container-custom {
   width: 100vw;
@@ -288,8 +273,6 @@ input[type="search"] {
     top: 1rem;
   }
 }
-
-/* nav */
 
 .custom-dropdown {
   display: none;
@@ -367,7 +350,6 @@ input[type="search"] {
     margin-top: -1.2rem;
   }
 }
-/* 1111111 */
 
 .profiles {
   width: 25px;
@@ -391,15 +373,6 @@ input[type="search"] {
   }
 }
 
-/* @media (max-width: 450px) {
-          .navbar-icons {
-            display: flex;
-            flex-wrap: nowrap;
-          }
-        } */
-
-/* 11111111111 */
-
 @media (min-width: 993px) {
   .custom-dropdown {
     display: none;
@@ -418,8 +391,6 @@ input[type="search"] {
   outline: none;
   box-shadow: none;
 }
-
-/* Navbar */
 
 .container-contact {
   text-align: center;
@@ -501,20 +472,15 @@ input[type="search"] {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-
-/* font */
 
 .query {
   width: 100%;
   max-width: 36rem;
-  /* height: auto; */
+
   height: 33rem;
   background-color: #ffffff;
   padding: 1rem;
@@ -586,13 +552,11 @@ input[type="search"] {
   background-color: #0a9a73;
 }
 
-/* form */
-
 .query {
   width: 100%;
   max-width: 36rem;
   background-color: #ffffff;
-  /* border: 1px solid black; */
+
   padding: 1rem;
 }
 
@@ -620,9 +584,6 @@ button.button-btn {
   .col-12 {
     text-align: center;
   }
-  /* .first-texts{
-              
-            } */
 
   .form-group {
     width: 100%;
@@ -658,8 +619,6 @@ button.button-btn {
   max-width: 100%;
 }
 
-/* 55555555555 */
-
 .full-width-container {
   width: 100vw;
   margin: 0;
@@ -673,8 +632,6 @@ button.button-btn {
   position: relative;
   top: -10rem;
 }
-
-/* add to cart */
 
 .lorem-contact {
   letter-spacing: 1px;

@@ -12,6 +12,8 @@ import {
   faEnvelope,
   faImage,
   faMoon,
+  faSave,
+  faSignOut,
   faTrashCan,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -2467,1646 +2469,1677 @@ function ProductsCreate() {
         </ol>
       </nav>
 
-      <div class="container container-create-gallery">
-        <div
-          class="alert alert-info bg-body editor-page border container-english"
-          id="role-announce"
-          role="alert"
-        >
-          <svg
-            class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-            <path d="M12 9h.01"></path>
-            <path d="M11 12h1v4h1"></path>
-          </svg>
-          You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-          version
-        </div>
-
-        <div class="row border ms-1 rounded announcement-create-gal container-creat">
-          <div class="col-md-12 col-lg-8 w-100">
-            <form className="gallery-form">
-              <div class="mb-3 mt-4">
-                <label for="name" class="form-label fw-lighter">
-                  Name <span className="text-danger">*</span>
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create1"
-                  placeholder="Name"
-                  name="name"
-                  value={name}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="content" class="form-label fw-lighter">
-                  Permalink <span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  placeholder="https://shofy.botble.com/products/"
-                  name="permalink"
-                  value={permalink}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div>
-                <div className="mb-3">
-                  <label htmlFor="content1" className="form-label fw-lighter">
-                    Description
-                  </label>
-                  <div className="d-flex gap-2 flex-row">
-                    <button
-                      className="btn bg-body border d-flex py-4 mb-2"
-                      onClick={showEditorClicked1}
-                    >
-                      Show/Hide Editor
-                    </button>
-                    <button
-                      className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                      onClick={mediaUpload}
-                    >
-                      <FontAwesomeIcon icon={faImage} className="me-2" />
-                      Add Media
-                    </button>
-                  </div>
-                  {showEdit1 ? (
-                    <div className="mb-3">
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={editorData1}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setEditorData1(data);
-                        }}
-                        config={{
-                          toolbar: [
-                            "heading",
-                            "fontColor",
-                            "fontSize",
-                            "fontBackgroundColor",
-                            "fontFamily",
-                            "bold",
-                            "italic",
-                            "underline",
-                            "strikethrough",
-                            "link",
-                            "bulletedList",
-                            "numberedList",
-                            "alignment",
-                            "textDirection",
-                            "blockQuote",
-                            "indent",
-                            "outdent",
-                            "insertTable",
-                            "imageUpload",
-                            "mediaEmbed",
-                            "undo",
-                            "redo",
-                            "findAndReplace",
-                            "removeFormat",
-                            "source",
-                            "codeBlock",
-                            "fullscreen",
-                          ],
-                          heading: {
-                            options: [
-                              {
-                                model: "paragraph",
-                                title: "Paragraph",
-                                className: "ck-heading_paragraph",
-                              },
-                              {
-                                model: "heading1",
-                                view: "h1",
-                                title: "Heading 1",
-                                className: "ck-heading_heading1",
-                              },
-                              {
-                                model: "heading2",
-                                view: "h2",
-                                title: "Heading 2",
-                                className: "ck-heading_heading2",
-                              },
-                              {
-                                model: "heading3",
-                                view: "h3",
-                                title: "Heading 3",
-                                className: "ck-heading_heading3",
-                              },
-                              {
-                                model: "heading4",
-                                view: "h4",
-                                title: "Heading 4",
-                                className: "ck-heading_heading4",
-                              },
-                              {
-                                model: "heading5",
-                                view: "h5",
-                                title: "Heading 5",
-                                className: "ck-heading_heading5",
-                              },
-                              {
-                                model: "heading6",
-                                view: "h6",
-                                title: "Heading 6",
-                                className: "ck-heading_heading6",
-                              },
-                            ],
-                          },
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="mb-3">
-                      <textarea
-                        id="content1"
-                        className="form-control text-create"
-                        placeholder="Short description"
-                        value={textAreaData1}
-                        onChange={handleTextAreaChange1}
-                        style={{
-                          height: "58px",
-                          zIndex: "1000",
-                          position: "relative",
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="content2" className="form-label fw-lighter">
-                    Content
-                  </label>
-                  <div className="d-flex gap-2 flex-row">
-                    <button
-                      className="btn bg-body border d-flex py-4 mb-2"
-                      onClick={showEditorClicked2}
-                    >
-                      Show/Hide Editor
-                    </button>
-                    <button
-                      className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                      onClick={mediaUpload}
-                    >
-                      <FontAwesomeIcon icon={faImage} className="me-2" />
-                      Add Media
-                    </button>
-
-                    <button
-                      className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <FontAwesomeIcon icon={faCube} className="me-2" />
-                      UI Blocks
-                    </button>
-                  </div>
-                  {showEdit2 ? (
-                    <div className="mb-3">
-                      <CKEditor
-                        editor={ClassicEditor}
-                        data={editorData2}
-                        onChange={(event, editor) => {
-                          const data = editor.getData();
-                          setEditorData2(data);
-                        }}
-                        config={{
-                          toolbar: [
-                            "heading",
-                            "fontColor",
-                            "fontSize",
-                            "fontBackgroundColor",
-                            "fontFamily",
-                            "bold",
-                            "italic",
-                            "underline",
-                            "strikethrough",
-                            "link",
-                            "bulletedList",
-                            "numberedList",
-                            "alignment",
-                            "textDirection",
-                            "blockQuote",
-                            "indent",
-                            "outdent",
-                            "insertTable",
-                            "imageUpload",
-                            "mediaEmbed",
-                            "undo",
-                            "redo",
-                            "findAndReplace",
-                            "removeFormat",
-                            "source",
-                            "codeBlock",
-                            "fullscreen",
-                          ],
-                          heading: {
-                            options: [
-                              {
-                                model: "paragraph",
-                                title: "Paragraph",
-                                className: "ck-heading_paragraph",
-                              },
-                              {
-                                model: "heading1",
-                                view: "h1",
-                                title: "Heading 1",
-                                className: "ck-heading_heading1",
-                              },
-                              {
-                                model: "heading2",
-                                view: "h2",
-                                title: "Heading 2",
-                                className: "ck-heading_heading2",
-                              },
-                              {
-                                model: "heading3",
-                                view: "h3",
-                                title: "Heading 3",
-                                className: "ck-heading_heading3",
-                              },
-                              {
-                                model: "heading4",
-                                view: "h4",
-                                title: "Heading 4",
-                                className: "ck-heading_heading4",
-                              },
-                              {
-                                model: "heading5",
-                                view: "h5",
-                                title: "Heading 5",
-                                className: "ck-heading_heading5",
-                              },
-                              {
-                                model: "heading6",
-                                view: "h6",
-                                title: "Heading 6",
-                                className: "ck-heading_heading6",
-                              },
-                            ],
-                          },
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="mb-3">
-                      <textarea
-                        id="content2"
-                        className="form-control text-create"
-                        placeholder="Short description"
-                        value={textAreaData2}
-                        onChange={handleTextAreaChange2}
-                        style={{
-                          height: "58px",
-                          zIndex: "1000",
-                          position: "relative",
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div class="col-md-6 mt-3 mb-4">
-                <label for="start-date" class="form-label fw-lighter">
-                  Start date
-                </label>
-                <input
-                  type="date"
-                  class="form-control py-4 text-areabox"
-                  id="start-date"
-                  name="date"
-                  value={date}
-                  onChange={onInputChange}
-                  style={{
-                    zIndex: "1000",
-                    position: "relative",
-                    cursor: "pointer",
-                  }}
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="card tags-seo2 mt-3 create-display">
-          <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-lg-center align-items-start">
-            <div>
-              <h5 className="card-title1 mt-2">Specification Tables</h5>
-              <Link to="#" className="link-primary1 primary2 meta float-end">
-                <select
-                  className="w-100 rounded-1 py-2 border general-space"
-                  style={{
-                    zIndex: "1000",
-                    cursor: "pointer",
-                    position: "relative",
-                  }}
-                  value={selectedSpec}
-                  onChange={handleSelectChange}
-                >
-                  <option value="None">None</option>
-                  <option value="General Specification">
-                    General Specification
-                  </option>
-                  <option value="Technical Specification">
-                    Technical Specification
-                  </option>
-                </select>
-              </Link>
-              <hr className="custom-display mt-4" />
-
-              {selectedSpec === "None" && (
-                <p className="card-text text-dark">
-                  Select the specification table to display in this product
-                </p>
-              )}
-
-              {selectedSpec === "General Specification" && (
-                <table className="table table-bordered border table-group table-striped">
-                  <thead className="bg-light">
-                    <tr>
-                      <th className="fw-light py-2 px-2">GROUP</th>
-                      <th className="fw-light">ATTRIBUTE</th>
-                      <th className="fw-light">ATTRIBUTE VALUE</th>
-                      <th className="fw-light">HIDE</th>
-                      <th className="fw-light">SORTING</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Dimensions</td>
-                      <td>Height</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Dimensions</td>
-                      <td>Width</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Dimensions</td>
-                      <td>Weight</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Performance</td>
-                      <td>Power</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Performance</td>
-                      <td>Speed</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              )}
-
-              {selectedSpec === "Technical Specification" && (
-                <table className="table table-bordered border table-group1 table-striped">
-                  <thead className="bg-light">
-                    <tr>
-                      <th className="fw-light py-2 px-2">GROUP</th>
-                      <th className="fw-light">ATTRIBUTE</th>
-                      <th className="fw-light">ATTRIBUTE VALUE</th>
-                      <th className="fw-light">HIDE</th>
-                      <th className="fw-light">SORTING</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Battery</td>
-                      <td>Battery Life</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Display</td>
-                      <td>Screen Size</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4 input-attribute"
-                        />
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Display</td>
-                      <td>Resolution</td>
-                      <td>
-                        <select className="input-attribute py- form-select">
-                          <option value="">1920*1080</option>
-                          <option value="">2560*1440</option>
-                          <option value="">3840*2160</option>
-                        </select>
-                      </td>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              )}
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
+              <svg
+                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 9h.01"></path>
+                <path d="M11 12h1v4h1"></path>
+              </svg>
+              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
+              version
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="card mt-3 ms- create-tags1">
-          <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <div className="w-100">
-              <h5 class="card-title1">Overview</h5>
-              <Link to="#" class="link-primary1 primary2 meta float-end"></Link>
-              <hr />
-              <div className="d-flex mb-4">
-                <div className="me-2 flex-fill">
-                  <label htmlFor="coupon-type" className="form-label">
-                    SKU
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control w-aut py-4 sku-overview"
-                    name="sku"
-                    value={sku}
-                    onChange={onInputChange}
-                  />
-                </div>
-
-                <div className="me-2 flex-fill mt-3 mt-md-0 mt-lg-0 ms-0 ms-lg-3 sku-overview1">
-                  <label htmlFor="coupon-condition" className="form-label">
-                    Price
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control py-4 sku-overview1"
-                    id="discount"
-                    placeholder="$"
-                    name="price"
-                    value={price}
-                    onChange={onInputChange}
-                  />
-                </div>
-
-                <div className="flex-fill mt-3 mt-md-0 mt-lg-0 sku-overview1">
-                  <label htmlFor="coupon-condition" className="form-label">
-                    Price Sale
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control py-4 w-au sku-overview1"
-                    id="discount"
-                    placeholder="$"
-                    name="price_sale"
-                    value={price_sale}
-                    onChange={onInputChange}
-                  />
-                </div>
-              </div>
-              <div className="d-flex mb-4">
-                <div className="me-2 flex-fill cost-item">
-                  <label htmlFor="coupon-type" className="form-label">
-                    Cost per item
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control w- py-4 coupon-barcode1"
-                    placeholder="$"
-                    name="cost"
-                    value={cost}
-                    onChange={onInputChange}
-                  />
-                </div>
-
-                <div className="me-2 flex-fill mt-4 mt-md-0 mt-lg-0 cost-item">
-                  <label
-                    htmlFor="coupon-condition"
-                    className="form-label coupon-barcode"
-                  >
-                    Barcode (ISBN, UPC, GTIN, etc.)
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control py-4 w-100 coupon-barcode1"
-                    id="discount"
-                    placeholder="$"
-                    name="barcode"
-                    value={barcode}
-                    onChange={onInputChange}
-                  />
-                </div>
-              </div>
-
-              <div className="d-flex1 ms-2">
-                <input type="checkbox" className="form-check-input" />
-                <label htmlFor="" className="ms-2">
-                  With storehouse management
-                </label>
-              </div>
-
-              <div className="border rounded bg-light mt-3">
-                <label htmlFor="" className="ms-3 mt-3">
-                  Stock status
-                </label>
-                <div className="d-flex ms-3 mt-2 gap-2 mb-3 stock-radio flex-row">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    name="stockstatus"
-                    value="In stock"
-                    onChange={onInputChange}
-                    checked={stockstatus === "In stock"}
-                  />
-                  <label htmlFor="">In stock</label>
-                  <input
-                    type="radio"
-                    className="ms-2 form-check-input"
-                    name="stockstatus"
-                    value="out_of_stock"
-                    onChange={onInputChange}
-                    checked={stockstatus === "out_of_stock"}
-                  />
-                  <label htmlFor="">Out of stock</label>
-                  <input
-                    type="radio"
-                    className="ms-2 form-check-input"
-                    name="stockstatus"
-                    value="backorder"
-                    onChange={onInputChange}
-                    checked={stockstatus === "backorder"}
-                  />
-                  <label htmlFor="" className="me-lg-0">
-                    on backorder
-                  </label>
-                </div>
-              </div>
-
-              <div className="border w-100 rounded mt-3 cart-cart bg-light">
-                <label htmlFor="" className="fw-medium cart-cart ms-3 mt-3">
-                  Shipping
-                </label>
-                <div className="d-flex mb-4 mt-3">
-                  <div className="flex-fill ms-2 shipping-label">
-                    <label htmlFor="coupon-type" className="form-label ms-2">
-                      Weight (g)
-                    </label>
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
+              <form>
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-3 w-100">
+                    <label htmlFor="">Name</label>
                     <input
                       type="text"
-                      className="form-control w-100 py-4 coupon-barcode1"
-                      placeholder="g"
-                      name="weight"
-                      value={weight}
-                      onChange={onInputChange}
-                    />
-                  </div>
-
-                  <div className="me-2 flex-fill mt-4 mt-lg-0 ms-2 shipping-label">
-                    <label
-                      htmlFor="coupon-condition"
-                      className="form-label coupon-barcode"
-                    >
-                      Length (cm)
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control py-4 w-100 coupon-barcode1"
-                      id="discount"
-                      placeholder="cm"
-                      name="length"
-                      value={length}
+                      class="form-control py-4 mt-2"
+                      id="name-create1"
+                      placeholder="Name"
+                      name="name"
+                      value={name}
                       onChange={onInputChange}
                     />
                   </div>
                 </div>
 
-                <div className="d-flex mb-4 mt-3 ms-2">
-                  <div className="me-2 flex-fill shipping-label1">
-                    <label htmlFor="coupon-type" className="form-label ms-2">
-                      Wide (cm)
-                    </label>
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
+                    <label htmlFor="">Permalink</label>
                     <input
                       type="text"
-                      className="form-control w-100 py-4 coupon-barcode1"
-                      placeholder="cm"
-                      name="wide"
-                      value={wide}
-                      onChange={onInputChange}
-                    />
-                  </div>
-
-                  <div className="me-2 flex-fill mt-4 mt-lg-0 ms- shipping-label1">
-                    <label
-                      htmlFor="coupon-condition"
-                      className="form-label coupon-barcode"
-                    >
-                      Height (cm)
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control py-4 coupon-barcode1"
-                      id="discount"
-                      placeholder="cm"
-                      name="height"
-                      value={height}
+                      className="form-control mt-2 py-4"
+                      placeholder="https://shofy.botble.com/products/"
+                      name="permalink"
+                      value={permalink}
                       onChange={onInputChange}
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column">
-          <div className="d-flex w-100">
-            <label
-              htmlFor=""
-              className="fw-medium cart-cart ms-4 mt-lg-4 mt-4 flex-grow-1 attribute-produc"
-            >
-              Attributes
-            </label>
-
-            <button
-              className="btn btn-success ms-auto d-flex me-2 mt-0 mt-lg-4 new-attribute new-attribute2 bg-body border text-dark py-4"
-              onClick={attributeNew}
-              style={{ zIndex: "100" }}
-            >
-              {news ? "Cancel" : "Add new attributes"}
-            </button>
-          </div>
-
-          <hr className="custom-hr mt-0" />
-
-          <div className="mt-1 mb-3 me-4 ms-3 ms-lg-0">
-            Adding new attributes helps the product to have many options, such
-            as size or color.
-          </div>
-
-          {news && (
-            <>
-              <div className="border bg-light mb-2 attribute-select rounded">
-                {more.map((attribute, index) => (
-                  <div className="d-flex w-100 mb-3 mt-3" key={index}>
-                    <div className="d-flex flex-column w-100 me-3">
-                      <label htmlFor="" className="ms-2 mt-2">
-                        Attribute Name
-                      </label>
-                      {create.slice(0, 1).map((data, key) => (
-                        <>
-                          <div key={key}>
-                            <select
-                              name="attribute"
-                              className="form-select w-75 mt-2 ms-2 mb-2 h-auto"
-                            >
-                              <option value="">Select Attribute</option>
-                              {create.length > 0 ? (
-                                create.map((item) => {
-                                  console.log("Item:", item);
-                                  console.log("Item title:", item.title);
-                                  return (
-                                    <option key={item.id} value={item.title}>
-                                      {item.title}
-                                    </option>
-                                  );
-                                })
-                              ) : (
-                                <option disabled>
-                                  No attributes available
-                                </option>
-                              )}
-                            </select>
-                          </div>
-                        </>
-                      ))}
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap overflow-hidden">
+                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
+                    <label htmlFor="">Description </label>
+                    <div className="d-flex gap-2 flex-row mt-2">
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2"
+                        onClick={showEditorClicked1}
+                      >
+                        Show/Hide Editor
+                      </button>
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
+                        onClick={mediaUpload}
+                      >
+                        <FontAwesomeIcon icon={faImage} className="me-2" />
+                        Add Media
+                      </button>
                     </div>
-
-                    <div className="d-flex flex-column ms-2 ms-lg-0 w-100">
-                      <label htmlFor="" className="ms-0 mt-2">
-                        Value
-                      </label>
-                      <select
-                        name=""
-                        className="form-select w-75 ms-0 mt-2 mb-2 h-auto"
-                      >
-                        <option value="">Select Attribute</option>
-                        <option value="">S</option>
-                        <option value="">M</option>
-                        <option value="">L</option>
-                        <option value="">Xl</option>
-                        <option value="">XXL</option>
-                      </select>
-
-                      <div
-                        className="ms-auto me-5 mt-4 pt-3"
-                        style={{ position: "absolute", left: "76rem" }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faTrashCan}
-                          className="bg-danger px-2 py-2 rounded text-light"
-                          onClick={() => deleteItem(index)}
-                          style={{
-                            cursor: "pointer",
-                            position: "absolute",
-                            top: "15px",
-                            right: "-16px",
-                            zIndex: "100",
+                    {showEdit1 ? (
+                      <div className="mb-0">
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={editorData1}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setEditorData1(data);
+                          }}
+                          config={{
+                            toolbar: [
+                              "heading",
+                              "fontColor",
+                              "fontSize",
+                              "fontBackgroundColor",
+                              "fontFamily",
+                              "bold",
+                              "italic",
+                              "underline",
+                              "strikethrough",
+                              "link",
+                              "bulletedList",
+                              "numberedList",
+                              "alignment",
+                              "textDirection",
+                              "blockQuote",
+                              "indent",
+                              "outdent",
+                              "insertTable",
+                              "imageUpload",
+                              "mediaEmbed",
+                              "undo",
+                              "redo",
+                              "findAndReplace",
+                              "removeFormat",
+                              "source",
+                              "codeBlock",
+                              "fullscreen",
+                            ],
+                            heading: {
+                              options: [
+                                {
+                                  model: "paragraph",
+                                  title: "Paragraph",
+                                  className: "ck-heading_paragraph",
+                                },
+                                {
+                                  model: "heading1",
+                                  view: "h1",
+                                  title: "Heading 1",
+                                  className: "ck-heading_heading1",
+                                },
+                                {
+                                  model: "heading2",
+                                  view: "h2",
+                                  title: "Heading 2",
+                                  className: "ck-heading_heading2",
+                                },
+                                {
+                                  model: "heading3",
+                                  view: "h3",
+                                  title: "Heading 3",
+                                  className: "ck-heading_heading3",
+                                },
+                                {
+                                  model: "heading4",
+                                  view: "h4",
+                                  title: "Heading 4",
+                                  className: "ck-heading_heading4",
+                                },
+                                {
+                                  model: "heading5",
+                                  view: "h5",
+                                  title: "Heading 5",
+                                  className: "ck-heading_heading5",
+                                },
+                                {
+                                  model: "heading6",
+                                  view: "h6",
+                                  title: "Heading 6",
+                                  className: "ck-heading_heading6",
+                                },
+                              ],
+                            },
                           }}
                         />
                       </div>
-                    </div>
+                    ) : (
+                      <div className="mb-0">
+                        <textarea
+                          id="content1"
+                          className="form-control text-create"
+                          placeholder="Short description"
+                          value={textAreaData1}
+                          onChange={handleTextAreaChange1}
+                          style={{
+                            height: "58px",
+                            zIndex: "1000",
+                            position: "relative",
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
-                ))}
-
-                <button
-                  className="btn btn-transparent border mb-2 d-flex py-4 ms-2 mt-2 bg-body mb-3"
-                  style={{ maxWidth: "200px" }}
-                  onClick={moreAttribute}
-                >
-                  Add more attribute
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column">
-          <div className="d-flex w-100">
-            <label
-              htmlFor=""
-              className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-            >
-              Product options
-            </label>
-          </div>
-          <hr className="custom-hr mt-0" />
-          {options.map((option, index) => (
-            <div
-              key={option.id}
-              className="border bg-light option-product mb-2 d-flex rounded flex-wrap"
-            >
-              <div className="d-flex flex-column py-2 ms-2 mt-1 pb-3 ms-3 w-auto product-opts w-auto">
-                <label htmlFor=""> #{index + 1} Option</label>
-                <input
-                  type="text"
-                  className="form-control py-4 mt-2"
-                  placeholder="name"
-                  value={option.name}
-                  onChange={(e) =>
-                    handleInputChanges(option.id, "name", e.target.value)
-                  }
-                />
-              </div>
-
-              <div className="d-flex flex-column py-2 ms-3 mt-0 mt-lg-2">
-                <label htmlFor="">Type</label>
-                <select
-                  className="form-select py-4 mt-2 mt-lg-1 product-opt1"
-                  value={option.type}
-                  onChange={(e) =>
-                    handleInputChanges(option.id, "type", e.target.value)
-                  }
-                >
-                  <option value="">Please select option</option>
-                  <option value="Text" className="fw-bold">
-                    Text
-                  </option>
-                  <option value="Field">Field</option>
-                  <option value="Select" className="fw-bold">
-                    Select
-                  </option>
-                  <option value="Dropdown">Dropdown</option>
-                  <option value="Checkbox">Checkbox</option>
-                  <option value="RadioButton">RadioButton</option>
-                </select>
-              </div>
-
-              <div className="d-flex flex-row mt-md-5 mt-sm-5 mt-lg-0">
-                <div className="d-flex flex-row py-2 ms-3 gap-2 mt-0 mt-lg-5 ms-lg-2">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={option.required}
-                    onChange={(e) =>
-                      handleInputChanges(
-                        option.id,
-                        "required",
-                        e.target.checked
-                      )
-                    }
-                  />
-                  <label htmlFor="">Is required?</label>
                 </div>
 
-                <div className="d-flex flex-row ms-lg-5 py-2 ms-2 mt-0 gap-2 mt-0 mt-lg-5 ms-0 ps-2">
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-0 mt-lg-0 w-100 overflow-hidden">
+                    <label htmlFor="">Content</label>
+                    <div className="d-flex gap-2 flex-row mt-2">
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2"
+                        onClick={showEditorClicked2}
+                      >
+                        Show/Hide Editor
+                      </button>
+
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
+                        onClick={mediaUpload}
+                      >
+                        <FontAwesomeIcon icon={faImage} className="me-2" />
+                        Add Media
+                      </button>
+
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <FontAwesomeIcon icon={faCube} className="me-2" />
+                        UI Blocks
+                      </button>
+                    </div>
+                    {showEdit2 ? (
+                      <div className="mb-3">
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={editorData2}
+                          onChange={(event, editor) => {
+                            const data = editor.getData();
+                            setEditorData2(data);
+                          }}
+                          config={{
+                            toolbar: [
+                              "heading",
+                              "fontColor",
+                              "fontSize",
+                              "fontBackgroundColor",
+                              "fontFamily",
+                              "bold",
+                              "italic",
+                              "underline",
+                              "strikethrough",
+                              "link",
+                              "bulletedList",
+                              "numberedList",
+                              "alignment",
+                              "textDirection",
+                              "blockQuote",
+                              "indent",
+                              "outdent",
+                              "insertTable",
+                              "imageUpload",
+                              "mediaEmbed",
+                              "undo",
+                              "redo",
+                              "findAndReplace",
+                              "removeFormat",
+                              "source",
+                              "codeBlock",
+                              "fullscreen",
+                            ],
+                            heading: {
+                              options: [
+                                {
+                                  model: "paragraph",
+                                  title: "Paragraph",
+                                  className: "ck-heading_paragraph",
+                                },
+                                {
+                                  model: "heading1",
+                                  view: "h1",
+                                  title: "Heading 1",
+                                  className: "ck-heading_heading1",
+                                },
+                                {
+                                  model: "heading2",
+                                  view: "h2",
+                                  title: "Heading 2",
+                                  className: "ck-heading_heading2",
+                                },
+                                {
+                                  model: "heading3",
+                                  view: "h3",
+                                  title: "Heading 3",
+                                  className: "ck-heading_heading3",
+                                },
+                                {
+                                  model: "heading4",
+                                  view: "h4",
+                                  title: "Heading 4",
+                                  className: "ck-heading_heading4",
+                                },
+                                {
+                                  model: "heading5",
+                                  view: "h5",
+                                  title: "Heading 5",
+                                  className: "ck-heading_heading5",
+                                },
+                                {
+                                  model: "heading6",
+                                  view: "h6",
+                                  title: "Heading 6",
+                                  className: "ck-heading_heading6",
+                                },
+                              ],
+                            },
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="mb-3">
+                        <textarea
+                          id="content2"
+                          className="form-control text-create"
+                          placeholder="Short description"
+                          value={textAreaData2}
+                          onChange={handleTextAreaChange2}
+                          style={{
+                            height: "58px",
+                            zIndex: "1000",
+                            position: "relative",
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
+                    <label htmlFor=""> Start date</label>
+                    <input
+                      type="date"
+                      className="form-control mt-2 py-4"
+                      name="date"
+                      value={date}
+                      onChange={onInputChange}
+                    />
+                  </div>
+                </div>
+
+                <div class="card tags-seo mb-3 mt-2">
+                  <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-lg-center align-items-start">
+                    <div>
+                      <h5 className="card-title1 mt-2 text-start">
+                        Specification Tables
+                      </h5>
+                      <Link
+                        to="#"
+                        className="link-primary1 primary2 meta float-end"
+                      >
+                        <select
+                          className="w-100 rounded-1 py-2 border general-space"
+                          style={{
+                            zIndex: "1000",
+                            cursor: "pointer",
+                            position: "relative",
+                          }}
+                          value={selectedSpec}
+                          onChange={handleSelectChange}
+                        >
+                          <option value="None">None</option>
+                          <option value="General Specification">
+                            General Specification
+                          </option>
+                          <option value="Technical Specification">
+                            Technical Specification
+                          </option>
+                        </select>
+                      </Link>
+                      <hr className="mt-4" />
+
+                      {selectedSpec === "None" && (
+                        <p className="card-text text-dark">
+                          Select the specification table to display in this
+                          product
+                        </p>
+                      )}
+
+                      {selectedSpec === "General Specification" && (
+                        <table className="table table-bordered border table-group2 table-striped">
+                          <thead className="bg-light">
+                            <tr>
+                              <th className="fw-light py-2 px-2">GROUP</th>
+                              <th className="fw-light">ATTRIBUTE</th>
+                              <th className="fw-light">ATTRIBUTE VALUE</th>
+                              <th className="fw-light">HIDE</th>
+                              <th className="fw-light">SORTING</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Dimensions</td>
+                              <td>Height</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Dimensions</td>
+                              <td>Width</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Dimensions</td>
+                              <td>Weight</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Performance</td>
+                              <td>Power</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Performance</td>
+                              <td>Speed</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      )}
+
+                      {selectedSpec === "Technical Specification" && (
+                        <table className="table table-bordered border table-group1 table-striped">
+                          <thead className="bg-light">
+                            <tr>
+                              <th className="fw-light py-2 px-2">GROUP</th>
+                              <th className="fw-light">ATTRIBUTE</th>
+                              <th className="fw-light">ATTRIBUTE VALUE</th>
+                              <th className="fw-light">HIDE</th>
+                              <th className="fw-light">SORTING</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Battery</td>
+                              <td>Battery Life</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Display</td>
+                              <td>Screen Size</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4 input-attribute"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Display</td>
+                              <td>Resolution</td>
+                              <td>
+                                <select className="input-attribute py- form-select">
+                                  <option value="">1920*1080</option>
+                                  <option value="">2560*1440</option>
+                                  <option value="">3840*2160</option>
+                                </select>
+                              </td>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  className="form-check-input"
+                                />
+                              </td>
+                              <td>
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card mt-4 create-tags1">
+                  <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <div className="w-100">
+                      <h5 class="card-title1 text-start">Overview</h5>
+                      <Link
+                        to="#"
+                        class="link-primary1 primary2 meta float-end"
+                      ></Link>
+                      <hr />
+                      <div className="d-flex mb-4 text-start">
+                        <div className="me-2 flex-fill">
+                          <label htmlFor="coupon-type" className="form-label">
+                            SKU
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control w-aut py-4 sku-overview"
+                            name="sku"
+                            value={sku}
+                            onChange={onInputChange}
+                          />
+                        </div>
+
+                        <div className="me-2 flex-fill mt-3 mt-md-0 mt-lg-0 ms-0 ms-lg-3 sku-overview1">
+                          <label
+                            htmlFor="coupon-condition"
+                            className="form-label"
+                          >
+                            Price
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control py-4 sku-overview1"
+                            id="discount"
+                            placeholder="$"
+                            name="price"
+                            value={price}
+                            onChange={onInputChange}
+                          />
+                        </div>
+
+                        <div className="flex-fill mt-3 mt-md-0 mt-lg-0 sku-overview1">
+                          <label
+                            htmlFor="coupon-condition"
+                            className="form-label"
+                          >
+                            Price Sale
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control py-4 w-au sku-overview1"
+                            id="discount"
+                            placeholder="$"
+                            name="price_sale"
+                            value={price_sale}
+                            onChange={onInputChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex mb-4 text-start">
+                        <div className="me-2 flex-fill cost-item">
+                          <label htmlFor="coupon-type" className="form-label">
+                            Cost per item
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control w- py-4 coupon-barcode1"
+                            placeholder="$"
+                            name="cost"
+                            value={cost}
+                            onChange={onInputChange}
+                          />
+                        </div>
+
+                        <div className="me-2 flex-fill mt-4 mt-md-0 mt-lg-0 cost-item">
+                          <label
+                            htmlFor="coupon-condition"
+                            className="form-label coupon-barcode"
+                          >
+                            Barcode (ISBN, UPC, GTIN, etc.)
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control py-4 w-100 coupon-barcode1"
+                            id="discount"
+                            placeholder="$"
+                            name="barcode"
+                            value={barcode}
+                            onChange={onInputChange}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="d-flex1 ms-2 text-start">
+                        <input type="checkbox" className="form-check-input" />
+                        <label htmlFor="" className="ms-2">
+                          With storehouse management
+                        </label>
+                      </div>
+
+                      <div className="border rounded bg-light mt-3 text-start">
+                        <label htmlFor="" className="ms-3 mt-3">
+                          Stock status
+                        </label>
+                        <div className="d-flex ms-3 mt-2 gap-2 mb-3 stock-radio flex-row">
+                          <input
+                            type="radio"
+                            className="form-check-input"
+                            name="stockstatus"
+                            value="In stock"
+                            onChange={onInputChange}
+                            checked={stockstatus === "In stock"}
+                          />
+                          <label htmlFor="">In stock</label>
+                          <input
+                            type="radio"
+                            className="ms-2 form-check-input"
+                            name="stockstatus"
+                            value="out_of_stock"
+                            onChange={onInputChange}
+                            checked={stockstatus === "out_of_stock"}
+                          />
+                          <label htmlFor="">Out of stock</label>
+                          <input
+                            type="radio"
+                            className="ms-2 form-check-input"
+                            name="stockstatus"
+                            value="backorder"
+                            onChange={onInputChange}
+                            checked={stockstatus === "backorder"}
+                          />
+                          <label htmlFor="" className="me-lg-0">
+                            on backorder
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="border w-100 rounded mt-3 cart-cart bg-light text-start">
+                        <label
+                          htmlFor=""
+                          className="fw-medium cart-cart ms-3 mt-3"
+                        >
+                          Shipping
+                        </label>
+                        <div className="d-flex mb-4 mt-3">
+                          <div className="flex-fill ms-2 shipping-label">
+                            <label
+                              htmlFor="coupon-type"
+                              className="form-label ms-2"
+                            >
+                              Weight (g)
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control w-100 py-4 coupon-barcode1"
+                              placeholder="g"
+                              name="weight"
+                              value={weight}
+                              onChange={onInputChange}
+                            />
+                          </div>
+
+                          <div className="me-2 flex-fill mt-4 mt-lg-0 ms-2 shipping-label">
+                            <label
+                              htmlFor="coupon-condition"
+                              className="form-label coupon-barcode"
+                            >
+                              Length (cm)
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control py-4 w-100 coupon-barcode1"
+                              id="discount"
+                              placeholder="cm"
+                              name="length"
+                              value={length}
+                              onChange={onInputChange}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="d-flex mb-4 mt-3 ms-2">
+                          <div className="me-2 flex-fill shipping-label1">
+                            <label
+                              htmlFor="coupon-type"
+                              className="form-label ms-2"
+                            >
+                              Wide (cm)
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control w-100 py-4 coupon-barcode1"
+                              placeholder="cm"
+                              name="wide"
+                              value={wide}
+                              onChange={onInputChange}
+                            />
+                          </div>
+
+                          <div className="me-2 flex-fill mt-4 mt-lg-0 ms- shipping-label1">
+                            <label
+                              htmlFor="coupon-condition"
+                              className="form-label coupon-barcode"
+                            >
+                              Height (cm)
+                            </label>
+                            <input
+                              type="text"
+                              className="form-control py-4 coupon-barcode1"
+                              id="discount"
+                              placeholder="cm"
+                              name="height"
+                              value={height}
+                              onChange={onInputChange}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border ms-1 rounded mt-3 mb-3 cart-cart bg-body d-flex flex-column">
+                  <div className="d-flex w-100">
+                    <label
+                      htmlFor=""
+                      className="fw-medium cart-cart ms-4 mt-lg-4 mt-4 flex-grow-1 attribute-produc"
+                    >
+                      Attributes
+                    </label>
+
+                    <button
+                      className="btn btn-success ms-auto d-flex me-2 mt-0 mt-lg-4 new-attribute new-attribute2 bg-body border text-dark py-4"
+                      onClick={attributeNew}
+                      style={{ zIndex: "100" }}
+                    >
+                      {news ? "Cancel" : "Add new attributes"}
+                    </button>
+                  </div>
+
+                  <hr className="custom-hr mt-0" />
+
+                  <div className="mt-1 mb-3 me-4 ms-3 ms-lg-2">
+                    Adding new attributes helps the product to have many
+                    options, such as size or color.
+                  </div>
+
+                  {news && (
+                    <>
+                      <div className="border bg-light mb-2 attribute-select rounded">
+                        {more.map((attribute, index) => (
+                          <div className="d-flex w-100 mb-3 mt-3" key={index}>
+                            <div className="d-flex flex-column w-100 me-3">
+                              <label htmlFor="" className="ms-2 mt-2">
+                                Attribute Name
+                              </label>
+                              {create.slice(0, 1).map((data, key) => (
+                                <>
+                                  <div key={key}>
+                                    <select
+                                      name="attribute"
+                                      className="form-select w-75 mt-2 ms-2 mb-2 h-auto"
+                                    >
+                                      <option value="">Select Attribute</option>
+                                      {create.length > 0 ? (
+                                        create.map((item) => {
+                                          console.log("Item:", item);
+                                          console.log(
+                                            "Item title:",
+                                            item.title
+                                          );
+                                          return (
+                                            <option
+                                              key={item.id}
+                                              value={item.title}
+                                            >
+                                              {item.title}
+                                            </option>
+                                          );
+                                        })
+                                      ) : (
+                                        <option disabled>
+                                          No attributes available
+                                        </option>
+                                      )}
+                                    </select>
+                                  </div>
+                                </>
+                              ))}
+                            </div>
+
+                            <div className="d-flex flex-column ms-2 ms-lg-0 w-100">
+                              <label htmlFor="" className="ms-0 mt-2">
+                                Value
+                              </label>
+                              <select
+                                name=""
+                                className="form-select w-75 ms-0 mt-2 mb-2 h-auto"
+                              >
+                                <option value="">Select Attribute</option>
+                                <option value="">S</option>
+                                <option value="">M</option>
+                                <option value="">L</option>
+                                <option value="">Xl</option>
+                                <option value="">XXL</option>
+                              </select>
+
+                              <div
+                                className="ms-auto me-5 mt-4 pt-3"
+                                style={{ position: "absolute", left: "76rem" }}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faTrashCan}
+                                  className="bg-danger px-2 py-2 rounded text-light"
+                                  onClick={() => deleteItem(index)}
+                                  style={{
+                                    cursor: "pointer",
+                                    position: "absolute",
+                                    top: "15px",
+                                    right: "-16px",
+                                    zIndex: "100",
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+
+                        <button
+                          className="btn btn-transparent border mb-2 d-flex py-4 ms-2 mt-2 bg-body mb-3"
+                          style={{ maxWidth: "200px" }}
+                          onClick={moreAttribute}
+                        >
+                          Add more attribute
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3">
+                  <div className="d-flex w-100">
+                    <label
+                      htmlFor=""
+                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                    >
+                      Product options
+                    </label>
+                  </div>
+                  <hr className="custom-hr mt-0" />
+                  {options.map((option, index) => (
+                    <div
+                      key={option.id}
+                      className="border bg-light option-product mb-2 d-flex rounded flex-wrap"
+                    >
+                      <div className="d-flex flex-column py-2 ms-2 mt-1 pb-3 ms-3 w-auto product-opts w-auto">
+                        <label htmlFor=""> #{index + 1} Option</label>
+                        <input
+                          type="text"
+                          className="form-control py-4 mt-2"
+                          placeholder="name"
+                          value={option.name}
+                          onChange={(e) =>
+                            handleInputChanges(
+                              option.id,
+                              "name",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+
+                      <div className="d-flex flex-column py-2 ms-3 mt-0 mt-lg-2">
+                        <label htmlFor="">Type</label>
+                        <select
+                          className="form-select py-4 mt-2 mt-lg-1 product-opt1"
+                          value={option.type}
+                          onChange={(e) =>
+                            handleInputChanges(
+                              option.id,
+                              "type",
+                              e.target.value
+                            )
+                          }
+                        >
+                          <option value="">Please select option</option>
+                          <option value="Text" className="fw-bold">
+                            Text
+                          </option>
+                          <option value="Field">Field</option>
+                          <option value="Select" className="fw-bold">
+                            Select
+                          </option>
+                          <option value="Dropdown">Dropdown</option>
+                          <option value="Checkbox">Checkbox</option>
+                          <option value="RadioButton">RadioButton</option>
+                        </select>
+                      </div>
+
+                      <div className="d-flex flex-row mt-md-5 mt-sm-5 mt-lg-0">
+                        <div className="d-flex flex-row py-2 ms-3 gap-2 mt-0 mt-lg-5 ms-lg-2">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            checked={option.required}
+                            onChange={(e) =>
+                              handleInputChanges(
+                                option.id,
+                                "required",
+                                e.target.checked
+                              )
+                            }
+                          />
+                          <label htmlFor="">Is required?</label>
+                        </div>
+
+                        <div className="d-flex flex-row ms-lg-5 py-2 ms-2 mt-0 gap-2 mt-0 mt-lg-5 ms-0 ps-2">
+                          <button
+                            className="btn btn-danger d-flex p-2"
+                            onClick={() => deleteOptions(option.id)}
+                          >
+                            <FontAwesomeIcon icon={faTrashCan} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="w-100 ms-3 me-3 mt-2">
+                        <table className="table table-striped table-bordered table-lable1">
+                          <thead className="bg-body">
+                            <tr>
+                              <th className="fw-light text-dark ps-3 py-2">
+                                #
+                              </th>
+                              <th className="fw-light text-dark ps-2">LABEL</th>
+                              <th className="fw-light text-dark ps-2">PRICE</th>
+                              <th className="fw-light text-dark">PRICE TYPE</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rows.map((row) => (
+                              <tr key={row.id}>
+                                <td>
+                                  <FontAwesomeIcon icon={faArrowUp} />
+                                  <FontAwesomeIcon icon={faArrowDown} />
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className="form-control py-4"
+                                    placeholder="Please fill label"
+                                    value={row.label}
+                                    onChange={(e) =>
+                                      handleChanges(
+                                        row.id,
+                                        "label",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className="form-control py-4"
+                                    placeholder="Please fill affect price"
+                                    value={row.price}
+                                    onChange={(e) =>
+                                      handleChanges(
+                                        row.id,
+                                        "price",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    style={{
+                                      cursor: "pointer",
+                                      zIndex: 1000,
+                                      position: "relative",
+                                    }}
+                                    value={row.priceType}
+                                    onChange={(e) =>
+                                      handleChanges(
+                                        row.id,
+                                        "priceType",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="fixed">Fixed</option>
+                                    <option value="percent">Percent</option>
+                                  </select>
+                                </td>
+
+                                <td>
+                                  <button
+                                    className="btn bg-body border px-2 py-3 d-flex p-2"
+                                    style={{
+                                      cursor: "pointer",
+                                      zIndex: 1000,
+                                      position: "relative",
+                                    }}
+                                    onClick={() => handleDelete(row.id)}
+                                  >
+                                    <FontAwesomeIcon icon={faTrashCan} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <button
+                          className="btn bg-body border d-flex mb-2 py-4"
+                          onClick={handleAddRow}
+                        >
+                          Add new row
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
                   <button
-                    className="btn btn-danger d-flex p-2"
-                    onClick={() => deleteOptions(option.id)}
+                    className="btn bg-body border py-4 d-flex add-option ms-3"
+                    onClick={addOptions}
                   >
-                    <FontAwesomeIcon icon={faTrashCan} />
+                    Add new option
+                  </button>
+
+                  <div className="d-flex flex-row flex-md-row align-items-start mb-2 ms-md-2 global-select">
+                    <select
+                      className="form-select px-4 globally-add1"
+                      style={{ zIndex: "100" }}
+                    >
+                      <option value="">Select Global Option</option>
+                      <option value="">Warranty</option>
+                      <option value="">RAM</option>
+                      <option value="">CPU</option>
+                      <option value="">HDD</option>
+                    </select>
+
+                    <button
+                      className="btn bg-body border py-4 ms-md-2 d-flex globally-add"
+                      style={{ whiteSpace: "nowrap", zIndex: "100" }}
+                    >
+                      Add Global Option
+                    </button>
+                  </div>
+                </div>
+
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3">
+                  <div className="d-flex w-100">
+                    <label
+                      htmlFor=""
+                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                    >
+                      Related Products
+                    </label>
+                  </div>
+                  <hr className="custom-hr mt-0" />
+                  <input
+                    type="text"
+                    className="form-control mb-3 py-4 me-auto ms-3 search-create"
+                    placeholder="Search products"
+                    name="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  {loading && <p>Loading...</p>}
+                  {error && <p>{error}</p>}
+
+                  <div className="product-list">
+                    {products.length > 0 ? (
+                      products.map((product) => {
+                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product.image}`;
+                        return (
+                          <div
+                            key={product.id}
+                            className="product-card border w-auto h-auto m-1 rounded"
+                          >
+                            <div
+                              className="d-flex flex-row"
+                              style={{ cursor: "pointer" }}
+                            >
+                              <img
+                                src={imageUrl}
+                                alt="img not found"
+                                onError={(e) =>
+                                  (e.target.src =
+                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                }
+                                className="product-image img-thumbnail mt-2 ms-2 mb-2"
+                              />
+                              <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
+                                {product.name}
+                              </h5>
+                              <p className="product-price mt-4 ms-2 pt-2">
+                                {product.price}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <span className="mt-2 ms-2"></span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3">
+                  <div className="d-flex w-100">
+                    <label
+                      htmlFor=""
+                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                    >
+                      Cross-selling products
+                    </label>
+                  </div>
+                  <hr className="custom-hr mt-0" />
+                  <input
+                    type="text"
+                    className="form-control mb-3 py-4 me-auto ms-3 search-create"
+                    placeholder="Search products"
+                    name="search1"
+                    value={search1}
+                    onChange={(e) => setSearch1(e.target.value)}
+                  />
+                  {loading1 && <p>Loading...</p>}
+                  {error1 && <p>{error1}</p>}
+
+                  <div className="product-list">
+                    {products1.length > 0 ? (
+                      products1.map((product2) => {
+                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product2.image}`;
+                        return (
+                          <div
+                            key={product2.id}
+                            className="product-card border w-auto h-auto m-1 rounded"
+                          >
+                            <div
+                              className="d-flex flex-row"
+                              style={{ cursor: "pointer" }}
+                            >
+                              <img
+                                src={imageUrl}
+                                alt="img not found"
+                                onError={(e) =>
+                                  (e.target.src =
+                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                }
+                                className="product-image img-thumbnail mt-2 ms-2 mb-2"
+                              />
+                              <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
+                                {product2.name}
+                              </h5>
+                              <p className="product-price mt-4 ms-2 pt-2">
+                                {product2.price}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <span className="mt-2 ms-2"></span>
+                    )}
+                  </div>
+                  <span className="ms-3">
+                    <strong>* Price field:</strong> Enter the amount you want to
+                    reduce from the original price. Example: If the original
+                    price is $100, enter 20 to reduce the price to $80.
+                  </span>
+                  <span className="ms-3 mb-3">
+                    <strong>* Type field:</strong> Choose the discount type:
+                    Fixed (reduce a specific amount) or Percent (reduce by a
+                    percentage).
+                  </span>
+                </div>
+
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column  mb-3">
+                  <div className="d-flex w-100">
+                    <label
+                      htmlFor=""
+                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                    >
+                      Product FAQs
+                    </label>
+                  </div>
+                  <hr className="custom-hr mt-0" />
+
+                  {addproducts.map((product, index) => (
+                    <div
+                      key={index}
+                      className="input-question border mb-2 bg-light rounded ms-2 position-relative"
+                    >
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="remove-icon position-absolute top-0 end-0 m-2 me-3 fs-6 px-2 py-2 rounded cursor-pointer text-dark border"
+                        onClick={() => removeProduct(index)}
+                      />
+                      <label htmlFor="" className="mt-3 ms-3">
+                        Question
+                      </label>
+                      <textarea
+                        type="text"
+                        className="form-control ms-3 mb-2 mt-2 input-question"
+                        style={{ height: "58px" }}
+                        value={product.question}
+                        onChange={(e) =>
+                          handleInputChange(index, "question", e.target.value)
+                        }
+                      />
+                      <label htmlFor="" className="mt-2 ms-3">
+                        Answer
+                      </label>
+                      <textarea
+                        type="text"
+                        className="form-control ms-3 mb-4 mt-2 input-question"
+                        style={{ height: "58px" }}
+                        value={product.answer}
+                        onChange={(e) =>
+                          handleInputChange(index, "answer", e.target.value)
+                        }
+                      />
+                    </div>
+                  ))}
+
+                  <button
+                    className="me-auto ms-4 mb-3 btn bg-light border d-flex py-4 px-3 z-3"
+                    onClick={addProduct}
+                  >
+                    Add new
+                  </button>
+                </div>
+
+                <div class="card mt-3 ms- create-tags1 create-display">
+                  <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <div>
+                      <h5 class="card-title1">Search Engine Optimize</h5>
+                      <Link
+                        to="#"
+                        class="link-primary1 primary2 meta float-end"
+                        onClick={seodataproduct}
+                        style={{ zIndex: "100" }}
+                      >
+                        Edit SEO meta
+                      </Link>
+                      <hr />
+                      <p class="card-text text-dark">
+                        Setup meta title & description to make your site easy to
+                        discovered on search engines such as Google
+                        <hr />
+                        {seo && (
+                          <>
+                            <div>
+                              <label htmlFor="">SEO Title</label>
+                              <input
+                                type="text"
+                                className="form-control mt-2 py-4 seo-edit"
+                              />
+                            </div>
+
+                            <div className="mt-3">
+                              <label htmlFor="seo-description">
+                                SEO Description
+                              </label>
+                              <textarea
+                                id="seo-description"
+                                className="form-control mt-2 py-4 seo-edit"
+                                placeholder="SEO Description"
+                                style={{
+                                  height: "100px",
+                                  overflow: "auto",
+                                  resize: "vertical",
+                                  minHeight: "100px",
+                                }}
+                              />
+                            </div>
+
+                            <div>
+                              <label className="mt-3 pt-2 ms-2">
+                                SEO image
+                              </label>
+                              <div className="image-card border-0 ps-1">
+                                <div
+                                  className="image-placeholder"
+                                  onClick={() =>
+                                    document.getElementById("fileInput").click()
+                                  }
+                                >
+                                  {imageUrl ? (
+                                    <img
+                                      alt="Uploaded preview"
+                                      src={imageUrl}
+                                      width="100"
+                                      height="100"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={Cutting}
+                                      alt="404"
+                                      className="w-75 h-75 img-fluid"
+                                    />
+                                  )}
+                                </div>
+                                <input
+                                  id="fileInput"
+                                  type="file"
+                                  name="file"
+                                  style={{ display: "none" }}
+                                  onChange={handleFileChange}
+                                />
+                                <Link
+                                  className="ms-5"
+                                  to="#"
+                                  onClick={() =>
+                                    document.getElementById("fileInput").click()
+                                  }
+                                >
+                                  Choose image <br />
+                                </Link>
+                                <span className="ms-2 me-2 ms-5">or</span>
+                                <Link to="#" onClick={handleAddFromUrl}>
+                                  Add from URL
+                                </Link>
+                              </div>
+                            </div>
+
+                            <div className="d-flex gap-2 ms-2">
+                              <label htmlFor="">Index</label>
+                            </div>
+
+                            <div className="ms-2 mt-2 pb-2">
+                              <input
+                                class="form-check-input"
+                                type="radio"
+                                name="check"
+                                checked
+                              />
+                              <label htmlFor="" className="ms-2">
+                                Index
+                              </label>
+
+                              <input
+                                className="form-check-input ms-2"
+                                type="radio"
+                                value="index"
+                                name="check"
+                              />
+                              <label htmlFor="" className="ms-2">
+                                No index
+                              </label>
+                            </div>
+                          </>
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
+                <h4 className="mt-0 text-start">Publish</h4>
+                <hr />
+                <div className="d-flex flex-row gap-3 mb-3">
+                  <button
+                    type="button"
+                    className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
+                    onClick={handleSubmit}
+                  >
+                    <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                  </button>
+                  <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
+                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                    Save & Exit
                   </button>
                 </div>
               </div>
 
-              <div className="w-100 ms-3 me-3 mt-2">
-                <table className="table table-striped table-bordered table-lable1">
-                  <thead className="bg-body">
-                    <tr>
-                      <th className="fw-light text-dark ps-3 py-2">#</th>
-                      <th className="fw-light text-dark ps-2">LABEL</th>
-                      <th className="fw-light text-dark ps-2">PRICE</th>
-                      <th className="fw-light text-dark">PRICE TYPE</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((row) => (
-                      <tr key={row.id}>
-                        <td>
-                          <FontAwesomeIcon icon={faArrowUp} />
-                          <FontAwesomeIcon icon={faArrowDown} />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            className="form-control py-4"
-                            placeholder="Please fill label"
-                            value={row.label}
-                            onChange={(e) =>
-                              handleChanges(row.id, "label", e.target.value)
-                            }
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            className="form-control py-4"
-                            placeholder="Please fill affect price"
-                            value={row.price}
-                            onChange={(e) =>
-                              handleChanges(row.id, "price", e.target.value)
-                            }
-                          />
-                        </td>
-                        <td>
-                          <select
-                            className="form-select"
-                            style={{
-                              cursor: "pointer",
-                              zIndex: 1000,
-                              position: "relative",
-                            }}
-                            value={row.priceType}
-                            onChange={(e) =>
-                              handleChanges(row.id, "priceType", e.target.value)
-                            }
-                          >
-                            <option value="fixed">Fixed</option>
-                            <option value="percent">Percent</option>
-                          </select>
-                        </td>
-
-                        <td>
-                          <button
-                            className="btn bg-body border px-2 py-3 d-flex p-2"
-                            style={{
-                              cursor: "pointer",
-                              zIndex: 1000,
-                              position: "relative",
-                            }}
-                            onClick={() => handleDelete(row.id)}
-                          >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <button
-                  className="btn bg-body border d-flex mb-2 py-4"
-                  onClick={handleAddRow}
-                >
-                  Add new row
-                </button>
-              </div>
-            </div>
-          ))}
-
-          <button
-            className="btn bg-body border py-4 d-flex add-option"
-            onClick={addOptions}
-          >
-            Add new option
-          </button>
-
-          <div className="d-flex flex-row flex-md-row align-items-start mb-2 ms-md-2 global-select">
-            <select
-              className="form-select px-4 globally-add1"
-              style={{ zIndex: "100" }}
-            >
-              <option value="">Select Global Option</option>
-              <option value="">Warranty</option>
-              <option value="">RAM</option>
-              <option value="">CPU</option>
-              <option value="">HDD</option>
-            </select>
-
-            <button
-              className="btn bg-body border py-4 ms-md-2 d-flex globally-add"
-              style={{ whiteSpace: "nowrap", zIndex: "100" }}
-            >
-              Add Global Option
-            </button>
-          </div>
-        </div>
-
-        <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column">
-          <div className="d-flex w-100">
-            <label
-              htmlFor=""
-              className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-            >
-              Related Products
-            </label>
-          </div>
-          <hr className="custom-hr mt-0" />
-          <input
-            type="text"
-            className="form-control mb-3 py-4 me-auto ms-3 search-create"
-            placeholder="Search products"
-            name="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {loading && <p>Loading...</p>}
-          {error && <p>{error}</p>}
-
-          <div className="product-list">
-            {products.length > 0 ? (
-              products.map((product) => {
-                const imageUrl = `http://localhost:1600/productpagedata/src/image/${product.image}`;
-                return (
-                  <div
-                    key={product.id}
-                    className="product-card border w-auto h-auto m-1 rounded"
-                  >
-                    <div
-                      className="d-flex flex-row"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                        src={imageUrl}
-                        alt="img not found"
-                        onError={(e) =>
-                          (e.target.src =
-                            "http://localhost:1600/path/to/fallback-image.jpg")
-                        }
-                        className="product-image img-thumbnail mt-2 ms-2 mb-2"
-                      />
-                      <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
-                        {product.name}
-                      </h5>
-                      <p className="product-price mt-4 ms-2 pt-2">
-                        {product.price}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <span className="mt-2 ms-2"></span>
-            )}
-          </div>
-        </div>
-
-        <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column">
-          <div className="d-flex w-100">
-            <label
-              htmlFor=""
-              className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-            >
-              Cross-selling products
-            </label>
-          </div>
-          <hr className="custom-hr mt-0" />
-          <input
-            type="text"
-            className="form-control mb-3 py-4 me-auto ms-3 search-create"
-            placeholder="Search products"
-            name="search1"
-            value={search1}
-            onChange={(e) => setSearch1(e.target.value)}
-          />
-          {loading1 && <p>Loading...</p>}
-          {error1 && <p>{error1}</p>}
-
-          <div className="product-list">
-            {products1.length > 0 ? (
-              products1.map((product2) => {
-                const imageUrl = `http://localhost:1600/productpagedata/src/image/${product2.image}`;
-                return (
-                  <div
-                    key={product2.id}
-                    className="product-card border w-auto h-auto m-1 rounded"
-                  >
-                    <div
-                      className="d-flex flex-row"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                        src={imageUrl}
-                        alt="img not found"
-                        onError={(e) =>
-                          (e.target.src =
-                            "http://localhost:1600/path/to/fallback-image.jpg")
-                        }
-                        className="product-image img-thumbnail mt-2 ms-2 mb-2"
-                      />
-                      <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
-                        {product2.name}
-                      </h5>
-                      <p className="product-price mt-4 ms-2 pt-2">
-                        {product2.price}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <span className="mt-2 ms-2"></span>
-            )}
-          </div>
-          <span className="ms-3">
-            <strong>* Price field:</strong> Enter the amount you want to reduce
-            from the original price. Example: If the original price is $100,
-            enter 20 to reduce the price to $80.
-          </span>
-          <span className="ms-3 mb-3">
-            <strong>* Type field:</strong> Choose the discount type: Fixed
-            (reduce a specific amount) or Percent (reduce by a percentage).
-          </span>
-        </div>
-
-        <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column">
-          <div className="d-flex w-100">
-            <label
-              htmlFor=""
-              className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-            >
-              Product FAQs
-            </label>
-          </div>
-          <hr className="custom-hr mt-0" />
-
-          {addproducts.map((product, index) => (
-            <div
-              key={index}
-              className="input-question border mb-2 bg-light rounded ms-2 position-relative"
-            >
-              <FontAwesomeIcon
-                icon={faXmark}
-                className="remove-icon position-absolute top-0 end-0 m-2 me-3 fs-6 px-2 py-2 rounded cursor-pointer text-dark border"
-                onClick={() => removeProduct(index)}
-              />
-              <label htmlFor="" className="mt-3 ms-3">
-                Question
-              </label>
-              <textarea
-                type="text"
-                className="form-control ms-3 mb-2 mt-2 input-question"
-                style={{ height: "58px" }}
-                value={product.question}
-                onChange={(e) =>
-                  handleInputChange(index, "question", e.target.value)
-                }
-              />
-              <label htmlFor="" className="mt-2 ms-3">
-                Answer
-              </label>
-              <textarea
-                type="text"
-                className="form-control ms-3 mb-4 mt-2 input-question"
-                style={{ height: "58px" }}
-                value={product.answer}
-                onChange={(e) =>
-                  handleInputChange(index, "answer", e.target.value)
-                }
-              />
-            </div>
-          ))}
-
-          <button
-            className="me-auto ms-4 mb-3 btn bg-light border d-flex py-4 px-3 z-3"
-            onClick={addProduct}
-          >
-            Add new
-          </button>
-        </div>
-
-        <div class="card mt-3 ms- create-tags1 create-display">
-          <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <div>
-              <h5 class="card-title1">Search Engine Optimize</h5>
-              <Link
-                to="#"
-                class="link-primary1 primary2 meta float-end"
-                onClick={seodataproduct}
-                style={{ zIndex: "100" }}
-              >
-                Edit SEO meta
-              </Link>
-              <hr />
-              <p class="card-text text-dark">
-                Setup meta title & description to make your site easy to
-                discovered on search engines such as Google
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Status</h4>
                 <hr />
-                {seo && (
-                  <>
-                    <div>
-                      <label htmlFor="">SEO Title</label>
-                      <input
-                        type="text"
-                        className="form-control mt-2 py-4 seo-edit"
-                      />
-                    </div>
-
-                    <div className="mt-3">
-                      <label htmlFor="seo-description">SEO Description</label>
-                      <textarea
-                        id="seo-description"
-                        className="form-control mt-2 py-4 seo-edit"
-                        placeholder="SEO Description"
-                        style={{
-                          height: "100px",
-                          overflow: "auto",
-                          resize: "vertical",
-                          minHeight: "100px",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="mt-3 pt-2 ms-2">SEO image</label>
-                      <div className="image-card border-0 ps-1">
-                        <div
-                          className="image-placeholder"
-                          onClick={() =>
-                            document.getElementById("fileInput").click()
-                          }
-                        >
-                          {imageUrl ? (
-                            <img
-                              alt="Uploaded preview"
-                              src={imageUrl}
-                              width="100"
-                              height="100"
-                            />
-                          ) : (
-                            <img
-                              src={Cutting}
-                              alt="404"
-                              className="w-75 h-75 img-fluid"
-                            />
-                          )}
-                        </div>
-                        <input
-                          id="fileInput"
-                          type="file"
-                          name="file"
-                          style={{ display: "none" }}
-                          onChange={handleFileChange}
-                        />
-                        <Link
-                          className="ms-5"
-                          to="#"
-                          onClick={() =>
-                            document.getElementById("fileInput").click()
-                          }
-                        >
-                          Choose image <br />
-                        </Link>
-                        <span className="ms-2 me-2 ms-5">or</span>
-                        <Link to="#" onClick={handleAddFromUrl}>
-                          Add from URL
-                        </Link>
-                      </div>
-                    </div>
-
-                    <div className="d-flex gap-2 ms-2">
-                      <label htmlFor="">Index</label>
-                    </div>
-
-                    <div className="ms-2 mt-2 pb-2">
-                      <input
-                        class="form-check-input"
-                        type="radio"
-                        name="check"
-                        checked
-                      />
-                      <label htmlFor="" className="ms-2">
-                        Index
-                      </label>
-
-                      <input
-                        className="form-check-input ms-2"
-                        type="radio"
-                        value="index"
-                        name="check"
-                      />
-                      <label htmlFor="" className="ms-2">
-                        No index
-                      </label>
-                    </div>
-                  </>
-                )}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-container mt-4 flex-column container-publish me-3">
-          <div class="card card-publish">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Publish</h5>
-              <hr />
-              <div className="d-flex flex-row">
-                <button
-                  class="btn btn-save d-flex"
-                  type="submit"
-                  onClick={handleSubmit}
+                <select
+                  className="w-100 rounded-1 py-2 border"
+                  name="status"
+                  value={status}
+                  onChange={onInputChange}
                 >
-                  <i class="fas fa-save"></i> Save
-                </button>
-                <button
-                  class="btn btn-secondary ms-2 btn-exit d-flex flex-row gap-1"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  <i class="fas fa-sign-out-alt"></i> Save & Exit
-                </button>
+                  <option value="">Select an option</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
+                </select>
               </div>
-            </div>
-          </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">
-                Status <span className="text-danger">*</span>
-              </h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="status"
-                value={status}
-                onChange={onInputChange}
-                required
-              >
-                <option value="">Select an option</option>
-                <option value="Published">Published</option>
-                <option value="Draft">Draft</option>
-                <option value="Pending">Pending</option>
-              </select>
-            </div>
-          </div>
+              <div className="border rounded p-3 customer-page1">
+                <h5 class="card-title fw-lighter text-start">Store</h5>
+                <hr />
+                <select
+                  className="w-100 rounded-1 py-2 border"
+                  name="store"
+                  value={store}
+                  onChange={onInputChange}
+                  required
+                >
+                  <option value="">Select a store</option>
+                  <option value="GoPro">GoPro</option>
+                  <option value="Global Office">Global Office</option>
+                  <option value="Young Shop">Young Shop</option>
+                  <option value="Global Store">Global Store</option>
+                  <option value="Rebort's Store">Rebort's Store</option>
+                  <option value="Stroufer">Stroufer</option>
+                  <option value="Starkist">StarKist</option>
+                </select>
+              </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Store</h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="store"
-                value={store}
-                onChange={onInputChange}
-                required
-              >
-                <option value="">Select a store</option>
-                <option value="GoPro">GoPro</option>
-                <option value="Global Office">Global Office</option>
-                <option value="Young Shop">Young Shop</option>
-                <option value="Global Store">Global Store</option>
-                <option value="Rebort's Store">Rebort's Store</option>
-                <option value="Stroufer">Stroufer</option>
-                <option value="Starkist">StarKist</option>
-              </select>
-            </div>
-          </div>
+              <div className="border rounded p-3 customer-page1">
+                <h5 class="card-title fw-lighter">Is featured?</h5>
+                <hr />
+                <div class="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="has-action"
+                    name="feature"
+                    checked={user.feature}
+                    onChange={onInputChange}
+                  />
+                </div>
+              </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Is featured?</h5>
-              <hr />
-              <div class="form-check form-switch mb-3">
+              <div className="border rounded p-3 customer-page1">
+                <h5 class="card-title fw-lighter">Brand</h5>
+                <hr />
+                <select
+                  className="w-100 rounded-1 py-2 border"
+                  name="brand"
+                  value={brand}
+                  onChange={onInputChange}
+                  required
+                >
+                  <option value="">Select a brand</option>
+                  <option value="FoodPound">FoodPound</option>
+                  <option value="iTea JSC">iTea JSC</option>
+                  <option value="Soda Brand">Soda Brand</option>
+                  <option value="Shofy">Shofy</option>
+                  <option value="Soda Brand">Soda Brand</option>
+                </select>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h5>Featured image </h5>
+                <hr />
+                <div
+                  className="image-placeholder"
+                  onClick={() => document.getElementById("fileInput").click()}
+                >
+                  {imageUrl ? (
+                    <img
+                      alt="Uploaded preview"
+                      src={imageUrl}
+                      width="100"
+                      height="100"
+                    />
+                  ) : (
+                    <img src={Cutting} className="w-75 h-100" />
+                  )}
+                </div>
                 <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                  name="feature"
-                  checked={user.feature}
+                  id="fileInput"
+                  type="file"
+                  name="file"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Link
+                  to="#"
+                  onClick={() => document.getElementById("fileInput").click()}
+                >
+                  Choose image
+                </Link>
+                <span className="ms-2 me-2">or</span>
+                <Link to="#" onClick={handleAddFromUrl}>
+                  Add from URL
+                </Link>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h5>Product collections</h5>
+                <hr />
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() =>
+                      handleCheckboxChange1("Weekly Gadget Spotlight")
+                    }
+                  />
+                  <label htmlFor="">Weekly Gadget Spotlight</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() =>
+                      handleCheckboxChange1("Electronic Trendsetters")
+                    }
+                  />
+                  <label htmlFor="">Electronic Trendsetters</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() =>
+                      handleCheckboxChange1("Digital Workspace Gear")
+                    }
+                  />
+                  <label htmlFor="">Digital Workspace Gear</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() => handleCheckboxChange1("Cutting Edge Tech")}
+                  />
+                  <label htmlFor="">Cutting Edge Tech</label>
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h5>Labels</h5>
+                <hr />
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() => handleCheckboxChange("Hot")}
+                  />
+                  <label htmlFor="">Hot</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() => handleCheckboxChange("New")}
+                  />
+                  <label htmlFor="">New</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={() => handleCheckboxChange("Sale")}
+                  />
+                  <label htmlFor="">Sale</label>
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h5>Taxes</h5>
+                <hr />
+                <div className="d-flex gap-2 mb-1">
+                  <input type="checkbox" className="form-check-input" />
+                  <label htmlFor="">None (0%)</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input type="checkbox" className="form-check-input" />
+                  <label htmlFor="">VAT (10%)</label>
+                </div>
+                <div className="d-flex gap-2 mb-1">
+                  <input type="checkbox" className="form-check-input" />
+                  <label htmlFor="">Import Tax (15%)</label>
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h6>Minimum order quantity</h6>
+                <hr />
+                <input
+                  type="number"
+                  className="form-control py-4"
+                  placeholder="Maximum quantity"
+                  name="minimumorder"
+                  value={minimumorder}
                   onChange={onInputChange}
                 />
               </div>
-            </div>
-          </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Brand</h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="brand"
-                value={brand}
-                onChange={onInputChange}
-                required
-              >
-                <option value="">Select a brand</option>
-                <option value="FoodPound">FoodPound</option>
-                <option value="iTea JSC">iTea JSC</option>
-                <option value="Soda Brand">Soda Brand</option>
-                <option value="Shofy">Shofy</option>
-                <option value="Soda Brand">Soda Brand</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="container mt-1 image-card1">
-            <div className="image-card">
-              <h5>Featured image </h5>
-              <div
-                className="image-placeholder"
-                onClick={() => document.getElementById("fileInput").click()}
-              >
-                {imageUrl ? (
-                  <img
-                    alt="Uploaded preview"
-                    src={imageUrl}
-                    width="100"
-                    height="100"
-                  />
-                ) : (
-                  <svg
-                    class="icon icon-md text-secondary svg-icon-ti-ti-photo-plus"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M15 8h.01"></path>
-                    <path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5"></path>
-                    <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4"></path>
-                    <path d="M14 14l1 -1c.67 -.644 1.45 -.824 2.182 -.54"></path>
-                    <path d="M16 19h6"></path>
-                    <path d="M19 16v6"></path>
-                  </svg>
-                )}
-              </div>
-              <input
-                id="fileInput"
-                type="file"
-                name="file"
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <Link
-                to="#"
-                onClick={() => document.getElementById("fileInput").click()}
-              >
-                Choose image
-              </Link>
-              <span className="ms-2 me-2">or</span>
-              <Link to="#" onClick={handleAddFromUrl}>
-                Add from URL
-              </Link>
-            </div>
-          </div>
-
-          <div className="container mt-1 image-card1">
-            <div className="image-card">
-              <h5>Product collections</h5>
-              <hr />
-              <div className="d-flex gap-2 mb-1">
+              <div className="border rounded p-3 customer-page1">
+                <h6>Maximum order quantity</h6>
+                <hr />
                 <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() =>
-                    handleCheckboxChange1("Weekly Gadget Spotlight")
-                  }
+                  type="number"
+                  className="form-control py-4"
+                  placeholder="Minimum quantity"
+                  name="maximumorder"
+                  value={maximumorder}
+                  onChange={onInputChange}
                 />
-                <label htmlFor="">Weekly Gadget Spotlight</label>
               </div>
-              <div className="d-flex gap-2 mb-1">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() =>
-                    handleCheckboxChange1("Electronic Trendsetters")
-                  }
-                />
-                <label htmlFor="">Electronic Trendsetters</label>
-              </div>
-              <div className="d-flex gap-2 mb-1">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() =>
-                    handleCheckboxChange1("Digital Workspace Gear")
-                  }
-                />
-                <label htmlFor="">Digital Workspace Gear</label>
-              </div>
-              <div className="d-flex gap-2 mb-1">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() => handleCheckboxChange1("Cutting Edge Tech")}
-                />
-                <label htmlFor="">Cutting Edge Tech</label>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mt-1 image-card1">
-            <div className="image-card">
-              <h5>Labels</h5>
-              <hr />
-              <div className="d-flex gap-2 mb-1">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() => handleCheckboxChange("Hot")}
-                />
-                <label htmlFor="">Hot</label>
-              </div>
-              <div className="d-flex gap-2 mb-1">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() => handleCheckboxChange("New")}
-                />
-                <label htmlFor="">New</label>
-              </div>
-              <div className="d-flex gap-2 mb-1">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={() => handleCheckboxChange("Sale")}
-                />
-                <label htmlFor="">Sale</label>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mt-1 image-card1">
-            <div className="image-card">
-              <h5>Taxes</h5>
-              <hr />
-              <div className="d-flex gap-2 mb-1">
-                <input type="checkbox" className="form-check-input" />
-                <label htmlFor="">None (0%)</label>
-              </div>
-              <div className="d-flex gap-2 mb-1">
-                <input type="checkbox" className="form-check-input" />
-                <label htmlFor="">VAT (10%)</label>
-              </div>
-              <div className="d-flex gap-2 mb-1">
-                <input type="checkbox" className="form-check-input" />
-                <label htmlFor="">Import Tax (15%)</label>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mt-1 image-card1">
-            <div className="image-card">
-              <h6>Minimum order quantity</h6>
-              <hr />
-              <input
-                type="number"
-                className="form-control py-4"
-                placeholder="Maximum quantity"
-                name="minimumorder"
-                value={minimumorder}
-                onChange={onInputChange}
-              />
-            </div>
-          </div>
-
-          <div className="container mt-1 image-card1">
-            <div className="image-card">
-              <h6>Maximum order quantity</h6>
-              <hr />
-              <input
-                type="number"
-                className="form-control py-4"
-                placeholder="Minimum quantity"
-                name="maximumorder"
-                value={maximumorder}
-                onChange={onInputChange}
-              />
             </div>
           </div>
         </div>

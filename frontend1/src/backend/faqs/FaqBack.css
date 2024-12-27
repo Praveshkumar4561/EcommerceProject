@@ -8,8 +8,6 @@ body {
   display: inline;
 }
 
-/* navbar */
-
 .navbar-back {
   width: 100%;
   max-width: 100%;
@@ -23,7 +21,6 @@ body {
 }
 
 .navbar-back.expanded {
-  /* height: 60rem; */
   height: 60rem;
   z-index: 1000;
   opacity: 1;
@@ -74,8 +71,6 @@ input[type="search"] {
   }
 }
 
-/* 111111111 */
-
 .search-box1 {
   width: 32px;
   position: relative;
@@ -88,8 +83,6 @@ input[type="search"] {
   left: 0.6rem;
   top: 0.22rem;
 }
-
-/* 111111111 */
 
 @media (max-width: 768px) {
   .hamburger {
@@ -111,7 +104,6 @@ input[type="search"] {
 
 .sidebar-container.expanded {
   transform: translateX(0);
-  /* height: 100%; */
 }
 
 .sidebar-faqs {
@@ -167,8 +159,6 @@ input[type="search"] {
     height: 55rem;
   }
 }
-
-/* sidebar */
 
 #container-custom {
   width: 100vw;
@@ -227,8 +217,6 @@ input[type="search"] {
   }
 }
 
-/* 111111111 */
-
 .search-box1 {
   width: 32px;
   position: relative;
@@ -241,10 +229,6 @@ input[type="search"] {
   left: 0.6rem;
   top: 0.22rem;
 }
-
-/* 111111111 */
-
-/* nav */
 
 .custom-dropdown {
   display: none;
@@ -364,8 +348,6 @@ input[type="search"] {
   box-shadow: none;
 }
 
-/* Navbar */
-
 .container-contact {
   text-align: center;
   margin-bottom: 2rem;
@@ -446,20 +428,15 @@ input[type="search"] {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-
-/* font */
 
 .query {
   width: 100%;
   max-width: 36rem;
-  /* height: auto; */
+
   height: 33rem;
   background-color: #ffffff;
   padding: 1rem;
@@ -531,13 +508,11 @@ input[type="search"] {
   background-color: #0a9a73;
 }
 
-/* form */
-
 .query {
   width: 100%;
   max-width: 36rem;
   background-color: #ffffff;
-  /* border: 1px solid black; */
+
   padding: 1rem;
 }
 
@@ -603,8 +578,6 @@ button.button-btn {
   max-width: 100%;
 }
 
-/* 55555555555 */
-
 .full-width-container {
   width: 100vw;
   margin: 0;
@@ -618,8 +591,6 @@ button.button-btn {
   position: relative;
   top: -10rem;
 }
-
-/* add to cart */
 
 .lorem-contact {
   letter-spacing: 1px;

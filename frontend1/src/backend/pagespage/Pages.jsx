@@ -5,7 +5,6 @@ import Logo from "../../assets/Logo.png";
 import {
   faAngleDown,
   faBell,
-  faCheck,
   faEnvelope,
   faMoon,
   faPenToSquare,
@@ -193,32 +192,7 @@ function Pages() {
     alert("data sucessfully deleted");
   };
 
-  // excel data
 
-  const handleDownload = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:1600/export-excelcontact",
-        {
-          responseType: "blob",
-        }
-      );
-
-      if (response.data.size > 0) {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "data.xlsx");
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      } else {
-        console.error("Received empty response data.");
-      }
-    } catch (error) {
-      console.error("Error downloading the Excel file:", error);
-    }
-  };
 
   return (
     <>

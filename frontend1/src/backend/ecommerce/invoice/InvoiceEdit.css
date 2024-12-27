@@ -4,8 +4,6 @@
   box-sizing: border-box;
 }
 
-/* navbar */
-
 body {
   display: inline;
   position: relative;
@@ -24,7 +22,6 @@ body {
 }
 
 .navbar-back.expanded {
-  /* height: 60rem; */
   height: 60rem;
   z-index: 1000;
   opacity: 1;
@@ -217,8 +214,6 @@ input[type="search"] {
     padding-right: 0.25rem;
   }
 }
-
-/* 1111111111 */
 
 .content-orders1 {
   width: 100%;

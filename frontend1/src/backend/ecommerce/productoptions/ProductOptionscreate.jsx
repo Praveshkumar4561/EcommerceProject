@@ -10,6 +10,8 @@ import {
   faTrashCan,
   faArrowUp,
   faArrowDown,
+  faSave,
+  faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
@@ -1401,7 +1403,7 @@ function ProductOptionsCreate() {
                 </div>
               )}
             </div>
-            
+
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
@@ -2159,243 +2161,243 @@ function ProductOptionsCreate() {
         </ol>
       </nav>
 
-      <div class="container container-create-gallery">
-        <div
-          class="alert alert-info bg-body editor-page border container-english"
-          id="role-announce"
-          role="alert"
-        >
-          <svg
-            class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-            <path d="M12 9h.01"></path>
-            <path d="M11 12h1v4h1"></path>
-          </svg>
-          You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-          version
-        </div>
-
-        <div class="row border ms-1 rounded announcement-create-gal container-creat">
-          <div class="col-md-12 col-lg-8 w-100">
-            <form className="gallery-form">
-              <div class="mb-3 mt-4">
-                <label for="name" class="form-label fw-lighter">
-                  Name <span className="text-danger">*</span>
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  placeholder="Name"
-                  name="name"
-                  value={name}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="col-md-6 mt-3 mb-4">
-                <label for="start-date" class="form-label fw-lighter">
-                  Start date
-                </label>
-                <input
-                  type="date"
-                  class="form-control py-4 text-areabox"
-                  id="start-date"
-                  name="date"
-                  value={date}
-                  onChange={onInputChange}
-                  style={{
-                    cursor: "pointer",
-                    zIndex: "1000",
-                    position: "relative",
-                  }}
-                />
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column">
-          <div className="d-flex w-100">
-            <label
-              htmlFor=""
-              className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-            >
-              Options Value
-            </label>
-          </div>
-          <hr className="custom-hr mt-0" />
-
-          <div className="border bg-light option-product mb-2 d-flex rounded flex-wrap">
-            <div className="w-100 ms-3 me-3 mt-2">
-              <table className="table table-striped table-bordered table-lable1">
-                <thead className="bg-body">
-                  <tr>
-                    <th className="fw-light text-dark ps-3 py-2">#</th>
-                    <th className="fw-light text-dark ps-2">LABEL</th>
-                    <th className="fw-light text-dark ps-2">PRICE</th>
-                    <th className="fw-light text-dark">PRICE TYPE</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.id}>
-                      <td>
-                        <FontAwesomeIcon icon={faArrowUp} />
-                        <FontAwesomeIcon icon={faArrowDown} />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4"
-                          placeholder="Please fill label"
-                          value={row.label}
-                          onChange={(e) =>
-                            handleChanges(row.id, "label", e.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control py-4"
-                          placeholder="Please fill affect price"
-                          value={row.price}
-                          onChange={(e) =>
-                            handleChanges(row.id, "price", e.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <select
-                          className="form-select"
-                          style={{
-                            cursor: "pointer",
-                            zIndex: 1000,
-                            position: "relative",
-                          }}
-                          value={row.priceType}
-                          onChange={(e) =>
-                            handleChanges(row.id, "priceType", e.target.value)
-                          }
-                        >
-                          <option value="fixed">Fixed</option>
-                          <option value="percent">Percent</option>
-                        </select>
-                      </td>
-                      <td>
-                        <button
-                          className="btn bg-body border px-2 py-3 d-flex p-2"
-                          style={{
-                            cursor: "pointer",
-                            zIndex: 1000,
-                            position: "relative",
-                          }}
-                          onClick={() => handleDelete(row.id)}
-                          disabled={rows.length === 1}
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button
-                className="btn bg-body border d-flex mb-2 py-4"
-                onClick={handleAddRow}
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
+              <svg
+                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                Add new row
-              </button>
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 9h.01"></path>
+                <path d="M11 12h1v4h1"></path>
+              </svg>
+              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
+              version
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="card-container mt-4 pt-2 flex-column container-publish me-3">
-          <div class="card card-publish">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Publish</h5>
-              <hr />
-              <div className="d-flex">
-                <button
-                  class="btn btn-save d-flex"
-                  type="submit"
-                  onClick={handleSubmit}
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
+              <form>
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-3 w-100">
+                    <label htmlFor="">Name</label>
+                    <input
+                      type="text"
+                      className="form-control mt-2 py-4"
+                      placeholder="Name"
+                      name="name"
+                      value={name}
+                      onChange={onInputChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
+                    <label htmlFor=""> Start date</label>
+                    <input
+                      type="date"
+                      className="form-control mt-2 py-4"
+                      name="date"
+                      value={date}
+                      onChange={onInputChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="border ms-1 rounded mt-3 mb-3 cart-cart bg-body attribute-product d-flex flex-column">
+                  <div className="d-flex w-100">
+                    <label
+                      htmlFor=""
+                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                    >
+                      Options Value
+                    </label>
+                  </div>
+                  <hr className="custom-hr mt-0" />
+
+                  <div className="border bg-light option-product mb-2 d-flex rounded flex-wrap">
+                    <div className="w-100 ms-3 me-3 mt-2">
+                      <table className="table table-striped table-bordered table-lable1">
+                        <thead className="bg-body">
+                          <tr>
+                            <th className="fw-light text-dark ps-3 py-2">#</th>
+                            <th className="fw-light text-dark ps-2">LABEL</th>
+                            <th className="fw-light text-dark ps-2">PRICE</th>
+                            <th className="fw-light text-dark">PRICE TYPE</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {rows.map((row) => (
+                            <tr key={row.id}>
+                              <td className="d-flex flex-row">
+                                <FontAwesomeIcon icon={faArrowUp} />
+                                <FontAwesomeIcon icon={faArrowDown} />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4"
+                                  placeholder="Please fill label"
+                                  value={row.label}
+                                  onChange={(e) =>
+                                    handleChanges(
+                                      row.id,
+                                      "label",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  type="text"
+                                  className="form-control py-4"
+                                  placeholder="Please fill affect price"
+                                  value={row.price}
+                                  onChange={(e) =>
+                                    handleChanges(
+                                      row.id,
+                                      "price",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>
+                                <select
+                                  className="form-select"
+                                  style={{
+                                    cursor: "pointer",
+                                    zIndex: 1000,
+                                    position: "relative",
+                                  }}
+                                  value={row.priceType}
+                                  onChange={(e) =>
+                                    handleChanges(
+                                      row.id,
+                                      "priceType",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="fixed">Fixed</option>
+                                  <option value="percent">Percent</option>
+                                </select>
+                              </td>
+                              <td>
+                                <button
+                                  className="btn bg-body border px-2 py-3 d-flex p-2"
+                                  style={{
+                                    cursor: "pointer",
+                                    zIndex: 1000,
+                                    position: "relative",
+                                  }}
+                                  onClick={() => handleDelete(row.id)}
+                                  disabled={rows.length === 1}
+                                >
+                                  <FontAwesomeIcon icon={faTrashCan} />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <button
+                        className="btn bg-body border d-flex mb-2 py-4"
+                        onClick={handleAddRow}
+                      >
+                        Add new row
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
+                <h4 className="mt-0 text-start">Publish</h4>
+                <hr />
+                <div className="d-flex flex-row gap-3 mb-3">
+                  <button
+                    type="button"
+                    className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
+                    onClick={handleSubmit}
+                  >
+                    <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                  </button>
+                  <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
+                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                    Save & Exit
+                  </button>
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h5 class="card-title fw-lighter">
+                  Type <span className="text-danger">*</span>
+                </h5>
+                <hr />
+                <select
+                  className="w-100 rounded-1 py-2 border"
+                  name="status1"
+                  value={status1}
+                  onChange={onInputChange}
                 >
-                  <i class="fas fa-save"></i> Save
-                </button>
-                <button class="btn btn-secondary ms-1 d-flex btn-exit">
-                  <i class="fas fa-sign-out-alt"></i> Save & Exit
-                </button>
+                  <option value="">Please select option</option>
+                  <option value="Text" className="fw-bold">
+                    Text
+                  </option>
+                  <option value="Field">Field</option>
+                  <option value="Select" className="fw-bold ms-4">
+                    Select
+                  </option>
+                  <option value="Dropdown" className="ms-4">
+                    Dropdown
+                  </option>
+                  <option value="Checkbox" className="ms-4">
+                    Checkbox
+                  </option>
+                  <option value="RadioButton" className="ms-4">
+                    RadioButton
+                  </option>
+                </select>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h5 class="card-title fw-lighter">Is required?</h5>
+                <hr />
+                <div class="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="has-action"
+                    name="featured"
+                    checked={featured === "Yes"}
+                    onChange={onInputChange}
+                  />
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">
-                Type <span className="text-danger">*</span>
-              </h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="status1"
-                value={status1}
-                onChange={onInputChange}
-              >
-                <option value="">Please select option</option>
-                <option value="Text" className="fw-bold">
-                  Text
-                </option>
-                <option value="Field">Field</option>
-                <option value="Select" className="fw-bold ms-4">
-                  Select
-                </option>
-                <option value="Dropdown" className="ms-4">
-                  Dropdown
-                </option>
-                <option value="Checkbox" className="ms-4">
-                  Checkbox
-                </option>
-                <option value="RadioButton" className="ms-4">
-                  RadioButton
-                </option>
-              </select>
-            </div>
-          </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Is required?</h5>
-              <hr />
-
-              <div class="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                  name="featured"
-                  checked={featured === "Yes"}
-                  onChange={onInputChange}
-                />
-              </div>
-            </div>
-          </div>
-
-          
         </div>
       </div>
     </>

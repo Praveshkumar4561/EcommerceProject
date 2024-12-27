@@ -30,6 +30,16 @@ function AdsCreate() {
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
+
+  let togglespecification = () => {
+    setSpecifcation(!Specification);
+  };
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -1016,6 +1026,131 @@ function AdsCreate() {
               )}
             </div>
 
+            <div>
+              <li onClick={togglespecification} style={{ cursor: "pointer" }}>
+                <svg
+                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M12 21h-7a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7"></path>
+                  <path d="M3 10h18"></path>
+                  <path d="M10 3v18"></path>
+                  <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                  <path d="M19.001 15.5v1.5"></path>
+                  <path d="M19.001 21v1.5"></path>
+                  <path d="M22.032 17.25l-1.299 .75"></path>
+                  <path d="M17.27 20l-1.3 .75"></path>
+                  <path d="M15.97 17.25l1.3 .75"></path>
+                  <path d="M20.733 20l1.3 .75"></path>
+                </svg>
+                Product Specification
+                <FontAwesomeIcon
+                  icon={faAngleDown}
+                  className={`float-lg-end mt-2 pt-1 me-4 icon-down ${
+                    Specification ? "rotate" : ""
+                  }`}
+                  onClick={togglespecification}
+                />
+              </li>
+
+              {Specification && (
+                <div className="faq-content d-flex flex-column ms-1 ps-2">
+                  <Link
+                    to="/admin/ecommerce/specification-groups"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        class="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Specification Groups
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/ecommerce/specification-attributes"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        class="icon  svg-icon-ti-ti-point me-1"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Specification Attributes
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/ecommerce/specification-tables"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        class="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Specification Tables
+                    </li>
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <li>
               <Link to="/admin/pages" className="text-light">
                 <svg
@@ -1162,27 +1297,123 @@ function AdsCreate() {
               )}
             </div>
 
-            <li>
-              <svg
-                class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                <path d="M3 10l18 0"></path>
-                <path d="M7 15l.01 0"></path>
-                <path d="M11 15l2 0"></path>
-              </svg>
-              Payments
-            </li>
+            <div>
+              <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
+                <svg
+                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
+                  <path d="M3 10l18 0"></path>
+                  <path d="M7 15l.01 0"></path>
+                  <path d="M11 15l2 0"></path>
+                </svg>
+                Payments
+                <FontAwesomeIcon
+                  icon={faAngleDown}
+                  className={`float-end mt-2 pt-1 me-4 icon-down ${
+                    payment ? "rotate" : ""
+                  }`}
+                  onClick={paymentgateway}
+                />
+              </li>
+              {payment && (
+                <div className="faq-content d-flex flex-column ms-3 ps-2">
+                  <Link
+                    to="/admin/payments/transactions"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Transactions
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/payments/logs"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Payment Logs
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/payments/methods"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Payment Methods
+                    </li>
+                  </Link>
+                </div>
+              )}
+            </div>
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
@@ -1938,368 +2169,7 @@ function AdsCreate() {
         </ol>
       </nav>
 
-      {/* <div class="container container-create-gallery">
-        <div
-          class="alert alert-info bg-body editor-page border container-create1 container-english"
-          id="role-announce"
-          role="alert"
-        >
-          <svg
-            class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-            <path d="M12 9h.01"></path>
-            <path d="M11 12h1v4h1"></path>
-          </svg>
-          You are editing{" "}
-          <strong className="ms-2 me-2 fw-light">"English"</strong>
-          version
-        </div>
-
-        <div class="row border ms-1 rounded announcement-create-gal container-create2">
-          <div class="col-md-12 col-lg-8 w-100">
-            <form className="gallery-form">
-              <div class="mb-3 mt-4">
-                <label for="name" class="form-label fw-lighter">
-                  Name <span className="text-danger">*</span>
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  placeholder="Name"
-                  name="name"
-                  value={name}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="mb-3 mt-4">
-                <label for="name" class="form-label fw-lighter">
-                  Title
-                </label>
-                <textarea
-                  type="text"
-                  class="form-control py-3"
-                  id="name-create"
-                  placeholder="short description"
-                  name="title"
-                  value={title}
-                  onChange={onInputChange}
-                  style={{
-                    cursor: "pointer",
-                    height: "70px",
-                    position: "relative",
-                    zIndex: "1000",
-                  }}
-                />
-              </div>
-
-              <div class="mb-3 mt-4">
-                <label for="name" class="form-label fw-lighter">
-                  Subtitle
-                </label>
-                <textarea
-                  type="text"
-                  class="form-control py-3"
-                  id="name-create"
-                  placeholder="short description"
-                  name="subtitle"
-                  value={subtitle}
-                  onChange={onInputChange}
-                  style={{
-                    cursor: "pointer",
-                    height: "70px",
-                    position: "relative",
-                    zIndex: "1000",
-                  }}
-                />
-              </div>
-
-              <div class="mb-3 mt-4 flex-column d-flex text-areabox">
-                <label for="name" class="form-label fw-lighter">
-                  Button Lebel
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  name="button"
-                  value={button}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="mb-3 mt-4 flex-column d-flex text-areabox">
-                <label for="name" class="form-label fw-lighter">
-                  Key <span className="text-danger">*</span>
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  name="keyads"
-                  value={keyads}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="mb-3 mt-4 flex-column d-flex text-areabox">
-                <label for="name" class="form-label fw-lighter">
-                  Sort Order
-                </label>
-
-                <input
-                  type="number"
-                  class="form-control py-4"
-                  id="name-create"
-                  name="orders"
-                  value={orders}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="mb-3 mt-4 flex-column d-flex text-areabox">
-                <label for="name" class="form-label fw-lighter">
-                  Ads Type
-                </label>
-                <select
-                  name="adstype"
-                  value={adstype}
-                  onChange={onInputChange}
-                  className="border rounded py-3"
-                >
-                  <option value="">Select an option</option>
-                  <option value="Custom ad">Custom Ad</option>
-                  <option value="Google adsence">Google AdSence</option>
-                </select>
-              </div>
-
-              <div class="form-check form-switch mb-3">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                />
-                <label class="form-check-label ms-3 mt-1" for="has-action">
-                  Open in new tab?
-                </label>
-              </div>
-
-              <div className="container mt-4 mb-3 image-card11 d-flex">
-                <div className="image-card11 border-0">
-                  <h5>Image</h5>
-                  <div
-                    className="image-placeholder"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  >
-                    {imageUrl ? (
-                      <img
-                        alt="Uploaded preview"
-                        src={imageUrl}
-                        width="100"
-                        height="100"
-                      />
-                    ) : (
-                      <img
-                        src={Cutting}
-                        className="img-fluid w-75 h-75 rounded"
-                      />
-                    )}
-                  </div>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    name="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                  <Link
-                    to="#"
-                    onClick={() => document.getElementById("fileInput").click()}
-                    className="text-decoration-none"
-                  >
-                    Choose image <br />
-                  </Link>
-                  <span className="ms-2 me-2 text-decoration-none">or</span>
-                  <Link
-                    to="#"
-                    onClick={handleAddFromUrl}
-                    className="text-decoration-none"
-                  >
-                    Add from URL
-                  </Link>
-                </div>
-              </div>
-
-              <div className="container mt-4 mb-3 image-card11 d-flex">
-                <div className="image-card11 border-0">
-                  <h5>Tablet Image</h5>
-                  <div
-                    className="image-placeholder"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  >
-                    {imageUrl ? (
-                      <img
-                        alt="Uploaded preview"
-                        src={imageUrl}
-                        width="100"
-                        height="100"
-                      />
-                    ) : (
-                      <img
-                        src={Cutting}
-                        className="img-fluid w-75 h-75 rounded"
-                      />
-                    )}
-                  </div>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    name="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                  <Link
-                    to="#"
-                    onClick={() => document.getElementById("fileInput").click()}
-                    className="text-decoration-none"
-                  >
-                    Choose image <br />
-                  </Link>
-                  <span className="ms-2 me-2 text-decoration-none">or</span>
-                  <Link
-                    to="#"
-                    onClick={handleAddFromUrl}
-                    className="text-decoration-none"
-                  >
-                    Add from URL
-                  </Link>
-                </div>
-              </div>
-
-              <div className="container mt-4 mb-3 image-card11 d-flex">
-                <div className="image-card11 border-0">
-                  <h5>Mobile Image</h5>
-                  <div
-                    className="image-placeholder"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  >
-                    {imageUrl ? (
-                      <img
-                        alt="Uploaded preview"
-                        src={imageUrl}
-                        width="100"
-                        height="100"
-                      />
-                    ) : (
-                      <img
-                        src={Cutting}
-                        className="img-fluid w-75 h-75 rounded"
-                      />
-                    )}
-                  </div>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    name="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                  <Link
-                    to="#"
-                    onClick={() => document.getElementById("fileInput").click()}
-                    className="text-decoration-none"
-                  >
-                    Choose image <br />
-                  </Link>
-                  <span className="ms-2 me-2 text-decoration-none">or</span>
-                  <Link
-                    to="#"
-                    onClick={handleAddFromUrl}
-                    className="text-decoration-none"
-                  >
-                    Add from URL
-                  </Link>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div class="card-container mt-4 flex-column container-publish">
-          <div class="card card-publish">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Publish</h5>
-              <hr />
-              <div className="d-flex flex-row">
-                <button
-                  class="btn btn-save d-flex"
-                  type="submit"
-                  onClick={handleSubmit}
-                >
-                  <i class="fas fa-save"></i> Save
-                </button>
-                <button class="btn btn-secondary ms-1 d-flex btn-exit">
-                  <i class="fas fa-sign-out-alt"></i> Save & Exit
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">
-                Status <span className="text-danger">*</span>
-              </h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="status"
-                value={status}
-                onChange={onInputChange}
-                required
-              >
-                <option value="">Select an option</option>
-                <option value="Published">Published</option>
-                <option value="Draft">Draft</option>
-                <option value="Pending">Pending</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Expired at</h5>
-              <hr />
-
-              <input
-                type="date"
-                name="expired"
-                value={expired}
-                onChange={onInputChange}
-                className="border py-2 ms-1 w-100 rounded"
-              />
-
-             
-            </div>
-          </div>
-
-        </div>
-      </div> */}
+    
 
       <div className="container-fluid">
         <div className="container">

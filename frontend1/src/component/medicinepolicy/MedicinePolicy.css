@@ -64,8 +64,6 @@ body {
   }
 }
 
-/* nav */
-
 .custom-dropdown {
   display: none;
   position: absolute;
@@ -134,7 +132,6 @@ body {
     margin-top: -1.2rem;
   }
 }
-/* 1111111 */
 
 .profiles {
   width: 25px;
@@ -158,8 +155,6 @@ body {
   }
 }
 
-/* 11111111111 */
-
 @media (min-width: 993px) {
   .custom-dropdown {
     display: none;
@@ -178,8 +173,6 @@ body {
   outline: none;
   box-shadow: none;
 }
-
-/* Navbar */
 
 .container-contact {
   text-align: center;
@@ -261,15 +254,10 @@ body {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-
-/* font */
 
 .blog-medicine {
   width: 100%;
@@ -395,7 +383,6 @@ body {
   left: -2rem;
 }
 
-/* 1111111 */
 .social-links1 {
   display: flex;
   justify-content: center;
@@ -514,14 +501,10 @@ body {
   background-color: #f4f4f8;
 }
 
-/* Footer */
-
 .pharmacy {
   position: relative;
   left: 0.5rem;
 }
-
-/* Footer */
 
 .lorem-medicine-policy {
   letter-spacing: 1px;

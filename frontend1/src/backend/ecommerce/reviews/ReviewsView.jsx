@@ -24,7 +24,6 @@ function ReviewsView() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
-  
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -1053,8 +1052,6 @@ function ReviewsView() {
                 </div>
               )}
             </div>
-
-            
 
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
@@ -2271,15 +2268,6 @@ function ReviewsView() {
             </div>
           </div>
         </div> */}
-        </div>
-      </div>
-
-      <div class="container">
-        <div class="footer">
-          <div class="left">
-            Copyright 2024 © Botble Technologies. Version 1.2.1
-          </div>
-          <div class="right">Page loaded in 0.27 seconds</div>
         </div>
       </div>
     </>

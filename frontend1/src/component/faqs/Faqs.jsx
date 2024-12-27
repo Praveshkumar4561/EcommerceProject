@@ -132,7 +132,7 @@ function Faqs() {
 
   return (
     <>
-      {/* navbar */}
+      {}
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
@@ -393,7 +393,7 @@ function Faqs() {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

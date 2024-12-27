@@ -68,8 +68,6 @@ input[type="search"] {
   }
 }
 
-/* 111111111 */
-
 .search-box1 {
   width: 32px;
   position: relative;
@@ -82,8 +80,6 @@ input[type="search"] {
   left: 0.6rem;
   top: 0.22rem;
 }
-
-/* 111111111 */
 
 @media (max-width: 768px) {
   .hamburger {
@@ -105,12 +101,10 @@ input[type="search"] {
 
 .sidebar-container-plat.expanded {
   transform: translateX(0);
-  /* height: 100%; */
 }
 
 .sidebar-back-plat {
   height: auto;
-  /* height: 125rem; */
   overflow: hidden;
   position: relative;
 }
@@ -166,10 +160,6 @@ input[type="search"] {
   }
 }
 
-/* sidebar */
-
-/* 1111111111 */
-
 .breadcrumb-container {
   margin-left: 26rem;
   margin-top: 3rem;
@@ -223,10 +213,6 @@ input[type="search"] {
     padding-right: 0.25rem;
   }
 }
-
-/* 1111111111 */
-
-/* card */
 
 .card {
   border: 1px solid #e3e6f0;
@@ -332,8 +318,6 @@ input[type="search"] {
     left: 9.4rem;
   }
 }
-
-/* footer */
 
 .footer {
   color: #6c757d;

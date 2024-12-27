@@ -29,16 +29,16 @@ function ProductPrices() {
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
-    let [Specification, setSpecifcation] = useState(false);
-    let [payment, setPayment] = useState(false);
-  
-    let paymentgateway = () => {
-      setPayment(!payment);
-    };
-  
-    let togglespecification = () => {
-      setSpecifcation(!Specification);
-    };
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
+
+  let togglespecification = () => {
+    setSpecifcation(!Specification);
+  };
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -2317,15 +2317,6 @@ function ProductPrices() {
           </div>
         </div>
       </main>
-
-      <div class="container">
-        <div class="footer">
-          <div class="left">
-            Copyright 2024 © Botble Technologies. Version 1.2.1
-          </div>
-          <div class="right">Page loaded in 0.27 seconds</div>
-        </div>
-      </div>
     </>
   );
 }

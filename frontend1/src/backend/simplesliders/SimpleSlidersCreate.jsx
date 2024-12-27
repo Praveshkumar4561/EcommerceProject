@@ -29,6 +29,16 @@ function SimpleSlidersCreate() {
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
+
+  let togglespecification = () => {
+    setSpecifcation(!Specification);
+  };
 
   let toggleecommerce = () => {
     setCommerce(!commerce);
@@ -196,15 +206,6 @@ function SimpleSlidersCreate() {
     }
   };
 
-  let [payment, setPayment] = useState(false);
-
-  let paymentgateway = () => {
-    setPayment(!payment);
-  };
-
-  let togglespecification = () => {
-    setSpecifcation(!Specification);
-  };
   return (
     <>
       <div

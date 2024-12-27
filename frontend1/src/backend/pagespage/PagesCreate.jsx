@@ -8,8 +8,6 @@ import {
   faEnvelope,
   faMoon,
   faImage,
-  faFloppyDisk,
-  faXmark,
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";

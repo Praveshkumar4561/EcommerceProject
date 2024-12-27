@@ -210,8 +210,6 @@ input[type="search"] {
   }
 }
 
-/* 11111111111111 */
-
 .shipment-info {
   width: 100%;
   max-width: 95%;
@@ -227,7 +225,7 @@ input[type="search"] {
   margin-right: 10px;
 }
 
-.shipment-info{
+.shipment-info {
 }
 
 @media (max-width: 576px) {

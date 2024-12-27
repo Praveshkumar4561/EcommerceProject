@@ -471,15 +471,10 @@ input[type="search"] {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-
-/* font */
 
 .query {
   width: 100%;

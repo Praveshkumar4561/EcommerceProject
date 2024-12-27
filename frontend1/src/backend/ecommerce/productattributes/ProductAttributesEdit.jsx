@@ -7,6 +7,8 @@ import {
   faBell,
   faEnvelope,
   faMoon,
+  faSave,
+  faSignOut,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -146,6 +148,7 @@ function ProductAttributesEdit() {
   const toggleblog = () => {
     setBlog(!blog);
   };
+
   let [user, setUser] = useState({
     title: "",
     slug: "",
@@ -2186,373 +2189,353 @@ function ProductAttributesEdit() {
         </ol>
       </nav>
 
-      <div class="container container-create-gallery">
-        <div
-          class="alert alert-info bg-body editor-page border container-english"
-          id="role-announce"
-          role="alert"
-        >
-          <svg
-            class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-            <path d="M12 9h.01"></path>
-            <path d="M11 12h1v4h1"></path>
-          </svg>
-          You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-          version
-        </div>
-
-        <div class="row border ms-1 rounded announcement-create-gal container-creat">
-          <div class="col-md-12 col-lg-8 w-100">
-            <form className="gallery-form">
-              <div class="mb-3 mt-4">
-                <label for="name" class="form-label fw-lighter">
-                  Name <span className="text-danger">*</span>
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  placeholder="Title"
-                  name="title"
-                  value={title}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="mb-3 mt-4 flex-column d-flex text-areabox">
-                <label for="name" class="form-label fw-lighter">
-                  Slug
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control py-4"
-                  id="name-create"
-                  placeholder="Slug"
-                  name="slug"
-                  value={slug}
-                  onChange={onInputChange}
-                />
-              </div>
-
-              <div class="form-check form-switch mb-3 d-flex">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                  //   name="featured"
-                  //   checked={featured === "Yes"}
-                  onChange={onInputChange}
-                />
-                <span className="ms-2 mt-1 attribute-image">
-                  Use Image from product variation (for Visual Swtach only)
-                </span>
-              </div>
-
-              <div class="col-md-6 mt-3 mb-4">
-                <label for="start-date" class="form-label fw-lighter">
-                  Start date
-                </label>
-                <input
-                  type="date"
-                  class="form-control py-4 text-areabox"
-                  id="start-date"
-                  name="date"
-                  value={date}
-                  onChange={onInputChange}
-                  style={{
-                    cursor: "pointer",
-                    position: "relative",
-                    zIndex: "1000",
-                  }}
-                />
-              </div>
-            </form>
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
+              <svg
+                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 9h.01"></path>
+                <path d="M11 12h1v4h1"></path>
+              </svg>
+              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
+              version
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="ms-1 border mt-3 rounded ps-4 pt-2 align-items-center justify-content-center product-row">
-          <span className="attributes-list"> Attributes list </span>
-          <button
-            className="mt-3 border rounded px-3 py-2 bg-light float-end new-attribute me-3"
-            style={{ whiteSpace: "nowrap", cursor: "pointer" }}
-            onClick={addNewAttribute}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                position: "relative",
-                zIndex: "1000",
-              }}
-            >
-              Add new attribute
-            </span>
-          </button>
-
-          <hr className="me-1 mt-4 w-100" />
-          <table className="table table-responsive-lg table-bordered table-hover">
-            <thead className="fw-light">
-              <tr>
-                <th className="pt-2 pb-2 text-center fw-light">#</th>
-                <th className="text-center fw-light">Is Default?</th>
-                <th className="text-center fw-light">Title</th>
-                <th
-                  className="text-center pe-5 fw-light"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  Color
-                </th>
-                <th className="float-star ps-2 text-center fw-light">Image</th>
-                <th className="text-center fw-light">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {attributes.map((attribute, index) => (
-                <tr key={attribute.id}>
-                  <td className="bg-light text-center">{attribute.id}</td>
-                  <td>
-                    <input
-                      type="radio"
-                      className="ms-4"
-                      checked={attribute.isDefault}
-                      onChange={() => {
-                        const updatedAttributes = attributes.map((attr, i) => ({
-                          ...attr,
-                          isDefault: i === index,
-                        }));
-                        setAttributes(updatedAttributes);
-                      }}
-                    />
-                  </td>
-                  <td className="w-auto">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
+              <form>
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-3 w-100">
+                    <label htmlFor="">Name</label>
                     <input
                       type="text"
+                      className="form-control mt-2 py-4"
+                      placeholder="title"
                       name="title"
-                      placeholder="Title"
-                      value={attribute.title}
-                      className="rounded border py-2 px-2 w-100"
-                      onChange={(e) => handleInputChange(index, e)}
+                      value={title}
+                      onChange={onInputChange}
                     />
-                  </td>
-                  <td>
-                    <input
-                      type="color"
-                      name="color"
-                      value={attribute.color}
-                      className="w-25 border rounded-1 border p- border-secondary ms-3"
-                      onChange={(e) => handleInputChange(index, e)}
-                    />
-                  </td>
-                  <td>
-                    <div className="container attribute-choose">
-                      <div className="w-2">
-                        <div
-                          className="image-placeholder attribute-choose me-5 border w-100"
-                          onClick={() =>
-                            document.getElementById(`fileInput${index}`).click()
-                          }
-                        >
-                          {attribute.imageUrl ? (
-                            <img
-                              alt="Uploaded preview"
-                              src={attribute.imageUrl}
-                            />
-                          ) : (
-                            <img src={cutting} alt="img not found" />
-                          )}
-                        </div>
-                        <input
-                          id={`fileInput${index}`}
-                          type="file"
-                          name="file"
-                          style={{ display: "none" }}
-                          onChange={(e) => {
-                            const file = e.target.files[0];
-                            if (file) {
-                              const reader = new FileReader();
-                              reader.onloadend = () => {
-                                const updatedAttributes = [...attributes];
-                                updatedAttributes[index].imageUrl =
-                                  reader.result;
-                                setAttributes(updatedAttributes);
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                        <span className="m me-1">or</span>
-                        <Link
-                          to="#"
-                          onClick={() => {
-                            handleAddFromUrl();
-                          }}
-                        >
-                          Add from URL
-                        </Link>
-                      </div>
-                    </div>
-                  </td>
+                  </div>
+                </div>
 
-                  <td>
-                    <FontAwesomeIcon
-                      icon={faTrashCan}
-                      className="px-2 py-2 rounded text-danger fs-5 ms-3"
-                      onClick={() => handleRemoveAttribute(index)}
+                <div className="d-flex flex-column mb-3 mt-0 w-100">
+                  <label htmlFor="">Slug</label>
+                  <input
+                    type="text"
+                    className="form-control mt-2 py-4"
+                    placeholder="Slug"
+                    name="slug"
+                    value={slug}
+                    onChange={onInputChange}
+                  />
+                </div>
+
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div class="form-check form-switch mb-3 d-flex">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="has-action"
+                      onChange={onInputChange}
+                    />
+                    <span className="ms-2 mt-1 attribute-image">
+                      Use Image from product variation (for Visual Swtach only)
+                    </span>
+                  </div>
+                </div>
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
+                    <label htmlFor=""> Start date</label>
+                    <input
+                      type="date"
+                      className="form-control mt-2 py-4"
+                      name="date"
+                      value={date}
+                      onChange={onInputChange}
                       style={{
                         cursor: "pointer",
                         position: "relative",
                         zIndex: "1000",
                       }}
                     />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </div>
+                <div className="ms-1 border mt-3 rounded ps-4 pt-2 align-items-center justify-content-center product-row mb-4">
+                  <span className="attributes-list text-start">
+                    {" "}
+                    Attributes list{" "}
+                  </span>
+                  <button
+                    className="mt-3 border rounded px-3 py-2 bg-light float-end new-attribute me-3 mb-3"
+                    style={{ whiteSpace: "nowrap", cursor: "pointer" }}
+                    onClick={addNewAttribute}
+                  >
+                    <span
+                      style={{
+                        cursor: "pointer",
+                        position: "relative",
+                        zIndex: "1000",
+                      }}
+                    >
+                      Add new attribute
+                    </span>
+                  </button>
 
-        <div class="card-container mt-4 flex-column container-publish me-3">
-          <div class="card card-publish">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Publish</h5>
-              <hr />
-              <div className="d-flex">
-                <button
-                  class="btn btn-save d-flex"
-                  type="submit"
-                  onClick={handleSubmit}
+                  <hr className="me-1 mt-4 w-100" />
+                  <table className="table table-responsive-lg table-bordered table-hover">
+                    <thead className="fw-light">
+                      <tr>
+                        <th className="pt-2 pb-2 text-center fw-light">#</th>
+                        <th className="text-center fw-light">Is Default?</th>
+                        <th className="text-center fw-light">Title</th>
+                        <th
+                          className="text-center pe-5 fw-light"
+                          style={{ whiteSpace: "nowrap" }}
+                        >
+                          Color
+                        </th>
+                        <th className="float-star ps-2 text-center fw-light">
+                          Image
+                        </th>
+                        <th className="text-center fw-light">Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {attributes.map((attribute, index) => (
+                        <tr key={attribute.id}>
+                          <td className="bg-light text-center">
+                            {attribute.id}
+                          </td>
+                          <td>
+                            <input
+                              type="radio"
+                              className="ms-4"
+                              checked={attribute.isDefault}
+                              onChange={() => {
+                                const updatedAttributes = attributes.map(
+                                  (attr, i) => ({
+                                    ...attr,
+                                    isDefault: i === index,
+                                  })
+                                );
+                                setAttributes(updatedAttributes);
+                              }}
+                            />
+                          </td>
+                          <td className="w-auto">
+                            <input
+                              type="text"
+                              name="title"
+                              placeholder="Title"
+                              value={attribute.title}
+                              className="rounded border py-2 px-2 w-100"
+                              onChange={(e) => handleInputChange(index, e)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="color"
+                              name="color"
+                              value={attribute.color}
+                              className="w-25 border rounded-1 border p- border-secondary ms-3"
+                              onChange={(e) => handleInputChange(index, e)}
+                            />
+                          </td>
+                          <td>
+                            <div className="container attribute-choose">
+                              <div className="w-2">
+                                <div
+                                  className="image-placeholder attribute-choose me-5 border w-100"
+                                  onClick={() =>
+                                    document
+                                      .getElementById(`fileInput${index}`)
+                                      .click()
+                                  }
+                                >
+                                  {attribute.imageUrl ? (
+                                    <img
+                                      alt="Uploaded preview"
+                                      src={attribute.imageUrl}
+                                    />
+                                  ) : (
+                                    <img src={cutting} alt="img not found" />
+                                  )}
+                                </div>
+                                <input
+                                  id={`fileInput${index}`}
+                                  type="file"
+                                  name="file"
+                                  style={{ display: "none" }}
+                                  onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onloadend = () => {
+                                        const updatedAttributes = [
+                                          ...attributes,
+                                        ];
+                                        updatedAttributes[index].imageUrl =
+                                          reader.result;
+                                        setAttributes(updatedAttributes);
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                />
+                                <span className="m me-1">or</span>
+                                <Link
+                                  to="#"
+                                  onClick={() => {
+                                    handleAddFromUrl();
+                                  }}
+                                >
+                                  Add from URL
+                                </Link>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td>
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="px-2 py-2 rounded text-danger fs-5 ms-3"
+                              onClick={() => handleRemoveAttribute(index)}
+                              style={{
+                                cursor: "pointer",
+                                position: "relative",
+                                zIndex: "1000",
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </form>
+            </div>
+
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
+                <h4 className="mt-0 text-start">Publish</h4>
+                <hr />
+                <div className="d-flex flex-row gap-3 mb-3">
+                  <button
+                    type="button"
+                    className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
+                    onClick={handleSubmit}
+                  >
+                    <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                  </button>
+                  <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
+                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                    Save & Exit
+                  </button>
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Status</h4>
+                <hr />
+                <select
+                  className="w-100 rounded-1 py-2 border"
+                  name="status"
+                  value={status}
+                  onChange={onInputChange}
                 >
-                  <i class="fas fa-save"></i> Save
-                </button>
-                <button class="btn btn-secondary ms-1 d-flex btn-exit">
-                  <i class="fas fa-sign-out-alt"></i> Save & Exit
-                </button>
+                  <option value="">Select an option</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
+                </select>
               </div>
-            </div>
-          </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">
-                Status <span className="text-danger">*</span>
-              </h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="status"
-                value={status}
-                onChange={onInputChange}
-              >
-                <option value="">Select an option</option>
-                <option value="Published">Published</option>
-                <option value="draft">Draft</option>
-                <option value="pending">Pending</option>
-              </select>
-            </div>
-          </div>
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Display Layout</h4>
+                <hr />
+                <select
+                  className="w-100 rounded-1 py-2 border"
+                  name="status"
+                  value={status}
+                  onChange={onInputChange}
+                >
+                  <option value="">Select an option</option>
+                  <option value="Dropdown Swatch">Dropdown Swatch</option>
+                  <option value="Visual Swatch">Visual Swatch</option>
+                  <option value="Text Swatch">Text Swatch</option>
+                </select>
+              </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">
-                Display Layout <span className="text-danger">*</span>
-              </h5>
-              <hr />
-              <select
-                className="w-100 rounded-1 py-2 border"
-                name="status"
-                value={status}
-                onChange={onInputChange}
-                required
-              >
-                <option value="">Select an option</option>
-                <option value="Dropdown Swatch">Dropdown Swatch</option>
-                <option value="Visual Swatch">Visual Swatch</option>
-                <option value="Text Swatch">Text Swatch</option>
-              </select>
-            </div>
-          </div>
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Searchable</h4>
+                <hr />
+                <div class="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="has-action"
+                    onChange={onInputChange}
+                  />
+                </div>
+              </div>
 
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Searchable</h5>
-              <hr />
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Comparable</h4>
+                <hr />
+                <div class="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="has-action"
+                    onChange={onInputChange}
+                  />
+                </div>
+              </div>
 
-              <div class="form-check form-switch mb-3">
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Used in product listing</h4>
+                <hr />
+                <div class="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="has-action"
+                    onChange={onInputChange}
+                  />
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Sort order</h4>
+                <hr />
                 <input
-                  className="form-check-input"
-                  type="checkbox"
+                  type="number"
+                  className="form-check-input w-100 rounded border py-3 px-2"
+                  placeholder="Order By"
                   id="has-action"
-                  //   name="featured"
-                  //   checked={featured === "Yes"}
+                  name="sort"
+                  value={sort}
                   onChange={onInputChange}
                 />
               </div>
-            </div>
-          </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Comparable</h5>
-              <hr />
-
-              <div class="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                  //   name="featured"
-                  //   checked={featured === "Yes"}
-                  onChange={onInputChange}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Used in product listing</h5>
-              <hr />
-
-              <div class="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                  //   name="featured"
-                  //   checked={featured === "Yes"}
-                  onChange={onInputChange}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="card card-active mt-0 mb-">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Sort order</h5>
-              <hr />
-
-              <input
-                type="number"
-                className="form-check-input w-100 rounded border py-3 px-2"
-                placeholder="Order By"
-                id="has-action"
-                name="sort"
-                value={sort}
-                onChange={onInputChange}
-              />
             </div>
           </div>
         </div>

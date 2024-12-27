@@ -2120,7 +2120,7 @@ function Ecommerce() {
         </ol>
       </nav>
 
-      {/* 1111111111 */}
+      {}
 
       <div className="container mt-4 d-flex">
         <div className="sidebar-theme-options1 border rounded ms-md-aut">
@@ -2988,15 +2988,6 @@ function Ecommerce() {
               />
             </div>
           </form>
-        </div>
-      </div>
-
-      <div class="container">
-        <div class="footer">
-          <div class="left">
-            Copyright 2024 © Botble Technologies. Version 1.2.1
-          </div>
-          <div class="right">Page loaded in 0.27 seconds</div>
         </div>
       </div>
     </>

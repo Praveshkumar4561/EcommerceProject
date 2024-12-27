@@ -51,7 +51,7 @@ function AddCart() {
 
   return (
     <>
-      {/* navbar */}
+      {}
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
@@ -112,7 +112,7 @@ function AddCart() {
                   </ul>
                 </div>
 
-                {/* 1111111111 */}
+                {}
 
                 <div className="navbar-icons d-sm-flex">
                   <Link to="/login" className="nav-link">
@@ -132,7 +132,7 @@ function AddCart() {
                   </Link>
                 </div>
 
-                {/* 1111111111 */}
+                {}
               </div>
             </nav>
 
@@ -174,7 +174,7 @@ function AddCart() {
             )}
           </header>
 
-          {/* navbar */}
+          {}
 
           <main className="container mt-5 cart-lorem">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
@@ -197,7 +197,7 @@ function AddCart() {
       </div>
       <div></div>
 
-      {/* 111111111111111 */}
+      {}
 
       <div class="container-fluid cart-container d-flex cart-cart">
         <div class="row w-100">
@@ -331,7 +331,7 @@ function AddCart() {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

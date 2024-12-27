@@ -44,8 +44,6 @@ body {
   }
 }
 
-/* nav */
-
 .profile {
   position: relative;
   left: 0.1rem;
@@ -167,14 +165,10 @@ body {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-/* font */
 
 .order-cart {
   width: 100%;
@@ -383,8 +377,6 @@ body {
   left: 51%;
   bottom: 100%;
 } */
-
-/* card */
 
 .cards {
   width: 100%;

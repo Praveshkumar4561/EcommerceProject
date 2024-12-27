@@ -250,7 +250,7 @@ function ProductHome() {
             )}
           </header>
 
-          {/* navbar */}
+          {}
 
           <main className="container mt-5 cart-cart">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
@@ -730,7 +730,7 @@ function ProductHome() {
         </div>
       </div>
 
-      {/* Footer */}
+      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

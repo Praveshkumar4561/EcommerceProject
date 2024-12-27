@@ -68,8 +68,6 @@ body {
   }
 }
 
-/* nav */
-
 .custom-dropdown {
   display: none;
   position: absolute;
@@ -138,7 +136,6 @@ body {
     margin-top: -1.2rem;
   }
 }
-/* 1111111 */
 
 .profiles {
   width: 25px;
@@ -162,8 +159,6 @@ body {
   }
 }
 
-/* 11111111111 */
-
 @media (min-width: 993px) {
   .custom-dropdown {
     display: none;
@@ -182,8 +177,6 @@ body {
   outline: none;
   box-shadow: none;
 }
-
-/* Navbar */
 
 .container-contact {
   text-align: center;
@@ -265,15 +258,10 @@ body {
   }
 }
 
-/* font */
-
 @font-face {
   font-family: "SanDiego";
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-  /* format('truetype'); */
 }
-
-/* font */
 
 .heading {
   font-size: 20rem;

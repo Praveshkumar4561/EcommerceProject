@@ -9,8 +9,6 @@ body {
   position: absolute;
 }
 
-/* navbar */
-
 .navbar-back {
   width: 100%;
   max-width: 100%;
@@ -24,7 +22,6 @@ body {
 }
 
 .navbar-back.expanded {
-  /* height: 60rem; */
   height: 60rem;
   z-index: 1000;
   opacity: 1;
@@ -71,12 +68,9 @@ input[type="search"] {
     display: none;
   }
   .sidebar-customer {
-    /* height: 110rem; */
     height: 60rem;
   }
 }
-
-/* 111111111 */
 
 .search-box1 {
   width: 32px;
@@ -90,8 +84,6 @@ input[type="search"] {
   left: 0.6rem;
   top: 0.22rem;
 }
-
-/* 111111111 */
 
 @media (max-width: 768px) {
   .hamburger {
