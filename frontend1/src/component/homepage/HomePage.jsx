@@ -29,22 +29,6 @@ import UserContext from "../../context/UserContext";
 function HomePage() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [rotatedIndexes, setRotatedIndexes] = useState([]);
-  let [search, setSearch] = useState("");
-
-  useEffect(() => {
-    serachbar();
-  }, [search]);
-
-  let serachbar = async () => {
-    if (search.length > 0) {
-      const response = await axios.get(
-        `http://localhost:1600/cartsearch/${search}`
-      );
-      setUser(response.data);
-    } else {
-      setUser([]);
-    }
-  };
 
   const faqsAnswer = (index) => {
     setActiveIndex(activeIndex === index ? null : index);

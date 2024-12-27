@@ -191,7 +191,7 @@ function CustomerEdit() {
     notes: "",
     date: "",
     status: "",
-    gender:"",
+    gender: "",
     file: null,
   });
   const [showPasswordFields, setShowPasswordFields] = useState(false);
@@ -2274,23 +2274,23 @@ function CustomerEdit() {
                   </div>
 
                   <div className="text-start d-flex flex-row gap-2 mb-2">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    checked={gender === "male"}
-                    onChange={onInputChange}
-                  />
-                  <label htmlFor="">Male</label>
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    checked={gender === "female"}
-                    onChange={onInputChange}
-                  />
-                  <label htmlFor="">Female</label>
-                </div>
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="male"
+                      checked={gender === "male"}
+                      onChange={onInputChange}
+                    />
+                    <label htmlFor="">Male</label>
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="female"
+                      checked={gender === "female"}
+                      onChange={onInputChange}
+                    />
+                    <label htmlFor="">Female</label>
+                  </div>
 
                   <div className="form-check form-switch text-start">
                     <input
@@ -2345,10 +2345,6 @@ function CustomerEdit() {
                       Private notes are only visible to admins.
                     </label>
                   </div>
-
-               
-
-
                 </form>
               </div>
               <div className="position-absolute mt-0 wishlist-table start-0">

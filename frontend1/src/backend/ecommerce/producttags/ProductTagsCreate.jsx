@@ -194,29 +194,6 @@ function ProductTagsCreate() {
 
   let { count } = useContext(UserContext);
 
-  let [productTags, setProductTags] = useState(false);
-
-  let productTagsClicked = () => {
-    setProductTags(!productTags);
-  };
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
-  };
-
   return (
     <>
       <div

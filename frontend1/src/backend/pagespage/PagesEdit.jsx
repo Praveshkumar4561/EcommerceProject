@@ -46,7 +46,7 @@ function PagesEdit() {
   let togglespecification = () => {
     setSpecifcation(!Specification);
   };
-  
+
   const routes = {
     "/admin/welcome": "# Dashboard",
     "/admin/pages": "# Pages",
@@ -319,8 +319,6 @@ function PagesEdit() {
       }
     });
   };
-
-
 
   return (
     <>

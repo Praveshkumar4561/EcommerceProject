@@ -24,9 +24,7 @@ function BlogCategory() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   let { count } = useContext(UserContext);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +52,6 @@ function BlogCategory() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -73,13 +70,10 @@ function BlogCategory() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -187,8 +181,6 @@ function BlogCategory() {
     let response = await axios.get("http://localhost:1600/productpagedata");
     setUser(Array.isArray(response.data) ? response.data : []);
   };
-
- 
 
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
