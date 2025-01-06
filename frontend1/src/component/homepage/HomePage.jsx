@@ -48,7 +48,7 @@ function HomePage() {
   useEffect(() => {
     const faqdata = async () => {
       try {
-        const response = await axios.get("http://54.193.80.36:1600/api/pagesdatafaqs");
+        const response = await axios.get("/api/pagesdatafaqs");
         setFaqs(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -64,7 +64,7 @@ function HomePage() {
   useEffect(() => {
     const showdata = async () => {
       try {
-        let answer = await axios.get("http://54.193.80.36:1600/api/blogpostdata");
+        let answer = await axios.get("/api/blogpostdata");
         setBlog(answer.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -96,7 +96,7 @@ function HomePage() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://54.193.80.36:1600/api/getannounce");
+      let response = await axios.get("/api/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -117,7 +117,7 @@ function HomePage() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://54.193.80.36:1600/api/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -130,7 +130,7 @@ function HomePage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.193.80.36:1600/api/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -142,7 +142,7 @@ function HomePage() {
 
   let homedata = async () => {
     try {
-      let response = await axios.get("http://54.193.80.36:1600/api/productpagedata");
+      let response = await axios.get("/api/productpagedata");
       setProduct(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -153,7 +153,7 @@ function HomePage() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://54.193.80.36:1600/api/productlabelsdata");
+    let response = await axios.get("/api/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();
@@ -172,15 +172,11 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://54.193.80.36:1600/api/addcart",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("/api/addcart", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       alert("Product successfully added in the cart");
       navigate("/cart");
       detailsdata();
@@ -199,10 +195,7 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://54.193.80.36:1600/api/wishlistpost",
-        formData
-      );
+      const response = await axios.post("/api/wishlistpost", formData);
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -593,7 +586,7 @@ function HomePage() {
                       </button>
                       <Link to="/product-details">
                         <img
-                          src={`http://54.193.80.36:1600/src/image/${data.image}`}
+                          src={`http://localhost:1600/src/image/${data.image}`}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
                         />
@@ -669,7 +662,7 @@ function HomePage() {
                       </button>
                       <Link to="/product-details">
                         <img
-                          src={`http://54.193.80.36:1600/api/src/image/${data.image}`}
+                          src={`http://localhost:1600/src/image/${data.image}`}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
                         />
@@ -746,7 +739,7 @@ function HomePage() {
                     </button>
                     <Link to="/product-details">
                       <img
-                        src={`http://54.193.80.36:1600/api/src/image/${data.image}`}
+                        src={`http://localhost:1600/src/image/${data.image}`}
                         className="w-100 h-100 object-fit-cover border-0 image-watch"
                         style={{ cursor: "pointer" }}
                       />
@@ -854,7 +847,7 @@ function HomePage() {
                 className="col-12 col-xxl-4 col-lg-4 col-12 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center ms-lg- latest-read ms-md-3 mt-md-2"
               >
                 <img
-                  src={`http://54.193.80.36:1600/api/src/image/${post.image}`}
+                  src={`http://localhost:1600/src/image/${post.image}`}
                   alt={`img${index + 1}`}
                   className="img-fluid w-100"
                 />
