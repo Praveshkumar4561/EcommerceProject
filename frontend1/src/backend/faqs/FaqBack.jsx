@@ -183,7 +183,7 @@ function FaqBack() {
   };
 
   let alldata = async () => {
-    let response = await axios.get("/api/pagesdatafaqs");
+    let response = await axios.get("http://localhost:1600/pagesdatafaqs");
     setUser(response.data);
   };
 

@@ -167,8 +167,6 @@ const router = createBrowserRouter(
         <Route path="*" element={<Navigate to="/error" />} />
       </Route>
 
-      {/* backend routes */}
-
       <Route path="" element={<User />}>
         <Route path="/admin">
           <Route path="welcome" element={<Welcome />} />
@@ -207,8 +205,6 @@ const router = createBrowserRouter(
         <Route path="/admin/payments">
           <Route path="transactions/:id" element={<TransactionsEdit />} />
         </Route>
-
-        {/* Appearance theme options */}
 
         <Route path="/admin/theme/options">
           <Route path="opt-text-subsection-general" element={<General />} />
@@ -264,8 +260,6 @@ const router = createBrowserRouter(
           <Route path="create" element={<CustomerCreate />} />
           <Route path="edit/:id" element={<CustomerEdit />} />
         </Route>
-
-        {/* ECOMMERCE SECTIONS */}
 
         <Route path="/admin/ecommerce">
           <Route path="incomplete-orders" element={<IncompleteOrders />} />
@@ -388,8 +382,6 @@ const router = createBrowserRouter(
           <Route path="edit/:id" element={<ProductOptionsEdit />} />
         </Route>
 
-        {/* ECOMMERCE SECTIONS */}
-
         <Route path="/admin/announcements">
           <Route path="create" element={<AnnouncementCreate />} />
           <Route path="edit/:id" element={<AnnouncementEdit />} />
@@ -451,10 +443,6 @@ const router = createBrowserRouter(
           <Route path="edit/:id" element={<AdsEdit />} />
         </Route>
 
-        {/* backend routes */}
-
-        {/* frontend routes */}
-
         <Route path="/">
           <Route path="" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -496,8 +484,6 @@ const router = createBrowserRouter(
           <Route path="edit/:id" element={<CustomerDashEdit />} />
         </Route>
       </Route>
-
-      {/* frontend routes */}
     </>
   )
 );
