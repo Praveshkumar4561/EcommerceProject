@@ -177,19 +177,17 @@ function Discounts() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/discountsearch/${search}`
-    );
+    let response = await axios.get(`/api/discountsearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/discountdata");
+    let response = await axios.get("/api/discountdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/discountdelete/${id}`, user);
+    await axios.delete(`/api/discountdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

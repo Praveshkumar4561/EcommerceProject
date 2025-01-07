@@ -176,9 +176,7 @@ function Customers() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/customersearch/${search}`
-    );
+    let response = await axios.get(`/api/customersearch/${search}`);
     setUser(response.data);
   };
 
@@ -187,13 +185,13 @@ function Customers() {
   let [user, setUser] = useState([]);
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setUser(response.data);
     setCount1(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/customerdelete/${id}`, user);
+    await axios.delete(`/api/customerdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -201,12 +199,9 @@ function Customers() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:1600/export-customerdata",
-        {
-          responseType: "blob",
-        }
-      );
+      const response = await axios.get("/api/export-customerdata", {
+        responseType: "blob",
+      });
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");

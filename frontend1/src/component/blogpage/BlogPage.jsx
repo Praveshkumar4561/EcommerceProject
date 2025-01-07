@@ -21,7 +21,7 @@ function BlogPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -57,7 +57,7 @@ function BlogPage() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://localhost:1600/blogpostdata");
+        let response = await axios.get("/api/blogpostdata");
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching blog data:", error);
@@ -229,7 +229,7 @@ function BlogPage() {
               >
                 <div className="image-page">
                   <img
-                    src={`http://localhost:1600/blogpostdata/src/image/${blog.image}`}
+                    src={`/api/blogpostdata/src/image/${blog.image}`}
                     alt="404"
                     className="img-fluid w-100 h-501 mb-0 img-hover-effect"
                   />

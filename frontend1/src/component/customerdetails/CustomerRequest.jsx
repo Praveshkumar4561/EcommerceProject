@@ -34,7 +34,7 @@ function CustomerRequest() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -46,7 +46,7 @@ function CustomerRequest() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://localhost:1600/getannounce");
+      let response = await axios.get("/api/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -72,7 +72,7 @@ function CustomerRequest() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://localhost:1600/logout")
+      .get("/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -92,7 +92,7 @@ function CustomerRequest() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();

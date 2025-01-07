@@ -33,7 +33,7 @@ function CustomerAccount() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -65,10 +65,7 @@ function CustomerAccount() {
     console.log("ID:", id);
     if (validateForm()) {
       try {
-        const response = await axios.put(
-          `http://localhost:1600/userupdate/${id}`,
-          user
-        );
+        const response = await axios.put(`/api/userupdate/${id}`, user);
         setUser(response.data);
         console.log("User data updated:", response.data);
         navigate("/user/address");
@@ -87,7 +84,7 @@ function CustomerAccount() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://localhost:1600/dashboardsome/${1}`);
+    let response = await axios.get(`/api/dashboardsome/${1}`);
     setUser(response.data[0]);
   };
 
@@ -116,7 +113,7 @@ function CustomerAccount() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://localhost:1600/getannounce");
+        let response = await axios.get("/api/getannounce");
         setPassword(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -145,7 +142,7 @@ function CustomerAccount() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://localhost:1600/logout")
+      .get("/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -174,7 +171,7 @@ function CustomerAccount() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();

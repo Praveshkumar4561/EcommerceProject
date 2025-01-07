@@ -175,22 +175,20 @@ function Products() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/productsearch/${search}`
-    );
+    let response = await axios.get(`/api/productsearch/${search}`);
     setUser(response.data);
   };
 
   let [count2, setCount2] = useState(0);
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setUser(response.data);
     setCount2(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/deleteproductsdata/${id}`, user);
+    await axios.delete(`/api/deleteproductsdata/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -198,12 +196,9 @@ function Products() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:1600/exportexcel-productdata",
-        {
-          responseType: "blob",
-        }
-      );
+      const response = await axios.get("/api/exportexcel-productdata", {
+        responseType: "blob",
+      });
 
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -2415,7 +2410,7 @@ function Products() {
 
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           className="img-thumbnail rounded-1 w-auto"
                         />
                       </td>

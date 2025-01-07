@@ -185,10 +185,7 @@ function AdsEdit() {
     formData.append("expired", expired);
     formData.append("file", file);
     try {
-      const response = await axios.put(
-        `http://localhost:1600/adsupdate/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/adsupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/ads");
       }
@@ -206,7 +203,7 @@ function AdsEdit() {
   }, []);
 
   let editdata = async () => {
-    let response = await axios.get(`http://localhost:1600/adsomedataads/${id}`);
+    let response = await axios.get(`/api/adsomedataads/${id}`);
     setUser(response.data[0]);
   };
 
@@ -2348,7 +2345,7 @@ function AdsEdit() {
                       />
                     ) : (
                       <img
-                        src={`http://localhost:1600/src/image/${user.image}`}
+                        src={`/api/src/image/${user.image}`}
                         alt="404"
                         className="w-100 h-auto rounded-2 border rounded-2 img-fluid"
                       />

@@ -175,10 +175,7 @@ function ProductLabelsCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:1600/productlabels",
-        user
-      );
+      const response = await axios.post("/api/productlabels", user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-labels");
       }

@@ -178,19 +178,17 @@ function ProductAttributes() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/attributesearch/${search}`
-    );
+    let response = await axios.get(`/api/attributesearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/attributesdata");
+    let response = await axios.get("/api/attributesdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/attrubutedelete/${id}`, user);
+    await axios.delete(`/api/attrubutedelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

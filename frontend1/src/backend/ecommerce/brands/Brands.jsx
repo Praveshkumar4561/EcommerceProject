@@ -178,19 +178,17 @@ function Brands() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/searchbrand/${search}`
-    );
+    let response = await axios.get(`/api/searchbrand/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/brandsdata");
+    let response = await axios.get("/api/brandsdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/deletebrands/${id}`, user);
+    await axios.delete(`/api/deletebrands/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -2252,7 +2250,7 @@ function Brands() {
 
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           alt="404"
                           className="w-25 rounded-2 img-fluid"
                         />

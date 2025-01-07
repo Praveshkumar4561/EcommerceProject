@@ -35,7 +35,7 @@ function CustomerAddress() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -47,7 +47,7 @@ function CustomerAddress() {
 
   const alldata = async () => {
     try {
-      let response = await axios.get("http://localhost:1600/userdashboarddata");
+      let response = await axios.get("/api/userdashboarddata");
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user data", error);
@@ -56,7 +56,7 @@ function CustomerAddress() {
   alldata();
 
   let removedata = async (id) => {
-    await axios.delete(`http://localhost:1600/deleteuser/${id}`, user);
+    await axios.delete(`/api/deleteuser/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -65,7 +65,7 @@ function CustomerAddress() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("http://localhost:1600/getannounce");
+      let response = await axios.get("/api/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -93,7 +93,7 @@ function CustomerAddress() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://localhost:1600/logout")
+      .get("/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -113,7 +113,7 @@ function CustomerAddress() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();

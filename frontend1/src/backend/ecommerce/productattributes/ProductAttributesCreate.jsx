@@ -159,10 +159,7 @@ function ProductAttributesCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:1600/productattributes",
-        user
-      );
+      const response = await axios.post("/api/productattributes", user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-attribute-sets");
       }

@@ -32,21 +32,19 @@ function Galleries() {
   }, [search]);
 
   let serachbar = async () => {
-    const response = await axios.get(
-      `http://localhost:1600/galleryfil/${search}`
-    );
+    const response = await axios.get(`/api/galleryfil/${search}`);
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://localhost:1600/gallerydata");
+    let response = await axios.get("/api/gallerydata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://localhost:1600/deletegallery/${id}`);
+      await axios.delete(`/api/deletegallery/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);
@@ -2250,7 +2248,7 @@ function Galleries() {
                       <td>{data.id}</td>
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           alt=""
                           className="rounded-2 img-fluid w-50"
                         />

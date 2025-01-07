@@ -181,19 +181,17 @@ function BlogPost() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/blogpostsearch/${search}`
-    );
+    let response = await axios.get(`/api/blogpostsearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/blogpostdata");
+    let response = await axios.get("/api/blogpostdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/deleteblogpost/${id}`, user);
+    await axios.delete(`/api/deleteblogpost/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -2256,7 +2254,7 @@ function BlogPost() {
 
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           alt="404"
                           className="w-75 rounded-2 img-fluid"
                         />

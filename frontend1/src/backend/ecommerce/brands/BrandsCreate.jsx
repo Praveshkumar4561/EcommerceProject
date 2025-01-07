@@ -201,10 +201,7 @@ function BrandsCreate() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post(
-        "http://localhost:1600/brandsubmit",
-        formData
-      );
+      const response = await axios.post("/api/brandsubmit", formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/brands");
       }

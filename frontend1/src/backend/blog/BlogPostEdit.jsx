@@ -215,10 +215,7 @@ function BlogPostEdit() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.put(
-        `http://localhost:1600/blogpostupdate/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/blogpostupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/blog/posts");
       }
@@ -241,7 +238,7 @@ function BlogPostEdit() {
   }, []);
 
   let blogpostsdata = async () => {
-    let response = await axios.get(`http://localhost:1600/blogsomedata/${id}`);
+    let response = await axios.get(`/api/blogsomedata/${id}`);
     setUser(response.data[0]);
   };
 
@@ -2586,7 +2583,7 @@ function BlogPostEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://localhost:1600/src/image/${user.image}`}
+                      src={`/api/src/image/${user.image}`}
                       className="w-100 h-100 rounded"
                     />
                   )}

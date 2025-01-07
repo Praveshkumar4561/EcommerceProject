@@ -178,19 +178,17 @@ function ProductCollections() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/searchcollections/${search}`
-    );
+    let response = await axios.get(`/api/searchcollections/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/collectionsdata");
+    let response = await axios.get("/api/collectionsdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/collectiondelete/${id}`, user);
+    await axios.delete(`/api/collectiondelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -2247,7 +2245,7 @@ function ProductCollections() {
                       <td>
                         <Link to="#">
                           <img
-                            src={`http://localhost:1600/src/image/${data.image}`}
+                            src={`/api/src/image/${data.image}`}
                             className="img-fluid w-50"
                           />
                         </Link>

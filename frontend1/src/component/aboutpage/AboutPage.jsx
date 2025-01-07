@@ -24,7 +24,7 @@ function AboutUsPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -63,7 +63,7 @@ function AboutUsPage() {
   useEffect(() => {
     let showdata = async () => {
       try {
-        let response = await axios.get("http://localhost:1600/gettestimonials");
+        let response = await axios.get("/api/gettestimonials");
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching testimonials:", error);
@@ -347,7 +347,7 @@ function AboutUsPage() {
                   id="column-div"
                 >
                   <img
-                    src={`http://localhost:1600/src/image/${user[index].image}`}
+                    src={`/api/src/image/${user[index].image}`}
                     alt="404"
                     className="mt-4 mb-1 about-name"
                   />

@@ -177,10 +177,7 @@ function FlashSalesEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:1600/updateflashsales/${id}`,
-        user
-      );
+      const response = await axios.put(`/api/updateflashsales/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/flash-sales");
       }
@@ -198,9 +195,7 @@ function FlashSalesEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/flashsalessome/${id}`
-    );
+    let response = await axios.get(`/api/flashsalessome/${id}`);
     setUser(response.data[0]);
   };
 
@@ -239,7 +234,7 @@ function FlashSalesEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:1600/productpagedata?search=${search}`
+          `/api/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {

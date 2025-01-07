@@ -172,15 +172,11 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "/api/addcart",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("/api/addcart", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       alert("Product successfully added in the cart");
       navigate("/cart");
       detailsdata();
@@ -199,10 +195,7 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "/api/wishlistpost",
-        formData
-      );
+      const response = await axios.post("/api/wishlistpost", formData);
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -593,7 +586,7 @@ function HomePage() {
                       </button>
                       <Link to="/product-details">
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
                         />
@@ -669,7 +662,7 @@ function HomePage() {
                       </button>
                       <Link to="/product-details">
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
                         />
@@ -746,7 +739,7 @@ function HomePage() {
                     </button>
                     <Link to="/product-details">
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         className="w-100 h-100 object-fit-cover border-0 image-watch"
                         style={{ cursor: "pointer" }}
                       />
@@ -854,7 +847,7 @@ function HomePage() {
                 className="col-12 col-xxl-4 col-lg-4 col-12 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center ms-lg- latest-read ms-md-3 mt-md-2"
               >
                 <img
-                  src={`http://localhost:1600/src/image/${post.image}`}
+                  src={`/api/src/image/${post.image}`}
                   alt={`img${index + 1}`}
                   className="img-fluid w-100"
                 />

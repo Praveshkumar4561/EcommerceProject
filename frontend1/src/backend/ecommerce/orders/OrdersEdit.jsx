@@ -169,7 +169,7 @@ function OrdersEdit() {
   });
 
   let alldata = async () => {
-    let response = await axios.get(`http://localhost:1600/checkoutsome/${id}`);
+    let response = await axios.get(`/api/checkoutsome/${id}`);
     setUser(response.data[0]);
     setOrder(response.data);
   };
@@ -2025,7 +2025,7 @@ function OrdersEdit() {
                   <form key={key}>
                     <div className="d-flex flex-row flex-wrap order-edit justify-content-between">
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         alt=""
                         className="img-thumbnail"
                       />
@@ -2207,7 +2207,7 @@ function OrdersEdit() {
                 <>
                   <div className="d-flex flex-row order-edit gap-2" key={key}>
                     <img
-                      src={`http://localhost:1600/src/image/${data.image}`}
+                      src={`/api/src/image/${data.image}`}
                       className="img-thumbnail"
                     />
                     <span className="text-success">{data.item_name}</span>

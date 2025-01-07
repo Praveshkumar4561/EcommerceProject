@@ -47,16 +47,14 @@ function Reports() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/customerget/${search}`
-    );
+    let response = await axios.get(`/api/customerget/${search}`);
     setReport(response.data);
   };
 
   let [report, setReport] = useState([]);
 
   let customerdata = async () => {
-    const response = await axios.get("http://localhost:1600/checkoutdata");
+    const response = await axios.get("/api/checkoutdata");
     setReport(response.data);
   };
 
@@ -189,7 +187,7 @@ function Reports() {
   let [count1, setCount1] = useState("");
 
   let custometdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setCount1(response.data.length);
   };
   custometdata();
@@ -197,7 +195,7 @@ function Reports() {
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setCount2(response.data.length);
   };
   showdata();
@@ -205,7 +203,7 @@ function Reports() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://localhost:1600/checkoutdata");
+    let response = await axios.get("/api/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

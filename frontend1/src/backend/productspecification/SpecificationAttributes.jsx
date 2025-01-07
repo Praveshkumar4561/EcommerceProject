@@ -177,7 +177,7 @@ function SpecificationAttributes() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://localhost:1600/specificationattributesearch/${search}`,
+        `/api/specificationattributesearch/${search}`,
         user
       );
       setUser(response.data);
@@ -187,17 +187,12 @@ function SpecificationAttributes() {
   };
 
   const alldata = async () => {
-    let response = await axios.get(
-      "http://localhost:1600/spceficationattributedata"
-    );
+    let response = await axios.get("/api/spceficationattributedata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(
-      `http://localhost:1600/specificationdeleteattribute/${id}`,
-      user
-    );
+    await axios.delete(`/api/specificationdeleteattribute/${id}`, user);
     alert("data deleted");
   };
 

@@ -197,7 +197,7 @@ function SpecificationTableCreate() {
     };
 
     try {
-      await axios.post("http://localhost:1600/specificationtable", formData);
+      await axios.post("/api/specificationtable", formData);
       setErrors({});
       navigate("/admin/ecommerce/specification-tables");
     } catch (error) {
@@ -221,7 +221,7 @@ function SpecificationTableCreate() {
   let [list, setList] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://localhost:1600/spceficationdata");
+    let response = await axios.get("/api/spceficationdata");
     setList(response.data);
   };
   alldata();

@@ -147,10 +147,7 @@ function SimpleSlidersEdit() {
   let { name, sliderkey, description, date, status } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.put(
-      `http://localhost:1600/sliderupdate/${id}`,
-      user
-    );
+    const response = await axios.put(`/api/sliderupdate/${id}`, user);
     if (response.status === 200) {
       navigate("/admin/simple-sliders");
       alert("Data successfully submitted");
@@ -168,7 +165,7 @@ function SimpleSlidersEdit() {
   }, []);
 
   let sliderdata = async () => {
-    let response = await axios.get(`http://localhost:1600/someslider/${id}`);
+    let response = await axios.get(`/api/someslider/${id}`);
     setUser(response.data[0]);
   };
 

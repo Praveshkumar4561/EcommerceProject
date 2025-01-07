@@ -175,16 +175,14 @@ function ProductInventory() {
   }, [search]);
 
   const searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/productsearch/${search}`
-    );
+    let response = await axios.get(`/api/productsearch/${search}`);
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
   let [user, setUser] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
@@ -209,7 +207,7 @@ function ProductInventory() {
     try {
       console.log("Sending PUT request with data:", updatedData);
       const response = await axios.put(
-        `http://localhost:1600/productinventory/${id}`,
+        `/api/productinventory/${id}`,
         updatedData
       );
       alert("Data updated successfully");
@@ -2223,7 +2221,7 @@ function ProductInventory() {
 
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           className="img-thumbnail rounded-1 image-price"
                         />
                       </td>

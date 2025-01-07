@@ -87,10 +87,7 @@ function SimpleSlidersCreate() {
   let { name, sliderkey, description, date, status } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.post(
-      "http://localhost:1600/sliderspost",
-      user
-    );
+    const response = await axios.post("/api/sliderspost", user);
     if (response.status === 200) {
       navigate("/admin/simple-sliders");
       alert("Data successfully submitted");

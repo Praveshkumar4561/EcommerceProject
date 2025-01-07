@@ -25,7 +25,7 @@ function BlogDetails() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -63,15 +63,17 @@ function BlogDetails() {
   const [error, setError] = useState(null);
   let [welcome, setWelcome] = useState([]);
   let [detail, setDetail] = useState(false);
+  let [detail1, setDetail1] = useState([]);
 
   let blogsdata = async () => {
-    let response = await axios.get("http://localhost:1600/blogpostdata");
+    let response = await axios.get("/api/blogpostdata");
     setDetail(response.data);
+    setDetail1(response.data)
   };
   blogsdata();
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/blogalldata");
+    let response = await axios.get("/api/blogalldata");
     setWelcome(response.data);
   };
   alldata();
@@ -80,9 +82,7 @@ function BlogDetails() {
     const fetchBlogDetails = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:1600/blogpostdata/${id}`
-        );
+        const response = await axios.get(`/api/blogpostdata/${id}`);
         setBlog(response.data);
         setLoading(false);
       } catch (error) {
@@ -220,7 +220,7 @@ function BlogDetails() {
           </header>
 
           <main className="container mt-4">
-            <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-5 ms-4 me-4 pt-3 lorem-space cart-cart fs-4 expert-tips">
+            <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-1 ms-4 me-4 pt-3 lorem-space cart-cart fs-4 expert-blog">
               {blog.name}
             </p>
             <nav aria-label="breadcrumb" id="container-contact1">
@@ -254,7 +254,7 @@ function BlogDetails() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-8">
               <div className="blog-box1">
                 <img
-                  src={`http://localhost:1600/blogpostdata/src/image/${blog.image}`}
+                  src={`/api/blogpostdata/src/image/${blog.image}`}
                   alt="404"
                   className="img-fluid w-100 h-100 mb-0"
                 />
@@ -417,11 +417,11 @@ function BlogDetails() {
               <h5 className="mt-3 text-start">About Me</h5>
 
               <div className="border rounded p-3 mt-3">
-                {detail.slice(0, 1).map((data) => (
+                {detail1.slice(0, 1).map((data) => (
                   <>
                     <div className="d-flex justify-content-center w-100 align-items-center">
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         alt="404"
                         className="w-25 rounded-5"
                       />
@@ -436,11 +436,11 @@ function BlogDetails() {
               <h5 className="mt-3 text-start">Latest Posts</h5>
 
               <div className="border rounded p-3 mt-3">
-                {detail.slice(0, 3).map((data, key) => (
+                {detail1.slice(0, 3).map((data, key) => (
                   <>
                     <div className="d-flex flex-row" key={key}>
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         alt="404"
                         className="w-25 h-25 img-thumbnail me-2 mb-2 mb-lg-0"
                       />

@@ -164,7 +164,7 @@ function IncompleOrders() {
   let [incomplete, setIncomplete] = useState([]);
 
   // let incompletedata = async () => {
-  //   const response = await axios.get("http://localhost:1600/checkoutdata");
+  //   const response = await axios.get("/api/checkoutdata");
   //   setIncomplete(response.data);
   // };
   // incompletedata();
@@ -173,7 +173,7 @@ function IncompleOrders() {
   let [order, setOrder] = useState([]);
 
   let customerdata = async () => {
-    const response = await axios.get("http://localhost:1600/checkoutdata");
+    const response = await axios.get("/api/checkoutdata");
     setOrder(response.data);
     setCount5(response.data.length);
   };

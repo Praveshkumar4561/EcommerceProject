@@ -197,10 +197,7 @@ function ReviewsCreate() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post(
-        "http://localhost:1600/reviewdatasubmit",
-        formData
-      );
+      const response = await axios.post("/api/reviewdatasubmit", formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/reviews");
       }

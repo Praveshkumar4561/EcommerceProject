@@ -162,10 +162,7 @@ function ProductAttributesEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:1600/updateattributes/${id}`,
-        user
-      );
+      const response = await axios.put(`/api/updateattributes/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-attribute-sets");
       }
@@ -183,9 +180,7 @@ function ProductAttributesEdit() {
   }, []);
 
   let attributedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/attributesomedata/${id}`
-    );
+    let response = await axios.get(`/api/attributesomedata/${id}`);
     setUser(response.data[0]);
   };
 

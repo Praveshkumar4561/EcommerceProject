@@ -176,10 +176,7 @@ function MenusEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:1600/menusupdate/${id}`,
-        user
-      );
+      const response = await axios.put(`/api/menusupdate/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/menus");
       }
@@ -197,7 +194,7 @@ function MenusEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://localhost:1600/menusomedata/${id}`);
+    let response = await axios.get(`/api/menusomedata/${id}`);
     setUser(response.data[0]);
   };
 

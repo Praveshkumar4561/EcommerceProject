@@ -178,19 +178,17 @@ function FlashSales() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/searchflash/${search}`
-    );
+    let response = await axios.get(`/api/searchflash/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/flashsalesdata");
+    let response = await axios.get("/api/flashsalesdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/flashsaledelete/${id}`, user);
+    await axios.delete(`/api/flashsaledelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

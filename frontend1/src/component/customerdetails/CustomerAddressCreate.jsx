@@ -33,7 +33,7 @@ function CustomerAddressCreate() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -69,10 +69,7 @@ function CustomerAddressCreate() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post(
-          "http://localhost:1600/userdashboard",
-          user
-        );
+        const response = await axios.post("/api/userdashboard", user);
         setUser(response.data);
         navigate("/user/address");
       } catch (error) {
@@ -136,7 +133,7 @@ function CustomerAddressCreate() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("http://localhost:1600/getannounce");
+      let response = await axios.get("/api/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -166,7 +163,7 @@ function CustomerAddressCreate() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://localhost:1600/logout")
+      .get("/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -186,7 +183,7 @@ function CustomerAddressCreate() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();

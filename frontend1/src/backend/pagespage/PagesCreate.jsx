@@ -238,10 +238,7 @@ function PagesCreate() {
     formData.append("content", cleanContent);
     formData.append("file", user.file);
     try {
-      const response = await axios.post(
-        "http://localhost:1600/pagespost",
-        formData
-      );
+      const response = await axios.post("/api/pagespost", formData);
       if (response.status === 200) {
         alert("Data successfully submitted and file uploaded");
         navigate("/admin/pages");

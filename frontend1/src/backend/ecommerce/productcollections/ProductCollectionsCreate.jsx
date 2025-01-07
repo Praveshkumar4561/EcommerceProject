@@ -186,10 +186,7 @@ function ProductCollectionsCreate() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post(
-        "http://localhost:1600/productcollection",
-        formData
-      );
+      const response = await axios.post("/api/productcollection", formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-collections");
       }

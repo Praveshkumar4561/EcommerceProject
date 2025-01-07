@@ -179,17 +179,17 @@ function AdsPage() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://localhost:1600/adsearch/${search}`);
+    let response = await axios.get(`/api/adsearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/adsdata");
+    let response = await axios.get("/api/adsdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/deleteads/${id}`, user);
+    await axios.delete(`/api/deleteads/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -2272,7 +2272,7 @@ function AdsPage() {
                       <td>
                         <Link to="#">
                           <img
-                            src={`http://localhost:1600/src/image/${data.image}`}
+                            src={`/api/src/image/${data.image}`}
                             alt="404"
                             className="w-50 rounded-2 img-fluid"
                           />

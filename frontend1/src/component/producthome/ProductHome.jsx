@@ -32,7 +32,7 @@ function ProductHome() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -68,7 +68,7 @@ function ProductHome() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let response = await axios.get("http://localhost:1600/brandsdata");
+      let response = await axios.get("/api/brandsdata");
       setUser(response.data);
     };
     fetchData();
@@ -89,7 +89,7 @@ function ProductHome() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setImage(response.data);
   };
 
@@ -122,7 +122,7 @@ function ProductHome() {
   let [home, setHome] = useState([]);
 
   let homedata = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setHome(response.data);
   };
   homedata();
@@ -286,7 +286,7 @@ function ProductHome() {
 
             <div className="col-12 col-sm-12 col-md-6 col-lg-6 border admin-product d-flex justify-content-center align-items-center">
               <img
-                src={`http://localhost:1600/src/image/${user[currentImageIndex]?.image}`}
+                src={`/api/src/image/${user[currentImageIndex]?.image}`}
                 alt={`Product Image ${currentImageIndex + 1}`}
                 className="img-fluid"
               />
@@ -308,7 +308,7 @@ function ProductHome() {
                 key={key}
               >
                 <img
-                  src={`http://localhost:1600/src/image/${data.image}`}
+                  src={`/api/src/image/${data.image}`}
                   alt={`Product Image ${key + 1}`}
                   className="img-fluid"
                 />
@@ -324,7 +324,7 @@ function ProductHome() {
             <div className="row ms-lg-0 gap-4 d-flex flex-row" key={key}>
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product border">
                 <img
-                  src={`http://localhost:1600/src/image/${data.image}`}
+                  src={`/api/src/image/${data.image}`}
                   alt={`Product Image ${key + 1}`}
                 />
                 <div className="position-absolute ms-4 mt-2 fw-bold">
@@ -334,9 +334,7 @@ function ProductHome() {
 
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
                 <img
-                  src={`http://localhost:1600/src/image/${
-                    image[key + 1]?.image
-                  }`}
+                  src={`/api/src/image/${image[key + 1]?.image}`}
                   alt={`Product Image ${key + 2}`}
                 />
                 <div className="position-absolute ms-4 mt-2 fw-bold">
@@ -346,9 +344,7 @@ function ProductHome() {
 
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
                 <img
-                  src={`http://localhost:1600/src/image/${
-                    image[key + 2]?.image
-                  }`}
+                  src={`/api/src/image/${image[key + 2]?.image}`}
                   alt={`Product Image ${key + 2}`}
                 />
                 <div className="position-absolute ms-5 mt-2 fw-bold">
@@ -358,9 +354,7 @@ function ProductHome() {
 
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
                 <img
-                  src={`http://localhost:1600/src/image/${
-                    image[key + 3]?.image
-                  }`}
+                  src={`/api/src/image/${image[key + 3]?.image}`}
                   alt={`Product Image ${key + 2}`}
                 />
                 <div className="position-absolute ms-5 mt-2 fw-bold">
@@ -370,9 +364,7 @@ function ProductHome() {
 
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
                 <img
-                  src={`http://localhost:1600/src/image/${
-                    image[key + 4]?.image
-                  }`}
+                  src={`/api/src/image/${image[key + 4]?.image}`}
                   alt={`Product Image ${key + 2}`}
                 />
                 <div className="position-absolute ms-4 mt-2 fw-bold">
@@ -719,7 +711,7 @@ function ProductHome() {
               <>
                 <div className="col-6 col-sm-6 col-md-4 col-lg-3 border rounded-0 digital-hello rounded">
                   <img
-                    src={`http://localhost:1600/src/image/${data.image}`}
+                    src={`/api/src/image/${data.image}`}
                     alt=""
                     className="ms-5"
                   />

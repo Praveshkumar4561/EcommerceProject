@@ -207,10 +207,7 @@ function CustomerCreate() {
     formData.append("file", file);
 
     try {
-      const response = await axios.post(
-        "http://localhost:1600/usersubmit",
-        formData
-      );
+      const response = await axios.post("/api/usersubmit", formData);
       if (response.status === 200) {
         navigate("/admin/customers");
       }

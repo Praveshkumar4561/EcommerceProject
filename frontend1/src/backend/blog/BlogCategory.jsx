@@ -171,14 +171,12 @@ function BlogCategory() {
   }, [search]);
 
   const searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/productsearch/${search}`
-    );
+    let response = await axios.get(`/api/productsearch/${search}`);
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
   const alldata = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 

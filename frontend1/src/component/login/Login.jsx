@@ -20,7 +20,7 @@ function Login() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -46,7 +46,7 @@ function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:1600/login", user, {
+      const response = await axios.post("/api/login", user, {
         withCredentials: true,
       });
       if (response.data.Status === "Success") {
@@ -64,10 +64,7 @@ function Login() {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:1600/submit",
-        registerUser
-      );
+      const response = await axios.post("/api/submit", registerUser);
       if (response.data.status === "success") {
         navigate("/login");
       }

@@ -178,7 +178,7 @@ function ShipmentEdit() {
   });
 
   let alldata = async () => {
-    let response = await axios.get(`http://localhost:1600/checkoutsome/${id}`);
+    let response = await axios.get(`/api/checkoutsome/${id}`);
     setShipment(response.data[0]);
     setShipment1(response.data);
   };
@@ -2135,7 +2135,7 @@ function ShipmentEdit() {
 
                   <div>
                     <img
-                      src={`http://localhost:1600/src/image/${data.image}`}
+                      src={`/api/src/image/${data.image}`}
                       alt=""
                       className="img-thumbnail w-50"
                     />

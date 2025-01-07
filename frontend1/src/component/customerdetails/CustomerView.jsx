@@ -35,7 +35,7 @@ function CustomerView() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -48,7 +48,7 @@ function CustomerView() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://localhost:1600/getannounce");
+      let response = await axios.get("/api/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -69,7 +69,7 @@ function CustomerView() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -119,7 +119,7 @@ function CustomerView() {
 
   let cancelOrder = async () => {
     try {
-      await axios.delete(`http://localhost:1600/deleteorder`);
+      await axios.delete(`/api/deleteorder`);
       setView([]);
       navigate("/user/orders");
       alert("All products deleted successfully");
@@ -137,7 +137,7 @@ function CustomerView() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://localhost:1600/checkoutdata");
+        const response = await axios.get("/api/checkoutdata");
         const flattenedData = response.data.flatMap((checkout) =>
           checkout.cartItems.map((item) => ({
             ...item,
@@ -306,7 +306,7 @@ function CustomerView() {
         console.log("Checking product data:", item);
         const itemName = item.name || "N/A";
         const itemImage = item.image
-          ? `http://localhost:1600/src/image/${item.image}`
+          ? `/api/src/image/${item.image}`
           : "http://example.com/default.jpg";
         const itemAmount = parseFloat(item.price.replace("$", "")) || 0;
         const itemQuantity = parseInt(item.quantity, 10) || 0;
@@ -775,7 +775,7 @@ function CustomerView() {
                         <td className="text-start">{data.checkoutId}</td>
                         <td className="text-start">
                           <img
-                            src={`http://localhost:1600/src/image/${data.image}`}
+                            src={`/api/src/image/${data.image}`}
                             alt=""
                             className="img-thumbnail"
                           />

@@ -176,10 +176,7 @@ function MenusCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:1600/menusubmit",
-        user
-      );
+      const response = await axios.post("/api/menusubmit", user);
       if (response.status === 200) {
         navigate("/admin/menus");
       }

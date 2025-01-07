@@ -181,10 +181,7 @@ function DiscountsEdit() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:1600/discountupdate/${id}`,
-        user
-      );
+      const response = await axios.put(`/api/discountupdate/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/discounts");
       }
@@ -198,9 +195,7 @@ function DiscountsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/discountsomedata/${id}`
-    );
+    let response = await axios.get(`/api/discountsomedata/${id}`);
     setUser(response.data[0]);
   };
 

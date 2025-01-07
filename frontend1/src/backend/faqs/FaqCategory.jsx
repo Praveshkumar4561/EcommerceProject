@@ -101,19 +101,17 @@ function FaqCategory() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/faqsearchcategory/${search}`
-    );
+    let response = await axios.get(`/api/faqsearchcategory/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/faqcategorydata");
+    let response = await axios.get("/api/faqcategorydata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/faqcategorydelete/${id}`, user);
+    await axios.delete(`/api/faqcategorydelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

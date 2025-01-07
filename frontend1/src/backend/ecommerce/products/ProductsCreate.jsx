@@ -250,10 +250,7 @@ function ProductsCreate() {
     formData.append("label", selectedLabels[0] || "");
     formData.append("label1", selectedLabels1[0] || "");
     try {
-      const response = await axios.post(
-        "http://localhost:1600/productpage",
-        formData
-      );
+      const response = await axios.post("/api/productpage", formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/products");
       }
@@ -485,7 +482,7 @@ function ProductsCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:1600/productpagedata?search=${search}`
+          `/api/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -514,7 +511,7 @@ function ProductsCreate() {
       try {
         setLoading1(true);
         const response = await axios.get(
-          `http://localhost:1600/productpagedata?search=${search}`
+          `/api/productpagedata?search=${search}`
         );
         setProducts1(response.data);
       } catch (error) {
@@ -531,7 +528,7 @@ function ProductsCreate() {
 
   const attributedata = async () => {
     try {
-      let response = await axios.get("http://localhost:1600/attributesdata");
+      let response = await axios.get("/api/attributesdata");
       setCreate(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -3612,7 +3609,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product.image}`;
+                        const imageUrl = `/api/productpagedata/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -3627,7 +3624,7 @@ function ProductsCreate() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                    "/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -3671,7 +3668,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.map((product2) => {
-                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product2.image}`;
+                        const imageUrl = `/api/productpagedata/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}
@@ -3686,7 +3683,7 @@ function ProductsCreate() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                    "/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />

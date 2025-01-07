@@ -188,10 +188,7 @@ function ProductCollectionsEdit() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.put(
-        `http://localhost:1600/collectionupdate/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/collectionupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-collections");
       }
@@ -214,9 +211,7 @@ function ProductCollectionsEdit() {
   }, []);
 
   let alldata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/collectionsome/${id}`
-    );
+    let response = await axios.get(`/api/collectionsome/${id}`);
     setUser(response.data[0]);
   };
 
@@ -2334,7 +2329,7 @@ function ProductCollectionsEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://localhost:1600/src/image/${user.image}`}
+                      src={`/api/src/image/${user.image}`}
                       alt=""
                       className="w-75 h-75 img-fluid rounded"
                     />

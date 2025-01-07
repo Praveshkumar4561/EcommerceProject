@@ -264,10 +264,7 @@ function ProductsEdit() {
     formData.append("label", selectedLabels || "");
     formData.append("label1", selectedLabels1 || "");
     try {
-      const response = await axios.put(
-        `http://localhost:1600/productupdate/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/productupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/products");
       }
@@ -309,9 +306,7 @@ function ProductsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/productsomedata/${id}`
-    );
+    let response = await axios.get(`/api/productsomedata/${id}`);
     setUser(response.data[0]);
   };
 
@@ -510,7 +505,7 @@ function ProductsEdit() {
 
   const attributedata = async () => {
     try {
-      let response = await axios.get("http://localhost:1600/attributesdata");
+      let response = await axios.get("/api/attributesdata");
       setCreate(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -552,7 +547,7 @@ function ProductsEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:1600/productpagedata?search=${search}`
+          `/api/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -3645,7 +3640,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product.image}`;
+                        const imageUrl = `/api/productpagedata/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -3660,7 +3655,7 @@ function ProductsEdit() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                    "/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -3704,7 +3699,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.map((product2) => {
-                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product2.image}`;
+                        const imageUrl = `/api/productpagedata/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}
@@ -3719,7 +3714,7 @@ function ProductsEdit() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                    "/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />

@@ -176,10 +176,7 @@ function ContactsEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(
-        `http://localhost:1600/updatecontact/${id}`,
-        user
-      );
+      const response = await axios.put(`/api/updatecontact/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/contacts");
       }
@@ -197,7 +194,7 @@ function ContactsEdit() {
   }, []);
 
   let contactdata = async () => {
-    let response = await axios.get(`http://localhost:1600/contactusget/${id}`);
+    let response = await axios.get(`/api/contactusget/${id}`);
     setUser(response.data[0]);
   };
 

@@ -33,7 +33,7 @@ function CustomerPassword() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -65,9 +65,7 @@ function CustomerPassword() {
 
   const passworddata = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:1600/changepassword/${id}`
-      );
+      const response = await axios.get(`/api/changepassword/${id}`);
       setUser({ ...response.data[0] });
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -103,10 +101,7 @@ function CustomerPassword() {
       };
       try {
         console.log("Sending data to the server:", data);
-        const response = await axios.put(
-          `http://localhost:1600/passwordupdate/${id}`,
-          data
-        );
+        const response = await axios.put(`/api/passwordupdate/${id}`, data);
         console.log("Password changed successfully", response.data);
         alert("Password changed successfully");
         navigate("/user/address");
@@ -123,7 +118,7 @@ function CustomerPassword() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://localhost:1600/getannounce");
+        let response = await axios.get("/api/getannounce");
         setCustomer(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -152,7 +147,7 @@ function CustomerPassword() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://localhost:1600/logout")
+      .get("/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -172,7 +167,7 @@ function CustomerPassword() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();

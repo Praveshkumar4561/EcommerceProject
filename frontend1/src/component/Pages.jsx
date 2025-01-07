@@ -12,9 +12,7 @@ const Page = () => {
     console.log("Fetching page data for ID:", id);
     const fetchPageData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:1600/page-seo/${id}`
-        );
+        const response = await axios.get(`/api/page-seo/${id}`);
         setPageData(response.data);
       } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -38,10 +36,7 @@ const Page = () => {
         <meta property="og:title" content={pageData.og_title} />
         <meta property="og:description" content={pageData.og_description} />
         <meta property="og:image" content={pageData.og_image} />
-        <meta
-          property="og:url"
-          content={`http://localhost:1600/page-seo/${id}`}
-        />
+        <meta property="og:url" content={`/api/page-seo/${id}`} />
       </Helmet>
       <h1>{pageData.title}</h1>
       <div dangerouslySetInnerHTML={{ __html: pageData.content }} />

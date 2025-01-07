@@ -83,10 +83,7 @@ function FaqCategoryCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:1600/faqcategory",
-        user
-      );
+      const response = await axios.post("/api/faqcategory", user);
       if (response.status === 200) {
         navigate("/admin/faq-categories");
       }

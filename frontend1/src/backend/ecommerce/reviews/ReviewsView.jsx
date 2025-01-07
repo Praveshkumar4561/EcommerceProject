@@ -199,10 +199,7 @@ function ReviewsView() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post(
-        "http://localhost:1600/reviewdatasubmit",
-        formData
-      );
+      const response = await axios.post("/api/reviewdatasubmit", formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/reviews");
       }
@@ -219,12 +216,9 @@ function ReviewsView() {
 
   let deletedata = async () => {
     try {
-      let response = await axios.delete(
-        `http://localhost:1600/deleteviewreview/${id}`,
-        {
-          data: user,
-        }
-      );
+      let response = await axios.delete(`/api/deleteviewreview/${id}`, {
+        data: user,
+      });
       if (response.status === 200) {
         alert("Data deleted successfully");
       } else {
@@ -241,9 +235,7 @@ function ReviewsView() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/reviewsomedata/${id}`
-    );
+    let response = await axios.get(`/api/reviewsomedata/${id}`);
     setUser(response.data[0]);
   };
 
@@ -2219,7 +2211,7 @@ function ReviewsView() {
                   <hr />
                   {user.comment}
                   <img
-                    src={`http://localhost:1600/src/image/${user.image}`}
+                    src={`/api/src/image/${user.image}`}
                     alt=""
                     className="img-thumbnail w-25 mb-3 mt-2"
                   />
@@ -2259,7 +2251,7 @@ function ReviewsView() {
               <hr className="custom-hori" />
               <span style={{ whiteSpace: "nowrap" }}>
                 <img
-                  src={`http://localhost:1600/src/image/${user.image}`}
+                  src={`/api/src/image/${user.image}`}
                   alt=""
                   className="img-thumbnail w-25 mb-3 mt-2"
                 />

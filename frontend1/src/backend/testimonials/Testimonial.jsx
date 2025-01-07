@@ -161,21 +161,19 @@ function Testimonial() {
   }, [search]);
 
   let serachbar = async () => {
-    const response = await axios.get(
-      `http://localhost:1600/testifilter/${search}`
-    );
+    const response = await axios.get(`/api/testifilter/${search}`);
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://localhost:1600/gettestimonials");
+    let response = await axios.get("/api/gettestimonials");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://localhost:1600/deletetest/${id}`);
+      await axios.delete(`/api/deletetest/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);
@@ -2251,7 +2249,7 @@ function Testimonial() {
                       <td>{data.id}</td>
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           alt="img not found"
                           className="rounded-2 image-test"
                         />

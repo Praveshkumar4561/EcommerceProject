@@ -228,10 +228,7 @@ function PagesEdit() {
     formData.append("content", cleanContent);
     formData.append("file", user.file);
     try {
-      const response = await axios.put(
-        `http://localhost:1600/pageupdate/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/pageupdate/${id}`, formData);
       if (response.status === 200) {
         alert("Data successfully updated");
         navigate("/admin/pages");
@@ -252,7 +249,7 @@ function PagesEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://localhost:1600/pagesomedata/${id}`);
+    let response = await axios.get(`/api/pagesomedata/${id}`);
     setUser(response.data[0]);
   };
 

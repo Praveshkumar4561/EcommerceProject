@@ -33,7 +33,7 @@ function CustomerDashEdit() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -71,10 +71,7 @@ function CustomerDashEdit() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.put(
-          `http://localhost:1600/dashboardedit/${id}`,
-          user
-        );
+        const response = await axios.put(`/api/dashboardedit/${id}`, user);
         setUser(response.data);
         navigate("/user/address");
       } catch (error) {
@@ -88,10 +85,7 @@ function CustomerDashEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/dashboardsome/${id}`,
-      user
-    );
+    let response = await axios.get(`/api/dashboardsome/${id}`, user);
     setUser(response.data[0]);
   };
 
@@ -151,7 +145,7 @@ function CustomerDashEdit() {
   useEffect(() => {
     const editData = async () => {
       try {
-        let response = await axios.get("http://localhost:1600/getannounce");
+        let response = await axios.get("/api/getannounce");
         setEdit(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -181,7 +175,7 @@ function CustomerDashEdit() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://localhost:1600/logout")
+      .get("/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -201,7 +195,7 @@ function CustomerDashEdit() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();

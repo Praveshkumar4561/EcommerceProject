@@ -33,7 +33,7 @@ function OrdersCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:1600/productpagedata?search=${search}`
+          `/api/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -191,7 +191,7 @@ function OrdersCreate() {
 
   const customerData = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/customersdata");
+      const response = await axios.get("/api/customersdata");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customer data:", error);
@@ -1950,7 +1950,7 @@ function OrdersCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://localhost:1600/productpagedata/src/image/${product.image}`;
+                        const imageUrl = `/api/productpagedata/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -1962,7 +1962,7 @@ function OrdersCreate() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://localhost:1600/path/to/fallback-image.jpg")
+                                    "/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -2110,7 +2110,7 @@ function OrdersCreate() {
               <div className="customer-list">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
-                    const imageUrl1 = `http://localhost:1600/customersdata/src/image/${customer.image}`;
+                    const imageUrl1 = `/api/customersdata/src/image/${customer.image}`;
                     return (
                       <>
                         <div className="border rounded d-flex flex-row">

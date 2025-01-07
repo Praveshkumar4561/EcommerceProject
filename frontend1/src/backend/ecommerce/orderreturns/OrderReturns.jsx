@@ -175,14 +175,12 @@ function OrderReturns() {
   };
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/contactsearch/${search}`
-    );
+    let response = await axios.get(`/api/contactsearch/${search}`);
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/deletecontact/${id}`, user);
+    await axios.delete(`/api/deletecontact/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -190,12 +188,9 @@ function OrderReturns() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:1600/export-returnsorder",
-        {
-          responseType: "blob",
-        }
-      );
+      const response = await axios.get("/api/export-returnsorder", {
+        responseType: "blob",
+      });
 
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));

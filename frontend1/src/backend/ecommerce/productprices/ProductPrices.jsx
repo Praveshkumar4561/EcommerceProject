@@ -178,10 +178,7 @@ function ProductPrices() {
 
   const searchbar = async () => {
     try {
-      let response = await axios.get(
-        `http://localhost:1600/productsearch/${search}`,
-        user
-      );
+      let response = await axios.get(`/api/productsearch/${search}`, user);
       setPrice(response.data);
       console.log("Search data:", response.data);
     } catch (error) {
@@ -192,7 +189,7 @@ function ProductPrices() {
   const [price, setPrice] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setPrice(response.data);
   };
 
@@ -221,7 +218,7 @@ function ProductPrices() {
       return;
     }
     try {
-      await axios.put(`http://localhost:1600/productpriceupdate/${id}`, {
+      await axios.put(`/api/productpriceupdate/${id}`, {
         cost,
         price: productPrice,
         price_sale,
@@ -2244,7 +2241,7 @@ function ProductPrices() {
 
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           className="img-thumbnail rounded-1 image-price"
                         />
                       </td>

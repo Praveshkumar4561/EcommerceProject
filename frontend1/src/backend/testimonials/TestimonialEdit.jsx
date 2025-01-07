@@ -190,7 +190,7 @@ function TestimonialEdit() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await axios.get(`http://localhost:1600/sometest/${id}`);
+        let response = await axios.get(`/api/sometest/${id}`);
         const userData = response.data[0];
         setUser(userData);
         setEditorData2(userData.content || "");
@@ -281,10 +281,7 @@ function TestimonialEdit() {
     formData.append("file", user.file);
 
     try {
-      const response = await axios.put(
-        `http://localhost:1600/updatetest/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/updatetest/${id}`, formData);
       if (response.status === 200) {
         alert("Data updated");
         navigate("/admin/testimonials");
@@ -2481,7 +2478,7 @@ function TestimonialEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://localhost:1600/src/image/${user.image}`}
+                      src={`/api/src/image/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

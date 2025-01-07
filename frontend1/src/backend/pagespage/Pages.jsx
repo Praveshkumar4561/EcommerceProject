@@ -177,18 +177,18 @@ function Pages() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://localhost:1600/pagesearch/${search}`
+      `/api/pagesearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/pagesdata");
+    let response = await axios.get("/api/pagesdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/pagesdelete/${id}`, user);
+    await axios.delete(`/api/pagesdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

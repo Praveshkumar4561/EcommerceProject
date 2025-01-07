@@ -174,22 +174,20 @@ function Reviews() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/reviewsearch/${search}`
-    );
+    let response = await axios.get(`/api/reviewsearch/${search}`);
     setUser(response.data);
   };
 
   let [count4, setCount4] = useState(0);
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/reviewdata");
+    let response = await axios.get("/api/reviewdata");
     setUser(response.data);
     setCount4(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/reviewdelete/${id}`, user);
+    await axios.delete(`/api/reviewdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -2289,7 +2287,7 @@ function Reviews() {
 
                       <td>
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           className="img-thumbnail w-auto"
                           alt="404"
                         />

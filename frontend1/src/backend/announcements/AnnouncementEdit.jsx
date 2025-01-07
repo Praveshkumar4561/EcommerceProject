@@ -57,10 +57,7 @@ function AnnouncementEdit() {
   let { name, content, start_date, end_date, active } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.put(
-      `http://localhost:1600/updateannnounce/${id}`,
-      user
-    );
+    const response = await axios.put(`/api/updateannnounce/${id}`, user);
     if (response.status === 200) {
       navigate("/admin/announcements");
     } else {
@@ -69,7 +66,7 @@ function AnnouncementEdit() {
   };
 
   let somedata = async () => {
-    let response = await axios.get(`http://localhost:1600/getann/${id}`);
+    let response = await axios.get(`/api/getann/${id}`);
     setUser(response.data[0]);
   };
 

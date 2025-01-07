@@ -186,7 +186,7 @@ function SpecificationEdit() {
       return;
     }
     try {
-      await axios.put(`http://localhost:1600/spceficationupdate/${id}`, user);
+      await axios.put(`/api/spceficationupdate/${id}`, user);
       setErrors({});
       navigate("/admin/ecommerce/specification-groups");
     } catch (error) {
@@ -203,9 +203,7 @@ function SpecificationEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/spceficationdatasome/${id}`
-    );
+    let response = await axios.get(`/api/spceficationdatasome/${id}`);
     setUser(response.data[0]);
   };
 

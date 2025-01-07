@@ -171,7 +171,7 @@ function Transactions() {
   let [user, setUser] = useState([]);
 
   let paymentdata = async () => {
-    const response = await axios.get("http://localhost:1600/paymentdata");
+    const response = await axios.get("/api/paymentdata");
     setUser(response.data);
   };
   paymentdata();

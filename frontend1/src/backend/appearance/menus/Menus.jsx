@@ -181,19 +181,17 @@ function Menus() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/menusearch/${search}`
-    );
+    let response = await axios.get(`/api/menusearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/menusdata");
+    let response = await axios.get("/api/menusdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/menusdelete/${id}`, user);
+    await axios.delete(`/api/menusdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

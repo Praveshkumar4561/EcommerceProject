@@ -42,7 +42,7 @@ function Checkout() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -55,7 +55,7 @@ function Checkout() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://localhost:1600/allcartdata");
+        const response = await axios.get("/api/allcartdata");
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,
@@ -108,7 +108,7 @@ function Checkout() {
   useEffect(() => {
     const userdata = async () => {
       try {
-        const response = await axios.get("http://localhost:1600/alldata");
+        const response = await axios.get("/api/alldata");
         if (response.data && response.data.length > 0) {
           setContainer(response.data);
           setUser((prevUser) => ({
@@ -168,10 +168,7 @@ function Checkout() {
       total: total.toFixed(2),
     };
     try {
-      const response = await axios.post(
-        "http://localhost:1600/checkout",
-        orderData
-      );
+      const response = await axios.post("/api/checkout", orderData);
       if (response.data && response.data.orderNumber) {
         alert(
           `Order successfully placed. Your order number is 
@@ -553,7 +550,7 @@ function Checkout() {
                         </div>
 
                         <img
-                          src={`http://localhost:1600/src/image/${data.image}`}
+                          src={`/api/src/image/${data.image}`}
                           alt=""
                           className="img- border rounded-0 number-item-img"
                         />

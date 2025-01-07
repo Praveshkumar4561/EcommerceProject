@@ -45,7 +45,7 @@ function Shop() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -56,7 +56,7 @@ function Shop() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://localhost:1600/productpagedata");
+    let response = await axios.get("/api/productpagedata");
     setImage(response.data);
   };
 
@@ -70,7 +70,7 @@ function Shop() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("http://localhost:1600/productpagedata");
+      let response = await axios.get("/api/productpagedata");
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -90,15 +90,11 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://localhost:1600/addcart",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("/api/addcart", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       alert("Product successfully added in the cart");
       navigate("/cart");
       detailsdata();
@@ -110,7 +106,7 @@ function Shop() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://localhost:1600/productlabelsdata");
+    let response = await axios.get("/api/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();
@@ -125,10 +121,7 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://localhost:1600/wishlistpost",
-        formData
-      );
+      const response = await axios.post("/api/wishlistpost", formData);
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -285,7 +278,7 @@ function Shop() {
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product border">
                 <Link to="/product-details" className="text-dark">
                   <img
-                    src={`http://localhost:1600/src/image/${data.image}`}
+                    src={`/api/src/image/${data.image}`}
                     alt={`Product Image ${key + 1}`}
                   />
                   <div className="position-absolute ms-4 mt-2 fw-bold">
@@ -297,9 +290,7 @@ function Shop() {
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
                 <Link to="/product-details" className="text-dark">
                   <img
-                    src={`http://localhost:1600/src/image/${
-                      image[key + 1]?.image
-                    }`}
+                    src={`/api/src/image/${image[key + 1]?.image}`}
                     alt={`Product Image ${key + 2}`}
                   />
                   <div
@@ -314,9 +305,7 @@ function Shop() {
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
                 <Link to="/product-details" className="text-dark">
                   <img
-                    src={`http://localhost:1600/src/image/${
-                      image[key + 2]?.image
-                    }`}
+                    src={`/api/src/image/${image[key + 2]?.image}`}
                     alt={`Product Image ${key + 2}`}
                   />
                   <div className="position-absolute ms-5 mt-2 fw-bold">
@@ -328,9 +317,7 @@ function Shop() {
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
                 <Link to="/product-details" className="text-dark">
                   <img
-                    src={`http://localhost:1600/src/image/${
-                      image[key + 3]?.image
-                    }`}
+                    src={`/api/src/image/${image[key + 3]?.image}`}
                     alt={`Product Image ${key + 2}`}
                   />
 
@@ -343,9 +330,7 @@ function Shop() {
               <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
                 <Link to="/product-details" className="text-dark">
                   <img
-                    src={`http://localhost:1600/src/image/${
-                      image[key + 4]?.image
-                    }`}
+                    src={`/api/src/image/${image[key + 4]?.image}`}
                     alt={`Product Image ${key + 2}`}
                   />
 
@@ -420,7 +405,7 @@ function Shop() {
                     </button>
                     <Link to="/product-details">
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         className="w-100 h-100 object-fit-cover border-0 image-watch"
                         style={{ cursor: "pointer" }}
                       />

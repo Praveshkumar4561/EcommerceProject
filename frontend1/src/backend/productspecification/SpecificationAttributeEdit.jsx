@@ -175,10 +175,7 @@ function SpecificationAttributeEdit() {
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        `http://localhost:1600/spceficationupdateattribute/${id}`,
-        user
-      );
+      await axios.put(`/api/spceficationupdateattribute/${id}`, user);
       navigate("/admin/ecommerce/specification-attributes");
     } catch (error) {
       console.error("There was an error submitting the form:", error);
@@ -194,16 +191,14 @@ function SpecificationAttributeEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/spceficationdatasomeattribute/${id}`
-    );
+    let response = await axios.get(`/api/spceficationdatasomeattribute/${id}`);
     setUser(response.data[0]);
   };
 
   let [list, setList] = useState("");
 
   const alldata = async () => {
-    let response = await axios.get("http://localhost:1600/spceficationdata");
+    let response = await axios.get("/api/spceficationdata");
     setList(response.data);
   };
   alldata();
@@ -211,7 +206,7 @@ function SpecificationAttributeEdit() {
   let [creates, setCreates] = useState([]);
 
   const allatributedata = async () => {
-    let response = await axios.get("http://localhost:1600/spceficationdata");
+    let response = await axios.get("/api/spceficationdata");
     setCreates(response.data);
   };
   allatributedata();

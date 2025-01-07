@@ -172,7 +172,7 @@ function InvoiceEdit() {
   });
 
   let alldata = async () => {
-    let response = await axios.get(`http://localhost:1600/checkoutsome/${id}`);
+    let response = await axios.get(`/api/checkoutsome/${id}`);
     setUser(response.data[0]);
     setInvoice(response.data);
   };
@@ -223,7 +223,7 @@ function InvoiceEdit() {
         62
       );
       if (data.image) {
-        const img = `http://localhost:1600/src/image/${data.image}`;
+        const img = `/api/src/image/${data.image}`;
         doc.addImage(img, "JPEG", 14, 70, 40, 40);
       }
       let yOffset = 120;
@@ -2324,7 +2324,7 @@ function InvoiceEdit() {
                           <td>{data.id}</td>
                           <td>
                             <img
-                              src={`http://localhost:1600/src/image/${data.image}`}
+                              src={`/api/src/image/${data.image}`}
                               alt=""
                               className="w-25 img-thumbnail"
                             />

@@ -238,10 +238,7 @@ function GalleryEdit() {
     formData.append("status", status);
     formData.append("file", file);
 
-    const response = await axios.put(
-      `http://localhost:1600/galleryupdates/${id}`,
-      formData
-    );
+    const response = await axios.put(`/api/galleryupdates/${id}`, formData);
     if (response.status === 200) {
       navigate("/admin/galleries");
       alert("data successfully submitted and file upload");
@@ -255,7 +252,7 @@ function GalleryEdit() {
   }, []);
 
   let gallerydata = async () => {
-    let response = await axios.get(`http://localhost:1600/gallerytests/${id}`);
+    let response = await axios.get(`/api/gallerytests/${id}`);
     setUser(response.data[0]);
   };
 
@@ -286,11 +283,11 @@ function GalleryEdit() {
     }
   };
 
-  let image1 = "http://localhost:1600/src/image/1726489010929-girl.jpg";
-  let image2 = "http://localhost:1600/src/image/1726484818763-new day.jpg";
-  let image3 = "http://localhost:1600/src/image/1726484754730-robot.jpg";
-  let image4 = "http://localhost:1600/src/image/1726484631704-mobile1.jpg";
-  let image5 = "http://localhost:1600/src/image/1726484882946-laptop.jpg";
+  let image1 = "/api/src/image/1726489010929-girl.jpg";
+  let image2 = "/api/src/image/1726484818763-new day.jpg";
+  let image3 = "/api/src/image/1726484754730-robot.jpg";
+  let image4 = "/api/src/image/1726484631704-mobile1.jpg";
+  let image5 = "/api/src/image/1726484882946-laptop.jpg";
 
   return (
     <>

@@ -173,9 +173,7 @@ function Invoice() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(
-      `http://localhost:1600/shipmentsearch/${search}`
-    );
+    let response = await axios.get(`/api/shipmentsearch/${search}`);
     setUser(response.data);
   };
 
@@ -186,13 +184,13 @@ function Invoice() {
   }, []);
 
   let invoicedata = async () => {
-    const response = await axios.get("http://localhost:1600/checkoutdata");
+    const response = await axios.get("/api/checkoutdata");
     setInvoice(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://localhost:1600/deleteorder1/${id}`);
+      await axios.delete(`/api/deleteorder1/${id}`);
       alert("Order deleted successfully");
     } catch (error) {
       console.error("Error deleting data:", error);

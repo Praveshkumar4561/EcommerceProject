@@ -177,7 +177,7 @@ function SpecificationTable() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://localhost:1600/specificationtablesearch/${search}`,
+        `/api/specificationtablesearch/${search}`,
         user
       );
       setUser(response.data);
@@ -187,17 +187,12 @@ function SpecificationTable() {
   };
 
   const alldata = async () => {
-    let response = await axios.get(
-      "http://localhost:1600/spceficationtabledata"
-    );
+    let response = await axios.get("/api/spceficationtabledata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(
-      `http://localhost:1600/specificationdeletetable/${id}`,
-      user
-    );
+    await axios.delete(`/api/specificationdeletetable/${id}`, user);
     alert("data deleted");
   };
 

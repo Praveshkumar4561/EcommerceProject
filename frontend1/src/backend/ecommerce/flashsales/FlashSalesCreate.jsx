@@ -177,10 +177,7 @@ function FlashSalesCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:1600/flashsales",
-        user
-      );
+      const response = await axios.post("/api/flashsales", user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/flash-sales");
       }
@@ -226,7 +223,7 @@ function FlashSalesCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://localhost:1600/productpagedata?search=${search}`
+          `/api/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -2037,7 +2034,7 @@ function FlashSalesCreate() {
             <div className="product-list">
               {products.length > 0 ? (
                 products.map((product) => {
-                  const imageUrl = `http://localhost:1600/productpagedata/src/image/${product.image}`;
+                  const imageUrl = `/api/productpagedata/src/image/${product.image}`;
                   return (
                     <div
                       key={product.id}
@@ -2052,7 +2049,7 @@ function FlashSalesCreate() {
                           alt="img not found"
                           onError={(e) =>
                             (e.target.src =
-                              "http://localhost:1600/path/to/fallback-image.jpg")
+                              "/api/path/to/fallback-image.jpg")
                           }
                           className="product-image img-thumbnail mt-2 ms-2 mb-2"
                         />

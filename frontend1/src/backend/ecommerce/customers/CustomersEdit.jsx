@@ -169,9 +169,7 @@ function CustomerEdit() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:1600/somecustomerdata/${id}`
-        );
+        const response = await axios.get(`/api/somecustomerdata/${id}`);
         setUser(response.data[0]);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -229,10 +227,7 @@ function CustomerEdit() {
     formData.append("gender", gender);
     formData.append("file", file);
     try {
-      const response = await axios.put(
-        `http://localhost:1600/userupdate/${id}`,
-        formData
-      );
+      const response = await axios.put(`/api/userupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/customers");
       }
@@ -277,7 +272,7 @@ function CustomerEdit() {
   let [wishList, setWishList] = useState([]);
 
   let wishlistdata = async () => {
-    let response = await axios.get("http://localhost:1600/wishlistdata");
+    let response = await axios.get("/api/wishlistdata");
     setWishList(response.data);
   };
   wishlistdata();
@@ -2389,7 +2384,7 @@ function CustomerEdit() {
                                 <td>{data.id}</td>
                                 <td className="d-flex flex-row align-items-center gap-2">
                                   <img
-                                    src={`http://localhost:1600/src/image/${data.image}`}
+                                    src={`/api/src/image/${data.image}`}
                                     alt=""
                                     className="img-thumbnail image-wishlist"
                                   />
@@ -2453,7 +2448,7 @@ function CustomerEdit() {
                                 <td>{data.id}</td>
                                 <td className="d-flex flex-row align-items-center gap-2">
                                   <img
-                                    src={`http://localhost:1600/src/image/${data.image}`}
+                                    src={`/api/src/image/${data.image}`}
                                     alt=""
                                     className="img-thumbnail image-wishlist"
                                   />
@@ -2528,7 +2523,7 @@ function CustomerEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://localhost:1600/src/image/${user.image}`}
+                      src={`/api/src/image/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

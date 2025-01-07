@@ -71,7 +71,7 @@ function CustomerVendor() {
       return;
     }
     try {
-      await axios.post("http://localhost:1600/vendorshop", user);
+      await axios.post("/api/vendorshop", user);
       alert("Shop registered successfully!");
     } catch (error) {
       alert("Error registering shop.");
@@ -85,7 +85,7 @@ function CustomerVendor() {
   let [vendor, setVendor] = useState([]);
 
   let vendor_data = async () => {
-    let response = await axios.get("http://localhost:1600/vendordata", user);
+    let response = await axios.get("/api/vendordata", user);
     setVendor(response.data);
   };
   vendor_data();

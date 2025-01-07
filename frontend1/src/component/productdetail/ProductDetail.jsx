@@ -29,7 +29,7 @@ function ProductDetail() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -204,8 +204,7 @@ function ProductDetail() {
                           <div key={key}>
                             <img
                               src={
-                                selectedImage ||
-                                `http://localhost:1600/src/image/${data.image}`
+                                selectedImage || `/api/src/image/${data.image}`
                               }
                               alt="404"
                             />
@@ -228,7 +227,7 @@ function ProductDetail() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("http://localhost:1600/productpagedata");
+      let response = await axios.get("/api/productpagedata");
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -241,9 +240,7 @@ function ProductDetail() {
   useEffect(() => {
     const shopdata = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:1600/productpagedata"
-        );
+        const response = await axios.get("/api/productpagedata");
         setShop(response.data);
       } catch (error) {
         console.error("Error occurred", error);
@@ -309,7 +306,7 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://localhost:1600/addcart", formData, {
+      await axios.post("/api/addcart", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -331,10 +328,7 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://localhost:1600/wishlistpost",
-        formData
-      );
+      const response = await axios.post("/api/wishlistpost", formData);
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -344,7 +338,7 @@ function ProductDetail() {
   let [user, setUser] = useState([]);
 
   let tagdata = async () => {
-    let response = await axios.get("http://localhost:1600/producttagdata");
+    let response = await axios.get("/api/producttagdata");
     setUser(response.data);
   };
   tagdata();
@@ -361,15 +355,11 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://localhost:1600/addcart",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("/api/addcart", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       alert("Product successfully added in the cart");
       console.log("Item added to cart:", response.data);
       navigate("/cart");
@@ -382,7 +372,7 @@ function ProductDetail() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://localhost:1600/productlabelsdata");
+    let response = await axios.get("/api/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();
@@ -558,7 +548,7 @@ function ProductDetail() {
                       key={key}
                       onClick={() =>
                         applyImage(
-                          `http://localhost:1600/src/image/${data.image}`,
+                          `/api/src/image/${data.image}`,
                           data.name,
                           data.description,
                           data.price,
@@ -568,7 +558,7 @@ function ProductDetail() {
                       }
                     >
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         alt=""
                         className="border"
                       />
@@ -576,10 +566,7 @@ function ProductDetail() {
                   ))}
                 </div>
                 <img
-                  src={
-                    selectedImage ||
-                    `http://localhost:1600/src/image/${shop[0]?.image}`
-                  }
+                  src={selectedImage || `/api/src/image/${shop[0]?.image}`}
                   alt="404"
                   className="mb-lg-3"
                 />
@@ -763,7 +750,7 @@ function ProductDetail() {
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       applyImage(
-                        `http://localhost:1600/src/image/${data.image}`,
+                        `/api/src/image/${data.image}`,
                         data.name,
                         data.description,
                         data.price,
@@ -781,7 +768,7 @@ function ProductDetail() {
                         {data.label}
                       </button>
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         className="w-100 h-100 object-fit-cover border-0 image-watch"
                         style={{ cursor: "pointer" }}
                       />
@@ -818,7 +805,7 @@ function ProductDetail() {
                     className="d-flex btn btn-success justify-content-start mb-0 rounded-0 cart-cart align-self-start"
                     onClick={() =>
                       applyImage(
-                        `http://localhost:1600/src/image/${data.image}`,
+                        `/api/src/image/${data.image}`,
                         data.name,
                         data.description,
                         data.price,
@@ -906,7 +893,7 @@ function ProductDetail() {
                         {data.label}
                       </button>
                       <img
-                        src={`http://localhost:1600/src/image/${data.image}`}
+                        src={`/api/src/image/${data.image}`}
                         className="w-100 h-100 object-fit-cover border-0 image-watch"
                         style={{ cursor: "pointer" }}
                       />

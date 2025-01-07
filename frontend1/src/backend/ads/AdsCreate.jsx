@@ -187,10 +187,7 @@ function AdsCreate() {
     formData.append("expired", expired);
     formData.append("file", file);
     try {
-      const response = await axios.post(
-        "http://localhost:1600/adspost",
-        formData
-      );
+      const response = await axios.post("/api/adspost", formData);
       if (response.status === 200) {
         navigate("/admin/ads");
       }
