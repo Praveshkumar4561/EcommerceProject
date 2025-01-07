@@ -33,17 +33,16 @@ function ProductCollections() {
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
-    let [Specification, setSpecifcation] = useState(false);
-    let [payment, setPayment] = useState(false);
-  
-    let paymentgateway = () => {
-      setPayment(!payment);
-    };
-  
-    let togglespecification = () => {
-      setSpecifcation(!Specification);
-    };
-  
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
+
+  let togglespecification = () => {
+    setSpecifcation(!Specification);
+  };
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -252,7 +251,7 @@ function ProductCollections() {
             <Link
               className="btn d-flex align-items-center"
               type="button"
-              to="http://localhost:5173/"
+              to="/"
               target="_blank"
             >
               <svg
@@ -1372,7 +1371,6 @@ function ProductCollections() {
               )}
             </div>
 
-            
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg

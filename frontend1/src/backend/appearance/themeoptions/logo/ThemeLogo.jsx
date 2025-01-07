@@ -239,7 +239,7 @@ function ThemeLogo() {
             <Link
               className="btn d-flex align-items-center"
               type="button"
-              to="http://localhost:5173/"
+              to="/"
               target="_blank"
             >
               <svg

@@ -218,7 +218,7 @@ function PaymentLog() {
             <Link
               className="btn d-flex align-items-center"
               type="button"
-              to="http://localhost:5173/"
+              to="/"
               target="_blank"
             >
               <svg
@@ -2228,7 +2228,10 @@ function PaymentLog() {
                       </button>
 
                       <button class="btn btn-delete btn-danger" type="button">
-                        <FontAwesomeIcon icon={faTrashCan} classaaaaaName="fs-5" />
+                        <FontAwesomeIcon
+                          icon={faTrashCan}
+                          classaaaaaName="fs-5"
+                        />
                       </button>
                     </td>
                   </tr>

@@ -295,7 +295,7 @@ function AdsCreate() {
             <Link
               className="btn d-flex align-items-center"
               type="button"
-              to="http://localhost:5173/"
+              to="/"
               target="_blank"
             >
               <svg
@@ -2168,8 +2168,6 @@ function AdsCreate() {
           <li className="breadcrumb-item fw-medium ms-2 text-dark">NEW ADS</li>
         </ol>
       </nav>
-
-    
 
       <div className="container-fluid">
         <div className="container">

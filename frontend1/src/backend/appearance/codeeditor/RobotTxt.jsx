@@ -29,16 +29,16 @@ function RobotTxt() {
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
-    let [Specification, setSpecifcation] = useState(false);
-    let [payment, setPayment] = useState(false);
-  
-    let paymentgateway = () => {
-      setPayment(!payment);
-    };
-  
-    let togglespecification = () => {
-      setSpecifcation(!Specification);
-    };
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
+
+  let togglespecification = () => {
+    setSpecifcation(!Specification);
+  };
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -238,7 +238,7 @@ function RobotTxt() {
             <Link
               className="btn d-flex align-items-center"
               type="button"
-              to="http://localhost:5173/"
+              to="/"
               target="_blank"
             >
               <svg
