@@ -48,7 +48,7 @@ function HomePage() {
   useEffect(() => {
     const faqdata = async () => {
       try {
-        const response = await axios.get("http://localhost:1600/pagesdatafaqs");
+        const response = await axios.get("/api/pagesdatafaqs");
         setFaqs(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -64,7 +64,7 @@ function HomePage() {
   useEffect(() => {
     const showdata = async () => {
       try {
-        let answer = await axios.get("http://localhost:1600/blogpostdata");
+        let answer = await axios.get("/api/blogpostdata");
         setBlog(answer.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -96,7 +96,7 @@ function HomePage() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://localhost:1600/getannounce");
+      let response = await axios.get("/api/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -117,7 +117,7 @@ function HomePage() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://localhost:1600/alldata");
+    let response = await axios.get("/api/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -130,7 +130,7 @@ function HomePage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://localhost:1600/allcartdata");
+      const response = await axios.get("/api/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -142,7 +142,7 @@ function HomePage() {
 
   let homedata = async () => {
     try {
-      let response = await axios.get("http://localhost:1600/productpagedata");
+      let response = await axios.get("/api/productpagedata");
       setProduct(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -153,7 +153,7 @@ function HomePage() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://localhost:1600/productlabelsdata");
+    let response = await axios.get("/api/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();
@@ -173,7 +173,7 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:1600/addcart",
+        "/api/addcart",
         formData,
         {
           headers: {
@@ -200,7 +200,7 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:1600/wishlistpost",
+        "/api/wishlistpost",
         formData
       );
       alert("Product successfully added to the wishlist");

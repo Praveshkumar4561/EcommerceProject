@@ -178,17 +178,17 @@ function FaqBack() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://localhost:1600/faqsearch/${search}`);
+    let response = await axios.get(`/api/faqsearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://localhost:1600/pagesdatafaqs");
+    let response = await axios.get("/api/pagesdatafaqs");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://localhost:1600/faqsdelete/${id}`, user);
+    await axios.delete(`/api/faqsdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
