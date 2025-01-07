@@ -59,8 +59,6 @@ function BlogDetails() {
   const { id } = useParams();
 
   const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   let [welcome, setWelcome] = useState([]);
   let [detail, setDetail] = useState(false);
   let [detail1, setDetail1] = useState([]);
@@ -68,7 +66,7 @@ function BlogDetails() {
   let blogsdata = async () => {
     let response = await axios.get("/api/blogpostdata");
     setDetail(response.data);
-    setDetail1(response.data)
+    setDetail1(response.data);
   };
   blogsdata();
 
@@ -81,21 +79,14 @@ function BlogDetails() {
   useEffect(() => {
     const fetchBlogDetails = async () => {
       try {
-        setLoading(true);
         const response = await axios.get(`/api/blogpostdata/${id}`);
         setBlog(response.data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching:", error);
-        setError("issue fetching the blog details.");
-        setLoading(false);
       }
     };
     fetchBlogDetails();
   }, [id]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -221,7 +212,9 @@ function BlogDetails() {
 
           <main className="container mt-4">
             <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-1 ms-4 me-4 pt-3 lorem-space cart-cart fs-4 expert-blog">
-              {blog.name}
+              {detail1.slice(0, 1).map((data) => (
+                <>{data.name}</>
+              ))}
             </p>
             <nav aria-label="breadcrumb" id="container-contact1">
               <ol className="breadcrumb d-flex flex-wrap gap-0 link-class">
@@ -251,162 +244,166 @@ function BlogDetails() {
       <div className="container-fluid">
         <div className="container">
           <div className="row gap-4 me-1 d-flex flex-lg-nowrap flex-md-wrap">
-            <div className="col-12 col-sm-12 col-md-12 col-lg-8">
-              <div className="blog-box1">
-                <img
-                  src={`/api/blogpostdata/src/image/${blog.image}`}
-                  alt="404"
-                  className="img-fluid w-100 h-100 mb-0"
-                />
-              </div>
+            {detail1.slice(0, 1).map((data) => (
+              <>
+                <div className="col-12 col-sm-12 col-md-12 col-lg-8">
+                  <div className="blog-box1">
+                    <img
+                      src={`/api/blogpostdata/src/image/${data.image}`}
+                      alt="404"
+                      className="img-fluid w-100 h-100 mb-0"
+                    />
+                  </div>
 
-              <div className="bg-light">
-                <div className="d-flex flex-row gap-2 ms-2 mt-0">
-                  <FontAwesomeIcon
-                    icon={faCalendarDays}
-                    className="text-success ms-1 mt-2 pt-lg-1"
-                  />
-                  <p className="mt-lg-2 mt-1 fw-medium text-dark lorem-space">
-                    {new Date(blog.date).toLocaleDateString()}
-                  </p>
-                </div>
+                  <div className="bg-light">
+                    <div className="d-flex flex-row gap-2 ms-2 mt-0">
+                      <FontAwesomeIcon
+                        icon={faCalendarDays}
+                        className="text-success ms-1 mt-2 pt-lg-1"
+                      />
+                      <p className="mt-lg-2 mt-1 fw-medium text-dark lorem-space">
+                        {new Date(data.date).toLocaleDateString()}
+                      </p>
+                    </div>
 
-                <h2 className="lorem-dummy ms-2 me-5 mt text-start lorem-space fw-normal lh-base">
-                  {blog.name}
-                </h2>
+                    <h2 className="lorem-dummy ms-2 me-5 mt text-start lorem-space fw-normal lh-base">
+                      {data.name}
+                    </h2>
 
-                <h4 className="english-read ms-2 mt-1 me-5 text-start lorem-space lh-lg text-dark">
-                  {blog.categories}
-                </h4>
+                    <h4 className="english-read ms-2 mt-1 me-5 text-start lorem-space lh-lg text-dark">
+                      {data.categories}
+                    </h4>
 
-                <h4 className="english-read ms-2 mt-0 me-5 text-start lorem-space lh-lg text-dark">
-                  {blog.author_name}
-                </h4>
+                    <h4 className="english-read ms-2 mt-0 me-5 text-start lorem-space lh-lg text-dark">
+                      {data.author_name}
+                    </h4>
 
-                <p className="english-read ms-2 me-5 text-start lorem-space lh-lg text-dark">
-                  {blog.description}
-                </p>
+                    <p className="english-read ms-2 me-5 text-start lorem-space lh-lg text-dark">
+                      {data.description}
+                    </p>
 
-                <div className="d-flex flex-column">
-                  <div className="cart-cart d-flex ms-2 flex-row gap-1">
-                    <h4>Tags:</h4>
-                    {welcome.slice(0, 3).map((data) => (
-                      <>
-                        <div className="ms-0">
-                          <button className="btn btn-transparent border d-flex">
-                            <Link
-                              to="/blog"
-                              className="text-decoration-none text-dark cart-cart"
+                    <div className="d-flex flex-column">
+                      <div className="cart-cart d-flex ms-2 flex-row gap-1">
+                        <h4>Tags:</h4>
+                        {welcome.slice(0, 3).map((data) => (
+                          <>
+                            <div className="ms-0">
+                              <button className="btn btn-transparent border d-flex">
+                                <Link
+                                  to="/blog"
+                                  className="text-decoration-none text-dark cart-cart"
+                                >
+                                  {data.name}
+                                </Link>
+                              </button>
+                            </div>
+                          </>
+                        ))}
+
+                        <div className="review-detail">
+                          <h4 className="fw-normal ms-2 mt-3 text-start mt-5 pt-0 cart-cart">
+                            Reviews
+                          </h4>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="container mt-0">
+                      <div className="row">
+                        <div className="col-12 col-md-8 col-lg-6 review-page mt-0 rounded-0">
+                          <h4 className="fw-normal mb-4 mt-1 lorem-space text-start">
+                            Write A Review
+                          </h4>
+                          <form action="" method="post">
+                            <div className="row mb-4 mt-3 mb-5">
+                              <div className="col-12 col-md-6 position-relative lorem-write1 border-top border-end border-start rounded">
+                                <FontAwesomeIcon
+                                  icon={faUser}
+                                  className="position-absolute text-success"
+                                  style={{
+                                    left: "35px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    zIndex: 1,
+                                  }}
+                                />
+                                <input
+                                  type="text"
+                                  className="form-control fw-medium border-top-0 py-4 control-form lorem-space lorem-write lorem-write1 ps-5 "
+                                  placeholder="Your Name*"
+                                />
+                              </div>
+
+                              <div className="col-12 col-md-6 mt-3 mt-md-0 position-relative lorem-write1">
+                                <FontAwesomeIcon
+                                  icon={faEnvelope}
+                                  className="position-absolute text-success"
+                                  style={{
+                                    left: "34px",
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    zIndex: 1,
+                                  }}
+                                />
+                                <input
+                                  type="email"
+                                  className="form-control fw-medium py-4 ps-5 control-form lorem-write mt-md-3 mt-lg-0 border-top border-end border-start"
+                                  placeholder="Email Address*"
+                                />
+                              </div>
+                            </div>
+
+                            <div className="col-12 position-relative mb-4">
+                              <FontAwesomeIcon
+                                icon={faComment}
+                                className="position-absolute text-success"
+                                style={{
+                                  left: "21px",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  zIndex: 1,
+                                }}
+                              />
+                              <input
+                                type="text"
+                                className="form-control px-5 fw-medium py-4 lorem-write control-form border-top border-end border-start border-top"
+                                placeholder="Write Comment"
+                              />
+                            </div>
+
+                            <div className="d-flex align-items-center mb-4 ms-1 flex-row">
+                              <input
+                                type="checkbox"
+                                id="save-info"
+                                className="me-1 form-check-input"
+                              />
+                              <label
+                                htmlFor="save-info"
+                                className="save-para lorem-space text-dark text-start"
+                              >
+                                Save my name, email, and website in this browser
+                                for the next time I comment.
+                              </label>
+                            </div>
+
+                            <button
+                              className="btn rounded text-light px-3 py-4 comment-post d-flex mt-3 mb-4 lorem-space"
+                              type="button"
                             >
-                              {data.name}
-                            </Link>
-                          </button>
+                              <Link
+                                to="/blog"
+                                className="text-light text-decoration-none"
+                              >
+                                Post Comment
+                              </Link>
+                            </button>
+                          </form>
                         </div>
-                      </>
-                    ))}
-
-                    <div className="review-detail">
-                      <h4 className="fw-normal ms-2 mt-3 text-start mt-5 pt-0 cart-cart">
-                        Reviews
-                      </h4>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="container mt-0">
-                  <div className="row">
-                    <div className="col-12 col-md-8 col-lg-6 review-page mt-0 rounded-0">
-                      <h4 className="fw-normal mb-4 mt-1 lorem-space text-start">
-                        Write A Review
-                      </h4>
-                      <form action="" method="post">
-                        <div className="row mb-4 mt-3 mb-5">
-                          <div className="col-12 col-md-6 position-relative lorem-write1 border-top border-end border-start rounded">
-                            <FontAwesomeIcon
-                              icon={faUser}
-                              className="position-absolute text-success"
-                              style={{
-                                left: "35px",
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                zIndex: 1,
-                              }}
-                            />
-                            <input
-                              type="text"
-                              className="form-control fw-medium border-top-0 py-4 control-form lorem-space lorem-write lorem-write1 ps-5 "
-                              placeholder="Your Name*"
-                            />
-                          </div>
-
-                          <div className="col-12 col-md-6 mt-3 mt-md-0 position-relative lorem-write1">
-                            <FontAwesomeIcon
-                              icon={faEnvelope}
-                              className="position-absolute text-success"
-                              style={{
-                                left: "34px",
-                                top: "50%",
-                                transform: "translateY(-50%)",
-                                zIndex: 1,
-                              }}
-                            />
-                            <input
-                              type="email"
-                              className="form-control fw-medium py-4 ps-5 control-form lorem-write mt-md-3 mt-lg-0 border-top border-end border-start"
-                              placeholder="Email Address*"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-12 position-relative mb-4">
-                          <FontAwesomeIcon
-                            icon={faComment}
-                            className="position-absolute text-success"
-                            style={{
-                              left: "21px",
-                              top: "50%",
-                              transform: "translateY(-50%)",
-                              zIndex: 1,
-                            }}
-                          />
-                          <input
-                            type="text"
-                            className="form-control px-5 fw-medium py-4 lorem-write control-form border-top border-end border-start border-top"
-                            placeholder="Write Comment"
-                          />
-                        </div>
-
-                        <div className="d-flex align-items-center mb-4 ms-1 flex-row">
-                          <input
-                            type="checkbox"
-                            id="save-info"
-                            className="me-1 form-check-input"
-                          />
-                          <label
-                            htmlFor="save-info"
-                            className="save-para lorem-space text-dark text-start"
-                          >
-                            Save my name, email, and website in this browser for
-                            the next time I comment.
-                          </label>
-                        </div>
-
-                        <button
-                          className="btn rounded text-light px-3 py-4 comment-post d-flex mt-3 mb-4 lorem-space"
-                          type="button"
-                        >
-                          <Link
-                            to="/blog"
-                            className="text-light text-decoration-none"
-                          >
-                            Post Comment
-                          </Link>
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              </>
+            ))}
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4">
               <input
