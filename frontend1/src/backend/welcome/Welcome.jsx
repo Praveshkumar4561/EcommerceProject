@@ -2514,7 +2514,7 @@ function Welcome() {
                   <tr>
                     <td>7</td>
                     <td>
-                      <Link className="shofy-website"> localhost</Link>
+                      <Link className="shofy-website"> local</Link>
                     </td>
                     <td className="text-end">15</td>
                   </tr>

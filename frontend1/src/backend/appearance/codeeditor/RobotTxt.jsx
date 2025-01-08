@@ -2138,7 +2138,7 @@ function RobotTxt() {
                   to="/robots.txt"
                   target="blank"
                 >
-                  https://localhost:5173/robots.txt
+                  /robots.txt
                 </Link>
               </div>
 
