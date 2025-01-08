@@ -2298,7 +2298,7 @@ function IncompleOrders() {
                                 type="button"
                               >
                                 <Link
-                                // to={`http://localhost:5173/admin/ecommerce/invoices/edit/${data.id}`}
+                                // to={`/admin/ecommerce/invoices/edit/${data.id}`}
                                 >
                                   <FontAwesomeIcon
                                     icon={faEye}

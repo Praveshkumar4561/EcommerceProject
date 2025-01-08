@@ -2255,7 +2255,7 @@ function Galleries() {
                       </td>
                       <td>
                         <Link
-                          to={`http://localhost:5173/admin/galleries/edit/${data.id}`}
+                          to={`/admin/galleries/edit/${data.id}`}
                         >
                           {data.name}
                         </Link>

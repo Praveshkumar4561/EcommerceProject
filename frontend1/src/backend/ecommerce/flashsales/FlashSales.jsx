@@ -2247,7 +2247,7 @@ function FlashSales() {
                       <td style={{ whiteSpace: "nowrap" }}>
                         <span className="sliders1">
                           <Link
-                            to={`http://localhost:5173/admin/ecommerce/flash-sales/edit/${data.id}`}
+                            to={`/admin/ecommerce/flash-sales/edit/${data.id}`}
                           >
                             {data.name}
                           </Link>

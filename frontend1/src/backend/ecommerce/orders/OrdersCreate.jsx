@@ -2116,7 +2116,7 @@ function OrdersCreate() {
                         <div className="border rounded d-flex flex-row">
                           <Link
                             className="text-decoration-none text-dark d-flex flex-row"
-                            to="http://localhost:5173/admin/customers"
+                            to="/admin/customers"
                           >
                             <FontAwesomeIcon
                               icon={faUser}

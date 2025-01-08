@@ -2260,7 +2260,7 @@ function Reviews() {
                       <td>
                         <Link
                           className="sliders1 product-name"
-                          to={`http://localhost:5173/admin/ecommerce/reviews/view/${data.id}`}
+                          to={`/admin/ecommerce/reviews/view/${data.id}`}
                         >
                           {data.product_name}
                         </Link>

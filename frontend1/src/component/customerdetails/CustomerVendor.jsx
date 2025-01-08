@@ -493,7 +493,7 @@ function CustomerVendor() {
 
       {}
 
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded">
+      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">
           <div className="row justify-content-center">
             <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
@@ -517,13 +517,13 @@ function CustomerVendor() {
               <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
               <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
                 <li className="pharmacy2">
-                  <Link to="http://localhost:5173/about" className="text-light">
+                  <Link to="/about" className="text-light">
                     About Us
                   </Link>
                 </li>
 
                 <li className="pharmacy2">
-                  <Link to="http://localhost:5173/blog" className="text-light">
+                  <Link to="/blog" className="text-light">
                     Blog
                   </Link>
                 </li>
@@ -546,7 +546,7 @@ function CustomerVendor() {
               <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
               <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
                 <li className="pharmacy2">
-                  <Link to="http://localhost:5173/faqs" className="text-light">
+                  <Link to="/faqs" className="text-light">
                     FAQ
                   </Link>
                 </li>
@@ -556,10 +556,7 @@ function CustomerVendor() {
                   </Link>
                 </li>
                 <li className="pharmacy2">
-                  <Link
-                    to="http://localhost:5173/contact"
-                    className="text-light"
-                  >
+                  <Link to="/contact-us" className="text-light">
                     Contact
                   </Link>
                 </li>
@@ -580,9 +577,9 @@ function CustomerVendor() {
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="form-control mb-2 py-4 ms-lg-4"
+                  className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
                 />
-                <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1">
+                <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
                   Subscribe
                 </button>
               </div>

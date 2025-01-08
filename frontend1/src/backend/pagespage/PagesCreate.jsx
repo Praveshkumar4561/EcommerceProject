@@ -300,7 +300,7 @@ function PagesCreate() {
         formData.append("image", file);
 
         try {
-          const response = await fetch("http://localhost:5173/upload", {
+          const response = await fetch("/upload", {
             method: "POST",
             body: formData,
           });

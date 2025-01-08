@@ -2517,11 +2517,11 @@ function ThemeEcommerce() {
                   <small>
                     It will look like{" "}
                     <Link
-                      to="http://localhost:5173/login"
+                      to="/login"
                       className="link-small me-1"
                       target="blank"
                     >
-                      http://localhost:5173/login
+                      /login
                     </Link>
                     when you access the page. Default value is login.
                   </small>
@@ -2537,11 +2537,11 @@ function ThemeEcommerce() {
                   <small>
                     It will look like{" "}
                     <Link
-                      to="http://localhost:5173/register"
+                      to="/register"
                       className="link-small me-1"
                       target="blank"
                     >
-                      http://localhost:5173/register
+                      /register
                     </Link>
                     when you access the page. Default value is register.
                   </small>
@@ -2560,11 +2560,11 @@ function ThemeEcommerce() {
                   <small>
                     It will look like{" "}
                     <Link
-                      to="http://localhost:5173/password/reset"
+                      to="/password/reset"
                       className="link-small me-1"
                       target="blank"
                     >
-                      http://localhost:5173/password/reset
+                      /password/reset
                     </Link>
                     when you access the page. Default value is password/reset.
                   </small>
@@ -2584,12 +2584,8 @@ function ThemeEcommerce() {
               <div className="mt-1">
                 <small>
                   It will look like{" "}
-                  <Link
-                    to="http://localhost:5173/"
-                    target="blank"
-                    className="link-small me-1"
-                  >
-                    http://localhost:5173/products
+                  <Link to="/" target="blank" className="link-small me-1">
+                    /products
                   </Link>
                   when you access the page. Default value is products.
                 </small>
@@ -2609,11 +2605,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/addcart"
+                    to="/addcart"
                     className="link-small me-1"
                     target="blank"
                   >
-                    http://localhost:5173/addcart
+                    /addcart
                   </Link>
                   when you access the page.Default value is cart.
                 </small>
@@ -2633,11 +2629,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/checkout-page"
+                    to="/checkout-page"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/checkout
+                    /checkout
                   </Link>
                   when you access the page. Default value is checkout.
                 </small>
@@ -2657,11 +2653,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/order/tracking"
+                    to="/order/tracking"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/orders/tracking
+                    /orders/tracking
                   </Link>
                   when you access the page. Default value is orders/tracking.
                 </small>
@@ -2681,11 +2677,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/wishlist"
+                    to="/wishlist"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/wishlist
+                    /wishlist
                   </Link>
                   when you access the page. Default value is wishlist.
                 </small>
@@ -2705,11 +2701,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/compare"
+                    to="/compare"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/compare
+                    /compare
                   </Link>
                   when you access the page. Default value is compare.
                 </small>
@@ -2729,11 +2725,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/customer/overview"
+                    to="/customer/overview"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/customer/overview
+                    /customer/overview
                   </Link>
                   when you access the page. Default value is customer/overview.
                 </small>
@@ -2753,11 +2749,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/customer/address"
+                    to="/customer/address"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/customer/address
+                    /customer/address
                   </Link>
                   when you access the page. Default value is customer/address.
                 </small>
@@ -2777,11 +2773,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/customer/change-password"
+                    to="/customer/change-password"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/customer/change-password
+                    /customer/change-password
                   </Link>
                   when you access the page. Default value is
                   customer/change-password.
@@ -2802,11 +2798,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/customer/downloads"
+                    to="/customer/downloads"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/customer/downloads
+                    /customer/downloads
                   </Link>
                   when you access the page. Default value is customer/downloads.
                 </small>
@@ -2826,11 +2822,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/customer/edit-accout"
+                    to="/customer/edit-accout"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/customer/edit-account
+                    /customer/edit-account
                   </Link>
                   when you access the page. Default value is
                   customer/edit-account.
@@ -2851,11 +2847,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/admin/ecommerce/order-returns"
+                    to="/admin/ecommerce/order-returns"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/cutomer/order-returns
+                    /cutomer/order-returns
                   </Link>
                   when you access the page.Default value is
                   customer/order-returns.
@@ -2876,11 +2872,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/admin/ecommerce/order-returns"
+                    to="/admin/ecommerce/order-returns"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/cutomer/order-returns
+                    /cutomer/order-returns
                   </Link>
                   when you access the page.Default value is ccustomer/orders.
                 </small>
@@ -2900,11 +2896,11 @@ function ThemeEcommerce() {
                 <small>
                   It will look like{" "}
                   <Link
-                    to="http://localhost:5173/admin/ecommerce/product-reviews"
+                    to="/admin/ecommerce/product-reviews"
                     target="blank"
                     className="link-small me-1"
                   >
-                    http://localhost:5173/cutomer/product-reviews
+                    /cutomer/product-reviews
                   </Link>
                   when you access the page.Default value is
                   customer/product-reviews.

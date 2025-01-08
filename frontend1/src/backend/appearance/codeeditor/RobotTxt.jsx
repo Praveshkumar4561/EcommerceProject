@@ -2135,7 +2135,7 @@ function RobotTxt() {
                 After saved, you can check your robots.txt here:{" "}
                 <Link
                   className="text-decoration-none text-success"
-                  to="https://localhost:5173/robots.txt"
+                  to="/robots.txt"
                   target="blank"
                 >
                   https://localhost:5173/robots.txt

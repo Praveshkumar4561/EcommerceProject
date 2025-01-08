@@ -2704,9 +2704,7 @@ function Welcome() {
                   <tr>
                     <td>1</td>
                     <td>
-                      <Link className="shofy-website">
-                        http://localhost:5173/error
-                      </Link>
+                      <Link className="shofy-website">/error</Link>
                     </td>
                     <td className="text-end">2024-11-24</td>
                   </tr>

@@ -2255,9 +2255,7 @@ function Testimonial() {
                         />
                       </td>
                       <td>
-                        <Link
-                          to={`http://localhost:5173/admin/testimonials/edit/${data.id}`}
-                        >
+                        <Link to={`/admin/testimonials/edit/${data.id}`}>
                           {data.name}
                         </Link>
                       </td>

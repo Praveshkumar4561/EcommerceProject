@@ -2166,9 +2166,9 @@ function Invoice() {
               <div className="d-flex w-100 justify-content-end">
                 <div className="mt-2 mt-lg-0 ms-lg-0 ms-xl-0 ms-xxl-0 d-flex flex-row">
                   <button
-                    className="btn btn-reloadss border me-1 text-light invoice-type d-flex flex-row align-items-center py-sm-0 ms-sm-2 ms-1"
+                    className="btn btn-reloadss border me-1 text-light invoice-type d-flex flex-row align-items-center py-sm-0 ms-sm-2 ms-1 cart-cart"
                     type="button"
-                    style={{ backgroundColor: "#206bc4" }}
+                    style={{ backgroundColor: "#206bc4",height:"49px" }}
                   >
                     <svg
                       className="icon  svg-icon-ti-ti-file-export me-1"
@@ -2319,7 +2319,7 @@ function Invoice() {
                       <td style={{ whiteSpace: "nowrap" }}>
                         <button class="btn btn-edit me-2" type="button">
                           <Link
-                            to={`http://localhost:5173/admin/ecommerce/invoices/edit/${data.id}`}
+                            to={`/admin/ecommerce/invoices/edit/${data.id}`}
                           >
                             <FontAwesomeIcon
                               icon={faPenToSquare}
