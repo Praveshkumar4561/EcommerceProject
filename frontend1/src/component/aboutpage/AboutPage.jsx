@@ -64,7 +64,7 @@ function AboutUsPage() {
     let showdata = async () => {
       try {
         let response = await axios.get(
-          "http://54.241.255.246:1600/gettestimonials"
+          "http://54.177.39.109:1600/gettestimonials"
         );
         setUser(response.data);
       } catch (error) {
