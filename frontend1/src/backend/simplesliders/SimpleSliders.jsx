@@ -2237,58 +2237,66 @@ function SimpleSliders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link to={`/admin/simple-sliders/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <span className="sliders1">
-                          [simple-slider alias="home-slider"][/simple-slider]
-                        </span>
-                      </td>
-
-                      <td>{data.date}</td>
-
-                      <td>
-                        <span class="badge badge-success fw-light">
-                          Published
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                        <td style={{ whiteSpace: "nowrap" }}>
                           <Link to={`/admin/simple-sliders/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.name}
                           </Link>
-                        </button>
-                        <button class="btn btn-delete" type="button">
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <span className="sliders1">
+                            [simple-slider alias="home-slider"][/simple-slider]
+                          </span>
+                        </td>
+
+                        <td>{data.date}</td>
+
+                        <td>
+                          <span class="badge badge-success fw-light">
+                            Published
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/simple-sliders/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No Simple sliders available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

@@ -1232,6 +1232,7 @@ function Transactions() {
                 </div>
               )}
             </div>
+
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
@@ -1350,27 +1351,6 @@ function Transactions() {
               )}
             </div>
 
-            <li>
-              <svg
-                class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                <path d="M3 10l18 0"></path>
-                <path d="M7 15l.01 0"></path>
-                <path d="M11 15l2 0"></path>
-              </svg>
-              Payments
-            </li>
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
@@ -2239,18 +2219,20 @@ function Transactions() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
                       <tr key={key}>
                         <td></td>
                         <td></td>
 
                         <td>
-                          <Link to="#"></Link>
+                          <Link to="#">{data.name || "No name available"}</Link>
                         </td>
 
                         <td>
-                          <span className="sliders1"></span>
+                          <span className="sliders1">
+                            {data.status || "No status"}
+                          </span>
                         </td>
 
                         <td>
@@ -2258,7 +2240,7 @@ function Transactions() {
                             className="mt-2 pt-1 d-flex flex-row"
                             style={{ whiteSpace: "nowrap" }}
                           >
-                            No data to display
+                            {data.message || "No data to display"}
                           </p>
                         </td>
 
@@ -2266,10 +2248,14 @@ function Transactions() {
                         <td></td>
 
                         <td>
-                          <FontAwesomeIcon className="text-primary ms-3" />
+                          <FontAwesomeIcon
+                            className="text-primary ms-3"
+                            icon={faCheck}
+                          />
                         </td>
+
                         <td style={{ whiteSpace: "nowrap" }}>
-                          <button class="btn btn-edit me-2" type="button">
+                          <button className="btn btn-edit me-2" type="button">
                             <Link
                               to={`/admin/payments/transactions/${data.id}`}
                             >
@@ -2280,7 +2266,7 @@ function Transactions() {
                             </Link>
                           </button>
 
-                          <button class="btn btn-delete" type="button">
+                          <button className="btn btn-delete" type="button">
                             <FontAwesomeIcon
                               icon={faTrashCan}
                               className="fs-5"
@@ -2289,8 +2275,12 @@ function Transactions() {
                           </button>
                         </td>
                       </tr>
-                    </>
-                  ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="text-center"></td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

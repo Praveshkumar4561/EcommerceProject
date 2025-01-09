@@ -2212,7 +2212,8 @@ function ProductInventory() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
+                {Array.isArray(user) && user.length > 0 ? (
+  user.map((data, key) => (
                     <tr key={key}>
                       <td>
                         <input type="checkbox" className="form-check-input" />
@@ -2260,14 +2261,19 @@ function ProductInventory() {
                         <button
                           className="btn btn-reload bulk border"
                           type="button"
-                          onClick={() => reloadInvent(data.id, user)} // Pass the correct user array and id
+                          onClick={() => reloadInvent(data.id, user)} 
                         >
                           <FontAwesomeIcon icon={faRotate} className="me-2" />
                           Reload
                         </button>
                       </td>
                     </tr>
-                  ))}
+                   ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center"></td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

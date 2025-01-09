@@ -2262,103 +2262,113 @@ function AdsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link to="#">
-                          <img
-                            src={`/api/src/image/${data.image}`}
-                            alt="404"
-                            className="w-50 rounded-2 img-fluid"
-                          />
-                        </Link>
-                      </td>
-
-                      <td>
-                        <Link to={`/admin/ads/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link
-                          to="#"
-                          className="text-light p-1 rounded-1 bg-secondary"
-                        >
-                          [ads key="{data.keyads}"][/ads]
-                        </Link>
-                        <svg
-                          onClick={() =>
-                            copyToClipboard(`[ads key="${data.keyads}"][/ads]`)
-                          }
-                          class="icon  svg-icon-ti-ti-clipboard ms-1 copy-path"
-                          data-clipboard-icon="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path
-                            stroke="none"
-                            d="M0 0h24v24H0z"
-                            fill="none"
-                          ></path>
-                          <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
-                          <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
-                        </svg>
-                      </td>
-
-                      <td>
-                        <Link to="#" style={{ fontFamily: "verdana" }}>
-                          {data.orders}
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>{data.expired}</td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 fw-light status-blog">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link to={`/admin/ads/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
+                        <td>
+                          <Link to="#">
+                            <img
+                              src={`/api/src/image/${data.image}`}
+                              alt="404"
+                              className="w-50 rounded-2 img-fluid"
                             />
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
+                        <td>
+                          <Link to={`/admin/ads/edit/${data.id}`}>
+                            {data.name}
+                          </Link>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <Link
+                            to="#"
+                            className="text-light p-1 rounded-1 bg-secondary"
+                          >
+                            [ads key="{data.keyads}"][/ads]
+                          </Link>
+                          <svg
+                            onClick={() =>
+                              copyToClipboard(
+                                `[ads key="${data.keyads}"][/ads]`
+                              )
+                            }
+                            class="icon  svg-icon-ti-ti-clipboard ms-1 copy-path"
+                            data-clipboard-icon="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path
+                              stroke="none"
+                              d="M0 0h24v24H0z"
+                              fill="none"
+                            ></path>
+                            <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
+                            <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
+                          </svg>
+                        </td>
+
+                        <td>
+                          <Link to="#" style={{ fontFamily: "verdana" }}>
+                            {data.orders}
+                          </Link>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>{data.expired}</td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 fw-light status-blog">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/ads/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="text-center">
+                        No data available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

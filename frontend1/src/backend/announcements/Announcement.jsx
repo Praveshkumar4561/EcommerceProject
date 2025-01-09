@@ -2219,46 +2219,56 @@ function Announcement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
-                      <td>
-                        <Link to={`/admin/announcements/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-                      <td>
-                        <span class="badge badge-success fw-light">Yes</span>
-                      </td>
-                      <td>{data.start_date}</td>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
+                        <td>
                           <Link to={`/admin/announcements/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.name}
                           </Link>
-                        </button>
-                        <button class="btn btn-delete" type="button">
+                        </td>
+                        <td>
+                          <span className="badge badge-success fw-light">
+                            Yes
+                          </span>
+                        </td>
+                        <td>{data.start_date}</td>
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button className="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/announcements/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No announcements available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

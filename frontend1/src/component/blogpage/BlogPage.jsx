@@ -222,54 +222,61 @@ function BlogPage() {
       <div className="container-fluid overflow-hidden">
         <div className="container mt-2 pt-4 d-flex justify-content-start ms-0 ms-lg-0">
           <div className="row d-flex">
-            {user.map((blog, index) => (
-              <div
-                className="col-12 col-md-12 col-lg-12 blog-tonic mb-5 mb-lg-5 blog-light bg-body"
-                key={index}
-              >
-                <div className="image-page">
-                  <img
-                    src={`/api/blogpostdata/src/image/${blog.image}`}
-                    alt="404"
-                    className="img-fluid w-100 h-501 mb-0 img-hover-effect"
-                  />
-                </div>
+            {/* {user.map((blog, index) => ( */}
+            {Array.isArray(user) && user.length > 0 ? (
+              user.map((blog, index) => (
+                <div
+                  className="col-12 col-md-12 col-lg-12 blog-tonic mb-5 mb-lg-5 blog-light bg-body"
+                  key={index}
+                >
+                  <div className="image-page">
+                    <img
+                      src={`/api/blogpostdata/src/image/${blog.image}`}
+                      alt="404"
+                      className="img-fluid w-100 h-501 mb-0 img-hover-effect"
+                    />
+                  </div>
 
-                <div className="box-insidex bg-light mt-0 px-3 py-2">
-                  <div className="d-flex gap-lg-2 gap-0 flex-row mb-0">
-                    <div className="d-flex flex-row">
-                      <FontAwesomeIcon
-                        icon={faCalendarDays}
-                        className="text-success ms-1 mt-2 pt-1"
-                      />
-                      <p className="mt-2 fw-medium text-dark ms-2 cart-cart mb-lg-2 mb-0">
-                        {new Date(blog.date).toLocaleDateString()}
-                      </p>
+                  <div className="box-insidex bg-light mt-0 px-3 py-2">
+                    <div className="d-flex gap-lg-2 gap-0 flex-row mb-0">
+                      <div className="d-flex flex-row">
+                        <FontAwesomeIcon
+                          icon={faCalendarDays}
+                          className="text-success ms-1 mt-2 pt-1"
+                        />
+                        <p className="mt-2 fw-medium text-dark ms-2 cart-cart mb-lg-2 mb-0">
+                          {new Date(blog.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    <h3 className="fs-51 fw-medium text-start lorem-text mb-0 mb-lg-2 blog-cal1">
+                      {blog.name}
+                    </h3>
+                    <p className="fs-51 fw-medium text-start lorem-text blog-cal">
+                      {blog.description}
+                    </p>
+
+                    <div className="d-flex mt-0 align-items-center flex-row">
+                      <Link
+                        to={`/blog-details/${blog.id}`}
+                        className="text-decoration-none"
+                      >
+                        <p className="read-more lorem-text mb-0">
+                          <button className="btn-success text-light rounded py-2 cart-cart px-2 mt-3">
+                            Read more
+                          </button>
+                        </p>
+                      </Link>
                     </div>
                   </div>
-
-                  <h3 className="fs-51 fw-medium text-start lorem-text mb-0 mb-lg-2 blog-cal1">
-                    {blog.name}
-                  </h3>
-                  <p className="fs-51 fw-medium text-start lorem-text blog-cal">
-                    {blog.description}
-                  </p>
-
-                  <div className="d-flex mt-0 align-items-center flex-row">
-                    <Link
-                      to={`/blog-details/${blog.id}`}
-                      className="text-decoration-none"
-                    >
-                      <p className="read-more lorem-text mb-0">
-                        <button className="btn-success text-light rounded py-2 cart-cart px-2 mt-3">
-                          Read more
-                        </button>
-                      </p>
-                    </Link>
-                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="text-center"></td>
+              </tr>
+            )}
           </div>
         </div>
       </div>

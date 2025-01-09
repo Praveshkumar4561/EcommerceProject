@@ -2226,54 +2226,60 @@ function BlogTags() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link to={`/admin/blog/tags/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td>{data.date}</td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 fw-light status-blog">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td className="d-flex flex-row">
-                        <button class="btn btn-edit me-2" type="button">
+                        <td>
                           <Link to={`/admin/blog/tags/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.name}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
+                        <td>{data.date}</td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 fw-light status-blog">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
-                      </td>
+                        </td>
+
+                        <td className="d-flex flex-row">
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/blog/tags/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center"></td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

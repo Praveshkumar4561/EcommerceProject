@@ -2237,83 +2237,89 @@ function Discounts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <div className="border w-auto h-auto bg-primary text-light p-2 rounded">
-                          CouponCode: {data.couponcode}
-                          <svg
-                            onClick={() => copyToClipboard(data.couponcode)}
-                            className="icon svg-icon-ti-ti-clipboard copy-path text-light"
-                            data-clipboard-icon="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
+                        <td>
+                          <div className="border w-auto h-auto bg-primary text-light p-2 rounded">
+                            CouponCode: {data.couponcode}
+                            <svg
+                              onClick={() => copyToClipboard(data.couponcode)}
+                              className="icon svg-icon-ti-ti-clipboard copy-path text-light"
+                              data-clipboard-icon="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
                               fill="none"
-                            ></path>
-                            <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
-                            <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
-                          </svg>
-                          <br />
-                          <p className="mt-3">
-                            Discount {data.conditions} for {data.orders}
-                          </p>
-                          (Coupon code cannot used with promotion)
-                        </div>
-                      </td>
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              ></path>
+                              <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
+                              <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
+                            </svg>
+                            <br />
+                            <p className="mt-3">
+                              Discount {data.conditions} for {data.orders}
+                            </p>
+                            (Coupon code cannot used with promotion)
+                          </div>
+                        </td>
 
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <span
-                          className="sliders1 product-name"
-                          style={{ fontFamily: "verdana" }}
-                        >
-                          0
-                        </span>
-                      </td>
-
-                      <td>{data.start_date}</td>
-
-                      <td>{data.end_date}</td>
-
-                      <td>--</td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link
-                            to={`/admin/ecommerce/discounts/edit/${data.id}`}
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <span
+                            className="sliders1 product-name"
+                            style={{ fontFamily: "verdana" }}
                           >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
-                          </Link>
-                        </button>
+                            0
+                          </span>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
-                      </td>
+                        <td>{data.start_date}</td>
+
+                        <td>{data.end_date}</td>
+
+                        <td>--</td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/discounts/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center"></td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

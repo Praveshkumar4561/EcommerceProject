@@ -2259,74 +2259,82 @@ function Customers() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        {data?.gender === "male" ? (
-                          <img
-                            src={Man}
-                            alt="Man"
-                            className="img-thumbnail image-default"
-                          />
-                        ) : data?.gender === "female" ? (
-                          <img
-                            src={Woman}
-                            alt="Woman"
-                            className="img-thumbnail image-default"
-                          />
-                        ) : (
-                          <img
-                            src={quality}
-                            alt="Default"
-                            className="img-flui image-default"
-                          />
-                        )}
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link to={`/admin/customers/edit/${data.id}`}>
-                          <span className="sliders1">
-                            {data.first_name}
-                            <span className="ms-2">{data.last_name}</span>
-                          </span>
-                        </Link>
-                      </td>
-
-                      <td>{data.email}</td>
-
-                      <td>{new Date(data.date).toLocaleDateString("en-CA")}</td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 status-blog fw-light">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link to={`/admin/customers/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
+                        <td>
+                          {data?.gender === "male" ? (
+                            <img
+                              src={Man}
+                              alt="Man"
+                              className="img-thumbnail image-default"
                             />
-                          </Link>
-                        </button>
+                          ) : data?.gender === "female" ? (
+                            <img
+                              src={Woman}
+                              alt="Woman"
+                              className="img-thumbnail image-default"
+                            />
+                          ) : (
+                            <img
+                              src={quality}
+                              alt="Default"
+                              className="img-flui image-default"
+                            />
+                          )}
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
-                      </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <Link to={`/admin/customers/edit/${data.id}`}>
+                            <span className="sliders1">
+                              {data.first_name}
+                              <span className="ms-2">{data.last_name}</span>
+                            </span>
+                          </Link>
+                        </td>
+
+                        <td>{data.email}</td>
+
+                        <td>
+                          {new Date(data.date).toLocaleDateString("en-CA")}
+                        </td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 status-blog fw-light">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/customers/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center"></td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

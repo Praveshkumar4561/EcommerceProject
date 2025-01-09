@@ -2401,84 +2401,96 @@ function Products() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          className="img-thumbnail rounded-1 w-auto"
-                        />
-                      </td>
+                        <td>
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            className="img-thumbnail rounded-1 w-auto"
+                          />
+                        </td>
 
-                      <td>
-                        <Link to={`/admin/ecommerce/products/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td style={{ fontFamily: "verdana" }}>{data.price}</td>
-
-                      <td
-                        style={{ whiteSpace: "nowrap" }}
-                        className="text-success"
-                      >
-                        {data.stockstatus}
-                      </td>
-
-                      <td>{data.minimumorder}</td>
-
-                      <td>{data.sku}</td>
-
-                      <td style={{ fontFamily: "verdana" }}>0</td>
-
-                      <td>{data.date}</td>
-
-                      <td className="text-status">
-                        <span class="badge badge-success px-2 py-2 fw-light">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <Link to={`/admin/ecommerce/products/edit/${data.id}`}>
-                          {data.store}
-                        </Link>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                        <td>
                           <Link
                             to={`/admin/ecommerce/products/edit/${data.id}`}
                           >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.name}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
+                        <td style={{ fontFamily: "verdana" }}>{data.price}</td>
+
+                        <td
+                          style={{ whiteSpace: "nowrap" }}
+                          className="text-success"
+                        >
+                          {data.stockstatus}
+                        </td>
+
+                        <td>{data.minimumorder}</td>
+
+                        <td>{data.sku}</td>
+
+                        <td style={{ fontFamily: "verdana" }}>0</td>
+
+                        <td>{data.date}</td>
+
+                        <td className="text-status">
+                          <span class="badge badge-success px-2 py-2 fw-light">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <Link
+                            to={`/admin/ecommerce/products/edit/${data.id}`}
+                          >
+                            {data.store}
+                          </Link>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/products/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No products available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

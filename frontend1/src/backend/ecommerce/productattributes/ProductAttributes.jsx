@@ -2243,64 +2243,71 @@ function ProductAttributes() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link
-                          to={`/admin/ecommerce/product-attribute-sets/edit/${data.id}`}
-                        >
-                          {data.title}
-                        </Link>
-                      </td>
-
-                      <td>{data.slug}</td>
-
-                      <td className="ps-5" style={{ fontFamily: "verdana" }}>
-                        {data.sort}
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>{data.date}</td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 fw-light">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                        <td>
                           <Link
                             to={`/admin/ecommerce/product-attribute-sets/edit/${data.id}`}
                           >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.title}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
+                        <td>{data.slug}</td>
+
+                        <td className="ps-5" style={{ fontFamily: "verdana" }}>
+                          {data.sort}
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>{data.date}</td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 fw-light">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/product-attribute-sets/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

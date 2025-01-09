@@ -2192,43 +2192,49 @@ function SpecificationGroup() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link
-                          to={`/admin/ecommerce/specification-groups/edit/${data.id}`}
-                        >
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td>--</td>
-
-                      <td>{data.date}</td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                        <td>
                           <Link
                             to={`/admin/ecommerce/specification-groups/edit/${data.id}`}
                           >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.name}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
-                      </td>
+                        <td>--</td>
+
+                        <td>{data.date}</td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/specification-groups/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="text-center"></td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

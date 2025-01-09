@@ -376,163 +376,175 @@ function Checkout() {
               </div>
 
               <form onSubmit={handleSubmit}>
-                {container.slice(0, 1).map((data, key) => (
-                  <div key={key}>
-                    <div className="ms-0 ms-lg-2">
-                      <input
-                        type="email"
-                        className="form-control border-start border-end py-4 border-place1 fw-medium text-dark"
-                        placeholder="Email"
-                        name="email"
-                        value={user.email || data.email}
-                        onChange={onInputChange}
-                      />
-                    </div>
-
-                    <div className="ms-0 ms-lg-2 mt-4">
-                      <input
-                        type="text"
-                        className="form-control py-4 border-place1 fw-medium text-dark border-start border-end"
-                        placeholder="Phone number"
-                        name="phone_number"
-                        value={user.phone_number || data.phone_number}
-                        onChange={onInputChange}
-                      />
-                    </div>
-
-                    <h4 className="mt-3 ms-lg-3 text-start fw-medium cart-cart">
-                      Shipping Address
-                    </h4>
-
-                    <div className="global-name">
-                      <div className="d-flex gap-5 ms-lg-2 ms-0 mt-3">
+                {Array.isArray(container) && container.length > 0 ? (
+                  container.slice(0, 1).map((data, key) => (
+                    <div key={key}>
+                      <div className="ms-0 ms-lg-2">
                         <input
-                          type="text"
-                          placeholder="First name"
-                          className="form-control fw-medium py-4 border-place1 border-start border-end"
-                          name="first_name"
-                          value={user.first_name || data.first_name}
-                          onChange={onInputChange}
-                        />
-                        <input
-                          type="text"
-                          placeholder="Last name"
-                          className="form-control fw-medium py-4 border-place1 border-start border-end"
-                          name="last_name"
-                          value={user.last_name || data.last_name}
+                          type="email"
+                          className="form-control border-start border-end py-4 border-place1 fw-medium text-dark"
+                          placeholder="Email"
+                          name="email"
+                          value={user.email || data.email}
                           onChange={onInputChange}
                         />
                       </div>
 
-                      <div className="ms-lg-2 ms-0">
+                      <div className="ms-0 ms-lg-2 mt-4">
                         <input
                           type="text"
-                          placeholder="Address"
-                          className="form-control py-4 mt-5 ms-0 fw-medium border-place1 border-start border-end"
-                          name="address"
-                          value={user.address}
+                          className="form-control py-4 border-place1 fw-medium text-dark border-start border-end"
+                          placeholder="Phone number"
+                          name="phone_number"
+                          value={user.phone_number || data.phone_number}
                           onChange={onInputChange}
                         />
-                        {errors.address && (
-                          <span className="text-danger">{errors.address}</span>
-                        )}
                       </div>
 
-                      <div className="ms-lg-2 ms-0">
-                        <input
-                          type="text"
-                          placeholder="Apartment"
-                          className="form-control py-4 mt-5 fw-medium border-place1 border-start border-end"
-                          name="apartment"
-                          value={user.apartment}
-                          onChange={onInputChange}
-                        />
-                        {errors.apartment && (
-                          <span className="text-danger">
-                            {errors.apartment}
-                          </span>
-                        )}
-                      </div>
+                      <h4 className="mt-3 ms-lg-3 text-start fw-medium cart-cart">
+                        Shipping Address
+                      </h4>
 
-                      <div className="d-flex gap-5 ms-lg-2 ms-0 mt-5">
-                        <input
-                          type="text"
-                          placeholder="Country"
-                          className="form-control fw-medium py-4 border-place1 border-start border-end"
-                          name="country"
-                          value={user.country}
-                          onChange={onInputChange}
-                        />
-                        {errors.country && (
-                          <span className="text-danger">{errors.country}</span>
-                        )}
+                      <div className="global-name">
+                        <div className="d-flex gap-5 ms-lg-2 ms-0 mt-3">
+                          <input
+                            type="text"
+                            placeholder="First name"
+                            className="form-control fw-medium py-4 border-place1 border-start border-end"
+                            name="first_name"
+                            value={user.first_name || data.first_name}
+                            onChange={onInputChange}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Last name"
+                            className="form-control fw-medium py-4 border-place1 border-start border-end"
+                            name="last_name"
+                            value={user.last_name || data.last_name}
+                            onChange={onInputChange}
+                          />
+                        </div>
 
-                        <input
-                          type="number"
-                          placeholder="Postal Code"
-                          className="form-control fw-medium py-4 border-place1 border-start border-end"
-                          name="pincode"
-                          value={user.pincode}
-                          onChange={onInputChange}
-                        />
-                        {errors.pincode && (
-                          <span className="text-danger">{errors.pincode}</span>
-                        )}
-                      </div>
+                        <div className="ms-lg-2 ms-0">
+                          <input
+                            type="text"
+                            placeholder="Address"
+                            className="form-control py-4 mt-5 ms-0 fw-medium border-place1 border-start border-end"
+                            name="address"
+                            value={user.address}
+                            onChange={onInputChange}
+                          />
+                          {errors.address && (
+                            <span className="text-danger">
+                              {errors.address}
+                            </span>
+                          )}
+                        </div>
 
-                      <div className="ms-lg-2 ms-0">
-                        <input
-                          type="datetime-local"
-                          className="form-control py-4 mt-5 fw-medium border-place1 border-start border-end"
-                          name="date"
-                          value={user.date}
-                          onChange={onInputChange}
-                        />
-                        {errors.date && (
-                          <span className="text-danger">{errors.date}</span>
-                        )}
-                      </div>
+                        <div className="ms-lg-2 ms-0">
+                          <input
+                            type="text"
+                            placeholder="Apartment"
+                            className="form-control py-4 mt-5 fw-medium border-place1 border-start border-end"
+                            name="apartment"
+                            value={user.apartment}
+                            onChange={onInputChange}
+                          />
+                          {errors.apartment && (
+                            <span className="text-danger">
+                              {errors.apartment}
+                            </span>
+                          )}
+                        </div>
 
-                      <div className="d-flex flex-row gap-2 ms-2 mt-3 cart-cart">
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          checked={isChecked}
-                          onChange={onCheckboxChange}
-                        />
-                        <label htmlFor="">
-                          I agree to the{" "}
+                        <div className="d-flex gap-5 ms-lg-2 ms-0 mt-5">
+                          <input
+                            type="text"
+                            placeholder="Country"
+                            className="form-control fw-medium py-4 border-place1 border-start border-end"
+                            name="country"
+                            value={user.country}
+                            onChange={onInputChange}
+                          />
+                          {errors.country && (
+                            <span className="text-danger">
+                              {errors.country}
+                            </span>
+                          )}
+
+                          <input
+                            type="number"
+                            placeholder="Postal Code"
+                            className="form-control fw-medium py-4 border-place1 border-start border-end"
+                            name="pincode"
+                            value={user.pincode}
+                            onChange={onInputChange}
+                          />
+                          {errors.pincode && (
+                            <span className="text-danger">
+                              {errors.pincode}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="ms-lg-2 ms-0">
+                          <input
+                            type="datetime-local"
+                            className="form-control py-4 mt-5 fw-medium border-place1 border-start border-end"
+                            name="date"
+                            value={user.date}
+                            onChange={onInputChange}
+                          />
+                          {errors.date && (
+                            <span className="text-danger">{errors.date}</span>
+                          )}
+                        </div>
+
+                        <div className="d-flex flex-row gap-2 ms-2 mt-3 cart-cart">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            checked={isChecked}
+                            onChange={onCheckboxChange}
+                          />
+                          <label htmlFor="">
+                            I agree to the{" "}
+                            <Link
+                              className="text-success text-decoration-underline"
+                              to="/privacy-policy"
+                            >
+                              Terms and Privacy Policy.
+                            </Link>
+                          </label>
+                          {errors.checkbox && (
+                            <span className="text-danger">
+                              {errors.checkbox}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="d-flex flex-row gap-2 text-success mt-3 ms-1 ps-2 cart-cart">
+                          <FontAwesomeIcon
+                            icon={faArrowLeft}
+                            className="mt-1 fs-6"
+                          />
                           <Link
-                            className="text-success text-decoration-underline"
-                            to="/privacy-policy"
+                            className="text-success text-decoration-none"
+                            to="/cart"
                           >
-                            Terms and Privacy Policy.
+                            Back to Cart
                           </Link>
-                        </label>
-                        {errors.checkbox && (
-                          <span className="text-danger">{errors.checkbox}</span>
-                        )}
+                        </div>
                       </div>
 
-                      <div className="d-flex flex-row gap-2 text-success mt-3 ms-1 ps-2 cart-cart">
-                        <FontAwesomeIcon
-                          icon={faArrowLeft}
-                          className="mt-1 fs-6"
-                        />
-                        <Link
-                          className="text-success text-decoration-none"
-                          to="/cart"
-                        >
-                          Back to Cart
-                        </Link>
-                      </div>
+                      <button className="btn btn-success d-flex mt-4 ms-lg-2 px-3 py-4 button-shipping rounded-0">
+                        Checkout
+                      </button>
                     </div>
-
-                    <button className="btn btn-success d-flex mt-4 ms-lg-2 px-3 py-4 button-shipping rounded-0">
-                      Checkout
-                    </button>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <div></div>
+                )}
               </form>
             </div>
 

@@ -129,47 +129,51 @@ function CustomerDetails() {
           </div>
 
           <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {detail.slice(0, 1).map((data, key) => (
-              <div
-                className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
-                key={key}
-              >
-                <div className="free-shipping d-flex flex-row me-3">
-                  <span className="d-flex align-items-center gap-21">
-                    <div className="d-sm-flex ms-auto d-flex">
-                      <Link to="/user/dashboard" className="nav-link">
-                        {data.first_name ? (
-                          <div className="img-fluid me-0 border rounded- py-1 bg-success dashboard-name profile-lyte">
-                            {data.first_name.charAt(0).toUpperCase()}
-                          </div>
-                        ) : (
-                          <img
-                            src={Profile}
-                            alt="Profile"
-                            className="profile-lyte img-fluid me-0 border rounded-5 py-1"
-                          />
-                        )}
-                      </Link>
-                      <div className="d-flex flex-column me-4">
-                        <span className="me-4 pe-2">
-                          Hello {data.first_name || "User"}
-                        </span>
-                        <span className="ms-4">{data.email}</span>
-                      </div>
+            {Array.isArray(detail) && detail.length > 0 ? (
+              detail.slice(0, 1).map((data, key) => (
+                <div
+                  className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+                  key={key}
+                >
+                  <div className="free-shipping d-flex flex-row me-3">
+                    <span className="d-flex align-items-center gap-2">
+                      <div className="d-sm-flex ms-auto d-flex">
+                        <Link to="/user/dashboard" className="nav-link">
+                          {data.first_name ? (
+                            <div className="img-fluid me-0 border rounded- py-1 bg-success dashboard-name profile-lyte">
+                              {data.first_name.charAt(0).toUpperCase()}
+                            </div>
+                          ) : (
+                            <img
+                              src={Profile}
+                              alt="Profile"
+                              className="profile-lyte img-fluid me-0 border rounded-5 py-1"
+                            />
+                          )}
+                        </Link>
+                        <div className="d-flex flex-column me-4">
+                          <span className="me-4 pe-2">
+                            Hello {data.first_name || "User"}
+                          </span>
+                          <span className="ms-4">{data.email}</span>
+                        </div>
 
-                      <Link to="/cart" className="nav-link d-flex mt-1">
-                        <img
-                          src={Cart}
-                          alt="Cart"
-                          className="img-fluid profile1 me-2"
-                        />
-                        <div className="addcarts-lyte2 ms-3">{count}</div>
-                      </Link>
-                    </div>
-                  </span>
+                        <Link to="/cart" className="nav-link d-flex mt-1">
+                          <img
+                            src={Cart}
+                            alt="Cart"
+                            className="img-fluid profile1 me-2"
+                          />
+                          <div className="addcarts-lyte2 ms-3">{count}</div>
+                        </Link>
+                      </div>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="no-details"></div>
+            )}
           </div>
         </div>
 
@@ -441,75 +445,79 @@ function CustomerDetails() {
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 bg-body shadow-lg customer-dashboard1 text-start rounded-0 mb-2 ms-lg-2 ms-sm-2">
-              {detail.slice(0, 1).map((data, key) => (
-                <div key={key}>
-                  <div className="d-flex flex-row">
-                    {data?.gender === "male" ? (
-                      <div className="bg-success1 mt-2 mb-3 text-light px-0 py-3 list-round w-25">
-                        <img
-                          src={Man}
-                          alt="Man"
-                          className="img-thumbnail rounded-5"
-                        />
-                      </div>
-                    ) : data?.gender === "female" ? (
-                      <div className="bg-success mt-4 mb-3 text-light px-4 py-3 list-round h-50">
-                        <img
-                          src={Woman}
-                          alt="Woman"
-                          className="img-thumbnail w-25"
-                        />
-                      </div>
-                    ) : null}
+              {Array.isArray(detail) && detail.length > 0 ? (
+                detail.slice(0, 1).map((data, key) => (
+                  <div key={key}>
+                    <div className="d-flex flex-row">
+                      {data?.gender === "male" ? (
+                        <div className="bg-success1 mt-2 mb-3 text-light px-0 py-3 list-round w-25">
+                          <img
+                            src={Man}
+                            alt="Man"
+                            className="img-thumbnail rounded-5"
+                          />
+                        </div>
+                      ) : data?.gender === "female" ? (
+                        <div className="bg-success mt-4 mb-3 text-light px-4 py-3 list-round h-50">
+                          <img
+                            src={Woman}
+                            alt="Woman"
+                            className="img-thumbnail w-25"
+                          />
+                        </div>
+                      ) : null}
 
-                    <div className="d-flex flex-column mt-4 ms-3 mb-3 user-cart">
-                      <span className="fw-bold">Hello {data.first_name}</span>
-                      <span className="fw-light">
-                        From your account dashboard you can view your
-                        <span className="recent">
-                          <Link
-                            to="/user/orders"
-                            className="text-decoration-none recent"
-                          >
-                            recent orders
-                          </Link>
+                      <div className="d-flex flex-column mt-4 ms-3 mb-3 user-cart">
+                        <span className="fw-bold">Hello {data.first_name}</span>
+                        <span className="fw-light">
+                          From your account dashboard you can view your
+                          <span className="recent">
+                            <Link
+                              to="/user/orders"
+                              className="text-decoration-none recent"
+                            >
+                              recent orders
+                            </Link>
+                          </span>
+                          , manage your{" "}
+                          <span className="recent">
+                            <Link
+                              to={`/user/edit-account/${1}`}
+                              className="text-decoration-none recent"
+                            >
+                              shipping and billing addresses
+                            </Link>{" "}
+                          </span>
+                          , and{" "}
+                          <span className="recent">
+                            <Link
+                              className="recent text-decoration-none"
+                              to={`/user/edit-account/${1}`}
+                            >
+                              edit your password and account details.
+                            </Link>
+                          </span>
                         </span>
-                        , manage your{" "}
-                        <span className="recent">
-                          <Link
-                            to={`/user/edit-account/${1}`}
-                            className="text-decoration-none recent"
-                          >
-                            shipping and billing addresses
-                          </Link>{" "}
-                        </span>
-                        , and{" "}
-                        <span className="recent">
-                          <Link
-                            className="recent text-decoration-none"
-                            to={`/user/edit-account/${1}`}
-                          >
-                            edit your password and account details.
-                          </Link>
-                        </span>
-                      </span>
+                      </div>
+                    </div>
+
+                    <div className="d-flex gap-2 mb-4 border rounded py-3 order-back d-flex justify-content-between">
+                      <div className="ms-3 recent text-dark">
+                        <img src={Tick} alt="404" className="me-2" />
+                        No orders have been made yet.
+                      </div>
+                      <Link
+                        className="me-3 text-decoration-none recent ms-4 ms-lg-0"
+                        to="/products"
+                      >
+                        Browse products
+                      </Link>
                     </div>
                   </div>
-
-                  <div className="d-flex gap-2 mb-4 border rounded py-3 order-back d-flex justify-content-between">
-                    <div className="ms-3 recent text-dark">
-                      <img src={Tick} alt="404" className="me-2" />
-                      No orders have been made yet.
-                    </div>
-                    <Link
-                      className="me-3 text-decoration-none recent ms-4 ms-lg-0"
-                      to="/products"
-                    >
-                      Browse products
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <div className="no-details"></div>
+              )}
             </div>
           </div>
         </div>

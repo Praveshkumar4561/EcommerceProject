@@ -211,7 +211,10 @@ function Shop() {
             </nav>
 
             {isDropdownOpen && (
-              <div className="custom-dropdown cart-cart" ref={dropdownRef}>
+              <div
+                className="custom-dropdown cart-cart rounded-0"
+                ref={dropdownRef}
+              >
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/">
@@ -273,77 +276,30 @@ function Shop() {
 
       <div className="container-fluid">
         <div className="container mb-5">
-          {image.slice(0, 1).map((data, key) => (
-            <div className="row ms-lg-0 gap-4 d-flex flex-row" key={key}>
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product border">
-                <Link to="/product-details" className="text-dark">
-                  <img
-                    src={`/api/src/image/${data.image}`}
-                    alt={`Product Image ${key + 1}`}
-                  />
-                  <div className="position-absolute ms-4 mt-2 fw-bold">
-                    HeadPhones
-                  </div>
-                </Link>
-              </div>
-
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
-                <Link to="/product-details" className="text-dark">
-                  <img
-                    src={`/api/src/image/${image[key + 1]?.image}`}
-                    alt={`Product Image ${key + 2}`}
-                  />
-                  <div
-                    className="position-absolute ms-4 mt-2 fw-bold"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    Digital Watch
-                  </div>
-                </Link>
-              </div>
-
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
-                <Link to="/product-details" className="text-dark">
-                  <img
-                    src={`/api/src/image/${image[key + 2]?.image}`}
-                    alt={`Product Image ${key + 2}`}
-                  />
-                  <div className="position-absolute ms-5 mt-2 fw-bold">
-                    Soundbar
-                  </div>
-                </Link>
-              </div>
-
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
-                <Link to="/product-details" className="text-dark">
-                  <img
-                    src={`/api/src/image/${image[key + 3]?.image}`}
-                    alt={`Product Image ${key + 2}`}
-                  />
-
-                  <div className="position-absolute ms-5 mt-2 fw-bold">
-                    EarPhones
-                  </div>
-                </Link>
-              </div>
-
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
-                <Link to="/product-details" className="text-dark">
-                  <img
-                    src={`/api/src/image/${image[key + 4]?.image}`}
-                    alt={`Product Image ${key + 2}`}
-                  />
-
-                  <div
-                    className="position-absolute ms-4 mt-2 fw-bold"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    Mobile Phone
-                  </div>
-                </Link>
-              </div>
+          {Array.isArray(image) && image.length > 0 && (
+            <div className="row ms-lg-0 gap-4 d-flex flex-row">
+              {image.slice(0, 5).map((data, key) => (
+                <div
+                  className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product"
+                  key={key}
+                >
+                  <Link to="/product-details" className="text-dark">
+                    <img
+                      src={`/api/src/image/${data.image}`}
+                      alt={`Product Image ${key + 1}`}
+                    />
+                    <div className="position-absolute ms-4 mt-2 fw-bold">
+                      {key === 0 && "HeadPhones"}
+                      {key === 1 && "Digital Watch"}
+                      {key === 2 && "Soundbar"}
+                      {key === 3 && "EarPhones"}
+                      {key === 4 && "Mobile Phone"}
+                    </div>
+                  </Link>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </div>
 
@@ -391,21 +347,27 @@ function Shop() {
                 (item) => item.name === data.label
               );
               const labelColor = productLabel ? productLabel.color : "green";
+              const productImage = data.image
+                ? `/api/src/image/${data.image}`
+                : "/path/to/default-image.jpg";
               return (
                 <div
                   className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
                   key={index}
                 >
                   <div className="feature-box rounded-0 position-relative rounded-1">
-                    <button
-                      className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                      style={{ backgroundColor: labelColor }}
-                    >
-                      {data.label}
-                    </button>
+                    {data.label && (
+                      <button
+                        className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                        style={{ backgroundColor: labelColor }}
+                      >
+                        {data.label}
+                      </button>
+                    )}
                     <Link to="/product-details">
                       <img
-                        src={`/api/src/image/${data.image}`}
+                        src={productImage}
+                        alt={data.name || "Product Image"}
                         className="w-100 h-100 object-fit-cover border-0 image-watch"
                         style={{ cursor: "pointer" }}
                       />
@@ -457,8 +419,6 @@ function Shop() {
           </div>
         </div>
       </div>
-
-      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

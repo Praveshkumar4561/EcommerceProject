@@ -2265,11 +2265,8 @@ function OrderReturns() {
                 </thead>
 
                 <tbody>
-                  {/* {user.map((data, key) => ( */}
                   <tr>
-                    <td>
-                      {/* <input type="checkbox" className="form-check-input"/> */}
-                    </td>
+                    <td></td>
                     <td></td>
 
                     <td>
@@ -2291,49 +2288,18 @@ function OrderReturns() {
 
                     <td></td>
 
-                    <td>
-                      {/* <span class="badge badge-success lh-base px-4">
-                          Read
-                        </span> */}
-                    </td>
+                    <td></td>
 
                     <td></td>
 
-                    <td>
-                      {/* <button class="btn btn-edit me-2" type="button">
-                          <Link to={``}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
-                          </Link>
-                        </button> */}
-
-                      {/* <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button> */}
-                    </td>
+                    <td></td>
                   </tr>
-                  {/* ))} */}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       </main>
-
-      {/* <div class="container">
-        <div class="footer">
-          <div class="left">
-            Copyright 2024 © Botble Technologies. Version 1.2.1
-          </div>
-          <div class="right">Page loaded in 0.27 seconds</div>
-        </div>
-      </div> */}
     </>
   );
 }

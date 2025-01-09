@@ -229,60 +229,66 @@ function HomePage() {
           </div>
 
           <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {detail.slice(0, 1).map((data, key) => (
-              <div
-                className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
-                key={key}
-              >
-                <div className="free-shipping d-flex flex-row me-3 mt-2">
-                  <span className="d-flex align-items-center gap-2">
-                    <div className="d-sm-flex ms-auto d-flex">
-                      <Link to="/user/dashboard" className="nav-link">
-                        {data.first_name ? (
-                          <div
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                              color: "white",
-                              fontSize: "18px",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
-                          >
-                            {data.first_name.charAt(0).toUpperCase()}
-                          </div>
-                        ) : (
+            {Array.isArray(detail) && detail.length > 0 ? (
+              detail.slice(0, 1).map((data, key) => (
+                <div
+                  className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+                  key={key}
+                >
+                  <div className="free-shipping d-flex flex-row me-3 mt-2">
+                    <span className="d-flex align-items-center gap-2">
+                      <div className="d-sm-flex ms-auto d-flex">
+                        <Link to="/user/dashboard" className="nav-link">
+                          {data.first_name ? (
+                            <div
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                                color: "white",
+                                fontSize: "18px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
+                            >
+                              {data.first_name.charAt(0).toUpperCase()}
+                            </div>
+                          ) : (
+                            <img
+                              src={Profile}
+                              alt="Profile"
+                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                            />
+                          )}
+                        </Link>
+
+                        <div className="d-flex flex-column me-4">
+                          <span className="me-4 pe-2">
+                            Hello {data.first_name || "User"}
+                          </span>
+                          <span className="ms-4">{data.email}</span>
+                        </div>
+
+                        <Link to="/cart" className="nav-link d-flex mt-2">
                           <img
-                            src={Profile}
-                            alt="Profile"
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                            src={Cart}
+                            alt="Cart"
+                            className="img-fluid profile1 me-2"
                           />
-                        )}
-                      </Link>
-
-                      <div className="d-flex flex-column me-4">
-                        <span className="me-4 pe-2">
-                          Hello {data.first_name || "User"}
-                        </span>
-                        <span className="ms-4">{data.email}</span>
+                          <div className="addcarts-lyte2 ms-3 mt-3">
+                            {count}
+                          </div>
+                        </Link>
                       </div>
-
-                      <Link to="/cart" className="nav-link d-flex mt-2">
-                        <img
-                          src={Cart}
-                          alt="Cart"
-                          className="img-fluid profile1 me-2"
-                        />
-                        <div className="addcarts-lyte2 ms-3 mt-3">{count}</div>
-                      </Link>
-                    </div>
-                  </span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>No user data available</div>
+            )}
           </div>
         </div>
 
@@ -567,74 +573,82 @@ function HomePage() {
           <h3 className="mt-lg-4 mt-0 text-center">Featured Products</h3>
           <div className="container">
             <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
-              {product.slice(0, 4).map((data, index) => {
-                const productLabel = label.find(
-                  (item) => item.name === data.label
-                );
-                const labelColor = productLabel ? productLabel.color : "green";
-                return (
-                  <div
-                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
-                    key={index}
-                  >
-                    <div className="feature-box rounded-0 position-relative rounded-1">
-                      <button
-                        className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                        style={{ backgroundColor: labelColor }}
-                      >
-                        {data.label}
-                      </button>
-                      <Link to="/product-details">
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          className="w-100 h-100 object-fit-cover border-0 image-watch"
-                          style={{ cursor: "pointer" }}
-                        />
-                      </Link>
-                      <button
-                        className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
-                        onClick={() => addWishlistItem(data)}
-                      >
-                        <FontAwesomeIcon icon={faHeart} />
-                        <div className="wishlist-button-content">
-                          Add to Wishlist
-                        </div>
-                      </button>
-                      <div className="add-to-cart-button-container">
+              {Array.isArray(product) && product.length > 0 ? (
+                product.slice(0, 4).map((data, index) => {
+                  const productLabel = label.find(
+                    (item) => item.name === data.label
+                  );
+                  const labelColor = productLabel
+                    ? productLabel.color
+                    : "green";
+
+                  return (
+                    <div
+                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                      key={index}
+                    >
+                      <div className="feature-box rounded-0 position-relative rounded-1">
                         <button
-                          className="add-to-cart-button mt-4 d-flex flex-row"
-                          style={{ whiteSpace: "nowrap" }}
-                          onClick={() => addCartItem(data)}
+                          className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                          style={{ backgroundColor: labelColor }}
                         >
-                          <FontAwesomeIcon
-                            icon={faCartShopping}
-                            className="me-2 mt-0"
-                          />
-                          Add to Cart
+                          {data.label || "Label"}
                         </button>
+                        <Link to="/product-details">
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            className="w-100 h-100 object-fit-cover border-0 image-watch"
+                            style={{ cursor: "pointer" }}
+                            alt={data.name || "Product Image"}
+                          />
+                        </Link>
+                        <button
+                          className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
+                          onClick={() => addWishlistItem(data)}
+                        >
+                          <FontAwesomeIcon icon={faHeart} />
+                          <div className="wishlist-button-content">
+                            Add to Wishlist
+                          </div>
+                        </button>
+                        <div className="add-to-cart-button-container">
+                          <button
+                            className="add-to-cart-button mt-4 d-flex flex-row"
+                            style={{ whiteSpace: "nowrap" }}
+                            onClick={() => addCartItem(data)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCartShopping}
+                              className="me-2 mt-0"
+                            />
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                      <hr />
+                      <div className="ms-3">
+                        <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
+                          {data.store || "Product Store"}
+                        </h6>
+                        <h5 className="mt-0 lh-base text-start text-lg-start">
+                          {data.name || "Product Name"}
+                        </h5>
+                        <div
+                          className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
+                          style={{ fontFamily: "verdana" }}
+                        >
+                          <h6 className="me-1">{data.price || "Price"}</h6>
+                          <strike className="text-danger fw-medium">
+                            {data.discountPrice || "$54"}
+                          </strike>
+                        </div>
                       </div>
                     </div>
-                    <hr />
-                    <div className="ms-3">
-                      <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
-                        {data.store || "Product Name"}
-                      </h6>
-                      <h5 className="mt-0 lh-base text-start text-lg-start">
-                        {data.name || "Product Name"}
-                      </h5>
-                      <div
-                        className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
-                        style={{ fontFamily: "verdana" }}
-                      >
-                        <h6 className="me-1">{data.price || "Price"}</h6>
-                        <strike className="text-danger fw-medium">
-                          {data.discountPrice || "$54"}
-                        </strike>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div>No featured products available</div>
+              )}
             </div>
           </div>
         </div>
@@ -643,74 +657,84 @@ function HomePage() {
           <h3 className="mt-lg-4 mt-0 text-center">Trending Products</h3>
           <div className="container">
             <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
-              {product.slice(0, 8).map((data, index) => {
-                const productLabel = label.find(
-                  (item) => item.name === data.label
-                );
-                const labelColor = productLabel ? productLabel.color : "green";
-                return (
-                  <div
-                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
-                    key={index}
-                  >
-                    <div className="feature-box rounded-0 position-relative rounded-1">
-                      <button
-                        className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                        style={{ backgroundColor: labelColor }}
-                      >
-                        {data.label}
-                      </button>
-                      <Link to="/product-details">
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          className="w-100 h-100 object-fit-cover border-0 image-watch"
-                          style={{ cursor: "pointer" }}
-                        />
-                      </Link>
-                      <button
-                        className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
-                        onClick={() => addWishlistItem(data)}
-                      >
-                        <FontAwesomeIcon icon={faHeart} />
-                        <div className="wishlist-button-content">
-                          Add to Wishlist
-                        </div>
-                      </button>
-                      <div className="add-to-cart-button-container">
-                        <button
-                          className="add-to-cart-button mt-4 d-flex flex-row"
-                          style={{ whiteSpace: "nowrap" }}
-                          onClick={() => addCartItem(data)}
-                        >
-                          <FontAwesomeIcon
-                            icon={faCartShopping}
-                            className="me-2 mt-0"
+              {Array.isArray(product) && product.length > 0 ? (
+                product.slice(0, 8).map((data, index) => {
+                  const productLabel = label.find(
+                    (item) => item.name === data.label
+                  );
+                  const labelColor = productLabel
+                    ? productLabel.color
+                    : "green";
+
+                  return (
+                    <div
+                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                      key={index}
+                    >
+                      <div className="feature-box rounded-0 position-relative rounded-1">
+                        {data.label && (
+                          <button
+                            className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                            style={{ backgroundColor: labelColor }}
+                          >
+                            {data.label}
+                          </button>
+                        )}
+                        <Link to="/product-details">
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            className="w-100 h-100 object-fit-cover border-0 image-watch"
+                            style={{ cursor: "pointer" }}
+                            alt={data.name || "Product Image"}
                           />
-                          Add to Cart
+                        </Link>
+                        <button
+                          className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
+                          onClick={() => addWishlistItem(data)}
+                        >
+                          <FontAwesomeIcon icon={faHeart} />
+                          <div className="wishlist-button-content">
+                            Add to Wishlist
+                          </div>
                         </button>
+                        <div className="add-to-cart-button-container">
+                          <button
+                            className="add-to-cart-button mt-4 d-flex flex-row"
+                            style={{ whiteSpace: "nowrap" }}
+                            onClick={() => addCartItem(data)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCartShopping}
+                              className="me-2 mt-0"
+                            />
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                      <hr />
+                      <div className="ms-3">
+                        <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
+                          {data.store || "Product Store"}
+                        </h6>
+                        <h5 className="mt-0 lh-base text-start text-lg-start">
+                          {data.name || "Product Name"}
+                        </h5>
+                        <div
+                          className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
+                          style={{ fontFamily: "verdana" }}
+                        >
+                          <h6 className="me-1">{data.price || "Price"}</h6>
+                          <strike className="text-danger fw-medium">
+                            {data.discountPrice || "$54"}
+                          </strike>
+                        </div>
                       </div>
                     </div>
-                    <hr />
-                    <div className="ms-3">
-                      <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
-                        {data.store || "Product Name"}
-                      </h6>
-                      <h5 className="mt-0 lh-base text-start text-lg-start">
-                        {data.name || "Product Name"}
-                      </h5>
-                      <div
-                        className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
-                        style={{ fontFamily: "verdana" }}
-                      >
-                        <h6 className="me-1">{data.price || "Price"}</h6>
-                        <strike className="text-danger fw-medium">
-                          {data.discountPrice || "$54"}
-                        </strike>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <div>No trending products available</div>
+              )}
             </div>
           </div>
         </div>
@@ -720,74 +744,87 @@ function HomePage() {
         <h3 className="mt-lg-4 mt-0 text-center">Best Selling Item</h3>
         <div className="container">
           <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
-            {product.slice(0, 4).map((data, index) => {
-              const productLabel = label.find(
-                (item) => item.name === data.label
-              );
-              const labelColor = productLabel ? productLabel.color : "green";
-              return (
-                <div
-                  className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
-                  key={index}
-                >
-                  <div className="feature-box rounded-0 position-relative rounded-1">
-                    <button
-                      className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                      style={{ backgroundColor: labelColor }}
-                    >
-                      {data.label}
-                    </button>
-                    <Link to="/product-details">
-                      <img
-                        src={`/api/src/image/${data.image}`}
-                        className="w-100 h-100 object-fit-cover border-0 image-watch"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </Link>
-                    <button
-                      className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
-                      onClick={() => addWishlistItem(data)}
-                    >
-                      <FontAwesomeIcon icon={faHeart} />
-                      <div className="wishlist-button-content">
-                        Add to Wishlist
-                      </div>
-                    </button>
-                    <div className="add-to-cart-button-container">
-                      <button
-                        className="add-to-cart-button mt-4 d-flex flex-row"
-                        style={{ whiteSpace: "nowrap" }}
-                        onClick={() => addCartItem(data)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faCartShopping}
-                          className="me-2 mt-0"
+            {Array.isArray(product) && product.length > 0 ? (
+              product.slice(0, 4).map((data, index) => {
+                const productLabel = label.find(
+                  (item) => item.name === data.label
+                );
+                const labelColor = productLabel ? productLabel.color : "green";
+
+                return (
+                  <div
+                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                    key={index}
+                  >
+                    <div className="feature-box rounded-0 position-relative rounded-1">
+                      {data.label && (
+                        <button
+                          className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                          style={{ backgroundColor: labelColor }}
+                        >
+                          {data.label}
+                        </button>
+                      )}
+
+                      <Link to="/product-details">
+                        <img
+                          src={`/api/src/image/${data.image}`}
+                          alt={data.name || "Product Image"}
+                          className="w-100 h-100 object-fit-cover border-0 image-watch"
+                          style={{ cursor: "pointer" }}
                         />
-                        Add to Cart
+                      </Link>
+
+                      <button
+                        className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
+                        onClick={() => addWishlistItem(data)}
+                      >
+                        <FontAwesomeIcon icon={faHeart} />
+                        <div className="wishlist-button-content">
+                          Add to Wishlist
+                        </div>
                       </button>
+
+                      <div className="add-to-cart-button-container">
+                        <button
+                          className="add-to-cart-button mt-4 d-flex flex-row"
+                          style={{ whiteSpace: "nowrap" }}
+                          onClick={() => addCartItem(data)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faCartShopping}
+                            className="me-2 mt-0"
+                          />
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+
+                    <hr />
+
+                    <div className="ms-3">
+                      <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
+                        {data.store || "Product Store"}
+                      </h6>
+                      <h5 className="mt-0 lh-base text-start text-lg-start">
+                        {data.name || "Product Name"}
+                      </h5>
+                      <div
+                        className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
+                        style={{ fontFamily: "verdana" }}
+                      >
+                        <h6 className="me-1">{data.price || "Price"}</h6>
+                        <strike className="text-danger fw-medium">
+                          {data.discountPrice || "$54"}
+                        </strike>
+                      </div>
                     </div>
                   </div>
-                  <hr />
-                  <div className="ms-3">
-                    <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
-                      {data.store || "Product Name"}
-                    </h6>
-                    <h5 className="mt-0 lh-base text-start text-lg-start">
-                      {data.name || "Product Name"}
-                    </h5>
-                    <div
-                      className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
-                      style={{ fontFamily: "verdana" }}
-                    >
-                      <h6 className="me-1">{data.price || "Price"}</h6>
-                      <strike className="text-danger fw-medium">
-                        {data.discountPrice || "$54"}
-                      </strike>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <div>No best-selling items available</div>
+            )}
           </div>
         </div>
       </div>
@@ -879,9 +916,8 @@ function HomePage() {
               className="mt-2 me-2 text-success"
               style={{ cursor: "pointer" }}
               onClick={goToPreviousPage}
-              disabled={currentPage === 1} // Disable left arrow if on the first page
+              disabled={currentPage === 1}
             />
-            {/* Display the page buttons */}
             <button
               onClick={() => paginate(1)}
               className={`btn ${
@@ -911,7 +947,7 @@ function HomePage() {
               className="mt-2 text-success"
               style={{ cursor: "pointer" }}
               onClick={goToNextPage}
-              disabled={currentPage === Math.ceil(blog.length / blogsPerPage)} // Disable right arrow if on the last page
+              disabled={currentPage === Math.ceil(blog.length / blogsPerPage)}
             />
           </div>
         </div>

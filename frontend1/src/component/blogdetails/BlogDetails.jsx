@@ -212,9 +212,13 @@ function BlogDetails() {
 
           <main className="container mt-4">
             <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-1 ms-4 me-4 pt-3 lorem-space cart-cart fs-4 expert-blog">
-              {detail1.slice(0, 1).map((data) => (
-                <>{data.name}</>
-              ))}
+              {Array.isArray(detail1) && detail1.length > 0 ? (
+                detail1
+                  .slice(0, 1)
+                  .map((data, key) => <span key={key}>{data.name}</span>)
+              ) : (
+                <span></span>
+              )}
             </p>
             <nav aria-label="breadcrumb" id="container-contact1">
               <ol className="breadcrumb d-flex flex-wrap gap-0 link-class">
@@ -244,9 +248,12 @@ function BlogDetails() {
       <div className="container-fluid">
         <div className="container">
           <div className="row gap-4 me-1 d-flex flex-lg-nowrap flex-md-wrap">
-            {detail1.slice(0, 1).map((data) => (
-              <>
-                <div className="col-12 col-sm-12 col-md-12 col-lg-8">
+            {Array.isArray(detail1) && detail1.length > 0 ? (
+              detail1.slice(0, 1).map((data) => (
+                <div
+                  className="col-12 col-sm-12 col-md-12 col-lg-8"
+                  key={data.id}
+                >
                   <div className="blog-box1">
                     <img
                       src={`/api/blogpostdata/src/image/${data.image}`}
@@ -285,9 +292,9 @@ function BlogDetails() {
                     <div className="d-flex flex-column">
                       <div className="cart-cart d-flex ms-2 flex-row gap-1">
                         <h4>Tags:</h4>
-                        {welcome.slice(0, 3).map((data) => (
-                          <>
-                            <div className="ms-0">
+                        {Array.isArray(welcome) && welcome.length > 0 ? (
+                          welcome.slice(0, 3).map((data, key) => (
+                            <div className="ms-0" key={key}>
                               <button className="btn btn-transparent border d-flex">
                                 <Link
                                   to="/blog"
@@ -297,8 +304,10 @@ function BlogDetails() {
                                 </Link>
                               </button>
                             </div>
-                          </>
-                        ))}
+                          ))
+                        ) : (
+                          <p></p>
+                        )}
 
                         <div className="review-detail">
                           <h4 className="fw-normal ms-2 mt-3 text-start mt-5 pt-0 cart-cart">
@@ -307,6 +316,7 @@ function BlogDetails() {
                         </div>
                       </div>
                     </div>
+
                     <div className="container mt-0">
                       <div className="row">
                         <div className="col-12 col-md-8 col-lg-6 review-page mt-0 rounded-0">
@@ -402,8 +412,10 @@ function BlogDetails() {
                     </div>
                   </div>
                 </div>
-              </>
-            ))}
+              ))
+            ) : (
+              <p></p>
+            )}
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4">
               <input
@@ -414,27 +426,36 @@ function BlogDetails() {
               <h5 className="mt-3 text-start">About Me</h5>
 
               <div className="border rounded p-3 mt-3">
-                {detail1.slice(0, 1).map((data) => (
-                  <>
-                    <div className="d-flex justify-content-center w-100 align-items-center">
-                      <img
-                        src={`/api/src/image/${data.image}`}
-                        alt="404"
-                        className="w-25 rounded-5"
-                      />
+                {Array.isArray(detail1) && detail1.length > 0 ? (
+                  detail1.slice(0, 1).map((data) => (
+                    <div key={data.id}>
+                      <div className="d-flex justify-content-center w-100 align-items-center">
+                        <img
+                          src={`/api/src/image/${data.image}`}
+                          alt="404"
+                          className="w-25 rounded-5"
+                        />
+                      </div>
+
+                      <div className="d-flex justify-content-center align-items-center mt-2 cart-cart">
+                        {Array.isArray(data) && data.length > 0 ? (
+                          data.name.split(" ").slice(0, 4).join(" ")
+                        ) : (
+                          <p></p>
+                        )}
+                      </div>
                     </div>
-                    <div className="d-flex justify-content-center align-items-center mt-2 cart-cart">
-                      {data.name.split(" ").slice(0, 4).join(" ")}
-                    </div>
-                  </>
-                ))}
+                  ))
+                ) : (
+                  <p></p>
+                )}
               </div>
 
               <h5 className="mt-3 text-start">Latest Posts</h5>
 
               <div className="border rounded p-3 mt-3">
-                {detail1.slice(0, 3).map((data, key) => (
-                  <>
+                {Array.isArray(detail1) && detail1.length > 0 ? (
+                  detail1.slice(0, 3).map((data, key) => (
                     <div className="d-flex flex-row" key={key}>
                       <img
                         src={`/api/src/image/${data.image}`}
@@ -442,15 +463,17 @@ function BlogDetails() {
                         className="w-25 h-25 img-thumbnail me-2 mb-2 mb-lg-0"
                       />
                       <div className="d-flex flex-column ms-2 lh-lg">
-                        {data.date}
+                        <span>{data.date}</span>
                         <span className="text-success text-start">
                           {data.name}
                         </span>
                         <div className="border border-secondary w-100"></div>
                       </div>
                     </div>
-                  </>
-                ))}
+                  ))
+                ) : (
+                  <p></p>
+                )}
               </div>
 
               <h5 className="mt-3 text-start cart-cart">Categories</h5>
@@ -465,11 +488,13 @@ function BlogDetails() {
               </div>
 
               <h5 className="mt-3 text-start">Popular Tags</h5>
+
               <div className="border rounded mt-3 lh-lg">
                 <div className="d-flex flex-row flex-wrap mt-2 ms-2 mb-2 gap-1">
-                  {welcome.slice(0, 6).map((data) => (
-                    <>
+                  {Array.isArray(welcome) && welcome.length > 0 ? (
+                    welcome.slice(0, 6).map((data, key) => (
                       <Link
+                        key={key}
                         to="/blog"
                         className="text-decoration-none text-light"
                       >
@@ -477,8 +502,10 @@ function BlogDetails() {
                           {data.name}
                         </button>
                       </Link>
-                    </>
-                  ))}
+                    ))
+                  ) : (
+                    <p></p>
+                  )}
                 </div>
               </div>
             </div>

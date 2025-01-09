@@ -2386,8 +2386,8 @@ function Reports() {
                   </tr>
                 </thead>
                 <tbody>
-                  {report.map((data, key) => (
-                    <>
+                  {Array.isArray(report) && report.length > 0 ? (
+                    report.map((data, key) => (
                       <tr key={key}>
                         <td>{data.id}</td>
                         <td>
@@ -2398,17 +2398,20 @@ function Reports() {
                         <td style={{ fontFamily: "verdana" }}>${data.total}</td>
                         <td></td>
                         <td style={{ whiteSpace: "nowrap" }}></td>
-
                         <td></td>
-
                         <td>
                           {new Date(data.date).toLocaleDateString("en-IN", {})}
                         </td>
-
                         <td>{data.store}</td>
                       </tr>
-                    </>
-                  ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No reports available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

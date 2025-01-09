@@ -2241,73 +2241,83 @@ function Brands() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          alt="404"
-                          className="w-25 rounded-2 img-fluid"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link to={`/admin/ecommerce/brands/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td>
-                        <Link to="#">
-                          {" "}
-                          <span class="badge badge-success lh-base fw-light py-1 px-2 status-blog">
-                            {data.featured}
-                          </span>
-                        </Link>
-                      </td>
-
-                      <td>
-                        <Link to="#">{data.date}</Link>
-                      </td>
-
-                      <td>
-                        <span class="badge badge-success fw-light lh-base px-2 py-1 status-blog">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link to={`/admin/ecommerce/brands/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
-                          </Link>
-                        </button>
-
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                        <td>
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            alt="404"
+                            className="w-25 rounded-2 img-fluid"
                           />
-                        </button>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <Link to={`/admin/ecommerce/brands/edit/${data.id}`}>
+                            {data.name}
+                          </Link>
+                        </td>
+
+                        <td>
+                          <Link to="#">
+                            {" "}
+                            <span class="badge badge-success lh-base fw-light py-1 px-2 status-blog">
+                              {data.featured}
+                            </span>
+                          </Link>
+                        </td>
+
+                        <td>
+                          <Link to="#">{data.date}</Link>
+                        </td>
+
+                        <td>
+                          <span class="badge badge-success fw-light lh-base px-2 py-1 status-blog">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <FontAwesomeIcon
+                            icon={faCheck}
+                            className="text-primary ms-3"
+                          />
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/brands/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

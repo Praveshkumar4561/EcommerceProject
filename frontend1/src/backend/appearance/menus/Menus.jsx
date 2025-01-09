@@ -2230,86 +2230,94 @@ function Menus() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link to={`/admin/menus/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        {/* <Link to="#">—</Link> */}
-                        <span class="badge bg-success fw-light text-info-fg me-1 py-2 fw-bol navigation">
-                          Main Navigation
-                        </span>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <svg
-                          class="icon  svg-icon-ti-ti-link text-dark me-1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path
-                            stroke="none"
-                            d="M0 0h24v24H0z"
-                            fill="none"
-                          ></path>
-                          <path d="M9 15l6 -6"></path>
-                          <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"></path>
-                          <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"></path>
-                        </svg>
-                        {data.items}
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>{data.date}</td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 fw-normal navigation">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                        <td>
                           <Link to={`/admin/menus/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.name}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          {/* <Link to="#">—</Link> */}
+                          <span class="badge bg-success fw-light text-info-fg me-1 py-2 fw-bol navigation">
+                            Main Navigation
+                          </span>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <svg
+                            class="icon  svg-icon-ti-ti-link text-dark me-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path
+                              stroke="none"
+                              d="M0 0h24v24H0z"
+                              fill="none"
+                            ></path>
+                            <path d="M9 15l6 -6"></path>
+                            <path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"></path>
+                            <path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"></path>
+                          </svg>
+                          {data.items}
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>{data.date}</td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 fw-normal navigation">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/menus/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No menus available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

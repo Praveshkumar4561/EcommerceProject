@@ -250,102 +250,93 @@ function Cart() {
                         </tr>
                       </thead>
                       <tbody>
-                        {user.map((data, key) => (
-                          <tr className="cart-cart" key={key}>
-                            <td className="d-flex align-items-center flex-row flex-row">
-                              <div className="digital-table rounded-0 me-3 mb-4">
-                                <img
-                                  src={`/api/src/image/${data.image}`}
-                                  alt=""
-                                  className="img-fluid"
-                                />
-                              </div>
-                              <div className="d-flex flex-column">
-                                <span className="digital-band text-start">
-                                  {data.name}
-                                </span>
-                                <p className="brown-table text-success digital-band ms-0">
-                                  {data.stockstatus}
-                                </p>
-                                <p className="brown-table1 text-dark ms-0 text-start">
-                                  Vendor: {data.store}
-                                </p>
-                              </div>
-                            </td>
-                            <td
-                              className="table-dollar lh-lg"
-                              style={{ fontFamily: "verdana" }}
-                            >
-                              {data.price}
-                              <strike className="ms-2">
-                                {data.price_sale}
-                              </strike>
-                            </td>
-
-                            <td className="border rounded-5 py-1 px-0">
-                              <div
-                                className="border rounded-5 me-2 ms-2 bg-light"
-                                style={{ cursor: "pointer" }}
+                        {Array.isArray(user) && user.length > 0 ? (
+                          user.map((data, key) => (
+                            <tr className="cart-cart" key={key}>
+                              <td className="d-flex align-items-center flex-row flex-row">
+                                <div className="digital-table rounded-0 me-3 mb-4">
+                                  <img
+                                    src={`/api/src/image/${data.image}`}
+                                    alt=""
+                                    className="img-fluid"
+                                  />
+                                </div>
+                                <div className="d-flex flex-column">
+                                  <span className="digital-band text-start">
+                                    {data.name}
+                                  </span>
+                                  <p className="brown-table text-success digital-band ms-0">
+                                    {data.stockstatus}
+                                  </p>
+                                  <p className="brown-table1 text-dark ms-0 text-start">
+                                    Vendor: {data.store}
+                                  </p>
+                                </div>
+                              </td>
+                              <td
+                                className="table-dollar lh-lg"
+                                style={{ fontFamily: "verdana" }}
                               >
-                                <span
-                                  className="ms-4 fw-medium fs-4"
-                                  onClick={() =>
-                                    updateQuantity(data.id, "decrease")
-                                  }
+                                {data.price}
+                                <strike className="ms-2">
+                                  {data.price_sale}
+                                </strike>
+                              </td>
+
+                              <td className="border rounded-5 py-1 px-0">
+                                <div
+                                  className="border rounded-5 me-2 ms-2 bg-light"
+                                  style={{ cursor: "pointer" }}
                                 >
-                                  -
-                                </span>
-                                <span className="ms-4 fw-medium fs-5">
-                                  {data.quantity}
-                                </span>
-                                <span
-                                  className="ms-4 fw-medium fs-4 me-3"
-                                  onClick={() =>
-                                    updateQuantity(data.id, "increase")
-                                  }
-                                >
-                                  +
-                                </span>
-                              </div>
-                            </td>
-                            <td
-                              className="lh-lg"
-                              style={{ fontFamily: "verdana" }}
-                            >
-                              $
-                              {(
-                                parseFloat(data.price.replace("$", "").trim()) *
-                                data.quantity
-                              ).toFixed(2)}
-                            </td>
-                            <td style={{ cursor: "pointer" }}>
-                              <FontAwesomeIcon
-                                icon={faTrashCan}
-                                className="text-danger"
-                                onClick={() => deletedata(data.id)}
-                              />
-                            </td>
+                                  <span
+                                    className="ms-4 fw-medium fs-4"
+                                    onClick={() =>
+                                      updateQuantity(data.id, "decrease")
+                                    }
+                                  >
+                                    -
+                                  </span>
+                                  <span className="ms-4 fw-medium fs-5">
+                                    {data.quantity}
+                                  </span>
+                                  <span
+                                    className="ms-4 fw-medium fs-4 me-3"
+                                    onClick={() =>
+                                      updateQuantity(data.id, "increase")
+                                    }
+                                  >
+                                    +
+                                  </span>
+                                </div>
+                              </td>
+                              <td
+                                className="lh-lg"
+                                style={{ fontFamily: "verdana" }}
+                              >
+                                $
+                                {(
+                                  parseFloat(
+                                    data.price.replace("$", "").trim()
+                                  ) * data.quantity
+                                ).toFixed(2)}
+                              </td>
+                              <td style={{ cursor: "pointer" }}>
+                                <FontAwesomeIcon
+                                  icon={faTrashCan}
+                                  className="text-danger"
+                                  onClick={() => deletedata(data.id)}
+                                />
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="9" className="text-center"></td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
-
-                  {/* <div className="d-flex">
-                    <div className="container d-flex flex-column justify-content-md-center align-items-start justify-content-lg-center mt-1">
-                      <h4 className="fw-b me-5 cart-cart">Add Promo Code</h4>
-                      <div className="d-flex flex-row">
-                        <input
-                          type="text"
-                          className="rounded me-2 ms-0 ms-lg-0 mt-2 form-control py-4 mb-2 rounded-0 cart-cart"
-                          placeholder="Enter promo code"
-                        />
-                        <button className="btn btn-success px-3 mt-2 d-flex py-4 cart-cart rounded-0">
-                          Apply
-                        </button>
-                      </div>
-                    </div>
-                  </div> */}
                 </div>
 
                 <div className="col-lg-4 col-md-12 d-flex flex-column align-items-center cart-cart">

@@ -364,62 +364,74 @@ function CustomerView() {
             )}
           </div>
 
+
+
+
           <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {detail.slice(0, 1).map((data, key) => (
-              <div
-                className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
-                key={key}
-              >
-                <div className="free-shipping d-flex flex-row me-3">
-                  <span className="d-flex align-items-center gap-2">
-                    <div className="d-sm-flex ms-auto d-flex">
-                      <Link to="/user/dashboard" className="nav-link">
-                        {data.first_name ? (
-                          <div
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                              color: "white",
-                              fontSize: "18px",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
-                          >
-                            {data.first_name.charAt(0).toUpperCase()}
-                          </div>
-                        ) : (
-                          <img
-                            src={Profile}
-                            alt="Profile"
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
-                          />
-                        )}
-                      </Link>
+  {Array.isArray(detail) && detail.length > 0 ? (
+    detail.slice(0, 1).map((data, key) => (
+      <div
+        className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+        key={key}
+      >
+        <div className="free-shipping d-flex flex-row me-3">
+          <span className="d-flex align-items-center gap-2">
+            <div className="d-sm-flex ms-auto d-flex">
+              <Link to="/user/dashboard" className="nav-link">
+                {data.first_name ? (
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      color: "white",
+                      fontSize: "18px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
+                  >
+                    {data.first_name.charAt(0).toUpperCase()}
+                  </div>
+                ) : (
+                  <img
+                    src={Profile}
+                    alt="Profile"
+                    className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                  />
+                )}
+              </Link>
 
-                      <div className="d-flex flex-column me-4">
-                        <span className="me-4 pe-2">
-                          Hello {data.first_name || "User"}
-                        </span>
-                        <span className="ms-4">{data.email}</span>
-                      </div>
-
-                      <Link to="/cart" className="nav-link d-flex mt-1">
-                        <img
-                          src={Cart}
-                          alt="Cart"
-                          className="img-fluid profile1 me-2"
-                        />
-                        <div className="addcarts-lyte2 ms-3 mt-2">{count}</div>
-                      </Link>
-                    </div>
-                  </span>
-                </div>
+              <div className="d-flex flex-column me-4">
+                <span className="me-4 pe-2">
+                  Hello {data.first_name || "User"}
+                </span>
+                <span className="ms-4">{data.email}</span>
               </div>
-            ))}
-          </div>
+
+              <Link to="/cart" className="nav-link d-flex mt-1">
+                <img
+                  src={Cart}
+                  alt="Cart"
+                  className="img-fluid profile1 me-2"
+                />
+                <div className="addcarts-lyte2 ms-3 mt-2">{count}</div>
+              </Link>
+            </div>
+          </span>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p>No user data available</p>
+  )}
+</div>
+
+
+
+
+
         </div>
 
         <div className="container">
@@ -690,281 +702,258 @@ function CustomerView() {
             </div>
 
             <div
-              className="col-12 col-sm-12 col-md-12 col-lg-6 bg-body shadow-lg customer-dashboard1 text-start rounded-0 mb-2 ms-lg-2 ms-sm-2 border d-flex flex-column align-items-start py-5 overflow-hidden"
-              id="invoice-content"
-            >
-              <div className="d-flex w-100 justify-content-between">
-                {customer.slice(0, 1).map((data, key) => (
-                  <>
-                    <div
-                      className="d-flex flex-column lh-lg cart-cart"
-                      key={key}
-                    >
-                      <div className="d-flex flex-row">
-                        <span>Order Number:{data.order_number}</span>
-                      </div>
+  className="col-12 col-sm-12 col-md-12 col-lg-6 bg-body shadow-lg customer-dashboard1 text-start rounded-0 mb-2 ms-lg-2 ms-sm-2 border d-flex flex-column align-items-start py-5 overflow-hidden"
+  id="invoice-content"
+>
+  <div className="d-flex w-100 justify-content-between">
+    {Array.isArray(customer) && customer.slice(0, 1).map((data, key) => (
+      <div className="d-flex flex-column lh-lg cart-cart" key={key}>
+        <div className="d-flex flex-row">
+          <span>Order Number: {data.order_number}</span>
+        </div>
 
-                      <div className="d-flex flex-row">
-                        <span>
-                          Time:<span className="cart-cart1">{data.date}</span>
-                        </span>
-                      </div>
+        <div className="d-flex flex-row">
+          <span>
+            Time:<span className="cart-cart1">{data.date}</span>
+          </span>
+        </div>
 
-                      <div className="d-flex flex-row">
-                        <span>Order Status:</span>
-                      </div>
+        <div className="d-flex flex-row">
+          <span>Order Status:</span>
+        </div>
 
-                      <div className="d-flex flex-row">
-                        <span>Payment method:</span>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <span>Payment status:</span>
-                      </div>
-                    </div>
-                  </>
-                ))}
+        <div className="d-flex flex-row">
+          <span>Payment method:</span>
+        </div>
+        <div className="d-flex flex-row">
+          <span>Payment status:</span>
+        </div>
+      </div>
+    ))}
 
-                {customer.slice(0, 1).map((data, key) => (
-                  <>
-                    <div
-                      className="d-flex flex-column lh-lg cart-cart me-0"
-                      key={key}
-                    >
-                      <div className="d-flex flex-row">
-                        <span>
-                          Full Name:
-                          <span className="ms-1 fw-bold">
-                            {data.first_name} {data.last_name}
-                          </span>
-                        </span>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <span>
-                          Phone:
-                          <span className="ms-1 fw-bold">
-                            {data.phone_number}
-                          </span>
-                        </span>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <span>
-                          Address:
-                          <span className="ms-1 fw-bold">{data.address}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </>
-                ))}
-              </div>
-              <h4 className="mt-3 cart-cart mb-3 mb-lg-0">Products</h4>
-              <div className="w-100 cart-cart text-center table-container-content">
-                <table className="table table-borderless table-striped border mt-lg-3 mt-0">
-                  <thead className="bg-light border">
-                    <tr>
-                      <th className="fw-light ps-3 py-2 text-start">#</th>
-                      <th className="fw-light text-start">Image</th>
-                      <th className="fw-light text-start">Product</th>
-                      <th className="fw-light text-start">Amount</th>
-                      <th className="fw-light">Quantity</th>
-                      <th className="fw-light text-center">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {view.map((data, key) => (
-                      <tr key={key}>
-                        <td className="text-start">{data.checkoutId}</td>
-                        <td className="text-start">
-                          <img
-                            src={`/api/src/image/${data.image}`}
-                            alt=""
-                            className="img-thumbnail"
-                          />
-                        </td>
-                        <td className="text-start d-flex flex-column">
-                          {data.name}
-                        </td>
+    {Array.isArray(customer) && customer.slice(0, 1).map((data, key) => (
+      <div className="d-flex flex-column lh-lg cart-cart me-0" key={key}>
+        <div className="d-flex flex-row">
+          <span>
+            Full Name:
+            <span className="ms-1 fw-bold">
+              {data.first_name} {data.last_name}
+            </span>
+          </span>
+        </div>
+        <div className="d-flex flex-row">
+          <span>
+            Phone:
+            <span className="ms-1 fw-bold">{data.phone_number}</span>
+          </span>
+        </div>
+        <div className="d-flex flex-row">
+          <span>
+            Address:
+            <span className="ms-1 fw-bold">{data.address}</span>
+          </span>
+        </div>
+      </div>
+    ))}
+  </div>
 
-                        {customer.slice(0, 1).map((data) => (
-                          <>
-                            <td
-                              style={{ fontFamily: "verdana" }}
-                              className="text-start"
-                            >
-                              {data.price}
-                            </td>
-                            <td>{data.quantity}</td>
-                            <td style={{ fontFamily: "verdana" }}>
-                              ${data.total}
-                            </td>
-                          </>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
+  <h4 className="mt-3 cart-cart mb-3 mb-lg-0">Products</h4>
+  <div className="w-100 cart-cart text-center table-container-content">
+    <table className="table table-borderless table-striped border mt-lg-3 mt-0">
+      <thead className="bg-light border">
+        <tr>
+          <th className="fw-light ps-3 py-2 text-start">#</th>
+          <th className="fw-light text-start">Image</th>
+          <th className="fw-light text-start">Product</th>
+          <th className="fw-light text-start">Amount</th>
+          <th className="fw-light">Quantity</th>
+          <th className="fw-light text-center">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array.isArray(view) && view.map((data, key) => (
+          <tr key={key}>
+            <td className="text-start">{data.checkoutId}</td>
+            <td className="text-start">
+              <img
+                src={`/api/src/image/${data.image}`}
+                alt=""
+                className="img-thumbnail"
+              />
+            </td>
+            <td className="text-start d-flex flex-column">{data.name}</td>
 
-                  <div className="d-flex flex-column mt-0 lh-lg total-amount">
-                    {view.length > 0 && (
-                      <>
-                        {customer.map((data) => (
-                          <>
-                            <span className="text-start ms-4">
-                              Tax:
-                              <span style={{ fontFamily: "verdana" }}>
-                                ${data.tax}
-                              </span>
-                            </span>
-                            <span
-                              className="text-start ms-4 mb-3"
-                              style={{ whiteSpace: "nowrap" }}
-                            >
-                              Total Amount:
-                              <span style={{ fontFamily: "verdana" }}>
-                                ${data.total}
-                              </span>
-                            </span>
-                          </>
-                        ))}
-                      </>
-                    )}
-                  </div>
-                </table>
-              </div>
+            {Array.isArray(customer) && customer.slice(0, 1).map((data) => (
+              <>
+                <td style={{ fontFamily: "verdana" }} className="text-start">
+                  {data.price}
+                </td>
+                <td>{data.quantity}</td>
+                <td style={{ fontFamily: "verdana" }}>${data.total}</td>
+              </>
+            ))}
+          </tr>
+        ))}
+      </tbody>
 
-              <div className="d-flex flex-column bg-light px-3 py-3 mt-2 cart-cart lh-lg order-border">
-                The order is currently being processed. For expedited
-                processing, kindly upload a copy of your payment proof:
-                <div className="d-flex flex-row flex-wrap flex-md-nowrap me-md-3">
-                  <div className="border rounded-0 file-choose bg-body">
-                    <input
-                      type="file"
-                      className="mt-2 mb-2 ms-2"
-                      accept=".jpg,.jpeg,.png,.pdf"
-                      onChange={handleFileChange}
-                    />
-                  </div>
-                  <button
-                    className="btn btn-success d-flex rounded-0 cart-cart py-4 upload-btn mt-1 ms-2"
-                    onClick={handleUpload}
-                  >
-                    Upload
-                  </button>
-                </div>
-                {error && <span className="text-danger">{error}</span>}
-                <span style={{ fontSize: "12px" }} className="mt-1">
-                  You can upload the following file types: jpg, jpeg, png, pdf
-                  and the max file size is 2MB.
+      <div className="d-flex flex-column mt-0 lh-lg total-amount">
+        {Array.isArray(view) && view.length > 0 && Array.isArray(customer) && (
+          <>
+            {customer.map((data) => (
+              <>
+                <span className="text-start ms-4">
+                  Tax:
+                  <span style={{ fontFamily: "verdana" }}>${data.tax}</span>
                 </span>
-              </div>
+                <span className="text-start ms-4 mb-3" style={{ whiteSpace: "nowrap" }}>
+                  Total Amount:
+                  <span style={{ fontFamily: "verdana" }}>${data.total}</span>
+                </span>
+              </>
+            ))}
+          </>
+        )}
+      </div>
+    </table>
+  </div>
 
-              <div className="d-flex flex-row gap-2 mt-4 ms-1">
-                <button
-                  className="btn btn-success d-flex rounded-0 py-4 cart-cart"
-                  onClick={printInvoice}
-                >
-                  Print Invoice
-                </button>
-                <button
-                  className="btn btn-success d-flex rounded-0 py-4 cart-cart"
-                  onClick={downloadInvoice}
-                >
-                  Download Invoice
-                </button>
-                <button
-                  className="btn btn-danger d-flex rounded-0 py-4 cart-cart"
-                  onClick={showPopup}
-                >
-                  Cancel order
-                </button>
-              </div>
+  <div className="d-flex flex-column bg-light px-3 py-3 mt-2 cart-cart lh-lg order-border">
+    The order is currently being processed. For expedited processing, kindly upload a copy of your payment proof:
+    <div className="d-flex flex-row flex-wrap flex-md-nowrap me-md-3">
+      <div className="border rounded-0 file-choose bg-body">
+        <input
+          type="file"
+          className="mt-2 mb-2 ms-2"
+          accept=".jpg,.jpeg,.png,.pdf"
+          onChange={handleFileChange}
+        />
+      </div>
+      <button
+        className="btn btn-success d-flex rounded-0 cart-cart py-4 upload-btn mt-1 ms-2"
+        onClick={handleUpload}
+      >
+        Upload
+      </button>
+    </div>
+    {error && <span className="text-danger">{error}</span>}
+    <span style={{ fontSize: "12px" }} className="mt-1">
+      You can upload the following file types: jpg, jpeg, png, pdf and the max file size is 2MB.
+    </span>
+  </div>
 
-              {isPopupVisible && (
-                <div className="popup-overlay">
-                  <div className="popup-content border px-2 py-2 rounded mt-3 ms-lg-5 ms-2 me-2 d-flex flex-column cart-cart order-invoice1">
-                    <div className="d-flex justify-content-between flex-row w-100">
-                      <h4 className="mt-1">Cancel Order</h4>
-                      <FontAwesomeIcon
-                        icon={faX}
-                        className="mt-2 me-2"
-                        style={{ cursor: "pointer" }}
-                        onClick={closePopup}
-                      />
-                    </div>
-                    <span className="mt-1">
-                      Please provide a reason for the cancellation.
-                    </span>
-                    <hr />
-                    <div>
-                      <label htmlFor="">
-                        Choose a Reason for Order Cancellation{" "}
-                        <span className="text-danger fw-bold">*</span>
-                      </label>
+  <div className="d-flex flex-row gap-2 mt-4 ms-1">
+    <button
+      className="btn btn-success d-flex rounded-0 py-4 cart-cart"
+      onClick={printInvoice}
+    >
+      Print Invoice
+    </button>
+    <button
+      className="btn btn-success d-flex rounded-0 py-4 cart-cart"
+      onClick={downloadInvoice}
+    >
+      Download Invoice
+    </button>
+    <button
+      className="btn btn-danger d-flex rounded-0 py-4 cart-cart"
+      onClick={showPopup}
+    >
+      Cancel order
+    </button>
+  </div>
 
-                      <select
-                        className="form-select mt-2 order-invoice rounded-0"
-                        style={{ height: "50px" }}
-                      >
-                        <option value="" selected="">
-                          Choose a reason...
-                        </option>
-                        <option value="change-mind">
-                          Changed mind or no longer needed the product
-                        </option>
-                        <option value="found-better-price">
-                          Found a better price elsewhere
-                        </option>
-                        <option value="out-of-stock">
-                          Product out of stock
-                        </option>
-                        <option value="shipping-delays">Shipping delays</option>
-                        <option value="incorrect-address">
-                          Incorrect or incomplete shipping address
-                        </option>
-                        <option value="customer-requested">
-                          Customer requested cancellation
-                        </option>
-                        <option value="not-as-described">
-                          Product not as described
-                        </option>
-                        <option value="payment-issues">
-                          Payment issues or declined transaction
-                        </option>
-                        <option value="unforeseen-circumstances">
-                          Unforeseen circumstances or emergencies
-                        </option>
-                        <option value="technical-issues">
-                          Technical issues during the checkout process
-                        </option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
+  {isPopupVisible && (
+    <div className="popup-overlay">
+      <div className="popup-content border px-2 py-2 rounded mt-3 ms-lg-5 ms-2 me-2 d-flex flex-column cart-cart order-invoice1">
+        <div className="d-flex justify-content-between flex-row w-100">
+          <h4 className="mt-1">Cancel Order</h4>
+          <FontAwesomeIcon
+            icon={faX}
+            className="mt-2 me-2"
+            style={{ cursor: "pointer" }}
+            onClick={closePopup}
+          />
+        </div>
+        <span className="mt-1">
+          Please provide a reason for the cancellation.
+        </span>
+        <hr />
+        <div>
+          <label htmlFor="">
+            Choose a Reason for Order Cancellation{" "}
+            <span className="text-danger fw-bold">*</span>
+          </label>
 
-                    <div className="mt-3 ms-2">
-                      <label htmlFor="">Description</label>
-                      <textarea
-                        className="form-control mt-2 mb-3 order-invoice rounded-0"
-                        style={{ height: "76px" }}
-                      ></textarea>
-                    </div>
-                    <hr />
+          <select
+            className="form-select mt-2 order-invoice rounded-0"
+            style={{ height: "50px" }}
+          >
+            <option value="" selected="">
+              Choose a reason...
+            </option>
+            <option value="change-mind">
+              Changed mind or no longer needed the product
+            </option>
+            <option value="found-better-price">
+              Found a better price elsewhere
+            </option>
+            <option value="out-of-stock">
+              Product out of stock
+            </option>
+            <option value="shipping-delays">Shipping delays</option>
+            <option value="incorrect-address">
+              Incorrect or incomplete shipping address
+            </option>
+            <option value="customer-requested">
+              Customer requested cancellation
+            </option>
+            <option value="not-as-described">
+              Product not as described
+            </option>
+            <option value="payment-issues">
+              Payment issues or declined transaction
+            </option>
+            <option value="unforeseen-circumstances">
+              Unforeseen circumstances or emergencies
+            </option>
+            <option value="technical-issues">
+              Technical issues during the checkout process
+            </option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-                    <div className="d-flex gap-2 justify-content-end flex-row w-100">
-                      <button
-                        className="btn btn-secondary d-flex rounded-0 py-4 cart-cart"
-                        onClick={closePopup}
-                      >
-                        Close
-                      </button>
-                      <button
-                        className="btn btn-success d-flex rounded-0 py-4 cart-cart"
-                        onClick={cancelOrder}
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+        <div className="mt-3 ms-2">
+          <label htmlFor="">Description</label>
+          <textarea
+            className="form-control mt-2 mb-3 order-invoice rounded-0"
+            style={{ height: "76px" }}
+          ></textarea>
+        </div>
+        <hr />
+
+        <div className="d-flex gap-2 justify-content-end flex-row w-100">
+          <button
+            className="btn btn-secondary d-flex rounded-0 py-4 cart-cart"
+            onClick={closePopup}
+          >
+            Close
+          </button>
+          <button
+            className="btn btn-success d-flex rounded-0 py-4 cart-cart"
+            onClick={cancelOrder}
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
+
+
+
+
           </div>
         </div>
       </div>

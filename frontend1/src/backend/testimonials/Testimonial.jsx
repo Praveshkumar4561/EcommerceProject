@@ -2241,53 +2241,61 @@ function Testimonial() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
-                      <td>
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          alt="img not found"
-                          className="rounded-2 image-test"
-                        />
-                      </td>
-                      <td>
-                        <Link to={`/admin/testimonials/edit/${data.id}`}>
-                          {data.name}
-                        </Link>
-                      </td>
-                      <td>
-                        <span class="badge badge-success fw-light">Yes</span>
-                      </td>
-                      <td>{data.date}</td>
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-0"
-                        />
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link to={`/admin/testimonials/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
-                          </Link>
-                        </button>
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
+                        <td>
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            alt="img not found"
+                            className="rounded-2 image-test"
                           />
-                        </button>
-                      </td>
+                        </td>
+                        <td>
+                          <Link to={`/admin/testimonials/edit/${data.id}`}>
+                            {data.name}
+                          </Link>
+                        </td>
+                        <td>
+                          <span className="badge badge-success fw-light">
+                            Yes
+                          </span>
+                        </td>
+                        <td>{data.date}</td>
+                        <td>
+                          <FontAwesomeIcon
+                            icon={faCheck}
+                            className="text-primary ms-0"
+                          />
+                        </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button className="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/testimonials/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8">No testimonials available</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

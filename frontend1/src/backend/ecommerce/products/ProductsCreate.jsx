@@ -1465,8 +1465,11 @@ function ProductsCreate() {
                 <path d="M13 8l2 0"></path>
                 <path d="M13 12l2 0"></path>
               </svg>
+              <Link to="/admin/pages" className="text-light">
               Pages
+              </Link>
             </li>
+
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
@@ -3288,8 +3291,8 @@ function ProductsCreate() {
                               <label htmlFor="" className="ms-2 mt-2">
                                 Attribute Name
                               </label>
-                              {create.slice(0, 1).map((data, key) => (
-                                <>
+                              {Array.isArray(create) && create.length > 0 ? (
+                                create.slice(0, 1).map((data, key) => (
                                   <div key={key}>
                                     <select
                                       name="attribute"
@@ -3314,13 +3317,16 @@ function ProductsCreate() {
                                         })
                                       ) : (
                                         <option disabled>
-                                          No attributes available
+                                          
                                         </option>
                                       )}
                                     </select>
                                   </div>
-                                </>
-                              ))}
+                                ))
+                              ) : (
+                                <p></p>
+                              )}
+
                             </div>
 
                             <div className="d-flex flex-column ms-2 ms-lg-0 w-100">

@@ -2111,10 +2111,6 @@ function CustomCss() {
         </ol>
       </nav>
 
-      {/* 11111111111111111111 */}
-
-      {/* code editor */}
-
       <div className="container">
         <div className="row d-flex justify-content-md-center ps-1">
           <div className="d-flex flex-column align-items-center mt-1 col-12 col-lg-6 w-100">
@@ -2146,17 +2142,6 @@ function CustomCss() {
               </button>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* code editor */}
-
-      <div class="container ">
-        <div class="footer">
-          <div class="left">
-            Copyright 2024 © Botble Technologies. Version 1.2.1
-          </div>
-          <div class="right">Page loaded in 0.27 seconds</div>
         </div>
       </div>
     </>

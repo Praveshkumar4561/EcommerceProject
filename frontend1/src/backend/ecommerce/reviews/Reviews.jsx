@@ -2250,80 +2250,90 @@ function Reviews() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link
-                          className="sliders1 product-name"
-                          to={`/admin/ecommerce/reviews/view/${data.id}`}
-                        >
-                          {data.product_name}
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <span className="sliders1 product-name">
-                          {data.user_name}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faStar}
-                          className="fontawasome"
-                        />
-                      </td>
-
-                      <td>
-                        <span className="sliders1 product-name">
-                          {data.comment}
-                        </span>
-                      </td>
-
-                      <td>
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          className="img-thumbnail w-auto"
-                          alt="404"
-                        />
-                      </td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 py-1 status-blog product-name1 fw-light">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>{data.date}</td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button
-                          class="btn btn-edit me-2 bg-light"
-                          type="button"
-                        >
-                          <Link to={`/admin/ecommerce/reviews/view/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faEye}
-                              className="fs-5 text-dark text-center"
-                            />
+                        <td>
+                          <Link
+                            className="sliders1 product-name"
+                            to={`/admin/ecommerce/reviews/view/${data.id}`}
+                          >
+                            {data.product_name}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete py-1" type="button">
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <span className="sliders1 product-name">
+                            {data.user_name}
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faStar}
+                            className="fontawasome"
                           />
-                        </button>
+                        </td>
+
+                        <td>
+                          <span className="sliders1 product-name">
+                            {data.comment}
+                          </span>
+                        </td>
+
+                        <td>
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            className="img-thumbnail w-auto"
+                            alt="404"
+                          />
+                        </td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 py-1 status-blog product-name1 fw-light">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>{data.date}</td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button
+                            class="btn btn-edit me-2 bg-light"
+                            type="button"
+                          >
+                            <Link
+                              to={`/admin/ecommerce/reviews/view/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faEye}
+                                className="fs-5 text-dark text-center"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                       
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

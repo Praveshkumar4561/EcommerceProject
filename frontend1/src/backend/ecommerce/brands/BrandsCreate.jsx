@@ -1172,7 +1172,9 @@ function BrandsCreate() {
                 <path d="M13 8l2 0"></path>
                 <path d="M13 12l2 0"></path>
               </svg>
-              Pages
+              <Link to="/admin/pages" className="text-light">
+                Pages
+              </Link>
             </li>
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>

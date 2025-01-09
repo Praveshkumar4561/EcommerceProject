@@ -145,60 +145,64 @@ function CustomerAddress() {
           </div>
 
           <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {detail.slice(0, 1).map((data, key) => (
-              <div
-                className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
-                key={key}
-              >
-                <div className="free-shipping d-flex flex-row me-3">
-                  <span className="d-flex align-items-center gap-2">
-                    <div className="d-sm-flex ms-auto d-flex">
-                      <Link to="/user/dashboard" className="nav-link">
-                        {data.first_name ? (
-                          <div
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                              color: "white",
-                              fontSize: "18px",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
-                          >
-                            {data.first_name.charAt(0).toUpperCase()}
-                          </div>
-                        ) : (
+            {Array.isArray(detail) && detail.length > 0 ? (
+              detail.slice(0, 1).map((data, key) => (
+                <div
+                  className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+                  key={key}
+                >
+                  <div className="free-shipping d-flex flex-row me-3">
+                    <span className="d-flex align-items-center gap-2">
+                      <div className="d-sm-flex ms-auto d-flex">
+                        <Link to="/user/dashboard" className="nav-link">
+                          {data.first_name ? (
+                            <div
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                                color: "white",
+                                fontSize: "18px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
+                            >
+                              {data.first_name.charAt(0).toUpperCase()}
+                            </div>
+                          ) : (
+                            <img
+                              src={Profile}
+                              alt="Profile"
+                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                            />
+                          )}
+                        </Link>
+
+                        <div className="d-flex flex-column me-4">
+                          <span className="me-4 pe-2">
+                            Hello {data.first_name || "User"}
+                          </span>
+                          <span className="ms-4">{data.email}</span>
+                        </div>
+
+                        <Link to="/cart" className="nav-link d-flex mt-1">
                           <img
-                            src={Profile}
-                            alt="Profile"
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                            src={Cart}
+                            alt="Cart"
+                            className="img-fluid profile1 me-2"
                           />
-                        )}
-                      </Link>
-
-                      <div className="d-flex flex-column me-4">
-                        <span className="me-4 pe-2">
-                          Hello {data.first_name || "User"}
-                        </span>
-                        <span className="ms-4">{data.email}</span>
+                          <div className="addcarts-lyte2 ms-3">{count}</div>
+                        </Link>
                       </div>
-
-                      <Link to="/cart" className="nav-link d-flex mt-1">
-                        <img
-                          src={Cart}
-                          alt="Cart"
-                          className="img-fluid profile1 me-2"
-                        />
-                        <div className="addcarts-lyte2 ms-3">{count}</div>
-                      </Link>
-                    </div>
-                  </span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div className="no-details"></div>
+            )}
           </div>
         </div>
 
@@ -482,45 +486,51 @@ function CustomerAddress() {
                 </>
               ) : (
                 <div className="border box-address rounded">
-                  {user.map((data, key) => (
-                    <div key={key}>
-                      <div className="d-flex flex-row ms-2 py-2">
-                        <img src={Van} alt="" className="w-25 me-3 mb-4" />
-                        <div className="d-flex flex-column mt-2">
-                          <span className="fw-bold fs-3">{data.name}</span>
-                          <span>
-                            <span className="fw-bold">Phone:</span>{" "}
-                            {data.phone || "Not available"}
-                          </span>
-                          <span>
-                            <span className="fw-bold">Email:</span>{" "}
-                            {data.email || "Not available"}
-                          </span>
-                          <span>
-                            <span className="fw-bold">Address:</span>
-                            {data.address},{data.city}, {data.country}
-                          </span>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <div key={key}>
+                        <div className="d-flex flex-row ms-2 py-2">
+                          <img src={Van} alt="" className="w-25 me-3 mb-4" />
+                          <div className="d-flex flex-column mt-2">
+                            <span className="fw-bold fs-3">{data.name}</span>
+                            <span>
+                              <span className="fw-bold">Phone:</span>{" "}
+                              {data.phone || "Not available"}
+                            </span>
+                            <span>
+                              <span className="fw-bold">Email:</span>{" "}
+                              {data.email || "Not available"}
+                            </span>
+                            <span>
+                              <span className="fw-bold">Address:</span>
+                              {data.address},{data.city}, {data.country}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="d-flex gap-0 mb-1 justify-content-end me-3 flex-row">
+                          <button className="btn btn-success d-flex bg-body text-info">
+                            <Link
+                              className="text-info text-decoration-none"
+                              to={`/user/address/edit/${data.id}`}
+                            >
+                              Edit
+                            </Link>
+                          </button>
+                          <span className="mt-2 pt-lg-1 mt-lg-0"> | </span>
+                          <button
+                            className="btn btn-success d-flex bg-body text-danger"
+                            onClick={() => removedata(data.id)}
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
-                      <div className="d-flex gap-0 mb-1 justify-content-end me-3 flex-row">
-                        <button className="btn btn-success d-flex bg-body text-info">
-                          <Link
-                            className="text-info text-decoration-none"
-                            to={`/user/address/edit/${data.id}`}
-                          >
-                            Edit
-                          </Link>
-                        </button>
-                        <span className="mt-2 pt-lg-1 mt-lg-0"> | </span>
-                        <button
-                          className="btn btn-success d-flex bg-body text-danger"
-                          onClick={() => removedata(data.id)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="text-center"></td>
+                    </tr>
+                  )}
                 </div>
               )}
 

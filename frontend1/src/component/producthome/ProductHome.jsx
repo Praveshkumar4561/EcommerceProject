@@ -302,77 +302,128 @@ function ProductHome() {
           </div>
 
           <div className="row mt-lg-5 pt-lg-3 d-flex justify-content-center d-none d-lg-flex">
-            {user.slice(0, 5).map((data, key) => (
-              <div
-                className="col-6 col-sm-6 col-md-4 col-lg-2 border admin-product d-flex justify-content-center align-items-center"
-                key={key}
-              >
-                <img
-                  src={`/api/src/image/${data.image}`}
-                  alt={`Product Image ${key + 1}`}
-                  className="img-fluid"
-                />
-              </div>
-            ))}
+            {Array.isArray(user) && user.length > 0 ? (
+              user.slice(0, 5).map((data, key) => (
+                <div
+                  className="col-6 col-sm-6 col-md-4 col-lg-2 border admin-product d-flex justify-content-center align-items-center"
+                  key={key}
+                >
+                  <img
+                    src={`/api/src/image/${data.image}`}
+                    alt={`Product Image ${key + 1}`}
+                    className="img-fluid"
+                  />
+                </div>
+              ))
+            ) : (
+              <p></p>
+            )}
           </div>
         </div>
       </div>
 
       <div className="container-fluid">
         <div className="container mb-5">
-          {image.slice(0, 1).map((data, key) => (
-            <div className="row ms-lg-0 gap-4 d-flex flex-row" key={key}>
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product border">
-                <img
-                  src={`/api/src/image/${data.image}`}
-                  alt={`Product Image ${key + 1}`}
-                />
-                <div className="position-absolute ms-4 mt-2 fw-bold">
-                  HeadPhones
-                </div>
-              </div>
+          {Array.isArray(image) && image.length > 0 ? (
+            image.slice(0, 1).map((data, key) => {
+              const labels = [
+                "HeadPhones",
+                "Digital Watch",
+                "Soundbar",
+                "EarPhones",
+                "Mobile Phone",
+              ];
+              const productLabel = labels[key] || "Product";
+              const nextImage = image[key + 1] || {};
+              const nextImage2 = image[key + 2] || {};
+              const nextImage3 = image[key + 3] || {};
+              const nextImage4 = image[key + 4] || {};
 
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
-                <img
-                  src={`/api/src/image/${image[key + 1]?.image}`}
-                  alt={`Product Image ${key + 2}`}
-                />
-                <div className="position-absolute ms-4 mt-2 fw-bold">
-                  Digital Watch
-                </div>
-              </div>
+              return (
+                <div className="row ms-lg-0 gap-4 d-flex flex-row" key={key}>
+                  {/* First Product */}
+                  <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
+                    <img
+                      src={`/api/src/image/${
+                        data.image || "default-image.jpg"
+                      }`}
+                      alt={`Product Image ${key + 1}`}
+                      className="w-100 h-100 object-fit-cover"
+                    />
+                    <div className="position-absolute ms-4 mt-2 fw-bold">
+                      {productLabel}
+                    </div>
+                  </div>
 
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
-                <img
-                  src={`/api/src/image/${image[key + 2]?.image}`}
-                  alt={`Product Image ${key + 2}`}
-                />
-                <div className="position-absolute ms-5 mt-2 fw-bold">
-                  Soundbar
-                </div>
-              </div>
+                  {/* Second Product */}
+                  <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
+                    {nextImage.image && (
+                      <img
+                        src={`/api/src/image/${
+                          nextImage.image || "default-image.jpg"
+                        }`}
+                        alt={`Product Image ${key + 2}`}
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    )}
+                    <div className="position-absolute ms-4 mt-2 fw-bold">
+                      {labels[key + 1] || "Product"}
+                    </div>
+                  </div>
 
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product">
-                <img
-                  src={`/api/src/image/${image[key + 3]?.image}`}
-                  alt={`Product Image ${key + 2}`}
-                />
-                <div className="position-absolute ms-5 mt-2 fw-bold">
-                  EarPhones
-                </div>
-              </div>
+                  {/* Third Product */}
+                  <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4 position-relative">
+                    {nextImage2.image && (
+                      <img
+                        src={`/api/src/image/${
+                          nextImage2.image || "default-image.jpg"
+                        }`}
+                        alt={`Product Image ${key + 3}`}
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    )}
+                    <div className="position-absolute ms-5 mt-2 fw-bold">
+                      {labels[key + 2] || "Product"}
+                    </div>
+                  </div>
 
-              <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4">
-                <img
-                  src={`/api/src/image/${image[key + 4]?.image}`}
-                  alt={`Product Image ${key + 2}`}
-                />
-                <div className="position-absolute ms-4 mt-2 fw-bold">
-                  Mobile Phone
+                  {/* Fourth Product */}
+                  <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
+                    {nextImage3.image && (
+                      <img
+                        src={`/api/src/image/${
+                          nextImage3.image || "default-image.jpg"
+                        }`}
+                        alt={`Product Image ${key + 4}`}
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    )}
+                    <div className="position-absolute ms-5 mt-2 fw-bold">
+                      {labels[key + 3] || "Product"}
+                    </div>
+                  </div>
+
+                  {/* Fifth Product */}
+                  <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4 position-relative">
+                    {nextImage4.image && (
+                      <img
+                        src={`/api/src/image/${
+                          nextImage4.image || "default-image.jpg"
+                        }`}
+                        alt={`Product Image ${key + 5}`}
+                        className="w-100 h-100 object-fit-cover"
+                      />
+                    )}
+                    <div className="position-absolute ms-4 mt-2 fw-bold">
+                      {labels[key + 4] || "Product"}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          ) : (
+            <p>No images available</p>
+          )}
         </div>
       </div>
 
@@ -388,7 +439,6 @@ function ProductHome() {
               <button
                 className="nav-product active ms-0 ms-lg-4 border h-25 mt-4 px-2 py-2"
                 type="button"
-                // onClick={handleFilterToggle}
               >
                 <img src={Dot} alt="filter" />
               </button>
@@ -707,22 +757,26 @@ function ProductHome() {
                 </div>
               </div>
             </div>
-            {home.map((data) => (
-              <>
-                <div className="col-6 col-sm-6 col-md-4 col-lg-3 border rounded-0 digital-hello rounded">
-                  <img
-                    src={`/api/src/image/${data.image}`}
-                    alt=""
-                    className="ms-5"
-                  />
-                </div>
-              </>
-            ))}
+            {Array.isArray(user) && user.length > 0 ? (
+              user.map((data) => (
+                <>
+                  <div className="col-6 col-sm-6 col-md-4 col-lg-3 border rounded-0 digital-hello rounded">
+                    <img
+                      src={`/api/src/image/${data.image}`}
+                      alt=""
+                      className="ms-5"
+                    />
+                  </div>
+                </>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="text-center"></td>
+              </tr>
+            )}
           </div>
         </div>
       </div>
-
-      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

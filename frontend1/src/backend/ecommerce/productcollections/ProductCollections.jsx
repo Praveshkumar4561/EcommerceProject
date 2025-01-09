@@ -2235,71 +2235,79 @@ function ProductCollections() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link to="#">
-                          <img
-                            src={`/api/src/image/${data.image}`}
-                            className="img-fluid w-50"
-                          />
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link
-                          to={`/admin/ecommerce/product-collections/edit/${data.id}`}
-                          className="sliders1"
-                        >
-                          {data.name}
-                        </Link>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>{data.slug}</td>
-
-                      <td>{data.date}</td>
-
-                      <td>
-                        {" "}
-                        <span class="badge badge-success lh-base px-2 fw-light">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link
-                            to={`/admin/ecommerce/product-collections/edit/${data.id}`}
-                          >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
+                        <td>
+                          <Link to="#">
+                            <img
+                              src={`/api/src/image/${data.image}`}
+                              className="img-fluid w-50"
                             />
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <Link
+                            to={`/admin/ecommerce/product-collections/edit/${data.id}`}
+                            className="sliders1"
+                          >
+                            {data.name}
+                          </Link>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>{data.slug}</td>
+
+                        <td>{data.date}</td>
+
+                        <td>
+                          {" "}
+                          <span class="badge badge-success lh-base px-2 fw-light">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
                           <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
+                            icon={faCheck}
+                            className="text-primary ms-3"
                           />
-                        </button>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/product-collections/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No contacts available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

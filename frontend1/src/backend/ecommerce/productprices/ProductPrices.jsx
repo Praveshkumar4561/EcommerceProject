@@ -2232,7 +2232,9 @@ function ProductPrices() {
                   </tr>
                 </thead>
                 <tbody>
-                  {price.map((data, key) => (
+                  {/* {price.map((data, key) => ( */}
+                  {Array.isArray(price) && price.length > 0 ? (
+  price.map((data, key) => (
                     <tr key={key}>
                       <td>
                         <input type="checkbox" className="form-check-input" />
@@ -2307,7 +2309,12 @@ function ProductPrices() {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="text-center">No products prices available</td>
+                  </tr>
+                )}
                 </tbody>
               </table>
             </div>

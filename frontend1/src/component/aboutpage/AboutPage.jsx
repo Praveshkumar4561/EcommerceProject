@@ -63,7 +63,7 @@ function AboutUsPage() {
   useEffect(() => {
     let showdata = async () => {
       try {
-        let response = await axios.get("/api/gettestimonials");
+        let response = await axios.get("http://54.219.78.81:1600/gettestimonials");
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching testimonials:", error);

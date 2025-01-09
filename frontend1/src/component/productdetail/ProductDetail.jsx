@@ -71,18 +71,16 @@ function ProductDetail() {
               <div className="row mt-lg-2 mt-0 me-lg-3 w-auto">
                 <div className="col-12">
                   <div className="car bg-body rounded">
-                    {shop.slice(0, 1).map((data, key) => (
-                      <>
-                        <div className="card-body h-auto product-viva1 mt-2">
-                          <h4 className="card-titlxe fs- fw-medium text-start">
-                            Product Description
-                          </h4>
-                          <p className="text-dark lh-lg text-start contray">
-                            {selectedDescription || data.description}
-                          </p>
-                        </div>
-                      </>
-                    ))}
+                    {shop.length > 0 && (
+                      <div className="card-body h-auto product-viva1 mt-2">
+                        <h4 className="card-title fs-5 fw-medium text-start">
+                          Product Description
+                        </h4>
+                        <p className="text-dark lh-lg text-start">
+                          {selectedDescription || shop[0].description}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -194,23 +192,20 @@ function ProductDetail() {
             <div className="container">
               <div className="row mt-lg-2 mt-0 me-lg-3 w-auto">
                 <div className="col-12">
-                  <div className="car bg-body rounded">
-                    <div className="card-body h-auto product-viva1 mt-2">
-                      <h4 className="card-titlxe fs- fw-medium text-start">
-                        Product image
-                      </h4>
-                      {detail.slice(0, 1).map((data, key) => (
-                        <>
-                          <div key={key}>
-                            <img
-                              src={
-                                selectedImage || `/api/src/image/${data.image}`
-                              }
-                              alt="404"
-                            />
-                          </div>
-                        </>
-                      ))}
+                  <div className="ca1rd bg-body rounded">
+                    <div className=" h-auto product-viva1 mt-2">
+                      {detail.length > 0 && (
+                        <div>
+                          <img
+                            src={
+                              selectedImage ||
+                              `/api/src/image/${detail[0].image}`
+                            }
+                            alt="Product"
+                            className="img-fluid"
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -516,13 +511,18 @@ function ProductDetail() {
                   </Link>
                 </li>
 
-                {shop.slice(0, 1).map((data, key) => (
-                  <>
-                    <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                {Array.isArray(shop) && shop.length > 0 ? (
+                  shop.slice(0, 1).map((data, key) => (
+                    <li
+                      className="breadcrumb-item navbar-item fw-medium text-dark"
+                      key={key}
+                    >
                       {selectedName || data.name}
                     </li>
-                  </>
-                ))}
+                  ))
+                ) : (
+                  <li className="breadcrumb-item navbar-item fw-medium text-dark"></li>
+                )}
               </ol>
             </nav>
           </main>
@@ -533,124 +533,140 @@ function ProductDetail() {
       <div className="container-fluid overflow-hidden d-flex justify-content-center align-items-center position-relative overflow-x-hidden">
         <div className="container d-flex justify-content-center">
           <div className="row mt-5 d-flex flex me-md-1">
-            {shop.slice(0, 1).map((key) => (
-              <div
-                className="col-12 col-lg-6 col-md-6 shop-div d-flex gap-2 d-flex w-100 border"
-                key={key}
-              >
+            {Array.isArray(shop) && shop.length > 0 ? (
+              shop.slice(0, 1).map((key) => (
                 <div
-                  className="d-flex flex-lg-column flex-row flex-md-column gap-3 "
-                  style={{ cursor: "pointer" }}
+                  className="col-12 col-lg-6 col-md-6 shop-div d-flex gap-2 d-flex w-100 border"
+                  key={key}
                 >
-                  {shop.slice(0, 4).map((data, key) => (
-                    <div
-                      className="box me-0"
-                      key={key}
-                      onClick={() =>
-                        applyImage(
-                          `/api/src/image/${data.image}`,
-                          data.name,
-                          data.description,
-                          data.price,
-                          data.store,
-                          data.price_sale
-                        )
-                      }
-                    >
-                      <img
-                        src={`/api/src/image/${data.image}`}
-                        alt=""
-                        className="border"
-                      />
-                    </div>
-                  ))}
+                  <div
+                    className="d-flex flex-lg-column flex-row flex-md-column gap-3"
+                    style={{ cursor: "pointer" }}
+                  >
+                    {Array.isArray(shop) && shop.length > 0 ? (
+                      shop.slice(0, 4).map((data, key) => (
+                        <div
+                          className="box me-0"
+                          key={key}
+                          onClick={() =>
+                            applyImage(
+                              `/api/src/image/${data.image}`,
+                              data.name,
+                              data.description,
+                              data.price,
+                              data.store,
+                              data.price_sale
+                            )
+                          }
+                        >
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            alt=""
+                            className="border"
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <p>No products available</p>
+                    )}
+                  </div>
+                  <img
+                    src={selectedImage || `/api/src/image/${shop[0]?.image}`}
+                    alt="404"
+                    className="mb-lg-3"
+                  />
                 </div>
-                <img
-                  src={selectedImage || `/api/src/image/${shop[0]?.image}`}
-                  alt="404"
-                  className="mb-lg-3"
-                />
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>No shop data available</p>
+            )}
 
             <div className="col-12 col-lg-6 col-md-6 single-shop bg-light pb-4">
               <div className="d-flex align-items-center flex-column h-auto">
-                {shop.slice(0, 1).map((key) => (
-                  <>
-                    <div
-                      className="d-flex flex-row me- pe-41 pe-lg-0 googles1"
-                      key={key}
-                    >
-                      <h2 className="fw-bol mt-4 pt-3 me-md-5 me-lg-5 me-xxl-4 pe-lg-5 ms-4 ms-lg-0 ps-2 ps-lg-0 ms-lg-0 googles1 cart-cart text-start">
-                        {selectedName || shop[0]?.name}
-                      </h2>
-                    </div>
+                {Array.isArray(shop) && shop.length > 0 ? (
+                  shop.slice(0, 1).map((key) => (
+                    <>
+                      <div
+                        className="d-flex flex-row me- pe-41 pe-lg-0 googles1"
+                        key={key}
+                      >
+                        <h2 className="fw-bol mt-4 pt-3 me-md-5 me-lg-5 me-xxl-4 pe-lg-5 ms-4 ms-lg-0 ps-2 ps-lg-0 ms-lg-0 googles1 cart-cart text-start">
+                          {selectedName || shop[0]?.name}
+                        </h2>
+                      </div>
 
-                    <h4
-                      className="mt-0 pt-0 text-success fw-medium d-flex flex-row me-auto"
-                      style={{ fontFamily: "verdana" }}
-                    >
-                      {selectedStore || shop[0]?.store}
-                    </h4>
-
-                    <p className="text-dark text-start lh-lg cart-cart">
-                      {selectedDescription || shop[0]?.description}
-                    </p>
-
-                    <div className="d-flex flex-row gap-2 me-auto">
-                      <h3
-                        className="mt-0 pt-0 text-success fw-medium d-flex flex-row ms-0 dollar-rupee me-auto"
+                      <h4
+                        className="mt-0 pt-0 text-success fw-medium d-flex flex-row me-auto"
                         style={{ fontFamily: "verdana" }}
                       >
-                        {selectedPrice || shop[0]?.price}
-                      </h3>
+                        {selectedStore || shop[0]?.store}
+                      </h4>
 
-                      <h3
-                        className="mt-0 pt-0 text-success fw-medium d-flex flex-row ms-0 dollar-rupee me-auto"
-                        style={{ fontFamily: "verdana" }}
-                      >
-                        <strike>{selectedSale || shop[0]?.price_sale}</strike>
-                      </h3>
-                    </div>
+                      <p className="text-dark text-start lh-lg cart-cart">
+                        {selectedDescription || shop[0]?.description}
+                      </p>
 
-                    <div className="me-auto cart-cart">
-                      <h4>Quantity:</h4>
-                    </div>
-                  </>
-                ))}
+                      <div className="d-flex flex-row gap-2 me-auto">
+                        <h3
+                          className="mt-0 pt-0 text-success fw-medium d-flex flex-row ms-0 dollar-rupee me-auto"
+                          style={{ fontFamily: "verdana" }}
+                        >
+                          {selectedPrice || shop[0]?.price}
+                        </h3>
+
+                        <h3
+                          className="mt-0 pt-0 text-success fw-medium d-flex flex-row ms-0 dollar-rupee me-auto"
+                          style={{ fontFamily: "verdana" }}
+                        >
+                          <strike>{selectedSale || shop[0]?.price_sale}</strike>
+                        </h3>
+                      </div>
+
+                      <div className="me-auto cart-cart">
+                        <h4>Quantity:</h4>
+                      </div>
+                    </>
+                  ))
+                ) : (
+                  <p>No shop details available</p>
+                )}
               </div>
 
               <div className="d-flex flex-row googles">
-                {shop.slice(0, 1).map((data) => (
-                  <>
-                    <div
-                      className="plus bg-success text-white fw-bold px-3 py-3"
-                      onClick={() => decrement()}
-                    >
-                      -
-                    </div>
-                    <div
-                      className="plus bg-secondary text-light fw-light px-3 py-3"
-                      style={{ fontFamily: "verdana" }}
-                    >
-                      {counts}
-                    </div>
-                    <div
-                      className="plus bg-success text-light fw-bold px-3 py-3"
-                      onClick={() => increment()}
-                    >
-                      +
-                    </div>
+                {Array.isArray(shop) && shop.length > 0 ? (
+                  shop.slice(0, 1).map((data) => (
+                    <>
+                      <div
+                        className="plus bg-success text-white fw-bold px-3 py-3"
+                        onClick={() => decrement()}
+                      >
+                        -
+                      </div>
+                      <div
+                        className="plus bg-secondary text-light fw-light px-3 py-3"
+                        style={{ fontFamily: "verdana" }}
+                      >
+                        {counts}
+                      </div>
+                      <div
+                        className="plus bg-success text-light fw-bold px-3 py-3"
+                        onClick={() => increment()}
+                      >
+                        +
+                      </div>
 
-                    <button
-                      className="cart-cart px-2 py-2 rounded btn d-flex py-4 rounded-0 btn-success text-light mt-2 cart-style cart-style1"
-                      style={{ marginLeft: "13%" }}
-                      onClick={() => addCartItem(data)}
-                    >
-                      Add To Cart
-                    </button>
-                  </>
-                ))}
+                      <button
+                        className="cart-cart px-2 py-2 rounded btn d-flex py-4 rounded-0 btn-success text-light mt-2 cart-style cart-style1"
+                        style={{ marginLeft: "13%" }}
+                        onClick={() => addCartItem(data)}
+                      >
+                        Add To Cart
+                      </button>
+                    </>
+                  ))
+                ) : (
+                  <p>No items available for purchase</p>
+                )}
               </div>
 
               <div>
@@ -662,11 +678,15 @@ function ProductDetail() {
               </div>
 
               <div className="mt-2 cart-cart">
-                {detail.slice(0, 1).map((data) => (
-                  <>
-                    <h4>SKU:{selectedSku || data.sku}</h4>
-                  </>
-                ))}
+                {Array.isArray(detail) && detail.length > 0 ? (
+                  detail.slice(0, 1).map((data) => (
+                    <>
+                      <h4>SKU:{selectedSku || data.sku}</h4>
+                    </>
+                  ))
+                ) : (
+                  <p>No SKU information available</p>
+                )}
               </div>
 
               <div className="d-flex flex-row flex-wrap justify-content-start mt-3 ms-0 ps-0 cart-cart">
@@ -677,7 +697,7 @@ function ProductDetail() {
                     to="/product-details"
                   >
                     <p>Electronics,</p>
-                    <p>laptop,</p>
+                    <p>Laptop,</p>
                     <p>Accessories,</p>
                     <p>Microscope</p>
                   </Link>
@@ -686,8 +706,8 @@ function ProductDetail() {
 
               <div className="d-flex flex-row flex-wrap justify-content-start mt-0 ms-0 ps-1 lh- cart-cart">
                 <h4>Tag:</h4>
-                {user.map((data, key) => (
-                  <>
+                {Array.isArray(user) && user.length > 0 ? (
+                  user.map((data, key) => (
                     <div
                       className="d-flex flex-row text-dark ms-1 mt-1 gap-0"
                       key={key}
@@ -699,8 +719,10 @@ function ProductDetail() {
                         <p>{data.name},</p>
                       </Link>
                     </div>
-                  </>
-                ))}
+                  ))
+                ) : (
+                  <p>No tags available</p>
+                )}
               </div>
 
               <div className="d-flex flex-row flex-wrap justify-content-start mt-0 ms-0 ps-1 lh- cart-cart">
@@ -732,95 +754,105 @@ function ProductDetail() {
       </div>
 
       <div className="container-fluid mt-3 mt-lg-0 cart-cart">
-        <h3 className="fw-bol text-center mt-lg-4 pt-2">Bought Together</h3>
+        <h3 className="fw-light text-center mt-lg-4 pt-2">Bought Together</h3>
         <div className="container">
-          <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
-            {detail.slice(0, 6).map((data, index) => {
-              const productLabel = label.find(
-                (item) => item.name === data.label
-              );
-              const labelColor = productLabel ? productLabel.color : "green";
-              return (
-                <div
-                  className="col-12 col-lg-3 col-md-6 text-center border-0 feature-box2 d-flex flex-column justify-content-between"
-                  key={index}
-                >
-                  <div
-                    className="feature-box rounded-0 position-relative rounded-1"
-                    style={{ cursor: "pointer" }}
-                    onClick={() =>
-                      applyImage(
-                        `/api/src/image/${data.image}`,
-                        data.name,
-                        data.description,
-                        data.price,
-                        data.store,
-                        data.price_sale,
-                        data.sku
-                      )
-                    }
-                  >
-                    <Link to="/product-details">
-                      <button
-                        className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                        style={{ backgroundColor: labelColor }}
-                      >
-                        {data.label}
-                      </button>
-                      <img
-                        src={`/api/src/image/${data.image}`}
-                        className="w-100 h-100 object-fit-cover border-0 image-watch"
+          {Array.isArray(detail) && detail.length > 0 ? (
+            <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
+              {Array.isArray(shop) && shop.length > 0 ? (
+                detail.slice(0, 6).map((data, index) => {
+                  const productLabel = label.find(
+                    (item) => item.name === data.label
+                  );
+                  const labelColor = productLabel
+                    ? productLabel.color
+                    : "green";
+                  const imageUrl = data.image
+                    ? `/api/src/image/${data.image}`
+                    : "/api/src/image/default-image.jpg";
+                  const getFormattedName = (name, index) => {
+                    const words = name.split(" ");
+                    if (index === 0) return words.slice(0, 4).join(" ");
+                    if (index === 1) return words.slice(0, 2).join(" ");
+                    if (index === 2) return words.slice(0, 5).join(" ");
+                    return name;
+                  };
+                  return (
+                    <div
+                      className="col-12 col-lg-3 col-md-6 text-center border-0 feature-box2 d-flex flex-column justify-content-between"
+                      key={index}
+                    >
+                      <div
+                        className="feature-box rounded-0 position-relative rounded-1"
                         style={{ cursor: "pointer" }}
-                      />
-                    </Link>
-                  </div>
-                  <hr />
+                        onClick={() =>
+                          applyImage(
+                            imageUrl,
+                            data.name,
+                            data.description,
+                            data.price,
+                            data.store,
+                            data.price_sale,
+                            data.sku
+                          )
+                        }
+                      >
+                        <Link to="/product-details">
+                          <button
+                            className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                            style={{ backgroundColor: labelColor }}
+                          >
+                            {data.label}
+                          </button>
+                          <img
+                            src={imageUrl}
+                            alt={`Product Image ${index + 1}`}
+                            className="w-100 h-100 object-fit-cover border-0 image-watch"
+                            style={{ cursor: "pointer" }}
+                          />
+                        </Link>
+                      </div>
+                      <hr />
 
-                  <h5 className="mt-1 lh-base text-start text-lg-start">
-                    {(() => {
-                      const words = (data.name || "Product Name").split(" ");
-                      if (index === 0) {
-                        return words.slice(0, 4).join(" ");
-                      } else if (index === 1) {
-                        return words.slice(0, 2).join(" ");
-                      } else if (index === 2) {
-                        return words.slice(0, 5).join(" ");
-                      } else {
-                        return data.name || "Product Name";
-                      }
-                    })()}
-                  </h5>
+                      <h5 className="mt-1 lh-base text-start text-lg-start">
+                        {getFormattedName(data.name || "Product Name", index)}
+                      </h5>
 
-                  <div
-                    className="d-flex justify-content-center justify-content-lg-start mb-1 gap-1 mt-0 flex-row"
-                    style={{ fontFamily: "verdana" }}
-                  >
-                    <h6 className="me-1">{data.price || "Price"}</h6>
-                    <strike className="text-danger fw-medium">
-                      {data.discountPrice || "$54"}
-                    </strike>
-                  </div>
+                      <div
+                        className="d-flex justify-content-center justify-content-lg-start mb-1 gap-1 mt-0 flex-row"
+                        style={{ fontFamily: "verdana" }}
+                      >
+                        <h6 className="me-1">{data.price || "Price"}</h6>
+                        <strike className="text-danger fw-medium">
+                          {data.discountPrice || "$54"}
+                        </strike>
+                      </div>
 
-                  <button
-                    className="d-flex btn btn-success justify-content-start mb-0 rounded-0 cart-cart align-self-start"
-                    onClick={() =>
-                      applyImage(
-                        `/api/src/image/${data.image}`,
-                        data.name,
-                        data.description,
-                        data.price,
-                        data.store,
-                        data.price_sale,
-                        data.sku
-                      )
-                    }
-                  >
-                    Buy Now
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+                      <button
+                        className="d-flex btn btn-success justify-content-start mb-0 rounded-0 cart-cart align-self-start"
+                        onClick={() =>
+                          applyImage(
+                            imageUrl,
+                            data.name,
+                            data.description,
+                            data.price,
+                            data.store,
+                            data.price_sale,
+                            data.sku
+                          )
+                        }
+                      >
+                        Buy Now
+                      </button>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-center">No shop data available</p>
+              )}
+            </div>
+          ) : (
+            <p className="text-center">No detail data available</p>
+          )}
         </div>
       </div>
 
@@ -873,78 +905,90 @@ function ProductDetail() {
       <div className="container-fluid mt-3 mt-lg-0 cart-cart">
         <h3 className="mt-lg-4 mt-0 text-center">Best Selling Item</h3>
         <div className="container">
-          <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
-            {detail.slice(0, 4).map((data, index) => {
-              const productLabel = label.find(
-                (item) => item.name === data.label
-              );
-              const labelColor = productLabel ? productLabel.color : "green";
-              return (
-                <div
-                  className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
-                  key={index}
-                >
-                  <div className="feature-box rounded-0 position-relative rounded-1">
-                    <Link to="/product-details">
-                      <button
-                        className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                        style={{ backgroundColor: labelColor }}
-                      >
-                        {data.label}
-                      </button>
-                      <img
-                        src={`/api/src/image/${data.image}`}
-                        className="w-100 h-100 object-fit-cover border-0 image-watch"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </Link>
-
-                    <button
-                      className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
-                      onClick={() => addWishlistItem(data)}
-                    >
-                      <FontAwesomeIcon icon={faHeart} />
-                      <div className="wishlist-button-content">
-                        Add to Wishlist
-                      </div>
-                    </button>
-
-                    <div className="add-to-cart-button-container">
-                      <button
-                        className="add-to-cart-button mt-4 d-flex flex-row"
-                        style={{ whiteSpace: "nowrap" }}
-                        onClick={() => addCartItem1(data)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faCartShopping}
-                          className="me-2 mt-0"
-                        />
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="ms-3">
-                    <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
-                      {data.store || "Product Name"}
-                    </h6>
-                    <h5 className="mt-0 lh-base text-start text-lg-start">
-                      {data.name || "Product Name"}
-                    </h5>
+          {Array.isArray(detail) && detail.length > 0 ? (
+            <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
+              {Array.isArray(detail) && detail.length > 0 ? (
+                detail.slice(0, 4).map((data, index) => {
+                  const productLabel = label.find(
+                    (item) => item.name === data.label
+                  );
+                  const labelColor = productLabel
+                    ? productLabel.color
+                    : "green";
+                  return (
                     <div
-                      className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
-                      style={{ fontFamily: "verdana" }}
+                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                      key={index}
                     >
-                      <h6 className="me-1">{data.price || "Price"}</h6>
-                      <strike className="text-danger fw-medium">
-                        {data.discountPrice || "$54"}
-                      </strike>
+                      <div className="feature-box rounded-0 position-relative rounded-1">
+                        <Link to="/product-details">
+                          <button
+                            className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                            style={{ backgroundColor: labelColor }}
+                          >
+                            {data.label}
+                          </button>
+                          <img
+                            src={`/api/src/image/${
+                              data.image || "default-image.jpg"
+                            }`}
+                            className="w-100 h-100 object-fit-cover border-0 image-watch"
+                            style={{ cursor: "pointer" }}
+                          />
+                        </Link>
+
+                        <button
+                          className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
+                          onClick={() => addWishlistItem(data)}
+                        >
+                          <FontAwesomeIcon icon={faHeart} />
+                          <div className="wishlist-button-content">
+                            Add to Wishlist
+                          </div>
+                        </button>
+
+                        <div className="add-to-cart-button-container">
+                          <button
+                            className="add-to-cart-button mt-4 d-flex flex-row"
+                            style={{ whiteSpace: "nowrap" }}
+                            onClick={() => addCartItem1(data)}
+                          >
+                            <FontAwesomeIcon
+                              icon={faCartShopping}
+                              className="me-2 mt-0"
+                            />
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                      <hr />
+                      <div className="ms-3">
+                        <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
+                          {data.store || "Product Name"}
+                        </h6>
+                        <h5 className="mt-0 lh-base text-start text-lg-start">
+                          {data.name || "Product Name"}
+                        </h5>
+                        <div
+                          className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
+                          style={{ fontFamily: "verdana" }}
+                        >
+                          <h6 className="me-1">{data.price || "Price"}</h6>
+                          <strike className="text-danger fw-medium">
+                            {data.discountPrice || "$54"}
+                          </strike>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })
+              ) : (
+                <p>No products available</p>
+              )}
+            </div>
+          ) : (
+            <p className="text-center"></p>
+          )}
         </div>
       </div>
 

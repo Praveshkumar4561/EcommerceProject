@@ -2168,7 +2168,7 @@ function Invoice() {
                   <button
                     className="btn btn-reloadss border me-1 text-light invoice-type d-flex flex-row align-items-center py-sm-0 ms-sm-2 ms-1 cart-cart"
                     type="button"
-                    style={{ backgroundColor: "#206bc4",height:"49px" }}
+                    style={{ backgroundColor: "#206bc4", height: "49px" }}
                   >
                     <svg
                       className="icon  svg-icon-ti-ti-file-export me-1"
@@ -2270,74 +2270,82 @@ function Invoice() {
                   </tr>
                 </thead>
                 <tbody>
-                  {invoice.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(invoice) && invoice.length > 0 ? (
+                    invoice.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td className="cart-cart">
-                        <Link to="#" className="text-decoration-none">
-                          {data.first_name}
-                          <span className="ms-1">{data.last_name}</span>
-                        </Link>
-                      </td>
+                        <td className="cart-cart">
+                          <Link to="#" className="text-decoration-none">
+                            {data.first_name}
+                            <span className="ms-1">{data.last_name}</span>
+                          </Link>
+                        </td>
 
-                      <td className="cart-cart">
-                        <span className="sliders1">{data.order_number}</span>
-                      </td>
+                        <td className="cart-cart">
+                          <span className="sliders1">{data.order_number}</span>
+                        </td>
 
-                      <td
-                        className="cart-cart"
-                        style={{ fontFamily: "verdana" }}
-                      >
-                        <Link>
-                          {`INV-${data.invoice_number.slice(-2).slice(0)}`}
-                        </Link>
-                      </td>
-
-                      <td>
-                        <span
-                          class="fw-medium lh-base px-2 bulk1"
+                        <td
+                          className="cart-cart"
                           style={{ fontFamily: "verdana" }}
                         >
-                          ${data.total}
-                        </span>
-                      </td>
-
-                      <td className="ps-3">
-                        {new Date(data.date).toISOString().split("T")[0]}
-                      </td>
-
-                      <td>
-                        <span class="badge badge-success fw-light cart-cart py-2 cart-cart">
-                          Pending
-                        </span>
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link
-                            to={`/admin/ecommerce/invoices/edit/${data.id}`}
-                          >
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                          <Link>
+                            {`INV-${data.invoice_number.slice(-2).slice(0)}`}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
+                        <td>
+                          <span
+                            class="fw-medium lh-base px-2 bulk1"
+                            style={{ fontFamily: "verdana" }}
+                          >
+                            ${data.total}
+                          </span>
+                        </td>
+
+                        <td className="ps-3">
+                          {new Date(data.date).toISOString().split("T")[0]}
+                        </td>
+
+                        <td>
+                          <span class="badge badge-success fw-light cart-cart py-2 cart-cart">
+                            Pending
+                          </span>
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/invoices/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No invoices available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

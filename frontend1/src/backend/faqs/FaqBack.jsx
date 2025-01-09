@@ -2225,7 +2225,8 @@ function FaqBack() {
                   </tr>
                 </thead>
                 <tbody>
-                  {user.map((data, key) => (
+                {Array.isArray(user) && user.length > 0 ? (
+  user.map((data, key) => (
                     <tr key={key}>
                       <td>
                         <input type="checkbox" className="form-check-input" />
@@ -2267,16 +2268,21 @@ function FaqBack() {
                           </Link>
                         </button>
 
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        <button className="btn btn-delete" type="button">
+          <FontAwesomeIcon
+            icon={faTrashCan}
+            className="fs-5"
+            onClick={() => deletedata(data.id)}
+          />
+        </button>
+      </td>
+    </tr>
+  ))
+) : (
+  <tr>
+    <td colSpan="9" className="text-center"></td>
+  </tr>
+)}
                 </tbody>
               </table>
             </div>

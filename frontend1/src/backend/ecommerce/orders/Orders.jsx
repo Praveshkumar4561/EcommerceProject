@@ -84,6 +84,11 @@ function Orders() {
   const resultsRef = useRef(null);
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+
+  let paymentgateway = () => {
+    setPayment(!payment);
+  };
 
   let togglespecification = () => {
     setSpecifcation(!Specification);
@@ -418,37 +423,6 @@ function Orders() {
                         <path d="M15 17v-3"></path>
                       </svg>
                       Report
-                    </li>
-                  </Link>
-
-                  <Link
-                    to="/admin/ecommerce/orders"
-                    className="text-light text-decoration-none"
-                  >
-                    <li>
-                      <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                        <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                        <path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"></path>
-                        <path d="M3 9l4 0"></path>
-                      </svg>
-                      Orders
                     </li>
                   </Link>
 
@@ -1281,27 +1255,124 @@ function Orders() {
               )}
             </div>
 
-            <li>
-              <svg
-                class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                <path d="M3 10l18 0"></path>
-                <path d="M7 15l.01 0"></path>
-                <path d="M11 15l2 0"></path>
-              </svg>
-              Payments
-            </li>
+            <div>
+              <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
+                <svg
+                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
+                  <path d="M3 10l18 0"></path>
+                  <path d="M7 15l.01 0"></path>
+                  <path d="M11 15l2 0"></path>
+                </svg>
+                Payments
+                <FontAwesomeIcon
+                  icon={faAngleDown}
+                  className={`float-end mt-2 pt-1 me-4 icon-down ${
+                    payment ? "rotate" : ""
+                  }`}
+                  onClick={paymentgateway}
+                />
+              </li>
+              {payment && (
+                <div className="faq-content d-flex flex-column ms-3 ps-2">
+                  <Link
+                    to="/admin/payments/transactions"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Transactions
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/payments/logs"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Payment Logs
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/payments/methods"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-point me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                      </svg>
+                      Payment Methods
+                    </li>
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
@@ -2210,62 +2281,78 @@ function Orders() {
                   </tr>
                 </thead>
                 <tbody>
-                  {customer.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <div className="d-flex flex-column gap-1">
-                          <FontAwesomeIcon
-                            icon={faPlay}
-                            className={`text-success me-4 ${
-                              visibleStore === data.id ? "rotated-success" : ""
-                            }`}
-                            onClick={() => toggleStore(data.id)}
-                          />
-                          <input type="checkbox" className="form-check-input" />
-                        </div>
-                      </td>
-                      <td>{data.id}</td>
-                      <td className="d-flex flex-column">
-                        <span className="d-flex flex-row">
-                          {data.first_name}
-                          <span className="ms-1">{data.last_name}</span>
-                        </span>
-                        <Link to={`/admin/ecommerce/orders/edit/${data.id}`}>
-                          {data.email}
-                        </Link>
-                        {data.phone_number}
-                      </td>
-                      <td style={{ fontFamily: "verdana" }}>${data.total}</td>
-                      <td></td>
-                      <td className="ps-4">
-                        <span className="badge badge-success fw-light cart-cart py-2"></span>
-                      </td>
-                      <td className="ps-4"></td>
-                      <td style={{ fontFamily: "verdana" }} className="ps-4">
-                        ${data.tax}
-                      </td>
-                      <td style={{ fontFamily: "verdana" }} className="ps-4">
-                        {data.shippingfee}
-                      </td>
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button className="btn btn-edit me-2" type="button">
-                          <Link to={`/admin/ecommerce/orders/edit/${data.id}`}>
+                  {Array.isArray(customer) && customer.length > 0 ? (
+                    customer.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <div className="d-flex flex-column gap-1">
                             <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
+                              icon={faPlay}
+                              className={`text-success me-4 ${
+                                visibleStore === data.id
+                                  ? "rotated-success"
+                                  : ""
+                              }`}
+                              onClick={() => toggleStore(data.id)}
                             />
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                            />
+                          </div>
+                        </td>
+                        <td>{data.id}</td>
+                        <td className="d-flex flex-column">
+                          <span className="d-flex flex-row">
+                            {data.first_name}
+                            <span className="ms-1">{data.last_name}</span>
+                          </span>
+                          <Link to={`/admin/ecommerce/orders/edit/${data.id}`}>
+                            {data.email}
                           </Link>
-                        </button>
-                        <button className="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
+                          {data.phone_number}
+                        </td>
+                        <td style={{ fontFamily: "verdana" }}>${data.total}</td>
+                        <td></td>
+                        <td className="ps-4">
+                          <span className="badge badge-success fw-light cart-cart py-2"></span>
+                        </td>
+                        <td className="ps-4"></td>
+                        <td style={{ fontFamily: "verdana" }} className="ps-4">
+                          ${data.tax}
+                        </td>
+                        <td style={{ fontFamily: "verdana" }} className="ps-4">
+                          {data.shippingfee}
+                        </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button className="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/orders/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No orders available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
 

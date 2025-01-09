@@ -2243,83 +2243,92 @@ function Shipment() {
                   </tr>
                 </thead>
                 <tbody>
-                  {shipment.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {/* {shipment.map((data, key) => ( */}
+                  {Array.isArray(shipment) && shipment.length > 0 ? (
+                    shipment.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td className="cart-cart">
-                        <Link
-                          to="#"
-                          className="text-decoration-none"
+                        <td className="cart-cart">
+                          <Link
+                            to="#"
+                            className="text-decoration-none"
+                            style={{ fontFamily: "verdana" }}
+                          >
+                            <span className="d-flex flex-row">
+                              {data.order_number}
+                              <FontAwesomeIcon
+                                icon={faCopy}
+                                className="ms-1 text-dark fs-5"
+                                onClick={() => handleCopy(data.order_number)}
+                                style={{ cursor: "pointer" }}
+                              />
+                            </span>
+                          </Link>
+                        </td>
+
+                        <td className="cart-cart d-flex flex-column">
+                          <span className="text-dark">
+                            {data.first_name} <span>{data.last_name}</span>
+                          </span>
+                          <span className="sliders1">{data.email}</span>
+                          <span>{data.phone_number}</span>
+                        </td>
+
+                        <td
+                          className="cart-cart ps-4"
                           style={{ fontFamily: "verdana" }}
                         >
-                          <span className="d-flex flex-row">
-                            {data.order_number}
-                            <FontAwesomeIcon
-                              icon={faCopy}
-                              className="ms-1 text-dark fs-5"
-                              onClick={() => handleCopy(data.order_number)}
-                              style={{ cursor: "pointer" }}
-                            />
+                          ${data.shippingfee}
+                        </td>
+
+                        <td>
+                          <span class="badge badge-success fw-medium lh-base px-2 bulk1">
+                            Pending
                           </span>
-                        </Link>
-                      </td>
+                        </td>
 
-                      <td className="cart-cart d-flex flex-column">
-                        <span className="text-dark">
-                          {data.first_name} <span>{data.last_name}</span>
-                        </span>
-                        <span className="sliders1">{data.email}</span>
-                        <span>{data.phone_number}</span>
-                      </td>
+                        <td className="ps-3">
+                          <span class="badge badge-success fw-medium lh-base px-2 bulk1">
+                            Not Available
+                          </span>
+                        </td>
+                        <td className="ps-3">
+                          {new Date(data.date).toISOString().split("T")[0]}
+                        </td>
 
-                      <td
-                        className="cart-cart ps-4"
-                        style={{ fontFamily: "verdana" }}
-                      >
-                        ${data.shippingfee}
-                      </td>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link
+                              to={`/admin/ecommerce/shipments/edit/${data.id}`}
+                            >
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
 
-                      <td>
-                        <span class="badge badge-success fw-medium lh-base px-2 bulk1">
-                          Pending
-                        </span>
-                      </td>
-
-                      <td className="ps-3">
-                        <span class="badge badge-success fw-medium lh-base px-2 bulk1">
-                          Not Available
-                        </span>
-                      </td>
-                      <td className="ps-3">
-                        {new Date(data.date).toISOString().split("T")[0]}
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
-                          <Link
-                            to={`/admin/ecommerce/shipments/edit/${data.id}`}
-                          >
+                          <button className="btn btn-delete" type="button">
                             <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
                             />
-                          </Link>
-                        </button>
-
-                        <button class="btn btn-delete" type="button">
-                          <FontAwesomeIcon
-                            icon={faTrashCan}
-                            className="fs-5"
-                            onClick={() => deletedata(data.id)}
-                          />
-                        </button>
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No shipment available
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
