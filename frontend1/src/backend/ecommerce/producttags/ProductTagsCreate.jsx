@@ -158,7 +158,7 @@ function ProductTagsCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/producttags", user);
+      const response = await axios.post("http://50.18.56.183:1600/producttags", user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-tags");
       }

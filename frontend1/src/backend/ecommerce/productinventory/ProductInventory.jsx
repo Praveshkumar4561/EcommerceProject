@@ -175,14 +175,14 @@ function ProductInventory() {
   }, [search]);
 
   const searchbar = async () => {
-    let response = await axios.get(`/api/productsearch/${search}`);
+    let response = await axios.get(`http://50.18.56.183:1600/productsearch/${search}`);
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
   let [user, setUser] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("/api/productpagedata");
+    let response = await axios.get("http://50.18.56.183:1600/productpagedata");
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
@@ -207,7 +207,7 @@ function ProductInventory() {
     try {
       console.log("Sending PUT request with data:", updatedData);
       const response = await axios.put(
-        `/api/productinventory/${id}`,
+        `http://50.18.56.183:1600/productinventory/${id}`,
         updatedData
       );
       alert("Data updated successfully");

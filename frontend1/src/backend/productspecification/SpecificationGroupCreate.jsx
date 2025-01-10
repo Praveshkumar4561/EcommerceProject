@@ -185,7 +185,7 @@ function SpecificationGroupCreate() {
       return;
     }
     try {
-      await axios.post("/api/specification", user);
+      await axios.post("http://50.18.56.183:1600/specification", user);
       setErrors({});
       navigate("/admin/ecommerce/specification-groups");
     } catch (error) {

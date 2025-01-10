@@ -179,17 +179,17 @@ function Announcement() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`/api/search/${search}`);
+    let response = await axios.get(`http://50.18.56.183:1600/search/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("/api/getannounce");
+    let response = await axios.get("http://50.18.56.183:1600/getannounce");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`/api/deleteannoune/${id}`, user);
+    await axios.delete(`http://50.18.56.183:1600/deleteannoune/${id}`, user);
     alert("data sucessfully deleted");
   };
 

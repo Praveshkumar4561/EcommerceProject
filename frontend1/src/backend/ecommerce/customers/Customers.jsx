@@ -176,7 +176,7 @@ function Customers() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`/api/customersearch/${search}`);
+    let response = await axios.get(`http://50.18.56.183:1600/customersearch/${search}`);
     setUser(response.data);
   };
 
@@ -185,13 +185,13 @@ function Customers() {
   let [user, setUser] = useState([]);
 
   let alldata = async () => {
-    let response = await axios.get("/api/alldata");
+    let response = await axios.get("http://50.18.56.183:1600/alldata");
     setUser(response.data);
     setCount1(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`/api/customerdelete/${id}`, user);
+    await axios.delete(`http://50.18.56.183:1600/customerdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -199,7 +199,7 @@ function Customers() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("/api/export-customerdata", {
+      const response = await axios.get("http://50.18.56.183:1600/export-customerdata", {
         responseType: "blob",
       });
       if (response.data.size > 0) {

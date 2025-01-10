@@ -237,7 +237,7 @@ function GalleryCreate() {
     formData.append("status", status);
     formData.append("file", file);
 
-    const response = await axios.post("/api/gallerypost", formData);
+    const response = await axios.post("http://50.18.56.183:1600/gallerypost", formData);
     if (response.status === 200) {
       navigate("/admin/galleries");
       alert("data successfully submitted and file upload");

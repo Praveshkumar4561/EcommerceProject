@@ -164,7 +164,7 @@ function FaqsEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`/api/faqspageupdate/${id}`, user);
+      const response = await axios.put(`http://50.18.56.183:1600/faqspageupdate/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/faqs");
       }
@@ -182,7 +182,7 @@ function FaqsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/faqsomedata/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/faqsomedata/${id}`);
     setUser(response.data[0]);
   };
 

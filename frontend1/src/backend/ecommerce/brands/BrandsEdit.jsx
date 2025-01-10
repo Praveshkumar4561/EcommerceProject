@@ -203,7 +203,7 @@ function BrandsEdit() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.put(`/api/brandupdate/${id}`, formData);
+      const response = await axios.put(`http://50.18.56.183:1600/brandupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/brands");
       }
@@ -221,7 +221,7 @@ function BrandsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/brandssomedata/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/brandssomedata/${id}`);
     setUser(response.data[0]);
   };
 

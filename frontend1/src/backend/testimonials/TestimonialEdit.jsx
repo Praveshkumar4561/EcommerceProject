@@ -190,7 +190,7 @@ function TestimonialEdit() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await axios.get(`/api/sometest/${id}`);
+        let response = await axios.get(`http://50.18.56.183:1600/sometest/${id}`);
         const userData = response.data[0];
         setUser(userData);
         setEditorData2(userData.content || "");
@@ -281,7 +281,7 @@ function TestimonialEdit() {
     formData.append("file", user.file);
 
     try {
-      const response = await axios.put(`/api/updatetest/${id}`, formData);
+      const response = await axios.put(`http://50.18.56.183:1600/updatetest/${id}`, formData);
       if (response.status === 200) {
         alert("Data updated");
         navigate("/admin/testimonials");

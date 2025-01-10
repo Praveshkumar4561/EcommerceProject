@@ -33,7 +33,7 @@ function CustomerAccount() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -65,7 +65,10 @@ function CustomerAccount() {
     console.log("ID:", id);
     if (validateForm()) {
       try {
-        const response = await axios.put(`/api/userupdate/${id}`, user);
+        const response = await axios.put(
+          `http://50.18.56.183:1600/userupdate/${id}`,
+          user
+        );
         setUser(response.data);
         console.log("User data updated:", response.data);
         navigate("/user/address");
@@ -84,7 +87,9 @@ function CustomerAccount() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/dashboardsome/${1}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/dashboardsome/${1}`
+    );
     setUser(response.data[0]);
   };
 
@@ -113,7 +118,7 @@ function CustomerAccount() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("/api/getannounce");
+        let response = await axios.get("http://50.18.56.183:1600/getannounce");
         setPassword(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -134,15 +139,13 @@ function CustomerAccount() {
     );
   };
 
-  //  logout logic
-
   const [auth, setAuth] = useState(true);
   const [message, setMessage] = useState("");
 
   let handleDelete = () => {
-    axios.defaults.withCredentials = true;
+    axios.defaults.withCredentials = false;
     axios
-      .get("/api/logout")
+      .get("http://50.18.56.183:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -171,7 +174,7 @@ function CustomerAccount() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("/api/alldata");
+    let response = await axios.get("http://50.18.56.183:1600/alldata");
     setDetail(response.data);
   };
   userdata();

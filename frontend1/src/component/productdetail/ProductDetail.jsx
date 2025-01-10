@@ -29,7 +29,7 @@ function ProductDetail() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -222,7 +222,7 @@ function ProductDetail() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("/api/productpagedata");
+      let response = await axios.get("http://50.18.56.183:1600/productpagedata");
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -235,7 +235,7 @@ function ProductDetail() {
   useEffect(() => {
     const shopdata = async () => {
       try {
-        const response = await axios.get("/api/productpagedata");
+        const response = await axios.get("http://50.18.56.183:1600/productpagedata");
         setShop(response.data);
       } catch (error) {
         console.error("Error occurred", error);
@@ -301,7 +301,7 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("/api/addcart", formData, {
+      await axios.post("http://50.18.56.183:1600/addcart", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -323,7 +323,7 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("/api/wishlistpost", formData);
+      const response = await axios.post("http://50.18.56.183:1600/wishlistpost", formData);
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -333,7 +333,7 @@ function ProductDetail() {
   let [user, setUser] = useState([]);
 
   let tagdata = async () => {
-    let response = await axios.get("/api/producttagdata");
+    let response = await axios.get("http://50.18.56.183:1600/producttagdata");
     setUser(response.data);
   };
   tagdata();
@@ -350,7 +350,7 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("/api/addcart", formData, {
+      const response = await axios.post("http://50.18.56.183:1600/addcart", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -367,7 +367,7 @@ function ProductDetail() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("/api/productlabelsdata");
+    let response = await axios.get("http://50.18.56.183:1600/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();

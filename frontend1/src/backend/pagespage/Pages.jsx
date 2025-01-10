@@ -177,18 +177,18 @@ function Pages() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `/api/pagesearch/${search}`
+      `http://50.18.56.183:1600/pagesearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("/api/pagesdata");
+    let response = await axios.get("http://50.18.56.183:1600/pagesdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`/api/pagesdelete/${id}`, user);
+    await axios.delete(`http://50.18.56.183:1600/pagesdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

@@ -185,7 +185,7 @@ function AdsEdit() {
     formData.append("expired", expired);
     formData.append("file", file);
     try {
-      const response = await axios.put(`/api/adsupdate/${id}`, formData);
+      const response = await axios.put(`http://50.18.56.183:1600/adsupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/ads");
       }
@@ -203,7 +203,7 @@ function AdsEdit() {
   }, []);
 
   let editdata = async () => {
-    let response = await axios.get(`/api/adsomedataads/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/adsomedataads/${id}`);
     setUser(response.data[0]);
   };
 

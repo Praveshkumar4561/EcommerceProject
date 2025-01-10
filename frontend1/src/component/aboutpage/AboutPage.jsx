@@ -24,7 +24,7 @@ function AboutUsPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -36,7 +36,6 @@ function AboutUsPage() {
   const dropdownRef = useRef(null);
   const toggleButtonRef = useRef(null);
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -52,7 +51,6 @@ function AboutUsPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Toggle the dropdown menu
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -64,7 +62,7 @@ function AboutUsPage() {
     let showdata = async () => {
       try {
         let response = await axios.get(
-          "http://54.177.39.109:1600/gettestimonials"
+          "http://50.18.56.183:1600/gettestimonials"
         );
         setUser(response.data);
       } catch (error) {

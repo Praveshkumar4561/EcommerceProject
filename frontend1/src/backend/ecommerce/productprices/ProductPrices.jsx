@@ -178,7 +178,7 @@ function ProductPrices() {
 
   const searchbar = async () => {
     try {
-      let response = await axios.get(`/api/productsearch/${search}`, user);
+      let response = await axios.get(`http://50.18.56.183:1600/productsearch/${search}`, user);
       setPrice(response.data);
       console.log("Search data:", response.data);
     } catch (error) {
@@ -189,7 +189,7 @@ function ProductPrices() {
   const [price, setPrice] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("/api/productpagedata");
+    let response = await axios.get("http://50.18.56.183:1600/productpagedata");
     setPrice(response.data);
   };
 
@@ -218,7 +218,7 @@ function ProductPrices() {
       return;
     }
     try {
-      await axios.put(`/api/productpriceupdate/${id}`, {
+      await axios.put(`http://50.18.56.183:1600/productpriceupdate/${id}`, {
         cost,
         price: productPrice,
         price_sale,

@@ -177,7 +177,7 @@ function FlashSalesCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/flashsales", user);
+      const response = await axios.post("http://50.18.56.183:1600/flashsales", user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/flash-sales");
       }
@@ -223,7 +223,7 @@ function FlashSalesCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `/api/productpagedata?search=${search}`
+          `http://50.18.56.183:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -2016,62 +2016,7 @@ function FlashSalesCreate() {
         </div>
       </div>
 
-      {/* <div className="container ms-1">
-        <div className="row border w rounded pt-4 flash-product">
-          <p className="ms-1">Products</p>
-          <hr />
-          <div>
-            <input
-              type="text"
-              placeholder="Search or create a new product"
-              className="form-control py-4 form-order"
-              name="search"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-            {loading && <p>Loading...</p>}
-            {error && <p>{error}</p>}
-
-            <div className="product-list">
-              {products.length > 0 ? (
-                products.map((product) => {
-                  const imageUrl = `/api/productpagedata/src/image/${product.image}`;
-                  return (
-                    <div
-                      key={product.id}
-                      className="product-card border w-auto h-auto m-1 rounded"
-                    >
-                      <div
-                        className="d-flex flex-row"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <img
-                          src={imageUrl}
-                          alt="img not found"
-                          onError={(e) =>
-                            (e.target.src =
-                              "/api/path/to/fallback-image.jpg")
-                          }
-                          className="product-image img-thumbnail mt-2 ms-2 mb-2"
-                        />
-                        <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
-                          {product.name}
-                        </h5>
-                        <p className="product-price mt-4 ms-2 pt-2">
-                          {product.price}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <span className="mt-2 ms-2"></span>
-              )}
-            </div>
-          </div>
-        </div>
-      </div> */}
+      
     </>
   );
 }

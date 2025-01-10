@@ -20,7 +20,7 @@ function Login() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -46,7 +46,7 @@ function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/login", user, {
+      const response = await axios.post("http://50.18.56.183:1600/login", user, {
         withCredentials: true,
       });
       if (response.data.Status === "Success") {
@@ -64,7 +64,7 @@ function Login() {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/submit", registerUser);
+      const response = await axios.post("http://50.18.56.183:1600/submit", registerUser);
       if (response.data.status === "success") {
         navigate("/login");
       }

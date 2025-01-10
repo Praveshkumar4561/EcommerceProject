@@ -84,7 +84,7 @@ function FaqCategoryEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`/api/faqcategoryupdate/${id}`, user);
+      const response = await axios.put(`http://50.18.56.183:1600/faqcategoryupdate/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/faq-categories");
       }
@@ -102,7 +102,7 @@ function FaqCategoryEdit() {
   }, []);
 
   let categorydata = async () => {
-    let response = await axios.get(`/api/faqcategorysomedata/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/faqcategorysomedata/${id}`);
     setUser(response.data[0]);
   };
 

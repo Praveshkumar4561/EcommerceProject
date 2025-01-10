@@ -264,7 +264,7 @@ function ProductsEdit() {
     formData.append("label", selectedLabels || "");
     formData.append("label1", selectedLabels1 || "");
     try {
-      const response = await axios.put(`/api/productupdate/${id}`, formData);
+      const response = await axios.put(`http://50.18.56.183:1600/productupdate/${id}`, formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/products");
       }
@@ -306,7 +306,7 @@ function ProductsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/productsomedata/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/productsomedata/${id}`);
     setUser(response.data[0]);
   };
 
@@ -505,7 +505,7 @@ function ProductsEdit() {
 
   const attributedata = async () => {
     try {
-      let response = await axios.get("/api/attributesdata");
+      let response = await axios.get("http://50.18.56.183:1600/attributesdata");
       setCreate(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -547,7 +547,7 @@ function ProductsEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `/api/productpagedata?search=${search}`
+          `http://50.18.56.183:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {

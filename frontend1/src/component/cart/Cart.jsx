@@ -41,7 +41,7 @@ function Cart() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("/api/allcartdata");
+        const response = await axios.get("http://50.18.56.183:1600/allcartdata");
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,
@@ -57,7 +57,7 @@ function Cart() {
 
   const deletedata = async (id) => {
     try {
-      await axios.delete(`/api/deletecart/${id}`);
+      await axios.delete(`http://50.18.56.183:1600/deletecart/${id}`);
       const updatedUser = user.filter((item) => item.id !== id);
       setUser(updatedUser);
       console.log("Updated cart:", updatedUser);

@@ -32,19 +32,22 @@ function Galleries() {
   }, [search]);
 
   let serachbar = async () => {
-    const response = await axios.get(`/api/galleryfil/${search}`);
+    const response = await axios.get(`http://50.18.56.183:1600/galleryfil/${search}`);
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("/api/gallerydata");
+    
+    let response = await axios.get("http://50.18.56.183:1600/gallerydata");
+
+
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`/api/deletegallery/${id}`);
+      await axios.delete(`http://50.18.56.183:1600/deletegallery/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);

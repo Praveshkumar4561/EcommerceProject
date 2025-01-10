@@ -181,17 +181,17 @@ function BlogPost() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`/api/blogpostsearch/${search}`);
+    let response = await axios.get(`http://50.18.56.183:1600/blogpostsearch/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("/api/blogpostdata");
+    let response = await axios.get("http://50.18.56.183:1600/blogpostdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`/api/deleteblogpost/${id}`, user);
+    await axios.delete(`http://50.18.56.183:1600/deleteblogpost/${id}`, user);
     alert("data sucessfully deleted");
   };
 

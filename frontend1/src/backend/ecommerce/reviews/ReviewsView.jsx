@@ -199,7 +199,7 @@ function ReviewsView() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post("/api/reviewdatasubmit", formData);
+      const response = await axios.post("http://50.18.56.183:1600/reviewdatasubmit", formData);
       if (response.status === 200) {
         navigate("/admin/ecommerce/reviews");
       }
@@ -216,7 +216,7 @@ function ReviewsView() {
 
   let deletedata = async () => {
     try {
-      let response = await axios.delete(`/api/deleteviewreview/${id}`, {
+      let response = await axios.delete(`http://50.18.56.183:1600/deleteviewreview/${id}`, {
         data: user,
       });
       if (response.status === 200) {
@@ -235,7 +235,7 @@ function ReviewsView() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/reviewsomedata/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/reviewsomedata/${id}`);
     setUser(response.data[0]);
   };
 
@@ -2246,22 +2246,7 @@ function ReviewsView() {
             </div>
           </div>
 
-          {/* <div class="card-contain">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title fw-lighter">Product</h5>
-              <hr className="custom-hori" />
-              <span style={{ whiteSpace: "nowrap" }}>
-                <img
-                  src={`/api/src/image/${user.image}`}
-                  alt=""
-                  className="img-thumbnail w-25 mb-3 mt-2"
-                />
-                <span> {user.user_name} </span>
-              </span>
-            </div>
-          </div>
-        </div> */}
+         
         </div>
       </div>
     </>

@@ -176,7 +176,7 @@ function ProductLabelsEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`/api/labelsupdate/${id}`, user);
+      const response = await axios.put(`http://50.18.56.183:1600/labelsupdate/${id}`, user);
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-labels");
       }
@@ -194,7 +194,7 @@ function ProductLabelsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/productlabelsdata/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/productlabelsdata/${id}`);
     setUser(response.data[0]);
   };
 

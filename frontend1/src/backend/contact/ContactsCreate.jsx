@@ -176,7 +176,7 @@ function ContactsCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("/api/contactdata", user);
+      const response = await axios.post("http://50.18.56.183:1600/contactdata", user);
       if (response.status === 200) {
         navigate("/admin/contacts");
       }

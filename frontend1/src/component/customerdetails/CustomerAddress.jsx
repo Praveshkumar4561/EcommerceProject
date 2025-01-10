@@ -35,7 +35,7 @@ function CustomerAddress() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -47,7 +47,9 @@ function CustomerAddress() {
 
   const alldata = async () => {
     try {
-      let response = await axios.get("/api/userdashboarddata");
+      let response = await axios.get(
+        "http://50.18.56.183:1600/userdashboarddata"
+      );
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user data", error);
@@ -56,7 +58,7 @@ function CustomerAddress() {
   alldata();
 
   let removedata = async (id) => {
-    await axios.delete(`/api/deleteuser/${id}`, user);
+    await axios.delete(`http://50.18.56.183:1600/deleteuser/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -65,7 +67,7 @@ function CustomerAddress() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("/api/getannounce");
+      let response = await axios.get("http://50.18.56.183:1600/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -83,17 +85,15 @@ function CustomerAddress() {
     );
   };
 
-  //  logout logic
-
   const [auth, setAuth] = useState(true);
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
   let handleDelete = () => {
-    axios.defaults.withCredentials = true;
+    axios.defaults.withCredentials = false;
     axios
-      .get("/api/logout")
+      .get("http://50.18.56.183:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -113,7 +113,7 @@ function CustomerAddress() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("/api/alldata");
+    let response = await axios.get("http://50.18.56.183:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -466,8 +466,8 @@ function CustomerAddress() {
                   </Link>
                 </li>
 
-                <li>
-                  <img src={Cart_logout} alt="404" className="me-2" />
+                <li onClick={handleDelete} style={{ cursor: "pointer" }}>
+                  <img src={Cart_logout} alt="Logout" className="me-2" />
                   Logout
                 </li>
               </ul>

@@ -178,17 +178,17 @@ function ProductLabels() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`/api/searchlabels/${search}`);
+    let response = await axios.get(`http://50.18.56.183:1600/searchlabels/${search}`);
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("/api/productlabelsdata");
+    let response = await axios.get("http://50.18.56.183:1600/productlabelsdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`/api/deletelabels/${id}`, user);
+    await axios.delete(`http://50.18.56.183:1600/deletelabels/${id}`, user);
     alert("data sucessfully deleted");
   };
 

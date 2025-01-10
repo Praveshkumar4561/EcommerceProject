@@ -254,7 +254,7 @@ function BlogPostCreate() {
     formData.append("file", user.file);
 
     try {
-      const response = await axios.post("/api/blogpostsubmit", formData);
+      const response = await axios.post("http://50.18.56.183:1600/blogpostsubmit", formData);
       if (response.status === 200) {
         navigate("/admin/blog/posts");
       }

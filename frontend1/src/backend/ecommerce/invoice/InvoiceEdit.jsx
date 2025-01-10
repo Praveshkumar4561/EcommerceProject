@@ -172,7 +172,7 @@ function InvoiceEdit() {
   });
 
   let alldata = async () => {
-    let response = await axios.get(`/api/checkoutsome/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/checkoutsome/${id}`);
     setUser(response.data[0]);
     setInvoice(response.data);
   };

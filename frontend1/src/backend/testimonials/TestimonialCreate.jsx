@@ -128,7 +128,7 @@ function TestimonialCreate() {
     formData.append("file", user.file);
 
     try {
-      const response = await axios.post("/api/testimonials", formData);
+      const response = await axios.post("http://50.18.56.183:1600/testimonials", formData);
       if (response.status === 200) {
         alert("Data successfully submitted and file uploaded");
         navigate("/admin/testimonials");

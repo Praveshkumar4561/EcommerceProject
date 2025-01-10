@@ -33,7 +33,7 @@ function CustomerDashEdit() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -71,7 +71,10 @@ function CustomerDashEdit() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.put(`/api/dashboardedit/${id}`, user);
+        const response = await axios.put(
+          `http://50.18.56.183:1600/dashboardedit/${id}`,
+          user
+        );
         setUser(response.data);
         navigate("/user/address");
       } catch (error) {
@@ -85,7 +88,10 @@ function CustomerDashEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/dashboardsome/${id}`, user);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/dashboardsome/${id}`,
+      user
+    );
     setUser(response.data[0]);
   };
 
@@ -145,7 +151,7 @@ function CustomerDashEdit() {
   useEffect(() => {
     const editData = async () => {
       try {
-        let response = await axios.get("/api/getannounce");
+        let response = await axios.get("http://50.18.56.183:1600/getannounce");
         setEdit(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -167,35 +173,35 @@ function CustomerDashEdit() {
     );
   };
 
-  //  logout logic
 
-  const [auth, setAuth] = useState(true);
-  const [message, setMessage] = useState("");
 
-  let handleDelete = () => {
-    axios.defaults.withCredentials = true;
-    axios
-      .get("/api/logout")
-      .then((res) => {
-        if (res.data.Status === "Success") {
-          setAuth(false);
-          setMessage("Logged out successfully!");
-          alert("Logged out successfully!");
-          navigate("/login");
-        } else {
-          setMessage(res.data.Error);
-        }
-      })
-      .catch((err) => {
-        console.log("Error during logout:", err);
-        setMessage("Logout failed, please try again.");
-      });
-  };
+   const [auth, setAuth] = useState(true);
+   const [message, setMessage] = useState("");
+ 
+   let handleDelete = () => {
+     axios.defaults.withCredentials = false;
+     axios
+       .get("http://50.18.56.183:1600/logout")
+       .then((res) => {
+         if (res.data.Status === "Success") {
+           setAuth(false);
+           setMessage("Logged out successfully!");
+           alert("Logged out successfully!");
+           navigate("/login");
+         } else {
+           setMessage(res.data.Error);
+         }
+       })
+       .catch((err) => {
+         console.log("Error during logout:", err);
+         setMessage("Logout failed, please try again.");
+       });
+   };
 
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("/api/alldata");
+    let response = await axios.get("http://50.18.56.183:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -552,8 +558,8 @@ function CustomerDashEdit() {
                   </Link>
                 </li>
 
-                <li>
-                  <img src={Cart_logout} alt="404" className="me-2" />
+                <li onClick={handleDelete} style={{ cursor: "pointer" }}>
+                  <img src={Cart_logout} alt="Logout" className="me-2" />
                   Logout
                 </li>
               </ul>

@@ -35,19 +35,19 @@ function Orders() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`/api/customerget/${search}`);
+    let response = await axios.get(`http://50.18.56.183:1600/customerget/${search}`);
     setCustomer(response.data);
   };
 
   let customerdata = async () => {
-    const response = await axios.get("/api/checkoutdata");
+    const response = await axios.get("http://50.18.56.183:1600/checkoutdata");
     setCustomer(response.data);
     setCount5(response.data.length);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`/api/deleteorder1/${id}`);
+      await axios.delete(`http://50.18.56.183:1600/deleteorder1/${id}`);
       alert("Order deleted successfully");
     } catch (error) {
       console.error("Error deleting data:", error);
@@ -201,7 +201,7 @@ function Orders() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("/api/order-export", {
+      const response = await axios.get("http://50.18.56.183:1600/order-export", {
         responseType: "blob",
       });
 

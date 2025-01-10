@@ -82,7 +82,7 @@ function NewsLetters() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("/api/export-excel", {
+      const response = await axios.get("http://50.18.56.183:1600/export-excel", {
         responseType: "blob",
       });
 

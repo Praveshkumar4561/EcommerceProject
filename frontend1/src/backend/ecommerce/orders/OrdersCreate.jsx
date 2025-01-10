@@ -33,7 +33,7 @@ function OrdersCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `/api/productpagedata?search=${search}`
+          `http://50.18.56.183:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -201,7 +201,7 @@ function OrdersCreate() {
 
   const customerData = async () => {
     try {
-      const response = await axios.get("/api/customersdata");
+      const response = await axios.get("/http://50.18.56.183:1600customersdata");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customer data:", error);

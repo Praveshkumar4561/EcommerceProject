@@ -25,7 +25,7 @@ function BlogDetails() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -64,14 +64,14 @@ function BlogDetails() {
   let [detail1, setDetail1] = useState([]);
 
   let blogsdata = async () => {
-    let response = await axios.get("/api/blogpostdata");
+    let response = await axios.get("http://50.18.56.183:1600/blogpostdata");
     setDetail(response.data);
     setDetail1(response.data);
   };
   blogsdata();
 
   let alldata = async () => {
-    let response = await axios.get("/api/blogalldata");
+    let response = await axios.get("http://50.18.56.183:1600/blogalldata");
     setWelcome(response.data);
   };
   alldata();
@@ -79,7 +79,7 @@ function BlogDetails() {
   useEffect(() => {
     const fetchBlogDetails = async () => {
       try {
-        const response = await axios.get(`/api/blogpostdata/${id}`);
+        const response = await axios.get(`http://50.18.56.183:1600/blogpostdata/${id}`);
         setBlog(response.data);
       } catch (error) {
         console.error("Error fetching:", error);

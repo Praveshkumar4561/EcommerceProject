@@ -201,7 +201,7 @@ function SpecificationTableEdit() {
     };
 
     try {
-      await axios.put(`/api/spceficationupdatetable/${id}`, formData);
+      await axios.put(`http://50.18.56.183:1600/spceficationupdatetable/${id}`, formData);
       setErrors({});
       navigate("/admin/ecommerce/specification-tables");
     } catch (error) {
@@ -218,7 +218,7 @@ function SpecificationTableEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`/api/spceficationdatasometable/${id}`);
+    let response = await axios.get(`http://50.18.56.183:1600/spceficationdatasometable/${id}`);
     setUser(response.data[0]);
   };
 
@@ -240,7 +240,7 @@ function SpecificationTableEdit() {
 
   const alldata = async () => {
     try {
-      const response = await axios.get(`/api/spceficationdatasome/${id}`);
+      const response = await axios.get(`http://50.18.56.183:1600/spceficationdatasome/${id}`);
       if (Array.isArray(response.data)) {
         setEdit(response.data);
       } else {
@@ -257,7 +257,7 @@ function SpecificationTableEdit() {
   }, [id]);
 
   const alldata1 = async () => {
-    let response = await axios.get("/api/spceficationdata");
+    let response = await axios.get("http://50.18.56.183:1600/spceficationdata");
     setList(response.data);
   };
   alldata1();

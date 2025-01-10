@@ -33,7 +33,7 @@ function CustomerAddressCreate() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("/api/allcartdata");
+      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -69,7 +69,10 @@ function CustomerAddressCreate() {
     e.preventDefault();
     if (validateForm()) {
       try {
-        const response = await axios.post("/api/userdashboard", user);
+        const response = await axios.post(
+          "http://50.18.56.183:1600/userdashboard",
+          user
+        );
         setUser(response.data);
         navigate("/user/address");
       } catch (error) {
@@ -133,7 +136,7 @@ function CustomerAddressCreate() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("/api/getannounce");
+      let response = await axios.get("http://50.18.56.183:1600/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -155,15 +158,13 @@ function CustomerAddressCreate() {
     }
   };
 
-  //  logout logic
-
   const [auth, setAuth] = useState(true);
   const [message, setMessage] = useState("");
 
   let handleDelete = () => {
-    axios.defaults.withCredentials = true;
+    axios.defaults.withCredentials = false;
     axios
-      .get("/api/logout")
+      .get("http://50.18.56.183:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -183,7 +184,7 @@ function CustomerAddressCreate() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("/api/alldata");
+    let response = await axios.get("http://50.18.56.183:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -219,66 +220,65 @@ function CustomerAddressCreate() {
           </div>
 
           <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-  {Array.isArray(detail) && detail.length > 0 ? (
-    detail.slice(0, 1).map((data, key) => (
-      <div
-        className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
-        key={key}
-      >
-        <div className="free-shipping d-flex flex-row me-3">
-          <span className="d-flex align-items-center gap-2">
-            <div className="d-sm-flex ms-auto d-flex">
-              <Link to="/user/dashboard" className="nav-link">
-                {data.first_name ? (
-                  <div
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      color: "white",
-                      fontSize: "18px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                    className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
-                  >
-                    {data.first_name.charAt(0).toUpperCase()}
+            {Array.isArray(detail) && detail.length > 0 ? (
+              detail.slice(0, 1).map((data, key) => (
+                <div
+                  className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+                  key={key}
+                >
+                  <div className="free-shipping d-flex flex-row me-3">
+                    <span className="d-flex align-items-center gap-2">
+                      <div className="d-sm-flex ms-auto d-flex">
+                        <Link to="/user/dashboard" className="nav-link">
+                          {data.first_name ? (
+                            <div
+                              style={{
+                                width: "40px",
+                                height: "40px",
+                                borderRadius: "50%",
+                                color: "white",
+                                fontSize: "18px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
+                            >
+                              {data.first_name.charAt(0).toUpperCase()}
+                            </div>
+                          ) : (
+                            <img
+                              src={Profile}
+                              alt="Profile"
+                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                            />
+                          )}
+                        </Link>
+
+                        <div className="d-flex flex-column me-4">
+                          <span className="me-4 pe-2">
+                            Hello {data.first_name || "User"}
+                          </span>
+                          <span className="ms-4">{data.email}</span>
+                        </div>
+
+                        <Link to="/cart" className="nav-link d-flex mt-1">
+                          <img
+                            src={Cart}
+                            alt="Cart"
+                            className="img-fluid profile1 me-2"
+                          />
+                          <div className="addcarts-lyte2 ms-3">{count}</div>
+                        </Link>
+                      </div>
+                    </span>
                   </div>
-                ) : (
-                  <img
-                    src={Profile}
-                    alt="Profile"
-                    className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
-                  />
-                )}
-              </Link>
-
-              <div className="d-flex flex-column me-4">
-                <span className="me-4 pe-2">
-                  Hello {data.first_name || "User"}
-                </span>
-                <span className="ms-4">{data.email}</span>
-              </div>
-
-              <Link to="/cart" className="nav-link d-flex mt-1">
-                <img
-                  src={Cart}
-                  alt="Cart"
-                  className="img-fluid profile1 me-2"
-                />
-                <div className="addcarts-lyte2 ms-3">{count}</div>
-              </Link>
-            </div>
-          </span>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="no-details"></div>
-  )}
-</div>
-
+                </div>
+              ))
+            ) : (
+              <div className="no-details"></div>
+            )}
+          </div>
         </div>
 
         <div className="container">
@@ -541,8 +541,8 @@ function CustomerAddressCreate() {
                   </Link>
                 </li>
 
-                <li>
-                  <img src={Cart_logout} alt="404" className="me-2" />
+                <li onClick={handleDelete} style={{ cursor: "pointer" }}>
+                  <img src={Cart_logout} alt="Logout" className="me-2" />
                   Logout
                 </li>
               </ul>
