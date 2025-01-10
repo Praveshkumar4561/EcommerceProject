@@ -17,7 +17,7 @@ const salt = 10;
 
 app.use(
   cors({
-    origin: "http://54.177.39.109",
+    origin: "http://50.18.56.183",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
