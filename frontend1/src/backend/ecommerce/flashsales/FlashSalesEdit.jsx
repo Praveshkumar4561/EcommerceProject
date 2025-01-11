@@ -178,7 +178,7 @@ function FlashSalesEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/updateflashsales/${id}`,
+        `http://52.9.253.67:1600/updateflashsales/${id}`,
         user
       );
       if (response.status === 200) {
@@ -199,7 +199,7 @@ function FlashSalesEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/flashsalessome/${id}`
+      `http://52.9.253.67:1600/flashsalessome/${id}`
     );
     setUser(response.data[0]);
   };
@@ -239,7 +239,7 @@ function FlashSalesEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://50.18.56.183:1600/productpagedata?search=${search}`
+          `http://52.9.253.67:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {

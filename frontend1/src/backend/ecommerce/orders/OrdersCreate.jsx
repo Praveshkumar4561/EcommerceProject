@@ -33,7 +33,7 @@ function OrdersCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://50.18.56.183:1600/productpagedata?search=${search}`
+          `http://52.9.253.67:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -201,9 +201,7 @@ function OrdersCreate() {
 
   const customerData = async () => {
     try {
-      const response = await axios.get(
-        "/http://50.18.56.183:1600customersdata"
-      );
+      const response = await axios.get("/http://52.9.253.67:1600customersdata");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customer data:", error);
@@ -2152,7 +2150,7 @@ function OrdersCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `/api/productpagedata/src/image/${product.image}`;
+                        const imageUrl = `/api/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -2312,7 +2310,7 @@ function OrdersCreate() {
               <div className="customer-list">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
-                    const imageUrl1 = `/api/customersdata/src/image/${customer.image}`;
+                    const imageUrl1 = `/api/src/image/${customer.image}`;
                     return (
                       <>
                         <div className="border rounded d-flex flex-row">

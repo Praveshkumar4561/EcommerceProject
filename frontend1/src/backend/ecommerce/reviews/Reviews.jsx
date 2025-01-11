@@ -175,7 +175,7 @@ function Reviews() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/reviewsearch/${search}`
+      `http://52.9.253.67:1600/reviewsearch/${search}`
     );
     setUser(response.data);
   };
@@ -183,13 +183,13 @@ function Reviews() {
   let [count4, setCount4] = useState(0);
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/reviewdata");
+    let response = await axios.get("http://52.9.253.67:1600/reviewdata");
     setUser(response.data);
     setCount4(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/reviewdelete/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/reviewdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

@@ -186,10 +186,7 @@ function SpecificationEdit() {
       return;
     }
     try {
-      await axios.put(
-        `http://50.18.56.183:1600/spceficationupdate/${id}`,
-        user
-      );
+      await axios.put(`http://52.9.253.67:1600/spceficationupdate/${id}`, user);
       setErrors({});
       navigate("/admin/ecommerce/specification-groups");
     } catch (error) {
@@ -207,7 +204,7 @@ function SpecificationEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/spceficationdatasome/${id}`
+      `http://52.9.253.67:1600/spceficationdatasome/${id}`
     );
     setUser(response.data[0]);
   };

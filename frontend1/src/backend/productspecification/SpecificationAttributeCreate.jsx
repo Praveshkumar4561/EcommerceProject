@@ -174,7 +174,7 @@ function SpecificationAttributeCreate() {
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://50.18.56.183:1600/specificationattribute", user);
+      await axios.post("http://52.9.253.67:1600/specificationattribute", user);
       navigate("/admin/ecommerce/specification-attributes");
     } catch (error) {
       console.error("There was an error submitting the form:", error);
@@ -188,7 +188,7 @@ function SpecificationAttributeCreate() {
   let [list, setList] = useState("");
 
   const alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/spceficationdata");
+    let response = await axios.get("http://52.9.253.67:1600/spceficationdata");
     setList(response.data);
   };
   alldata();
@@ -196,7 +196,7 @@ function SpecificationAttributeCreate() {
   let [creates, setCreates] = useState([]);
 
   const allatributedata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/spceficationdata");
+    let response = await axios.get("http://52.9.253.67:1600/spceficationdata");
     setCreates(response.data);
   };
   allatributedata();

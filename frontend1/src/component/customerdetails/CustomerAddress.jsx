@@ -35,7 +35,7 @@ function CustomerAddress() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -48,7 +48,7 @@ function CustomerAddress() {
   const alldata = async () => {
     try {
       let response = await axios.get(
-        "http://50.18.56.183:1600/userdashboarddata"
+        "http://52.9.253.67:1600/userdashboarddata"
       );
       setUser(response.data);
     } catch (error) {
@@ -58,7 +58,7 @@ function CustomerAddress() {
   alldata();
 
   let removedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/deleteuser/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/deleteuser/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -67,7 +67,7 @@ function CustomerAddress() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("http://50.18.56.183:1600/getannounce");
+      let response = await axios.get("http://52.9.253.67:1600/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -93,7 +93,7 @@ function CustomerAddress() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://50.18.56.183:1600/logout")
+      .get("http://52.9.253.67:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -113,7 +113,7 @@ function CustomerAddress() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/alldata");
+    let response = await axios.get("http://52.9.253.67:1600/alldata");
     setDetail(response.data);
   };
   userdata();

@@ -177,7 +177,7 @@ function MenusEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/menusupdate/${id}`,
+        `http://52.9.253.67:1600/menusupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -198,7 +198,7 @@ function MenusEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/menusomedata/${id}`
+      `http://52.9.253.67:1600/menusomedata/${id}`
     );
     setUser(response.data[0]);
   };

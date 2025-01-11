@@ -200,7 +200,7 @@ function ReviewsView() {
     formData.append("file", file);
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/reviewdatasubmit",
+        "http://52.9.253.67:1600/reviewdatasubmit",
         formData
       );
       if (response.status === 200) {
@@ -220,7 +220,7 @@ function ReviewsView() {
   let deletedata = async () => {
     try {
       let response = await axios.delete(
-        `http://50.18.56.183:1600/deleteviewreview/${id}`,
+        `http://52.9.253.67:1600/deleteviewreview/${id}`,
         {
           data: user,
         }
@@ -242,7 +242,7 @@ function ReviewsView() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/reviewsomedata/${id}`
+      `http://52.9.253.67:1600/reviewsomedata/${id}`
     );
     setUser(response.data[0]);
   };

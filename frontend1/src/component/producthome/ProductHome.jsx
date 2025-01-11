@@ -32,7 +32,7 @@ function ProductHome() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -68,7 +68,7 @@ function ProductHome() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let response = await axios.get("http://50.18.56.183:1600/brandsdata");
+      let response = await axios.get("http://52.9.253.67:1600/brandsdata");
       setUser(response.data);
     };
     fetchData();
@@ -89,7 +89,7 @@ function ProductHome() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
     setImage(response.data);
   };
 
@@ -122,7 +122,7 @@ function ProductHome() {
   let [home, setHome] = useState([]);
 
   let homedata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
     setHome(response.data);
   };
   homedata();

@@ -17,7 +17,7 @@ const salt = 10;
 
 app.use(
   cors({
-    origin: "http://50.18.56.183",
+    origin: "http://52.9.253.67",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -289,8 +289,6 @@ app.get("/check-auth", (req, res) => {
   });
 });
 
-// checkout
-
 app.post("/checkout", (req, res) => {
   const {
     email,
@@ -477,8 +475,6 @@ app.get("/customerget/:value", (req, res) => {
   });
 });
 
-// checkout
-
 app.delete("/deleteorder1/:id", (req, res) => {
   let id = req.params.id;
   console.log(`Attempting to delete order with ID: ${id}`);
@@ -638,8 +634,6 @@ app.get("/search/:value", (req, res) => {
   });
 });
 
-// Testimonials
-
 app.post("/testimonials", upload.single("file"), (req, res) => {
   const name = req.body.name;
   const company = req.body.company;
@@ -722,8 +716,6 @@ app.get("/sometest/:id", (req, res) => {
     }
   });
 });
-
-// Galleries
 
 app.post("/gallerypost", upload.single("file"), (req, res) => {
   const name = req.body.name;
@@ -808,8 +800,6 @@ app.get("/gallerytests/:id", (req, res) => {
   });
 });
 
-// simple-sliders
-
 app.post("/sliderspost", (req, res) => {
   const { name, sliderkey, description, date, status } = req.body;
   const value = [[name, sliderkey, description, date, status]];
@@ -878,8 +868,6 @@ app.get("/someslider/:id", (req, res) => {
   });
 });
 
-// excel.js
-
 app.get("/export-excel", async (req, res) => {
   try {
     db.query("SELECT * FROM newsletters", async (err, results) => {
@@ -917,8 +905,6 @@ app.get("/export-excel", async (req, res) => {
     res.status(500).send("Error generating Excel file.");
   }
 });
-
-// contactus
 
 app.post("/contactdata", (req, res) => {
   const {
@@ -1048,8 +1034,6 @@ app.delete("/deletecontact/:id", (req, res) => {
   });
 });
 
-// pages page
-
 app.post("/pagespost", upload.single("file"), (req, res) => {
   const {
     name,
@@ -1145,8 +1129,6 @@ app.put("/pageupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-// 1111111111111
-
 app.get("/pagesomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select *from pages where id=?";
@@ -1168,8 +1150,6 @@ app.get("/pagesearch/:value", (req, res) => {
     }
   });
 });
-
-// faqs backend
 
 app.post("/faqsubmit", (req, res) => {
   const { category, question, answer, date, status } = req.body;
@@ -1239,8 +1219,6 @@ app.get("/faqsearch/:value", (req, res) => {
   });
 });
 
-// faqs category
-
 app.post("/faqcategory", (req, res) => {
   const { name, description, orders, date, status } = req.body;
   const value = [[name, description, orders, date, status]];
@@ -1309,8 +1287,6 @@ app.get("/faqsearchcategory/:value", (req, res) => {
   });
 });
 
-// blog
-
 app.post("/blogtagpost", (req, res) => {
   const { name, permalink, description, date, status } = req.body;
   const value = [[name, permalink, description, date, status]];
@@ -1378,8 +1354,6 @@ app.get("/blogtagsearch/:value", (req, res) => {
     }
   });
 });
-
-// blogpost
 
 app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
   const name = req.body.name;
@@ -1511,8 +1485,6 @@ app.get("/blogpostsearch/:value", (req, res) => {
   });
 });
 
-// ads
-
 app.post("/adspost", upload.single("file"), (req, res) => {
   const {
     name,
@@ -1634,9 +1606,6 @@ app.get("/adsearch/:value", (req, res) => {
   });
 });
 
-// ECOMMERCE
-// product tags
-
 app.post("/producttags", (req, res) => {
   const { name, permalink, description, date, status } = req.body;
   const value = [[name, permalink, description, date, status]];
@@ -1705,8 +1674,6 @@ app.get("/searchtags/:value", (req, res) => {
   });
 });
 
-// order returns
-
 app.get("/export-returnsorder", async (req, res) => {
   try {
     db.query("SELECT * FROM returnorder", async (err, results) => {
@@ -1740,8 +1707,6 @@ app.get("/export-returnsorder", async (req, res) => {
     res.status(500).send("Error generating Excel file.");
   }
 });
-
-// product collections
 
 app.post("/productcollection", upload.single("file"), (req, res) => {
   const { name, slug, description, status, feature, date } = req.body;
@@ -1821,8 +1786,6 @@ app.get("/collectionsome/:id", (req, res) => {
   });
 });
 
-// productlabels
-
 app.post("/productlabels", (req, res) => {
   const { name, color, status, date } = req.body;
   const value = [[name, color, status, date]];
@@ -1889,8 +1852,6 @@ app.get("/productlabelsdata/:id", (req, res) => {
     }
   });
 });
-
-// brands
 
 app.post("/brandsubmit", upload.single("file"), (req, res) => {
   const {
@@ -2009,8 +1970,6 @@ app.get("/brandssomedata/:id", (req, res) => {
   });
 });
 
-// product options
-
 app.post("/productoptions", (req, res) => {
   const { name, date, status, featured } = req.body;
   const value = [[name, date, status, featured]];
@@ -2077,8 +2036,6 @@ app.get("/optionsomedata/:id", (req, res) => {
     }
   });
 });
-
-// product attributes
 
 app.post("/productattributes", (req, res) => {
   const { title, slug, sort, status, date } = req.body;
@@ -2153,8 +2110,6 @@ app.get("/attributesomedata/:id", (req, res) => {
   });
 });
 
-// flash sales
-
 app.post("/flashsales", (req, res) => {
   const { name, start_date, status, end_date } = req.body;
   const value = [[name, start_date, status, end_date]];
@@ -2222,8 +2177,6 @@ app.get("/flashsalessome/:id", (req, res) => {
     }
   });
 });
-
-// customers
 
 app.post("/usersubmit", upload.single("file"), (req, res) => {
   const {
@@ -2429,8 +2382,6 @@ app.get("/somecustomerdata/:id", (req, res) => {
   });
 });
 
-// customer popup
-
 app.post("/customerpopupsubmit", (req, res) => {
   const { name, phone, email, country, state, city, address } = req.body;
   const value = [[name, phone, email, country, state, city, address]];
@@ -2453,8 +2404,6 @@ app.get("/customerpopupdata", (req, res) => {
     }
   });
 });
-
-// Reviews
 
 app.post("/reviewdatasubmit", upload.single("file"), (req, res) => {
   const { product_name, user_name, email, star, comment, status, date } =
@@ -2526,8 +2475,6 @@ app.delete("/deleteviewreview/:id", (req, res) => {
     }
   });
 });
-
-// discounts page
 
 app.post("/discountsubmit", (req, res) => {
   const {
@@ -2614,8 +2561,6 @@ app.get("/discountsomedata/:id", (req, res) => {
     }
   });
 });
-
-// products page
 
 app.post("/productpage", upload.single("file"), (req, res) => {
   const {
@@ -2839,8 +2784,6 @@ app.put("/productinventory/:id", (req, res) => {
   });
 });
 
-// excel data
-
 app.get("/exportexcel-productdata", async (req, res) => {
   try {
     db.query("select * from products", async (err, results) => {
@@ -2881,8 +2824,6 @@ app.get("/exportexcel-productdata", async (req, res) => {
     res.status(500).send("Error generating Excel file.");
   }
 });
-
-// appearence menus
 
 app.post("/menusubmit", (req, res) => {
   const { name, locations, items, date, status } = req.body;
@@ -2951,8 +2892,6 @@ app.put("/menusupdate/:id", (req, res) => {
   });
 });
 
-// orders excel export
-
 app.get("/order-export", async (req, res) => {
   try {
     db.query(
@@ -2999,8 +2938,6 @@ app.get("/order-export", async (req, res) => {
     res.status(500).send("Error generating Excel file.");
   }
 });
-
-// user dashboard
 
 app.post("/userdashboard", (req, res) => {
   const { name, phone, email, country, state, city, address } = req.body;
@@ -3071,8 +3008,6 @@ app.put("/userupdate/1", (req, res) => {
   });
 });
 
-// User vendor
-
 app.post("/vendorshop", (req, res) => {
   const { shop_name, shop_url, shop_phone } = req.body;
   const value = [[shop_name, shop_url, shop_phone]];
@@ -3095,8 +3030,6 @@ app.get("/vendordata", (req, res) => {
   });
 });
 
-// add to cart
-
 app.post("/addcart", upload.single("file"), (req, res) => {
   const { name, store, price, price_sale } = req.body;
   const image = req.body.image || req.file?.filename;
@@ -3117,8 +3050,6 @@ app.post("/addcart", upload.single("file"), (req, res) => {
     res.send("Data submitted successfully");
   });
 });
-
-// add to cart
 
 app.get("/allcartdata", (req, res) => {
   const sql = "select *from cart";
@@ -3185,8 +3116,6 @@ app.get("/cartsearch/:value", (req, res) => {
     }
   });
 });
-
-// product specification
 
 app.post("/specification", (req, res) => {
   const { name, description, date } = req.body;
@@ -3255,8 +3184,6 @@ app.put("/spceficationupdate/:id", (req, res) => {
   });
 });
 
-//  specification tables
-
 app.post("/specificationtable", (req, res) => {
   const { name, description, date, display } = req.body;
   const value = [[name, description, date, display]];
@@ -3324,8 +3251,6 @@ app.get("/specificationtablesearch/:value", (req, res) => {
     }
   });
 });
-
-//  specification attributes
 
 app.post("/specificationattribute", (req, res) => {
   const { groupname, name, fieldtype, valuegroup, date } = req.body;

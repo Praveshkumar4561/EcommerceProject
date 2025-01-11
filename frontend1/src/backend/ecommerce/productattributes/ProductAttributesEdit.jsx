@@ -163,7 +163,7 @@ function ProductAttributesEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/updateattributes/${id}`,
+        `http://52.9.253.67:1600/updateattributes/${id}`,
         user
       );
       if (response.status === 200) {
@@ -184,7 +184,7 @@ function ProductAttributesEdit() {
 
   let attributedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/attributesomedata/${id}`
+      `http://52.9.253.67:1600/attributesomedata/${id}`
     );
     setUser(response.data[0]);
   };

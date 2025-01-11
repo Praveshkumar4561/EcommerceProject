@@ -177,7 +177,7 @@ function ContactsEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/updatecontact/${id}`,
+        `http://52.9.253.67:1600/updatecontact/${id}`,
         user
       );
       if (response.status === 200) {
@@ -198,7 +198,7 @@ function ContactsEdit() {
 
   let contactdata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/contactusget/${id}`
+      `http://52.9.253.67:1600/contactusget/${id}`
     );
     setUser(response.data[0]);
   };

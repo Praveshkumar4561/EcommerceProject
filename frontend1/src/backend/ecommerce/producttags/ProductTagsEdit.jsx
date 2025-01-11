@@ -161,7 +161,7 @@ function ProductTagsEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/updateproducttags/${id}`,
+        `http://52.9.253.67:1600/updateproducttags/${id}`,
         user
       );
       if (response.status === 200) {
@@ -182,7 +182,7 @@ function ProductTagsEdit() {
 
   let showdata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/productsometag/${id}`
+      `http://52.9.253.67:1600/productsometag/${id}`
     );
     setUser(response.data[0]);
   };

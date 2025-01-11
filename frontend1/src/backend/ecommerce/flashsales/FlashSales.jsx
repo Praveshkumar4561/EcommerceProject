@@ -179,18 +179,18 @@ function FlashSales() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/searchflash/${search}`
+      `http://52.9.253.67:1600/searchflash/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/flashsalesdata");
+    let response = await axios.get("http://52.9.253.67:1600/flashsalesdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/flashsaledelete/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/flashsaledelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

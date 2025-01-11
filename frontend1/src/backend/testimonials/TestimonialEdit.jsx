@@ -191,7 +191,7 @@ function TestimonialEdit() {
     const fetchData = async () => {
       try {
         let response = await axios.get(
-          `http://50.18.56.183:1600/sometest/${id}`
+          `http://52.9.253.67:1600/sometest/${id}`
         );
         const userData = response.data[0];
         setUser(userData);
@@ -284,7 +284,7 @@ function TestimonialEdit() {
 
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/updatetest/${id}`,
+        `http://52.9.253.67:1600/updatetest/${id}`,
         formData
       );
       if (response.status === 200) {

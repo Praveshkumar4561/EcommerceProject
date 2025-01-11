@@ -178,7 +178,7 @@ function FlashSalesCreate() {
   let handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/flashsales",
+        "http://52.9.253.67:1600/flashsales",
         user
       );
       if (response.status === 200) {
@@ -226,7 +226,7 @@ function FlashSalesCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://50.18.56.183:1600/productpagedata?search=${search}`
+          `http://52.9.253.67:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {

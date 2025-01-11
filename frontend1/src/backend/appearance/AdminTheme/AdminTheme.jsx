@@ -174,18 +174,18 @@ function AdminTheme() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/menusearch/${search}`
+      `http://52.9.253.67:1600/menusearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/menusdata");
+    let response = await axios.get("http://52.9.253.67:1600/menusdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/menusdelete/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/menusdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

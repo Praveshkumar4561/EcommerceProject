@@ -183,18 +183,18 @@ function BlogTags() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/blogtagsearch/${search}`
+      `http://52.9.253.67:1600/blogtagsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/blogalldata");
+    let response = await axios.get("http://52.9.253.67:1600/blogalldata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/blogtagsdelete/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/blogtagsdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

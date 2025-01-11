@@ -33,7 +33,7 @@ function CustomerDashEdit() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -72,7 +72,7 @@ function CustomerDashEdit() {
     if (validateForm()) {
       try {
         const response = await axios.put(
-          `http://50.18.56.183:1600/dashboardedit/${id}`,
+          `http://52.9.253.67:1600/dashboardedit/${id}`,
           user
         );
         setUser(response.data);
@@ -89,7 +89,7 @@ function CustomerDashEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/dashboardsome/${id}`,
+      `http://52.9.253.67:1600/dashboardsome/${id}`,
       user
     );
     setUser(response.data[0]);
@@ -151,7 +151,7 @@ function CustomerDashEdit() {
   useEffect(() => {
     const editData = async () => {
       try {
-        let response = await axios.get("http://50.18.56.183:1600/getannounce");
+        let response = await axios.get("http://52.9.253.67:1600/getannounce");
         setEdit(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -179,7 +179,7 @@ function CustomerDashEdit() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://50.18.56.183:1600/logout")
+      .get("http://52.9.253.67:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -199,7 +199,7 @@ function CustomerDashEdit() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/alldata");
+    let response = await axios.get("http://52.9.253.67:1600/alldata");
     setDetail(response.data);
   };
   userdata();

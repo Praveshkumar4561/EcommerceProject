@@ -148,7 +148,7 @@ function SimpleSlidersEdit() {
 
   let handleSubmit = async () => {
     const response = await axios.put(
-      `http://50.18.56.183:1600/sliderupdate/${id}`,
+      `http://52.9.253.67:1600/sliderupdate/${id}`,
       user
     );
     if (response.status === 200) {
@@ -168,7 +168,7 @@ function SimpleSlidersEdit() {
   }, []);
 
   let sliderdata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/someslider/${id}`);
+    let response = await axios.get(`http://52.9.253.67:1600/someslider/${id}`);
     setUser(response.data[0]);
   };
 

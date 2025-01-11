@@ -190,13 +190,13 @@ function Shipment() {
   let [shipment, setshipment] = useState([]);
 
   let shipmentdata = async () => {
-    const response = await axios.get("http://50.18.56.183:1600/checkoutdata");
+    const response = await axios.get("http://52.9.253.67:1600/checkoutdata");
     setshipment(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://50.18.56.183:1600/deleteorder1/${id}`);
+      await axios.delete(`http://52.9.253.67:1600/deleteorder1/${id}`);
       alert("Order deleted successfully");
     } catch (error) {
       console.error("Error deleting data:", error);

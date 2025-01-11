@@ -208,7 +208,7 @@ function CustomerCreate() {
 
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/usersubmit",
+        "http://52.9.253.67:1600/usersubmit",
         formData
       );
       if (response.status === 200) {

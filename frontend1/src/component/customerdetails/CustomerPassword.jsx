@@ -33,7 +33,7 @@ function CustomerPassword() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -66,7 +66,7 @@ function CustomerPassword() {
   const passworddata = async () => {
     try {
       const response = await axios.get(
-        `http://50.18.56.183:1600/changepassword/${id}`
+        `http://52.9.253.67:1600/changepassword/${id}`
       );
       setUser({ ...response.data[0] });
     } catch (error) {
@@ -104,7 +104,7 @@ function CustomerPassword() {
       try {
         console.log("Sending data to the server:", data);
         const response = await axios.put(
-          `http://50.18.56.183:1600/passwordupdate/${id}`,
+          `http://52.9.253.67:1600/passwordupdate/${id}`,
           data
         );
         console.log("Password changed successfully", response.data);
@@ -123,7 +123,7 @@ function CustomerPassword() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://50.18.56.183:1600/getannounce");
+        let response = await axios.get("http://52.9.253.67:1600/getannounce");
         setCustomer(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -151,7 +151,7 @@ function CustomerPassword() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://50.18.56.183:1600/logout")
+      .get("http://52.9.253.67:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -171,7 +171,7 @@ function CustomerPassword() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/alldata");
+    let response = await axios.get("http://52.9.253.67:1600/alldata");
     setDetail(response.data);
   };
   userdata();

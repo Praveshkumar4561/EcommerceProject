@@ -178,18 +178,18 @@ function ContactPage() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/contactsearch/${search}`
+      `http://52.9.253.67:1600/contactsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/allcontact");
+    let response = await axios.get("http://52.9.253.67:1600/allcontact");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/deletecontact/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/deletecontact/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -198,7 +198,7 @@ function ContactPage() {
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://50.18.56.183:1600/export-excelcontact",
+        "http://52.9.253.67:1600/export-excelcontact",
         {
           responseType: "blob",
         }

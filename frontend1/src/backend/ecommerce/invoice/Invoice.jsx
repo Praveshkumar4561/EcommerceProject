@@ -174,7 +174,7 @@ function Invoice() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/shipmentsearch/${search}`
+      `http://52.9.253.67:1600/shipmentsearch/${search}`
     );
     setUser(response.data);
   };
@@ -186,13 +186,13 @@ function Invoice() {
   }, []);
 
   let invoicedata = async () => {
-    const response = await axios.get("http://50.18.56.183:1600/checkoutdata");
+    const response = await axios.get("http://52.9.253.67:1600/checkoutdata");
     setInvoice(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://50.18.56.183:1600/deleteorder1/${id}`);
+      await axios.delete(`http://52.9.253.67:1600/deleteorder1/${id}`);
       alert("Order deleted successfully");
     } catch (error) {
       console.error("Error deleting data:", error);

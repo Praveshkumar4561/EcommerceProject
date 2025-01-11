@@ -178,18 +178,18 @@ function Discounts() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/discountsearch/${search}`
+      `http://52.9.253.67:1600/discountsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/discountdata");
+    let response = await axios.get("http://52.9.253.67:1600/discountdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/discountdelete/${id}`, user);
+    await axios.delete(`http://52.9.253.67:1600/discountdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 

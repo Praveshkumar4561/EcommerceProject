@@ -216,7 +216,7 @@ function BlogPostEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/blogpostupdate/${id}`,
+        `http://52.9.253.67:1600/blogpostupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -242,7 +242,7 @@ function BlogPostEdit() {
 
   let blogpostsdata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/blogsomedata/${id}`
+      `http://52.9.253.67:1600/blogsomedata/${id}`
     );
     setUser(response.data[0]);
   };

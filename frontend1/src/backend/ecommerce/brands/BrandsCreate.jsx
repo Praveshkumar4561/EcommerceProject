@@ -202,7 +202,7 @@ function BrandsCreate() {
     formData.append("file", file);
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/brandsubmit",
+        "http://52.9.253.67:1600/brandsubmit",
         formData
       );
       if (response.status === 200) {

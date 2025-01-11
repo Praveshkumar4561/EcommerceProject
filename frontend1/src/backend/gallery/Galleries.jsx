@@ -33,21 +33,21 @@ function Galleries() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://50.18.56.183:1600/galleryfil/${search}`
+      `http://52.9.253.67:1600/galleryfil/${search}`
     );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/gallerydata");
+    let response = await axios.get("http://52.9.253.67:1600/gallerydata");
 
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://50.18.56.183:1600/deletegallery/${id}`);
+      await axios.delete(`http://52.9.253.67:1600/deletegallery/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);

@@ -29,7 +29,7 @@ function ProductDetail() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -222,9 +222,7 @@ function ProductDetail() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get(
-        "http://50.18.56.183:1600/productpagedata"
-      );
+      let response = await axios.get("http://52.9.253.67:1600/productpagedata");
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -238,7 +236,7 @@ function ProductDetail() {
     const shopdata = async () => {
       try {
         const response = await axios.get(
-          "http://50.18.56.183:1600/productpagedata"
+          "http://52.9.253.67:1600/productpagedata"
         );
         setShop(response.data);
       } catch (error) {
@@ -305,7 +303,7 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://50.18.56.183:1600/addcart", formData, {
+      await axios.post("http://52.9.253.67:1600/addcart", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -328,7 +326,7 @@ function ProductDetail() {
     }
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/wishlistpost",
+        "http://52.9.253.67:1600/wishlistpost",
         formData
       );
       alert("Product successfully added to the wishlist");
@@ -340,7 +338,7 @@ function ProductDetail() {
   let [user, setUser] = useState([]);
 
   let tagdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/producttagdata");
+    let response = await axios.get("http://52.9.253.67:1600/producttagdata");
     setUser(response.data);
   };
   tagdata();
@@ -358,7 +356,7 @@ function ProductDetail() {
     }
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/addcart",
+        "http://52.9.253.67:1600/addcart",
         formData,
         {
           headers: {
@@ -378,9 +376,7 @@ function ProductDetail() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get(
-      "http://50.18.56.183:1600/productlabelsdata"
-    );
+    let response = await axios.get("http://52.9.253.67:1600/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();

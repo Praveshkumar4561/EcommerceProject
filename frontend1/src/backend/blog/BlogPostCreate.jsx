@@ -255,7 +255,7 @@ function BlogPostCreate() {
 
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/blogpostsubmit",
+        "http://52.9.253.67:1600/blogpostsubmit",
         formData
       );
       if (response.status === 200) {

@@ -176,7 +176,7 @@ function SpecificationAttributeEdit() {
     e.preventDefault();
     try {
       await axios.put(
-        `http://50.18.56.183:1600/spceficationupdateattribute/${id}`,
+        `http://52.9.253.67:1600/spceficationupdateattribute/${id}`,
         user
       );
       navigate("/admin/ecommerce/specification-attributes");
@@ -195,7 +195,7 @@ function SpecificationAttributeEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/spceficationdatasomeattribute/${id}`
+      `http://52.9.253.67:1600/spceficationdatasomeattribute/${id}`
     );
     setUser(response.data[0]);
   };
@@ -203,7 +203,7 @@ function SpecificationAttributeEdit() {
   let [list, setList] = useState("");
 
   const alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/spceficationdata");
+    let response = await axios.get("http://52.9.253.67:1600/spceficationdata");
     setList(response.data);
   };
   alldata();
@@ -211,7 +211,7 @@ function SpecificationAttributeEdit() {
   let [creates, setCreates] = useState([]);
 
   const allatributedata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/spceficationdata");
+    let response = await axios.get("http://52.9.253.67:1600/spceficationdata");
     setCreates(response.data);
   };
   allatributedata();

@@ -182,7 +182,7 @@ function DiscountsEdit() {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/discountupdate/${id}`,
+        `http://52.9.253.67:1600/discountupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -199,7 +199,7 @@ function DiscountsEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/discountsomedata/${id}`
+      `http://52.9.253.67:1600/discountsomedata/${id}`
     );
     setUser(response.data[0]);
   };

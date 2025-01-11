@@ -170,7 +170,7 @@ function CustomerEdit() {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://50.18.56.183:1600/somecustomerdata/${id}`
+          `http://52.9.253.67:1600/somecustomerdata/${id}`
         );
         setUser(response.data[0]);
       } catch (error) {
@@ -230,7 +230,7 @@ function CustomerEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/userupdate/${id}`,
+        `http://52.9.253.67:1600/userupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -277,7 +277,7 @@ function CustomerEdit() {
   let [wishList, setWishList] = useState([]);
 
   let wishlistdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/wishlistdata");
+    let response = await axios.get("http://52.9.253.67:1600/wishlistdata");
     setWishList(response.data);
   };
   wishlistdata();

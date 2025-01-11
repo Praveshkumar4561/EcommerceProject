@@ -73,20 +73,20 @@ function SimpleSliders() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://50.18.56.183:1600/searchslider/${search}`
+      `http://52.9.253.67:1600/searchslider/${search}`
     );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/sliderdata");
+    let response = await axios.get("http://52.9.253.67:1600/sliderdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://50.18.56.183:1600/slidersdelete/${id}`);
+      await axios.delete(`http://52.9.253.67:1600/slidersdelete/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);

@@ -185,7 +185,7 @@ function BlogTagsEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/blogtagupdate/${id}`,
+        `http://52.9.253.67:1600/blogtagupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -205,9 +205,7 @@ function BlogTagsEdit() {
   }, []);
 
   let tagsdata = async () => {
-    let response = await axios.get(
-      `http://50.18.56.183:1600/blogtagdata/${id}`
-    );
+    let response = await axios.get(`http://52.9.253.67:1600/blogtagdata/${id}`);
     setUser(response.data[0]);
   };
 

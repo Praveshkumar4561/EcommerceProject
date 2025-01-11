@@ -159,7 +159,7 @@ function ProductTagsCreate() {
   let handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/producttags",
+        "http://52.9.253.67:1600/producttags",
         user
       );
       if (response.status === 200) {

@@ -176,7 +176,7 @@ function Products() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/productsearch/${search}`
+      `http://52.9.253.67:1600/productsearch/${search}`
     );
     setUser(response.data);
   };
@@ -184,14 +184,14 @@ function Products() {
   let [count2, setCount2] = useState(0);
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
     setUser(response.data);
     setCount2(response.data.length);
   };
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://50.18.56.183:1600/deleteproductsdata/${id}`,
+      `http://52.9.253.67:1600/deleteproductsdata/${id}`,
       user
     );
     alert("data sucessfully deleted");
@@ -202,7 +202,7 @@ function Products() {
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://50.18.56.183:1600/exportexcel-productdata",
+        "http://52.9.253.67:1600/exportexcel-productdata",
         {
           responseType: "blob",
         }

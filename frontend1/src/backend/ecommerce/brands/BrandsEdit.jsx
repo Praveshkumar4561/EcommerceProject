@@ -204,7 +204,7 @@ function BrandsEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/brandupdate/${id}`,
+        `http://52.9.253.67:1600/brandupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -225,7 +225,7 @@ function BrandsEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/brandssomedata/${id}`
+      `http://52.9.253.67:1600/brandssomedata/${id}`
     );
     setUser(response.data[0]);
   };

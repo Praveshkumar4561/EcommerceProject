@@ -251,7 +251,7 @@ function ProductsCreate() {
     formData.append("label1", selectedLabels1[0] || "");
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/productpage",
+        "http://52.9.253.67:1600/productpage",
         formData
       );
       if (response.status === 200) {
@@ -485,7 +485,7 @@ function ProductsCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://50.18.56.183:1600/productpagedata?search=${search}`
+          `http://52.9.253.67:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -514,7 +514,7 @@ function ProductsCreate() {
       try {
         setLoading1(true);
         const response = await axios.get(
-          `http://50.18.56.183:1600/productpagedata?search=${search}`
+          `http://52.9.253.67:1600/productpagedata?search=${search}`
         );
         setProducts1(response.data);
       } catch (error) {
@@ -531,7 +531,7 @@ function ProductsCreate() {
 
   const attributedata = async () => {
     try {
-      let response = await axios.get("http://50.18.56.183:1600/attributesdata");
+      let response = await axios.get("http://52.9.253.67:1600/attributesdata");
       setCreate(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -3615,7 +3615,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `/api/productpagedata/src/image/${product.image}`;
+                        const imageUrl = `/api/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -3674,7 +3674,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.map((product2) => {
-                        const imageUrl = `/api/productpagedata/src/image/${product2.image}`;
+                        const imageUrl = `/api/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}

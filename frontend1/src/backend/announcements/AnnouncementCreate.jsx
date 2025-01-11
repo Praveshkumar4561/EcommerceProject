@@ -172,10 +172,7 @@ function AnnouncementCreate() {
   let { name, content, start_date, end_date, active } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.post(
-      "http://50.18.56.183:1600/announce",
-      user
-    );
+    const response = await axios.post("http://52.9.253.67:1600/announce", user);
     if (response.status === 200) {
       navigate("/admin/announcements");
     } else {

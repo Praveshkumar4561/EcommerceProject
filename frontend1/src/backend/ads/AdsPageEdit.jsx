@@ -186,7 +186,7 @@ function AdsEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://50.18.56.183:1600/adsupdate/${id}`,
+        `http://52.9.253.67:1600/adsupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -207,7 +207,7 @@ function AdsEdit() {
 
   let editdata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/adsomedataads/${id}`
+      `http://52.9.253.67:1600/adsomedataads/${id}`
     );
     setUser(response.data[0]);
   };

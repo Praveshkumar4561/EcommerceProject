@@ -177,7 +177,7 @@ function SpecificationTable() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://50.18.56.183:1600/specificationtablesearch/${search}`,
+        `http://52.9.253.67:1600/specificationtablesearch/${search}`,
         user
       );
       setUser(response.data);
@@ -188,14 +188,14 @@ function SpecificationTable() {
 
   const alldata = async () => {
     let response = await axios.get(
-      "http://50.18.56.183:1600/spceficationtabledata"
+      "http://52.9.253.67:1600/spceficationtabledata"
     );
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://50.18.56.183:1600/specificationdeletetable/${id}`,
+      `http://52.9.253.67:1600/specificationdeletetable/${id}`,
       user
     );
     alert("data deleted");

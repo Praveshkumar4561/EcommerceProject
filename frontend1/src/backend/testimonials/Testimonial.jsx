@@ -162,20 +162,20 @@ function Testimonial() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://50.18.56.183:1600/testifilter/${search}`
+      `http://52.9.253.67:1600/testifilter/${search}`
     );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/gettestimonials");
+    let response = await axios.get("http://52.9.253.67:1600/gettestimonials");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://50.18.56.183:1600/deletetest/${id}`);
+      await axios.delete(`http://52.9.253.67:1600/deletetest/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);

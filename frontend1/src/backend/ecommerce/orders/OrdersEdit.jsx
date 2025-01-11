@@ -175,7 +175,7 @@ function OrdersEdit() {
 
   let alldata = async () => {
     let response = await axios.get(
-      `http://50.18.56.183:1600/checkoutsome/${id}`
+      `http://52.9.253.67:1600/checkoutsome/${id}`
     );
     setUser(response.data[0]);
     setOrder(response.data);

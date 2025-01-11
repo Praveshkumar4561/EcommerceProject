@@ -58,7 +58,7 @@ function AnnouncementEdit() {
 
   let handleSubmit = async () => {
     const response = await axios.put(
-      `http://50.18.56.183:1600/updateannnounce/${id}`,
+      `http://52.9.253.67:1600/updateannnounce/${id}`,
       user
     );
     if (response.status === 200) {
@@ -69,7 +69,7 @@ function AnnouncementEdit() {
   };
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/getann/${id}`);
+    let response = await axios.get(`http://52.9.253.67:1600/getann/${id}`);
     setUser(response.data[0]);
   };
 

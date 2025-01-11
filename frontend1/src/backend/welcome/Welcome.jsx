@@ -164,14 +164,14 @@ function Welcome() {
   let [count1, setCount1] = useState("");
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/alldata");
+    let response = await axios.get("http://52.9.253.67:1600/alldata");
     setCount1(response.data.length);
   };
 
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
     setCount2(response.data.length);
   };
   showdata();
@@ -179,7 +179,7 @@ function Welcome() {
   let [count4, setCount4] = useState(0);
 
   let reviews = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/reviewdata");
+    let response = await axios.get("http://52.9.253.67:1600/reviewdata");
     setCount4(response.data.length);
   };
   reviews();
@@ -187,7 +187,7 @@ function Welcome() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/checkoutdata");
+    let response = await axios.get("http://52.9.253.67:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

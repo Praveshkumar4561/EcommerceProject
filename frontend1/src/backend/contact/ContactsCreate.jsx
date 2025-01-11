@@ -177,7 +177,7 @@ function ContactsCreate() {
   let handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://50.18.56.183:1600/contactdata",
+        "http://52.9.253.67:1600/contactdata",
         user
       );
       if (response.status === 200) {
