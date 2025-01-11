@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./FlashSales.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -178,7 +178,9 @@ function FlashSales() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/searchflash/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/searchflash/${search}`
+    );
     setUser(response.data);
   };
 

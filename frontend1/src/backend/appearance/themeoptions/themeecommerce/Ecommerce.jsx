@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Ecommerce.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.png";
+import Logo from "../../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -12,8 +12,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import Cutting from "../../../../assets/Cutting.png";
-import Login from "../../../../assets/login.png";
+import Cutting from "../../../../assets/Cutting.webp";
+import Login from "../../../../assets/login.webp";
 import UserContext from "../../../../context/UserContext";
 
 function Ecommerce() {

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./BrandsEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Cutting from "../../../assets/Cutting.png";
+import Logo from "../../../assets/Logo.webp";
+import Cutting from "../../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -203,7 +203,10 @@ function BrandsEdit() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/brandupdate/${id}`, formData);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/brandupdate/${id}`,
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/brands");
       }
@@ -221,7 +224,9 @@ function BrandsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/brandssomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/brandssomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

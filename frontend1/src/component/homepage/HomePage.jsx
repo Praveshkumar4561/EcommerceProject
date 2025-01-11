@@ -13,7 +13,7 @@ import {
   faCartShopping,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import Panic from "../../assets/Panic Attacks.png";
+import Panic from "../../assets/Panic Attacks.webp";
 import { Link, useNavigate } from "react-router-dom";
 import Generic from "../../assets/Lytes.svg";
 import PainRelief from "../../assets/Latest.svg";
@@ -22,7 +22,7 @@ import Support from "../../assets/Support.svg";
 import Payments from "../../assets/Payments.svg";
 import Returns from "../../assets/Returns.svg";
 import Shipping from "../../assets/Shipping.svg";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
 
@@ -48,7 +48,9 @@ function HomePage() {
   useEffect(() => {
     const faqdata = async () => {
       try {
-        const response = await axios.get("http://50.18.56.183:1600/pagesdatafaqs");
+        const response = await axios.get(
+          "http://50.18.56.183:1600/pagesdatafaqs"
+        );
         setFaqs(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -142,7 +144,9 @@ function HomePage() {
 
   let homedata = async () => {
     try {
-      let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+      let response = await axios.get(
+        "http://50.18.56.183:1600/productpagedata"
+      );
       setProduct(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -153,7 +157,9 @@ function HomePage() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productlabelsdata");
+    let response = await axios.get(
+      "http://50.18.56.183:1600/productlabelsdata"
+    );
     setLabel(response.data);
   };
   labeldata();
@@ -172,11 +178,15 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("http://50.18.56.183:1600/addcart", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://50.18.56.183:1600/addcart",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       alert("Product successfully added in the cart");
       navigate("/cart");
       detailsdata();
@@ -195,7 +205,10 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("http://50.18.56.183:1600/wishlistpost", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/wishlistpost",
+        formData
+      );
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -310,8 +323,11 @@ function HomePage() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
 
-                <div className="d-lg-block d-none">
-                  <select className="form-select rounded-0 border-0 mt-1">
+                <div className="d-lg-block d-none w-75 ">
+                  <select
+                    className="form-select rounded-0 border-0 mt-3"
+                    style={{ height: "49px" }}
+                  >
                     <option value="All Categories">All Categories</option>
                     <option value="New Arrivals">New Arrivals</option>
                     <option value="Electronics">Electronics</option>
@@ -364,7 +380,7 @@ function HomePage() {
                 </div>
 
                 <div className="d-flex d-lg-block d-none">
-                  <button className="ms-1 btn btn-success d-flex mt-3 py-4 px-3 rounded-0 justify-content-center align-items-center">
+                  <button className="ms-0 btn btn-success d-flex mt-3 py-4 px-3 rounded-0 justify-content-center align-items-center">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </button>
                 </div>

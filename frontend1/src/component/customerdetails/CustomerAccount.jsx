@@ -11,16 +11,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
-import Over from "../../assets/Over.png";
-import Address from "../../assets/Cart_address.png";
-import Cart_order from "../../assets/Cart_request.png";
-import Cart_reviews from "../../assets/Cart_reviews.png";
-import Cart_download from "../../assets/Cart_download.png";
-import Cart_setting from "../../assets/Cart_setting.png";
-import Cart_logout from "../../assets/Cart_logout.png";
-import Cart_user from "../../assets/Cart_user.png";
+import Over from "../../assets/Over.webp";
+import Address from "../../assets/Cart_address.webp";
+import Cart_order from "../../assets/Cart_request.webp";
+import Cart_reviews from "../../assets/Cart_reviews.webp";
+import Cart_download from "../../assets/Cart_download.webp";
+import Cart_setting from "../../assets/Cart_setting.webp";
+import Cart_logout from "../../assets/Cart_logout.webp";
+import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
 
@@ -264,7 +264,10 @@ function CustomerAccount() {
                 </div>
               ))
             ) : (
-              <div className="no-details"></div>
+              <div className="d-flex flex-column">
+                <span className="me-4 pe-2">Hello User</span>
+                <span className="ms-4">No profile available</span>
+              </div>
             )}
           </div>
         </div>
@@ -281,12 +284,15 @@ function CustomerAccount() {
               <div className="input-welcome7 d-flex flex-row align-items-center mt-3">
                 <input
                   type="search"
-                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-2"
+                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-0"
                   placeholder="Search For Product"
                 />
 
-                <div className="d-lg-block d-none">
-                  <select className="form-select rounded-0 border-0 mt-1">
+                <div className="d-lg-block d-none w-75 ">
+                  <select
+                    className="form-select rounded-0 border-0 mt-3"
+                    style={{ height: "49px" }}
+                  >
                     <option value="All Categories">All Categories</option>
                     <option value="New Arrivals">New Arrivals</option>
                     <option value="Electronics">Electronics</option>

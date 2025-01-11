@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductOptions.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -178,17 +178,24 @@ function ProductOptions() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/searchproductoption/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/searchproductoption/${search}`
+    );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productoptiondata");
+    let response = await axios.get(
+      "http://50.18.56.183:1600/productoptiondata"
+    );
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/deleteproductoptions/${id}`, user);
+    await axios.delete(
+      `http://50.18.56.183:1600/deleteproductoptions/${id}`,
+      user
+    );
     alert("data sucessfully deleted");
   };
 

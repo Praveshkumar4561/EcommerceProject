@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./BlogTagsCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -184,7 +184,10 @@ function BlogTagsEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/blogtagupdate/${id}`, user);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/blogtagupdate/${id}`,
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/blog/tags");
       }
@@ -202,7 +205,9 @@ function BlogTagsEdit() {
   }, []);
 
   let tagsdata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/blogtagdata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/blogtagdata/${id}`
+    );
     setUser(response.data[0]);
   };
 

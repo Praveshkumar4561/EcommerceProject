@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./FaqCategoryEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -84,7 +84,10 @@ function FaqCategoryEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/faqcategoryupdate/${id}`, user);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/faqcategoryupdate/${id}`,
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/faq-categories");
       }
@@ -102,7 +105,9 @@ function FaqCategoryEdit() {
   }, []);
 
   let categorydata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/faqcategorysomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/faqcategorysomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

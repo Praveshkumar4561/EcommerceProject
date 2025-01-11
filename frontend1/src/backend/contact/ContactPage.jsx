@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ContactPage.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faBell,
   faDownload,
@@ -177,7 +177,9 @@ function ContactPage() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/contactsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/contactsearch/${search}`
+    );
     setUser(response.data);
   };
 
@@ -195,9 +197,12 @@ function ContactPage() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/export-excelcontact", {
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        "http://50.18.56.183:1600/export-excelcontact",
+        {
+          responseType: "blob",
+        }
+      );
 
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));

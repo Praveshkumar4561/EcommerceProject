@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./Invoice.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -173,7 +173,9 @@ function Invoice() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/shipmentsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/shipmentsearch/${search}`
+    );
     setUser(response.data);
   };
 

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./ShipmentEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -178,7 +178,9 @@ function ShipmentEdit() {
   });
 
   let alldata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/checkoutsome/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/checkoutsome/${id}`
+    );
     setShipment(response.data[0]);
     setShipment1(response.data);
   };

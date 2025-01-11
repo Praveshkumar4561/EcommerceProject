@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./SpecificationAttributeCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -175,7 +175,10 @@ function SpecificationAttributeEdit() {
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://50.18.56.183:1600/spceficationupdateattribute/${id}`, user);
+      await axios.put(
+        `http://50.18.56.183:1600/spceficationupdateattribute/${id}`,
+        user
+      );
       navigate("/admin/ecommerce/specification-attributes");
     } catch (error) {
       console.error("There was an error submitting the form:", error);
@@ -191,7 +194,9 @@ function SpecificationAttributeEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/spceficationdatasomeattribute/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/spceficationdatasomeattribute/${id}`
+    );
     setUser(response.data[0]);
   };
 

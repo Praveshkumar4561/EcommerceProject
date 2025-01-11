@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./BlogCategory.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
-import Cutting from "../../assets/Cutting.png";
+import Cutting from "../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -171,7 +171,9 @@ function BlogCategory() {
   }, [search]);
 
   const searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/productsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/productsearch/${search}`
+    );
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 

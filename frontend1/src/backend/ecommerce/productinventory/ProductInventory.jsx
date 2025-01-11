@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductInventory.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -175,7 +175,9 @@ function ProductInventory() {
   }, [search]);
 
   const searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/productsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/productsearch/${search}`
+    );
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
@@ -2212,63 +2214,65 @@ function ProductInventory() {
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(user) && user.length > 0 ? (
-  user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          className="img-thumbnail rounded-1 image-price"
-                        />
-                      </td>
+                        <td>
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            className="img-thumbnail rounded-1 image-price"
+                          />
+                        </td>
 
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link to={`/admin/ecommerce/products/edit/${data.id}`}>
-                          <div>{data.name}</div>
-                          <div
-                            style={{ fontSize: "1rem", color: "gray" }}
-                            className="text-dark"
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <Link
+                            to={`/admin/ecommerce/products/edit/${data.id}`}
                           >
-                            SKU: {data.sku}
-                          </div>
-                        </Link>
-                      </td>
+                            <div>{data.name}</div>
+                            <div
+                              style={{ fontSize: "1rem", color: "gray" }}
+                              className="text-dark"
+                            >
+                              SKU: {data.sku}
+                            </div>
+                          </Link>
+                        </td>
 
-                      <td>
-                        <select className="w-75 rounded-1 py-2 select-yes border rounded-1 px-2">
-                          <option value="Yes">{data.featured}</option>
-                          <option value="No">No</option>
-                        </select>
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          className="form-control w-75 py-4"
-                          placeholder="$"
-                          name="minimumorder"
-                          value={data.minimumorder}
-                          style={{ fontFamily: "verdana" }}
-                          onChange={(e) => onInputChange(e, key)}
-                        />
-                      </td>
+                        <td>
+                          <select className="w-75 rounded-1 py-2 select-yes border rounded-1 px-2">
+                            <option value="Yes">{data.featured}</option>
+                            <option value="No">No</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input
+                            type="number"
+                            className="form-control w-75 py-4"
+                            placeholder="$"
+                            name="minimumorder"
+                            value={data.minimumorder}
+                            style={{ fontFamily: "verdana" }}
+                            onChange={(e) => onInputChange(e, key)}
+                          />
+                        </td>
 
-                      <td>
-                        <button
-                          className="btn btn-reload bulk border"
-                          type="button"
-                          onClick={() => reloadInvent(data.id, user)} 
-                        >
-                          <FontAwesomeIcon icon={faRotate} className="me-2" />
-                          Reload
-                        </button>
-                      </td>
-                    </tr>
-                   ))
+                        <td>
+                          <button
+                            className="btn btn-reload bulk border"
+                            type="button"
+                            onClick={() => reloadInvent(data.id, user)}
+                          >
+                            <FontAwesomeIcon icon={faRotate} className="me-2" />
+                            Reload
+                          </button>
+                        </td>
+                      </tr>
+                    ))
                   ) : (
                     <tr>
                       <td colSpan="8" className="text-center"></td>

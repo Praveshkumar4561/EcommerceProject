@@ -4,7 +4,7 @@ import "./ContactUs.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import "../../../src/assets/fonts/Roboto-BlackItalic.ttf";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -90,7 +90,10 @@ function ContactUs() {
     }
 
     try {
-      const response = await axios.post("http://50.18.56.183:1600/contact", user);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/contact",
+        user
+      );
       if (response.status === 200) {
         alert("Message sent successfully!");
         setUser({

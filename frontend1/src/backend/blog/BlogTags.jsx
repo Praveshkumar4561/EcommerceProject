@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./BlogTags.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -182,7 +182,9 @@ function BlogTags() {
   let { id } = useParams();
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/blogtagsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/blogtagsearch/${search}`
+    );
     setUser(response.data);
   };
 

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./AdminTheme.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Appath from "../../../assets/appath.jpg";
+import Logo from "../../../assets/Logo.webp";
+import Appath from "../../../assets/appath.webp";
 import {
   faAngleDown,
   faBell,
@@ -173,7 +173,9 @@ function AdminTheme() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/menusearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/menusearch/${search}`
+    );
     setUser(response.data);
   };
 

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./SimpleSlidersCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faBell,
   faEnvelope,
@@ -147,7 +147,10 @@ function SimpleSlidersEdit() {
   let { name, sliderkey, description, date, status } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.put(`http://50.18.56.183:1600/sliderupdate/${id}`, user);
+    const response = await axios.put(
+      `http://50.18.56.183:1600/sliderupdate/${id}`,
+      user
+    );
     if (response.status === 200) {
       navigate("/admin/simple-sliders");
       alert("Data successfully submitted");

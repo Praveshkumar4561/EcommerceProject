@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductCollectionsEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -188,7 +188,10 @@ function ProductCollectionsEdit() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/collectionupdate/${id}`, formData);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/collectionupdate/${id}`,
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-collections");
       }
@@ -211,7 +214,9 @@ function ProductCollectionsEdit() {
   }, []);
 
   let alldata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/collectionsome/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/collectionsome/${id}`
+    );
     setUser(response.data[0]);
   };
 

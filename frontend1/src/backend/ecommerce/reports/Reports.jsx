@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Reports.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Viewer from "../../../assets/Viewer.png";
-import Viewer1 from "../../../assets/Viewer1.png";
-import Viewer2 from "../../../assets/Viewer2.png";
+import Logo from "../../../assets/Logo.webp";
+import Viewer from "../../../assets/Viewer.webp";
+import Viewer1 from "../../../assets/Viewer1.webp";
+import Viewer2 from "../../../assets/Viewer2.webp";
 import {
   faAngleDown,
   faBell,
@@ -47,7 +47,9 @@ function Reports() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/customerget/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/customerget/${search}`
+    );
     setReport(response.data);
   };
 

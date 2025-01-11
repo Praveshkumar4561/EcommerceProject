@@ -12,17 +12,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
-import Over from "../../assets/Over.png";
-import Address from "../../assets/Cart_address.png";
-import Cart_order from "../../assets/Cart_request.png";
-import Cart_reviews from "../../assets/Cart_reviews.png";
-import Cart_download from "../../assets/Cart_download.png";
-import Cart_setting from "../../assets/Cart_setting.png";
-import Cart_logout from "../../assets/Cart_logout.png";
-import Cart_user from "../../assets/Cart_user.png";
+import Over from "../../assets/Over.webp";
+import Address from "../../assets/Cart_address.webp";
+import Cart_order from "../../assets/Cart_request.webp";
+import Cart_reviews from "../../assets/Cart_reviews.webp";
+import Cart_download from "../../assets/Cart_download.webp";
+import Cart_setting from "../../assets/Cart_setting.webp";
+import Cart_logout from "../../assets/Cart_logout.webp";
+import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 
@@ -450,7 +450,10 @@ function CustomerView() {
                 </div>
               ))
             ) : (
-              <p>No user data available</p>
+              <div className="d-flex flex-column">
+                <span className="me-4 pe-2">Hello User</span>
+                <span className="ms-4">No profile available</span>
+              </div>
             )}
           </div>
         </div>

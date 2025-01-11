@@ -5,7 +5,7 @@ import "./Login.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import axios from "axios";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
@@ -46,9 +46,13 @@ function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://50.18.56.183:1600/login", user, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        "http://50.18.56.183:1600/login",
+        user,
+        {
+          withCredentials: true,
+        }
+      );
       if (response.data.Status === "Success") {
         console.log("Login successful!");
         navigate("/");
@@ -64,7 +68,10 @@ function Login() {
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://50.18.56.183:1600/submit", registerUser);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/submit",
+        registerUser
+      );
       if (response.data.status === "success") {
         navigate("/login");
       }

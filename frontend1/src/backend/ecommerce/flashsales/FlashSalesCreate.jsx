@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./FlashSalesCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -177,7 +177,10 @@ function FlashSalesCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("http://50.18.56.183:1600/flashsales", user);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/flashsales",
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/flash-sales");
       }
@@ -2015,8 +2018,6 @@ function FlashSalesCreate() {
           </div>
         </div>
       </div>
-
-      
     </>
   );
 }

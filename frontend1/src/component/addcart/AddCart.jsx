@@ -4,7 +4,7 @@ import "./AddCart.css";
 import image1 from "../../assets/Tonic.svg";
 import "../../../src/assets/fonts/SanDiego.ttf";
 import Tonic from "../../assets/Tonic.svg";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./SpecificationEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -186,7 +186,10 @@ function SpecificationEdit() {
       return;
     }
     try {
-      await axios.put(`http://50.18.56.183:1600/spceficationupdate/${id}`, user);
+      await axios.put(
+        `http://50.18.56.183:1600/spceficationupdate/${id}`,
+        user
+      );
       setErrors({});
       navigate("/admin/ecommerce/specification-groups");
     } catch (error) {
@@ -203,7 +206,9 @@ function SpecificationEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/spceficationdatasome/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/spceficationdatasome/${id}`
+    );
     setUser(response.data[0]);
   };
 

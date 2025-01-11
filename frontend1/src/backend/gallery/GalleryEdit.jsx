@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./GalleryCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
-import Cutting from "../../assets/Cutting.png";
+import Logo from "../../assets/Logo.webp";
+import Cutting from "../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -238,7 +238,10 @@ function GalleryEdit() {
     formData.append("status", status);
     formData.append("file", file);
 
-    const response = await axios.put(`http://50.18.56.183:1600/galleryupdates/${id}`, formData);
+    const response = await axios.put(
+      `http://50.18.56.183:1600/galleryupdates/${id}`,
+      formData
+    );
     if (response.status === 200) {
       navigate("/admin/galleries");
       alert("data successfully submitted and file upload");
@@ -252,7 +255,9 @@ function GalleryEdit() {
   }, []);
 
   let gallerydata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/gallerytests/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/gallerytests/${id}`
+    );
     setUser(response.data[0]);
   };
 
@@ -282,7 +287,6 @@ function GalleryEdit() {
       setIsNavbarExpanded(!isNavbarExpanded);
     }
   };
-
 
   return (
     <>

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Products.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -175,7 +175,9 @@ function Products() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/productsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/productsearch/${search}`
+    );
     setUser(response.data);
   };
 
@@ -188,7 +190,10 @@ function Products() {
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/deleteproductsdata/${id}`, user);
+    await axios.delete(
+      `http://50.18.56.183:1600/deleteproductsdata/${id}`,
+      user
+    );
     alert("data sucessfully deleted");
   };
 
@@ -196,9 +201,12 @@ function Products() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/exportexcel-productdata", {
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        "http://50.18.56.183:1600/exportexcel-productdata",
+        {
+          responseType: "blob",
+        }
+      );
 
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));

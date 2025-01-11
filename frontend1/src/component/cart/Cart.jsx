@@ -5,7 +5,7 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./Cart.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Carts from "../../assets/Cart.svg";
 import axios from "axios";
@@ -41,7 +41,9 @@ function Cart() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+        const response = await axios.get(
+          "http://50.18.56.183:1600/allcartdata"
+        );
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,

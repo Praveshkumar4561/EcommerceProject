@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./AdsCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
-import Cutting from "../../assets/Cutting.png";
+import Logo from "../../assets/Logo.webp";
+import Cutting from "../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -187,7 +187,10 @@ function AdsCreate() {
     formData.append("expired", expired);
     formData.append("file", file);
     try {
-      const response = await axios.post("http://50.18.56.183:1600/adspost", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/adspost",
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ads");
       }

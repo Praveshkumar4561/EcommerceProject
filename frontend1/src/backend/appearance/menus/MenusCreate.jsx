@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./MenusCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -176,7 +176,10 @@ function MenusCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("http://50.18.56.183:1600/menusubmit", user);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/menusubmit",
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/menus");
       }

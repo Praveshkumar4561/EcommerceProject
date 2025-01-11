@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./IncompleteOrders.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
-import Output from "../../../assets/output.png";
+import Output from "../../../assets/output.webp";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
@@ -162,7 +162,6 @@ function IncompleOrders() {
   };
 
   let [incomplete, setIncomplete] = useState([]);
-
 
   let [count5, setCount5] = useState(0);
   let [order, setOrder] = useState([]);

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductsEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Cutting from "../../../assets/Cutting.png";
+import Logo from "../../../assets/Logo.webp";
+import Cutting from "../../../assets/Cutting.webp";
 import {
   faAngleDown,
   faArrowDown,
@@ -264,7 +264,10 @@ function ProductsEdit() {
     formData.append("label", selectedLabels || "");
     formData.append("label1", selectedLabels1 || "");
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/productupdate/${id}`, formData);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/productupdate/${id}`,
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/products");
       }
@@ -306,7 +309,9 @@ function ProductsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/productsomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/productsomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

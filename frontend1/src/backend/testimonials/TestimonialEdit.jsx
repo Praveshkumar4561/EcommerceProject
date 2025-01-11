@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./TestimonialCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
@@ -190,7 +190,9 @@ function TestimonialEdit() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await axios.get(`http://50.18.56.183:1600/sometest/${id}`);
+        let response = await axios.get(
+          `http://50.18.56.183:1600/sometest/${id}`
+        );
         const userData = response.data[0];
         setUser(userData);
         setEditorData2(userData.content || "");
@@ -281,7 +283,10 @@ function TestimonialEdit() {
     formData.append("file", user.file);
 
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/updatetest/${id}`, formData);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/updatetest/${id}`,
+        formData
+      );
       if (response.status === 200) {
         alert("Data updated");
         navigate("/admin/testimonials");

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./NewsLetters.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faBell,
   faDownload,
@@ -82,9 +82,12 @@ function NewsLetters() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/export-excel", {
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        "http://50.18.56.183:1600/export-excel",
+        {
+          responseType: "blob",
+        }
+      );
 
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));

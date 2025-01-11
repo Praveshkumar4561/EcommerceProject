@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ThemeLogo.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.png";
+import Logo from "../../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -12,9 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import Cutting from "../../../../assets/Cutting.png";
-import Shofy from "../../../../assets/shofy.png";
-import Shofy1 from "../../../../assets/shofy1.png";
+import Cutting from "../../../../assets/Cutting.webp";
+import Shofy from "../../../../assets/shofy.webp";
+import Shofy1 from "../../../../assets/shofy1.webp";
 import UserContext from "../../../../context/UserContext";
 
 function ThemeLogo() {

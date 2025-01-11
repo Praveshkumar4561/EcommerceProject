@@ -6,7 +6,7 @@ import Tonic from "../../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-brands-svg-icons";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
@@ -222,7 +222,6 @@ function BlogPage() {
       <div className="container-fluid overflow-hidden">
         <div className="container mt-2 pt-4 d-flex justify-content-start ms-0 ms-lg-0">
           <div className="row d-flex">
-            {/* {user.map((blog, index) => ( */}
             {Array.isArray(user) && user.length > 0 ? (
               user.map((blog, index) => (
                 <div
@@ -231,7 +230,7 @@ function BlogPage() {
                 >
                   <div className="image-page">
                     <img
-                      src={`/api/blogpostdata/src/image/${blog.image}`}
+                      src={`/api/src/image/${blog.image}`}
                       alt="404"
                       className="img-fluid w-100 h-501 mb-0 img-hover-effect"
                     />

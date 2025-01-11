@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductTagsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -158,7 +158,10 @@ function ProductTagsCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("http://50.18.56.183:1600/producttags", user);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/producttags",
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-tags");
       }

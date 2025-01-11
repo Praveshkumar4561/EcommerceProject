@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./SpecificationTable.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -187,12 +187,17 @@ function SpecificationTable() {
   };
 
   const alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/spceficationtabledata");
+    let response = await axios.get(
+      "http://50.18.56.183:1600/spceficationtabledata"
+    );
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://50.18.56.183:1600/specificationdeletetable/${id}`, user);
+    await axios.delete(
+      `http://50.18.56.183:1600/specificationdeletetable/${id}`,
+      user
+    );
     alert("data deleted");
   };
 

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./MenusEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Cutting from "../../../assets/Cutting.png";
+import Logo from "../../../assets/Logo.webp";
+import Cutting from "../../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -176,7 +176,10 @@ function MenusEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/menusupdate/${id}`, user);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/menusupdate/${id}`,
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/menus");
       }
@@ -194,7 +197,9 @@ function MenusEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/menusomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/menusomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

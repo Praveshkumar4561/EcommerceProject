@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Cutting from "../../../assets/Cutting.png";
+import Logo from "../../../assets/Logo.webp";
+import Cutting from "../../../assets/Cutting.webp";
 import {
   faAngleDown,
   faArrowDown,
@@ -250,7 +250,10 @@ function ProductsCreate() {
     formData.append("label", selectedLabels[0] || "");
     formData.append("label1", selectedLabels1[0] || "");
     try {
-      const response = await axios.post("http://50.18.56.183:1600/productpage", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/productpage",
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/products");
       }
@@ -1466,7 +1469,7 @@ function ProductsCreate() {
                 <path d="M13 12l2 0"></path>
               </svg>
               <Link to="/admin/pages" className="text-light">
-              Pages
+                Pages
               </Link>
             </li>
 
@@ -3316,9 +3319,7 @@ function ProductsCreate() {
                                           );
                                         })
                                       ) : (
-                                        <option disabled>
-                                          
-                                        </option>
+                                        <option disabled></option>
                                       )}
                                     </select>
                                   </div>
@@ -3326,7 +3327,6 @@ function ProductsCreate() {
                               ) : (
                                 <p></p>
                               )}
-
                             </div>
 
                             <div className="d-flex flex-column ms-2 ms-lg-0 w-100">

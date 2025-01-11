@@ -10,7 +10,7 @@ import {
   faEnvelope,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
@@ -79,7 +79,9 @@ function BlogDetails() {
   useEffect(() => {
     const fetchBlogDetails = async () => {
       try {
-        const response = await axios.get(`http://50.18.56.183:1600/blogpostdata/${id}`);
+        const response = await axios.get(
+          `http://50.18.56.183:1600/blogpostdata/${id}`
+        );
         setBlog(response.data);
       } catch (error) {
         console.error("Error fetching:", error);
@@ -256,7 +258,7 @@ function BlogDetails() {
                 >
                   <div className="blog-box1">
                     <img
-                      src={`/api/blogpostdata/src/image/${data.image}`}
+                      src={`/api/src/image/${data.image}`}
                       alt="404"
                       className="img-fluid w-100 h-100 mb-0"
                     />

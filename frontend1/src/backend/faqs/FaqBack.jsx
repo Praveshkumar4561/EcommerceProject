@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./FaqBack.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -178,7 +178,9 @@ function FaqBack() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/faqsearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/faqsearch/${search}`
+    );
     setUser(response.data);
   };
 
@@ -2225,64 +2227,64 @@ function FaqBack() {
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(user) && user.length > 0 ? (
-  user.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <Link to={`/admin/faqs/edit/${data.id}`}>
-                          {data.question}
-                        </Link>
-                      </td>
-
-                      <td>
-                        <span className="sliders1">{data.category}</span>
-                      </td>
-
-                      <td>{data.date}</td>
-
-                      <td>
-                        <span class="badge badge-success lh-base px-2 fw-light">
-                          {data.status}
-                        </span>
-                      </td>
-
-                      <td>
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="text-primary ms-3"
-                        />
-                      </td>
-
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <button class="btn btn-edit me-2" type="button">
+                        <td>
                           <Link to={`/admin/faqs/edit/${data.id}`}>
-                            <FontAwesomeIcon
-                              icon={faPenToSquare}
-                              className="fs-5 text-light"
-                            />
+                            {data.question}
                           </Link>
-                        </button>
+                        </td>
 
-                        <button className="btn btn-delete" type="button">
-          <FontAwesomeIcon
-            icon={faTrashCan}
-            className="fs-5"
-            onClick={() => deletedata(data.id)}
-          />
-        </button>
-      </td>
-    </tr>
-  ))
-) : (
-  <tr>
-    <td colSpan="9" className="text-center"></td>
-  </tr>
-)}
+                        <td>
+                          <span className="sliders1">{data.category}</span>
+                        </td>
+
+                        <td>{data.date}</td>
+
+                        <td>
+                          <span class="badge badge-success lh-base px-2 fw-light">
+                            {data.status}
+                          </span>
+                        </td>
+
+                        <td>
+                          <FontAwesomeIcon
+                            icon={faCheck}
+                            className="text-primary ms-3"
+                          />
+                        </td>
+
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button class="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/faqs/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
+
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="9" className="text-center"></td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

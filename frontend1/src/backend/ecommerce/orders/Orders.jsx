@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Orders.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -35,7 +35,9 @@ function Orders() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/customerget/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/customerget/${search}`
+    );
     setCustomer(response.data);
   };
 
@@ -201,9 +203,12 @@ function Orders() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/order-export", {
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        "http://50.18.56.183:1600/order-export",
+        {
+          responseType: "blob",
+        }
+      );
 
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));

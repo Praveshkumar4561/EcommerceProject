@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "./Checkout.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
@@ -55,7 +55,9 @@ function Checkout() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://50.18.56.183:1600/allcartdata");
+        const response = await axios.get(
+          "http://50.18.56.183:1600/allcartdata"
+        );
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,
@@ -168,7 +170,10 @@ function Checkout() {
       total: total.toFixed(2),
     };
     try {
-      const response = await axios.post("http://50.18.56.183:1600/checkout", orderData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/checkout",
+        orderData
+      );
       if (response.data && response.data.orderNumber) {
         alert(
           `Order successfully placed. Your order number is 

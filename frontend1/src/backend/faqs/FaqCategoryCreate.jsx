@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./FaqCategoryCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -83,7 +83,10 @@ function FaqCategoryCreate() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.post("http://50.18.56.183:1600/faqcategory", user);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/faqcategory",
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/faq-categories");
       }

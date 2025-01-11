@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./FaqsEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -164,7 +164,10 @@ function FaqsEdit() {
 
   let handleSubmit = async () => {
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/faqspageupdate/${id}`, user);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/faqspageupdate/${id}`,
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/faqs");
       }
@@ -182,7 +185,9 @@ function FaqsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/faqsomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/faqsomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

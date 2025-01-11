@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductLabels.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -178,12 +178,16 @@ function ProductLabels() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/searchlabels/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/searchlabels/${search}`
+    );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productlabelsdata");
+    let response = await axios.get(
+      "http://50.18.56.183:1600/productlabelsdata"
+    );
     setUser(response.data);
   };
 

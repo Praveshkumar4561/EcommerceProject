@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ThemeStyles.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.png";
+import Logo from "../../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,

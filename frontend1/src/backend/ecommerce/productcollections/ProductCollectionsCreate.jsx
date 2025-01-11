@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductCollectionsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
-import Cutting from "../../../assets/Cutting.png";
+import Cutting from "../../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -186,7 +186,10 @@ function ProductCollectionsCreate() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post("http://50.18.56.183:1600/productcollection", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/productcollection",
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/product-collections");
       }

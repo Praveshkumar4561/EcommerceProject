@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./DiscountsEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -181,7 +181,10 @@ function DiscountsEdit() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.put(`http://50.18.56.183:1600/discountupdate/${id}`, user);
+      const response = await axios.put(
+        `http://50.18.56.183:1600/discountupdate/${id}`,
+        user
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/discounts");
       }
@@ -195,7 +198,9 @@ function DiscountsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/discountsomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/discountsomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

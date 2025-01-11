@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./AnnouncementEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faBell,
   faEnvelope,
@@ -57,7 +57,10 @@ function AnnouncementEdit() {
   let { name, content, start_date, end_date, active } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.put(`http://50.18.56.183:1600/updateannnounce/${id}`, user);
+    const response = await axios.put(
+      `http://50.18.56.183:1600/updateannnounce/${id}`,
+      user
+    );
     if (response.status === 200) {
       navigate("/admin/announcements");
     } else {

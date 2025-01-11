@@ -3,12 +3,12 @@ import "./AboutPages.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import { Link } from "react-router-dom";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import free from "../../assets/free.png";
-import Cash from "../../assets/Cash.png";
-import Hoursupport from "../../assets/hoursupport.png";
-import Quality from "../../assets/quality.png";
+import free from "../../assets/free.webp";
+import Cash from "../../assets/Cash.webp";
+import Hoursupport from "../../assets/hoursupport.webp";
+import Quality from "../../assets/quality.webp";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -125,7 +125,7 @@ function AboutUsPage() {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/blog-details">
+                      <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>

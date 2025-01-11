@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./Pages.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -2220,58 +2220,57 @@ function Pages() {
                   </tr>
                 </thead>
                 <tbody>
-                {Array.isArray(user) && user.length > 0 ? (
-  user.map((data, key) => (
-    <tr key={key}>
-      <td>
-        <input type="checkbox" className="form-check-input" />
-      </td>
-      <td>{data.id}</td>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-      <td>
-        <Link to={`/admin/pages/edit/${data.id}`}>
-          {data.name}
-        </Link>
-      </td>
+                        <td>
+                          <Link to={`/admin/pages/edit/${data.id}`}>
+                            {data.name}
+                          </Link>
+                        </td>
 
-      <td>
-        <span className="sliders1">{data.template}</span>
-      </td>
+                        <td>
+                          <span className="sliders1">{data.template}</span>
+                        </td>
 
-      <td>{data.date}</td>
+                        <td>{data.date}</td>
 
-      <td>
-        <span className="badge badge-success fw-medium lh-base px-2 bulk1">
-          {data.status}
-        </span>
-      </td>
+                        <td>
+                          <span className="badge badge-success fw-medium lh-base px-2 bulk1">
+                            {data.status}
+                          </span>
+                        </td>
 
-      <td style={{ whiteSpace: "nowrap" }}>
-        <button className="btn btn-edit me-2" type="button">
-          <Link to={`/admin/pages/edit/${data.id}`}>
-            <FontAwesomeIcon
-              icon={faPenToSquare}
-              className="fs-5 text-light"
-            />
-          </Link>
-        </button>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button className="btn btn-edit me-2" type="button">
+                            <Link to={`/admin/pages/edit/${data.id}`}>
+                              <FontAwesomeIcon
+                                icon={faPenToSquare}
+                                className="fs-5 text-light"
+                              />
+                            </Link>
+                          </button>
 
-        <button className="btn btn-delete" type="button">
-          <FontAwesomeIcon
-            icon={faTrashCan}
-            className="fs-5"
-            onClick={() => deletedata(data.id)}
-          />
-        </button>
-      </td>
-    </tr>
-  ))
-) : (
-  <tr>
-    <td colSpan="7">No data available</td>
-  </tr>
-)}
-
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7">No data available</td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

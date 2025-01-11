@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Customers.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Man from "../../../assets/man.png";
-import Woman from "../../../assets/woman.png";
-import quality from "../../../assets/quality.png";
+import Logo from "../../../assets/Logo.webp";
+import Man from "../../../assets/man.webp";
+import Woman from "../../../assets/woman.webp";
+import quality from "../../../assets/quality.webp";
 import {
   faAngleDown,
   faBell,
@@ -176,7 +176,9 @@ function Customers() {
   }, [search]);
 
   let searchbar = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/customersearch/${search}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/customersearch/${search}`
+    );
     setUser(response.data);
   };
 
@@ -199,9 +201,12 @@ function Customers() {
 
   const handleDownload = async () => {
     try {
-      const response = await axios.get("http://50.18.56.183:1600/export-customerdata", {
-        responseType: "blob",
-      });
+      const response = await axios.get(
+        "http://50.18.56.183:1600/export-customerdata",
+        {
+          responseType: "blob",
+        }
+      );
       if (response.data.size > 0) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");

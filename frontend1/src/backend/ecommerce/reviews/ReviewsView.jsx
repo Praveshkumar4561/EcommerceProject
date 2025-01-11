@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ReviewsView.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -199,7 +199,10 @@ function ReviewsView() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post("http://50.18.56.183:1600/reviewdatasubmit", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/reviewdatasubmit",
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/reviews");
       }
@@ -216,9 +219,12 @@ function ReviewsView() {
 
   let deletedata = async () => {
     try {
-      let response = await axios.delete(`http://50.18.56.183:1600/deleteviewreview/${id}`, {
-        data: user,
-      });
+      let response = await axios.delete(
+        `http://50.18.56.183:1600/deleteviewreview/${id}`,
+        {
+          data: user,
+        }
+      );
       if (response.status === 200) {
         alert("Data deleted successfully");
       } else {
@@ -235,7 +241,9 @@ function ReviewsView() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://50.18.56.183:1600/reviewsomedata/${id}`);
+    let response = await axios.get(
+      `http://50.18.56.183:1600/reviewsomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 
@@ -2245,8 +2253,6 @@ function ReviewsView() {
               </form>
             </div>
           </div>
-
-         
         </div>
       </div>
     </>

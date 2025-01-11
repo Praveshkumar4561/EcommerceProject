@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ReviewsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import Cutting from "../../../assets/Cutting.png";
+import Logo from "../../../assets/Logo.webp";
+import Cutting from "../../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -197,7 +197,10 @@ function ReviewsCreate() {
     formData.append("date", date);
     formData.append("file", file);
     try {
-      const response = await axios.post("http://50.18.56.183:1600/reviewdatasubmit", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/reviewdatasubmit",
+        formData
+      );
       if (response.status === 200) {
         navigate("/admin/ecommerce/reviews");
       }

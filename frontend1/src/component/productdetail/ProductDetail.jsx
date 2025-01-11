@@ -14,7 +14,7 @@ import {
   faCartShopping,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
@@ -222,7 +222,9 @@ function ProductDetail() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+      let response = await axios.get(
+        "http://50.18.56.183:1600/productpagedata"
+      );
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -235,7 +237,9 @@ function ProductDetail() {
   useEffect(() => {
     const shopdata = async () => {
       try {
-        const response = await axios.get("http://50.18.56.183:1600/productpagedata");
+        const response = await axios.get(
+          "http://50.18.56.183:1600/productpagedata"
+        );
         setShop(response.data);
       } catch (error) {
         console.error("Error occurred", error);
@@ -323,7 +327,10 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("http://50.18.56.183:1600/wishlistpost", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/wishlistpost",
+        formData
+      );
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);
@@ -350,11 +357,15 @@ function ProductDetail() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("http://50.18.56.183:1600/addcart", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://50.18.56.183:1600/addcart",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       alert("Product successfully added in the cart");
       console.log("Item added to cart:", response.data);
       navigate("/cart");
@@ -367,7 +378,9 @@ function ProductDetail() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productlabelsdata");
+    let response = await axios.get(
+      "http://50.18.56.183:1600/productlabelsdata"
+    );
     setLabel(response.data);
   };
   labeldata();

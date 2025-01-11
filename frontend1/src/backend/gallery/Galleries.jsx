@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Galleries.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -32,15 +32,15 @@ function Galleries() {
   }, [search]);
 
   let serachbar = async () => {
-    const response = await axios.get(`http://50.18.56.183:1600/galleryfil/${search}`);
+    const response = await axios.get(
+      `http://50.18.56.183:1600/galleryfil/${search}`
+    );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    
     let response = await axios.get("http://50.18.56.183:1600/gallerydata");
-
 
     setUser(response.data);
   };

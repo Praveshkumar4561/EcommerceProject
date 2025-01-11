@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./ProductPrices.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
-import View from "../../../assets/view.png";
+import Logo from "../../../assets/Logo.webp";
+import View from "../../../assets/view.webp";
 import {
   faAngleDown,
   faBell,
@@ -178,7 +178,10 @@ function ProductPrices() {
 
   const searchbar = async () => {
     try {
-      let response = await axios.get(`http://50.18.56.183:1600/productsearch/${search}`, user);
+      let response = await axios.get(
+        `http://50.18.56.183:1600/productsearch/${search}`,
+        user
+      );
       setPrice(response.data);
       console.log("Search data:", response.data);
     } catch (error) {
@@ -2234,87 +2237,91 @@ function ProductPrices() {
                 <tbody>
                   {/* {price.map((data, key) => ( */}
                   {Array.isArray(price) && price.length > 0 ? (
-  price.map((data, key) => (
-                    <tr key={key}>
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>{data.id}</td>
+                    price.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                      <td>
-                        <img
-                          src={`/api/src/image/${data.image}`}
-                          className="img-thumbnail rounded-1 image-price"
-                        />
-                      </td>
+                        <td>
+                          <img
+                            src={`/api/src/image/${data.image}`}
+                            className="img-thumbnail rounded-1 image-price"
+                          />
+                        </td>
 
-                      <td style={{ whiteSpace: "nowrap" }}>
-                        <Link to={`/admin/ecommerce/products/edit/${data.id}`}>
-                          <div>{data.name}</div>
-                          <div
-                            style={{ fontSize: "1rem", color: "gray" }}
-                            className="text-dark"
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <Link
+                            to={`/admin/ecommerce/products/edit/${data.id}`}
                           >
-                            SKU: {data.sku}
-                          </div>
-                        </Link>
-                      </td>
+                            <div>{data.name}</div>
+                            <div
+                              style={{ fontSize: "1rem", color: "gray" }}
+                              className="text-dark"
+                            >
+                              SKU: {data.sku}
+                            </div>
+                          </Link>
+                        </td>
 
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control w-75 py-4"
-                          placeholder="$"
-                          name="cost"
-                          value={data.cost}
-                          style={{
-                            fontFamily: "verdana",
-                            zIndex: "1000",
-                            position: "relative",
-                          }}
-                          onChange={(e) => onInputChange(e, key)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control w-75 py-4"
-                          placeholder="$"
-                          name="price"
-                          value={data.price}
-                          style={{ fontFamily: "verdana" }}
-                          onChange={(e) => onInputChange(e, key)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control w-75 py-4"
-                          placeholder="$"
-                          name="price_sale"
-                          value={data.price_sale}
-                          style={{ fontFamily: "verdana" }}
-                          onChange={(e) => onInputChange(e, key)}
-                        />
-                      </td>
+                        <td>
+                          <input
+                            type="text"
+                            className="form-control w-75 py-4"
+                            placeholder="$"
+                            name="cost"
+                            value={data.cost}
+                            style={{
+                              fontFamily: "verdana",
+                              zIndex: "1000",
+                              position: "relative",
+                            }}
+                            onChange={(e) => onInputChange(e, key)}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            className="form-control w-75 py-4"
+                            placeholder="$"
+                            name="price"
+                            value={data.price}
+                            style={{ fontFamily: "verdana" }}
+                            onChange={(e) => onInputChange(e, key)}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            className="form-control w-75 py-4"
+                            placeholder="$"
+                            name="price_sale"
+                            value={data.price_sale}
+                            style={{ fontFamily: "verdana" }}
+                            onChange={(e) => onInputChange(e, key)}
+                          />
+                        </td>
 
-                      <td>
-                        <button
-                          className="btn btn-reload bulk border d-flex flex-row align-items-center ms-1 py-4"
-                          type="button"
-                          onClick={() => reloadButton(data.id)}
-                        >
-                          <FontAwesomeIcon icon={faRotate} className="me-2" />
-                          Reload
-                        </button>
+                        <td>
+                          <button
+                            className="btn btn-reload bulk border d-flex flex-row align-items-center ms-1 py-4"
+                            type="button"
+                            onClick={() => reloadButton(data.id)}
+                          >
+                            <FontAwesomeIcon icon={faRotate} className="me-2" />
+                            Reload
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No products prices available
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" className="text-center">No products prices available</td>
-                  </tr>
-                )}
+                  )}
                 </tbody>
               </table>
             </div>

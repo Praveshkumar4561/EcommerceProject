@@ -7,7 +7,7 @@ import Shipping from "../../assets/Shipping.svg";
 import Support from "../../assets/Support.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
@@ -70,7 +70,9 @@ function Shop() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("http://50.18.56.183:1600/productpagedata");
+      let response = await axios.get(
+        "http://50.18.56.183:1600/productpagedata"
+      );
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -90,11 +92,15 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("http://50.18.56.183:1600/addcart", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://50.18.56.183:1600/addcart",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       alert("Product successfully added in the cart");
       navigate("/cart");
       detailsdata();
@@ -106,7 +112,9 @@ function Shop() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://50.18.56.183:1600/productlabelsdata");
+    let response = await axios.get(
+      "http://50.18.56.183:1600/productlabelsdata"
+    );
     setLabel(response.data);
   };
   labeldata();
@@ -121,7 +129,10 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post("http://50.18.56.183:1600/wishlistpost", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/wishlistpost",
+        formData
+      );
       alert("Product successfully added to the wishlist");
     } catch (error) {
       console.error("Error adding to wishlist:", error);

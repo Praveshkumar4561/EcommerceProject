@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Widgets.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.png";
+import Logo from "../../../assets/Logo.webp";
 import {
   faAngleDown,
   faAngleUp,
@@ -13,9 +13,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import Cutting from "../../../assets/Cutting.png";
-import Grid from "../../../assets/grid.png";
-import Slider from "../../../assets/slider.png";
+import Cutting from "../../../assets/Cutting.webp";
+import Grid from "../../../assets/grid.webp";
+import Slider from "../../../assets/slider.webp";
 import UserContext from "../../../context/UserContext";
 
 function Widgets() {

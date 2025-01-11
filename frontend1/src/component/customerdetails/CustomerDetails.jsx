@@ -11,21 +11,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
-import Profile from "../../assets/image.png";
+import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
-import Over from "../../assets/Over.png";
-import Address from "../../assets/Cart_address.png";
-import Cart_order from "../../assets/Cart_request.png";
-import Cart_reviews from "../../assets/Cart_reviews.png";
-import Cart_download from "../../assets/Cart_download.png";
-import Cart_setting from "../../assets/Cart_setting.png";
-import Cart_logout from "../../assets/Cart_logout.png";
-import Cart_user from "../../assets/Cart_user.png";
-import Tick from "../../assets/Tick.png";
-import Man from "../../assets/man.png";
-import Woman from "../../assets/woman.png";
-import quality from "../../assets/quality.png";
+import Over from "../../assets/Over.webp";
+import Address from "../../assets/Cart_address.webp";
+import Cart_order from "../../assets/Cart_request.webp";
+import Cart_reviews from "../../assets/Cart_reviews.webp";
+import Cart_download from "../../assets/Cart_download.webp";
+import Cart_setting from "../../assets/Cart_setting.webp";
+import Cart_logout from "../../assets/Cart_logout.webp";
+import Cart_user from "../../assets/Cart_user.webp";
+import Tick from "../../assets/Tick.webp";
+import Man from "../../assets/man.webp";
+import Woman from "../../assets/woman.webp";
+import quality from "../../assets/quality.webp";
 import axios from "axios";
 
 function CustomerDetails() {
@@ -106,7 +106,7 @@ function CustomerDetails() {
         <div className="row align-items-center justify-content-between text-center mt-lg-2 mt-0 pt-0 pt-lg-1">
           <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-4 lorem-home">
             {user.length > 0 && (
-              <div className="d-block d-lg-block text-start">
+              <div className="d-block d-lg-block text-start bg-light">
                 <p className="mb-0 mt-3 mt-lg-0 me-md-3 free-shipping d-flex flex-row">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
@@ -170,7 +170,10 @@ function CustomerDetails() {
                 </div>
               ))
             ) : (
-              <div className="no-details"></div>
+              <div className="d-flex flex-column">
+                <span className="me-4 pe-2">Hello User</span>
+                <span className="ms-4">No profile available</span>
+              </div>
             )}
           </div>
         </div>
@@ -187,12 +190,15 @@ function CustomerDetails() {
               <div className="input-welcome2 d-flex flex-row align-items-center mt-3">
                 <input
                   type="search"
-                  className="form-control p-2 me-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-0"
+                  className="form-control p-2 me-1 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-0"
                   placeholder="Search For Product"
                 />
 
-                <div className="d-lg-block d-none">
-                  <select className="form-select rounded-0 border-0 mt-1">
+                <div className="d-lg-block d-none w-75 ">
+                  <select
+                    className="form-select rounded-0 border-0 mt-3"
+                    style={{ height: "49px" }}
+                  >
                     <option value="All Categories">All Categories</option>
                     <option value="New Arrivals">New Arrivals</option>
                     <option value="Electronics">Electronics</option>

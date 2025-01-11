@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Testimonial.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faBell,
   faCheck,
@@ -161,7 +161,9 @@ function Testimonial() {
   }, [search]);
 
   let serachbar = async () => {
-    const response = await axios.get(`http://50.18.56.183:1600/testifilter/${search}`);
+    const response = await axios.get(
+      `http://50.18.56.183:1600/testifilter/${search}`
+    );
     setUser(response.data);
   };
   serachbar();

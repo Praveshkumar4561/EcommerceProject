@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./PagesCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
+import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
@@ -16,7 +16,7 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import Cutting from "../../assets/Cutting.png";
+import Cutting from "../../assets/Cutting.webp";
 import UserContext from "../../context/UserContext";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -238,7 +238,10 @@ function PagesCreate() {
     formData.append("content", cleanContent);
     formData.append("file", user.file);
     try {
-      const response = await axios.post("http://50.18.56.183:1600/pagespost", formData);
+      const response = await axios.post(
+        "http://50.18.56.183:1600/pagespost",
+        formData
+      );
       if (response.status === 200) {
         alert("Data successfully submitted and file uploaded");
         navigate("/admin/pages");

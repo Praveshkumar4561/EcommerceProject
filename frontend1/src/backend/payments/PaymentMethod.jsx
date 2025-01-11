@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import "./PaymentMethod.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.png";
-import Credit from "../../assets/credit.png";
-import Cutting from "../../assets/Cutting.png";
+import Logo from "../../assets/Logo.webp";
+import Credit from "../../assets/credit.webp";
+import Cutting from "../../assets/Cutting.webp";
 import {
   faBell,
   faEnvelope,
