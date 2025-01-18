@@ -8,6 +8,8 @@ const path = require("path");
 const ExcelJS = require("exceljs");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const { ppid } = require("process");
@@ -17,7 +19,7 @@ const salt = 10;
 
 app.use(
   cors({
-    origin: "http://52.9.253.67",
+    origin: "http://52.8.59.14",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -550,19 +552,40 @@ app.post("/faqs", (req, res) => {
 });
 
 app.post("/contact", (req, res) => {
-  const first_name = req.body.first_name;
-  const last_name = req.body.last_name;
+  const name = req.body.name;
   let email = req.body.email;
-  let phone_number = req.body.phone_number;
-  let product = req.body.product;
-  let message = req.body.message;
-  let value = [[first_name, last_name, email, phone_number, product, message]];
+  let address = req.body.address;
+  let phone = req.body.phone;
+  let subject = req.body.subject;
+  let content = req.body.content;
+  let value = [[name, email, address, phone, subject, content]];
   let sql =
-    "insert into contact(first_name,last_name,email,phone_number,product,message)values ?";
+    "insert into contact(name, email, address, phone, subject, content)values ?";
   db.query(sql, [value], (err, result) => {
     if (err) throw err;
     else {
       res.send("data submitted");
+    }
+  });
+});
+
+app.get("/contactreqdata", (req, res) => {
+  const sql = "select *from contact";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.get("/contactsomedata/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "select *from contact where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
     }
   });
 });
@@ -957,7 +980,7 @@ app.get("/allcontact", (req, res) => {
 
 app.get("/export-excelcontact", async (req, res) => {
   try {
-    db.query("SELECT * FROM contactus", async (err, results) => {
+    db.query("SELECT * FROM contact", async (err, results) => {
       if (err) {
         console.error("Database query error:", err);
         res.status(500).send("Error querying the database.");
@@ -965,7 +988,6 @@ app.get("/export-excelcontact", async (req, res) => {
       }
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sheet1");
-
       if (results.length > 0) {
         worksheet.columns = Object.keys(results[0]).map((key) => ({
           header: key,
@@ -980,6 +1002,7 @@ app.get("/export-excelcontact", async (req, res) => {
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
+
       await workbook.xlsx.write(res);
       res.end();
     });
@@ -1014,7 +1037,7 @@ app.get("/contactusget/:id", (req, res) => {
 
 app.get("/contactsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from contactus where name like ?";
+  const sql = "select *from contact where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -3339,6 +3362,217 @@ app.post("/wishlistpost", upload.single("file"), (req, res) => {
 app.get("/wishlistdata", (req, res) => {
   const sql = "select *from wishlist";
   db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+// admin login logic
+
+// app.post("/adminlogin", (req, res) => {
+//   const { username, password } = req.body;
+//   if (!username || !password) {
+//     return res.status(400).send("Both username and password are required");
+//   }
+//   const sql = "SELECT * FROM adminlogin WHERE username = ?";
+//   db.query(sql, [username], (err, result) => {
+//     if (err) {
+//       return res.status(500).send("Internal server error");
+//     }
+//     if (result.length === 0) {
+//       return res.status(400).send("Invalid username or password.");
+//     }
+//     const hashedPassword = result[0].password;
+//     bcrypt.compare(password, hashedPassword, (err, isMatch) => {
+//       if (err) {
+//         return res.status(500).send("Error comparing passwords");
+//       }
+//       if (isMatch) {
+//         const token = jwt.sign(
+//           { userId: result[0].id, username: result[0].username },
+//           process.env.JWT_SECRET,
+//           { expiresIn: "6h" }
+//         );
+//         res.cookie("auth_token", token, {
+//           httpOnly: true,
+//           secure: process.env.NODE_ENV === "production",
+//           maxAge: 6 * 60 * 60 * 1000,
+//           sameSite: "Strict",
+//         });
+//         return res.send({
+//           message: "Successfully logged in!",
+//           user: result[0],
+//         });
+//       } else {
+//         return res.status(400).send("Invalid username or password.");
+//       }
+//     });
+//   });
+// });
+
+app.post("/adminlogin", (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send("Both username and password are required");
+  }
+  const sql = "SELECT * FROM adminlogin WHERE username = ?";
+  db.query(sql, [username], (err, result) => {
+    if (err) {
+      return res.status(500).send("Internal server error");
+    }
+    if (result.length === 0) {
+      return res.status(400).send("Invalid username or password.");
+    }
+    const hashedPassword = result[0].password;
+    const role = result[0].role;
+    const lastLogin = result[0].last_login;
+    bcrypt.compare(password, hashedPassword, (err, isMatch) => {
+      if (err) {
+        return res.status(500).send("Error comparing passwords");
+      }
+      if (isMatch) {
+        let expiresIn;
+        let maxAge;
+        const currentTime = new Date().getTime();
+        let lastLoginTime = lastLogin
+          ? new Date(lastLogin).getTime()
+          : currentTime;
+        if (role === "superadmin") {
+          expiresIn = "365d";
+          maxAge = 365 * 24 * 60 * 60 * 1000;
+        } else if (role === "admin") {
+          const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+          const timeElapsed = currentTime - lastLoginTime;
+          if (timeElapsed < sevenDaysInMilliseconds) {
+            expiresIn = (sevenDaysInMilliseconds - timeElapsed) / 1000;
+            maxAge = expiresIn * 1000;
+          } else {
+            expiresIn = 7 * 24 * 60 * 60;
+            maxAge = sevenDaysInMilliseconds;
+          }
+        }
+        const sql = "UPDATE adminlogin SET last_login = ? WHERE username = ?";
+        db.query(sql, [new Date(), username], (updateErr) => {
+          if (updateErr) {
+            return res.status(500).send("Error updating last login time");
+          }
+          const token = jwt.sign(
+            { userId: result[0].id, username, role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+          );
+          res.cookie("auth_token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: maxAge,
+            sameSite: "Strict",
+          });
+          return res.send({
+            message:
+              role === "superadmin"
+                ? "Successfully logged in as Super Admin!"
+                : "Successfully logged in as Admin!",
+            user: result[0],
+            token: token,
+            expiresIn: expiresIn,
+          });
+        });
+      } else {
+        return res.status(400).send("Invalid username or password.");
+      }
+    });
+  });
+});
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "xyz@gmail.com",
+    pass: "1111111",
+  },
+  debug: true,
+});
+
+function sendResetPasswordEmail(email, resetToken) {
+  const resetLink = `http://localhost:5173/admin/password/reset-password?token=${resetToken}`;
+  const mailOptions = {
+    from: "pkumar@jainya.com",
+    to: email,
+    subject: "Password Reset Request",
+    html: `<p>You requested a password reset. Please click the link below to reset your password:</p><p><a href="${resetLink}">${resetLink}</a></p>`,
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.error("Error sending email:", err);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+}
+
+app.post("/forgot-password", (req, res) => {
+  const { email } = req.body;
+  const sql = "SELECT * FROM adminlogin WHERE username = ?";
+  db.query(sql, [email], (err, result) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).send("Database error");
+    }
+    if (result.length === 0) {
+      return res.status(404).send("Email not found");
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiration = Date.now() + 3600000;
+    const updateSql =
+      "UPDATE adminlogin SET reset_token = ?, reset_token_expiration = ? WHERE username = ?";
+    db.query(updateSql, [resetToken, resetTokenExpiration, email], (err) => {
+      if (err) {
+        console.error("Error updating reset token:", err);
+        return res.status(500).send("Error updating reset token");
+      }
+      sendResetPasswordEmail(email, resetToken);
+      res.send("Password reset link has been sent to your email");
+    });
+  });
+});
+
+app.post("/reset-password", (req, res) => {
+  const { token, newPassword } = req.body;
+  const sql =
+    "SELECT * FROM adminlogin WHERE reset_token = ? AND reset_token_expiration > ?";
+  db.query(sql, [token, Date.now()], (err, result) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).send("Database error");
+    }
+    if (result.length === 0) {
+      return res.status(400).send("Invalid or expired reset token");
+    }
+    bcrypt.hash(newPassword, salt, (err, hashedPassword) => {
+      if (err) {
+        console.error("Error hashing the password:", err);
+        return res.status(500).send("Error hashing the password");
+      }
+      const updateSql =
+        "UPDATE adminlogin SET password = ?, reset_token = NULL, reset_token_expiration = NULL WHERE reset_token = ?";
+      db.query(updateSql, [hashedPassword, token], (err) => {
+        if (err) {
+          console.error("Error updating the password:", err);
+          return res.status(500).send("Error updating the password");
+        }
+        res.send("Password has been reset successfully");
+      });
+    });
+  });
+});
+
+app.get("/forgot-password", (req, res) => {
+  const { username } = req.body;
+  const sql = "select *from adminlogin where username=?";
+  db.query(sql, [username], (err, result) => {
     if (err) throw err;
     else {
       res.json(result);
