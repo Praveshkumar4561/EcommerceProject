@@ -10,8 +10,9 @@ import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
+
 import axios from "axios";
+import UserContext from "../../context/UserContext";
 
 function Shop() {
   let { count, setCount } = useContext(UserContext);
@@ -45,7 +46,7 @@ function Shop() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -56,7 +57,7 @@ function Shop() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
     setImage(response.data);
   };
 
@@ -70,7 +71,7 @@ function Shop() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+      let response = await axios.get("http://52.8.59.14:1600/productpagedata");
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -91,7 +92,7 @@ function Shop() {
     }
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/addcart",
+        "http://52.8.59.14:1600/addcart",
         formData,
         {
           headers: {
@@ -110,7 +111,7 @@ function Shop() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productlabelsdata");
+    let response = await axios.get("http://52.8.59.14:1600/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();
@@ -126,7 +127,7 @@ function Shop() {
     }
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/wishlistpost",
+        "http://52.8.59.14:1600/wishlistpost",
         formData
       );
       alert("Product successfully added to the wishlist");
@@ -257,8 +258,6 @@ function Shop() {
               </div>
             )}
           </header>
-
-          {}
 
           <main className="container mt-5 cart-cart">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
@@ -504,7 +503,7 @@ function Shop() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

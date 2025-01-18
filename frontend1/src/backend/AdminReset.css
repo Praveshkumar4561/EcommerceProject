@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.admin-login-image {
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+.align-class {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.align-class1 {
+  width: 100%;
+  max-width: 75%;
+}
+.admin-min1 {
+  background-color: #1b293a;
+  color: white;
+}
+
+.admin-min2 {
+  background-color: #1b293a;
+  color: white;
+}
+.admin-min2:focus {
+  background-color: #1b293a;
+  color: white;
+  border: 1px solid #1b293a;
+}
+.admin-min2::placeholder {
+  color: white;
+}
+
+@media (max-width: 576px) {
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 100%;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 90%;
+  }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 70%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .admin-min {
+    width: 100%;
+    max-width: 100%;
+  }
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 62%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 85%;
+  }
+}
+
+.input-container {
+  position: relative;
+}
+
+.admin-min2 {
+  padding-right: 40px;
+}
+
+.password-icon {
+  position: absolute;
+  top: 71%;
+  right: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.login-pass {
+  text-decoration: none;
+  color: #6aa9e3;
+}
+.login-pass:hover {
+  text-decoration: underline;
+}
+
+.password-reset {
+  font-size: 14px;
+}

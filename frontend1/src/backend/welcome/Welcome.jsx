@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Welcome.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.webp";
+import Logo from "../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AgCharts } from "ag-charts-react";
 
 function Welcome() {
   const [query, setQuery] = useState("");
@@ -164,14 +165,14 @@ function Welcome() {
   let [count1, setCount1] = useState("");
 
   let alldata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setCount1(response.data.length);
   };
 
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
     setCount2(response.data.length);
   };
   showdata();
@@ -179,7 +180,7 @@ function Welcome() {
   let [count4, setCount4] = useState(0);
 
   let reviews = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/reviewdata");
+    let response = await axios.get("http://52.8.59.14:1600/reviewdata");
     setCount4(response.data.length);
   };
   reviews();
@@ -187,7 +188,7 @@ function Welcome() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/checkoutdata");
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -199,6 +200,89 @@ function Welcome() {
       setDisplayedCount(count5);
     }
   }, [count5, displayedCount]);
+
+  let getData = () => {
+    return [
+      { month: "1h", subscriptions: 222, services: 250, products: 200 },
+      { month: "3h", subscriptions: 240, services: 255, products: 210 },
+      { month: "5h", subscriptions: 280, services: 245, products: 195 },
+      { month: "7h", subscriptions: 300, services: 260, products: 205 },
+      { month: "9h", subscriptions: 350, services: 235, products: 215 },
+      { month: "11h", subscriptions: 420, services: 270, products: 200 },
+      { month: "13h", subscriptions: 300, services: 255, products: 225 },
+      { month: "15h", subscriptions: 270, services: 305, products: 210 },
+      { month: "17h", subscriptions: 260, services: 280, products: 250 },
+      { month: "19h", subscriptions: 385, services: 250, products: 205 },
+      { month: "21h", subscriptions: 320, services: 265, products: 215 },
+      { month: "23h", subscriptions: 330, services: 255, products: 220 },
+    ];
+  };
+
+  const [options, setOptions] = useState({
+    title: {},
+    data: getData(),
+    series: [
+      {
+        type: "area",
+        xKey: "month",
+        yKey: "subscriptions",
+        yName: "Subscriptions",
+        stroke: "blue",
+        strokeWidth: 3,
+        lineDash: [3, 4],
+        fill: "lightBlue",
+      },
+      {
+        type: "area",
+        xKey: "month",
+        yKey: "services",
+        yName: "Services",
+        stroke: "red",
+        strokeWidth: 3,
+        fill: "pink",
+        marker: {
+          enabled: true,
+          fill: "red",
+        },
+      },
+      {
+        type: "area",
+        xKey: "month",
+        yKey: "products",
+        yName: "Products",
+        stroke: "green",
+        strokeWidth: 3,
+        fill: "lightGreen",
+        label: {
+          enabled: true,
+          fontWeight: "bold",
+          formatter: ({ value }) => value.toFixed(0),
+        },
+      },
+    ],
+    axes: [
+      {
+        type: "category",
+        position: "bottom",
+        title: {
+          text: "Time (h)",
+        },
+      },
+      {
+        type: "number",
+        position: "left",
+        title: {
+          // text: "Values",
+        },
+        min: 0,
+        max: 300,
+        nice: false,
+        tick: {
+          values: [0, 75, 150, 225, 300],
+        },
+      },
+    ],
+  });
 
   return (
     <>
@@ -218,7 +302,11 @@ function Welcome() {
               className="hamburger-back pt-2 pe-1 "
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -259,7 +347,7 @@ function Welcome() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -302,11 +390,16 @@ function Welcome() {
             <span className="text-light count-value1 d-lg-block d-none">
               {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+
+            <Link to="/admin/ecommerce/orders">
+              <Link to="/admin/ecommerce/orders">
+                <img
+                  src={Shopping}
+                  alt="Shopping"
+                  className="search-box search-box1"
+                />
+              </Link>
+            </Link>
           </div>
         </div>
       </div>
@@ -321,7 +414,7 @@ function Welcome() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -344,7 +437,7 @@ function Welcome() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -377,7 +470,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -409,7 +502,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -440,7 +533,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -473,7 +566,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -506,7 +599,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -537,7 +630,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -569,7 +662,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -601,7 +694,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -630,7 +723,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -660,7 +753,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -690,7 +783,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -719,7 +812,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -748,7 +841,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -778,7 +871,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -807,7 +900,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -837,7 +930,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -867,7 +960,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -895,7 +988,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -923,7 +1016,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -964,7 +1057,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -995,7 +1088,7 @@ function Welcome() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1036,7 +1129,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1064,7 +1157,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1092,7 +1185,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1120,7 +1213,7 @@ function Welcome() {
             <Link to="/admin/pages" className="text-light text-decoration-none">
               <li>
                 <svg
-                  class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                  className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1143,7 +1236,7 @@ function Welcome() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1177,7 +1270,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1209,7 +1302,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1237,7 +1330,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1266,7 +1359,7 @@ function Welcome() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1384,7 +1477,7 @@ function Welcome() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1406,7 +1499,7 @@ function Welcome() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1429,7 +1522,7 @@ function Welcome() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1463,7 +1556,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1491,7 +1584,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1519,7 +1612,7 @@ function Welcome() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1542,7 +1635,7 @@ function Welcome() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1564,7 +1657,7 @@ function Welcome() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1624,7 +1717,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1657,7 +1750,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1685,7 +1778,7 @@ function Welcome() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1705,7 +1798,7 @@ function Welcome() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1727,7 +1820,7 @@ function Welcome() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1747,7 +1840,7 @@ function Welcome() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1781,7 +1874,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1812,7 +1905,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1846,7 +1939,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1876,7 +1969,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1909,7 +2002,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1940,7 +2033,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1971,7 +2064,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2007,7 +2100,7 @@ function Welcome() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2042,7 +2135,7 @@ function Welcome() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2064,7 +2157,7 @@ function Welcome() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2083,7 +2176,7 @@ function Welcome() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2105,7 +2198,7 @@ function Welcome() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2128,9 +2221,9 @@ function Welcome() {
         </div>
       </div>
 
-      <div class="content-home d-flex justify-content-center mt-1">
-        <div class="mt-4 ms-lg-2">
-          <div class="d-flex flex-row justify-content-between align-items-center mb-3">
+      <div className="content-home d-flex justify-content-center mt-1">
+        <div className="mt-4 ms-lg-2">
+          <div className="d-flex flex-row justify-content-between align-items-center mb-3">
             <h4 className="ms-sm-1">DASHBOARD</h4>
 
             <button className="btn d-flex py-4 border button-widget1 mt-2 me-sm-3 me-3 me-md-3 me-lg-3 me-xl-0 me-xxl-2 mt-lg-0">
@@ -2255,10 +2348,13 @@ function Welcome() {
           <div className="analytics-box border rounded">
             <h5>Site Analytics</h5>
             <hr />
-            <div className="chart rounded"></div>
-            <div className="stats d-flex gap-1 flex-wrap session-para1">
+            <div className="chart rounded">
+              <AgCharts options={options} />;
+            </div>
+
+            <div className="stats d-flex gap-1 flex-wrap session-para1 mt-5 pt-5">
               <div className="stat border mt-3 d-flex flex-row justify-content-start session-para1 align-items-start">
-                <i class="fas fa-eye bg-success px-2 py-2 rounded text-light mt-2"></i>
+                <i className="fas fa-eye bg-success px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2">Sessions</p>
                   <h4 className="sessional1 ms-2">201</h4>
@@ -2266,21 +2362,21 @@ function Welcome() {
               </div>
 
               <div className="stat border mt-3 d-flex justify-content-start w- align-items-start flex-row ">
-                <i class="fas fa-user bg-info px-2 py-2 rounded text-light mt-2"></i>
+                <i className="fas fa-user bg-info px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2">Visitors</p>
                   <h4 className="sessional1 ms-2">183</h4>
                 </div>
               </div>
               <div className="stat border mt-3 d-flex flex-row justify-content-start w- align-items-start">
-                <i class="fas fa-file-alt bg-primary px-2 py-2 rounded text-light mt-2"></i>
+                <i className="fas fa-file-alt bg-primary px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2 ms-lg-0">Pageviews</p>
                   <h4 className="sessional1 ms-2">699</h4>
                 </div>
               </div>
               <div className="stat border mt-3 d-flex flex-row justify-content-start w- align-items-start">
-                <i class="fas fa-bolt bg-warning px-2 py-2 rounded text-light mt-2"></i>
+                <i className="fas fa-bolt bg-warning px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2">Bounce Rate</p>
                   <h4 className="sessional1 ms-2">56%</h4>

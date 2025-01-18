@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ContactEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.webp";
+import Logo from "../../assets/Tonic.svg";
 import {
   faBell,
   faEnvelope,
@@ -15,7 +15,6 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import UserContext from "../../context/UserContext";
 
 function ContactsEdit() {
   let { id } = useParams();
@@ -51,7 +50,6 @@ function ContactsEdit() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -70,13 +68,10 @@ function ContactsEdit() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -147,50 +142,7 @@ function ContactsEdit() {
     setBlog(!blog);
   };
 
-  let [user, setUser] = useState({
-    type: "",
-    name: "",
-    phone: "",
-    email: "",
-    address: "",
-    subject: "",
-    content: "",
-    required: false,
-    orders: "",
-    date: "",
-    status: "",
-  });
-  let {
-    type,
-    name,
-    phone,
-    email,
-    address,
-    subject,
-    content,
-    required,
-    orders,
-    date,
-    status,
-  } = user;
-
-  let handleSubmit = async () => {
-    try {
-      const response = await axios.put(
-        `http://52.9.253.67:1600/updatecontact/${id}`,
-        user
-      );
-      if (response.status === 200) {
-        navigate("/admin/contacts");
-      }
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  let onInputChange = async (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
+  let [user, setUser] = useState([]);
 
   useEffect(() => {
     contactdata();
@@ -198,9 +150,10 @@ function ContactsEdit() {
 
   let contactdata = async () => {
     let response = await axios.get(
-      `http://52.9.253.67:1600/contactusget/${id}`
+      `http://52.8.59.14:1600/contactsomedata/${id}`
     );
     setUser(response.data[0]);
+    console.log(response.data);
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -221,7 +174,24 @@ function ContactsEdit() {
     }
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("en-GB", { month: "short" });
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+    return `${day} ${month} ${year} ${hours}:${minutes}:${seconds}`;
+  };
 
   return (
     <>
@@ -241,7 +211,11 @@ function ContactsEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -282,7 +256,7 @@ function ContactsEdit() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -317,13 +291,15 @@ function ContactsEdit() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -333,12 +309,12 @@ function ContactsEdit() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -361,7 +337,7 @@ function ContactsEdit() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -393,7 +369,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -425,7 +401,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -456,7 +432,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -489,7 +465,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -522,7 +498,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -553,7 +529,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -585,7 +561,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -617,7 +593,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -646,7 +622,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -676,7 +652,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -706,7 +682,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -735,7 +711,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -764,7 +740,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -794,7 +770,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -823,7 +799,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -853,7 +829,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -883,7 +859,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -911,7 +887,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -939,7 +915,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -980,7 +956,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1011,7 +987,7 @@ function ContactsEdit() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1052,7 +1028,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1080,7 +1056,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1108,7 +1084,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1136,7 +1112,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/pages" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                  className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1159,7 +1135,7 @@ function ContactsEdit() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1193,7 +1169,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1225,7 +1201,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1253,7 +1229,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1282,7 +1258,7 @@ function ContactsEdit() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1399,7 +1375,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1420,7 +1396,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1442,7 +1418,7 @@ function ContactsEdit() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1476,7 +1452,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1504,7 +1480,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1531,7 +1507,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1554,7 +1530,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1576,7 +1552,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1636,7 +1612,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1669,7 +1645,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1697,7 +1673,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1717,7 +1693,7 @@ function ContactsEdit() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1739,7 +1715,7 @@ function ContactsEdit() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1758,7 +1734,7 @@ function ContactsEdit() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1792,7 +1768,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1823,7 +1799,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1857,7 +1833,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1887,7 +1863,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1920,7 +1896,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1951,7 +1927,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1982,7 +1958,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2018,7 +1994,7 @@ function ContactsEdit() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2053,7 +2029,7 @@ function ContactsEdit() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2074,7 +2050,7 @@ function ContactsEdit() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2093,7 +2069,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2114,7 +2090,7 @@ function ContactsEdit() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2151,201 +2127,63 @@ function ContactsEdit() {
         </ol>
       </nav>
 
-      <div className="container-fluid">
+      <div className="container-fluid cart-cart">
         <div className="container">
-          <div className="row">
-            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
-              <svg
-                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M12 9h.01"></path>
-                <path d="M11 12h1v4h1"></path>
-              </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container-fluid">
-        <div className="container">
-          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
-            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
-              <form>
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-3 w-100">
-                    <label htmlFor="">Name</label>
-                    <select
-                      className="border rounded-1 mt-2 py-2 w-100"
-                      name="type"
-                      value={type}
-                      onChange={onInputChange}
-                    >
-                      <option value="">Select an option</option>
-                      <option value="text">Text</option>
-                      <option value="number">Number</option>
-                      <option value="textarea">Textarea</option>
-                      <option value="dropdown">Dropdown</option>
-                      <option value="checkbox">Checkbox</option>
-                      <option value="radio">Radio</option>
-                      <option value="date">Date</option>
-                      <option value="date-time">Date Time</option>
-                      <option value="time">Time</option>
-                    </select>
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-lg-2">
+            <div className="col-12 col-lg-8 border rounded customer-page review-public2">
+              <div className="d-flex flex-column gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
+                <div className="d-flex flex-row justify-content-between w-100 flex-nowrap">
+                  <div className="d-flex justify-content-start">
+                    <h5 className="mt-3">Contact information</h5>
                   </div>
+                  <div className="d-flex justify-content-end gap-2 align-items-lg-center mt-2 flex-lg-nowrap flex-row flex-wrap"></div>
+                </div>
+                <div className="border w-100 mt-1"></div>
+              </div>
+
+              <div className="d-flex justify-content-between w-100 flex-wrap lh-lg mt-3">
+                <div className="d-flex flex-column">
+                  <span className="fw-medium">FULL NAME</span>
+                  <span>{user.name}</span>
+                </div>
+                <div className="d-flex flex-column">
+                  <h classNamee="fw-bold">EMAIL</h>
+                  <Link className="login-pass1">{user.email}</Link>
+                </div>
+                <div className="d-flex flex-column">
+                  <span className="fw-medium">PHONE</span>
+                  <span>
+                    <Link className="login-pass1">{user.phone}</Link>
+                  </span>
+                </div>
+              </div>
+
+              <div className="d-flex justify-content-between w-100 flex-wrap lh-lg mt-lg-3">
+                <div className="d-flex flex-column">
+                  <span className="fw-medium">TIME</span>
+                  <span>{formatDate(user.date)}</span>
                 </div>
 
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label htmlFor="">Name</label>
-                    <input
-                      type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Content"
-                      name="name"
-                      value={name}
-                      onChange={onInputChange}
-                    />
-                  </div>
+                <div className="d-flex flex-column pe-4">
+                  <span className="fw-medium">ADDRESS</span>
+                  <span>{user.address}</span>
                 </div>
 
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label htmlFor="">Phone</label>
-                    <input
-                      type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Content"
-                      name="phone"
-                      value={phone}
-                      onChange={onInputChange}
-                    />
-                  </div>
+                <div className="d-flex flex-column text-end">
+                  <span className="fw-medium">SUBJECT</span>
+                  <span>{user.subject}</span>
                 </div>
+              </div>
 
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label htmlFor="">Email</label>
-                    <input
-                      type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Content"
-                      name="email"
-                      value={email}
-                      onChange={onInputChange}
-                    />
-                  </div>
+              <div className="d-flex justify-content-between w-50 flex-wrap lh-lg mt-lg-3 mb-4">
+                <div className="d-flex flex-column">
+                  <span className="fw-medium">CONTENT</span>
+                  <span>{user.content}</span>
                 </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label htmlFor="">Address</label>
-                    <input
-                      type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Content"
-                      name="address"
-                      value={address}
-                      onChange={onInputChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label htmlFor="">Subject</label>
-                    <input
-                      type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Content"
-                      name="subject"
-                      value={subject}
-                      onChange={onInputChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label htmlFor="">Content</label>
-                    <textarea
-                      type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Content"
-                      name="content"
-                      value={content}
-                      onChange={onInputChange}
-                      style={{ height: "80px" }}
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-row mb-3 mt-lg-0  w-100">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="has-action"
-                      checked={required}
-                      name="required"
-                      value={required}
-                      onChange={onInputChange}
-                    />
-                    <label class="form-check-label ms-2" for="has-action">
-                      Required
-                    </label>
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0  w-100">
-                    <label class="form-check-label ms-2" for="has-action">
-                      Order
-                    </label>
-                    <input
-                      class="form-control mt-2 py-4"
-                      type="number"
-                      placeholder="Order"
-                      name="orders"
-                      value={orders}
-                      onChange={onInputChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
-                    <label htmlFor="">Start date</label>
-                    <input
-                      type="date"
-                      className="form-control mt-2 py-4"
-                      name="date"
-                      value={date}
-                      onChange={onInputChange}
-                      style={{
-                        cursor: "pointer",
-                        zIndex: "1000",
-                        position: "relative",
-                      }}
-                    />
-                  </div>
-                </div>
-              </form>
+              </div>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 mt-2 mt-lg-0 review-public2 mt-lg-2 mt-xl-0 mt-xxl-0">
               <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Publish</h4>
                 <hr />
@@ -2353,7 +2191,6 @@ function ContactsEdit() {
                   <button
                     type="button"
                     className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
-                    onClick={handleSubmit}
                   >
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
@@ -2368,16 +2205,13 @@ function ContactsEdit() {
                 <h4 className="mt-0 text-start">Status</h4>
                 <hr />
                 <select
-                  className="form-select mb-3 customer-page1"
+                  className="form-select w-100"
                   style={{ height: "46px" }}
                   name="status"
-                  value={status}
-                  onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="published">Published</option>
-                  <option value="default">Default</option>
-                  <option value="pending">Pending</option>
+                  <option value="Read">Read</option>
+                  <option value="Unread">Unread</option>
                 </select>
               </div>
             </div>

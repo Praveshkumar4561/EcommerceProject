@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Settings.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.webp";
+import Logo from "../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -11,7 +11,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import UserContext from "../../context/UserContext";
+
+import axios from "axios";
 
 function Settings() {
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -159,7 +160,13 @@ function Settings() {
     setBlog(!blog);
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   return (
     <>
@@ -179,7 +186,11 @@ function Settings() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -220,7 +231,7 @@ function Settings() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -255,13 +266,15 @@ function Settings() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -276,7 +289,7 @@ function Settings() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -299,7 +312,7 @@ function Settings() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -331,7 +344,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -363,7 +376,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -394,7 +407,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -427,7 +440,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -460,7 +473,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -491,7 +504,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -523,7 +536,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -555,7 +568,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -584,7 +597,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -614,7 +627,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -644,7 +657,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -673,7 +686,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -702,7 +715,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -732,7 +745,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -761,7 +774,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -791,7 +804,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -821,7 +834,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -849,7 +862,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -877,7 +890,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -918,7 +931,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -949,7 +962,7 @@ function Settings() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -990,7 +1003,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1018,7 +1031,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1046,7 +1059,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1074,7 +1087,7 @@ function Settings() {
             <li>
               <Link to="/admin/pages" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                  className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1097,7 +1110,7 @@ function Settings() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1131,7 +1144,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1163,7 +1176,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1191,7 +1204,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1220,7 +1233,7 @@ function Settings() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1338,7 +1351,7 @@ function Settings() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1359,7 +1372,7 @@ function Settings() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1381,7 +1394,7 @@ function Settings() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1415,7 +1428,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1443,7 +1456,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1470,7 +1483,7 @@ function Settings() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1493,7 +1506,7 @@ function Settings() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1515,7 +1528,7 @@ function Settings() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1575,7 +1588,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1608,7 +1621,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1636,7 +1649,7 @@ function Settings() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1656,7 +1669,7 @@ function Settings() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1678,7 +1691,7 @@ function Settings() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1697,7 +1710,7 @@ function Settings() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1731,7 +1744,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1762,7 +1775,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1796,7 +1809,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1826,7 +1839,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1859,7 +1872,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1890,7 +1903,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1921,7 +1934,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1957,7 +1970,7 @@ function Settings() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1992,7 +2005,7 @@ function Settings() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2013,7 +2026,7 @@ function Settings() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2032,7 +2045,7 @@ function Settings() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2053,7 +2066,7 @@ function Settings() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2085,15 +2098,15 @@ function Settings() {
         </ol>
       </nav>
 
-      <div class="container mt-lg-4 mt-0 d-flex justify-content-center ms-2 ms-md-0 ms-lg-0">
-        <div class="card platform">
-          <div class="card-header fw-normal">Common</div>
-          <div class="card-body ">
-            <div class="row mt-0 d-flex flex-row">
-              <div class="col-12 col-md-4 mb-0">
-                <div class="d-flex align-items-start platform2 mt-sm-1">
+      <div className="container mt-lg-4 mt-0 d-flex justify-content-center ms-2 ms-md-0 ms-lg-0">
+        <div className="card platform">
+          <div className="card-header fw-normal">Common</div>
+          <div className="card-body ">
+            <div className="row mt-0 d-flex flex-row">
+              <div className="col-12 col-md-4 mb-0">
+                <div className="d-flex align-items-start platform2 mt-sm-1">
                   <svg
-                    class="icon svg-icon-ti-ti-settings platform-backend text-dark announcement"
+                    className="icon svg-icon-ti-ti-settings platform-backend text-dark announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2109,20 +2122,20 @@ function Settings() {
                     <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
                   </svg>
                   <div>
-                    <Link to="#" class="ms-xxl-3 fw-medium">
+                    <Link to="#" className="ms-xxl-3 fw-medium">
                       General
                     </Link>
-                    <div class="description1 user-backend ms-xxl-3">
+                    <div className="description1 user-backend ms-xxl-3">
                       View and update your general settings and activate license
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4">
-                <div class="d-flex align-items-start platform2 mb-sm-4">
+              <div className="col-12 col-md-4">
+                <div className="d-flex align-items-start platform2 mb-sm-4">
                   <svg
-                    class="icon  svg-icon-ti-ti-mail platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-mail platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2141,17 +2154,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Email
                     </Link>
-                    <div class="description1 user-backend">
+                    <div className="description1 user-backend">
                       View and update your email settings and email templates
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0">
-                <div class="d-flex align-items-start platform2 mb-sm-4">
+              <div className="col-12 col-md-4 mb-0">
+                <div className="d-flex align-items-start platform2 mb-sm-4">
                   <svg
-                    class="icon  svg-icon-ti-ti-mail-code platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-mail-code platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2172,17 +2185,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Email templates
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Email templates using HTML & system variables.
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-mail-check platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-mail-check platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2202,17 +2215,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Email rules
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Configure email rules for validation
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-folder platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-folder platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2230,17 +2243,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Media
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your media settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-4 mt-sm-3 mt-md-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-4 mt-sm-3 mt-md-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-link platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-link platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2260,17 +2273,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Permalink
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your permalink settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-4">
-                <div class="d-flex align-items-start platform2 mt-md-1">
+              <div className="col-12 col-md-4 mb-0 mb-lg-4">
+                <div className="d-flex align-items-start platform2 mt-md-1">
                   <svg
-                    class="icon  svg-icon-ti-ti-language platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-language platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2292,17 +2305,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Languages
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your website languages
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-4">
-                <div class="d-flex align-items-start platform2 mt-sm-3 mt-md-1">
+              <div className="col-12 col-md-4 mb-0 mb-lg-4">
+                <div className="d-flex align-items-start platform2 mt-sm-3 mt-md-1">
                   <svg
-                    class="icon  svg-icon-ti-ti-palette platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-palette platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2323,17 +2336,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Admin appearance
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update logo, favicon, layout,...
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-4">
-                <div class="d-flex align-items-start platform2 mb-sm-4 mt-md-1">
+              <div className="col-12 col-md-4 mb-0 mb-lg-4">
+                <div className="d-flex align-items-start platform2 mb-sm-4 mt-md-1">
                   <svg
-                    class="icon  svg-icon-ti-ti-api platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-api platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2354,17 +2367,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       API Settings
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your API settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-4">
-                <div class="d-flex align-items-start platform2 mt-sm-3 mt-md-2 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-4">
+                <div className="d-flex align-items-start platform2 mt-sm-3 mt-md-2 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-box platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-box platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2385,17 +2398,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Cache
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Configure caching for optimized speed
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4  mb-0 mb-lg-4">
-                <div class="d-flex align-items-start platform2 mb-sm-4 mt-md-2 mt-lg-0">
+              <div className="col-12 col-md-4  mb-0 mb-lg-4">
+                <div className="d-flex align-items-start platform2 mb-sm-4 mt-md-2 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-table-options platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-table-options platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2422,15 +2435,15 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Datatables
                     </Link>
-                    <div class="description1">Settings for datatables</div>
+                    <div className="description1">Settings for datatables</div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4  mb-0 mb-lg-4">
-                <div class="d-flex align-items-start platform2 mt-sm-4 mt-md-0">
+              <div className="col-12 col-md-4  mb-0 mb-lg-4">
+                <div className="d-flex align-items-start platform2 mt-sm-4 mt-md-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-world platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-world platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2452,15 +2465,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Website Tracking
                     </Link>
-                    <div class="description1">Configure website tracking</div>
+                    <div className="description1">
+                      Configure website tracking
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-4 mt-md-0 mt-lg-0">
-                <div class="d-flex align-items-start platform2 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-4 mt-md-0 mt-lg-0">
+                <div className="d-flex align-items-start platform2 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-brand-speedtest platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-brand-speedtest platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2479,7 +2494,7 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Optimize
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Minify HTML output, inline CSS, remove comments...
                     </div>
                   </div>
@@ -2490,15 +2505,15 @@ function Settings() {
         </div>
       </div>
 
-      <div class="container mt-0 d-flex justify-content-center ms-2 ms-lg-0">
-        <div class="card platform">
-          <div class="card-header fw-normal">Localization</div>
-          <div class="card-body">
-            <div class="row mt-0 d-flex flex-row">
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mb-sm-5">
-                <div class="d-flex align-items-start platform2">
+      <div className="container mt-0 d-flex justify-content-center ms-2 ms-lg-0">
+        <div className="card platform">
+          <div className="card-header fw-normal">Localization</div>
+          <div className="card-body">
+            <div className="row mt-0 d-flex flex-row">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mb-sm-5">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-world-download platform-backend text-dark announcement"
+                    className="icon  svg-icon-ti-ti-world-download platform-backend text-dark announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2518,20 +2533,20 @@ function Settings() {
                     <path d="M18 14v7m-3 -3l3 3l3 -3"></path>
                   </svg>
                   <div>
-                    <Link to="#" class="ms-xxl-3 fw-medium">
+                    <Link to="#" className="ms-xxl-3 fw-medium">
                       Locales
                     </Link>
-                    <div class="description1 user-backend ms-xxl-3">
+                    <div className="description1 user-backend ms-xxl-3">
                       View, download and import locales
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4  mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-5">
+              <div className="col-12 col-md-4  mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-5">
                   <svg
-                    class="icon  svg-icon-ti-ti-language platform-backend text-dark me-3 mt-1 announcement"
+                    className="icon  svg-icon-ti-ti-language platform-backend text-dark me-3 mt-1 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2553,17 +2568,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Theme Translations
                     </Link>
-                    <div class="description1 user-backend">
+                    <div className="description1 user-backend">
                       Manage the theme translations
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-2 mt-md-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-2 mt-md-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-message-language platform-backend text-dark me-3 mt-1 announcement"
+                    className="icon  svg-icon-ti-ti-message-language platform-backend text-dark me-3 mt-1 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2583,7 +2598,7 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Other Translations
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Manage the other translations (admin, plugins,
                       packages...)
                     </div>
@@ -2595,15 +2610,15 @@ function Settings() {
         </div>
       </div>
 
-      <div class="container mt-0 d-flex justify-content-center ms-2 ms-lg-0">
-        <div class="card platform">
-          <div class="card-header fw-normal">Ecommerce</div>
-          <div class="card-body">
-            <div class="row mt-0 d-flex flex-row">
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-md-0">
-                <div class="d-flex align-items-start platform2">
+      <div className="container mt-0 d-flex justify-content-center ms-2 ms-lg-0">
+        <div className="card platform">
+          <div className="card-header fw-normal">Ecommerce</div>
+          <div className="card-body">
+            <div className="row mt-0 d-flex flex-row">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-md-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-settings platform-backend text-dark announcement"
+                    className="icon  svg-icon-ti-ti-settings platform-backend text-dark announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2619,20 +2634,20 @@ function Settings() {
                     <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
                   </svg>
                   <div>
-                    <Link to="#" class="ms-xxl-3 fw-medium">
+                    <Link to="#" className="ms-xxl-3 fw-medium">
                       General
                     </Link>
-                    <div class="description1 user-backend ms-xxl-3">
+                    <div className="description1 user-backend ms-xxl-3">
                       View and update your general settings and activate license
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-5 pb-sm-3">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-5 pb-sm-3">
                   <svg
-                    class="icon  svg-icon-ti-ti-coin platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-coin platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2652,17 +2667,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Currencies
                     </Link>
-                    <div class="description1 user-backend">
+                    <div className="description1 user-backend">
                       View and update currency settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-3 pb-sm-3">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-3 pb-sm-3">
                   <svg
-                    class="icon  svg-icon-ti-ti-map-pin platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-map-pin platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2681,17 +2696,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Store locators
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update the lists of your chains
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-2">
                   <svg
-                    class="icon  svg-icon-ti-ti-packages platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-packages platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2717,17 +2732,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Products
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your products settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mt-sm-3 mt-md-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mt-sm-3 mt-md-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-search platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-search platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2746,17 +2761,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Product Search
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update product search settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mt-sm-2 mt-md-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mt-sm-2 mt-md-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-device-desktop platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-device-desktop platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2777,17 +2792,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Digital Products
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update digital products settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-md-2 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-md-2 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-star platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-star platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2805,17 +2820,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Product Reviews
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your product reviews settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mb-sm-4 mt-md-2 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mb-sm-4 mt-md-2 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-shopping-cart platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-shopping-cart platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2836,17 +2851,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Shopping
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your shopping settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mb-sm-5 mt-md-2 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mb-sm-5 mt-md-2 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-shopping-cart-share platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-shopping-cart-share platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2868,17 +2883,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Checkout
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update checkout settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-1 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-1 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-receipt-refund platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-receipt-refund platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2897,17 +2912,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Return
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update return settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mt-sm-3 mt-md-0 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mt-sm-3 mt-md-0 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-file-invoice platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-file-invoice platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2929,17 +2944,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Invoices
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your invoices settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-2 mt-md-0 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-2 mt-md-0 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-list-details platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-list-details platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2962,17 +2977,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Invoice Template
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Settings for Invoice template
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mt-sm-3 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mt-sm-3 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-list-details platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-list-details platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -2995,17 +3010,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Shipping Label Template
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Settings for Shipping Label template
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-4 mt-md-3 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-4 mt-md-3 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-receipt-tax platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-receipt-tax platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3036,17 +3051,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Taxes
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your taxes settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mt-md-3 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mt-md-3 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-users platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-users platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3067,17 +3082,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Customers
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update your customers settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-cube-send platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-cube-send platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3100,17 +3115,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Shipping
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update shipping settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-building-store platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-building-store platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3132,17 +3147,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Marketplace
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update marketplace settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mt-md-4 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mt-md-4 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-webhook platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-webhook platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3162,15 +3177,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Webhook
                     </Link>
-                    <div class="description1">Configure webhook settings</div>
+                    <div className="description1">
+                      Configure webhook settings
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-3 mt-md-4 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-3 mt-md-4 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-robot-face platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-robot-face platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3193,17 +3210,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Tracking
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update tracking settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-checklist platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-checklist platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3224,17 +3241,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Standard & Format
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update standard & format settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2 mb-sm-4 mt-md-4 mt-lg-0">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2 mb-sm-4 mt-md-4 mt-lg-0">
                   <svg
-                    class="icon  svg-icon-ti-ti-speakerphone platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-speakerphone platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3254,17 +3271,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Flash Sale
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update flash sale settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-shopping-cart platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-shopping-cart platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3285,7 +3302,7 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Sale Popup
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Customize your sale popup settings with ease
                     </div>
                   </div>
@@ -3296,15 +3313,15 @@ function Settings() {
         </div>
       </div>
 
-      <div class="container mt-0 d-flex justify-content-center ms-2 ms-lg-0">
-        <div class="card platform">
-          <div class="card-header fw-normal">Others</div>
-          <div class="card-body">
-            <div class="row mt-0 d-flex flex-row m-">
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2">
+      <div className="container mt-0 d-flex justify-content-center ms-2 ms-lg-0">
+        <div className="card platform">
+          <div className="card-header fw-normal">Others</div>
+          <div className="card-body">
+            <div className="row mt-0 d-flex flex-row m-">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-social platform-backend text-dark me-1 announcement"
+                    className="icon  svg-icon-ti-ti-social platform-backend text-dark me-1 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3325,20 +3342,20 @@ function Settings() {
                     <path d="M17.3 17.8l-2.8 -2"></path>
                   </svg>
                   <div>
-                    <Link to="#" class="ms-xxl-3 fw-medium">
+                    <Link to="#" className="ms-xxl-3 fw-medium">
                       Social Login
                     </Link>
-                    <div class="description1 user-backend ms-xxl-3">
+                    <div className="description1 user-backend ms-xxl-3">
                       View and update your social login settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-file-settings platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-file-settings platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3364,17 +3381,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Blog
                     </Link>
-                    <div class="description1 user-backend">
+                    <div className="description1 user-backend">
                       View and update blog settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-mail-cog platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-mail-cog platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3400,17 +3417,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Newsletter
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update newsletter settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-0 mb-sm-2 mt-md-4 mt-lg-0  ">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-0 mb-sm-2 mt-md-4 mt-lg-0  ">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon svg-icon-ti-ti-mail-cog platform-backend text-dark me-3 announcement"
+                    className="icon svg-icon-ti-ti-mail-cog platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3436,15 +3453,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Contact
                     </Link>
-                    <div class="description1">Settings for contact plugin</div>
+                    <div className="description1">
+                      Settings for contact plugin
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon svg-icon-ti-ti-refresh platform-backend text-dark me-3 announcement"
+                    className="icon svg-icon-ti-ti-refresh platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3463,17 +3482,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Captcha
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update reCAPTCHA and math captcha.
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-brand-google-analytics platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-brand-google-analytics platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3493,17 +3512,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Google Analytics
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       Config Credentials for Google Analytics
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-md-3 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-4 mt-md-3 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-settings-question platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-settings-question platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3524,17 +3543,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       FAQs
                     </Link>
-                    <div class="description1">
+                    <div className="description1">
                       View and update FAQs settings
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-slideshow platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-slideshow platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3558,15 +3577,17 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Simple Sliders
                     </Link>
-                    <div class="description1">Settings for Simple sliders</div>
+                    <div className="description1">
+                      Settings for Simple sliders
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-sm-3 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon  svg-icon-ti-ti-ad-circle platform-backend text-dark me-3 announcement"
+                    className="icon  svg-icon-ti-ti-ad-circle platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
@@ -3587,15 +3608,15 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Ads Settings
                     </Link>
-                    <div class="description1">Manage ads settings</div>
+                    <div className="description1">Manage ads settings</div>
                   </div>
                 </div>
               </div>
 
-              <div class="col-12 col-md-4 mb-0 mb-lg-3 mt-md-2 mt-lg-0">
-                <div class="d-flex align-items-start platform2">
+              <div className="col-12 col-md-4 mb-0 mb-lg-3 mt-md-2 mt-lg-0">
+                <div className="d-flex align-items-start platform2">
                   <svg
-                    class="icon svg-icon-ti-ti-speakerphone platform-backend text-dark me-3 announcement"
+                    className="icon svg-icon-ti-ti-speakerphone platform-backend text-dark me-3 announcement"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="none"
@@ -3613,7 +3634,9 @@ function Settings() {
                     <Link to="#" className="fw-medium">
                       Announcement
                     </Link>
-                    <div class="description1">Manage announcement settings</div>
+                    <div className="description1">
+                      Manage announcement settings
+                    </div>
                   </div>
                 </div>
               </div>

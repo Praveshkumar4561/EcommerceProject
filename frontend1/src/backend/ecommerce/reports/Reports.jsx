@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Reports.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.webp";
+import Logo from "../../../assets/Tonic.svg";
 import Viewer from "../../../assets/Viewer.webp";
 import Viewer1 from "../../../assets/Viewer1.webp";
 import Viewer2 from "../../../assets/Viewer2.webp";
@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import UserContext from "../../../context/UserContext";
+
 import axios from "axios";
 
 function Reports() {
@@ -48,7 +48,7 @@ function Reports() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.9.253.67:1600/customerget/${search}`
+      `http://52.8.59.14:1600/customerget/${search}`
     );
     setReport(response.data);
   };
@@ -56,7 +56,7 @@ function Reports() {
   let [report, setReport] = useState([]);
 
   let customerdata = async () => {
-    const response = await axios.get("http://52.9.253.67:1600/checkoutdata");
+    const response = await axios.get("http://52.8.59.14:1600/checkoutdata");
     setReport(response.data);
   };
 
@@ -185,11 +185,18 @@ function Reports() {
     }
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
+
   let [count1, setCount1] = useState("");
 
   let custometdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setCount1(response.data.length);
   };
   custometdata();
@@ -197,18 +204,10 @@ function Reports() {
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
     setCount2(response.data.length);
   };
   showdata();
-
-  let [count5, setCount5] = useState(0);
-
-  let orderdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/checkoutdata");
-    setCount5(response.data.length);
-  };
-  orderdata();
 
   return (
     <>
@@ -228,7 +227,11 @@ function Reports() {
               className="hamburger-back pt-2 pe-1 text-light"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -269,7 +272,7 @@ function Reports() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -305,13 +308,15 @@ function Reports() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -326,7 +331,7 @@ function Reports() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -349,7 +354,7 @@ function Reports() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -381,7 +386,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -413,7 +418,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -444,7 +449,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -477,7 +482,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -510,7 +515,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -541,7 +546,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -573,7 +578,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -605,7 +610,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -634,7 +639,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -664,7 +669,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -694,7 +699,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -723,7 +728,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -752,7 +757,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -782,7 +787,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -811,7 +816,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -841,7 +846,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -871,7 +876,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -899,7 +904,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -927,7 +932,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -968,7 +973,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -999,7 +1004,7 @@ function Reports() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1040,7 +1045,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1068,7 +1073,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1096,7 +1101,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1124,7 +1129,7 @@ function Reports() {
             <li>
               <Link to="/admin/pages" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                  className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1147,7 +1152,7 @@ function Reports() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1181,7 +1186,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1213,7 +1218,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1241,7 +1246,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1270,7 +1275,7 @@ function Reports() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1387,7 +1392,7 @@ function Reports() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1408,7 +1413,7 @@ function Reports() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1431,7 +1436,7 @@ function Reports() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1465,7 +1470,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1493,7 +1498,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1521,7 +1526,7 @@ function Reports() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1543,7 +1548,7 @@ function Reports() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1564,7 +1569,7 @@ function Reports() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1624,7 +1629,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1657,7 +1662,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1685,7 +1690,7 @@ function Reports() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1705,7 +1710,7 @@ function Reports() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1727,7 +1732,7 @@ function Reports() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1746,7 +1751,7 @@ function Reports() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1780,7 +1785,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1811,7 +1816,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1845,7 +1850,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1875,7 +1880,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1908,7 +1913,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1939,7 +1944,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1970,7 +1975,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2006,7 +2011,7 @@ function Reports() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2040,7 +2045,7 @@ function Reports() {
             </div>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2061,7 +2066,7 @@ function Reports() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2080,7 +2085,7 @@ function Reports() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2101,7 +2106,7 @@ function Reports() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2139,7 +2144,7 @@ function Reports() {
           <div className="row content-reports gap-2 gap-sm-2 gap-md-2">
             <div className="col-12 col-sm-12 col-md-3 col-lg-3 border content-reports1 rounded d-flex flex-row py-3 me-3 me-lg-0">
               <svg
-                class="icon icon-md text-white bg-danger rounded p-1 mt-2"
+                className="icon icon-md text-white bg-danger rounded p-1 mt-2"
                 xmlns="http://www.w3.org/2000/svg"
                 width="40"
                 height="40"
@@ -2153,10 +2158,10 @@ function Reports() {
                 <path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2"></path>
                 <path d="M12 3v3m0 12v3"></path>
               </svg>
-              <div class="text mt-2 ms-2">
-                <h5 class="text-dark">Revenue</h5>
+              <div className="text mt-2 ms-2">
+                <h5 className="text-dark">Revenue</h5>
                 <h3
-                  class="fw-medium text-start"
+                  className="fw-medium text-start"
                   style={{ fontFamily: "verdana" }}
                 >
                   $0.00
@@ -2166,7 +2171,7 @@ function Reports() {
 
             <div className="col-12 col-sm-12 col-md-3 col-lg-3 border content-reports1 rounded d-flex flex-row py-3 me-3 me-lg-0">
               <svg
-                class="icon icon-md text-white bg-info rounded p-1 mt-2"
+                className="icon icon-md text-white bg-info rounded p-1 mt-2"
                 xmlns="http://www.w3.org/2000/svg"
                 width="42"
                 height="43"
@@ -2185,10 +2190,10 @@ function Reports() {
                 to="/admin/ecommerce/products"
                 className="text-decoration-none"
               >
-                <div class="text mt-2 ms-2">
-                  <h5 class="text-dark">Products</h5>
+                <div className="text mt-2 ms-2">
+                  <h5 className="text-dark">Products</h5>
                   <h3
-                    class="fw-normal text-start text-dark"
+                    className="fw-normal text-start text-dark"
                     style={{ fontFamily: "verdana" }}
                   >
                     {count2}
@@ -2199,7 +2204,7 @@ function Reports() {
 
             <div className="col-12 col-sm-12 col-md-3 content-reports1 col-lg-3 border rounded d-flex flex-row py-3 me-3 me-lg-0">
               <svg
-                class="icon icon-md text-white bg-success rounded p-1 mt-2"
+                className="icon icon-md text-white bg-success rounded p-1 mt-2"
                 xmlns="http://www.w3.org/2000/svg"
                 width="40"
                 height="40"
@@ -2216,10 +2221,10 @@ function Reports() {
                 <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
               </svg>
               <Link to="/admin/customers" className="text-decoration-none">
-                <div class="text mt-2 ms-2">
-                  <h5 class="text-dark">Customers</h5>
+                <div className="text mt-2 ms-2">
+                  <h5 className="text-dark">Customers</h5>
                   <h3
-                    class="fw-normal text-start text-dark"
+                    className="fw-normal text-start text-dark"
                     style={{ fontFamily: "verdana" }}
                   >
                     0{count1}
@@ -2230,7 +2235,7 @@ function Reports() {
 
             <div className="col-12 col-sm-12 content-reports1 col-md-3 col-lg-3 border rounded d-flex flex-row py-3 me-3 me-lg-0">
               <svg
-                class="icon icon-md text-white bg-warning rounded p-1 mt-2"
+                className="icon icon-md text-white bg-warning rounded p-1 mt-2"
                 xmlns="http://www.w3.org/2000/svg"
                 width="42"
                 height="42"
@@ -2250,10 +2255,10 @@ function Reports() {
                 to="/admin/ecommerce/orders"
                 className="text-decoration-none text-dark"
               >
-                <div class="text mt-2 ms-2">
-                  <h5 class="text-dark">Orders</h5>
+                <div className="text mt-2 ms-2">
+                  <h5 className="text-dark">Orders</h5>
                   <h3
-                    class="fw-normal text-start"
+                    className="fw-normal text-start"
                     style={{ fontFamily: "verdana" }}
                   >
                     0{count5}
@@ -2299,15 +2304,15 @@ function Reports() {
         </div>
       </div>
 
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
-        <div class="card mt-3 testimonial recent-table">
-          <div class="card-body">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
+        <div className="card mt-3 testimonial recent-table">
+          <div className="card-body">
             <span className="fw-medium">Recent Orders</span>
             <hr />
-            <div class="d-flex justify-content-between mb-3">
-              <div class="d-flex flex-row w-100">
+            <div className="d-flex justify-content-between mb-3">
+              <div className="d-flex flex-row w-100">
                 <input
-                  class="form-control py-4 mt-2 mt-lg-0 rounded-2 w-25"
+                  className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-25"
                   placeholder="Search..."
                   type="text"
                   name="search"
@@ -2316,8 +2321,8 @@ function Reports() {
                 />
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="table table-stripeds table-responsive">
+            <div className="table-responsive">
+              <table className="table table-stripeds table-responsive">
                 <thead className="table-secondary">
                   <tr>
                     <th
@@ -2326,7 +2331,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       ID
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2335,7 +2340,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Customer
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2344,7 +2349,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Amount
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2353,7 +2358,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Payment Method
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2362,7 +2367,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Payment Status
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
                     <th
                       scope="col"
@@ -2370,7 +2375,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Status
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2379,7 +2384,7 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Created At
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-normal">

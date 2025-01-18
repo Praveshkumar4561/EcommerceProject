@@ -33,7 +33,7 @@ function CustomerAccount() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -66,7 +66,7 @@ function CustomerAccount() {
     if (validateForm()) {
       try {
         const response = await axios.put(
-          `http://52.9.253.67:1600/userupdate/${id}`,
+          `http://52.8.59.14:1600/userupdate/${id}`,
           user
         );
         setUser(response.data);
@@ -87,9 +87,7 @@ function CustomerAccount() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(
-      `http://52.9.253.67:1600/dashboardsome/${1}`
-    );
+    let response = await axios.get(`http://52.8.59.14:1600/dashboardsome/${1}`);
     setUser(response.data[0]);
   };
 
@@ -118,7 +116,7 @@ function CustomerAccount() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://52.9.253.67:1600/getannounce");
+        let response = await axios.get("http://52.8.59.14:1600/getannounce");
         setPassword(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -145,7 +143,7 @@ function CustomerAccount() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://52.9.253.67:1600/logout")
+      .get("http://52.8.59.14:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -174,7 +172,7 @@ function CustomerAccount() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -545,7 +543,7 @@ function CustomerAccount() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 bg-body shadow-lg customer-dashboard1 text-start rounded-0 mb-2 mb-lg-0 ms-lg-1 ms-sm-0 border d-flex flex-column py-5 overflow-hidden letter-typo ms-md-2">
               <div className="d-flex flex-row ms-1 mb-4 gap-0">
                 <button
-                  class="btn py-4 d-flex address-account border rounded-0 address-profile border-end-0"
+                  className="btn py-4 d-flex address-account border rounded-0 address-profile border-end-0"
                   id="profile-btn"
                 >
                   <Link
@@ -557,7 +555,7 @@ function CustomerAccount() {
                   </Link>
                 </button>
 
-                <button class="btn py-4 d-flex address-account border rounded-0 address-profile">
+                <button className="btn py-4 d-flex address-account border rounded-0 address-profile">
                   <Link
                     className="text-decoration-none"
                     style={{ color: "#0c55aa" }}
@@ -638,30 +636,11 @@ function CustomerAccount() {
                 >
                   Update
                 </button>
-
-                {/* <div className="address-name mt-3 border rounded address-account lh-lg">
-                  <p className="ms-3 mt-3 mb-1 text-danger fw-bold">
-                    Delete account
-                  </p>
-                  <p className="ms-3">
-                    This action will permanently delete your account and all
-                    associated data and irreversible. Please be sure before
-                    proceeding.
-                  </p>
-                  <button
-                    className="ms-3 mb-3 btn btn-outline-danger d-flex py-4 address-account rounded-0"
-                    onClick={() => deleteAccount(data.id)}
-                  >
-                    Delete your account
-                  </button>
-                </div> */}
               </form>
             </div>
           </div>
         </div>
       </div>
-
-      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">
@@ -740,7 +719,10 @@ function CustomerAccount() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

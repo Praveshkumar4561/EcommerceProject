@@ -14,7 +14,6 @@ import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
 import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
 import Cart_order from "../../assets/Cart_request.webp";
@@ -25,6 +24,7 @@ import Cart_logout from "../../assets/Cart_logout.webp";
 import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
 import { jsPDF } from "jspdf";
+import UserContext from "../../context/UserContext";
 
 function CustomerView() {
   let { count, setCount } = useContext(UserContext);
@@ -35,7 +35,7 @@ function CustomerView() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -48,7 +48,7 @@ function CustomerView() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://52.9.253.67:1600/getannounce");
+      let response = await axios.get("http://52.8.59.14:1600/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -69,7 +69,7 @@ function CustomerView() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -115,11 +115,9 @@ function CustomerView() {
   let [cart, setCart] = useState([]);
   let [customer, setCustomer] = useState([]);
 
-  // cancel order
-
   let cancelOrder = async () => {
     try {
-      await axios.delete(`http://52.9.253.67:1600/deleteorder`);
+      await axios.delete(`http://52.8.59.14:1600/deleteorder`);
       setView([]);
       navigate("/user/orders");
       alert("All products deleted successfully");
@@ -137,9 +135,7 @@ function CustomerView() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get(
-          "http://52.9.253.67:1600/checkoutdata"
-        );
+        const response = await axios.get("http://52.8.59.14:1600/checkoutdata");
         const flattenedData = response.data.flatMap((checkout) =>
           checkout.cartItems.map((item) => ({
             ...item,
@@ -348,7 +344,7 @@ function CustomerView() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://52.9.253.67:1600/logout")
+      .get("http://52.8.59.14:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -1085,7 +1081,10 @@ function CustomerView() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

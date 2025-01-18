@@ -13,7 +13,6 @@ import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
 import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
 import Cart_order from "../../assets/Cart_request.webp";
@@ -25,8 +24,8 @@ import Cart_user from "../../assets/Cart_user.webp";
 import Tick from "../../assets/Tick.webp";
 import Man from "../../assets/man.webp";
 import Woman from "../../assets/woman.webp";
-import quality from "../../assets/quality.webp";
 import axios from "axios";
+import UserContext from "../../context/UserContext";
 
 function CustomerDetails() {
   let { count, setCount } = useContext(UserContext);
@@ -37,7 +36,7 @@ function CustomerDetails() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -49,7 +48,7 @@ function CustomerDetails() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://52.9.253.67:1600/getannounce");
+      let response = await axios.get("http://52.8.59.14:1600/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -75,7 +74,7 @@ function CustomerDetails() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://52.9.253.67:1600/logout")
+      .get("http://52.8.59.14:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -95,7 +94,7 @@ function CustomerDetails() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -106,7 +105,7 @@ function CustomerDetails() {
         <div className="row align-items-center justify-content-between text-center mt-lg-2 mt-0 pt-0 pt-lg-1">
           <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-4 lorem-home">
             {user.length > 0 && (
-              <div className="d-block d-lg-block text-start bg-light">
+              <div className="d-block d-lg-block text-start">
                 <p className="mb-0 mt-3 mt-lg-0 me-md-3 free-shipping d-flex flex-row">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
@@ -604,7 +603,10 @@ function CustomerDetails() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

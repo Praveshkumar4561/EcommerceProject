@@ -119,7 +119,6 @@ input[type="search"] {
   }
 }
 
-/* dropdown */
 
 @media (max-width: 576px) {
   .icon-down {
@@ -151,7 +150,6 @@ input[type="search"] {
   }
 }
 
-/* dropdown */
 
 .sidebar-container {
   position: absolute;

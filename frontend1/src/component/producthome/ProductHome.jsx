@@ -20,8 +20,9 @@ import Profile from "../../assets/image.webp";
 import Dot from "../../assets/dot.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
+
 import axios from "axios";
+import UserContext from "../../context/UserContext";
 
 function ProductHome() {
   let { count, setCount } = useContext(UserContext);
@@ -32,7 +33,7 @@ function ProductHome() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -68,7 +69,7 @@ function ProductHome() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let response = await axios.get("http://52.9.253.67:1600/brandsdata");
+      let response = await axios.get("http://52.8.59.14:1600/brandsdata");
       setUser(response.data);
     };
     fetchData();
@@ -89,7 +90,7 @@ function ProductHome() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
     setImage(response.data);
   };
 
@@ -122,7 +123,7 @@ function ProductHome() {
   let [home, setHome] = useState([]);
 
   let homedata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
     setHome(response.data);
   };
   homedata();
@@ -250,8 +251,6 @@ function ProductHome() {
             )}
           </header>
 
-          {}
-
           <main className="container mt-5 cart-cart">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
               Products
@@ -341,7 +340,6 @@ function ProductHome() {
 
               return (
                 <div className="row ms-lg-0 gap-4 d-flex flex-row" key={key}>
-                  {/* First Product */}
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
                     <img
                       src={`/api/src/image/${
@@ -355,7 +353,6 @@ function ProductHome() {
                     </div>
                   </div>
 
-                  {/* Second Product */}
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
                     {nextImage.image && (
                       <img
@@ -371,7 +368,6 @@ function ProductHome() {
                     </div>
                   </div>
 
-                  {/* Third Product */}
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4 position-relative">
                     {nextImage2.image && (
                       <img
@@ -387,7 +383,6 @@ function ProductHome() {
                     </div>
                   </div>
 
-                  {/* Fourth Product */}
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
                     {nextImage3.image && (
                       <img
@@ -403,7 +398,6 @@ function ProductHome() {
                     </div>
                   </div>
 
-                  {/* Fifth Product */}
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4 position-relative">
                     {nextImage4.image && (
                       <img
@@ -855,7 +849,10 @@ function ProductHome() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

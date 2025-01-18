@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./CustomerVendor.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +11,7 @@ import Tonic from "../../assets/Tonic.svg";
 import { Link } from "react-router-dom";
 import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
+
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
 import Cart_order from "../../assets/Cart_request.webp";
@@ -24,7 +24,13 @@ import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
 
 function CustomerVendor() {
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   const [user, setUser] = useState({
     shop_name: "",
@@ -71,7 +77,7 @@ function CustomerVendor() {
       return;
     }
     try {
-      await axios.post("http://52.9.253.67:1600/vendorshop", user);
+      await axios.post("http://52.8.59.14:1600/vendorshop", user);
       alert("Shop registered successfully!");
     } catch (error) {
       alert("Error registering shop.");
@@ -85,7 +91,7 @@ function CustomerVendor() {
   let [vendor, setVendor] = useState([]);
 
   let vendor_data = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/vendordata", user);
+    let response = await axios.get("http://52.8.59.14:1600/vendordata", user);
     setVendor(response.data);
   };
   vendor_data();
@@ -124,7 +130,7 @@ function CustomerVendor() {
                         alt="Cart"
                         className="img-fluid profile1 me-2"
                       />
-                      <div className="addcarts-lyte2 ms-3">{count}</div>
+                      <div className="addcarts-lyte2 ms-3">{count5}</div>
                     </Link>
                   </div>
                 </span>
@@ -490,8 +496,6 @@ function CustomerVendor() {
           </div>
         </div>
       </div>
-
-      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">

@@ -268,7 +268,6 @@ body {
   padding: 0 1rem;
   color: #071c1f;
   font-weight: 595;
-  /* line-height: 30px; */
   line-height: 1.1rem;
   font-size: 30px;
 }
@@ -542,7 +541,6 @@ body {
   letter-spacing: 1px;
 }
 
-/* testimonial */
 
 .green {
   width: 1rem;
@@ -562,7 +560,6 @@ body {
   cursor: pointer;
 }
 
-/* testimonial */
 
 .about-image {
   width: 59.57px;

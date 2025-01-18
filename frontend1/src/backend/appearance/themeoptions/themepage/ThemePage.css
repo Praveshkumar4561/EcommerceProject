@@ -599,18 +599,7 @@ input[type="search"] {
   }
 }
 
-/* @media (max-width: 1500px) {
-    .sidebar-theme-options1 {
-      margin-left: 18rem;
-      width: 100%;
-      max-width: 20%;
-    }
-    .content-theme {
-      width: 100%;
-      max-width: 59.3%;
-      margin-left: 10rem;
-    }
-  } */
+
 
 .choose-url {
   color: rgba(32, 107, 196, 1);

@@ -579,10 +579,7 @@ input[type="search"] {
   cursor: pointer;
 }
 
-/* .brands-round {
-  width: 100%;
-  max-width: 25%;
-} */
+
 
 .brands-round {
   width: 100%;
@@ -596,19 +593,13 @@ input[type="search"] {
   }
 }
 
-/* .brands-round1 {
-  width: 100%;
-  max-width: 47.7%;
-  position: relative;
-  left: -16rem;
-} */
+
 
 .brands-round1 {
   width: 100%;
   max-width: 46.3%;
   margin-left: -16rem;
-  /* position: relative;
-  left: -16rem; */
+
 }
 
 @media (max-width: 576px) {
@@ -663,8 +654,7 @@ input[type="search"] {
 }
 
 .page-story {
-  /* margin-top: 0.7rem; */
-  /* margin-left: 12rem; */
+
   position: relative;
   top: 0.5rem;
   left: 13rem;

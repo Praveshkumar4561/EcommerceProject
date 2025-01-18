@@ -1,9 +1,153 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-.admin_login{
+
+.admin-login-image {
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+.align-class {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.align-class1 {
+  width: 100%;
+  max-width: 75%;
+}
+.admin-min1 {
+  background-color: #1b293a;
+  color: white;
+}
+
+.admin-min2 {
+  background-color: #1b293a;
+  color: white;
+}
+.admin-min2:focus {
+  background-color: #1b293a;
+  color: white;
+  border: 1px solid #1b293a;
+}
+.admin-min2::placeholder {
+  color: white;
+}
+
+@media (max-width: 576px) {
+  .align-class {
     width: 100%;
-    max-width: 50%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0%;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 100%;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 90%;
+  }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 70%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .admin-min {
+    width: 100%;
+    max-width: 100%;
+  }
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 62%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .align-class {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .align-class1 {
+    width: 100%;
+    max-width: 85%;
+  }
+}
+
+.input-container {
+  position: relative;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-min2 {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.admin-min3 {
+  background-color: #1b293a;
+  color: white;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-min3:focus {
+  background-color: #1b293a;
+  color: white;
+  border: 1px solid #1b293a;
+}
+.admin-min3::placeholder {
+  color: white;
+}
+
+.password-icon1 {
+  position: absolute;
+  right: 10px;
+  top: 60%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.error-message-admin {
+  margin-top: 5px;
+  font-size: 0.875rem;
+  color: red;
 }

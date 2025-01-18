@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ProductCollectionsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.webp";
+import Logo from "../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -16,7 +16,6 @@ import Cutting from "../../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import UserContext from "../../../context/UserContext";
 
 function ProductCollectionsCreate() {
   const [image, setImage] = useState(null);
@@ -187,7 +186,7 @@ function ProductCollectionsCreate() {
     formData.append("file", file);
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/productcollection",
+        "http://52.8.59.14:1600/productcollection",
         formData
       );
       if (response.status === 200) {
@@ -225,7 +224,13 @@ function ProductCollectionsCreate() {
     }
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   return (
     <>
@@ -245,7 +250,11 @@ function ProductCollectionsCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -286,7 +295,7 @@ function ProductCollectionsCreate() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -322,13 +331,15 @@ function ProductCollectionsCreate() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -1016,7 +1027,7 @@ function ProductCollectionsCreate() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1057,7 +1068,7 @@ function ProductCollectionsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1085,7 +1096,7 @@ function ProductCollectionsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1113,7 +1124,7 @@ function ProductCollectionsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1284,7 +1295,7 @@ function ProductCollectionsCreate() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2163,7 +2174,7 @@ function ProductCollectionsCreate() {
           <div className="row">
             <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
               <svg
-                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
+                className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"

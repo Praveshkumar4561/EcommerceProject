@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./AdsCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Logo.webp";
@@ -16,7 +16,6 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import UserContext from "../../context/UserContext";
 
 function AdsCreate() {
   let [isVisible, setIsVisible] = useState(false);
@@ -188,7 +187,7 @@ function AdsCreate() {
     formData.append("file", file);
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/adspost",
+        "http://52.8.59.14:1600/adspost",
         formData
       );
       if (response.status === 200) {
@@ -238,7 +237,13 @@ function AdsCreate() {
     alert("Functionality to add image from URL needs to be implemented.");
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   return (
     <>
@@ -258,7 +263,11 @@ function AdsCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -299,7 +308,7 @@ function AdsCreate() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -335,13 +344,15 @@ function AdsCreate() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -356,7 +367,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -379,7 +390,7 @@ function AdsCreate() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -411,7 +422,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -443,7 +454,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -474,7 +485,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -507,7 +518,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -540,7 +551,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -571,7 +582,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -603,7 +614,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -635,7 +646,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -664,7 +675,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -694,7 +705,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -724,7 +735,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -753,7 +764,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -782,7 +793,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -812,7 +823,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -841,7 +852,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -871,7 +882,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -901,7 +912,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -929,7 +940,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -957,7 +968,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -998,7 +1009,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1029,7 +1040,7 @@ function AdsCreate() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1070,7 +1081,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1098,7 +1109,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1126,7 +1137,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1154,7 +1165,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/pages" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                  className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1177,7 +1188,7 @@ function AdsCreate() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1211,7 +1222,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1243,7 +1254,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1271,7 +1282,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1300,7 +1311,7 @@ function AdsCreate() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1417,7 +1428,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1438,7 +1449,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1460,7 +1471,7 @@ function AdsCreate() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1494,7 +1505,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1522,7 +1533,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1549,7 +1560,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1572,7 +1583,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1594,7 +1605,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1654,7 +1665,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1687,7 +1698,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1715,7 +1726,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1735,7 +1746,7 @@ function AdsCreate() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1757,7 +1768,7 @@ function AdsCreate() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1776,7 +1787,7 @@ function AdsCreate() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1810,7 +1821,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1841,7 +1852,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1875,7 +1886,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1905,7 +1916,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1938,7 +1949,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1969,7 +1980,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2000,7 +2011,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2036,7 +2047,7 @@ function AdsCreate() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2071,7 +2082,7 @@ function AdsCreate() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2092,7 +2103,7 @@ function AdsCreate() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2111,7 +2122,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2132,7 +2143,7 @@ function AdsCreate() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2174,7 +2185,7 @@ function AdsCreate() {
           <div className="row">
             <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
               <svg
-                class="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
+                className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2312,13 +2323,16 @@ function AdsCreate() {
                   </div>
                 </div>
 
-                <div class="form-check form-switch mb-3 d-flex flex-row name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                <div className="form-check form-switch mb-3 d-flex flex-row name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <input
-                    class="form-check-input"
+                    className="form-check-input"
                     type="checkbox"
                     id="has-action"
                   />
-                  <label class="form-check-label ms-2 mt-1" for="has-action">
+                  <label
+                    className="form-check-label ms-2 mt-1"
+                    for="has-action"
+                  >
                     Open in new tab?
                   </label>
                 </div>

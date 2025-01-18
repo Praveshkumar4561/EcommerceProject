@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Widgets.css";
 import Hamburger from "../../../assets/hamburger.svg";
-import Logo from "../../../assets/Logo.webp";
+import Logo from "../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faAngleUp,
@@ -16,7 +16,7 @@ import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../assets/Cutting.webp";
 import Grid from "../../../assets/grid.webp";
 import Slider from "../../../assets/slider.webp";
-import UserContext from "../../../context/UserContext";
+import axios from "axios";
 
 function Widgets() {
   const [query, setQuery] = useState("");
@@ -349,7 +349,13 @@ function Widgets() {
     setProductPrimary(!productPrimary);
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   return (
     <>
@@ -369,7 +375,11 @@ function Widgets() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -410,7 +420,7 @@ function Widgets() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -446,13 +456,15 @@ function Widgets() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -467,7 +479,7 @@ function Widgets() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -490,7 +502,7 @@ function Widgets() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -522,7 +534,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -554,7 +566,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -585,7 +597,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -618,7 +630,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -651,7 +663,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -682,7 +694,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -714,7 +726,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -746,7 +758,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -775,7 +787,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -805,7 +817,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -835,7 +847,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -864,7 +876,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -893,7 +905,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -923,7 +935,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -952,7 +964,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -982,7 +994,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1012,7 +1024,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1040,7 +1052,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1068,7 +1080,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1109,7 +1121,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1140,7 +1152,7 @@ function Widgets() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1181,7 +1193,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1209,7 +1221,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1237,7 +1249,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1264,7 +1276,7 @@ function Widgets() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1287,7 +1299,7 @@ function Widgets() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1321,7 +1333,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1353,7 +1365,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1381,7 +1393,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1410,7 +1422,7 @@ function Widgets() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1527,7 +1539,7 @@ function Widgets() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1548,7 +1560,7 @@ function Widgets() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1571,7 +1583,7 @@ function Widgets() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1605,7 +1617,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1633,7 +1645,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1661,7 +1673,7 @@ function Widgets() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1683,7 +1695,7 @@ function Widgets() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1704,7 +1716,7 @@ function Widgets() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1764,7 +1776,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1797,7 +1809,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1825,7 +1837,7 @@ function Widgets() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1845,7 +1857,7 @@ function Widgets() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1867,7 +1879,7 @@ function Widgets() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1887,7 +1899,7 @@ function Widgets() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1921,7 +1933,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1952,7 +1964,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1986,7 +1998,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2016,7 +2028,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2049,7 +2061,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2080,7 +2092,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2111,7 +2123,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2147,7 +2159,7 @@ function Widgets() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2182,7 +2194,7 @@ function Widgets() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2203,7 +2215,7 @@ function Widgets() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2222,7 +2234,7 @@ function Widgets() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2243,7 +2255,7 @@ function Widgets() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2277,15 +2289,15 @@ function Widgets() {
         </ol>
       </nav>
 
-      <div class="container container-create create-tag1 w-auto">
+      <div className="container container-create create-tag1 w-auto">
         <div
-          class="alert alert-info bg-body editor-page border d-flex create-tag1 d-flex wigets-name2"
+          className="alert alert-info bg-body editor-page border d-flex create-tag1 d-flex wigets-name2"
           id="role-announce"
           role="alert"
         >
           <span>
             <svg
-              class="icon alert-icon svg-icon-ti-ti-info-circle me-1 editor-page"
+              className="icon alert-icon svg-icon-ti-ti-info-circle me-1 editor-page"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -2334,8 +2346,6 @@ function Widgets() {
             <hr />
             {sidebar && (
               <>
-                {/* blog search */}
-
                 <div className="border rounded py-2 mt-2">
                   <label htmlFor="" className="ms-2">
                     Blog Search
@@ -2358,10 +2368,6 @@ function Widgets() {
                     </div>
                   )}
                 </div>
-
-                {/* blog search */}
-
-                {/* blog about me */}
 
                 <div className="border mt-2 py-2 rounded mt-3">
                   <label htmlFor="" className="ms-2">
@@ -2523,10 +2529,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* blog about me */}
-
-                {/* blog posts */}
-
                 <div className="border rounded py-2 mt-3">
                   <label htmlFor="" className="ms-2">
                     Blog Posts
@@ -2578,10 +2580,6 @@ function Widgets() {
                     </div>
                   )}
                 </div>
-
-                {/* blog posts */}
-
-                {/* blog categories */}
 
                 <div className="border rounded mt-3">
                   <label htmlFor="" className="ms-2 py-2">
@@ -2639,10 +2637,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* blog categories */}
-
-                {/* tags */}
-
                 <div className="border rounded  mt-3">
                   <label htmlFor="" className="ms-2 py-2">
                     Tags
@@ -2684,8 +2678,6 @@ function Widgets() {
                     </div>
                   )}
                 </div>
-
-                {/* tags */}
               </>
             )}
           </div>
@@ -2707,8 +2699,6 @@ function Widgets() {
             <hr />
             {footer && (
               <>
-                {/* site information  */}
-
                 <div className="border rounded py-2 mt-2">
                   <label htmlFor="" className="ms-2">
                     Site Information
@@ -2813,10 +2803,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* site information  */}
-
-                {/* custom menu1  */}
-
                 <div className="border mt-3 py-2 rounded">
                   <label htmlFor="" className="ms-2">
                     Custom Menu
@@ -2843,7 +2829,7 @@ function Widgets() {
                         Menu
                       </label>
                       <select
-                        class="select-search-full form-select mt-2 px-2 py-4 name-blog"
+                        className="select-search-full form-select mt-2 px-2 py-4 name-blog"
                         data-allow-clear="false"
                         id="menu_id"
                         name="menu_id"
@@ -2875,10 +2861,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* custom menu1  */}
-
-                {/* custom menu2  */}
-
                 <div className="border rounded py-2 mt-3">
                   <label htmlFor="" className="ms-2">
                     Custom Menu
@@ -2906,7 +2888,7 @@ function Widgets() {
                       </label>
 
                       <select
-                        class="select-search-full form-select select2-hidden-accessible mt-2 px-2 py-4 name-blog"
+                        className="select-search-full form-select select2-hidden-accessible mt-2 px-2 py-4 name-blog"
                         data-allow-clear="false"
                         id="menu_id"
                         name="menu_id"
@@ -2983,10 +2965,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* custom menu2  */}
-
-                {/* site contact  */}
-
                 <div className="border rounded mt-3">
                   <label htmlFor="" className="ms-2 py-2">
                     Site Contact
@@ -3062,10 +3040,6 @@ function Widgets() {
                     </div>
                   )}
                 </div>
-
-                {/* site contact  */}
-
-                {/* product category1 */}
 
                 <div className="border rounded  mt-3">
                   <label htmlFor="" className="ms-2 py-2">
@@ -3512,10 +3486,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* product category1 */}
-
-                {/* product category2 */}
-
                 <div className="border rounded  mt-3">
                   <label htmlFor="" className="ms-2 py-2">
                     Product Categories
@@ -3960,10 +3930,6 @@ function Widgets() {
                     </>
                   )}
                 </div>
-
-                {/* product category2 */}
-
-                {/* product category3 */}
 
                 <div className="border rounded  mt-3">
                   <label htmlFor="" className="ms-2 py-2">
@@ -4410,10 +4376,6 @@ function Widgets() {
                   )}
                 </div>
 
-                {/* product category3 */}
-
-                {/* product category4 */}
-
                 <div className="border rounded  mt-3">
                   <label htmlFor="" className="ms-2 py-2">
                     Product Categories
@@ -4858,8 +4820,6 @@ function Widgets() {
                     </>
                   )}
                 </div>
-
-                {/* product category4 */}
               </>
             )}
           </div>
@@ -4888,8 +4848,6 @@ function Widgets() {
                 <hr />
                 {footers1 && (
                   <>
-                    {/* Newsletters form */}
-
                     <div className="border mt-2 py-2 rounded mt-3">
                       <label htmlFor="" className="ms-2">
                         Newsletters form
@@ -5141,8 +5099,6 @@ function Widgets() {
                 <hr />
                 {footer2 && (
                   <>
-                    {/* site information  */}
-
                     <div className="border rounded py-2 mt-2">
                       <label htmlFor="" className="ms-2">
                         Site Copyright
@@ -5247,8 +5203,6 @@ function Widgets() {
                         </div>
                       )}
                     </div>
-
-                    {/* custom menu1  */}
                   </>
                 )}
               </div>

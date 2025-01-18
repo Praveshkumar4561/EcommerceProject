@@ -22,20 +22,6 @@ body {
   transition: height 0.3s ease;
 }
 
-/* .navbar-back {
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  height: 4rem;
-  padding: 0 1rem;
-  background-color: #151f2c;
-  position: fixed;
-  top: 0;
-  transition: height 0.3s ease;
-  z-index: 1000;
-} */
-
 .navbar-back.expanded {
   height: 60rem;
   z-index: 1000;
@@ -386,12 +372,6 @@ input[type="search"] {
   }
 }
 
-/* @media (max-width: 450px) {
-            .navbar-icons {
-              display: flex;
-              flex-wrap: nowrap;
-            }
-          } */
 
 @media (min-width: 993px) {
   .custom-dropdown {
@@ -497,53 +477,6 @@ input[type="search"] {
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
 }
 
-/* CodeEditor.css */
-
-/* .custom-appear {
-  margin-left: 3.3rem;
-} */
-
-/* .area-custom {
-  width: 100%;
-  max-width: 98.5%;
-}
-@media (max-width: 576px) {
-  .area-custom {
-    width: 95%;
-  }
-}
-
-.custom-appear1 {
-  width: 100%;
-  max-width: 73%;
-}
-
-.custom-appear2 {
-  width: 100%;
-  max-width: 25%;
-}
-
-@media (max-width: 576px) {
-  .custom-appear1 {
-    width: 100%;
-    max-width: 98%;
-  }
-  .custom-appear2 {
-    width: 100%;
-    max-width: 98%;
-  }
-}
-@media (max-width: 768px) {
-  .custom-appear1 {
-    width: 100%;
-    max-width: 98%;
-  }
-  .custom-appear2 {
-    width: 100%;
-    max-width: 98%;
-  }
-} */
-
 .custom-code {
   width: 100%;
   max-width: 53%;
@@ -577,7 +510,6 @@ input[type="search"] {
   width: 100%;
   max-width: 15%;
   position: absolute;
-  /* left: 42rem; */
   right: 8rem;
   top: 9.6rem;
 }

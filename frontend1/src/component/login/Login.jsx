@@ -20,7 +20,7 @@ function Login() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -46,7 +46,7 @@ function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://52.9.253.67:1600/login", user, {
+      const response = await axios.post("http://52.8.59.14:1600/login", user, {
         withCredentials: true,
       });
       if (response.data.Status === "Success") {
@@ -65,7 +65,7 @@ function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/submit",
+        "http://52.8.59.14:1600/submit",
         registerUser
       );
       if (response.data.status === "success") {
@@ -88,8 +88,6 @@ function Login() {
   const handleRegisterChange = (e) => {
     setRegisterUser({ ...registerUser, [e.target.name]: e.target.value });
   };
-
-  //  signup page
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -530,7 +528,10 @@ function Login() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

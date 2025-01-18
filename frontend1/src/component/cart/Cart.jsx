@@ -41,7 +41,7 @@ function Cart() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+        const response = await axios.get("http://52.8.59.14:1600/allcartdata");
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,
@@ -57,7 +57,7 @@ function Cart() {
 
   const deletedata = async (id) => {
     try {
-      await axios.delete(`http://52.9.253.67:1600/deletecart/${id}`);
+      await axios.delete(`http://52.8.59.14:1600/deletecart/${id}`);
       const updatedUser = user.filter((item) => item.id !== id);
       setUser(updatedUser);
       console.log("Updated cart:", updatedUser);
@@ -408,7 +408,7 @@ function Cart() {
         </div>
       </div>
 
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
+      <div className="container-fluid bg-dark text-light py-5 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0 cart-page-footer">
         <div className="container text-center">
           <div className="row justify-content-center">
             <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
@@ -485,7 +485,10 @@ function Cart() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

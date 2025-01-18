@@ -264,120 +264,6 @@ body {
   }
 }
 
-/* payment details */
-
-/* .amount {
-  font-family: Verdana, Tahoma, sans-serif;
-}
-
-.payment-details {
-  background-color: #ffffff;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 30.5%;
-  margin: 20px auto;
-  position: absolute;
-  top: 25.7rem;
-  left: 0.2rem;
-  height: 21.4rem;
-}
-
-@media (min-width:1400px) and (max-width:1864px) {
-  .payment-details{
-    width: 100%;
-    max-width: 30.5%;
-  }
-}
-
-@media (max-width: 576px) {
-  .payment-details {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-.payment-details h6 {
-  font-size: 14px;
-  color: #6c757d;
-  margin-bottom: 20px;
-}
-.payment-details .amount {
-  font-size: 14px;
-  color: #212529;
-}
-.payment-details .total-payable {
-  font-size: 14px;
-  font-weight: bold;
-  font-family: Verdana, Tahoma, sans-serif;
-}
-.payment-details .total-savings {
-  background-color: #e9f7ef;
-  color: #28a745;
-  padding: 5px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-  margin: 10px 0;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-.payment-details .proceed-btn {
-  color: #ffffff;
-  font-weight: bold;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  width: 100%;
-  text-align: center;
-  display: inline;
-}
-.payment-details .proceed-btn:hover {
-  background-color: rgb(8, 116, 8);
-}
-.payment-details .final-total {
-  font-size: 18px;
-  font-weight: 500;
-  color: #212529;
-  margin-top: 20px;
-  font-family: Verdana, Tahoma, sans-serif;
-}
-
-@media (min-width: 992px) and (max-width: 1200px) {
-  .payment-details {
-    width: 100%;
-    max-width: 48.3%;
-    position: absolute;
-    left: 1.6%;
-    top: 97%;
-  }
-  .order-cart1 {
-    position: absolute;
-    right: 0.5%;
-    width: 100%;
-    max-width: 49%;
-  }
-}
-
-@media (min-width: 1200px) and (max-width: 1400px) {
-  .payment-details {
-    width: 100%;
-    max-width: 48.3%;
-  }
-  .order-cart1 {
-    position: absolute;
-    right: 0.5%;
-    width: 100%;
-    max-width: 49%;
-  }
-}
-
-.payment-details1 {
-  position: absolute;
-  left: 51%;
-  bottom: 100%;
-} */
-
 .cards {
   width: 100%;
   max-width: 24%;
@@ -406,7 +292,6 @@ body {
   letter-spacing: 1px;
 }
 
-/* cart content */
 
 .cart-container {
   height: 100%;

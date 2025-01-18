@@ -9,8 +9,8 @@ import {} from "@fortawesome/free-brands-svg-icons";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
 import axios from "axios";
+import UserContext from "../../context/UserContext";
 
 function BlogPage() {
   let { count, setCount } = useContext(UserContext);
@@ -21,7 +21,7 @@ function BlogPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -57,7 +57,7 @@ function BlogPage() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://52.9.253.67:1600/blogpostdata");
+        let response = await axios.get("http://52.8.59.14:1600/blogpostdata");
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching blog data:", error);
@@ -280,9 +280,7 @@ function BlogPage() {
         </div>
       </div>
 
-      {}
-
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
+      <div className="container-fluid bg-dark text-light py-5 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0 blog-page-footer">
         <div className="container text-center">
           <div className="row justify-content-center">
             <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
@@ -359,7 +357,10 @@ function BlogPage() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

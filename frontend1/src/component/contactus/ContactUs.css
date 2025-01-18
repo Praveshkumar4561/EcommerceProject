@@ -170,12 +170,7 @@ body {
   }
 }
 
-/* @media (max-width: 450px) {
-  .navbar-icons {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-} */
+
 
 @media (min-width: 993px) {
   .custom-dropdown {
@@ -399,9 +394,7 @@ button.button-btn {
   .col-12 {
     text-align: center;
   }
-  /* .first-texts{
-      
-    } */
+
 
   .form-group {
     width: 100%;

@@ -372,13 +372,6 @@ input[type="search"] {
   }
 }
 
-/* @media (max-width: 450px) {
-              .navbar-icons {
-                display: flex;
-                flex-wrap: nowrap;
-              }
-            } */
-
 @media (min-width: 993px) {
   .custom-dropdown {
     display: none;
@@ -483,7 +476,6 @@ input[type="search"] {
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
 }
 
-/* CodeEditor.css */
 
 .custom-code {
   width: 100%;
@@ -518,7 +510,6 @@ input[type="search"] {
   width: 100%;
   max-width: 15%;
   position: absolute;
-  /* left: 42rem; */
   right: 8rem;
   top: 9.6rem;
 }

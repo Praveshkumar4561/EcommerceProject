@@ -18,7 +18,7 @@ function AddCart() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -51,7 +51,6 @@ function AddCart() {
 
   return (
     <>
-      {}
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
@@ -112,8 +111,6 @@ function AddCart() {
                   </ul>
                 </div>
 
-                {}
-
                 <div className="navbar-icons d-sm-flex">
                   <Link to="/login" className="nav-link">
                     <img
@@ -131,8 +128,6 @@ function AddCart() {
                     <div className="addcarts ms-1 ps-1 pt-lg-1">{count}</div>
                   </Link>
                 </div>
-
-                {}
               </div>
             </nav>
 
@@ -174,8 +169,6 @@ function AddCart() {
             )}
           </header>
 
-          {}
-
           <main className="container mt-5 cart-lorem">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
               Add Cart
@@ -197,15 +190,13 @@ function AddCart() {
       </div>
       <div></div>
 
-      {}
-
-      <div class="container-fluid cart-container d-flex cart-cart">
-        <div class="row w-100">
-          <div class="col-md-8">
-            <div class="cart-title text-start cart-cart fw-medium">
+      <div className="container-fluid cart-container d-flex cart-cart">
+        <div className="row w-100">
+          <div className="col-md-8">
+            <div className="cart-title text-start cart-cart fw-medium">
               Shopping Cart
             </div>
-            <div class="cart-details">
+            <div className="cart-details">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi,
               quae iste. Qui a quaerat iure ipsum illum ducimus nihil aliquid
               reiciendis maiores necessitatibus nisi odit nemo, sunt
@@ -235,8 +226,8 @@ function AddCart() {
             </div>
           </div>
 
-          <div class="col-md-4 d-flex flex-column mt-lg-2 pt-lg-1 pt-0 mt-0 mt-md-2 order-delivery">
-            <div class="delivery-banner flex-grow-1 d-flex w-100">
+          <div className="col-md-4 d-flex flex-column mt-lg-2 pt-lg-1 pt-0 mt-0 mt-md-2 order-delivery">
+            <div className="delivery-banner flex-grow-1 d-flex w-100">
               <img
                 src="https://storage.googleapis.com/a1aa/image/nMM8lYafat3UCS7X7Ru3axBcOYFTMfzGw7RPQW0klfbEJ8TnA.jpg"
                 alt="Delivery person on a scooter illustration"
@@ -249,26 +240,26 @@ function AddCart() {
                   <span style={{ fontFamily: "verdana" }}>$0%</span> delivery
                   charges on this order
                 </p>
-                <p class="free-delivery1 text-start">
+                <p className="free-delivery1 text-start">
                   Get Free delivery on your first order
                 </p>
               </div>
             </div>
-            <div class="payment-details flex-grow-1 w-100 mt-md-2">
+            <div className="payment-details flex-grow-1 w-100 mt-md-2">
               <h5>PAYMENT DETAILS</h5>
-              <div class="d-flex justify-content-between lh-lg flex-row">
+              <div className="d-flex justify-content-between lh-lg flex-row">
                 <span>MRP Total</span>
                 <span style={{ fontFamily: "verdana" }}>$ 03.00</span>
               </div>
-              <div class="d-flex justify-content-between lh-lg flex-row">
+              <div className="d-flex justify-content-between lh-lg flex-row">
                 <span>Additional Discount</span>
                 <span style={{ fontFamily: "verdana" }}>-$ 01.00</span>
               </div>
-              <div class="d-flex justify-content-between lh-lg flex-row">
+              <div className="d-flex justify-content-between lh-lg flex-row">
                 <span>Total Amount</span>
                 <span style={{ fontFamily: "verdana" }}>$ 03.00</span>
               </div>
-              <div class="d-flex justify-content-between lh-lg flex-row">
+              <div className="d-flex justify-content-between lh-lg flex-row">
                 <span>Shipping/Delivery Charges</span>
                 <span
                   style={{ fontFamily: "verdana" }}
@@ -277,22 +268,22 @@ function AddCart() {
                   <s>$ 04.00</s> $ 0.00
                 </span>
               </div>
-              <div class="d-flex justify-content-between total-payable lh-lg flex-row">
+              <div className="d-flex justify-content-between total-payable lh-lg flex-row">
                 <span>Total Payable</span>
                 <span style={{ fontFamily: "verdana" }}>$ 03.00</span>
               </div>
-              <div class="total-savings">
+              <div className="total-savings">
                 Total Savings{" "}
                 <span style={{ fontFamily: "verdana" }}>$ 01.00</span>
               </div>
-              <div class="text-center mt-3">
-                <span class="total-payable">
+              <div className="text-center mt-3">
+                <span className="total-payable">
                   Total Payable{" "}
                   <span style={{ fontFamily: "verdana" }}>$ 03.00</span>
                 </span>
               </div>
               <div className="d-flex justify-content-lg-center align-items-center justify-content-center">
-                <button class="proceed-btn btn d-flex btn-success py-4 px-2 w-auto lorem-home fw-light">
+                <button className="proceed-btn btn d-flex btn-success py-4 px-2 w-auto lorem-home fw-light">
                   PROCEED
                 </button>
               </div>
@@ -330,8 +321,6 @@ function AddCart() {
           </div>
         </div>
       </div>
-
-      {}
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">
@@ -410,7 +399,10 @@ function AddCart() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

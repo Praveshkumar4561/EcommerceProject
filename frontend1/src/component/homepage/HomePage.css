@@ -1262,6 +1262,10 @@ li a {
     left: 59%;
     margin-top: 8.2rem;
   }
+  .list-contact3{
+    position: relative;
+    top: 0.4rem;
+  }
 }
 
 @media (max-width: 768px) {

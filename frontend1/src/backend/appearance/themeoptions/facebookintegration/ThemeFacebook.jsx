@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ThemeFacebook.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Logo.webp";
@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import UserContext from "../../../../context/UserContext";
+import axios from "axios";
 
 function ThemeFacebook() {
   let [isVisible, setIsVisible] = useState(false);
@@ -173,7 +173,13 @@ function ThemeFacebook() {
     setFacebook(!facebook);
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   return (
     <>
@@ -193,7 +199,11 @@ function ThemeFacebook() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -234,7 +244,7 @@ function ThemeFacebook() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -270,13 +280,15 @@ function ThemeFacebook() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -291,7 +303,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -314,7 +326,7 @@ function ThemeFacebook() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -346,7 +358,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -378,7 +390,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -409,7 +421,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -442,7 +454,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -475,7 +487,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -506,7 +518,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -538,7 +550,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -570,7 +582,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -599,7 +611,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -629,7 +641,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -659,7 +671,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -688,7 +700,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -717,7 +729,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -747,7 +759,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -776,7 +788,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -806,7 +818,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -836,7 +848,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -864,7 +876,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -892,7 +904,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -933,7 +945,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -964,7 +976,7 @@ function ThemeFacebook() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1005,7 +1017,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1033,7 +1045,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1061,7 +1073,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1088,7 +1100,7 @@ function ThemeFacebook() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1111,7 +1123,7 @@ function ThemeFacebook() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1145,7 +1157,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1177,7 +1189,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1205,7 +1217,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1234,7 +1246,7 @@ function ThemeFacebook() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1351,7 +1363,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1372,7 +1384,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1395,7 +1407,7 @@ function ThemeFacebook() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1429,7 +1441,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1457,7 +1469,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1485,7 +1497,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1507,7 +1519,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1528,7 +1540,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1588,7 +1600,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1621,7 +1633,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1649,7 +1661,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1669,7 +1681,7 @@ function ThemeFacebook() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1691,7 +1703,7 @@ function ThemeFacebook() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1711,7 +1723,7 @@ function ThemeFacebook() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1745,7 +1757,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1776,7 +1788,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1810,7 +1822,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1840,7 +1852,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1873,7 +1885,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1904,7 +1916,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1935,7 +1947,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1971,7 +1983,7 @@ function ThemeFacebook() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2006,7 +2018,7 @@ function ThemeFacebook() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2027,7 +2039,7 @@ function ThemeFacebook() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2046,7 +2058,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2067,7 +2079,7 @@ function ThemeFacebook() {
             <li>
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2103,8 +2115,6 @@ function ThemeFacebook() {
         </ol>
       </nav>
 
-      {}
-
       <div className="container mt-4 d-flex">
         <div className="sidebar-theme-options1 border rounded ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
@@ -2112,11 +2122,11 @@ function ThemeFacebook() {
 
           <nav className="nav flex-column bg-light pt-2 ps-2 ps-lg-0">
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-general"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-home general-theme"
+                className="icon me-2 svg-icon-ti-ti-home general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2136,11 +2146,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-styles"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-palette general-theme"
+                className="icon me-2 svg-icon-ti-ti-palette general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2161,11 +2171,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-page"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-book general-theme"
+                className="icon me-2 svg-icon-ti-ti-book general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2187,11 +2197,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-breadcrumb"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-directions general-theme"
+                className="icon me-2 svg-icon-ti-ti-directions general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2214,11 +2224,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-logo"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-photo general-theme"
+                className="icon me-2 svg-icon-ti-ti-photo general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2239,11 +2249,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-facebook-integration"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-brand-facebook general-theme"
+                className="icon me-2 svg-icon-ti-ti-brand-facebook general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2261,11 +2271,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-marketplace"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-shopping-bag general-theme"
+                className="icon me-2 svg-icon-ti-ti-shopping-bag general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2284,11 +2294,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-blog"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-edit general-theme"
+                className="icon me-2 svg-icon-ti-ti-edit general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2308,11 +2318,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-ecommerce"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-shopping-bag general-theme"
+                className="icon me-2 svg-icon-ti-ti-shopping-bag general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2331,11 +2341,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-ecommerce-slug"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-link general-theme"
+                className="icon me-2 svg-icon-ti-ti-link general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2355,11 +2365,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-typography"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-typography general-theme"
+                className="icon me-2 svg-icon-ti-ti-typography general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2381,11 +2391,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-social-links"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-social general-theme"
+                className="icon me-2 svg-icon-ti-ti-social general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2409,11 +2419,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-social-sharing"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-share general-theme"
+                className="icon me-2 svg-icon-ti-ti-share general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2435,11 +2445,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-newsletter-popup"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-mail-opened general-theme"
+                className="icon me-2 svg-icon-ti-ti-mail-opened general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2460,11 +2470,11 @@ function ThemeFacebook() {
             </Link>
 
             <Link
-              className="nav-link general-theme"
+              className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-cookie-consent"
             >
               <svg
-                class="icon me-2 svg-icon-ti-ti-cookie general-theme"
+                className="icon me-2 svg-icon-ti-ti-cookie general-theme text-dark"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2491,13 +2501,13 @@ function ThemeFacebook() {
 
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex">
-              Save Chaneges
+            <button className="btn btn-success button-change py-4 mt-2 mt-lg-3 me-2 border d-flex">
+              Save Changes
             </button>
           </div>
 
           <hr className="custom-changes1" />
-          <form className="content-form w-100">
+          <form className="content-form ms-3 me-3">
             <div className="mb-3 mt-2">
               <div className="mb-3">
                 <label className="form-label" htmlFor="date-format">
@@ -2505,8 +2515,9 @@ function ThemeFacebook() {
                 </label>
 
                 <select
-                  className="form-select label-cookie py-4"
+                  className="form-select label-cookie"
                   id="date-format"
+                  style={{ height: "50px" }}
                 >
                   <option value="">Select an option</option>
                   <option value="Yes">Yes</option>
@@ -2519,8 +2530,9 @@ function ThemeFacebook() {
                   </label>
 
                   <select
-                    className="form-select label-hotline label-date py-4"
+                    className="form-select label-hotline label-date"
                     id="date-format"
+                    style={{ height: "50px" }}
                   >
                     <option value="">Select an option</option>
                     <option value="Yes">Yes</option>
@@ -2571,8 +2583,9 @@ function ThemeFacebook() {
                 Enable Facebook comment in post detail page?
               </label>
               <select
-                className="form-select label-cookie py-4"
+                className="form-select label-cookie"
                 id="date-format"
+                style={{ height: "50px" }}
               >
                 <option value="">Select an option</option>
                 <option value="Yes">Yes</option>

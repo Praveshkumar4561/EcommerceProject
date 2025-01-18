@@ -7,9 +7,10 @@ import Tonic from "../../assets/Tonic.svg";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import UserContext from "../../context/UserContext";
 
 function Checkout() {
   let { count, setCount } = useContext(UserContext);
@@ -42,7 +43,7 @@ function Checkout() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -55,7 +56,7 @@ function Checkout() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+        const response = await axios.get("http://52.8.59.14:1600/allcartdata");
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,
@@ -108,7 +109,7 @@ function Checkout() {
   useEffect(() => {
     const userdata = async () => {
       try {
-        const response = await axios.get("http://52.9.253.67:1600/alldata");
+        const response = await axios.get("http://52.8.59.14:1600/alldata");
         if (response.data && response.data.length > 0) {
           setContainer(response.data);
           setUser((prevUser) => ({
@@ -169,7 +170,7 @@ function Checkout() {
     };
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/checkout",
+        "http://52.8.59.14:1600/checkout",
         orderData
       );
       if (response.data && response.data.orderNumber) {
@@ -944,7 +945,10 @@ function Checkout() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

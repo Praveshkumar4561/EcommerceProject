@@ -259,29 +259,24 @@ body {
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
 }
 
-/* General Card Styling */
 .card {
   border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Card Body Styling */
 .card-body {
   padding: 2rem;
 }
 
-/* Card Header Styling */
 .card-header {
   background-color: #f8f9fa;
   padding: 1.5rem;
 }
 
-/* Form Control Styling */
 .form-control {
   padding: 1rem;
 }
 
-/* Button Styling */
 .btn-success {
   background-color: #0a9a73;
   border: none;
@@ -293,10 +288,8 @@ body {
   color: #fff;
 }
 
-/* Text Color Styling */
 .login {
   color: #232323;
-  /* font-weight: 900; */
 }
 
 .account {
@@ -309,7 +302,6 @@ body {
   font-size: 1rem;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 992px) {
   .card-body {
     padding: 1.5rem;
@@ -345,8 +337,6 @@ body {
     font-size: 0.875rem;
   }
 }
-
-/* 11111111111   */
 
 .navbar-item {
   color: #133344;

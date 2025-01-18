@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./FaqCategory.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.webp";
+import Logo from "../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -18,7 +18,6 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import UserContext from "../../context/UserContext";
 
 function FaqCategory() {
   let [user, setUser] = useState([]);
@@ -102,22 +101,28 @@ function FaqCategory() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.9.253.67:1600/faqsearchcategory/${search}`
+      `http://52.8.59.14:1600/faqsearchcategory/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/faqcategorydata");
+    let response = await axios.get("http://52.8.59.14:1600/faqcategorydata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://52.9.253.67:1600/faqcategorydelete/${id}`, user);
+    await axios.delete(`http://52.8.59.14:1600/faqcategorydelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
-  let { count } = useContext(UserContext);
+  let [count5, setCount5] = useState(0);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+  orderdata();
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -230,7 +235,11 @@ function FaqCategory() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="Logo"
+              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+            />
           </ul>
 
           <input
@@ -271,7 +280,7 @@ function FaqCategory() {
               target="_blank"
             >
               <svg
-                class="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
+                className="icon icon-left svg-icon-ti-ti-world me-1 mt- text-lig"
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
                 height="22"
@@ -294,10 +303,8 @@ function FaqCategory() {
           </div>
 
           <FontAwesomeIcon
-            //  icon={isDarkMode ? faSun : faMoon}
             icon={faMoon}
             className="text-light fs-4 me-2 search-box"
-            // onClick={toggleTheme}
             style={{ cursor: "pointer" }}
           />
 
@@ -313,13 +320,15 @@ function FaqCategory() {
           />
           <div className="d-flex flex-column ms-1">
             <span className="text-light count-value1 d-lg-block d-none">
-              {count}
+              {count5}
             </span>
-            <img
-              src={Shopping}
-              alt="Shopping"
-              className="search-box search-box1"
-            />
+            <Link to="/admin/ecommerce/orders">
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -334,7 +343,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/welcome" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-home me-2 mb-1"
+                  className="icon svg-icon-ti-ti-home me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -357,7 +366,7 @@ function FaqCategory() {
             <div>
               <li onClick={toggleecommerce} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-shopping-bag me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -390,7 +399,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-report-analytics me-2"
+                        className="icon  svg-icon-ti-ti-report-analytics me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -422,7 +431,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -453,7 +462,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-cancel me-2"
+                        className="icon  svg-icon-ti-ti-basket-cancel me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -486,7 +495,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-basket-down me-2"
+                        className="icon  svg-icon-ti-ti-basket-down me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -519,7 +528,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-truck-loading me-2"
+                        className="icon  svg-icon-ti-ti-truck-loading me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -550,7 +559,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-invoice me-2"
+                        className="icon  svg-icon-ti-ti-file-invoice me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -582,7 +591,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-package me-2"
+                        className="icon  svg-icon-ti-ti-package me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -614,7 +623,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-currency-dollar me-2"
+                        className="icon  svg-icon-ti-ti-currency-dollar me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -643,7 +652,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-home-check me-2"
+                        className="icon  svg-icon-ti-ti-home-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -673,7 +682,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-archive me-2"
+                        className="icon  svg-icon-ti-ti-archive me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -703,7 +712,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -732,7 +741,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -761,7 +770,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-database me-2"
+                        className="icon  svg-icon-ti-ti-database me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -791,7 +800,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-album me-2"
+                        className="icon  svg-icon-ti-ti-album me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -820,7 +829,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tags me-2"
+                        className="icon  svg-icon-ti-ti-tags me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -850,7 +859,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-registered me-2"
+                        className="icon  svg-icon-ti-ti-registered me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -880,7 +889,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-star me-2"
+                        className="icon  svg-icon-ti-ti-star me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -908,7 +917,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-bolt me-2"
+                        className="icon  svg-icon-ti-ti-bolt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -936,7 +945,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-discount me-2"
+                        className="icon  svg-icon-ti-ti-discount me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -977,7 +986,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-users me-2"
+                        className="icon  svg-icon-ti-ti-users me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1008,7 +1017,7 @@ function FaqCategory() {
             <div>
               <li onClick={togglespecification} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-table-options ms-0 me-1"
+                  className="icon  svg-icon-ti-ti-table-options ms-0 me-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1049,7 +1058,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1077,7 +1086,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-1"
+                        className="icon  svg-icon-ti-ti-point me-1"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1105,7 +1114,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1133,7 +1142,7 @@ function FaqCategory() {
             <Link to="/admin/pages" className="text-light text-decoration-none">
               <li>
                 <svg
-                  class="icon svg-icon-ti-ti-notebook me-2 mb-1"
+                  className="icon svg-icon-ti-ti-notebook me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1156,7 +1165,7 @@ function FaqCategory() {
             <div>
               <li onClick={toggleblog} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-article me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-article me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1190,7 +1199,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-text me-2"
+                        className="icon  svg-icon-ti-ti-file-text me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1222,7 +1231,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1250,7 +1259,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tag me-2"
+                        className="icon  svg-icon-ti-ti-tag me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1279,7 +1288,7 @@ function FaqCategory() {
             <div>
               <li onClick={paymentgateway} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-credit-card me-2 mb-1"
+                  className="icon svg-icon-ti-ti-credit-card me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1396,7 +1405,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/galleries" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-camera me-2 mb-1"
+                  className="icon svg-icon-ti-ti-camera me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1417,7 +1426,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/testimonials" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-star me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-star me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1440,7 +1449,7 @@ function FaqCategory() {
             <div>
               <li onClick={toggleads} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
+                  className="icon  svg-icon-ti-ti-ad-circle me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1474,7 +1483,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1502,7 +1511,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-point me-2"
+                        className="icon  svg-icon-ti-ti-point me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1530,7 +1539,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/announcements" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
+                  className="icon svg-icon-ti-ti-speakerphone me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1553,7 +1562,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/contacts" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1574,7 +1583,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/simple-sliders" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-slideshow me-2 mb-1"
+                  className="icon svg-icon-ti-ti-slideshow me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1634,7 +1643,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-check me-2"
+                        className="icon  svg-icon-ti-ti-list-check me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1667,7 +1676,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-folder me-2"
+                        className="icon  svg-icon-ti-ti-folder me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1695,7 +1704,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/newsletters" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-mail me-2 mb-1"
+                  className="icon svg-icon-ti-ti-mail me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1715,7 +1724,7 @@ function FaqCategory() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-world me-2 mb-1"
+                className="icon svg-icon-ti-ti-world me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1737,7 +1746,7 @@ function FaqCategory() {
             </li>
             <li>
               <svg
-                class="icon svg-icon-ti-ti-folder me-2 mb-1"
+                className="icon svg-icon-ti-ti-folder me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -1757,7 +1766,7 @@ function FaqCategory() {
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
-                  class="icon svg-icon-ti-ti-brush me-2 mb-1"
+                  className="icon svg-icon-ti-ti-brush me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -1791,7 +1800,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-palette me-2"
+                        className="icon  svg-icon-ti-ti-palette me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1822,7 +1831,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-tournament me-2"
+                        className="icon  svg-icon-ti-ti-tournament me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1856,7 +1865,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-layout me-2"
+                        className="icon  svg-icon-ti-ti-layout me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1886,7 +1895,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-list-tree me-2"
+                        className="icon  svg-icon-ti-ti-list-tree me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1919,7 +1928,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-css me-2"
+                        className="icon  svg-icon-ti-ti-file-type-css me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1950,7 +1959,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-js me-2"
+                        className="icon  svg-icon-ti-ti-file-type-js me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -1981,7 +1990,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-html me-2"
+                        className="icon  svg-icon-ti-ti-file-type-html me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2017,7 +2026,7 @@ function FaqCategory() {
                   >
                     <li>
                       <svg
-                        class="icon  svg-icon-ti-ti-file-type-txt me-2"
+                        className="icon  svg-icon-ti-ti-file-type-txt me-2"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
                         height="24"
@@ -2052,7 +2061,7 @@ function FaqCategory() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-plug me-2 mb-1"
+                className="icon svg-icon-ti-ti-plug me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2074,7 +2083,7 @@ function FaqCategory() {
 
             <li>
               <svg
-                class="icon svg-icon-ti-ti-tool me-2 mb-1"
+                className="icon svg-icon-ti-ti-tool me-2 mb-1"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -2093,7 +2102,7 @@ function FaqCategory() {
             <li>
               <Link to="/admin/settings" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-settings me-2 mb-1"
+                  className="icon svg-icon-ti-ti-settings me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2115,7 +2124,7 @@ function FaqCategory() {
             <li className="mb-4 pb-3">
               <Link to="/admin/system" className="text-light">
                 <svg
-                  class="icon svg-icon-ti-ti-user-shield me-2 mb-1"
+                  className="icon svg-icon-ti-ti-user-shield me-2 mb-1"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -2148,15 +2157,15 @@ function FaqCategory() {
         </ol>
       </nav>
 
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
-        <div class="card mt-3 testimonial">
-          <div class="card-body">
-            <div class="d-flex justify-content-between mb-3">
-              <div class="d-flex flex-row w-100">
-                <div class="btn-group me-2">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
+        <div className="card mt-3 testimonial">
+          <div className="card-body">
+            <div className="d-flex justify-content-between mb-3">
+              <div className="d-flex flex-row w-100">
+                <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    class="btn btn-secondary dropdown-toggle d-flex py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
+                    className="btn btn-secondary dropdown-toggle d-flex py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2164,7 +2173,7 @@ function FaqCategory() {
                   </button>
                 </div>
                 <button
-                  class="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
+                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
                   type="button"
                 >
                   Filters
@@ -2172,7 +2181,7 @@ function FaqCategory() {
 
                 <div className="search-gallery">
                   <input
-                    class="form-control py-4 mt-2 mt-lg-0 rounded-2"
+                    className="form-control py-4 mt-2 mt-lg-0 rounded-2"
                     placeholder="Search..."
                     type="text"
                     name="search"
@@ -2185,12 +2194,12 @@ function FaqCategory() {
               <div className="d-flex w-100 justify-content-end">
                 <div className="mt-2 mt-lg-0 ms-lg-2 ms-xl-0 ms-xxl-0">
                   <Link to="/admin/faq-categories/create">
-                    <button class="btn btn-create me-2" type="button">
+                    <button className="btn btn-create me-2" type="button">
                       <FontAwesomeIcon icon={faPlus} className="me-2" />
                       Create
                     </button>
                   </Link>
-                  <button class="btn btn-reload border" type="button">
+                  <button className="btn btn-reload border" type="button">
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
                   </button>
@@ -2198,8 +2207,8 @@ function FaqCategory() {
               </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="table table-responsive table-striped">
+            <div className="table-responsive">
+              <table className="table table-responsive table-striped">
                 <thead className="table-secondary">
                   <tr>
                     <th scope="col">
@@ -2212,12 +2221,12 @@ function FaqCategory() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       ID
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-light">
                       Name
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2226,11 +2235,11 @@ function FaqCategory() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Created At
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
                     <th scope="col" className="fw-light">
                       Status
-                      <i class="fas fa-sort ms-1"></i>
+                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col">
@@ -2267,7 +2276,7 @@ function FaqCategory() {
                         <td>{data.date}</td>
 
                         <td>
-                          <span class="badge badge-success lh-base fw-light">
+                          <span className="badge badge-success lh-base fw-light">
                             {data.status}
                           </span>
                         </td>
@@ -2280,7 +2289,7 @@ function FaqCategory() {
                         </td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
-                          <button class="btn btn-edit me-2" type="button">
+                          <button className="btn btn-edit me-2" type="button">
                             <Link to={`/admin/faq-categories/edit/${data.id}`}>
                               <FontAwesomeIcon
                                 icon={faPenToSquare}
@@ -2301,7 +2310,9 @@ function FaqCategory() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="9" className="text-center"></td>
+                      <td colSpan="9" className="text-center">
+                        No data available
+                      </td>
                     </tr>
                   )}
                 </tbody>

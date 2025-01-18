@@ -17,7 +17,7 @@ function MedicinePolicy() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -167,8 +167,6 @@ function MedicinePolicy() {
               </div>
             )}
           </header>
-
-          {}
 
           <main className="container mt-5">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2 lorem-space">
@@ -354,8 +352,6 @@ function MedicinePolicy() {
         </div>
       </div>
 
-      {}
-
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">
           <div className="row justify-content-center">
@@ -433,7 +429,10 @@ function MedicinePolicy() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

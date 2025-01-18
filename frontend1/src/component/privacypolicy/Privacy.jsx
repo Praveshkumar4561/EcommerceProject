@@ -17,7 +17,7 @@ function Privacy() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -50,7 +50,6 @@ function Privacy() {
 
   return (
     <>
-      {}
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom ms-4 ms-lg-0">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
@@ -111,8 +110,6 @@ function Privacy() {
                   </ul>
                 </div>
 
-                {}
-
                 <div className="navbar-icons d-sm-flex">
                   <Link to="/login" className="nav-link">
                     <img
@@ -130,8 +127,6 @@ function Privacy() {
                     <div className="addcarts ms-1 ps-1 pt-lg-1">{count}</div>
                   </Link>
                 </div>
-
-                {}
               </div>
             </nav>
 
@@ -172,8 +167,6 @@ function Privacy() {
               </div>
             )}
           </header>
-
-          {}
 
           <main className="container mt-5">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2 lorem-space cart-cart">
@@ -420,8 +413,6 @@ function Privacy() {
         </div>
       </div>
 
-      {}
-
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">
           <div className="row justify-content-center">
@@ -499,7 +490,10 @@ function Privacy() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

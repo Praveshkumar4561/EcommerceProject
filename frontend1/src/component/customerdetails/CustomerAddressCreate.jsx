@@ -13,7 +13,7 @@ import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
 import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
-import UserContext from "../../context/UserContext";
+
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
 import Cart_order from "../../assets/Cart_request.webp";
@@ -23,6 +23,7 @@ import Cart_setting from "../../assets/Cart_setting.webp";
 import Cart_logout from "../../assets/Cart_logout.webp";
 import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
+import UserContext from "../../context/UserContext";
 
 function CustomerAddressCreate() {
   let { count, setCount } = useContext(UserContext);
@@ -33,7 +34,7 @@ function CustomerAddressCreate() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -70,7 +71,7 @@ function CustomerAddressCreate() {
     if (validateForm()) {
       try {
         const response = await axios.post(
-          "http://52.9.253.67:1600/userdashboard",
+          "http://52.8.59.14:1600/userdashboard",
           user
         );
         setUser(response.data);
@@ -136,7 +137,7 @@ function CustomerAddressCreate() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("http://52.9.253.67:1600/getannounce");
+      let response = await axios.get("http://52.8.59.14:1600/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -164,7 +165,7 @@ function CustomerAddressCreate() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://52.9.253.67:1600/logout")
+      .get("http://52.8.59.14:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -184,7 +185,7 @@ function CustomerAddressCreate() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -936,8 +937,6 @@ function CustomerAddressCreate() {
         </div>
       </div>
 
-      {}
-
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
         <div className="container text-center">
           <div className="row justify-content-center">
@@ -1015,7 +1014,10 @@ function CustomerAddressCreate() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

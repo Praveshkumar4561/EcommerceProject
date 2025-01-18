@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./ContactUs.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
@@ -26,7 +26,7 @@ function ContactUs() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -34,27 +34,15 @@ function ContactUs() {
   };
   cartdata();
 
-  // catcha code
-
   let generateRandomNumber = () => {
     return Math.floor(Math.random() * 10) + 1;
   };
 
-  const [user, setUser] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone_number: "",
-    product: "",
-    message: "",
-  });
   const [captchaValid, setCaptchaValid] = useState(false);
   const [num1, setNum1] = useState(generateRandomNumber());
   const [num2, setNum2] = useState(generateRandomNumber());
   const [userAnswer, setUserAnswer] = useState("");
   const [error, setError] = useState("");
-
-  const { first_name, last_name, email, phone_number, product, message } = user;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -81,6 +69,15 @@ function ContactUs() {
     setError("");
     setCaptchaValid(false);
   };
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    address: "",
+    phone: "",
+    subject: "",
+    content: "",
+  });
+  const { name, email, address, phone, subject, content } = user;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -88,21 +85,17 @@ function ContactUs() {
       alert("Please complete the CAPTCHA");
       return;
     }
-
     try {
-      const response = await axios.post(
-        "http://52.9.253.67:1600/contact",
-        user
-      );
+      const response = await axios.post("http://52.8.59.14:1600/contact", user);
       if (response.status === 200) {
         alert("Message sent successfully!");
         setUser({
-          first_name: "",
-          last_name: "",
+          name: "",
           email: "",
-          phone_number: "",
-          product: "",
-          message: "",
+          address: "",
+          phone: "",
+          subject: "",
+          content: "",
         });
         setCaptchaValid(false);
         setUserAnswer("");
@@ -114,8 +107,6 @@ function ContactUs() {
       alert("An error occurred while sending your message.");
     }
   };
-
-  // catcha code
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -142,8 +133,6 @@ function ContactUs() {
 
   return (
     <>
-      {}
-
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
@@ -221,13 +210,14 @@ function ContactUs() {
                     <div className="addcarts ms-1 ps-1 pt-lg-1">{count}</div>
                   </Link>
                 </div>
-
-                {}
               </div>
             </nav>
 
             {isDropdownOpen && (
-              <div className="custom-dropdown cart-cart" ref={dropdownRef}>
+              <div
+                className="custom-dropdown cart-cart rounded-0"
+                ref={dropdownRef}
+              >
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/">
@@ -264,8 +254,6 @@ function ContactUs() {
             )}
           </header>
 
-          {}
-
           <main className="container mt-5 lorem-contact">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
               Contact Us
@@ -292,7 +280,7 @@ function ContactUs() {
           <div className="row mt-5 pt-4 justify-content-center">
             <div className="col-12 col-md-6 query bg-light mb-3 rounded query-us">
               <div className="d-flex flex-column">
-                <h2 className="text-start ms-5 ps-5 ps-lg-0 ms-lg-0 mt-2 query-feel lorem-contact">
+                <h2 className="text-start ps-5 ps-lg-0 ms-lg-0 mt-2 query-feel lorem-contact">
                   Feel Free to contact <br /> us for any query
                 </h2>
                 <div className="phone-mail d-flex align-items-center p-3 rounded-5 bg-light mt-0">
@@ -344,32 +332,30 @@ function ContactUs() {
                   <div className="col-12 col-md-6 d-flex flex-column align-items-lg-center contact-name">
                     <div className="form-group text-start">
                       <label htmlFor="firstName" className="name1">
-                        First Name*
+                        Name
                       </label>
                       <input
                         type="text"
                         className="form-control fw-normal mt-4 py-4 lorem-contact1"
                         id="firstName"
-                        placeholder="First Name*"
-                        name="first_name"
-                        value={first_name}
+                        placeholder="Your name"
+                        name="name"
+                        value={name}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
                   <div className="col-12 col-md-6 d-flex flex-column align-items-start align-items-md-start contact-name">
                     <div className="form-group w-100 mt-sm-3 blackitalic text-start">
-                      <label htmlFor="lastName">Last Name*</label>
+                      <label htmlFor="lastName">Email</label>
                       <input
                         type="text"
                         className="form-control mt-2 fw-normal py-4 lorem-contact1"
                         id="lastName"
-                        placeholder="Last Name"
-                        name="last_name"
-                        value={last_name}
+                        placeholder="Your Email"
+                        name="email"
+                        value={email}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
@@ -378,62 +364,58 @@ function ContactUs() {
                 <div className="row mb-1 mt-0 d-flex align-items-md-start contact-name5">
                   <div className="col-12 col-md-6 d-flex flex-column align-items-start ">
                     <div className="form-group blackitalic text-start">
-                      <label htmlFor="email">Mail Address</label>
+                      <label htmlFor="email">Address</label>
                       <input
-                        type="email"
+                        type="text"
                         className="form-control fw-normal mt-2 py-4 lorem-contact1"
-                        placeholder="Mail Address"
+                        placeholder="Your Address"
                         id="email"
-                        name="email"
-                        value={email}
+                        name="address"
+                        value={address}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
                   <div className="col-12 col-md-6 d-flex flex-column align-items-start">
                     <div className="form-group blackitalic text-start contact-name">
                       <label htmlFor="phoneNumber" className="mt-3 mt-lg-0">
-                        Phone Number
+                        Phone
                       </label>
                       <input
                         type="number"
                         className="form-control fw-normal mt-2 py-4 lorem-contact1"
-                        placeholder="Phone Number"
+                        placeholder="Your Phone"
                         id="phoneNumber"
-                        name="phone_number"
-                        value={phone_number}
+                        name="phone"
+                        value={phone}
                         onChange={handleChange}
-                        required
                       />
                     </div>
                   </div>
                 </div>
                 <div className="mb-3 d-flex flex-column align-items-cente lorem-contact1">
                   <div className="form-group blackitalic text-start mt-3">
-                    <label htmlFor="product">Choose Product</label>
-                    <select
-                      className="form-control fw-bold mt-2 py-4"
-                      id="product"
-                      name="product"
-                      value={product}
+                    <label htmlFor="product">Subject</label>
+                    <input
+                      type="text"
+                      className="form-control fw-normal mt-2 py-4 lorem-contact1"
+                      placeholder="Subject"
+                      id="phoneNumber"
+                      name="subject"
+                      value={subject}
                       onChange={handleChange}
-                    >
-                      <option value="">Select a product</option>
-                      <option value="product1">Product 1</option>
-                      <option value="product2">Product 2</option>
-                    </select>
+                    />
                   </div>
                 </div>
 
                 <div className="form-group mt-sm-0 blackitalic ms-0 ms-md-0 ms-lg-0 text-start">
-                  <label htmlFor="message">Enter Message</label>
+                  <label htmlFor="message">Content</label>
                   <textarea
                     className="form-control fw-normal mt-2 lorem-contact1 custom-message"
                     id="message"
                     placeholder="Enter Message"
-                    name="message"
-                    value={message}
+                    name="content"
+                    value={content}
                     onChange={handleChange}
                   ></textarea>
 
@@ -477,9 +459,7 @@ function ContactUs() {
         </div>
       </div>
 
-      {}
-
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
+      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0 ">
         <div className="container text-center">
           <div className="row justify-content-center">
             <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
@@ -556,7 +536,10 @@ function ContactUs() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p
+                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
+              text-lg-start text-start pharmacy2 lh-lg"
+              >
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

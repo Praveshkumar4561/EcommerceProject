@@ -49,7 +49,7 @@ function HomePage() {
     const faqdata = async () => {
       try {
         const response = await axios.get(
-          "http://52.9.253.67:1600/pagesdatafaqs"
+          "http://52.8.59.14:1600/pagesdatafaqs"
         );
         setFaqs(response.data);
       } catch (error) {
@@ -66,7 +66,7 @@ function HomePage() {
   useEffect(() => {
     const showdata = async () => {
       try {
-        let answer = await axios.get("http://52.9.253.67:1600/blogpostdata");
+        let answer = await axios.get("http://52.8.59.14:1600/blogpostdata");
         setBlog(answer.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -98,7 +98,7 @@ function HomePage() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://52.9.253.67:1600/getannounce");
+      let response = await axios.get("http://52.8.59.14:1600/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -119,7 +119,7 @@ function HomePage() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/alldata");
+    let response = await axios.get("http://52.8.59.14:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -132,7 +132,7 @@ function HomePage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.9.253.67:1600/allcartdata");
+      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -144,7 +144,7 @@ function HomePage() {
 
   let homedata = async () => {
     try {
-      let response = await axios.get("http://52.9.253.67:1600/productpagedata");
+      let response = await axios.get("http://52.8.59.14:1600/productpagedata");
       setProduct(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -155,7 +155,7 @@ function HomePage() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://52.9.253.67:1600/productlabelsdata");
+    let response = await axios.get("http://52.8.59.14:1600/productlabelsdata");
     setLabel(response.data);
   };
   labeldata();
@@ -175,7 +175,7 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/addcart",
+        "http://52.8.59.14:1600/addcart",
         formData,
         {
           headers: {
@@ -202,7 +202,7 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://52.9.253.67:1600/wishlistpost",
+        "http://52.8.59.14:1600/wishlistpost",
         formData
       );
       alert("Product successfully added to the wishlist");
@@ -307,10 +307,10 @@ function HomePage() {
               <img
                 src={Tonic}
                 alt="404"
-                className="img-fluid me-3 me-md-0 mt-0 mt-lg-2"
+                className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
               />
 
-              <div className="input-welcome1 d-flex flex-row align-items-center mt-0">
+              <div className="input-welcome1 d-flex flex-row align-items-center mt-3">
                 <input
                   type="search"
                   className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-0"
@@ -1112,7 +1112,7 @@ function HomePage() {
               >
                 Sign Up for Newsletter
               </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-sm-end pharmacy2 lh-lg">
+              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">

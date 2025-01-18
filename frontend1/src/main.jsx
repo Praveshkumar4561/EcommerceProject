@@ -18,7 +18,7 @@ import Login from "./component/login/Login.jsx";
 import BlogPage from "./component/blogpage/BlogPage.jsx";
 import BlogDetails from "./component/blogdetails/BlogDetails.jsx";
 import Faqs from "./component/faqs/Faqs.jsx";
-import ErrorPage from "./component/errorpage/ErrorPage.jsx";
+import ErrorPage from "./component/Errorpage/ErrorPage.jsx";
 import ContactUs from "./component/contactus/ContactUs.jsx";
 import AddCart from "./component/addcart/AddCart.jsx";
 import User from "./User.jsx";
@@ -159,6 +159,9 @@ import Transactions from "./backend/payments/Transactions.jsx";
 import PaymentLog from "./backend/payments/PaymentLog.jsx";
 import TransactionsEdit from "./backend/payments/TransactionsEdit.jsx";
 import PaymentMethod from "./backend/payments/PaymentMethod.jsx";
+import AdminLogin from "./backend/AdminLogin.jsx";
+import AdminReset from "./backend/AdminReset.jsx";
+import ProtectedRoute from "./component/ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -167,8 +170,13 @@ const router = createBrowserRouter(
         <Route path="*" element={<Navigate to="/error" />} />
       </Route>
 
+      <Route path="/admin">
+        <Route path="" element={<Navigate to="/admin/login" />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+      </Route>
+
       <Route path="" element={<User />}>
-        <Route path="/admin">
+        <Route path="/admin/*" element={<ProtectedRoute />}>
           <Route path="welcome" element={<Welcome />} />
           <Route path="system" element={<PlatForm />} />
           <Route path="settings" element={<Settings />} />
@@ -187,7 +195,11 @@ const router = createBrowserRouter(
           <Route path="widgets" element={<Widgets />} />
         </Route>
 
-        <Route path="/admin/theme">
+        <Route path="/admin/password">
+          <Route path="reset" element={<AdminReset />} />
+        </Route>
+
+        <Route path="/admin/theme/*" element={<ProtectedRoute />}>
           <Route path="custom-css" element={<CustomCss />} />
           <Route path="robots-txt" element={<RobotTxt />} />
           <Route path="custom-js" element={<CustomJs />} />
@@ -196,17 +208,17 @@ const router = createBrowserRouter(
           <Route path="all" element={<AdminTheme />} />
         </Route>
 
-        <Route path="/admin/payments">
+        <Route path="/admin/payments/*" element={<ProtectedRoute />}>
           <Route path="transactions" element={<Transactions />} />
           <Route path="logs" element={<PaymentLog />} />
           <Route path="methods" element={<PaymentMethod />} />
         </Route>
 
-        <Route path="/admin/payments">
+        <Route path="/admin/payments/*" element={<ProtectedRoute />}>
           <Route path="transactions/:id" element={<TransactionsEdit />} />
         </Route>
 
-        <Route path="/admin/theme/options">
+        <Route path="/admin/theme/options/*" element={<ProtectedRoute />}>
           <Route path="opt-text-subsection-general" element={<General />} />
           <Route path="opt-text-subsection-page" element={<ThemePage />} />
           <Route
@@ -251,17 +263,17 @@ const router = createBrowserRouter(
           <Route path="opt-text-subsection-styles" element={<ThemeStyles />} />
         </Route>
 
-        <Route path="/admin/menus">
+        <Route path="/admin/menus/*" element={<ProtectedRoute />}>
           <Route path="create" element={<MenusCreate />} />
           <Route path="edit/:id" element={<MenusEdit />} />
         </Route>
 
-        <Route path="/admin/customers">
+        <Route path="/admin/customers/*" element={<ProtectedRoute />}>
           <Route path="create" element={<CustomerCreate />} />
           <Route path="edit/:id" element={<CustomerEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce">
+        <Route path="/admin/ecommerce/*" element={<ProtectedRoute />}>
           <Route path="incomplete-orders" element={<IncompleteOrders />} />
           <Route path="product-tags" element={<ProductTags />} />
           <Route path="options" element={<ProductOptions />} />
@@ -292,153 +304,186 @@ const router = createBrowserRouter(
           />
         </Route>
 
-        <Route path="/admin/ecommerce/shipments">
+        <Route path="/admin/ecommerce/shipments/*" element={<ProtectedRoute />}>
           <Route path="edit/:id" element={<ShipmentEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/specification-groups">
+        <Route
+          path="/admin/ecommerce/specification-groups/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<SpecificationGroupCreate />} />
         </Route>
 
-        <Route path="/admin/ecommerce/specification-groups">
+        <Route
+          path="/admin/ecommerce/specification-groups/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="edit/:id" element={<SpecificationEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/specification-tables">
+        <Route
+          path="/admin/ecommerce/specification-tables/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<SpecificationTableCreate />} />
         </Route>
 
-        <Route path="/admin/ecommerce/specification-tables">
+        <Route
+          path="/admin/ecommerce/specification-tables/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="edit/:id" element={<SpecificationTableEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/specification-attributes">
+        <Route
+          path="/admin/ecommerce/specification-attributes/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<SpecificationAttributeCreate />} />
         </Route>
 
-        <Route path="/admin/ecommerce/specification-attributes">
+        <Route
+          path="/admin/ecommerce/specification-attributes/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="edit/:id" element={<SpecificationAttributeEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/orders">
+        <Route path="/admin/ecommerce/orders/*" element={<ProtectedRoute />}>
           <Route path="create" element={<OrdersCreate />} />
         </Route>
 
-        <Route path="/admin/ecommerce/orders">
+        <Route path="/admin/ecommerce/orders/*" element={<ProtectedRoute />}>
           <Route path="edit/:id" element={<OrdersEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/invoices">
+        <Route path="/admin/ecommerce/invoices/*" element={<ProtectedRoute />}>
           <Route path="edit/:id" element={<InvoiceEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/products">
+        <Route path="/admin/ecommerce/products/*" element={<ProtectedRoute />}>
           <Route path="create" element={<ProductsCreate />} />
           <Route path="edit/:id" element={<ProductsEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/discounts">
+        <Route path="/admin/ecommerce/discounts/*" element={<ProtectedRoute />}>
           <Route path="create" element={<DiscountsCreate />} />
           <Route path="edit/:id" element={<DiscountsEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/reviews">
+        <Route path="/admin/ecommerce/reviews/*" element={<ProtectedRoute />}>
           <Route path="create" element={<ReviewsCreate />} />
           <Route path="view/:id" element={<ReviewsView />} />
         </Route>
 
-        <Route path="/admin/ecommerce/flash-sales">
+        <Route
+          path="/admin/ecommerce/flash-sales/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<FlashSalesCreate />} />
           <Route path="edit/:id" element={<FlashSalesEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/product-attribute-sets">
+        <Route
+          path="/admin/ecommerce/product-attribute-sets/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<ProductAttributesCreate />} />
           <Route path="edit/:id" element={<ProductAttributesEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/brands">
+        <Route path="/admin/ecommerce/brands/*" element={<ProtectedRoute />}>
           <Route path="create" element={<BrandsCreate />} />
           <Route path="edit/:id" element={<BrandsEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/product-collections">
+        <Route
+          path="/admin/ecommerce/product-collections/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<ProductCollectionsCreate />} />
           <Route path="edit/:id" element={<ProductCollectionsEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/product-labels">
+        <Route
+          path="/admin/ecommerce/product-labels/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<ProductLabelsCreate />} />
           <Route path="edit/:id" element={<ProductLabelsEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/product-tags">
+        <Route
+          path="/admin/ecommerce/product-tags/*"
+          element={<ProtectedRoute />}
+        >
           <Route path="create" element={<ProductTagsCreate />} />
           <Route path="edit/:id" element={<ProductTagsEdit />} />
         </Route>
 
-        <Route path="/admin/ecommerce/options">
+        <Route path="/admin/ecommerce/options/*" element={<ProtectedRoute />}>
           <Route path="create" element={<ProductOptionscreate />} />
           <Route path="edit/:id" element={<ProductOptionsEdit />} />
         </Route>
 
-        <Route path="/admin/announcements">
+        <Route path="/admin/announcements/*" element={<ProtectedRoute />}>
           <Route path="create" element={<AnnouncementCreate />} />
           <Route path="edit/:id" element={<AnnouncementEdit />} />
         </Route>
 
-        <Route path="/admin/testimonials">
+        <Route path="/admin/testimonials/*" element={<ProtectedRoute />}>
           <Route path="create" element={<TestimonialCreate />} />
           <Route path="edit/:id" element={<TestimonialEdit />} />
         </Route>
 
-        <Route path="/admin/galleries">
+        <Route path="/admin/galleries/*" element={<ProtectedRoute />}>
           <Route path="create" element={<GalleryCreate />} />
           <Route path="edit/:id" element={<GalleryEdit />} />
         </Route>
 
-        <Route path="/admin/simple-sliders">
+        <Route path="/admin/simple-sliders/*" element={<ProtectedRoute />}>
           <Route path="create" element={<SimpleSlidersCreate />} />
           <Route path="edit/:id" element={<SimpleSlidersEdit />} />
         </Route>
 
-        <Route path="/admin/contacts">
+        <Route path="/admin/contacts/*" element={<ProtectedRoute />}>
           <Route path="create" element={<ContactsCreate />} />
           <Route path="edit/:id" element={<ContactsEdit />} />
         </Route>
 
-        <Route path="/admin/pages">
+        <Route path="/admin/pages/*" element={<ProtectedRoute />}>
           <Route path="create" element={<PagesCreate />} />
           <Route path="edit/:id" element={<PagesEdit />} />
         </Route>
 
-        <Route path="/admin/faqs">
+        <Route path="/admin/faqs/*" element={<ProtectedRoute />}>
           <Route path="create" element={<FaqCreate />} />
           <Route path="edit/:id" element={<FaqsEdit />} />
         </Route>
 
-        <Route path="/admin/faq-categories">
+        <Route path="/admin/faq-categories/*" element={<ProtectedRoute />}>
           <Route path="create" element={<FaqCategoryCreate />} />
           <Route path="edit/:id" element={<FaqCategoryEdit />} />
         </Route>
 
-        <Route path="/admin/blog">
+        <Route path="/admin/blog/*" element={<ProtectedRoute />}>
           <Route path="tags" element={<BlogTags />} />
           <Route path="posts" element={<BlogPost />} />
           <Route path="categories" element={<BlogCategory />} />
         </Route>
 
-        <Route path="/admin/blog/tags">
+        <Route path="/admin/blog/tags/*" element={<ProtectedRoute />}>
           <Route path="create" element={<BlogTagsCreate />} />
           <Route path="edit/:id" element={<BlogTagsEdit />} />
         </Route>
 
-        <Route path="/admin/blog/posts">
+        <Route path="/admin/blog/posts/*" element={<ProtectedRoute />}>
           <Route path="create" element={<BlogPostCreate />} />
           <Route path="edit/:id" element={<BlogPostEdit />} />
         </Route>
 
-        <Route path="/admin/ads">
+        <Route path="/admin/ads/*" element={<ProtectedRoute />}>
           <Route path="create" element={<AdsCreate />} />
           <Route path="edit/:id" element={<AdsEdit />} />
         </Route>
