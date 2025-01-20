@@ -29,7 +29,7 @@ function BlogTagsEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -190,7 +190,7 @@ function BlogTagsEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/blogtagupdate/${id}`,
+        `http://54.183.54.164:1600/blogtagupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -210,7 +210,9 @@ function BlogTagsEdit() {
   }, []);
 
   let tagsdata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/blogtagdata/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/blogtagdata/${id}`
+    );
     setUser(response.data[0]);
   };
 

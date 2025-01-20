@@ -59,10 +59,13 @@ function AdminLogin() {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:1600/adminlogin", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "http://54.183.54.164:1600/adminlogin",
+        {
+          username,
+          password,
+        }
+      );
       const token = response.data.token;
       const role = response.data.user.role;
       const expiresIn = response.data.expiresIn;

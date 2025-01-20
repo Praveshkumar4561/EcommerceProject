@@ -9,6 +9,8 @@ import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function Login() {
   const navigate = useNavigate();
@@ -20,13 +22,16 @@ function Login() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
     }
   };
   cartdata();
+
+  const [registerErrors, setRegisterErrors] = useState({});
+  const [loginErrors, setLoginErrors] = useState({});
 
   const [registerUser, setRegisterUser] = useState({
     first_name: "",
@@ -45,27 +50,56 @@ function Login() {
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://52.8.59.14:1600/login", user, {
-        withCredentials: true,
+    setLoginErrors({});
+    if (!user.email || !user.password) {
+      setLoginErrors({
+        email: !user.email ? "Email is required" : "",
+        password: !user.password ? "Password is required" : "",
       });
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://54.183.54.164:1600/login",
+        user,
+        {
+          withCredentials: true,
+        }
+      );
       if (response.data.Status === "Success") {
         console.log("Login successful!");
         navigate("/");
       } else {
-        alert(response.data.Error || "Unexpected error during login");
+        alert(
+          response.data.Error || "You are entered wrong email and password"
+        );
       }
     } catch (error) {
       console.error("Error occurred during login:", error);
-      alert("Error occurred during login");
+      alert("You are entered wrong email and password");
     }
   };
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    setRegisterErrors({});
+    const errors = {};
+    if (!registerUser.first_name) errors.first_name = "First name is required";
+    if (!registerUser.last_name) errors.last_name = "Last name is required";
+    if (!registerUser.phone_number)
+      errors.phone_number = "Phone number is required";
+    if (!registerUser.email) errors.email = "Email is required";
+    if (!registerUser.password) errors.password = "Password is required";
+    else if (registerUser.password.length < 6)
+      errors.password = "Password must be at least 6 characters";
+
+    if (Object.keys(errors).length > 0) {
+      setRegisterErrors(errors);
+      return;
+    }
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/submit",
+        "http://54.183.54.164:1600/submit",
         registerUser
       );
       if (response.data.status === "success") {
@@ -110,6 +144,18 @@ function Login() {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const [show, setShow] = useState(false);
+
+  const passwordshow = () => {
+    setShow(!show);
+  };
+
+  const [shows, setShows] = useState(false);
+
+  const passwordshows = () => {
+    setShows(!shows);
   };
 
   return (
@@ -289,14 +335,18 @@ function Login() {
                         name="email"
                         value={email}
                         onChange={handleLoginChange}
-                        required
                       />
+                      {loginErrors.email && (
+                        <small className="text-danger">
+                          {loginErrors.email}
+                        </small>
+                      )}
                     </div>
                     <div className="mb-4 text-start">
                       <label htmlFor="loginPassword" className="form-label">
                         Password
                       </label>
-                      <input
+                      {/* <input
                         type="password"
                         className="form-control py-4 address-register"
                         id="loginPassword"
@@ -304,8 +354,33 @@ function Login() {
                         name="password"
                         value={password}
                         onChange={handleLoginChange}
-                        required
+                      /> */}
+                      <input
+                        type={shows ? "text" : "password"}
+                        className="form-control py-4 address-register"
+                        id="loginPassword"
+                        placeholder="Password"
+                        name="password"
+                        value={password}
+                        onChange={handleLoginChange}
                       />
+                      <FontAwesomeIcon
+                        icon={shows ? faEyeSlash : faEye}
+                        className="position-absolute translate-middle-y end-0 me-4 pe-2"
+                        onClick={passwordshows}
+                        style={{ cursor: "pointer", marginTop: "-23px" }}
+                      />
+                      {/* <FontAwesomeIcon
+                        icon={show ? faEyeSlash : faEye}
+                        className="position-absolute translate-middle-y end-0 me-4 pe-2"
+                        onClick={passwordshow}
+                        style={{ cursor: "pointer", marginTop: "-23px" }}
+                      /> */}
+                      {loginErrors.password && (
+                        <small className="text-danger">
+                          {loginErrors.password}
+                        </small>
+                      )}
                     </div>
 
                     <div className="d-flex justify-content-lg-center align-items-center">
@@ -367,13 +442,19 @@ function Login() {
                         value={registerUser.email}
                         onChange={handleRegisterChange}
                       />
+                      {registerErrors.email && (
+                        <small className="text-danger">
+                          {registerErrors.email}
+                        </small>
+                      )}
                     </div>
+
                     <div className="mb-3 text-start">
                       <label htmlFor="registerPassword" className="form-label">
                         Create Password
                       </label>
                       <input
-                        type="password"
+                        type={show ? "text" : "password"}
                         className="form-control py-4 address-register cart-cart"
                         id="registerPassword"
                         placeholder="Create Password"
@@ -381,7 +462,19 @@ function Login() {
                         value={registerUser.password}
                         onChange={handleRegisterChange}
                       />
+                      <FontAwesomeIcon
+                        icon={show ? faEyeSlash : faEye}
+                        className="position-absolute translate-middle-y end-0 me-4 pe-2"
+                        onClick={passwordshow}
+                        style={{ cursor: "pointer", marginTop: "-23px" }}
+                      />
+                      {registerErrors.password && (
+                        <small className="text-danger">
+                          {registerErrors.password}
+                        </small>
+                      )}
                     </div>
+
                     <div className="mb-3 text-start">
                       <label htmlFor="firstName" className="form-label">
                         First Name
@@ -395,6 +488,11 @@ function Login() {
                         value={registerUser.first_name}
                         onChange={handleRegisterChange}
                       />
+                      {registerErrors.first_name && (
+                        <small className="text-danger">
+                          {registerErrors.first_name}
+                        </small>
+                      )}
                     </div>
                     <div className="mb-3 text-start">
                       <label htmlFor="lastName" className="form-label">
@@ -409,6 +507,11 @@ function Login() {
                         value={registerUser.last_name}
                         onChange={handleRegisterChange}
                       />
+                      {registerErrors.last_name && (
+                        <small className="text-danger">
+                          {registerErrors.last_name}
+                        </small>
+                      )}
                     </div>
                     <div className="mb-3 text-start">
                       <label htmlFor="phoneNumber" className="form-label">
@@ -423,6 +526,11 @@ function Login() {
                         value={registerUser.phone_number}
                         onChange={handleRegisterChange}
                       />
+                      {registerErrors.phone_number && (
+                        <small className="text-danger">
+                          {registerErrors.phone_number}
+                        </small>
+                      )}
                     </div>
                     <div className="mb-3 form-check text-start">
                       <input

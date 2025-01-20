@@ -167,7 +167,7 @@ function IncompleOrders() {
   let [order, setOrder] = useState([]);
 
   let customerdata = async () => {
-    const response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    const response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setOrder(response.data);
     setCount5(response.data.length);
   };

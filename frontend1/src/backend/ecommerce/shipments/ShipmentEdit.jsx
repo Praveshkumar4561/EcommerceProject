@@ -29,7 +29,7 @@ function ShipmentEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -184,7 +184,9 @@ function ShipmentEdit() {
   });
 
   let alldata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/checkoutsome/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/checkoutsome/${id}`
+    );
     setShipment(response.data[0]);
     setShipment1(response.data);
   };

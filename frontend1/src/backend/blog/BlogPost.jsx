@@ -31,7 +31,7 @@ function BlogPost() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -187,18 +187,18 @@ function BlogPost() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/blogpostsearch/${search}`
+      `http://54.183.54.164:1600/blogpostsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/blogpostdata");
+    let response = await axios.get("http://54.183.54.164:1600/blogpostdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://52.8.59.14:1600/deleteblogpost/${id}`, user);
+    await axios.delete(`http://54.183.54.164:1600/deleteblogpost/${id}`, user);
     alert("data sucessfully deleted");
   };
 
@@ -2137,7 +2137,7 @@ function BlogPost() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
         <div className="card mt-3 testimonial">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">

@@ -21,7 +21,7 @@ function SpecificationAttributeEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -182,7 +182,7 @@ function SpecificationAttributeEdit() {
     e.preventDefault();
     try {
       await axios.put(
-        `http://52.8.59.14:1600/spceficationupdateattribute/${id}`,
+        `http://54.183.54.164:1600/spceficationupdateattribute/${id}`,
         user
       );
       navigate("/admin/ecommerce/specification-attributes");
@@ -201,7 +201,7 @@ function SpecificationAttributeEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/spceficationdatasomeattribute/${id}`
+      `http://54.183.54.164:1600/spceficationdatasomeattribute/${id}`
     );
     setUser(response.data[0]);
   };
@@ -209,7 +209,9 @@ function SpecificationAttributeEdit() {
   let [list, setList] = useState("");
 
   const alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/spceficationdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/spceficationdata"
+    );
     setList(response.data);
   };
   alldata();
@@ -217,7 +219,9 @@ function SpecificationAttributeEdit() {
   let [creates, setCreates] = useState([]);
 
   const allatributedata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/spceficationdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/spceficationdata"
+    );
     setCreates(response.data);
   };
   allatributedata();

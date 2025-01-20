@@ -178,25 +178,28 @@ function ProductCollections() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/searchcollections/${search}`
+      `http://54.183.54.164:1600/searchcollections/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/collectionsdata");
+    let response = await axios.get("http://54.183.54.164:1600/collectionsdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://52.8.59.14:1600/collectiondelete/${id}`, user);
+    await axios.delete(
+      `http://54.183.54.164:1600/collectiondelete/${id}`,
+      user
+    );
     alert("data sucessfully deleted");
   };
 
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

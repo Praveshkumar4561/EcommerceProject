@@ -172,7 +172,10 @@ function AnnouncementCreate() {
   let { name, content, start_date, end_date, active } = user;
 
   let handleSubmit = async () => {
-    const response = await axios.post("http://52.8.59.14:1600/announce", user);
+    const response = await axios.post(
+      "http://54.183.54.164:1600/announce",
+      user
+    );
     if (response.status === 200) {
       navigate("/admin/announcements");
     } else {
@@ -208,7 +211,7 @@ function AnnouncementCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

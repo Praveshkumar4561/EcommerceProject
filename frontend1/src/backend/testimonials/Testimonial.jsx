@@ -31,7 +31,7 @@ function Testimonial() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -167,20 +167,20 @@ function Testimonial() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://52.8.59.14:1600/testifilter/${search}`
+      `http://54.183.54.164:1600/testifilter/${search}`
     );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/gettestimonials");
+    let response = await axios.get("http://54.183.54.164:1600/gettestimonials");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://52.8.59.14:1600/deletetest/${id}`);
+      await axios.delete(`http://54.183.54.164:1600/deletetest/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);

@@ -43,7 +43,7 @@ function Checkout() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -56,7 +56,9 @@ function Checkout() {
   useEffect(() => {
     const cartdata = async () => {
       try {
-        const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+        const response = await axios.get(
+          "http://54.183.54.164:1600/allcartdata"
+        );
         const updatedData = response.data.map((item) => ({
           ...item,
           quantity: 1,
@@ -109,7 +111,7 @@ function Checkout() {
   useEffect(() => {
     const userdata = async () => {
       try {
-        const response = await axios.get("http://52.8.59.14:1600/alldata");
+        const response = await axios.get("http://54.183.54.164:1600/alldata");
         if (response.data && response.data.length > 0) {
           setContainer(response.data);
           setUser((prevUser) => ({
@@ -170,7 +172,7 @@ function Checkout() {
     };
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/checkout",
+        "http://54.183.54.164:1600/checkout",
         orderData
       );
       if (response.data && response.data.orderNumber) {

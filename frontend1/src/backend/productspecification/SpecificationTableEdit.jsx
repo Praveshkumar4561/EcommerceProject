@@ -21,7 +21,7 @@ function SpecificationTableEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -208,7 +208,7 @@ function SpecificationTableEdit() {
 
     try {
       await axios.put(
-        `http://52.8.59.14:1600/spceficationupdatetable/${id}`,
+        `http://54.183.54.164:1600/spceficationupdatetable/${id}`,
         formData
       );
       setErrors({});
@@ -228,7 +228,7 @@ function SpecificationTableEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/spceficationdatasometable/${id}`
+      `http://54.183.54.164:1600/spceficationdatasometable/${id}`
     );
     setUser(response.data[0]);
   };
@@ -252,7 +252,7 @@ function SpecificationTableEdit() {
   const alldata = async () => {
     try {
       const response = await axios.get(
-        `http://52.8.59.14:1600/spceficationdatasome/${id}`
+        `http://54.183.54.164:1600/spceficationdatasome/${id}`
       );
       if (Array.isArray(response.data)) {
         setEdit(response.data);
@@ -270,7 +270,9 @@ function SpecificationTableEdit() {
   }, [id]);
 
   const alldata1 = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/spceficationdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/spceficationdata"
+    );
     setList(response.data);
   };
   alldata1();

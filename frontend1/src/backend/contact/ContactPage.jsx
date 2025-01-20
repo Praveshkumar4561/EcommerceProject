@@ -176,26 +176,26 @@ function ContactPage() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/contactsearch/${search}`
+      `http://54.183.54.164:1600/contactsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/contactreqdata");
+    let response = await axios.get("http://54.183.54.164:1600/contactreqdata");
     setUser(response.data);
     console.log(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://52.8.59.14:1600/customerdelete/${id}`, user);
+    await axios.delete(`http://54.183.54.164:1600/customerdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://52.8.59.14:1600/export-excelcontact",
+        "http://54.183.54.164:1600/export-excelcontact",
         {
           responseType: "blob",
         }
@@ -220,7 +220,7 @@ function ContactPage() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

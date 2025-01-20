@@ -165,7 +165,7 @@ function FaqsEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/faqspageupdate/${id}`,
+        `http://54.183.54.164:1600/faqspageupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -185,7 +185,9 @@ function FaqsEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/faqsomedata/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/faqsomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 
@@ -210,7 +212,7 @@ function FaqsEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

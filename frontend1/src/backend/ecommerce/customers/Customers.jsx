@@ -176,7 +176,7 @@ function Customers() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/customersearch/${search}`
+      `http://54.183.54.164:1600/customersearch/${search}`
     );
     setUser(response.data);
   };
@@ -186,20 +186,20 @@ function Customers() {
   let [user, setUser] = useState([]);
 
   let alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/alldata");
+    let response = await axios.get("http://54.183.54.164:1600/alldata");
     setUser(response.data);
     setCount1(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://52.8.59.14:1600/customerdelete/${id}`, user);
+    await axios.delete(`http://54.183.54.164:1600/customerdelete/${id}`, user);
     alert("data sucessfully deleted");
   };
 
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://52.8.59.14:1600/export-customerdata",
+        "http://54.183.54.164:1600/export-customerdata",
         {
           responseType: "blob",
         }
@@ -223,7 +223,7 @@ function Customers() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

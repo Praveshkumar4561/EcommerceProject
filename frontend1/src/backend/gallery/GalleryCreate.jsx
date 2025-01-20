@@ -180,7 +180,7 @@ function GalleryCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -244,7 +244,7 @@ function GalleryCreate() {
     formData.append("file", file);
 
     const response = await axios.post(
-      "http://52.8.59.14:1600/gallerypost",
+      "http://54.183.54.164:1600/gallerypost",
       formData
     );
     if (response.status === 200) {

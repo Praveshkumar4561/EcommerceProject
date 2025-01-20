@@ -33,7 +33,7 @@ function PagesEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -235,7 +235,7 @@ function PagesEdit() {
     formData.append("file", user.file);
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/pageupdate/${id}`,
+        `http://54.183.54.164:1600/pageupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -258,7 +258,9 @@ function PagesEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/pagesomedata/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/pagesomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

@@ -20,7 +20,7 @@ function FlashSalesCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -183,7 +183,7 @@ function FlashSalesCreate() {
   let handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/flashsales",
+        "http://54.183.54.164:1600/flashsales",
         user
       );
       if (response.status === 200) {
@@ -231,7 +231,7 @@ function FlashSalesCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://52.8.59.14:1600/productpagedata?search=${search}`
+          `http://54.183.54.164:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {

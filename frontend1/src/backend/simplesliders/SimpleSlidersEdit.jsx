@@ -147,7 +147,7 @@ function SimpleSlidersEdit() {
 
   let handleSubmit = async () => {
     const response = await axios.put(
-      `http://52.8.59.14:1600/sliderupdate/${id}`,
+      `http://54.183.54.164:1600/sliderupdate/${id}`,
       user
     );
     if (response.status === 200) {
@@ -167,7 +167,9 @@ function SimpleSlidersEdit() {
   }, []);
 
   let sliderdata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/someslider/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/someslider/${id}`
+    );
     setUser(response.data[0]);
   };
 
@@ -192,7 +194,7 @@ function SimpleSlidersEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

@@ -26,7 +26,7 @@ function ContactUs() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -86,7 +86,10 @@ function ContactUs() {
       return;
     }
     try {
-      const response = await axios.post("http://52.8.59.14:1600/contact", user);
+      const response = await axios.post(
+        "http://54.183.54.164:1600/contact",
+        user
+      );
       if (response.status === 200) {
         alert("Message sent successfully!");
         setUser({

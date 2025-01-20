@@ -8,6 +8,7 @@ import {
   faMagnifyingGlass,
   faArrowLeft,
   faArrowRight,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -33,7 +34,7 @@ function CustomerAccount() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -66,7 +67,7 @@ function CustomerAccount() {
     if (validateForm()) {
       try {
         const response = await axios.put(
-          `http://52.8.59.14:1600/userupdate/${id}`,
+          `http://54.183.54.164:1600/userupdate/${id}`,
           user
         );
         setUser(response.data);
@@ -87,7 +88,9 @@ function CustomerAccount() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/dashboardsome/${1}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/dashboardsome/${1}`
+    );
     setUser(response.data[0]);
   };
 
@@ -116,7 +119,7 @@ function CustomerAccount() {
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://52.8.59.14:1600/getannounce");
+        let response = await axios.get("http://54.183.54.164:1600/getannounce");
         setPassword(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -143,7 +146,7 @@ function CustomerAccount() {
   let handleDelete = () => {
     axios.defaults.withCredentials = false;
     axios
-      .get("http://52.8.59.14:1600/logout")
+      .get("http://54.183.54.164:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           setAuth(false);
@@ -172,7 +175,7 @@ function CustomerAccount() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/alldata");
+    let response = await axios.get("http://54.183.54.164:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -180,11 +183,11 @@ function CustomerAccount() {
   return (
     <>
       <div className="container-fluid">
-        <div className="row align-items-center justify-content-between text-center mt-lg-2 mt-0 pt-0 pt-lg-1">
-          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-4 lorem-home">
+        <div className="row align-items-center justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
+          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-2 lorem-home mt-0">
             {password.length > 0 && (
-              <div className="d-block d-lg-block text-start">
-                <p className="mb-0 mt-3 mt-lg-0 me-md-3 free-shipping d-flex flex-row">
+              <div className="d-block d-lg-block text-start pt-1">
+                <p className="mb-0 mt-0 mt-lg-2 me-md-3 free-shipping d-flex flex-row">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
                     className="me-2 text-success fs-6 d-block d-lg-block mt-1"
@@ -197,24 +200,22 @@ function CustomerAccount() {
                     style={{ cursor: "pointer" }}
                     onClick={rightData}
                   />
-                  <div className="ms-0">
-                    {password[currentIndex]?.content || "No content available"}
-                  </div>
+                  <div className="ms-0">{password[currentIndex].content}</div>
                 </p>
               </div>
             )}
           </div>
 
-          <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
+          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
             {Array.isArray(detail) && detail.length > 0 ? (
               detail.slice(0, 1).map((data, key) => (
                 <div
-                  className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+                  className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1"
                   key={key}
                 >
-                  <div className="free-shipping d-flex flex-row me-3">
+                  <div className="free-shipping d-flex flex-row me-3 mt-2">
                     <span className="d-flex align-items-center gap-2">
-                      <div className="d-sm-flex ms-auto d-flex">
+                      <div className="d-sm-flex d-flex pt-1">
                         <Link to="/user/dashboard" className="nav-link">
                           {data.first_name ? (
                             <div
@@ -228,7 +229,7 @@ function CustomerAccount() {
                                 justifyContent: "center",
                                 alignItems: "center",
                               }}
-                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
+                              className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
                             >
                               {data.first_name.charAt(0).toUpperCase()}
                             </div>
@@ -241,20 +242,22 @@ function CustomerAccount() {
                           )}
                         </Link>
 
-                        <div className="d-flex flex-column me-4">
+                        <div className="d-flex flex-column me-0">
                           <span className="me-4 pe-2">
                             Hello {data.first_name || "User"}
                           </span>
                           <span className="ms-4">{data.email}</span>
                         </div>
 
-                        <Link to="/cart" className="nav-link d-flex mt-1">
+                        <Link to="/cart" className="nav-link d-flex mt-2">
                           <img
                             src={Cart}
                             alt="Cart"
                             className="img-fluid profile1 me-2"
                           />
-                          <div className="addcarts-lyte2 ms-3">{count}</div>
+                          <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
+                            {count}
+                          </div>
                         </Link>
                       </div>
                     </span>
@@ -262,33 +265,67 @@ function CustomerAccount() {
                 </div>
               ))
             ) : (
-              <div className="d-flex flex-column">
-                <span className="me-4 pe-2">Hello User</span>
-                <span className="ms-4">No profile available</span>
-              </div>
+              <Link className="text-decoration-none text-dark" to="/login">
+                <div className="d-flex align-items-end justify-content-end">
+                  <div
+                    style={{
+                      width: "38px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    className="profile-lyt img-fluid me-2 mb-1 border rounded-5 py-1 bg-light"
+                  >
+                    <FontAwesomeIcon icon={faUser} />
+                  </div>
+                  <div className="d-flex flex-column mt-2">
+                    <span className="text-start me-5">Hello User</span>
+                    <span className="text-start">
+                      <Link
+                        to="/login"
+                        className="text-decoration-none text-dark"
+                      >
+                        Login / Register
+                      </Link>
+                    </span>
+                  </div>
+                  <Link to="/cart" className="nav-link d-flex mb-2">
+                    <img
+                      src={Cart}
+                      alt="Cart"
+                      className="img-fluid profile1 me-2"
+                    />
+                    <div className="addcarts-lyte2 ms-3 mt-1 pt-2">{count}</div>
+                  </Link>
+                </div>
+              </Link>
             )}
           </div>
         </div>
 
-        <div className="container">
-          <div className="row d-flex justify-content-start text-center align-items-start mt-0">
+        <div className="container bg-light">
+          <div className="row d-flex justify-content-start text-center align-items-start mt-0 mb-lg-0 mb-2">
             <div className="col-12 col-md-8 d-flex align-items-center mb-4 mt-0 d-flex flex-row">
               <img
                 src={Tonic}
                 alt="404"
-                className="img-fluid me-3 me-md-0 mt-0 mt-lg-2"
+                className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
               />
 
-              <div className="input-welcome7 d-flex flex-row align-items-center mt-3">
+              <div className="input-welcome1 d-flex flex-row align-items-center mt-3 pt-4">
                 <input
                   type="search"
-                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-0"
+                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none border-end-0 me- pe-2"
                   placeholder="Search For Product"
+                  name="search"
+                  onChange={(e) => setSearch(e.target.value)}
                 />
 
-                <div className="d-lg-block d-none w-75 ">
+                <div className="d-lg-block d-none w-75">
                   <select
-                    className="form-select rounded-0 border-0 mt-3"
+                    className="form-select rounded-0 border-0 mt-3 border-start-0"
                     style={{ height: "49px" }}
                   >
                     <option value="All Categories">All Categories</option>
@@ -343,7 +380,7 @@ function CustomerAccount() {
                 </div>
 
                 <div className="d-flex d-lg-block d-none">
-                  <button className="ms-1 btn btn-success d-flex mt-3 py-4 px-3 rounded-0 justify-content-center align-items-center">
+                  <button className="ms-0 btn btn-success d-flex mt-3 py-4 px-3 rounded-0 justify-content-center align-items-center">
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
                   </button>
                 </div>
@@ -352,7 +389,7 @@ function CustomerAccount() {
           </div>
         </div>
 
-        <div className="container lorem-home d-none d-lg-block">
+        <div className="container lorem-home d-none d-lg-block bg-light pb-3">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div className="d-flex flex-column flex-md-row align-items-center mb-3 mb-md-0 ">
               <div className="dropdown d-inline-block">
@@ -436,10 +473,13 @@ function CustomerAccount() {
               <nav>
                 <ul className="nav-list d-flex flex-wrap mb-0 gap-3 gap-md-4">
                   <li className="nav-item">
-                    <Link to="/" className="nav-link fw-medium text-success">
-                      Home
-                    </Link>
+                    <div className="nav-link-wrapper">
+                      <Link to="/" className="nav-link fw-medium text-success">
+                        Home
+                      </Link>
+                    </div>
                   </li>
+
                   <li className="nav-item">
                     <Link to="/shop" className="nav-link fw-medium">
                       Shop
@@ -459,7 +499,7 @@ function CustomerAccount() {
 
                   <li className="nav-item">
                     <Link to="/contact-us" className="nav-link fw-medium">
-                      Contact Us
+                      Contact
                     </Link>
                   </li>
                 </ul>

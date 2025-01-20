@@ -20,7 +20,7 @@ function ProductPrices() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -184,7 +184,7 @@ function ProductPrices() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://52.8.59.14:1600/productsearch/${search}`,
+        `http://54.183.54.164:1600/productsearch/${search}`,
         user
       );
       setPrice(response.data);
@@ -197,7 +197,7 @@ function ProductPrices() {
   const [price, setPrice] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
+    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
     setPrice(response.data);
   };
 
@@ -226,7 +226,7 @@ function ProductPrices() {
       return;
     }
     try {
-      await axios.put(`http://52.8.59.14:1600/productpriceupdate/${id}`, {
+      await axios.put(`http://54.183.54.164:1600/productpriceupdate/${id}`, {
         cost,
         price: productPrice,
         price_sale,

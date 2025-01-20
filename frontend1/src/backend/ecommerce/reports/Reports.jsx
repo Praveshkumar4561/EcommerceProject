@@ -48,7 +48,7 @@ function Reports() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/customerget/${search}`
+      `http://54.183.54.164:1600/customerget/${search}`
     );
     setReport(response.data);
   };
@@ -56,7 +56,7 @@ function Reports() {
   let [report, setReport] = useState([]);
 
   let customerdata = async () => {
-    const response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    const response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setReport(response.data);
   };
 
@@ -188,7 +188,7 @@ function Reports() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -196,7 +196,7 @@ function Reports() {
   let [count1, setCount1] = useState("");
 
   let custometdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/alldata");
+    let response = await axios.get("http://54.183.54.164:1600/alldata");
     setCount1(response.data.length);
   };
   custometdata();
@@ -204,7 +204,7 @@ function Reports() {
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
+    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
     setCount2(response.data.length);
   };
   showdata();

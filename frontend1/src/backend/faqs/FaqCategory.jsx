@@ -101,25 +101,28 @@ function FaqCategory() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/faqsearchcategory/${search}`
+      `http://54.183.54.164:1600/faqsearchcategory/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/faqcategorydata");
+    let response = await axios.get("http://54.183.54.164:1600/faqcategorydata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://52.8.59.14:1600/faqcategorydelete/${id}`, user);
+    await axios.delete(
+      `http://54.183.54.164:1600/faqcategorydelete/${id}`,
+      user
+    );
     alert("data sucessfully deleted");
   };
 
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

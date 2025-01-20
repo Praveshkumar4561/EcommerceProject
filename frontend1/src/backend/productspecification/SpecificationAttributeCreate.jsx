@@ -21,7 +21,7 @@ function SpecificationAttributeCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -180,7 +180,10 @@ function SpecificationAttributeCreate() {
   let handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://52.8.59.14:1600/specificationattribute", user);
+      await axios.post(
+        "http://54.183.54.164:1600/specificationattribute",
+        user
+      );
       navigate("/admin/ecommerce/specification-attributes");
     } catch (error) {
       console.error("There was an error submitting the form:", error);
@@ -194,7 +197,9 @@ function SpecificationAttributeCreate() {
   let [list, setList] = useState("");
 
   const alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/spceficationdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/spceficationdata"
+    );
     setList(response.data);
   };
   alldata();
@@ -202,7 +207,9 @@ function SpecificationAttributeCreate() {
   let [creates, setCreates] = useState([]);
 
   const allatributedata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/spceficationdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/spceficationdata"
+    );
     setCreates(response.data);
   };
   allatributedata();

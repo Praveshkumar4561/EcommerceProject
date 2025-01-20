@@ -265,7 +265,7 @@ function ProductsEdit() {
     formData.append("label1", selectedLabels1 || "");
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/productupdate/${id}`,
+        `http://54.183.54.164:1600/productupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -310,7 +310,7 @@ function ProductsEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/productsomedata/${id}`
+      `http://54.183.54.164:1600/productsomedata/${id}`
     );
     setUser(response.data[0]);
   };
@@ -336,7 +336,7 @@ function ProductsEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -516,7 +516,9 @@ function ProductsEdit() {
 
   const attributedata = async () => {
     try {
-      let response = await axios.get("http://52.8.59.14:1600/attributesdata");
+      let response = await axios.get(
+        "http://54.183.54.164:1600/attributesdata"
+      );
       setCreate(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -558,7 +560,7 @@ function ProductsEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://52.8.59.14:1600/productpagedata?search=${search}`
+          `http://54.183.54.164:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -3674,7 +3676,7 @@ function ProductsEdit() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://52.8.59.14:1600/path/to/fallback-image.jpg")
+                                    "http://54.183.54.164:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -3733,7 +3735,7 @@ function ProductsEdit() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://52.8.59.14:1600/path/to/fallback-image.jpg")
+                                    "http://54.183.54.164:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />

@@ -22,7 +22,7 @@ function SpecificationGroup() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -182,7 +182,7 @@ function SpecificationGroup() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://52.8.59.14:1600/specificationsearch/${search}`,
+        `http://54.183.54.164:1600/specificationsearch/${search}`,
         user
       );
       setUser(response.data);
@@ -192,13 +192,15 @@ function SpecificationGroup() {
   };
 
   const alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/spceficationdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/spceficationdata"
+    );
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://52.8.59.14:1600/specificationdelete/${id}`,
+      `http://54.183.54.164:1600/specificationdelete/${id}`,
       user
     );
     alert("data deleted");

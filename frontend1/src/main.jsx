@@ -18,7 +18,7 @@ import Login from "./component/login/Login.jsx";
 import BlogPage from "./component/blogpage/BlogPage.jsx";
 import BlogDetails from "./component/blogdetails/BlogDetails.jsx";
 import Faqs from "./component/faqs/Faqs.jsx";
-import ErrorPage from "./component/Errorpage/ErrorPage.jsx";
+import ErrorPage from "./component/errorpage/ErrorPage.jsx";
 import ContactUs from "./component/contactus/ContactUs.jsx";
 import AddCart from "./component/addcart/AddCart.jsx";
 import User from "./User.jsx";

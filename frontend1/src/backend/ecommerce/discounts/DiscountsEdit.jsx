@@ -181,7 +181,7 @@ function DiscountsEdit() {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/discountupdate/${id}`,
+        `http://54.183.54.164:1600/discountupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -198,7 +198,7 @@ function DiscountsEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/discountsomedata/${id}`
+      `http://54.183.54.164:1600/discountsomedata/${id}`
     );
     setUser(response.data[0]);
   };
@@ -241,7 +241,7 @@ function DiscountsEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

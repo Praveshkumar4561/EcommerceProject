@@ -169,7 +169,7 @@ function CustomerEdit() {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://52.8.59.14:1600/somecustomerdata/${id}`
+          `http://54.183.54.164:1600/somecustomerdata/${id}`
         );
         setUser(response.data[0]);
       } catch (error) {
@@ -229,7 +229,7 @@ function CustomerEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/userupdate/${id}`,
+        `http://54.183.54.164:1600/userupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -274,7 +274,7 @@ function CustomerEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -282,7 +282,7 @@ function CustomerEdit() {
   let [wishList, setWishList] = useState([]);
 
   let wishlistdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/wishlistdata");
+    let response = await axios.get("http://54.183.54.164:1600/wishlistdata");
     setWishList(response.data);
   };
   wishlistdata();

@@ -72,20 +72,20 @@ function SimpleSliders() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://52.8.59.14:1600/searchslider/${search}`
+      `http://54.183.54.164:1600/searchslider/${search}`
     );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/sliderdata");
+    let response = await axios.get("http://54.183.54.164:1600/sliderdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://52.8.59.14:1600/slidersdelete/${id}`);
+      await axios.delete(`http://54.183.54.164:1600/slidersdelete/${id}`);
       alert("data deleted");
     } catch (error) {
       console.error("Error deleting data:", error);
@@ -114,7 +114,7 @@ function SimpleSliders() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

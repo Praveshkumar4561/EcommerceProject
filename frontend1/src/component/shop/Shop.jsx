@@ -46,7 +46,7 @@ function Shop() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -57,7 +57,7 @@ function Shop() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/productpagedata");
+    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
     setImage(response.data);
   };
 
@@ -71,7 +71,9 @@ function Shop() {
 
   let detailsdata = async () => {
     try {
-      let response = await axios.get("http://52.8.59.14:1600/productpagedata");
+      let response = await axios.get(
+        "http://54.183.54.164:1600/productpagedata"
+      );
       setDetail(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -92,7 +94,7 @@ function Shop() {
     }
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/addcart",
+        "http://54.183.54.164:1600/addcart",
         formData,
         {
           headers: {
@@ -111,7 +113,9 @@ function Shop() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/productlabelsdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/productlabelsdata"
+    );
     setLabel(response.data);
   };
   labeldata();
@@ -127,7 +131,7 @@ function Shop() {
     }
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/wishlistpost",
+        "http://54.183.54.164:1600/wishlistpost",
         formData
       );
       alert("Product successfully added to the wishlist");

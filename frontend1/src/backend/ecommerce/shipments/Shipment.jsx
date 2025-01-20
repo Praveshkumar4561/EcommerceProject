@@ -28,7 +28,7 @@ function Shipment() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -195,13 +195,13 @@ function Shipment() {
   let [shipment, setshipment] = useState([]);
 
   let shipmentdata = async () => {
-    const response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    const response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setshipment(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://52.8.59.14:1600/deleteorder1/${id}`);
+      await axios.delete(`http://54.183.54.164:1600/deleteorder1/${id}`);
       alert("Order deleted successfully");
     } catch (error) {
       console.error("Error deleting data:", error);

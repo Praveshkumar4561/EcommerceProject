@@ -188,7 +188,7 @@ function TestimonialEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -196,7 +196,9 @@ function TestimonialEdit() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await axios.get(`http://52.8.59.14:1600/sometest/${id}`);
+        let response = await axios.get(
+          `http://54.183.54.164:1600/sometest/${id}`
+        );
         const userData = response.data[0];
         setUser(userData);
         setEditorData2(userData.content || "");
@@ -288,7 +290,7 @@ function TestimonialEdit() {
 
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/updatetest/${id}`,
+        `http://54.183.54.164:1600/updatetest/${id}`,
         formData
       );
       if (response.status === 200) {

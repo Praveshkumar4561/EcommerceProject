@@ -178,19 +178,21 @@ function ProductOptions() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/searchproductoption/${search}`
+      `http://54.183.54.164:1600/searchproductoption/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/productoptiondata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/productoptiondata"
+    );
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://52.8.59.14:1600/deleteproductoptions/${id}`,
+      `http://54.183.54.164:1600/deleteproductoptions/${id}`,
       user
     );
     alert("data sucessfully deleted");
@@ -199,7 +201,7 @@ function ProductOptions() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

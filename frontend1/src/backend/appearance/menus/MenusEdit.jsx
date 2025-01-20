@@ -176,7 +176,7 @@ function MenusEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/menusupdate/${id}`,
+        `http://54.183.54.164:1600/menusupdate/${id}`,
         user
       );
       if (response.status === 200) {
@@ -196,7 +196,9 @@ function MenusEdit() {
   }, []);
 
   let somedata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/menusomedata/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/menusomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 
@@ -223,7 +225,7 @@ function MenusEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

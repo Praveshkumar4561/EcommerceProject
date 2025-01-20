@@ -25,7 +25,7 @@ function AboutUsPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -63,7 +63,7 @@ function AboutUsPage() {
     let showdata = async () => {
       try {
         let response = await axios.get(
-          "http://52.8.59.14:1600/gettestimonials"
+          "http://54.183.54.164:1600/gettestimonials"
         );
         setUser(response.data);
       } catch (error) {

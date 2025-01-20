@@ -59,7 +59,7 @@ function BlogPostEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -222,7 +222,7 @@ function BlogPostEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://52.8.59.14:1600/blogpostupdate/${id}`,
+        `http://54.183.54.164:1600/blogpostupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -247,7 +247,9 @@ function BlogPostEdit() {
   }, []);
 
   let blogpostsdata = async () => {
-    let response = await axios.get(`http://52.8.59.14:1600/blogsomedata/${id}`);
+    let response = await axios.get(
+      `http://54.183.54.164:1600/blogsomedata/${id}`
+    );
     setUser(response.data[0]);
   };
 

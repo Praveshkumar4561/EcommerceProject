@@ -19,7 +19,7 @@ function SpecificationEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -192,7 +192,10 @@ function SpecificationEdit() {
       return;
     }
     try {
-      await axios.put(`http://52.8.59.14:1600/spceficationupdate/${id}`, user);
+      await axios.put(
+        `http://54.183.54.164:1600/spceficationupdate/${id}`,
+        user
+      );
       setErrors({});
       navigate("/admin/ecommerce/specification-groups");
     } catch (error) {
@@ -210,7 +213,7 @@ function SpecificationEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://52.8.59.14:1600/spceficationdatasome/${id}`
+      `http://54.183.54.164:1600/spceficationdatasome/${id}`
     );
     setUser(response.data[0]);
   };

@@ -176,7 +176,7 @@ function MenusCreate() {
   let handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/menusubmit",
+        "http://54.183.54.164:1600/menusubmit",
         user
       );
       if (response.status === 200) {
@@ -212,7 +212,7 @@ function MenusCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/checkoutdata");
+    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();

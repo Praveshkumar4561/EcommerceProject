@@ -12,6 +12,7 @@ import {
   faArrowRight,
   faCartShopping,
   faHeart,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import Panic from "../../assets/Panic Attacks.webp";
 import { Link, useNavigate } from "react-router-dom";
@@ -49,7 +50,7 @@ function HomePage() {
     const faqdata = async () => {
       try {
         const response = await axios.get(
-          "http://52.8.59.14:1600/pagesdatafaqs"
+          "http://54.183.54.164:1600/pagesdatafaqs"
         );
         setFaqs(response.data);
       } catch (error) {
@@ -66,7 +67,7 @@ function HomePage() {
   useEffect(() => {
     const showdata = async () => {
       try {
-        let answer = await axios.get("http://52.8.59.14:1600/blogpostdata");
+        let answer = await axios.get("http://54.183.54.164:1600/blogpostdata");
         setBlog(answer.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -98,7 +99,7 @@ function HomePage() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://52.8.59.14:1600/getannounce");
+      let response = await axios.get("http://54.183.54.164:1600/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -119,7 +120,7 @@ function HomePage() {
   let [detail, setDetail] = useState([]);
 
   let userdata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/alldata");
+    let response = await axios.get("http://54.183.54.164:1600/alldata");
     setDetail(response.data);
   };
   userdata();
@@ -132,7 +133,7 @@ function HomePage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://52.8.59.14:1600/allcartdata");
+      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -144,7 +145,9 @@ function HomePage() {
 
   let homedata = async () => {
     try {
-      let response = await axios.get("http://52.8.59.14:1600/productpagedata");
+      let response = await axios.get(
+        "http://54.183.54.164:1600/productpagedata"
+      );
       setProduct(response.data);
     } catch (error) {
       console.error("Error occurred", error);
@@ -155,7 +158,9 @@ function HomePage() {
   let [label, setLabel] = useState([]);
 
   let labeldata = async () => {
-    let response = await axios.get("http://52.8.59.14:1600/productlabelsdata");
+    let response = await axios.get(
+      "http://54.183.54.164:1600/productlabelsdata"
+    );
     setLabel(response.data);
   };
   labeldata();
@@ -175,7 +180,7 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/addcart",
+        "http://54.183.54.164:1600/addcart",
         formData,
         {
           headers: {
@@ -202,7 +207,7 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://52.8.59.14:1600/wishlistpost",
+        "http://54.183.54.164:1600/wishlistpost",
         formData
       );
       alert("Product successfully added to the wishlist");
@@ -215,10 +220,10 @@ function HomePage() {
     <>
       <div className="container-fluid">
         <div className="row align-items-center justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
-          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-2 lorem-home mt-2">
+          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-2 lorem-home mt-0">
             {user.length > 0 && (
-              <div className="d-block d-lg-block text-start">
-                <p className="mb-0 mt-0 mt-lg-3 me-md-3 free-shipping d-flex flex-row">
+              <div className="d-block d-lg-block text-start pt-1">
+                <p className="mb-0 mt-0 mt-lg-2 me-md-3 free-shipping d-flex flex-row">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
                     className="me-2 text-success fs-6 d-block d-lg-block mt-1"
@@ -237,16 +242,16 @@ function HomePage() {
             )}
           </div>
 
-          <div className="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
+          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
             {Array.isArray(detail) && detail.length > 0 ? (
               detail.slice(0, 1).map((data, key) => (
                 <div
-                  className="d-flex align-items-center gap-3 float-lg-end d-none d-lg-block"
+                  className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1"
                   key={key}
                 >
                   <div className="free-shipping d-flex flex-row me-3 mt-2">
                     <span className="d-flex align-items-center gap-2">
-                      <div className="d-sm-flex ms-auto d-flex">
+                      <div className="d-sm-flex d-flex pt-1">
                         <Link to="/user/dashboard" className="nav-link">
                           {data.first_name ? (
                             <div
@@ -260,7 +265,7 @@ function HomePage() {
                                 justifyContent: "center",
                                 alignItems: "center",
                               }}
-                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1 bg-success"
+                              className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
                             >
                               {data.first_name.charAt(0).toUpperCase()}
                             </div>
@@ -273,7 +278,7 @@ function HomePage() {
                           )}
                         </Link>
 
-                        <div className="d-flex flex-column me-4">
+                        <div className="d-flex flex-column me-0">
                           <span className="me-4 pe-2">
                             Hello {data.first_name || "User"}
                           </span>
@@ -286,7 +291,7 @@ function HomePage() {
                             alt="Cart"
                             className="img-fluid profile1 me-2"
                           />
-                          <div className="addcarts-lyte2 ms-3 mt-3">
+                          <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
                             {count}
                           </div>
                         </Link>
@@ -296,7 +301,42 @@ function HomePage() {
                 </div>
               ))
             ) : (
-              <div></div>
+              <Link className="text-decoration-none text-dark" to="/login">
+                <div className="d-flex align-items-end justify-content-end">
+                  <div
+                    style={{
+                      width: "38px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    className="profile-lyt img-fluid me-2 mb-1 border rounded-5 py-1 bg-light"
+                  >
+                    <FontAwesomeIcon icon={faUser} />
+                  </div>
+                  <div className="d-flex flex-column mt-2">
+                    <span className="text-start me-5">Hello User</span>
+                    <span className="text-start">
+                      <Link
+                        to="/login"
+                        className="text-decoration-none text-dark"
+                      >
+                        Login / Register
+                      </Link>
+                    </span>
+                  </div>
+                  <Link to="/cart" className="nav-link d-flex mb-2">
+                    <img
+                      src={Cart}
+                      alt="Cart"
+                      className="img-fluid profile1 me-2"
+                    />
+                    <div className="addcarts-lyte2 ms-3 mt-1 pt-2">{count}</div>
+                  </Link>
+                </div>
+              </Link>
             )}
           </div>
         </div>
@@ -310,18 +350,18 @@ function HomePage() {
                 className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
               />
 
-              <div className="input-welcome1 d-flex flex-row align-items-center mt-3">
+              <div className="input-welcome1 d-flex flex-row align-items-center mt-1">
                 <input
                   type="search"
-                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none me-0"
+                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none border-end-0 me- pe-2"
                   placeholder="Search For Product"
                   name="search"
                   onChange={(e) => setSearch(e.target.value)}
                 />
 
-                <div className="d-lg-block d-none w-75 ">
+                <div className="d-lg-block d-none w-75">
                   <select
-                    className="form-select rounded-0 border-0 mt-3"
+                    className="form-select rounded-0 border-0 mt-3 border-start-0"
                     style={{ height: "49px" }}
                   >
                     <option value="All Categories">All Categories</option>

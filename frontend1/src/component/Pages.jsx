@@ -13,7 +13,7 @@ const Page = () => {
     const fetchPageData = async () => {
       try {
         const response = await axios.get(
-          `http://52.8.59.14:1600/page-seo/${id}`
+          `http://54.183.54.164:1600/page-seo/${id}`
         );
         setPageData(response.data);
       } catch (error) {
@@ -40,7 +40,7 @@ const Page = () => {
         <meta property="og:image" content={pageData.og_image} />
         <meta
           property="og:url"
-          content={`http://52.8.59.14:1600/page-seo/${id}`}
+          content={`http://54.183.54.164:1600/page-seo/${id}`}
         />
       </Helmet>
       <h1>{pageData.title}</h1>
