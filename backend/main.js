@@ -19,7 +19,7 @@ const salt = 10;
 
 app.use(
   cors({
-    origin: "http://52.8.59.14",
+    origin: "http://54.183.54.164",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -3496,7 +3496,7 @@ const transporter = nodemailer.createTransport({
 });
 
 function sendResetPasswordEmail(email, resetToken) {
-  const resetLink = `http://localhost:5173/admin/password/reset-password?token=${resetToken}`;
+  const resetLink = `http://54.183.54.164:5173/admin/password/reset-password?token=${resetToken}`;
   const mailOptions = {
     from: "pkumar@jainya.com",
     to: email,
