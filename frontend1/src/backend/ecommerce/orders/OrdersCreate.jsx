@@ -32,7 +32,7 @@ function OrdersCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://54.183.54.164:1600/productpagedata?search=${search}`
+          `http://89.116.170.231:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -84,7 +84,7 @@ function OrdersCreate() {
   let togglespecification = () => {
     setSpecifcation(!Specification);
   };
-  x;
+
   const routes = {
     "/admin/welcome": "# Dashboard",
     "/admin/pages": "# Pages",
@@ -125,6 +125,9 @@ function OrdersCreate() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -171,7 +174,7 @@ function OrdersCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -207,7 +210,7 @@ function OrdersCreate() {
   const customerData = async () => {
     try {
       const response = await axios.get(
-        "/http://54.183.54.164:1600customersdata"
+        "http://89.116.170.231:1600/customersdata"
       );
       setCustomers(response.data);
     } catch (error) {
@@ -252,11 +255,13 @@ function OrdersCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1310,9 +1315,9 @@ function OrdersCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1338,9 +1343,9 @@ function OrdersCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1366,9 +1371,9 @@ function OrdersCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2175,7 +2180,7 @@ function OrdersCreate() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://54.183.54.164:1600/path/to/fallback-image.jpg")
+                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />

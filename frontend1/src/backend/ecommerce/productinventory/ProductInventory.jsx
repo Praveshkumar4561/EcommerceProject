@@ -19,7 +19,7 @@ function ProductInventory() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -57,7 +57,6 @@ function ProductInventory() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -76,13 +75,10 @@ function ProductInventory() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -90,8 +86,10 @@ function ProductInventory() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -181,7 +179,7 @@ function ProductInventory() {
 
   const searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/productsearch/${search}`
+      `http://89.116.170.231:1600/productsearch/${search}`
     );
     setUser(Array.isArray(response.data) ? response.data : []);
   };
@@ -189,7 +187,9 @@ function ProductInventory() {
   let [user, setUser] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
+    let response = await axios.get(
+      "http://89.116.170.231:1600/productpagedata"
+    );
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
@@ -212,17 +212,27 @@ function ProductInventory() {
       minimumorder: updatedUser.minimumorder,
     };
     try {
-      console.log("Sending PUT request with data:", updatedData);
       const response = await axios.put(
-        `http://54.183.54.164:1600/productinventory/${id}`,
+        `http://89.116.170.231:1600/productinventory/${id}`,
         updatedData
       );
-      alert("Data updated successfully");
+      toast.success("Data updated successfully", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error(
-        "Error updating product inventory:",
-        error.response ? error.response.data : error.message
-      );
+      toast.error("Data is not updated", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -244,11 +254,13 @@ function ProductInventory() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1333,9 +1345,9 @@ function ProductInventory() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1361,9 +1373,9 @@ function ProductInventory() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1389,9 +1401,9 @@ function ProductInventory() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"

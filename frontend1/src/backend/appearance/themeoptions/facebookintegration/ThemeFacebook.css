@@ -662,13 +662,13 @@ input[type="search"] {
   top: 1rem;
 }
 
-.custom-changes1 {
-  position: relative;
-  bottom: 0.9rem;
-}
-.button-change {
+.custom-faceboook {
   position: relative;
   bottom: 0.6rem;
+}
+.button-facebook-change {
+  position: relative;
+  bottom: 0.4rem;
 }
 
 .image-admin1 {
@@ -805,4 +805,22 @@ input[type="search"] {
   .theme-appearance1 {
     font-size: 0.65rem;
   }
+}
+
+.facebook-integrate {
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 768px) {
+  .facebook-integrate {
+    width: 100%;
+    max-width: 100%;
+  }
+  .facebook-integrate1 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+.facebook-admins {
+  cursor: pointer;
 }

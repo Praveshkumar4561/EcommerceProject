@@ -180,7 +180,7 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
-  bottom: 42%;
+  bottom: 32%;
 }
 
 #container-contact1 {
@@ -541,7 +541,6 @@ body {
   letter-spacing: 1px;
 }
 
-
 .green {
   width: 1rem;
   height: 1rem;
@@ -559,7 +558,6 @@ body {
   transform: translateX(-50%);
   cursor: pointer;
 }
-
 
 .about-image {
   width: 59.57px;

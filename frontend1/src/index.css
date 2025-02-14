@@ -1,0 +1,39 @@
+:root {
+  --font-family: Arial, sans-serif, Verdana, Courier, "SanDiego";
+  --body-font-size: 16px;
+  --h1-font-size: 36px;
+  --h2-font-size: 32px;
+  --h3-font-size: 28px;
+  --h4-font-size: 24px;
+  --h5-font-size: 20px;
+  --h6-font-size: 16px;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--body-font-size);
+}
+
+h1 {
+  font-size: var(--h1-font-size);
+}
+
+h2 {
+  font-size: var(--h2-font-size);
+}
+
+h3 {
+  font-size: var(--h3-font-size);
+}
+
+h4 {
+  font-size: var(--h4-font-size);
+}
+
+h5 {
+  font-size: var(--h5-font-size);
+}
+
+h6 {
+  font-size: var(--h6-font-size);
+}

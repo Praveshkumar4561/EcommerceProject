@@ -1,19 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ThemePage.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Page from "../../../../assets/pagen.webp";
 
 function ThemePage() {
   const [query, setQuery] = useState("");
@@ -72,6 +75,9 @@ function ThemePage() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -115,21 +121,21 @@ function ThemePage() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState(
+    localStorage.getItem("errorPageImage") || null
+  );
+  const [tempImage, setTempImage] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newImage = reader.result;
+        setTempImage(newImage);
+      };
+      reader.readAsDataURL(file);
     }
-  };
-
-  const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -178,11 +184,131 @@ function ThemePage() {
 
   let [count5, setCount5] = useState(0);
 
-  let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
-    setCount5(response.data.length);
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  });
+
+  const [selectedHomepage, setSelectedHomepage] = useState(null);
+
+  const [pageSettings, setPageSettings] = useState({
+    homepage: "",
+    aboutpage: "",
+    shop: "",
+    blog: "",
+    contactus: "",
+    faqs: "",
+  });
+
+  useEffect(() => {
+    const fetchPageSettings = async () => {
+      try {
+        const response = await fetch("http://89.116.170.231:1600/get-homepage");
+        const data = await response.json();
+        if (data.homepageSettings) {
+          setPageSettings(data.homepageSettings);
+        }
+      } catch (error) {
+        console.error("Error fetching homepage settings:", error);
+      }
+    };
+    fetchPageSettings();
+  }, []);
+
+  const handleChanges = (e) => {
+    const { name, value } = e.target;
+    setPageSettings((prevSettings) => ({
+      ...prevSettings,
+      [name]: value,
+    }));
+    setSelectedHomepage(value);
+    localStorage.setItem("selectedHomepage", value);
   };
-  orderdata();
+
+  const handleSaveChanges = async () => {
+    let isHomepageUpdated = true;
+    let isImageUpdated = false;
+    if (!pageSettings.homepage) {
+      toast.error("Please select a homepage before saving.", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+    const previousHomepage = selectedHomepage;
+    try {
+      const response = await fetch("http://89.116.170.231:1600/save-homepage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pageSettings),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save page settings");
+      }
+      const data = await response.json();
+      console.log("Page settings saved successfully:", data);
+      if (
+        previousHomepage &&
+        previousHomepage !== data.homepageSettings.homepage
+      ) {
+        isHomepageUpdated = true;
+      }
+      if (tempImage && tempImage !== localStorage.getItem("errorPageImage")) {
+        setImageUrl(tempImage);
+        localStorage.setItem("errorPageImage", tempImage);
+        isImageUpdated = true;
+      }
+      setPageSettings(data.homepageSettings);
+      setSelectedHomepage(data.homepageSettings.homepage);
+      if (isHomepageUpdated) {
+        toast.success("Homepage updated successfully!", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+      if (isImageUpdated) {
+        toast.success("404 Image updated successfully!", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.error("Error saving page settings:", error);
+      toast.error("Failed to save settings. Please try again.", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let [user, setUser] = useState([]);
+
+  useEffect(() => {
+    let alldata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/pagesdata");
+      setUser(response.data);
+    };
+    alldata();
+  });
 
   return (
     <>
@@ -202,11 +328,13 @@ function ThemePage() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1290,9 +1418,9 @@ function ThemePage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1318,9 +1446,9 @@ function ThemePage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1346,9 +1474,9 @@ function ThemePage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2119,7 +2247,7 @@ function ThemePage() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
           <nav className="nav flex-column bg-light general-theme pt-2 ps-2 ps-lg-0">
@@ -2501,32 +2629,60 @@ function ThemePage() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border rounded-0 ms-0 mb-3 mb-lg-0">
           <div className="d-flex justify-content-end mt-2 mt-lg-0">
-            <button className="btn btn-success button-change1 py-4 mt-4 mt-lg-2 me-2 border d-flex">
+            <button
+              className="btn btn-success button-change1-theme py-4 mt-4 mt-lg-2 ms-2 me-2 border d-flex"
+              onClick={handleSaveChanges}
+            >
               Save Changes
             </button>
           </div>
-          <hr className="custom-changes2 mt-3" />
-          <form className="content-form-page ms-3 me-3">
+          <hr className="custom-changes2 mt-0" />
+          <form className="content-form-page-theme ms-3 me-3 w-100">
             <div className="mb-4">
-              <div className="mt-4 pt-3">
+              <div className="mt-0 pt-0 position-relative">
                 <h6 className="mb-3 mt-2 mt-lg-0">404 page image</h6>
+
                 <div
-                  className="image-placeholder image-admin"
+                  className="image-placeholder image-admin position-relative"
                   onClick={() => document.getElementById("fileInput").click()}
+                  style={{ width: "200px", height: "150px" }}
                 >
-                  {imageUrl ? (
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    className="position-absolute top-0 end-0 bg-secondary text-white rounded-circle p-1 me-2 mt-2"
+                    style={{
+                      cursor: "pointer",
+                      fontSize: "16px",
+                      right: "-8px",
+                      top: "-8px",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      localStorage.removeItem("errorPageImage");
+                      setTempImage(null);
+                      setImageUrl(null);
+                    }}
+                  />
+
+                  {tempImage ? (
+                    <img
+                      alt="Uploaded preview"
+                      src={tempImage}
+                      className="w-100 h-100 rounded-1"
+                    />
+                  ) : imageUrl ? (
                     <img
                       alt="Uploaded preview"
                       src={imageUrl}
-                      width="100"
-                      height="100"
+                      className="w-100 h-100 rounded-1"
                     />
                   ) : (
-                    <img src={Cutting} alt="404" className="w-75 h-75" />
+                    <img src={Page} alt="404" className="w-100 h-100" />
                   )}
                 </div>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -2534,6 +2690,7 @@ function ThemePage() {
                   style={{ display: "none" }}
                   onChange={handleFileChange}
                 />
+
                 <Link
                   className="ms-2 text-decoration-none choose-url"
                   to="#"
@@ -2542,68 +2699,56 @@ function ThemePage() {
                   Choose image <br />
                 </Link>
                 <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
+                <Link to="#" className="text-decoration-none choose-url">
                   Add from URL
                 </Link>
               </div>
 
-              <label className="form-label mt-2" htmlFor="date-format">
-                Your homepage displays
-              </label>
-
-              <select
-                className="form-select label-hotline4"
-                id="date-format"
-                style={{ height: "50px" }}
-              >
-                <option value="">Select an option</option>
-                <option value="Home">Home</option>
-                <option value="Categories">Categories</option>
-                <option value="Brands">Brands</option>
-                <option value="Coupons">Coupons</option>
-                <option value="Blog">Blog</option>
-                <option value="Contact">Contact</option>
-                <option value="FAQs">FAQs</option>
-                <option value="Cookie Policy">Cookie Policy</option>
-                <option value="Our Story">Our Story</option>
-                <option value="Careers">Careers</option>
-                <option value="Shipping">Shipping</option>
-                <option value="Coming Soon">Coming Soon</option>
-                <option value="Return Policy">Return Policy</option>
-              </select>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor="show-site-name">
-                Galleries page
-              </label>
-              <select
-                className="form-select label-hotline4"
-                id="show-site-name"
-                style={{ height: "50px" }}
-              >
-                <option value="">Select an option</option>
-                <option value="Home">Home</option>
-                <option value="Categories">Categories</option>
-                <option value="Brands">Brands</option>
-                <option value="Coupons">Coupons</option>
-                <option value="Blog">Blog</option>
-                <option value="Contact">Contact</option>
-                <option value="FAQs">FAQs</option>
-                <option value="Cookie Policy">Cookie Policy</option>
-                <option value="Our Story">Our Story</option>
-                <option value="Careers">Careers</option>
-                <option value="Shipping">Shipping</option>
-                <option value="Coming Soon">Coming Soon</option>
-                <option value="Return Policy">Return Policy</option>
-              </select>
+              <div className="error-backend">
+                <label className="form-label mt-2" htmlFor="date-format">
+                  Your homepage displays
+                </label>
+                {Array.isArray(user) && user.length > 0 ? (
+                  user.slice(0, 1).map((data, key) => (
+                    <div key={key}>
+                      <select
+                        className="form-select ms-2 error-backend"
+                        style={{ height: "50px" }}
+                        name="homepage"
+                        value={pageSettings.homepage}
+                        onChange={handleChanges}
+                      >
+                        <option value="">Select an option</option>
+                        <option value="home">Home</option>
+                        <option value="about">About</option>
+                        <option value="shop">Shop</option>
+                        <option value="blog">Blog</option>
+                        <option value="contact-us">Contact Us</option>
+                        <option value="faqs">Faqs</option>
+                        {user.length > 0 ? (
+                          user.map((item) => {
+                            console.log("Item:", item);
+                            console.log("Item title:", item.title);
+                            return (
+                              <option key={item.id} value={item.name}>
+                                {item.name}
+                              </option>
+                            );
+                          })
+                        ) : (
+                          <option disabled></option>
+                        )}
+                      </select>
+                    </div>
+                  ))
+                ) : (
+                  <p></p>
+                )}
+              </div>
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

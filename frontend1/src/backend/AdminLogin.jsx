@@ -60,7 +60,7 @@ function AdminLogin() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/adminlogin",
+        "http://89.116.170.231:1600/adminlogin",
         {
           username,
           password,

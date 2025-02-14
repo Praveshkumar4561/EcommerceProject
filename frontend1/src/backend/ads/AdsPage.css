@@ -157,3 +157,10 @@ body {
     margin-top: -1.2rem;
   }
 }
+
+.pointer-click {
+  cursor: pointer;
+}
+.editor-ads {
+  color: #f76707;
+}

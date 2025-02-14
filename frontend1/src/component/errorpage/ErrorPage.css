@@ -14,11 +14,9 @@ body {
   position: relative;
 }
 
-
-
 #container-custom {
   width: 100vw;
-  height: 180px;
+  height: 190px;
   background-color: #f2f5f7;
   display: flex;
   align-items: center;
@@ -120,10 +118,12 @@ body {
   .navbar-collapse {
     display: none;
   }
-  .hamburger-image {
+  .hamburger-images {
     position: relative;
     bottom: 0.9rem;
-    right: -2rem;
+    left: 55%;
+    width: 100%;
+    max-width: 15%;
   }
   .navbar-icons {
     position: absolute;
@@ -132,6 +132,36 @@ body {
   }
   .addcarts {
     margin-top: -1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hamburger-images {
+    position: relative;
+    bottom: 0.9rem;
+    left: 53%;
+    width: 100%;
+    max-width: 15%;
+  }
+}
+
+@media (max-width: 450px) {
+  .hamburger-images {
+    position: relative;
+    bottom: 0.9rem;
+    left: 59%;
+    width: 100%;
+    max-width: 15%;
+  }
+}
+
+@media (max-width: 380px) {
+  .hamburger-images {
+    position: relative;
+    bottom: 0.9rem;
+    left: 65%;
+    width: 100%;
+    max-width: 15%;
   }
 }
 
@@ -180,7 +210,7 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
-  bottom: 42%;
+  bottom: 32%;
 }
 
 #container-contact1 {
@@ -272,7 +302,7 @@ body {
   font-size: 1.7rem;
   font-weight: 700;
   line-height: 1.5;
-  margin-top: -2.8rem;
+  /* margin-top: -2.8rem; */
   font-family: "SanDiego";
 }
 

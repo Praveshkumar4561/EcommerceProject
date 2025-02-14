@@ -10,7 +10,6 @@ import Cash from "../../assets/Cash.webp";
 import Hoursupport from "../../assets/hoursupport.webp";
 import Quality from "../../assets/quality.webp";
 import Cart from "../../assets/Cart.svg";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -25,7 +24,9 @@ function AboutUsPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -63,7 +64,7 @@ function AboutUsPage() {
     let showdata = async () => {
       try {
         let response = await axios.get(
-          "http://54.183.54.164:1600/gettestimonials"
+          "http://89.116.170.231:1600/gettestimonials"
         );
         setUser(response.data);
       } catch (error) {
@@ -81,15 +82,95 @@ function AboutUsPage() {
     setIndex((previndex) => (previndex < user.length - 1 ? previndex + 1 : 0));
   };
 
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
+  let [about, setAbout] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setAbout(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
   return (
     <>
-      <div className="container" id="container-custom">
-        <div className="container-custom ms-3">
+      <div
+        className="container"
+        id="container-custom"
+        style={{
+          backgroundColor:
+            about?.background_color ||
+            (about?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: about?.background_image
+            ? `url(/api/src/image/${about.background_image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: about?.breadcrumb_height
+            ? `${about.breadcrumb_height}px`
+            : "190px",
+        }}
+      >
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
 
                 <button
@@ -103,12 +184,12 @@ function AboutUsPage() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
 
-                <div className="navbar-collapse">
+                <div className="navbar-collapse d-none d-lg-block">
                   <ul className="navbar-nav ms-auto cart-cart">
                     <li className="nav-item">
                       <Link className="nav-link" to="/">
@@ -120,18 +201,14 @@ function AboutUsPage() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -143,30 +220,35 @@ function AboutUsPage() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
                       className="img-fluid profiles1 mt-1"
                     />
-                    <div className="addcarts ms-1 ps-1 pt-0 pt-xxl-1 pt-xl-1">
-                      {count}
-                    </div>
+                    <div className="addcarts ms-1 ps-1 pt-lg-1">{count}</div>
                   </Link>
                 </div>
               </div>
             </nav>
 
             {isDropdownOpen && (
-              <div className="custom-dropdown rounded-0" ref={dropdownRef}>
+              <div
+                className="custom-dropdown cart-cart rounded-0"
+                ref={dropdownRef}
+              >
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/">
@@ -178,18 +260,14 @@ function AboutUsPage() {
                       Shop
                     </Link>
                   </li>
+
                   <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/blog-details">
+                    <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart-page">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -203,31 +281,45 @@ function AboutUsPage() {
             )}
           </header>
 
-          <main className="container mt-5 lorem-about cart-cart">
-            <h1
-              className="fw-medium mb-3 text-center container-contact fs-2"
-              style={{ position: "relative", zIndex: "1000" }}
-            >
-              About Us
-            </h1>
-            <nav aria-label="breadcrumb" id="container-contact1">
-              <ol className="breadcrumb d-flex flex-wrap gap-0">
-                <li
-                  className="breadcrumb-item navbar-item fw-medium"
-                  style={{ position: "relative", zIndex: "1000" }}
-                >
-                  <Link target="blank" to="/" className="text-dark">
-                    Home
-                  </Link>
-                </li>
-                <li
-                  className="breadcrumb-item navbar-item fw-medium text-dark"
-                  style={{ position: "relative", zIndex: "1000" }}
-                >
-                  About us
-                </li>
-              </ol>
-            </nav>
+          <main className="container mt-5 cart-cart">
+            {about?.enable_breadcrumb === "yes" &&
+              about?.breadcrumb_style !== "none" && (
+                <>
+                  {about?.hide_title !== "yes" && (
+                    <h1
+                      className={`fw-medium mb-3 text-center container-contact fs-2 container-style ${
+                        about?.breadcrumb_style === "without title"
+                          ? "d-none"
+                          : ""
+                      }`}
+                    >
+                      About Us
+                    </h1>
+                  )}
+
+                  <nav
+                    aria-label="breadcrumb"
+                    id="container-contact1"
+                    className={`ms-5 ps-3 ms-lg-0 ps-lg-0 ${
+                      about?.breadcrumb_style === "without title" ||
+                      about?.breadcrumb_style === "align start"
+                        ? "d-flex justify-content-start align-items-center w-50"
+                        : "d-flex justify-content-center align-items-center"
+                    }`}
+                  >
+                    <ol className="breadcrumb d-flex flex-wrap gap-0">
+                      <li className="breadcrumb-item navbar-item fw-medium">
+                        <Link target="_blank" to="/" className="text-dark">
+                          Home
+                        </Link>
+                      </li>
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                        About us
+                      </li>
+                    </ol>
+                  </nav>
+                </>
+              )}
           </main>
         </div>
       </div>

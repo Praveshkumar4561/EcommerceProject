@@ -4,7 +4,6 @@ import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import {
   faBell,
-  faCheck,
   faEnvelope,
   faMoon,
   faPenToSquare,
@@ -18,6 +17,8 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Testimonial() {
   let [user, setUser] = useState([]);
@@ -31,7 +32,7 @@ function Testimonial() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -62,7 +63,6 @@ function Testimonial() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -81,13 +81,10 @@ function Testimonial() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -95,8 +92,10 @@ function Testimonial() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -167,24 +166,39 @@ function Testimonial() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://54.183.54.164:1600/testifilter/${search}`
+      `http://89.116.170.231:1600/testifilter/${search}`
     );
     setUser(response.data);
   };
   serachbar();
 
   let showdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/gettestimonials");
+    let response = await axios.get(
+      "http://89.116.170.231:1600/gettestimonials"
+    );
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://54.183.54.164:1600/deletetest/${id}`);
-      alert("data deleted");
+      await axios.delete(`http://89.116.170.231:1600/deletetest/${id}`);
+      toast.success("Data successfully deleted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error deleting data:", error);
-      alert("Failed to delete data. Please try again.");
+      toast.error("Data is not deleted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -224,11 +238,13 @@ function Testimonial() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1313,9 +1329,9 @@ function Testimonial() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1341,9 +1357,9 @@ function Testimonial() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1369,9 +1385,9 @@ function Testimonial() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2238,16 +2254,7 @@ function Testimonial() {
                       Created At
                       <i className="fas fa-sort ms-1"></i>
                     </th>
-                    <th scope="col">
-                      <img
-                        src="https://shofy.botble.com/vendor/core/core/base/img/flags/us.svg"
-                        title="English"
-                        className="flag rounded-1 ms-"
-                        style={{ height: "16px" }}
-                        loading="lazy"
-                        alt="English flag"
-                      />
-                    </th>
+
                     <th scope="col" className="fw-normal">
                       Operations
                     </th>
@@ -2279,12 +2286,7 @@ function Testimonial() {
                           </span>
                         </td>
                         <td>{data.date}</td>
-                        <td>
-                          <FontAwesomeIcon
-                            icon={faCheck}
-                            className="text-primary ms-0"
-                          />
-                        </td>
+
                         <td style={{ whiteSpace: "nowrap" }}>
                           <button className="btn btn-edit me-2" type="button">
                             <Link to={`/admin/testimonials/edit/${data.id}`}>
@@ -2316,6 +2318,7 @@ function Testimonial() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

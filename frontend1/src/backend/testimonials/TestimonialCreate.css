@@ -479,3 +479,7 @@ input[type="search"] {
     margin-left: 9%;
   }
 }
+
+.ck-editor__editable {
+  min-height: 200px !important;
+}

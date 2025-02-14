@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import axios from "axios";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ function Login() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -31,7 +34,6 @@ function Login() {
   cartdata();
 
   const [registerErrors, setRegisterErrors] = useState({});
-  const [loginErrors, setLoginErrors] = useState({});
 
   const [registerUser, setRegisterUser] = useState({
     first_name: "",
@@ -46,11 +48,15 @@ function Login() {
     password: "",
   });
   const { email, password } = user;
-  const {} = registerUser;
+
+  const [loginErrors, setLoginErrors] = useState({});
+  const [auth, setAuth] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setLoginErrors({});
+
     if (!user.email || !user.password) {
       setLoginErrors({
         email: !user.email ? "Email is required" : "",
@@ -58,27 +64,68 @@ function Login() {
       });
       return;
     }
+
     try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const passwordToSend = storedUser?.password || user.password;
       const response = await axios.post(
-        "http://54.183.54.164:1600/login",
-        user,
-        {
-          withCredentials: true,
-        }
+        "http://89.116.170.231:1600/login",
+        { email: user.email, password: passwordToSend },
+        { withCredentials: true }
       );
-      if (response.data.Status === "Success") {
-        console.log("Login successful!");
+      if (response?.data?.Status === "Success" && response?.data?.user) {
+        const userData = response.data.user;
+        const tokenExpirationTime = response.data.tokenExpiration;
+        const userWithExpiration = {
+          ...userData,
+          tokenExpiration: tokenExpirationTime,
+        };
+        localStorage.setItem("user", JSON.stringify(userWithExpiration));
+        localStorage.setItem("auth", "true");
+        setAuth(true);
+        setMessage("Login successful!");
         navigate("/");
       } else {
-        alert(
-          response.data.Error || "You are entered wrong email and password"
-        );
+        console.warn("Login Failed:", response.data);
+        setLoginErrors({
+          general: response.data.Message || "Incorrect email or password.",
+        });
       }
     } catch (error) {
-      console.error("Error occurred during login:", error);
-      alert("You are entered wrong email and password");
+      console.error("Login Error:", error);
+      setLoginErrors({
+        general:
+          error.response?.data?.Message || "Incorrect email or password.",
+      });
     }
   };
+
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (storedUser && storedUser.tokenExpiration) {
+        console.log("Stored expiration:", storedUser.tokenExpiration);
+        console.log("Current time:", Date.now());
+        if (Date.now() > storedUser.tokenExpiration) {
+          console.log("Token expired. Logging out...");
+
+          localStorage.removeItem("user");
+          localStorage.removeItem("auth");
+
+          toast.error("Session expired. Please log in again.");
+
+          navigate("/login");
+        }
+      } else {
+        console.log("No tokenExpiration found in localStorage.");
+      }
+    };
+    checkTokenExpiration();
+    const timeoutid = setTimeout(() => {
+      checkTokenExpiration();
+    }, 10000);
+    return () => clearTimeout(timeoutid);
+  }, [navigate]);
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
@@ -99,16 +146,26 @@ function Login() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/submit",
+        "http://89.116.170.231:1600/submit",
         registerUser
       );
-      if (response.data.status === "success") {
-        navigate("/login");
-      }
-      alert("Registration successfully you can login");
+      toast.success("Registered successfully! you can login", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error occurred during registration", error);
-      alert("Error occurred during registration");
+      toast.error("Registered failed! you can try again", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -158,15 +215,95 @@ function Login() {
     setShows(!shows);
   };
 
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
+  let [cart, setCart] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setCart(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
   return (
     <>
-      <div className="container cart-cart" id="container-custom">
-        <div className="container-custom ms-3 ms-lg-0">
+      <div
+        className="container"
+        id="container-custom"
+        style={{
+          backgroundColor:
+            cart?.background_color ||
+            (cart?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: cart?.background_image
+            ? `url(/api/src/image/${cart.background_image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: cart?.breadcrumb_height
+            ? `${cart.breadcrumb_height}px`
+            : "190px",
+        }}
+      >
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
 
                 <button
@@ -180,13 +317,13 @@ function Login() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
 
                 <div className="navbar-collapse d-none d-lg-block">
-                  <ul className="navbar-nav ms-auto">
+                  <ul className="navbar-nav ms-auto cart-cart">
                     <li className="nav-item">
                       <Link className="nav-link" to="/">
                         Home
@@ -197,18 +334,14 @@ function Login() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -220,15 +353,19 @@ function Login() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
@@ -241,7 +378,10 @@ function Login() {
             </nav>
 
             {isDropdownOpen && (
-              <div className="custom-dropdown cart-cart" ref={dropdownRef}>
+              <div
+                className="custom-dropdown cart-cart rounded-0"
+                ref={dropdownRef}
+              >
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/">
@@ -253,18 +393,14 @@ function Login() {
                       Shop
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
+
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart-page">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -279,41 +415,53 @@ function Login() {
           </header>
 
           <main className="container mt-5 cart-cart">
-            <h1
-              className="fw-medium mb-3 text-center container-contact fs-2"
-              style={{ position: "relative", zIndex: "1000" }}
-            >
-              Login
-            </h1>
-            <nav aria-label="breadcrumb" id="container-contact1">
-              <ol
-                className="breadcrumb d-flex flex-wrap gap-0"
-                style={{ position: "relative", zIndex: "1000" }}
-              >
-                <li className="breadcrumb-item navbar-item fw-medium">
-                  <Link target="blank" to="/" className="text-dark">
-                    Home
-                  </Link>
-                </li>
-                <li className="breadcrumb-item navbar-item fw-medium">
-                  <Link to="/blog" className="text-dark">
-                    Pages
-                  </Link>
-                </li>
-                <li className="breadcrumb-item navbar-item fw-medium text-dark">
-                  Login
-                </li>
-              </ol>
-            </nav>
+            {cart?.enable_breadcrumb === "yes" &&
+              cart?.breadcrumb_style !== "none" && (
+                <>
+                  {cart?.hide_title !== "yes" && (
+                    <h1
+                      className={`fw-medium mb-3 text-center container-contact fs-2 container-style ${
+                        cart?.breadcrumb_style === "without title"
+                          ? "d-none"
+                          : ""
+                      }`}
+                    >
+                      Login
+                    </h1>
+                  )}
+
+                  <nav
+                    aria-label="breadcrumb"
+                    id="container-contact1"
+                    className={`ms-5 ps-3 ms-lg-0 ps-lg-0 ${
+                      cart?.breadcrumb_style === "without title" ||
+                      cart?.breadcrumb_style === "align start"
+                        ? "d-flex justify-content-start align-items-center w-50"
+                        : "d-flex justify-content-center align-items-center"
+                    }`}
+                  >
+                    <ol className="breadcrumb d-flex flex-wrap gap-0">
+                      <li className="breadcrumb-item navbar-item fw-medium">
+                        <Link target="_blank" to="/" className="text-dark">
+                          Home
+                        </Link>
+                      </li>
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                        Login
+                      </li>
+                    </ol>
+                  </nav>
+                </>
+              )}
           </main>
         </div>
       </div>
       <div></div>
 
       <div className="container-fluid cart-cart">
-        <div className="container">
-          <div className="row d-flex justify-content-start gap-0">
-            <div className="col-12 col-md-6 col-lg-5 mb-4 mb-lg-0">
+        <div className="container login-alignment">
+          <div className="row d-flex justify-content-start flex-md-nowrap flex-row gap-0 ">
+            <div className="col-12 col-md-6 col-lg-6 mb-4 mb-lg-0 login-alignment1">
               <div className="card w-100">
                 <div className="card-body border rounded-1">
                   <h3 className="card-title text-center login fw-medium">
@@ -342,19 +490,11 @@ function Login() {
                         </small>
                       )}
                     </div>
+
                     <div className="mb-4 text-start">
                       <label htmlFor="loginPassword" className="form-label">
                         Password
                       </label>
-                      {/* <input
-                        type="password"
-                        className="form-control py-4 address-register"
-                        id="loginPassword"
-                        placeholder="Password"
-                        name="password"
-                        value={password}
-                        onChange={handleLoginChange}
-                      /> */}
                       <input
                         type={shows ? "text" : "password"}
                         className="form-control py-4 address-register"
@@ -370,39 +510,44 @@ function Login() {
                         onClick={passwordshows}
                         style={{ cursor: "pointer", marginTop: "-23px" }}
                       />
-                      {/* <FontAwesomeIcon
-                        icon={show ? faEyeSlash : faEye}
-                        className="position-absolute translate-middle-y end-0 me-4 pe-2"
-                        onClick={passwordshow}
-                        style={{ cursor: "pointer", marginTop: "-23px" }}
-                      /> */}
                       {loginErrors.password && (
                         <small className="text-danger">
                           {loginErrors.password}
                         </small>
                       )}
+                      <div className="mt-1 pt-0">
+                        {loginErrors.general && (
+                          <div className="text-danger text-start mb-2 mt-0">
+                            {loginErrors.general}
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="d-flex justify-content-lg-center align-items-center">
+                    <div
+                      className="d-flex justify-content-lg-center align-items-center"
+                      style={{ display: "flex", justifyContent: "center" }}
+                    >
                       <button
                         type="submit"
-                        className="btn btn-success w-100 button-account d-flex py-4 cart-cart w-auto"
+                        className="btn btn-success button-account d-flex py-4 cart-cart w-100"
                       >
                         Sign In
                       </button>
                     </div>
                   </form>
+
                   <div className="text-center mt-3">
                     <p className="account1 text-dark cart-cart">
                       <Link
-                        to="/login"
+                        to={`/${url.login}`}
                         className="text-dark text-decoration-none me-2"
                       >
                         Don't have an account?
                       </Link>
 
                       <Link
-                        to="/login"
+                        to={`/${url.login}`}
                         className="account1 text-decoration-none cart-cart"
                       >
                         Create account
@@ -413,14 +558,14 @@ function Login() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-5">
-              <div className="card shadow-sm w-100 register">
+            <div className="col-12 col-md-6 col-lg-6">
+              <div className="card shadow-sm w-100 register mt-0 mt-lg-3 mt-md-3">
                 <div className="card-header text-center border rounded-2">
                   <h3 className="fw-lighter login">Register</h3>
                   <p className="account fw-medium text-dark">
                     Don't have an account?{" "}
                     <Link
-                      to="/login"
+                      to={`/${url.login}`}
                       className="text-dark text-decoration-none"
                     >
                       Register
@@ -518,7 +663,7 @@ function Login() {
                         Phone Number
                       </label>
                       <input
-                        type="tel"
+                        type="number"
                         className="form-control py-4 address-register cart-cart"
                         id="phoneNumber"
                         placeholder="Phone Number"
@@ -543,10 +688,13 @@ function Login() {
                         I agree to the Terms & Conditions
                       </label>
                     </div>
-                    <div className="d-flex justify-content-lg-center align-items-center">
+                    <div
+                      className="d-flex justify-content-lg-center align-items-center"
+                      style={{ display: "flex", justifyContent: "center" }}
+                    >
                       <button
                         type="submit"
-                        className="btn btn-success w-100 button-account d-flex py-4 cart-cart w-auto"
+                        className="btn btn-success w-100 button-account d-flex py-4 cart-cart"
                       >
                         Create Account
                       </button>
@@ -557,6 +705,7 @@ function Login() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">

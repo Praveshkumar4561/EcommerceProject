@@ -34,7 +34,9 @@ function CustomerAddressCreate() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -71,7 +73,7 @@ function CustomerAddressCreate() {
     if (validateForm()) {
       try {
         const response = await axios.post(
-          "http://54.183.54.164:1600/userdashboard",
+          "http://89.116.170.231:1600/userdashboard",
           user
         );
         setUser(response.data);
@@ -119,7 +121,7 @@ function CustomerAddressCreate() {
     }
 
     if (!state) {
-      formErrors.city = "city is required";
+      formErrors.city = "City is required";
       isValid = false;
     }
 
@@ -137,7 +139,7 @@ function CustomerAddressCreate() {
 
   useEffect(() => {
     const customerdata = async () => {
-      let response = await axios.get("http://54.183.54.164:1600/getannounce");
+      let response = await axios.get("http://89.116.170.231:1600/getannounce");
       setCustomer(response.data);
     };
     customerdata();
@@ -163,15 +165,18 @@ function CustomerAddressCreate() {
   const [message, setMessage] = useState("");
 
   let handleDelete = () => {
-    axios.defaults.withCredentials = false;
+    axios.defaults.withCredentials = true;
     axios
-      .get("http://54.183.54.164:1600/logout")
+      .get("http://89.116.170.231:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userDetails");
+          localStorage.removeItem("user");
+          localStorage.removeItem("auth");
           setAuth(false);
           setMessage("Logged out successfully!");
-          alert("Logged out successfully!");
-          navigate("/login");
+          navigate(`/${url.login}`);
         } else {
           setMessage(res.data.Error);
         }
@@ -184,11 +189,76 @@ function CustomerAddressCreate() {
 
   let [detail, setDetail] = useState([]);
 
-  let userdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/alldata");
-    setDetail(response.data);
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const isAuthenticated = localStorage.getItem("auth");
+      if (!storedUser || isAuthenticated !== "true") {
+        navigate("/login");
+      } else if (storedUser && storedUser.tokenExpiration) {
+        console.log("Stored expiration:", storedUser.tokenExpiration);
+        console.log("Current time:", Date.now());
+        if (Date.now() > storedUser.tokenExpiration) {
+          console.log("Token expired. Logging out...");
+          localStorage.removeItem("user");
+          localStorage.removeItem("auth");
+          toast.error("Session expired. Please log in again.");
+          navigate("/login");
+        } else {
+          setDetail(storedUser);
+          setAuth(true);
+        }
+      } else {
+        console.log("No tokenExpiration found in localStorage.");
+      }
+    };
+    checkTokenExpiration();
+    const intervalId = setInterval(checkTokenExpiration, 1000);
+    return () => clearInterval(intervalId);
+  }, [navigate]);
+
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
   };
-  userdata();
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
 
   return (
     <>
@@ -217,65 +287,73 @@ function CustomerAddressCreate() {
           </div>
 
           <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {Array.isArray(detail) && detail.length > 0 ? (
-              detail.slice(0, 1).map((data, key) => (
-                <div
-                  className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1"
-                  key={key}
-                >
-                  <div className="free-shipping d-flex flex-row me-3 mt-2">
-                    <span className="d-flex align-items-center gap-2">
-                      <div className="d-sm-flex d-flex pt-1">
-                        <Link to="/user/dashboard" className="nav-link">
-                          {data.first_name ? (
-                            <div
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                borderRadius: "50%",
-                                color: "white",
-                                fontSize: "18px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
-                            >
-                              {data.first_name.charAt(0).toUpperCase()}
-                            </div>
-                          ) : (
-                            <img
-                              src={Profile}
-                              alt="Profile"
-                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
-                            />
-                          )}
-                        </Link>
-
-                        <div className="d-flex flex-column me-0">
-                          <span className="me-4 pe-2">
-                            Hello {data.first_name || "User"}
-                          </span>
-                          <span className="ms-4">{data.email}</span>
-                        </div>
-
-                        <Link to="/cart" className="nav-link d-flex mt-2">
-                          <img
-                            src={Cart}
-                            alt="Cart"
-                            className="img-fluid profile1 me-2"
-                          />
-                          <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
-                            {count}
+            {detail && detail.first_name ? (
+              <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
+                <div className="free-shipping d-flex flex-row me-3 mt-2">
+                  <span className="d-flex align-items-center gap-2">
+                    <div className="d-sm-flex d-flex pt-1">
+                      <Link to={`/${url.userDashboard}`} className="nav-link">
+                        {detail.first_name ? (
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "50%",
+                              color: "white",
+                              fontSize: "18px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
+                          >
+                            {detail.first_name.charAt(0).toUpperCase()}
                           </div>
-                        </Link>
+                        ) : (
+                          <img
+                            src={Profile}
+                            alt="Profile"
+                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                          />
+                        )}
+                      </Link>
+
+                      <div className="d-flex flex-column me-0">
+                        <span className="me-4 pe-2">
+                          Hello {detail.first_name}
+                        </span>
+                        <span className="ms-4">
+                          {detail.email || "No Email"}
+                        </span>
                       </div>
-                    </span>
-                  </div>
+
+                      <Link
+                        to={`/${url.cart}`}
+                        className="nav-link d-flex mt-2"
+                      >
+                        <img
+                          src={Cart}
+                          alt="Cart image"
+                          className="img-fluid profile1 me-2"
+                          style={{
+                            position: "relative",
+                            cursor: "pointer",
+                            zIndex: "1000",
+                          }}
+                        />
+                        <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
+                          {count}
+                        </div>
+                      </Link>
+                    </div>
+                  </span>
                 </div>
-              ))
+              </div>
             ) : (
-              <Link className="text-decoration-none text-dark" to="/login">
+              <Link
+                className="text-decoration-none text-dark"
+                to={`/${url.login}`}
+              >
                 <div className="d-flex align-items-end justify-content-end">
                   <div
                     style={{
@@ -285,23 +363,35 @@ function CustomerAddressCreate() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
                     }}
                     className="profile-lyt img-fluid me-2 mb-1 border rounded-5 py-1 bg-light"
                   >
                     <FontAwesomeIcon icon={faUser} />
                   </div>
-                  <div className="d-flex flex-column mt-2">
+
+                  <div
+                    className="d-flex flex-column mt-2"
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
+                    }}
+                  >
                     <span className="text-start me-5">Hello User</span>
                     <span className="text-start">
                       <Link
-                        to="/login"
+                        to={`/${url.login}`}
                         className="text-decoration-none text-dark"
                       >
                         Login / Register
                       </Link>
                     </span>
                   </div>
-                  <Link to="/cart" className="nav-link d-flex mb-2">
+
+                  <Link to={`/${url.cart}`} className="nav-link d-flex mb-2">
                     <img
                       src={Cart}
                       alt="Cart"
@@ -318,11 +408,14 @@ function CustomerAddressCreate() {
         <div className="container bg-light">
           <div className="row d-flex justify-content-start text-center align-items-start mt-0 mb-lg-0 mb-2">
             <div className="col-12 col-md-8 d-flex align-items-center mb-4 mt-0 d-flex flex-row">
-              <img
-                src={Tonic}
-                alt="404"
-                className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
-              />
+              <Link className="navbar-brand d-non d-lg-block" to="/">
+                <img
+                  src={logoUrl || Tonic}
+                  alt="Tonic Logo"
+                  className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                  style={{ height: `${logoHeight}px`, width: "200px" }}
+                />
+              </Link>
 
               <div className="input-welcome1 d-flex flex-row align-items-center mt-3 pt-4">
                 <input
@@ -535,49 +628,49 @@ function CustomerAddressCreate() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 customer-dashboard text-start bg-body shadow-lg rounded-0 ms-0">
               <ul className="px-3 py-3 list-lyte">
                 <li>
-                  <Link to="/user/dashboard" className="text-dark">
+                  <Link to={`/${url.userDashboard}`} className="text-dark">
                     <img src={Over} alt="404" className="me-2" />
                     Overview
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/orders" className="text-dark">
+                  <Link to={`/${url.userOrders}`} className="text-dark">
                     <img src={Cart_user} alt="404" className="me-2" />
                     Orders
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/product-reviews" className="text-dark">
+                  <Link to={`/${url.userProductReviews}`} className="text-dark">
                     <img src={Cart_reviews} alt="404" className="me-2" />
                     Reviews
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/downloads" className="text-dark">
+                  <Link to={`/${url.userDownloads}`} className="text-dark">
                     <img src={Cart_download} alt="404" className="me-2" />
                     Downloads
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/order-returns" className="text-dark">
+                  <Link to={`/${url.userOrderReturns}`} className="text-dark">
                     <img src={Cart_order} alt="404" className="me-2" />
                     Order Returns Requets
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/address" className="text-dark">
+                  <Link to={`/${url.userAddress}`} className="text-dark">
                     <img src={Address} alt="404" className="me-2" />
                     Addresses
                   </Link>
                 </li>
 
                 <li>
-                  <Link to={`/user/edit-account/${1}`} className="text-dark">
+                  <Link to={`/${url.userEditAccount}`} className="text-dark">
                     <img src={Cart_setting} alt="404" className="me-2" />
                     Account Settings
                   </Link>
@@ -604,10 +697,10 @@ function CustomerAddressCreate() {
                       onChange={onInputChange}
                     />
                     {errors.name && (
-                      <div className="text-danger">{errors.name}</div>
+                      <div className="text-danger mt-1">{errors.name}</div>
                     )}
                   </div>
-                  <div className="d-flex flex-column w-100 ms-0 ms-lg- mt-0 mt-lg-3">
+                  <div className="d-flex flex-column w-100 ms-0 ms-lg- mt-3 mt-lg-3">
                     <label htmlFor="">Phone</label>
                     <input
                       type="number"
@@ -618,7 +711,7 @@ function CustomerAddressCreate() {
                       onChange={onInputChange}
                     />
                     {errors.phone && (
-                      <div className="text-danger">{errors.phone}</div>
+                      <div className="text-danger mt-1">{errors.phone}</div>
                     )}
                   </div>
                 </div>
@@ -634,7 +727,7 @@ function CustomerAddressCreate() {
                     onChange={onInputChange}
                   />
                   {errors.email && (
-                    <div className="text-danger">{errors.email}</div>
+                    <div className="text-danger mt-1">{errors.email}</div>
                   )}
                 </div>
 
@@ -908,7 +1001,7 @@ function CustomerAddressCreate() {
                     <option value="ZW">Zimbabwe</option>
                   </select>
                   {errors.country && (
-                    <div className="text-danger">{errors.country}</div>
+                    <div className="text-danger mt-1">{errors.country}</div>
                   )}
                 </div>
 
@@ -917,12 +1010,13 @@ function CustomerAddressCreate() {
                   <input
                     type="text"
                     className="form-control mt-2 py-4 address-name"
+                    placeholder="State"
                     name="state"
                     value={state}
                     onChange={onInputChange}
                   />
                   {errors.state && (
-                    <div className="text-danger">{errors.state}</div>
+                    <div className="text-danger mt-1">{errors.state}</div>
                   )}
                 </div>
 
@@ -931,12 +1025,13 @@ function CustomerAddressCreate() {
                   <input
                     type="text"
                     className="form-control mt-2 py-4 address-name"
+                    placeholder="City"
                     name="city"
                     value={city}
                     onChange={onInputChange}
                   />
                   {errors.city && (
-                    <div className="text-danger">{errors.city}</div>
+                    <div className="text-danger mt-1">{errors.city}</div>
                   )}
                 </div>
 
@@ -951,7 +1046,7 @@ function CustomerAddressCreate() {
                     onChange={onInputChange}
                   />
                   {errors.address && (
-                    <div className="text-danger">{errors.address}</div>
+                    <div className="text-danger mt-1">{errors.address}</div>
                   )}
                 </div>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./MarketPlace.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -14,6 +14,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function MarketPlace() {
   const [query, setQuery] = useState("");
@@ -43,7 +45,6 @@ function MarketPlace() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -62,13 +63,10 @@ function MarketPlace() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -76,8 +74,10 @@ function MarketPlace() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -133,7 +133,19 @@ function MarketPlace() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -183,7 +195,7 @@ function MarketPlace() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -206,11 +218,13 @@ function MarketPlace() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1294,9 +1308,9 @@ function MarketPlace() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1322,9 +1336,9 @@ function MarketPlace() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1350,9 +1364,9 @@ function MarketPlace() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2123,7 +2137,7 @@ function MarketPlace() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded">
+        <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
           <nav className="nav flex-column bg-light general-theme pt-2 ps-2 ps-lg-0">
@@ -2505,7 +2519,7 @@ function MarketPlace() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0 save-changes">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 save-changes">
           <div className="d-flex justify-content-end mt-lg-2 me-2 mt-3">
             <button className="btn btn-success button-change2 py-4 border d-flex ">
               Save Changes
@@ -2559,6 +2573,7 @@ function MarketPlace() {
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

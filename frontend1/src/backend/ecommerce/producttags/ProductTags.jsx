@@ -5,7 +5,6 @@ import Logo from "../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
-  faCheck,
   faEnvelope,
   faMoon,
   faPenToSquare,
@@ -18,6 +17,8 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ProductTags() {
   let [user, setUser] = useState([]);
@@ -83,6 +84,9 @@ function ProductTags() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -174,25 +178,43 @@ function ProductTags() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/searchtags/${search}`
+      `http://89.116.170.231:1600/searchtags/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/producttagdata");
+    let response = await axios.get("http://89.116.170.231:1600/producttagdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://54.183.54.164:1600/deletetags/${id}`, user);
-    alert("data sucessfully deleted");
+    await axios.delete(`http://89.116.170.231:1600/deletetags/${id}`, user);
+    try {
+      toast.success("Data successfully deleted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Data is not deleted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -215,11 +237,13 @@ function ProductTags() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1304,9 +1328,9 @@ function ProductTags() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1332,9 +1356,9 @@ function ProductTags() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1360,9 +1384,9 @@ function ProductTags() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2214,17 +2238,6 @@ function ProductTags() {
                       <i className="fas fa-sort ms-1"></i>
                     </th>
 
-                    <th scope="col">
-                      <img
-                        src="https://shofy.botble.com/vendor/core/core/base/img/flags/us.svg"
-                        title="English"
-                        className="flag rounded-1 ms-3"
-                        style={{ height: "16px" }}
-                        loading="lazy"
-                        alt="English flag"
-                      />
-                    </th>
-
                     <th scope="col" className="fw-light">
                       Operations
                     </th>
@@ -2253,13 +2266,6 @@ function ProductTags() {
                           <span className="badge badge-success lh-base px-2 status-blog fw-light">
                             {data.status}
                           </span>
-                        </td>
-
-                        <td>
-                          <FontAwesomeIcon
-                            icon={faCheck}
-                            className="text-primary ms-3"
-                          />
                         </td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
@@ -2296,6 +2302,7 @@ function ProductTags() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

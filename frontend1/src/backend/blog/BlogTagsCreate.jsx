@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./BlogTagsCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import Cutting from "../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -15,6 +16,8 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BlogTagsCreate() {
   let navigate = useNavigate();
@@ -28,7 +31,7 @@ function BlogTagsCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -39,6 +42,11 @@ function BlogTagsCreate() {
   const resultsRef = useRef(null);
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  let [seos, setSeos] = useState(false);
+
+  let seodatablogs = () => {
+    setSeos(!seos);
+  };
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -46,6 +54,35 @@ function BlogTagsCreate() {
 
   let togglespecification = () => {
     setSpecifcation(!Specification);
+  };
+
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImage(file);
+      setImageUrl(url);
+      setUser({ ...user, file: file });
+    }
+  };
+
+  const handleAddFromUrl = () => {
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   const routes = {
@@ -59,7 +96,6 @@ function BlogTagsCreate() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -78,13 +114,10 @@ function BlogTagsCreate() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -92,8 +125,10 @@ function BlogTagsCreate() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -168,7 +203,7 @@ function BlogTagsCreate() {
   let handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/blogtagpost",
+        "http://89.116.170.231:1600/blogtagpost",
         user
       );
       if (response.status === 200) {
@@ -219,11 +254,13 @@ function BlogTagsCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1310,9 +1347,9 @@ function BlogTagsCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1338,9 +1375,9 @@ function BlogTagsCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1366,9 +1403,9 @@ function BlogTagsCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2164,8 +2201,8 @@ function BlogTagsCreate() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2282,7 +2319,130 @@ function BlogTagsCreate() {
               </div>
             </div>
           </div>
+
+          <div className="card mt-3 seo-metas ms-51">
+            <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+              <div className="w-100">
+                <h5 className="card-title1">Search Engine Optimize</h5>
+                <Link
+                  to="#"
+                  className="link-primary1 primary2 meta float-end"
+                  onClick={seodatablogs}
+                  style={{ zIndex: "100" }}
+                >
+                  Edit SEO meta
+                </Link>
+                <div className="border seo-names mt-3"></div>
+                <p className="card-text text-dark mt-3">
+                  Setup meta title & description to make your site easy to
+                  discovered on search engines such as Google
+                  <div className="border seo-names mt-3"></div>
+                  {seos && (
+                    <>
+                      <div className="mt-3">
+                        <label htmlFor="">SEO Title</label>
+                        <input
+                          type="text"
+                          className="form-control mt-2 py-4 seo-edit"
+                          placeholder="SEO Title"
+                        />
+                      </div>
+
+                      <div className="mt-3">
+                        <label htmlFor="seo-description">SEO Description</label>
+                        <textarea
+                          id="seo-description"
+                          className="form-control mt-2 seo-edit"
+                          placeholder="SEO Description"
+                          style={{
+                            height: "100px",
+                            overflow: "auto",
+                            resize: "vertical",
+                            minHeight: "100px",
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="mt-3 pt-2 ms-2">SEO image</label>
+                        <div className="image-card border-0 ps-1">
+                          <div
+                            className="image-placeholder"
+                            onClick={() =>
+                              document.getElementById("fileInput").click()
+                            }
+                          >
+                            {imageUrl ? (
+                              <img
+                                alt="Uploaded preview"
+                                src={imageUrl}
+                                width="100"
+                                height="100"
+                              />
+                            ) : (
+                              <img
+                                src={Cutting}
+                                alt="404"
+                                className="w-75 h-75 img-fluid"
+                              />
+                            )}
+                          </div>
+                          <input
+                            id="fileInput"
+                            type="file"
+                            name="file"
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                          />
+                          <Link
+                            className="ms-5"
+                            to="#"
+                            onClick={() =>
+                              document.getElementById("fileInput").click()
+                            }
+                          >
+                            Choose image <br />
+                          </Link>
+                          <span className="ms-2 me-2 ms-5">or</span>
+                          <Link to="#" onClick={handleAddFromUrl}>
+                            Add from URL
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="d-flex gap-2 ms-2">
+                        <label htmlFor="">Index</label>
+                      </div>
+
+                      <div className="ms-2 mt-2 pb-2">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="check"
+                          checked
+                        />
+                        <label htmlFor="" className="ms-2">
+                          Index
+                        </label>
+
+                        <input
+                          className="form-check-input ms-2"
+                          type="radio"
+                          value="index"
+                          name="check"
+                        />
+                        <label htmlFor="" className="ms-2">
+                          No index
+                        </label>
+                      </div>
+                    </>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -18,6 +18,8 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ContactPage() {
   let [user, setUser] = useState([]);
@@ -176,26 +178,36 @@ function ContactPage() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/contactsearch/${search}`
+      `http://89.116.170.231:1600/contactsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/contactreqdata");
+    let response = await axios.get("http://89.116.170.231:1600/contactreqdata");
     setUser(response.data);
     console.log(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://54.183.54.164:1600/customerdelete/${id}`, user);
-    alert("data sucessfully deleted");
+    await axios.delete(`http://89.116.170.231:1600/contactdelete/${id}`, user);
+
+    try {
+      toast.success("data sucessfully deleted ", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {}
   };
 
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://54.183.54.164:1600/export-excelcontact",
+        "http://89.116.170.231:1600/export-excelcontact",
         {
           responseType: "blob",
         }
@@ -220,7 +232,7 @@ function ContactPage() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -243,11 +255,13 @@ function ContactPage() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1332,9 +1346,9 @@ function ContactPage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1360,9 +1374,9 @@ function ContactPage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1388,9 +1402,9 @@ function ContactPage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2271,11 +2285,15 @@ function ContactPage() {
                         </td>
 
                         <td>
-                          <span className="sliders1">{data.email}</span>
+                          <Link to={`/admin/contacts/edit/${data.id}`}>
+                            {data.email}
+                          </Link>
                         </td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
-                          <span className="sliders1">{data.phone}</span>
+                          <Link to={`/admin/contacts/edit/${data.id}`}>
+                            {data.phone}
+                          </Link>
                         </td>
 
                         <td>
@@ -2320,6 +2338,7 @@ function ContactPage() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

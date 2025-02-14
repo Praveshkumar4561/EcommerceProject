@@ -16,16 +16,16 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AdsEdit() {
   let navigate = useNavigate();
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -81,6 +81,9 @@ function AdsEdit() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -143,6 +146,7 @@ function AdsEdit() {
   const toggleblog = () => {
     setBlog(!blog);
   };
+
   let [user, setUser] = useState({
     name: "",
     title: "",
@@ -185,7 +189,7 @@ function AdsEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://54.183.54.164:1600/adsupdate/${id}`,
+        `http://89.116.170.231:1600/adsupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -206,7 +210,7 @@ function AdsEdit() {
 
   let editdata = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/adsomedataads/${id}`
+      `http://89.116.170.231:1600/adsomedataads/${id}`
     );
     setUser(response.data[0]);
   };
@@ -231,25 +235,44 @@ function AdsEdit() {
 
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [tabletImageUrl, setTabletImageUrl] = useState(null);
+  const [mobileImageUrl, setMobileImageUrl] = useState(null);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event, type) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
+      if (type === "image") {
+        setImage(file);
+        setImageUrl(url);
+      } else if (type === "tablet") {
+        setTabletImageUrl(url);
+      } else if (type === "mobile") {
+        setMobileImageUrl(url);
+      }
     }
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -272,11 +295,13 @@ function AdsEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1361,9 +1386,9 @@ function AdsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1389,9 +1414,9 @@ function AdsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1417,9 +1442,9 @@ function AdsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2212,8 +2237,43 @@ function AdsEdit() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong>
               version
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page editor-ads text-start me-3 me-md-0 me-lg-0 ">
+              <svg
+                className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-ads"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                <path d="M12 9h.01"></path>
+                <path d="M11 12h1v4h1"></path>
+              </svg>
+              If you are using Adblock browser extension, you need to disable
+              this extension on your site first. It may block your ads if it is{" "}
+              <span className="ms-lg-4 ps-lg-2">enabled on your site!</span>{" "}
+              <br />
+              <span className="ms-lg-4 ps-lg-2">
+                Tips: Image name SHOULD NOT contain some ads keywords (ad,
+                promotion...)
+              </span>
             </div>
           </div>
         </div>
@@ -2243,14 +2303,14 @@ function AdsEdit() {
                     <label htmlFor="">Title</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="title"
                       name="title"
                       value={title}
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        height: "75px",
+                        height: "82px",
                         position: "relative",
                         zIndex: "1000",
                       }}
@@ -2263,13 +2323,12 @@ function AdsEdit() {
                     <label htmlFor="">Subtitle</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="subtitle"
                       name="subtitle"
                       value={subtitle}
                       onChange={onInputChange}
                       style={{
-                        cursor: "pointer",
                         height: "75px",
                         position: "relative",
                         zIndex: "1000",
@@ -2308,7 +2367,7 @@ function AdsEdit() {
                   <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
                     <label htmlFor="">Sort Order</label>
                     <input
-                      type="text"
+                      type="number"
                       className="form-control mt-2 py-4"
                       name="orders"
                       value={orders}
@@ -2322,10 +2381,11 @@ function AdsEdit() {
                     <label htmlFor="">Ads Type</label>
                     <select
                       type="text"
-                      className="form-control form-select mt-2 py-4"
+                      className="form-select mt-2"
                       name="adstype"
                       value={adstype}
                       onChange={onInputChange}
+                      style={{ height: "48px" }}
                     >
                       <option value="">Select an option</option>
                       <option value="Custom ad">Custom Ad</option>
@@ -2334,129 +2394,179 @@ function AdsEdit() {
                   </div>
                 </div>
 
-                <div className="form-check form-switch mb-3 d-flex flex-row name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="has-action"
-                  />
-                  <label
-                    className="form-check-label ms-2 mt-1"
-                    for="has-action"
-                  >
-                    Open in new tab?
-                  </label>
-                </div>
+                {adstype === "Custom ad" && (
+                  <div className="border px-2 py-2 rounded bg-light mb-3">
+                    <div className="mt-1">
+                      <label htmlFor="">URL</label>
+                      <input
+                        type="text"
+                        className="form-control mt-2 mb-3 py-4"
+                        placeholder="URL"
+                      />
+                    </div>
+                    <div className="form-check form-switch mb-3 d-flex flex-row name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="has-action"
+                      />
+                      <label
+                        className="form-check-label ms-2 mt-1"
+                        htmlFor="has-action"
+                      >
+                        Open in new tab?
+                      </label>
+                    </div>
 
-                <div className="border-0 rounded p-3 customer-page1 w-25">
-                  <h4 className="mt-0 text-start">Image</h4>
-                  <hr />
-                  <div
-                    className="image-placeholder"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  >
-                    {imageUrl ? (
-                      <img
-                        alt="Uploaded preview"
-                        src={imageUrl}
-                        width="100"
-                        height="100"
+                    <div className="border-0 rounded customer-page1 w-25">
+                      <h6 className="mt-0 text-start">Image</h6>
+                      <div
+                        className="image-placeholder mt-2"
+                        onClick={() =>
+                          document.getElementById("fileInputImage").click()
+                        }
+                      >
+                        {imageUrl ? (
+                          <img
+                            alt="Uploaded preview"
+                            src={imageUrl}
+                            width="100"
+                            height="100"
+                          />
+                        ) : (
+                          <img
+                            src={`/api/src/image/${user.image}`}
+                            className="w-100 h-100 rounded"
+                          />
+                        )}
+                      </div>
+                      <input
+                        id="fileInputImage"
+                        type="file"
+                        name="file"
+                        style={{ display: "none" }}
+                        onChange={(event) => handleFileChange(event, "image")}
                       />
-                    ) : (
-                      <img
-                        src={`/api/src/image/${user.image}`}
-                        alt="404"
-                        className="w-100 h-auto rounded-2 border rounded-2 img-fluid"
-                      />
-                    )}
-                  </div>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    name="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                  <Link
-                    to="#"
-                    className=""
-                    onClick={() => document.getElementById("fileInput").click()}
-                  ></Link>
-                  Choose image or
-                  <Link to="#" onClick={handleAddFromUrl} className="ms-2">
-                    Add from URL
-                  </Link>
-                </div>
+                      <Link
+                        className="text-decoration-none"
+                        to="#"
+                        onClick={() =>
+                          document.getElementById("fileInputImage").click()
+                        }
+                      >
+                        Choose image or
+                      </Link>
+                      <Link
+                        to="#"
+                        onClick={handleAddFromUrl}
+                        className="ms-2 text-decoration-none"
+                      >
+                        Add from URL
+                      </Link>
+                    </div>
 
-                <div className="border-0 rounded customer-page1 w-25">
-                  <h4 className="mt-0 text-start">Tablet Image</h4>
-                  <hr />
-                  <div
-                    className="image-placeholder"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  >
-                    {imageUrl ? (
-                      <img
-                        alt="Uploaded preview"
-                        src={imageUrl}
-                        width="100"
-                        height="100"
+                    <div className="border-0 rounded customer-page1 w-25 mt-2">
+                      <h6 className="mt-0 text-start">Tablet Image</h6>
+                      <div
+                        className="image-placeholder mt-2"
+                        onClick={() =>
+                          document.getElementById("fileInputTablet").click()
+                        }
+                      >
+                        {tabletImageUrl ? (
+                          <img
+                            alt="Uploaded preview"
+                            src={tabletImageUrl}
+                            width="100"
+                            height="100"
+                          />
+                        ) : (
+                          <img src={Cutting} className="w-75 h-75" />
+                        )}
+                      </div>
+                      <input
+                        id="fileInputTablet"
+                        type="file"
+                        name="file"
+                        style={{ display: "none" }}
+                        onChange={(event) => handleFileChange(event, "tablet")}
                       />
-                    ) : (
-                      <img src={Cutting} className="w-75 h-75" />
-                    )}
-                  </div>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    name="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                  <Link
-                    to="#"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  ></Link>
-                  Choose image or
-                  <Link to="#" onClick={handleAddFromUrl} className="ms-2">
-                    Add from URL
-                  </Link>
-                </div>
+                      <Link
+                        className="text-decoration-none"
+                        to="#"
+                        onClick={() =>
+                          document.getElementById("fileInputTablet").click()
+                        }
+                      >
+                        Choose image or
+                      </Link>
+                      <Link
+                        to="#"
+                        onClick={handleAddFromUrl}
+                        className="ms-2 text-decoration-none"
+                      >
+                        Add from URL
+                      </Link>
+                    </div>
 
-                <div className="border-0 rounded customer-page1 mt-2 mb-3 w-25">
-                  <h4 className="mt-0 text-start">Mobile Image</h4>
-                  <hr />
-                  <div
-                    className="image-placeholder"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  >
-                    {imageUrl ? (
-                      <img
-                        alt="Uploaded preview"
-                        src={imageUrl}
-                        width="100"
-                        height="100"
+                    <div className="border-0 rounded customer-page1 mt-2 mb-3 w-25">
+                      <h6 className="mt-0 text-start">Mobile Image</h6>
+                      <div
+                        className="image-placeholder mt-2"
+                        onClick={() =>
+                          document.getElementById("fileInputMobile").click()
+                        }
+                      >
+                        {mobileImageUrl ? (
+                          <img
+                            alt="Uploaded preview"
+                            src={mobileImageUrl}
+                            width="100"
+                            height="100"
+                          />
+                        ) : (
+                          <img src={Cutting} className="w-75 h-75" />
+                        )}
+                      </div>
+                      <input
+                        id="fileInputMobile"
+                        type="file"
+                        name="file"
+                        style={{ display: "none" }}
+                        onChange={(event) => handleFileChange(event, "mobile")}
                       />
-                    ) : (
-                      <img src={Cutting} className="w-75 h-75" />
-                    )}
+                      <Link
+                        to="#"
+                        className="text-decoration-none"
+                        onClick={() =>
+                          document.getElementById("fileInputMobile").click()
+                        }
+                      >
+                        Choose image or
+                      </Link>
+                      <Link
+                        to="#"
+                        onClick={handleAddFromUrl}
+                        className="ms-2 text-decoration-none"
+                      >
+                        Add from URL
+                      </Link>
+                    </div>
                   </div>
-                  <input
-                    id="fileInput"
-                    type="file"
-                    name="file"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                  <Link
-                    to="#"
-                    onClick={() => document.getElementById("fileInput").click()}
-                  ></Link>
-                  Choose image or
-                  <Link to="#" onClick={handleAddFromUrl} className="ms-2">
-                    Add from URL
-                  </Link>
-                </div>
+                )}
+
+                {adstype === "Google adsence" && (
+                  <div className="border mb-3 bg-light rounded p-2 text-start cart-cart">
+                    <label htmlFor="" className="mt-2">
+                      Google AdSense Slot ID
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control mt-2 mb-2 py-4 cart-cart"
+                      placeholder="E.x:1234567890"
+                    />
+                  </div>
+                )}
               </form>
             </div>
 
@@ -2483,13 +2593,40 @@ function AdsEdit() {
                 <h4 className="mt-0 text-start">Status</h4>
                 <hr />
                 <select
-                  className="form-select mb-3 customer-page1"
+                  className="form-select mb-1 customer-page1"
                   style={{ height: "46px" }}
                 >
                   <option value="">Select an option</option>
                   <option value="published">Published</option>
                   <option value="default">Default</option>
                   <option value="pending">Pending</option>
+                </select>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
+                <h4 className="mt-0 text-start">Location</h4>
+                <hr />
+                <select
+                  className="form-select mb-1 customer-page1"
+                  style={{ height: "46px" }}
+                >
+                  <option value="Not set">Not set</option>
+                  <option value="Header(before)">Header (before)</option>
+                  <option value="Header(after)">Header (after)</option>
+                  <option value="Footer(before)">Footer (before)</option>
+                  <option value="Footer(after)">Footer (after)</option>
+                  <option value="Listing Page(before)">
+                    Listing Page (before)
+                  </option>
+                  <option value="Listing Page(after)">
+                    Listing Page (after)
+                  </option>
+                  <option value="Detail Page(before)">
+                    Detail Page (before)
+                  </option>
+                  <option value="Detail Page(after)">
+                    Detail Page (after)
+                  </option>
                 </select>
               </div>
 
@@ -2502,11 +2639,17 @@ function AdsEdit() {
                   name="expired"
                   value={expired}
                   onChange={onInputChange}
+                  style={{
+                    cursor: "pointer",
+                    position: "relative",
+                    zIndex: "1000",
+                  }}
                 />
               </div>
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./General.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
-  faAngleUp,
   faBell,
   faEnvelope,
   faMoon,
@@ -15,6 +14,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function General() {
   const [query, setQuery] = useState("");
@@ -44,7 +45,6 @@ function General() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -63,13 +63,10 @@ function General() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -77,6 +74,9 @@ function General() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -134,7 +134,19 @@ function General() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -184,7 +196,7 @@ function General() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -207,11 +219,13 @@ function General() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1295,9 +1309,9 @@ function General() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1323,9 +1337,9 @@ function General() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1351,9 +1365,9 @@ function General() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2125,7 +2139,7 @@ function General() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
@@ -2508,7 +2522,7 @@ function General() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
           <div className="d-flex justify-content-end">
             <button className="btn btn-success button-change py-4 mt-4 mt-lg-3 me-lg-2 border d-flex">
               Save Changes
@@ -2519,13 +2533,14 @@ function General() {
           <form className="content-form ms-3 me-3">
             <div className="mb-3 mt-2">
               <label className="form-label" htmlFor="hotline">
-                Hotline
+                Site title
               </label>
               <input className="form-control py-4 label-hotline" type="text" />
             </div>
+
             <div className="mb-3">
               <label className="form-label" htmlFor="date-format">
-                Date format
+                Show site name after page title, separated with "-"
               </label>
 
               <select
@@ -2533,58 +2548,33 @@ function General() {
                 id="date-format"
                 style={{ height: "50px" }}
               >
-                <option value="M d, Y">M d, Y (Oct 08, 2024)</option>
-                <option value="F j, Y">F j, Y (October 8, 2024)</option>
-                <option value="F d, Y">F d, Y (October 08, 2024)</option>
-                <option value="Y-m-d">Y-m-d (2024-10-08)</option>
-                <option value="Y-M-d">Y-M-d (2024-Oct-08)</option>
-                <option value="d-m-Y">d-m-Y (08-10-2024)</option>
-                <option value="d-M-Y">d-M-Y (08-Oct-2024)</option>
-                <option value="m/d/Y">m/d/Y (10/08/2024)</option>
-                <option value="M/d/Y">M/d/Y (Oct/08/2024)</option>
-                <option value="d/m/Y">d/m/Y (08/10/2024)</option>
-                <option value="d/M/Y">d/M/Y (08/Oct/2024)</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
               </select>
-
-              <small className="form-text text-muted">
-                <p className="mt-2">Choose date format for your front theme.</p>
-              </small>
             </div>
 
             <div className="mb-3">
               <label className="form-label" htmlFor="site-title">
-                Site title
-              </label>
-              <input
-                className="form-control py-4 label-hotline"
-                id="site-title"
-                type="text"
-              />
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor="show-site-name">
-                Show site name after page title, separated with "-"
+                SEO title separator
               </label>
               <select
-                className="form-select label-hotline"
-                id="show-site-name"
+                className="form-select label-hotline label-date"
+                id="date-format"
                 style={{ height: "50px" }}
               >
-                <option selected="">No</option>
-                <option selected="">Yes</option>
+                <option value="-(dash)">- (dash)</option>
+                <option value="|(pipe)">| (pipe)</option>
               </select>
             </div>
 
             <div className="mb-3">
-              <label className="form-label" htmlFor="seo-title">
+              <label className="form-label" htmlFor="show-site-name">
                 SEO Title
               </label>
               <input
-                className="form-control py-4 label-hotline"
-                id="seo-title"
-                placeholder="SEO Title"
                 type="text"
+                className="form-control py-4"
+                placeholder="SEO Title"
               />
             </div>
 
@@ -2597,6 +2587,32 @@ function General() {
                 rows="3"
                 style={{ height: "70px" }}
               ></textarea>
+            </div>
+
+            <div className="d-flex flex-column mb-3">
+              <label htmlFor="">SEO Index</label>
+              <div className="d-flex flex-row mt-1">
+                <input
+                  type="radio"
+                  className="form-check-input me-2 fs-5"
+                  id="indexRadio"
+                  name="seoIndex"
+                  defaultChecked
+                />
+                <label htmlFor="indexRadio" className="mt-1">
+                  Index
+                </label>
+
+                <input
+                  type="radio"
+                  className="form-check-input ms-3 me-2 fs-5"
+                  id="noIndexRadio"
+                  name="seoIndex"
+                />
+                <label htmlFor="noIndexRadio" className="mt-1">
+                  No Index
+                </label>
+              </div>
             </div>
 
             <div className="">
@@ -2757,6 +2773,7 @@ function General() {
             </span>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -16,6 +16,8 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Invoice() {
   let [user, setUser] = useState([]);
@@ -28,7 +30,7 @@ function Invoice() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -88,6 +90,9 @@ function Invoice() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -179,7 +184,7 @@ function Invoice() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/shipmentsearch/${search}`
+      `http://89.116.170.231:1600/shipmentsearch/${search}`
     );
     setUser(response.data);
   };
@@ -191,17 +196,30 @@ function Invoice() {
   }, []);
 
   let invoicedata = async () => {
-    const response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setInvoice(response.data);
   };
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://54.183.54.164:1600/deleteorder1/${id}`);
-      alert("Order deleted successfully");
+      await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
+      toast.success("Order deleted successfully", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error deleting data:", error);
-      alert("Failed to delete data.Please try again");
+      toast.error("Failed to delete data.Please try again", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -1308,9 +1326,9 @@ function Invoice() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1336,9 +1354,9 @@ function Invoice() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1364,9 +1382,9 @@ function Invoice() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2360,6 +2378,7 @@ function Invoice() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

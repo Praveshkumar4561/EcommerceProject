@@ -17,9 +17,10 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import Cutting from "../../assets/Cutting.webp";
-
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function TestimonialCreate() {
   let navigate = useNavigate();
@@ -129,17 +130,27 @@ function TestimonialCreate() {
 
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/testimonials",
+        "http://89.116.170.231:1600/testimonials",
         formData
       );
-      if (response.status === 200) {
-        alert("Data successfully submitted and file uploaded");
-        navigate("/admin/testimonials");
-      } else {
-        console.error("Error during submission");
-      }
+      toast.success("Data successfully submitted and file uploaded", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      navigate("/admin/testimonials");
     } catch (error) {
-      console.error("Error during submission:", error);
+      toast.error("Data is not submitted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -187,6 +198,9 @@ function TestimonialCreate() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -252,7 +266,7 @@ function TestimonialCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -271,7 +285,19 @@ function TestimonialCreate() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -310,11 +336,13 @@ function TestimonialCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1398,9 +1426,9 @@ function TestimonialCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1426,9 +1454,9 @@ function TestimonialCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1454,9 +1482,9 @@ function TestimonialCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2247,8 +2275,8 @@ function TestimonialCreate() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2274,7 +2302,7 @@ function TestimonialCreate() {
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-3  w-100">
+                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
                     <label htmlFor="">Position/Company</label>
                     <input
                       type="text"
@@ -2394,7 +2422,7 @@ function TestimonialCreate() {
                     <div className="mb-3">
                       <textarea
                         id="content2"
-                        className="form-control text-create"
+                        className="form-control"
                         placeholder="Short description"
                         value={textAreaData2}
                         onChange={handleTextAreaChange2}
@@ -2449,6 +2477,9 @@ function TestimonialCreate() {
                 <select
                   className="form-select mb-3 customer-page1"
                   style={{ height: "46px" }}
+                  name="status"
+                  value={status}
+                  onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
                   <option value="published">Published</option>
@@ -2497,6 +2528,7 @@ function TestimonialCreate() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

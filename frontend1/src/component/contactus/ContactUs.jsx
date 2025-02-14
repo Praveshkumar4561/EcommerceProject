@@ -16,6 +16,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ContactUs() {
   let { count, setCount } = useContext(UserContext);
@@ -26,7 +28,9 @@ function ContactUs() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -43,11 +47,6 @@ function ContactUs() {
   const [num2, setNum2] = useState(generateRandomNumber());
   const [userAnswer, setUserAnswer] = useState("");
   const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
-  };
 
   const handleCaptchaChange = () => {
     if (parseInt(userAnswer) === num1 + num2) {
@@ -69,6 +68,9 @@ function ContactUs() {
     setError("");
     setCaptchaValid(false);
   };
+
+  const [errors, setErrors] = useState({});
+
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -81,17 +83,36 @@ function ContactUs() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let formErrors = {};
+    if (!name) formErrors.name = "Name is required";
+    if (!email) formErrors.email = "Email is required";
+    if (!address) formErrors.address = "Address is required";
+    if (!phone) formErrors.phone = "Phone number is required";
+    if (!subject) formErrors.subject = "Subject is required";
+    if (!content) formErrors.content = "Message content is required";
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      formErrors.email = "Enter a valid email address";
+    }
+    const phoneRegex = /^[0-9]{10}$/;
+    if (phone && !phoneRegex.test(phone)) {
+      formErrors.phone = "Enter a valid 10-digit phone number";
+    }
     if (!captchaValid) {
-      alert("Please complete the CAPTCHA");
+      formErrors.captcha = "Please solve the CAPTCHA";
+    }
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
       return;
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/contact",
+        "http://89.116.170.231:1600/contact",
         user
       );
       if (response.status === 200) {
-        alert("Message sent successfully!");
         setUser({
           name: "",
           email: "",
@@ -102,13 +123,31 @@ function ContactUs() {
         });
         setCaptchaValid(false);
         setUserAnswer("");
-      } else {
-        alert("Failed to send message.");
+        setErrors({});
       }
+      toast.success("Contact details successfully submitted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error submitting form:", error);
-      alert("An error occurred while sending your message.");
+      toast.error("Contact details is not submitted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -134,15 +173,95 @@ function ContactUs() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
+  let [cart, setCart] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setCart(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
   return (
     <>
-      <div className="container cart-cart" id="container-custom">
-        <div className="container-custom">
+      <div
+        className="container"
+        id="container-custom"
+        style={{
+          backgroundColor:
+            cart?.background_color ||
+            (cart?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: cart?.background_image
+            ? `url(/api/src/image/${cart.background_image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: cart?.breadcrumb_height
+            ? `${cart.breadcrumb_height}px`
+            : "190px",
+        }}
+      >
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
 
                 <button
@@ -156,13 +275,13 @@ function ContactUs() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
 
                 <div className="navbar-collapse d-none d-lg-block">
-                  <ul className="navbar-nav ms-auto">
+                  <ul className="navbar-nav ms-auto cart-cart">
                     <li className="nav-item">
                       <Link className="nav-link" to="/">
                         Home
@@ -173,18 +292,14 @@ function ContactUs() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -196,15 +311,19 @@ function ContactUs() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
@@ -232,18 +351,14 @@ function ContactUs() {
                       Shop
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
+
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -257,22 +372,45 @@ function ContactUs() {
             )}
           </header>
 
-          <main className="container mt-5 lorem-contact">
-            <h1 className="fw-medium mb-3 text-center container-contact fs-2">
-              Contact Us
-            </h1>
-            <nav aria-label="breadcrumb" id="container-contact1">
-              <ol className="breadcrumb d-flex flex-wrap gap-0">
-                <li className="breadcrumb-item navbar-item fw-medium">
-                  <Link target="blank" to="/" className="text-dark">
-                    Home
-                  </Link>
-                </li>
-                <li className="breadcrumb-item navbar-item fw-medium text-dark">
-                  Contact Us
-                </li>
-              </ol>
-            </nav>
+          <main className="container mt-5 cart-cart">
+            {cart?.enable_breadcrumb === "yes" &&
+              cart?.breadcrumb_style !== "none" && (
+                <>
+                  {cart?.hide_title !== "yes" && (
+                    <h1
+                      className={`fw-medium mb-3 text-center container-contact fs-2 container-style ${
+                        cart?.breadcrumb_style === "without title"
+                          ? "d-none"
+                          : ""
+                      }`}
+                    >
+                      Contact Us
+                    </h1>
+                  )}
+
+                  <nav
+                    aria-label="breadcrumb"
+                    id="container-contact1"
+                    className={`ms-5 ps-3 ms-lg-0 ps-lg-0 ${
+                      cart?.breadcrumb_style === "without title" ||
+                      cart?.breadcrumb_style === "align start"
+                        ? "d-flex justify-content-start align-items-center w-50"
+                        : "d-flex justify-content-center align-items-center"
+                    }`}
+                  >
+                    <ol className="breadcrumb d-flex flex-wrap gap-0">
+                      <li className="breadcrumb-item navbar-item fw-medium">
+                        <Link target="_blank" to="/" className="text-dark">
+                          Home
+                        </Link>
+                      </li>
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                        Contact Us
+                      </li>
+                    </ol>
+                  </nav>
+                </>
+              )}
           </main>
         </div>
       </div>
@@ -346,13 +484,16 @@ function ContactUs() {
                         value={name}
                         onChange={handleChange}
                       />
+                      {errors.name && (
+                        <p className="error-text text-danger">{errors.name}</p>
+                      )}
                     </div>
                   </div>
                   <div className="col-12 col-md-6 d-flex flex-column align-items-start align-items-md-start contact-name">
                     <div className="form-group w-100 mt-sm-3 blackitalic text-start">
                       <label htmlFor="lastName">Email</label>
                       <input
-                        type="text"
+                        type="email"
                         className="form-control mt-2 fw-normal py-4 lorem-contact1"
                         id="lastName"
                         placeholder="Your Email"
@@ -360,6 +501,9 @@ function ContactUs() {
                         value={email}
                         onChange={handleChange}
                       />
+                      {errors.email && (
+                        <p className="error-text text-danger">{errors.email}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -377,6 +521,11 @@ function ContactUs() {
                         value={address}
                         onChange={handleChange}
                       />
+                      {errors.address && (
+                        <p className="error-text text-danger">
+                          {errors.address}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="col-12 col-md-6 d-flex flex-column align-items-start">
@@ -393,6 +542,9 @@ function ContactUs() {
                         value={phone}
                         onChange={handleChange}
                       />
+                      {errors.phone && (
+                        <p className="error-text text-danger">{errors.phone}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -408,6 +560,9 @@ function ContactUs() {
                       value={subject}
                       onChange={handleChange}
                     />
+                    {errors.subject && (
+                      <p className="error-text text-danger">{errors.subject}</p>
+                    )}
                   </div>
                 </div>
 
@@ -420,7 +575,11 @@ function ContactUs() {
                     name="content"
                     value={content}
                     onChange={handleChange}
-                  ></textarea>
+                  >
+                    {errors.content && (
+                      <p className="error-text text-danger">{errors.content}</p>
+                    )}
+                  </textarea>
 
                   <div className="captcha-container mt-4">
                     <p className="captcha-header ms-1 mt-2 fw-light">
@@ -442,7 +601,9 @@ function ContactUs() {
                         🔄
                       </button>
                     </div>
-                    {error && <p className="error-message ms-3">{error}</p>}
+                    {errors.captcha && (
+                      <p className="error-text text-danger">{errors.captcha}</p>
+                    )}
                   </div>
                 </div>
                 <button
@@ -460,6 +621,7 @@ function ContactUs() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0 ">

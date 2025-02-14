@@ -11,23 +11,23 @@ import Tonic from "../../assets/Tonic.svg";
 import { Link } from "react-router-dom";
 import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
-
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
 import Cart_order from "../../assets/Cart_request.webp";
 import Cart_reviews from "../../assets/Cart_reviews.webp";
 import Cart_download from "../../assets/Cart_download.webp";
 import Cart_setting from "../../assets/Cart_setting.webp";
-import Cart_vendor from "../../assets/Cart_vendor.webp";
 import Cart_logout from "../../assets/Cart_logout.webp";
 import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CustomerVendor() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -77,10 +77,24 @@ function CustomerVendor() {
       return;
     }
     try {
-      await axios.post("http://54.183.54.164:1600/vendorshop", user);
-      alert("Shop registered successfully!");
+      await axios.post("http://89.116.170.231:1600/vendorshop", user);
+      toast.success("Shop registered successfully!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      alert("Error registering shop.");
+      toast.error("Shop is not registered", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -92,12 +106,40 @@ function CustomerVendor() {
 
   let vendor_data = async () => {
     let response = await axios.get(
-      "http://54.183.54.164:1600/vendordata",
+      "http://89.116.170.231:1600/vendordata",
       user
     );
     setVendor(response.data);
   };
   vendor_data();
+
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
 
   return (
     <>
@@ -115,7 +157,7 @@ function CustomerVendor() {
               <div className="free-shipping d-flex flex-row me-3">
                 <span className="d-flex align-items-center gap-2">
                   <div className="d-sm-flex ms-auto d-flex">
-                    <Link to="/login" className="nav-link">
+                    <Link to={`/${url.login}`} className="nav-link">
                       <img
                         src={Profile}
                         alt="Profile"
@@ -127,7 +169,7 @@ function CustomerVendor() {
                       <span className="ms-4">Login/Register</span>
                     </div>
 
-                    <Link to="/cart" className="nav-link d-flex mt-1">
+                    <Link to={`/${url.cart}`} className="nav-link d-flex mt-1">
                       <img
                         src={Cart}
                         alt="Cart"
@@ -354,49 +396,49 @@ function CustomerVendor() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 customer-dashboard text-start bg-body shadow-lg rounded-0 ms-0">
               <ul className="px-3 py-3 list-lyte position-relative overflow-hidden">
                 <li>
-                  <Link to="/user/dashboard" className="text-dark">
+                  <Link to={`/${url.userDashboard}`} className="text-dark">
                     <img src={Over} alt="404" className="me-2" />
                     Overview
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/orders" className="text-dark">
+                  <Link to={`/${url.userOrders}`} className="text-dark">
                     <img src={Cart_user} alt="404" className="me-2" />
                     Orders
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/product-reviews" className="text-dark">
+                  <Link to={`/${url.userProductReviews}`} className="text-dark">
                     <img src={Cart_reviews} alt="404" className="me-2" />
                     Reviews
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/downloads" className="text-dark">
+                  <Link to={`/${url.userDownloads}`} className="text-dark">
                     <img src={Cart_download} alt="404" className="me-2" />
                     Downloads
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/order-returns" className="text-dark">
+                  <Link to={`/${url.userOrderReturns}`} className="text-dark">
                     <img src={Cart_order} alt="404" className="me-2" />
                     Order Returns Requets
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/address" className="text-dark">
+                  <Link to={`/${url.userAddress}`} className="text-dark">
                     <img src={Address} alt="404" className="me-2" />
                     Addresses
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/edit-account" className="text-dark">
+                  <Link to={`/${url.userEditAccount}`} className="text-dark">
                     <img src={Cart_setting} alt="404" className="me-2" />
                     Account Settings
                   </Link>
@@ -593,6 +635,7 @@ function CustomerVendor() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -159,3 +159,87 @@ input[type="search"] {
     height: 55rem;
   }
 }
+
+.seo-documnet {
+  position: relative;
+  top: -1.6rem;
+}
+
+.seo-metas {
+  width: 100%;
+  max-width: 67%;
+  position: relative;
+  left: 3.8rem;
+}
+@media (max-width: 768px) {
+  .seo-metas {
+    width: 100%;
+    max-width: 95%;
+    position: relative;
+    left: 0rem;
+  }
+  .seo-documnet {
+    position: relative;
+    top: 1rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 992px) {
+  .seo-metas {
+    width: 100%;
+    max-width: 97%;
+    position: relative;
+    left: 1rem;
+  }
+  .seo-documnet {
+    position: relative;
+    top: 1rem;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .seo-metas {
+    width: 100%;
+    max-width: 70%;
+    position: relative;
+    left: 20rem;
+  }
+  .seo-documnet {
+    position: relative;
+    top: 1rem;
+  }
+}
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .seo-metas {
+    width: 100%;
+    max-width: 49%;
+    position: relative;
+    left: 17.4rem;
+  }
+}
+@media (min-width: 1400px) and (max-width: 1600px) {
+  .seo-metas {
+    width: 100%;
+    max-width: 66%;
+    position: relative;
+    left: 10.3rem;
+  }
+}
+@media (min-width: 1600px) and (max-width: 1800px) {
+  .seo-metas {
+    width: 100%;
+    max-width: 66%;
+    position: relative;
+    left: 6rem;
+  }
+}
+
+.seo-name {
+  color: #1a0dab;
+}
+.seo-name1 {
+  color: #006621;
+}
+
+.seo-names {
+  width: 100%;
+  max-width: 100% !important;
+}

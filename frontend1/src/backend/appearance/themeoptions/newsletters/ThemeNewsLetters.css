@@ -658,13 +658,13 @@ input[type="search"] {
   top: 1rem;
 }
 
-.custom-changes1 {
-  position: relative;
-  bottom: 0.9rem;
-}
-.button-change {
+.custom-changes-news {
   position: relative;
   bottom: 0.6rem;
+}
+.button-change-news {
+  position: relative;
+  bottom: 0.3rem;
 }
 
 .image-admin1 {

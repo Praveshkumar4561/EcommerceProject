@@ -538,9 +538,13 @@ input[type="search"] {
   position: relative;
   bottom: 1.9rem;
 }
-.content-form {
+.content-form-social {
   position: relative;
-  bottom: 1.5rem;
+  bottom: 16.1rem;
+}
+
+.box-social {
+  margin-top: 24%;
 }
 
 .content-theme {
@@ -662,13 +666,15 @@ input[type="search"] {
   top: 1rem;
 }
 
-.custom-changes1 {
-  position: relative;
-  bottom: 0.9rem;
+.custom-theme-d {
+  margin-bottom: 40%;
 }
-.button-change {
+
+.custom-changes-social {
   position: relative;
-  bottom: 0.6rem;
+  bottom: 81.5%;
+}
+.button-change-social {
 }
 
 .image-admin1 {
@@ -681,9 +687,9 @@ input[type="search"] {
     width: 100%;
     max-width: 40%;
   }
-  .button-change1 {
+  .button-change-social {
     position: relative;
-    bottom: 1.5rem;
+    bottom: 0.4rem;
     cursor: pointer;
   }
 }
@@ -692,7 +698,7 @@ input[type="search"] {
     width: 100%;
     max-width: 40%;
   }
-  .button-change1 {
+  .button-change-social1 {
     position: relative;
     bottom: 1.5rem;
     cursor: pointer;
@@ -750,4 +756,10 @@ input[type="search"] {
   .theme-appearance4 {
     font-size: 0.76rem;
   }
+}
+
+.close-sharing {
+  position: relative;
+  cursor: pointer;
+  z-index: 1000;
 }

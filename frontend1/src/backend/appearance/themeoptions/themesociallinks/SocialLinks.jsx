@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./SocialLinks.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
@@ -14,6 +15,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SocialLinks() {
   let [isVisible, setIsVisible] = useState(false);
@@ -48,7 +51,6 @@ function SocialLinks() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -67,13 +69,10 @@ function SocialLinks() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -81,7 +80,11 @@ function SocialLinks() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -137,7 +140,19 @@ function SocialLinks() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let toggleecommerce = () => {
@@ -178,22 +193,20 @@ function SocialLinks() {
     }
   };
 
-  const [showPalette, setShowPalette] = useState(false);
+  let [boxes1, setBoxes1] = useState([]);
 
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
+  const addBox1 = (e) => {
+    e.preventDefault();
+    setBoxes1([...boxes1, { id: Date.now(), imageUrl: null }]);
   };
 
-  let [boxes, setBoxes] = useState([]);
-
-  const addbox = () => {
-    setBoxes(!boxes);
+  const deleteBox1 = (id) => {
+    setBoxes1(boxes1.filter((box) => box.id !== id));
   };
-
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -216,11 +229,13 @@ function SocialLinks() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1304,9 +1319,9 @@ function SocialLinks() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1332,9 +1347,9 @@ function SocialLinks() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1360,9 +1375,9 @@ function SocialLinks() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2133,7 +2148,7 @@ function SocialLinks() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
@@ -2516,144 +2531,109 @@ function SocialLinks() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
-          <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-3 me-2 border d-flex">
+        <div className="col-12 col-sm-6 col-lg-6 border text-start mb-3 mb-lg-0">
+          <div className="d-flex justify-content-end mt-3 me-2 ms-2">
+            <button className="btn btn-success d-flex py-4">
               Save Changes
             </button>
           </div>
+          <div className="border mt-2"></div>
+          <label htmlFor="" className="ms-2 mt-2">
+            Social Links
+          </label>
 
-          <hr className="custom-changes1" />
-          <form className="content-form">
-            <div className="mb-3 mt-2 ms-3 me-3">
-              <div className="mb-3">Social Links</div>
-
-              <div className="border rounded bg-light p-4">
-                <label className="form-label" htmlFor="date-format">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  className="form-control label-hotline py-4"
-                />
-
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Icon
-                </label>
-
-                <select
-                  className="form-select label-hotline label-date"
-                  id="date-format"
-                  style={{ height: "50px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="ti ti-brand-facebook">
-                    ti ti-brand-facebook
-                  </option>
-                  <option value="ti ti-brand-youtube">
-                    ti ti-brand-youtube
-                  </option>
-                  <option value="ti ti-brand-x">ti ti-brand-x</option>
-                  <option value="ti ti-12-hours">ti ti-12-hours</option>
-                  <option value="ti ti-123">ti ti-123</option>
-                  <option value="ti ti-24-hours">ti ti-24-hours</option>
-                  <option value="ti ti-2fa">ti ti-2fa</option>
-                  <option value="ti ti-360">ti ti-360</option>
-                  <option value="ti ti-360-view">ti ti-360-view</option>
-                  <option value="ti ti-3d-rotate">ti ti-3d-rotate</option>
-                  <option value="ti ti-a-b-2">ti ti-a-b-2</option>
-                  <option value="ti ti-a-b-off">ti ti-a-b-off</option>
-                  <option value="ti ti-abacus-off">ti ti-abacus-off</option>
-                  <option value="ti ti-abc">ti ti-abc</option>
-                  <option value="ti ti-access-point-off">
-                    ti ti-access-point-off
-                  </option>
-                  <option value="ti ti-ti-activity">ti ti-ti-activity</option>
-                  <option value="ti ti-ad-2">ti ti-ad-2</option>
-                  <option value="ti ti-ad-circle-filled">
-                    ti ti-ad-circle-filled
-                  </option>
-                  <option value="ti ti-ad-circle-off">
-                    ti ti-ad-circle-off
-                  </option>
-                  <option value="ti ti-ad-filled">ti ti-ad-filled</option>
-                  <option value="ti ti-adjusments-dollar">
-                    ti ti-adjusments-dollar
-                  </option>
-                  <option value="ti ti-adjusments-down">
-                    ti ti-adjusments-down
-                  </option>
-                  <option value="ti ti-adjusments-exclamation">
-                    ti ti-adjusments-exclamation
-                  </option>
-                  <option value="ti ti-adjusments-filled">
-                    ti ti-adjusments-filled
-                  </option>
-                  <option value="ti ti-adjusments-filledk">
-                    ti ti-adjusments-filled
-                  </option>
-                  <option value="ti ti-adjusments-off">
-                    ti ti-adjusments-off
-                  </option>
-                  <option value="ti ti-adjusments-paus">
-                    ti ti-adjusments-pause
-                  </option>
-                </select>
-
-                <label className="form-label mt-3" htmlFor="date-format">
-                  URLs
-                </label>
-                <input
-                  type="text"
-                  className="form-control label-hotline py-4"
-                />
-
-                <label htmlFor="" className="mt-3">
-                  Icon Image (It will override icon above if set)
-                </label>
-                <div
-                  className="image-placeholder image-admin2 mt-2"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={imageUrl}
-                      width="100"
-                      height="100"
-                    />
-                  ) : (
-                    <img src={Cutting} alt="404" className="w-75 h-75" />
-                  )}
+          {boxes1.map((box) => (
+            <>
+              <div className="bg-light border mt-2 ms-2 p-3 d-flex flex-column me-3 rounded w-auto mb-3">
+                <div className="w-100">
+                  <FontAwesomeIcon
+                    icon={faX}
+                    className="float-end bg-secondary px-2 py-2 mb-1 rounded text-light close-sharing"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => deleteBox1(box.id)}
+                  />
+                  <label htmlFor="">Name</label>
+                  <select
+                    className="form-select mt-2 me-3 w-100"
+                    style={{ height: "50px" }}
+                  >
+                    <option value="Facebook">Facebook</option>
+                    <option value="">X (Twitter)</option>
+                    <option value="Linkedin">Linkedin</option>
+                    <option value="X (Twitter)">X (Twitter)</option>
+                    <option value="Pinterst">Pinterst</option>
+                    <option value="WhatsApp">WhatsApp</option>
+                    <option value="Telegram">Telegram</option>
+                    <option value="Email">Email</option>
+                  </select>
                 </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose image <br />
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
 
-                <div className="mt-2">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Color
+                <div className="mt-3 w-100">
+                  <label htmlFor="">Icon</label>
+                  <select
+                    className="form-select mt-2 me-3 w-100"
+                    style={{ height: "50px" }}
+                  >
+                    <option value="ti ti-brand-facebook">
+                      ti ti-brand-facebook
+                    </option>
+                    <option value="ti ti-brand-youtube">
+                      ti ti-brand-youtube
+                    </option>
+                    <option value="ti ti-brand-x">ti ti-brand-x</option>
+                  </select>
+                </div>
+
+                <div className="mt-3 w-100">
+                  <label htmlFor="">URL</label>
+                  <input type="text" className="form-control py-4 mt-2" />
+                </div>
+
+                <div className="mt-0 w-100">
+                  <label htmlFor="" className="mt-3">
+                    Icon Image (It will override icon above if set)
                   </label>
+                  <div
+                    className="image-placeholder image-admin2 mt-2"
+                    onClick={() => document.getElementById("fileInput").click()}
+                  >
+                    {imageUrl ? (
+                      <img
+                        alt="Uploaded preview"
+                        src={imageUrl}
+                        width="100"
+                        height="100"
+                      />
+                    ) : (
+                      <img src={Cutting} alt="404" className="w-75 h-75" />
+                    )}
+                  </div>
+                  <input
+                    id="fileInput"
+                    type="file"
+                    name="file"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                  <Link
+                    className="ms-2 text-decoration-none choose-url"
+                    to="#"
+                    onClick={() => document.getElementById("fileInput").click()}
+                  >
+                    Choose image <br />
+                  </Link>
+                  <span className="ms-3 me-2">or</span>
+                  <Link
+                    to="#"
+                    onClick={handleAddFromUrl}
+                    className="text-decoration-none choose-url"
+                  >
+                    Add from URL
+                  </Link>
+                </div>
 
+                <div className="mt-2 w-100">
+                  <label className="form-label ms-1">Color</label>
                   <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
                     <input
                       type="color"
@@ -2669,11 +2649,8 @@ function SocialLinks() {
                   </div>
                 </div>
 
-                <div className="mt-2">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Background color
-                  </label>
-
+                <div className="mt-2 w-100">
+                  <label className="form-label ms-1">Background Color</label>
                   <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
                     <input
                       type="color"
@@ -2689,339 +2666,14 @@ function SocialLinks() {
                   </div>
                 </div>
               </div>
+            </>
+          ))}
 
-              <div className="border rounded bg-light p-4 mt-3">
-                <label className="form-label" htmlFor="date-format">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  className="form-control label-hotline py-4"
-                />
-
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Icon
-                </label>
-
-                <select
-                  className="form-select label-hotline label-date"
-                  id="date-format"
-                  style={{ height: "50px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="ti ti-brand-facebook">
-                    ti ti-brand-facebook
-                  </option>
-                  <option value="ti ti-brand-youtube">
-                    ti ti-brand-youtube
-                  </option>
-                  <option value="ti ti-brand-x">ti ti-brand-x</option>
-                  <option value="ti ti-12-hours">ti ti-12-hours</option>
-                  <option value="ti ti-123">ti ti-123</option>
-                  <option value="ti ti-24-hours">ti ti-24-hours</option>
-                  <option value="ti ti-2fa">ti ti-2fa</option>
-                  <option value="ti ti-360">ti ti-360</option>
-                  <option value="ti ti-360-view">ti ti-360-view</option>
-                  <option value="ti ti-3d-rotate">ti ti-3d-rotate</option>
-                  <option value="ti ti-a-b-2">ti ti-a-b-2</option>
-                  <option value="ti ti-a-b-off">ti ti-a-b-off</option>
-                  <option value="ti ti-abacus-off">ti ti-abacus-off</option>
-                  <option value="ti ti-abc">ti ti-abc</option>
-                  <option value="ti ti-access-point-off">
-                    ti ti-access-point-off
-                  </option>
-                  <option value="ti ti-ti-activity">ti ti-ti-activity</option>
-                  <option value="ti ti-ad-2">ti ti-ad-2</option>
-                  <option value="ti ti-ad-circle-filled">
-                    ti ti-ad-circle-filled
-                  </option>
-                  <option value="ti ti-ad-circle-off">
-                    ti ti-ad-circle-off
-                  </option>
-                  <option value="ti ti-ad-filled">ti ti-ad-filled</option>
-                  <option value="ti ti-adjusments-dollar">
-                    ti ti-adjusments-dollar
-                  </option>
-                  <option value="ti ti-adjusments-down">
-                    ti ti-adjusments-down
-                  </option>
-                  <option value="ti ti-adjusments-exclamation">
-                    ti ti-adjusments-exclamation
-                  </option>
-                  <option value="ti ti-adjusments-filled">
-                    ti ti-adjusments-filled
-                  </option>
-                  <option value="ti ti-adjusments-filledk">
-                    ti ti-adjusments-filled
-                  </option>
-                  <option value="ti ti-adjusments-off">
-                    ti ti-adjusments-off
-                  </option>
-                  <option value="ti ti-adjusments-paus">
-                    ti ti-adjusments-pause
-                  </option>
-                </select>
-
-                <label className="form-label mt-3" htmlFor="date-format">
-                  URLs
-                </label>
-                <input
-                  type="text"
-                  className="form-control label-hotline py-4"
-                />
-
-                <label htmlFor="" className="mt-3">
-                  Icon Image (It will override icon above if set)
-                </label>
-                <div
-                  className="image-placeholder image-admin2 mt-2"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={imageUrl}
-                      width="100"
-                      height="100"
-                    />
-                  ) : (
-                    <img src={Cutting} alt="404" className="w-75 h-75" />
-                  )}
-                </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose image <br />
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
-
-                <div className="mt-2">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Color
-                  </label>
-
-                  <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-2">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Background color
-                  </label>
-
-                  <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border rounded bg-light p-4 mt-3">
-                <label className="form-label" htmlFor="date-format">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  className="form-control label-hotline py-4"
-                />
-
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Icon
-                </label>
-
-                <select
-                  className="form-select label-hotline label-date"
-                  id="date-format"
-                  style={{ height: "50px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="ti ti-brand-facebook">
-                    ti ti-brand-facebook
-                  </option>
-                  <option value="ti ti-brand-youtube">
-                    ti ti-brand-youtube
-                  </option>
-                  <option value="ti ti-12-hours">ti ti-12-hours</option>
-                  <option value="ti ti-123">ti ti-123</option>
-                  <option value="ti ti-24-hours">ti ti-24-hours</option>
-                  <option value="ti ti-2fa">ti ti-2fa</option>
-                  <option value="ti ti-360">ti ti-360</option>
-                  <option value="ti ti-360-view">ti ti-360-view</option>
-                  <option value="ti ti-3d-rotate">ti ti-3d-rotate</option>
-                  <option value="ti ti-a-b-2">ti ti-a-b-2</option>
-                  <option value="ti ti-a-b-off">ti ti-a-b-off</option>
-                  <option value="ti ti-abacus-off">ti ti-abacus-off</option>
-                  <option value="ti ti-abc">ti ti-abc</option>
-                  <option value="ti ti-access-point-off">
-                    ti ti-access-point-off
-                  </option>
-                  <option value="ti ti-ti-activity">ti ti-ti-activity</option>
-                  <option value="ti ti-ad-2">ti ti-ad-2</option>
-                  <option value="ti ti-ad-circle-filled">
-                    ti ti-ad-circle-filled
-                  </option>
-                  <option value="ti ti-ad-circle-off">
-                    ti ti-ad-circle-off
-                  </option>
-                  <option value="ti ti-ad-filled">ti ti-ad-filled</option>
-                  <option value="ti ti-adjusments-dollar">
-                    ti ti-adjusments-dollar
-                  </option>
-                  <option value="ti ti-adjusments-down">
-                    ti ti-adjusments-down
-                  </option>
-                  <option value="ti ti-adjusments-exclamation">
-                    ti ti-adjusments-exclamation
-                  </option>
-                  <option value="ti ti-adjusments-filled">
-                    ti ti-adjusments-filled
-                  </option>
-                  <option value="ti ti-adjusments-filledk">
-                    ti ti-adjusments-filled
-                  </option>
-                  <option value="ti ti-adjusments-off">
-                    ti ti-adjusments-off
-                  </option>
-                  <option value="ti ti-adjusments-paus">
-                    ti ti-adjusments-pause
-                  </option>
-                </select>
-
-                <label className="form-label mt-3" htmlFor="date-format">
-                  URLs
-                </label>
-                <input
-                  type="text"
-                  className="form-control label-hotline py-4"
-                />
-
-                <label htmlFor="" className="mt-3">
-                  Icon Image (It will override icon above if set)
-                </label>
-                <div
-                  className="image-placeholder image-admin2 mt-2"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={imageUrl}
-                      width="100"
-                      height="100"
-                    />
-                  ) : (
-                    <img src={Cutting} alt="404" className="w-75 h-75" />
-                  )}
-                </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose image <br />
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
-
-                <div className="mt-2">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Color
-                  </label>
-
-                  <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-2">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Background color
-                  </label>
-
-                  <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                className="btn-success rounded mt-3 py-2 px-3 text-light"
-                onClick={addbox}
-              >
-                Add new
-              </button>
-            </div>
-          </form>
+          <div className="ms-2 mb-3 mt-3" onClick={addBox1}>
+            <button className="btn btn-success d-flex py-4">Add new</button>
+          </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

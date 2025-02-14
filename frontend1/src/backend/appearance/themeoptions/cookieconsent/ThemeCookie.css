@@ -669,6 +669,8 @@ input[type="search"] {
 .button-change {
   position: relative;
   bottom: 0.6rem;
+  cursor: pointer;
+  z-index: 1000;
 }
 
 .image-admin1 {

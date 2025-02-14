@@ -15,6 +15,8 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CustomerEdit() {
   const [query, setQuery] = useState("");
@@ -34,7 +36,6 @@ function CustomerEdit() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -53,13 +54,10 @@ function CustomerEdit() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -67,8 +65,10 @@ function CustomerEdit() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -124,7 +124,19 @@ function CustomerEdit() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -169,7 +181,7 @@ function CustomerEdit() {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://54.183.54.164:1600/somecustomerdata/${id}`
+          `http://89.116.170.231:1600/somecustomerdata/${id}`
         );
         setUser(response.data[0]);
       } catch (error) {
@@ -212,7 +224,14 @@ function CustomerEdit() {
 
   let handleSubmit = async () => {
     if (showPasswordFields && user.password !== user.confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
     let formData = new FormData();
@@ -221,7 +240,7 @@ function CustomerEdit() {
     formData.append("email", email);
     formData.append("phone_number", phone_number);
     formData.append("dob", dob);
-    formData.append("password", user.password);
+    formData.append("password", password);
     formData.append("notes", notes);
     formData.append("date", date);
     formData.append("status", status);
@@ -229,15 +248,42 @@ function CustomerEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://54.183.54.164:1600/userupdate/${id}`,
+        `http://89.116.170.231:1600/userupdate/${id}`,
         formData
       );
       if (response.status === 200) {
+        const currentUser = JSON.parse(localStorage.getItem("user"));
+        const updatedUser = {
+          id: currentUser.id,
+          first_name: first_name || currentUser.first_name,
+          last_name: last_name || currentUser.last_name,
+          email: email || currentUser.email,
+          password: password || currentUser.password,
+          phone_number: phone_number || currentUser.phone_number,
+          dob: dob || currentUser.dob,
+          tokenExpiration: currentUser.tokenExpiration || Date.now() + 3600000,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        toast.success("Data successfully updated!", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
         navigate("/admin/customers");
       }
-      alert("data successfully updated");
     } catch (error) {
-      console.error("error", error);
+      console.error("Error during update:", error);
+      toast.error("Failed to update data. Please try again later.", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -274,7 +320,7 @@ function CustomerEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -282,7 +328,7 @@ function CustomerEdit() {
   let [wishList, setWishList] = useState([]);
 
   let wishlistdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/wishlistdata");
+    let response = await axios.get("http://89.116.170.231:1600/wishlistdata");
     setWishList(response.data);
   };
   wishlistdata();
@@ -305,11 +351,13 @@ function CustomerEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1393,9 +1441,9 @@ function CustomerEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1421,9 +1469,9 @@ function CustomerEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1449,9 +1497,9 @@ function CustomerEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2360,134 +2408,6 @@ function CustomerEdit() {
                   </div>
                 </form>
               </div>
-              <div className="position-absolute mt-0 wishlist-table start-0">
-                <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex justify-content-start align-items-start">
-                  <div className="card mt-3 testimonial table-price ms-3 ms-lg-0">
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between mb-3">
-                        <div className="d-flex flex-row">
-                          <div className="btn-group me-2">
-                            <span>Addresses</span>
-                          </div>
-                        </div>
-                        <div className="mt-2 mt-sm-0 mt-lg-0 d-flex ms-1 flex-row"></div>
-                      </div>
-                      <div className="table-responsive">
-                        <table className="table table-responsive table-striped">
-                          <thead className="table-secondary">
-                            <tr>
-                              <th scope="col" className="fw-light">
-                                <span className="d-flex">
-                                  ID1
-                                  <i className="fas fa-sort ms-1"></i>
-                                </span>
-                              </th>
-
-                              <th scope="col" className="fw-light">
-                                <span className="d-flex">
-                                  Product
-                                  <i className="fas fa-sort ms-1"></i>
-                                </span>
-                              </th>
-
-                              <th scope="col" className="fw-light">
-                                Created At
-                                <i className="fas fa-sort ms-1"></i>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {wishList.map((data, key) => (
-                              <tr key={key}>
-                                <td>{data.id}</td>
-                                <td className="d-flex flex-row align-items-center gap-2">
-                                  <img
-                                    src={`/api/src/image/${data.image}`}
-                                    alt=""
-                                    className="img-thumbnail image-wishlist"
-                                  />
-                                  <Link to="/product-details">
-                                    {data.product_name}
-                                  </Link>
-                                </td>
-                                <td>
-                                  {new Date(data.created_at).toLocaleDateString(
-                                    "en-CA"
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </main>
-              </div>
-              <div className="position-absolute wishlist-table start-0">
-                <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 d-flex justify-content-start align-items-start">
-                  <div className="card mt-3 testimonial table-price ms-3 ms-lg-0">
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between mb-3">
-                        <div className="d-flex flex-row">
-                          <div className="btn-group me-2">
-                            <span>Wishlist</span>
-                          </div>
-                        </div>
-                        <div className="mt-2 mt-sm-0 mt-lg-0 d-flex ms-1 flex-row"></div>
-                      </div>
-                      <div className="table-responsive">
-                        <table className="table table-responsive table-striped">
-                          <thead className="table-secondary">
-                            <tr>
-                              <th scope="col" className="fw-light">
-                                <span className="d-flex">
-                                  ID
-                                  <i className="fas fa-sort ms-1"></i>
-                                </span>
-                              </th>
-
-                              <th scope="col" className="fw-light">
-                                <span className="d-flex">
-                                  Product
-                                  <i className="fas fa-sort ms-1"></i>
-                                </span>
-                              </th>
-
-                              <th scope="col" className="fw-light">
-                                Created At
-                                <i className="fas fa-sort ms-1"></i>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {wishList.map((data, key) => (
-                              <tr key={key}>
-                                <td>{data.id}</td>
-                                <td className="d-flex flex-row align-items-center gap-2">
-                                  <img
-                                    src={`/api/src/image/${data.image}`}
-                                    alt=""
-                                    className="img-thumbnail image-wishlist"
-                                  />
-                                  <Link to="/product-details">
-                                    {data.product_name}
-                                  </Link>
-                                </td>
-                                <td>
-                                  {new Date(data.created_at).toLocaleDateString(
-                                    "en-CA"
-                                  )}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </main>
-              </div>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3">
@@ -2568,6 +2488,7 @@ function CustomerEdit() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

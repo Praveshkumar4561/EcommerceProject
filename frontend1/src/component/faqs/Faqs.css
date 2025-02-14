@@ -16,7 +16,7 @@ body {
 
 #container-custom {
   width: 100vw;
-  height: 180px;
+  height: 190px;
   background-color: #f2f5f7;
   display: flex;
   align-items: center;
@@ -178,7 +178,7 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
-  bottom: 42%;
+  bottom: 32%;
 }
 
 #container-contact1 {
@@ -375,7 +375,7 @@ body {
 
 .error-message1 {
   color: red;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .faqs-page {

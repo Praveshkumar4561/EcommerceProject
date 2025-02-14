@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BlogOptions.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -13,6 +13,8 @@ import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BlogOptions() {
   const [query, setQuery] = useState("");
@@ -42,7 +44,6 @@ function BlogOptions() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -61,13 +62,10 @@ function BlogOptions() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -75,6 +73,9 @@ function BlogOptions() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -116,23 +117,6 @@ function BlogOptions() {
       setResults([]);
       setIsOpen(false);
     }
-  };
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -182,10 +166,18 @@ function BlogOptions() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
+
+  let [user, setUser] = useState([]);
+
+  let alldata = async () => {
+    let response = await axios.get("http://89.116.170.231:1600/pagesdata");
+    setUser(response.data);
+  };
+  alldata();
 
   return (
     <>
@@ -205,11 +197,13 @@ function BlogOptions() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1293,9 +1287,9 @@ function BlogOptions() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1321,9 +1315,9 @@ function BlogOptions() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1349,9 +1343,9 @@ function BlogOptions() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2122,7 +2116,7 @@ function BlogOptions() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded">
+        <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
           <nav className="nav flex-column bg-light general-theme pt-2">
@@ -2504,78 +2498,101 @@ function BlogOptions() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-2 mb-lg-0">
           <div className="d-flex justify-content-end mt-5 mt-lg-0 me-2">
             <button
-              className="btn btn-success button-change-change py-4 mt-0 border d-flex"
+              className="btn btn-success button-change-change py-4 mt-lg-0 mt-4 ms-2 border d-flex"
               style={{ cursor: "pointer" }}
             >
               Save Changes
             </button>
           </div>
-          <hr className="custom-change-change" />
-          <form className="content-form-change ms-3 me-3">
+          <hr className="custom-change-change mb-5 pb-2" />
+          <form className="content-form-change ms-3 me-3 w-100">
             <div className="mb-3">
-              <div className="mt-2 mt-lg-4 pt-2">
-                <label className="form-label mt-4 pt-3" htmlFor="date-format">
-                  Default blog posts layout
-                </label>
+              <div className="mt-2 mt-lg-4 pt-2 me-4 pe-3">
+                <div className="mb-4">
+                  <label className="form-label mt-31" htmlFor="date-format">
+                    Blog page
+                  </label>
 
-                <select
-                  className="form-select label-hotline1"
-                  id="date-format"
-                  style={{ height: "50px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="List">List</option>
-                  <option value="Grid">Grid</option>
-                </select>
+                  {Array.isArray(user) && user.length > 0 ? (
+                    user.slice(0, 1).map((data, key) => (
+                      <div key={key}>
+                        <select
+                          name="attribute"
+                          className="form-select ms-2"
+                          style={{ height: "50px" }}
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="Home">Home</option>
+                          <option value="Blog">Blog</option>
+                          <option value="Contact">Contact</option>
+                          <option value="FAQs">FAQs</option>
+                          <option value="Return Policy">Return Policy</option>
+                          {user.length > 0 ? (
+                            user.map((item) => {
+                              console.log("Item:", item);
+                              console.log("Item title:", item.title);
+                              return (
+                                <option key={item.id} value={item.name}>
+                                  {item.name}
+                                </option>
+                              );
+                            })
+                          ) : (
+                            <option disabled></option>
+                          )}
+                        </select>
+                      </div>
+                    ))
+                  ) : (
+                    <p></p>
+                  )}
+                </div>
 
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Blog page
-                </label>
+                <div className="mt-0">
+                  <label className="form-label mt-0" htmlFor="date-format">
+                    Number of posts per page in a category
+                  </label>
 
-                <select
-                  className="form-control form-select label-hotline1"
-                  style={{ height: "50px" }}
-                >
-                  <option value="0">-- Select --</option>
-                  <option value="1">Home</option>
-                  <option value="2">Categories</option>
-                  <option value="3">Brands</option>
-                  <option value="4">Coupons</option>
-                  <option value="5">Blog</option>
-                  <option value="6">Contact</option>
-                  <option value="7">FAQs</option>
-                  <option value="8">Cookie Policy</option>
-                  <option value="9">Our Story</option>
-                  <option value="10">Careers</option>
-                  <option value="11">Shipping</option>
-                  <option value="12">Coming Soon</option>
-                  <option value="13">Return Policy</option>
-                </select>
+                  <input
+                    type="number"
+                    className="form-control label-hotli w-100 py-4"
+                  />
+                </div>
 
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Number of posts per page in a category
-                </label>
+                <div>
+                  <label className="form-label mt-3" htmlFor="date-format">
+                    Number of posts per page in a tag
+                  </label>
 
-                <input
-                  type="number"
-                  className="form-control label-hotline1 py-4"
-                />
+                  <input
+                    type="number"
+                    className="form-control label-hotline1 py-4"
+                  />
+                </div>
 
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Number of posts per page in a tag
-                </label>
+                <div>
+                  <label className="form-label mt-0 pt-3" htmlFor="date-format">
+                    Default blog posts layout
+                  </label>
 
-                <input
-                  type="number"
-                  className="form-control label-hotline1 py-4"
-                />
+                  <select
+                    className="form-select w-100"
+                    id="date-format"
+                    style={{ height: "50px" }}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="List">List</option>
+                    <option value="Grid">Grid</option>
+                  </select>
+                </div>
               </div>
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

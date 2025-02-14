@@ -599,8 +599,6 @@ input[type="search"] {
   }
 }
 
-
-
 .choose-url {
   color: rgba(32, 107, 196, 1);
 }
@@ -649,9 +647,9 @@ input[type="search"] {
   bottom: 5.4rem;
 }
 
-.custom-changes3 {
+.custom-changes-bread {
   position: relative;
-  bottom: 0.89rem;
+  bottom: 1.1rem;
 }
 .button-change1 {
   position: relative;
@@ -699,5 +697,36 @@ input[type="search"] {
 @media (max-width: 576px) {
   .theme-appearance {
     font-size: 0.8rem;
+  }
+}
+
+.cookie-color-bread {
+  width: 100%;
+  max-width: 10%;
+}
+
+@media (max-width: 768px) {
+  .cookie-color-bread {
+    width: 100%;
+    max-width: 13%;
+  }
+}
+@media (max-width: 992px) {
+  .cookie-color-bread {
+    width: 100%;
+    max-width: 35%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .cookie-color-bread {
+    width: 100%;
+    max-width: 15%;
+  }
+}
+
+@media (max-width: 1400px) {
+  .cookie-color-bread {
+    width: 100%;
+    max-width: 15%;
   }
 }

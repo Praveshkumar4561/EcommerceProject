@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ThemeEcommerce.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -13,6 +13,8 @@ import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ThemeEcommerce() {
   let [isVisible, setIsVisible] = useState(false);
@@ -20,7 +22,6 @@ function ThemeEcommerce() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-  let [user, setUser] = useState([]);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -48,7 +49,6 @@ function ThemeEcommerce() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -67,13 +67,10 @@ function ThemeEcommerce() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -81,6 +78,9 @@ function ThemeEcommerce() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -162,23 +162,68 @@ function ThemeEcommerce() {
     }
   };
 
-  const [showPalette, setShowPalette] = useState(false);
-
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
-  };
-
-  let onInputChange = async () => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
+
+  const savedUrlState = localStorage.getItem("urlState");
+
+  const initialState = savedUrlState
+    ? JSON.parse(savedUrlState)
+    : {
+        login: "login",
+        register: "register",
+        changePassword: "user/change-password",
+        cart: "cart",
+        checkout: "checkout",
+        ordersTracking: "orders/tracking",
+        wishlist: "wishlist",
+        productDetails: "product/details",
+        userDashboard: "user/dashboard",
+        userAddress: "user/address",
+        userDownloads: "user/downloads",
+        userOrderReturns: "user/order-returns",
+        userProductReviews: "user/product-reviews",
+        userEditAccount: "user/edit-account",
+        userOrders: "user/orders",
+      };
+  const [url, setUrl] = useState(initialState);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setUrl((prevState) => {
+      const updatedState = { ...prevState, [name]: value };
+      localStorage.setItem("urlState", JSON.stringify(updatedState));
+      return updatedState;
+    });
+  };
+
+  const handleSaveChanges = () => {
+    localStorage.setItem("urlState", JSON.stringify(url));
+    try {
+      toast.success("URLs have been changed!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("URLs have been changed!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
 
   return (
     <>
@@ -198,11 +243,13 @@ function ThemeEcommerce() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1286,9 +1333,9 @@ function ThemeEcommerce() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1314,9 +1361,9 @@ function ThemeEcommerce() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1342,9 +1389,9 @@ function ThemeEcommerce() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2115,7 +2162,7 @@ function ThemeEcommerce() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
@@ -2498,9 +2545,12 @@ function ThemeEcommerce() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
           <div className="d-flex justify-content-end mt-3 me-2">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex">
+            <button
+              className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex"
+              onClick={handleSaveChanges}
+            >
               Save Changes
             </button>
           </div>
@@ -2519,21 +2569,24 @@ function ThemeEcommerce() {
                 <label className="form-label" htmlFor="date-format">
                   Login page slug
                 </label>
+
                 <input
                   type="text"
                   className="form-control label-cookie py-4"
                   name="login"
-                  onChange={onInputChange}
+                  value={url.login}
+                  onChange={handleInputChange}
                 />
+
                 <div className="mt-1">
                   <small>
                     It will look like{" "}
                     <Link
-                      to="/login"
+                      to={`/${url.login}`}
                       className="link-small me-1"
-                      target="blank"
+                      target="_blank"
                     >
-                      /login
+                      /{url.login}
                     </Link>
                     when you access the page. Default value is login.
                   </small>
@@ -2544,16 +2597,22 @@ function ThemeEcommerce() {
                 <label className="form-label mt-3" htmlFor="date-format">
                   Register page slug
                 </label>
-                <input type="text" className="form-control label-cookie py-4" />
+                <input
+                  type="text"
+                  className="form-control label-cookie py-4"
+                  name="register"
+                  value={url.register}
+                  onChange={handleInputChange}
+                />
                 <div className="mt-1">
                   <small>
                     It will look like{" "}
                     <Link
-                      to="/register"
+                      to={`/${url.login}`}
                       className="link-small me-1"
-                      target="blank"
+                      target="_blank"
                     >
-                      /register
+                      /{url.register}
                     </Link>
                     when you access the page. Default value is register.
                   </small>
@@ -2567,40 +2626,23 @@ function ThemeEcommerce() {
                 <input
                   className="form-control py-4 label-hotline"
                   type="text"
+                  name="changePassword"
+                  value={url.changePassword}
+                  onChange={handleInputChange}
                 />
                 <div className="mt-1">
                   <small>
                     It will look like{" "}
                     <Link
-                      to="/password/reset"
+                      to={`/${url.changePassword}`}
                       className="link-small me-1"
-                      target="blank"
+                      target="_blank"
                     >
-                      /password/reset
+                      /{url.changePassword}
                     </Link>
                     when you access the page. Default value is password/reset.
                   </small>
                 </div>
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor="site-title">
-                Product listing page slug
-              </label>
-              <input
-                className="form-control py-4 label-hotline"
-                id="site-title"
-                type="text"
-              />
-              <div className="mt-1">
-                <small>
-                  It will look like{" "}
-                  <Link to="/" target="blank" className="link-small me-1">
-                    /products
-                  </Link>
-                  when you access the page. Default value is products.
-                </small>
               </div>
             </div>
 
@@ -2612,14 +2654,17 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-hotline"
                 id="site-title"
                 type="text"
+                name="cart"
+                value={url.cart}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/addcart"
+                    to={`/${url.cart}`}
                     className="link-small me-1"
-                    target="blank"
+                    target="_blank"
                   >
                     /addcart
                   </Link>
@@ -2636,42 +2681,21 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-hotline"
                 id="site-title"
                 type="text"
+                name="checkout"
+                value={url.checkout}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/checkout-page"
-                    target="blank"
+                    to={`/${url.checkout}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /checkout
+                    /{url.checkout}
                   </Link>
                   when you access the page. Default value is checkout.
-                </small>
-              </div>
-            </div>
-
-            <div className="mt-3">
-              <label className="form-label" htmlFor="site-title">
-                Order tracking page slug
-              </label>
-              <input
-                className="form-control py-4 label-cookie"
-                id="site-title"
-                type="text"
-              />
-              <div className="mt-1">
-                <small>
-                  It will look like{" "}
-                  <Link
-                    to="/order/tracking"
-                    target="blank"
-                    className="link-small me-1"
-                  >
-                    /orders/tracking
-                  </Link>
-                  when you access the page. Default value is orders/tracking.
                 </small>
               </div>
             </div>
@@ -2684,16 +2708,19 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="wishlist"
+                value={url.wishlist}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/wishlist"
-                    target="blank"
+                    to={`/${url.wishlist}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /wishlist
+                    /{url.wishlist}
                   </Link>
                   when you access the page. Default value is wishlist.
                 </small>
@@ -2708,16 +2735,19 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="productDetails"
+                value={url.productDetails}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/compare"
-                    target="blank"
+                    to={`/${url.productDetails}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /compare
+                    /{url.productDetails}
                   </Link>
                   when you access the page. Default value is compare.
                 </small>
@@ -2732,18 +2762,21 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userDashboard"
+                value={url.userDashboard}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/customer/overview"
-                    target="blank"
+                    to={`/${url.userDashboard}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /customer/overview
+                    /{url.userDashboard}
                   </Link>
-                  when you access the page. Default value is customer/overview.
+                  when you access the page. Default value is userDashboard.
                 </small>
               </div>
             </div>
@@ -2756,43 +2789,21 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userAddress"
+                value={url.userAddress}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/customer/address"
-                    target="blank"
+                    to={`/${url.userAddress}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /customer/address
+                    /{url.userAddress}
                   </Link>
                   when you access the page. Default value is customer/address.
-                </small>
-              </div>
-            </div>
-
-            <div className="mt-3">
-              <label className="form-label" htmlFor="site-title">
-                Customer change password page slug
-              </label>
-              <input
-                className="form-control py-4 label-cookie"
-                id="site-title"
-                type="text"
-              />
-              <div className="mt-1">
-                <small>
-                  It will look like{" "}
-                  <Link
-                    to="/customer/change-password"
-                    target="blank"
-                    className="link-small me-1"
-                  >
-                    /customer/change-password
-                  </Link>
-                  when you access the page. Default value is
-                  customer/change-password.
                 </small>
               </div>
             </div>
@@ -2805,16 +2816,19 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userDownloads"
+                value={url.userDownloads}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/customer/downloads"
-                    target="blank"
+                    to={`/${url.userDownloads}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /customer/downloads
+                    /{url.userDownloads}
                   </Link>
                   when you access the page. Default value is customer/downloads.
                 </small>
@@ -2829,16 +2843,19 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userEditAccount"
+                value={url.userEditAccount}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/customer/edit-accout"
-                    target="blank"
+                    to={`/${url.userEditAccount}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /customer/edit-account
+                    /{url.userEditAccount}
                   </Link>
                   when you access the page. Default value is
                   customer/edit-account.
@@ -2848,22 +2865,25 @@ function ThemeEcommerce() {
 
             <div className="mt-3">
               <label className="form-label" htmlFor="site-title">
-                Customer order returns page slug
+                Customer order Returns page slug
               </label>
               <input
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userOrderReturns"
+                value={url.userOrderReturns}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/admin/ecommerce/order-returns"
-                    target="blank"
+                    to={`/${url.userOrderReturns}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /cutomer/order-returns
+                    /{url.userOrderReturns}
                   </Link>
                   when you access the page.Default value is
                   customer/order-returns.
@@ -2879,18 +2899,21 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userOrders"
+                value={url.userOrders}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/admin/ecommerce/order-returns"
-                    target="blank"
+                    to={`/${url.userOrders}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /cutomer/order-returns
+                    /{url.userOrders}
                   </Link>
-                  when you access the page.Default value is ccustomer/orders.
+                  when you access the page.Default value is customer/orders.
                 </small>
               </div>
             </div>
@@ -2903,16 +2926,19 @@ function ThemeEcommerce() {
                 className="form-control py-4 label-cookie"
                 id="site-title"
                 type="text"
+                name="userProductReviews"
+                value={url.userProductReviews}
+                onChange={handleInputChange}
               />
               <div className="mt-1">
                 <small>
                   It will look like{" "}
                   <Link
-                    to="/admin/ecommerce/product-reviews"
-                    target="blank"
+                    to={`/${url.userProductReviews}`}
+                    target="_blank"
                     className="link-small me-1"
                   >
-                    /cutomer/product-reviews
+                    /{url.userProductReviews}
                   </Link>
                   when you access the page.Default value is
                   customer/product-reviews.
@@ -2921,6 +2947,7 @@ function ThemeEcommerce() {
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Ecommerce.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -15,6 +15,8 @@ import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
 import Login from "../../../../assets/login.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Ecommerce() {
   let [isVisible, setIsVisible] = useState(false);
@@ -22,7 +24,6 @@ function Ecommerce() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +51,6 @@ function Ecommerce() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -69,13 +69,10 @@ function Ecommerce() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -83,6 +80,9 @@ function Ecommerce() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -126,21 +126,50 @@ function Ecommerce() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [logoImage, setLogoImage] = useState(null);
+  const [logoImageUrl, setLogoImageUrl] = useState(null);
+  const [loginBackgroundImage, setLoginBackgroundImage] = useState(null);
+  const [loginBackgroundImageUrl, setLoginBackgroundImageUrl] = useState(null);
+  const [registerBackgroundImage, setRegisterBackgroundImage] = useState(null);
+  const [registerBackgroundImageUrl, setRegisterBackgroundImageUrl] =
+    useState(null);
+  const [emptyCartImage, setEmptyCartImage] = useState(null);
+  const [emptyCartImageUrl, setEmptyCartImageUrl] = useState(null);
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event, part) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
+      if (part === "logo") {
+        setLogoImage(file);
+        setLogoImageUrl(url);
+      } else if (part === "loginBackground") {
+        setLoginBackgroundImage(file);
+        setLoginBackgroundImageUrl(url);
+      } else if (part === "registerBackground") {
+        setRegisterBackgroundImage(file);
+        setRegisterBackgroundImageUrl(url);
+      } else if (part === "emptyCart") {
+        setEmptyCartImage(file);
+        setEmptyCartImageUrl(url);
+      }
     }
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let toggleecommerce = () => {
@@ -195,7 +224,7 @@ function Ecommerce() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -218,11 +247,13 @@ function Ecommerce() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1306,9 +1337,9 @@ function Ecommerce() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1334,9 +1365,9 @@ function Ecommerce() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1362,9 +1393,9 @@ function Ecommerce() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2135,7 +2166,7 @@ function Ecommerce() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
@@ -2518,7 +2549,7 @@ function Ecommerce() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
           <div className="d-flex justify-content-end mt-3 me-2">
             <button className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex">
               Save Changes
@@ -2818,12 +2849,12 @@ function Ecommerce() {
               </label>
               <div
                 className="image-placeholder image-admin mt-3"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("fileInputLogo").click()}
               >
-                {imageUrl ? (
+                {logoImageUrl ? (
                   <img
                     alt="Uploaded preview"
-                    src={imageUrl}
+                    src={logoImageUrl}
                     width="100"
                     height="100"
                   />
@@ -2832,16 +2863,16 @@ function Ecommerce() {
                 )}
               </div>
               <input
-                id="fileInput"
+                id="fileInputLogo"
                 type="file"
                 name="file"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={(event) => handleFileChange(event, "logo")}
               />
               <Link
                 className="ms-2 text-decoration-none choose-url"
                 to="#"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("fileInputLogo").click()}
               >
                 Choose image <br />
               </Link>
@@ -2859,12 +2890,14 @@ function Ecommerce() {
               <label htmlFor="">Login background image</label>
               <div
                 className="image-placeholder image-admin mt-3"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                  document.getElementById("fileInputLogin").click()
+                }
               >
-                {imageUrl ? (
+                {loginBackgroundImageUrl ? (
                   <img
                     alt="Uploaded preview"
-                    src={imageUrl}
+                    src={loginBackgroundImageUrl}
                     width="100"
                     height="100"
                   />
@@ -2873,16 +2906,18 @@ function Ecommerce() {
                 )}
               </div>
               <input
-                id="fileInput"
+                id="fileInputLogin"
                 type="file"
                 name="file"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={(event) => handleFileChange(event, "loginBackground")}
               />
               <Link
                 className="ms-2 text-decoration-none choose-url"
                 to="#"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                  document.getElementById("fileInputLogin").click()
+                }
               >
                 Choose image <br />
               </Link>
@@ -2900,12 +2935,14 @@ function Ecommerce() {
               <label htmlFor="">Register background image</label>
               <div
                 className="image-placeholder image-admin mt-3"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                  document.getElementById("fileInputRegister").click()
+                }
               >
-                {imageUrl ? (
+                {registerBackgroundImageUrl ? (
                   <img
                     alt="Uploaded preview"
-                    src={imageUrl}
+                    src={registerBackgroundImageUrl}
                     width="100"
                     height="100"
                   />
@@ -2914,16 +2951,20 @@ function Ecommerce() {
                 )}
               </div>
               <input
-                id="fileInput"
+                id="fileInputRegister"
                 type="file"
                 name="file"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={(event) =>
+                  handleFileChange(event, "registerBackground")
+                }
               />
               <Link
                 className="ms-2 text-decoration-none choose-url"
                 to="#"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                  document.getElementById("fileInputRegister").click()
+                }
               >
                 Choose image <br />
               </Link>
@@ -2941,12 +2982,14 @@ function Ecommerce() {
               <label htmlFor="">Empty cart image</label>
               <div
                 className="image-placeholder image-admin mt-3"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                  document.getElementById("fileInputEmptyCart").click()
+                }
               >
-                {imageUrl ? (
+                {emptyCartImageUrl ? (
                   <img
                     alt="Uploaded preview"
-                    src={imageUrl}
+                    src={emptyCartImageUrl}
                     width="100"
                     height="100"
                   />
@@ -2955,16 +2998,18 @@ function Ecommerce() {
                 )}
               </div>
               <input
-                id="fileInput"
+                id="fileInputEmptyCart"
                 type="file"
                 name="file"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={(event) => handleFileChange(event, "emptyCart")}
               />
               <Link
                 className="ms-2 text-decoration-none choose-url"
                 to="#"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() =>
+                  document.getElementById("fileInputEmptyCart").click()
+                }
               >
                 Choose image <br />
               </Link>
@@ -3015,6 +3060,7 @@ function Ecommerce() {
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

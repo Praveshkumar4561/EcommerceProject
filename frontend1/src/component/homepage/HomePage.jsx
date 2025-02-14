@@ -26,6 +26,8 @@ import Shipping from "../../assets/Shipping.svg";
 import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function HomePage() {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -50,7 +52,7 @@ function HomePage() {
     const faqdata = async () => {
       try {
         const response = await axios.get(
-          "http://54.183.54.164:1600/pagesdatafaqs"
+          "http://89.116.170.231:1600/pagesdatafaqs"
         );
         setFaqs(response.data);
       } catch (error) {
@@ -67,7 +69,7 @@ function HomePage() {
   useEffect(() => {
     const showdata = async () => {
       try {
-        let answer = await axios.get("http://54.183.54.164:1600/blogpostdata");
+        let answer = await axios.get("http://89.116.170.231:1600/blogpostdata");
         setBlog(answer.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -99,7 +101,7 @@ function HomePage() {
 
   useEffect(() => {
     const alldata = async () => {
-      let response = await axios.get("http://54.183.54.164:1600/getannounce");
+      let response = await axios.get("http://89.116.170.231:1600/getannounce");
       setUser(response.data);
     };
     alldata();
@@ -118,12 +120,37 @@ function HomePage() {
   };
 
   let [detail, setDetail] = useState([]);
+  const [auth, setAuth] = useState(true);
+  const [message, setMessage] = useState("");
+  let navigate = useNavigate();
 
-  let userdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/alldata");
-    setDetail(response.data);
-  };
-  userdata();
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const isAuthenticated = localStorage.getItem("auth");
+      if (!storedUser || isAuthenticated !== "true") {
+        navigate("/");
+      } else if (storedUser && storedUser.tokenExpiration) {
+        console.log("Stored expiration:", storedUser.tokenExpiration);
+        console.log("Current time:", Date.now());
+        if (Date.now() > storedUser.tokenExpiration) {
+          console.log("Token expired. Logging out...");
+          localStorage.removeItem("user");
+          localStorage.removeItem("auth");
+          toast.error("Session expired. Please log in again.");
+          navigate("/");
+        } else {
+          setDetail(storedUser);
+          setAuth(true);
+        }
+      } else {
+        console.log("No tokenExpiration found in localStorage.");
+      }
+    };
+    checkTokenExpiration();
+    const intervalId = setInterval(checkTokenExpiration, 1000);
+    return () => clearInterval(intervalId);
+  }, [navigate]);
 
   let { count, setCount } = useContext(UserContext);
 
@@ -133,7 +160,9 @@ function HomePage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -146,7 +175,7 @@ function HomePage() {
   let homedata = async () => {
     try {
       let response = await axios.get(
-        "http://54.183.54.164:1600/productpagedata"
+        "http://89.116.170.231:1600/productpagedata"
       );
       setProduct(response.data);
     } catch (error) {
@@ -159,13 +188,11 @@ function HomePage() {
 
   let labeldata = async () => {
     let response = await axios.get(
-      "http://54.183.54.164:1600/productlabelsdata"
+      "http://89.116.170.231:1600/productlabelsdata"
     );
     setLabel(response.data);
   };
   labeldata();
-
-  let { navigate } = useNavigate();
 
   const addCartItem = async (data) => {
     const formData = new FormData();
@@ -180,25 +207,34 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/addcart",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        "http://89.116.170.231:1600/addcart",
+        formData
       );
-      alert("Product successfully added in the cart");
-      navigate("/cart");
-      detailsdata();
+      toast.success("Product successfully added on the cart", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
     } catch (error) {
-      console.error("Error adding item to cart:", error);
+      toast.error("Product is not added on the cart", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
     }
   };
 
   let addWishlistItem = async (data) => {
     const formData = new FormData();
     formData.append("product_name", data.name);
+    formData.append("store", data.store);
+    formData.append("price", data.price);
+    formData.append("price_sale", data.price_sale);
+    formData.append("sku", data.sku);
     const imageFileName = data.image ? data.image.split("/").pop() : null;
     if (imageFileName) {
       formData.append("image", imageFileName);
@@ -207,14 +243,62 @@ function HomePage() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/wishlistpost",
+        "http://89.116.170.231:1600/wishlistpost",
         formData
       );
-      alert("Product successfully added to the wishlist");
-    } catch (error) {
-      console.error("Error adding to wishlist:", error);
-    }
+      toast.success("Product successfully added on the wishlist", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    } catch (error) {}
   };
+
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
 
   return (
     <>
@@ -242,66 +326,74 @@ function HomePage() {
             )}
           </div>
 
-          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {Array.isArray(detail) && detail.length > 0 ? (
-              detail.slice(0, 1).map((data, key) => (
-                <div
-                  className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1"
-                  key={key}
-                >
-                  <div className="free-shipping d-flex flex-row me-3 mt-2">
-                    <span className="d-flex align-items-center gap-2">
-                      <div className="d-sm-flex d-flex pt-1">
-                        <Link to="/user/dashboard" className="nav-link">
-                          {data.first_name ? (
-                            <div
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                borderRadius: "50%",
-                                color: "white",
-                                fontSize: "18px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
-                            >
-                              {data.first_name.charAt(0).toUpperCase()}
-                            </div>
-                          ) : (
-                            <img
-                              src={Profile}
-                              alt="Profile"
-                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
-                            />
-                          )}
-                        </Link>
-
-                        <div className="d-flex flex-column me-0">
-                          <span className="me-4 pe-2">
-                            Hello {data.first_name || "User"}
-                          </span>
-                          <span className="ms-4">{data.email}</span>
-                        </div>
-
-                        <Link to="/cart" className="nav-link d-flex mt-2">
-                          <img
-                            src={Cart}
-                            alt="Cart"
-                            className="img-fluid profile1 me-2"
-                          />
-                          <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
-                            {count}
+          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block d-none">
+            {detail && detail.first_name ? (
+              <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
+                <div className="free-shipping d-flex flex-row me-3 mt-2">
+                  <span className="d-flex align-items-center gap-2">
+                    <div className="d-sm-flex pt-1">
+                      <Link to={`/${url.userDashboard}`} className="nav-link">
+                        {detail.first_name ? (
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "50%",
+                              color: "white",
+                              fontSize: "18px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
+                          >
+                            {detail.first_name.charAt(0).toUpperCase()}
                           </div>
-                        </Link>
+                        ) : (
+                          <img
+                            src={Profile}
+                            alt="Profile"
+                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                          />
+                        )}
+                      </Link>
+
+                      <div className="d-flex flex-column me-0">
+                        <span className="me-4 pe-2">
+                          Hello {detail.first_name}
+                        </span>
+                        <span className="ms-4">
+                          {detail.email || "No Email"}
+                        </span>
                       </div>
-                    </span>
-                  </div>
+
+                      <Link
+                        to={`/${url.cart}`}
+                        className="nav-link d-flex mt-2"
+                      >
+                        <img
+                          src={Cart}
+                          alt="Cart"
+                          className="img-fluid profile1 me-2 ms-1"
+                          style={{
+                            position: "relative",
+                            cursor: "pointer",
+                            zIndex: 1000,
+                          }}
+                        />
+                        <div className="addcarts-lyte2 ms-3 mt-2 pt-1">
+                          {count}
+                        </div>
+                      </Link>
+                    </div>
+                  </span>
                 </div>
-              ))
+              </div>
             ) : (
-              <Link className="text-decoration-none text-dark" to="/login">
+              <Link
+                className="text-decoration-none text-dark"
+                to={`/${url.login}`}
+              >
                 <div className="d-flex align-items-end justify-content-end">
                   <div
                     style={{
@@ -311,27 +403,39 @@ function HomePage() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
                     }}
                     className="profile-lyt img-fluid me-2 mb-1 border rounded-5 py-1 bg-light"
                   >
                     <FontAwesomeIcon icon={faUser} />
                   </div>
-                  <div className="d-flex flex-column mt-2">
+
+                  <div
+                    className="d-flex flex-column mt-2"
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
+                    }}
+                  >
                     <span className="text-start me-5">Hello User</span>
                     <span className="text-start">
                       <Link
-                        to="/login"
+                        to={`/${url.login}`}
                         className="text-decoration-none text-dark"
                       >
                         Login / Register
                       </Link>
                     </span>
                   </div>
-                  <Link to="/cart" className="nav-link d-flex mb-2">
+
+                  <Link to={`/${url.cart}`} className="nav-link d-flex mb-2">
                     <img
                       src={Cart}
                       alt="Cart"
-                      className="img-fluid profile1 me-2"
+                      className="img-fluid profile1 me-2 ms-2"
                     />
                     <div className="addcarts-lyte2 ms-3 mt-1 pt-2">{count}</div>
                   </Link>
@@ -344,11 +448,14 @@ function HomePage() {
         <div className="container bg-light">
           <div className="row d-flex justify-content-start text-center align-items-start mt-0 mb-lg-0 mb-2">
             <div className="col-12 col-md-8 d-flex align-items-center mb-4 mt-0 d-flex flex-row">
-              <img
-                src={Tonic}
-                alt="404"
-                className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
-              />
+              <Link className="navbar-brand d-non d-lg-block" to="/">
+                <img
+                  src={logoUrl || Tonic}
+                  alt="Tonic Logo"
+                  className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                  style={{ height: `${logoHeight}px`, width: "200px" }}
+                />
+              </Link>
 
               <div className="input-welcome1 d-flex flex-row align-items-center mt-1">
                 <input
@@ -646,7 +753,7 @@ function HomePage() {
                         >
                           {data.label || "Label"}
                         </button>
-                        <Link to="/product-details">
+                        <Link to={`/${url.productDetails}`}>
                           <img
                             src={`/api/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
@@ -685,6 +792,9 @@ function HomePage() {
                         <h5 className="mt-0 lh-base text-start text-lg-start">
                           {data.name || "Product Name"}
                         </h5>
+                        <h6 className="mt-0 lh-base text-start text-lg-start">
+                          SKU:{data.sku || "Product Name"}
+                        </h6>
                         <div
                           className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
                           style={{ fontFamily: "verdana" }}
@@ -704,6 +814,7 @@ function HomePage() {
             </div>
           </div>
         </div>
+        <ToastContainer />
 
         <div className="container-fluid mt-3 mt-lg-0 cart-cart">
           <h3 className="mt-lg-4 mt-0 text-center">Trending Products</h3>
@@ -732,7 +843,7 @@ function HomePage() {
                             {data.label}
                           </button>
                         )}
-                        <Link to="/product-details">
+                        <Link to={`/${url.productDetails}`}>
                           <img
                             src={`/api/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
@@ -771,6 +882,9 @@ function HomePage() {
                         <h5 className="mt-0 lh-base text-start text-lg-start">
                           {data.name || "Product Name"}
                         </h5>
+                        <h6 className="mt-0 lh-base text-start text-lg-start">
+                          SKU:{data.sku || "Product Name"}
+                        </h6>
                         <div
                           className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
                           style={{ fontFamily: "verdana" }}
@@ -818,7 +932,7 @@ function HomePage() {
                         </button>
                       )}
 
-                      <Link to="/product-details">
+                      <Link to={`/${url.productDetails}`}>
                         <img
                           src={`/api/src/image/${data.image}`}
                           alt={data.name || "Product Image"}
@@ -851,9 +965,7 @@ function HomePage() {
                         </button>
                       </div>
                     </div>
-
                     <hr />
-
                     <div className="ms-3">
                       <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
                         {data.store || "Product Store"}
@@ -861,6 +973,9 @@ function HomePage() {
                       <h5 className="mt-0 lh-base text-start text-lg-start">
                         {data.name || "Product Name"}
                       </h5>
+                      <h6 className="mt-0 lh-base text-start text-lg-start">
+                        SKU:{data.sku || "Product Name"}
+                      </h6>
                       <div
                         className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
                         style={{ fontFamily: "verdana" }}

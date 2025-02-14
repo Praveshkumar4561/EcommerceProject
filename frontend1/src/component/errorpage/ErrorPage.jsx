@@ -6,9 +6,9 @@ import Tonic from "../../assets/Tonic.svg";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
-
-import axios from "axios";
 import UserContext from "../../context/UserContext";
+import axios from "axios";
+import Page from "../../assets/Pagen.webp";
 
 function ErrorPage() {
   let { count, setCount } = useContext(UserContext);
@@ -19,7 +19,9 @@ function ErrorPage() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -50,15 +52,90 @@ function ErrorPage() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [errorImage, setErrorImage] = useState(
+    localStorage.getItem("errorPageImage") || Page
+  );
+
+  useEffect(() => {
+    const storedImage = localStorage.getItem("errorPageImage");
+    if (storedImage) {
+      setErrorImage(storedImage);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
+  let [cart, setCart] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setCart(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
   return (
     <>
       <div className="container cart-cart" id="container-custom">
-        <div className="container-custom">
+        <div className="container-custom ms-3 ms-lg-0">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
 
                 <button
@@ -72,7 +149,7 @@ function ErrorPage() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
@@ -89,18 +166,14 @@ function ErrorPage() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -112,15 +185,18 @@ function ErrorPage() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
@@ -133,7 +209,10 @@ function ErrorPage() {
             </nav>
 
             {isDropdownOpen && (
-              <div className="custom-dropdown cart-cart" ref={dropdownRef}>
+              <div
+                className="custom-dropdown cart-cart rounded-0"
+                ref={dropdownRef}
+              >
                 <ul className="navbar-nav">
                   <li className="nav-item">
                     <Link className="nav-link" to="/">
@@ -145,18 +224,14 @@ function ErrorPage() {
                       Shop
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
+
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -172,12 +247,16 @@ function ErrorPage() {
 
           <main className="container mt-5 lorem-error">
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
-              Error Page
+              Error
             </h1>
-            <nav aria-label="breadcrumb" id="container-contact1">
+            <nav
+              aria-label="breadcrumb"
+              id="container-contact1"
+              className="ms-5 ps-3 ms-lg-0 ps-lg-0"
+            >
               <ol className="breadcrumb d-flex flex-wrap gap-0">
                 <li className="breadcrumb-item navbar-item fw-medium">
-                  <Link target="blank" to="/" className="text-dark">
+                  <Link target="_blank" to="/" className="text-dark">
                     Home
                   </Link>
                 </li>
@@ -191,25 +270,24 @@ function ErrorPage() {
       </div>
       <div></div>
 
-      <div className="container-fluid d-flex justify-content-center align-items-start align-items-md-start align-items-lg-start align-items-xl-start align-items-xxl-star lorem-error">
+      <div className="container-fluid d-flex justify-content-center align-items-start align-items-md-start align-items-lg-start align-items-xl-start align-items-xxl-start lorem-error">
         <div className="container text-center">
           <div className="row">
-            <div className="col d-flex flex-column justify-content-center align-items-center">
-              <h2 className="heading text-dark fw-medium">404</h2>
+            <div className="col-12 d-flex flex-column justify-content-center align-items-center mt-0">
+              <img src={errorImage} alt="" className="img-fluid" />
+
               <h3 className="opps cart-cart fw-medium">
                 Oops! The page you requested was not found!
               </h3>
               <p className="sorry-para text-dark cart-cart">
                 Sorry, but the page you are looking for doesn’t exist!
               </p>
-              <Link
-                className="btn btn-secondary home-button py-2 d-flex justify-content-center align-items-center px-1"
-                to="/"
-              >
-                <span className="cart-cart d-flex flex-row align-items-cemter">
-                  Back to home
-                </span>
-              </Link>
+
+              <button className="btn btn-success d-flex py-4 cart-cart1 rounded-0">
+                <Link to="/" className="text-light text-decoration-none">
+                  Back to Home
+                </Link>
+              </button>
             </div>
           </div>
         </div>

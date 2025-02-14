@@ -29,7 +29,7 @@ function AdminReset() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/forgot-password",
+        "http://89.116.170.231:1600/forgot-password",
         {
           email: email,
         }
@@ -37,7 +37,7 @@ function AdminReset() {
       if (response.ok) {
         toast.success("Password reset link sent to your email!", {
           position: "bottom-right",
-          autoClose: 5000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -46,7 +46,7 @@ function AdminReset() {
       } else {
         toast.error("Failed to send reset link. Please try again.", {
           position: "bottom-right",
-          autoClose: 5000,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -56,7 +56,7 @@ function AdminReset() {
     } catch (error) {
       toast.error("An error occurred. Please try again.", {
         position: "bottom-right",
-        autoClose: 5000,
+        autoClose: 1500,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

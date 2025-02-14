@@ -33,7 +33,9 @@ function ProductHome() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -69,7 +71,7 @@ function ProductHome() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let response = await axios.get("http://54.183.54.164:1600/brandsdata");
+      let response = await axios.get("http://89.116.170.231:1600/brandsdata");
       setUser(response.data);
     };
     fetchData();
@@ -90,7 +92,9 @@ function ProductHome() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
+    let response = await axios.get(
+      "http://89.116.170.231:1600/productpagedata"
+    );
     setImage(response.data);
   };
 
@@ -123,20 +127,70 @@ function ProductHome() {
   let [home, setHome] = useState([]);
 
   let homedata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
+    let response = await axios.get(
+      "http://89.116.170.231:1600/productpagedata"
+    );
     setHome(response.data);
   };
   homedata();
+
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
 
   return (
     <>
       <div className="container" id="container-custom">
         <div className="container-custom ms-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
 
                 <button
@@ -150,7 +204,7 @@ function ProductHome() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
@@ -167,18 +221,14 @@ function ProductHome() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -190,15 +240,18 @@ function ProductHome() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
@@ -226,18 +279,14 @@ function ProductHome() {
                       Shop
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
+
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -255,10 +304,14 @@ function ProductHome() {
             <h1 className="fw-medium mb-3 text-center container-contact fs-2">
               Products
             </h1>
-            <nav aria-label="breadcrumb" id="container-contact1">
+            <nav
+              aria-label="breadcrumb"
+              id="container-contact1"
+              className="ms-5 ps-3 ms-lg-0 ps-lg-0"
+            >
               <ol className="breadcrumb d-flex flex-wrap gap-0">
                 <li className="breadcrumb-item navbar-item fw-medium">
-                  <Link target="blank" to="/" className="text-dark">
+                  <Link target="_blank" to="/" className="text-dark">
                     Home
                   </Link>
                 </li>

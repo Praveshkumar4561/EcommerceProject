@@ -24,6 +24,8 @@ import Cart_logout from "../../assets/Cart_logout.webp";
 import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CustomerAccount() {
   let { count, setCount } = useContext(UserContext);
@@ -34,7 +36,9 @@ function CustomerAccount() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -44,82 +48,15 @@ function CustomerAccount() {
 
   let navigate = useNavigate();
 
-  let [user, setUser] = useState({
-    name: "",
-    phone: "",
-    date: "",
-    email: "",
-  });
-
-  const [errors, setErrors] = useState({
-    name: "",
-    phone: "",
-    date: "",
-    email: "",
-  });
-
-  const { name, phone, date, email } = user;
-  let { id } = useParams();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("ID:", id);
-    if (validateForm()) {
-      try {
-        const response = await axios.put(
-          `http://54.183.54.164:1600/userupdate/${id}`,
-          user
-        );
-        setUser(response.data);
-        console.log("User data updated:", response.data);
-        navigate("/user/address");
-        alert("Data updated successfully");
-      } catch (error) {
-        console.error("Error occurred:", error);
-        alert("Error occurred while updating the user data. Please try again.");
-      }
-    } else {
-      alert("Form validation failed. Please check your inputs.");
-    }
-  };
-
-  useEffect(() => {
-    somedata();
-  }, []);
-
-  let somedata = async () => {
-    let response = await axios.get(
-      `http://54.183.54.164:1600/dashboardsome/${1}`
-    );
-    setUser(response.data[0]);
-  };
-
-  const onInputChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
-  const validateForm = () => {
-    let formErrors = {};
-    let isValid = true;
-
-    if (!date) {
-      formErrors.email = "Date is required";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      formErrors.email = "Date is invalid";
-      isValid = false;
-    }
-    setErrors(formErrors);
-    return isValid;
-  };
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [password, setPassword] = useState([]);
 
   useEffect(() => {
     const alldata = async () => {
       try {
-        let response = await axios.get("http://54.183.54.164:1600/getannounce");
+        let response = await axios.get(
+          "http://89.116.170.231:1600/getannounce"
+        );
         setPassword(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -144,15 +81,18 @@ function CustomerAccount() {
   const [message, setMessage] = useState("");
 
   let handleDelete = () => {
-    axios.defaults.withCredentials = false;
+    axios.defaults.withCredentials = true;
     axios
-      .get("http://54.183.54.164:1600/logout")
+      .get("http://89.116.170.231:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userDetails");
+          localStorage.removeItem("user");
+          localStorage.removeItem("auth");
           setAuth(false);
           setMessage("Logged out successfully!");
-          alert("Logged out successfully!");
-          navigate("/login");
+          navigate(`/${url.login}`);
         } else {
           setMessage(res.data.Error);
         }
@@ -163,22 +103,138 @@ function CustomerAccount() {
       });
   };
 
-  let deleteAccount = async (id) => {
+  const [errors, setErrors] = useState({
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    dob: "",
+    email: "",
+  });
+
+  const [detail, setDetail] = useState({
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    dob: "",
+    email: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const full_name = `${detail.first_name} ${detail.last_name}`;
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const { id } = storedUser;
+    if (!id) {
+      toast.error("User ID not found. Please log in again.");
+      navigate("/login");
+      return;
+    }
     try {
-      await axios.delete(`http://loclahost:1600/deleteaccount/${id}`, user);
-      alert("Data deleted");
+      const response = await axios.put(
+        `http://89.116.170.231:1600/userupdated/${id}`,
+        detail
+      );
+      if (response.status === 200) {
+        const updatedUser = {
+          ...storedUser,
+          first_name: detail.first_name,
+          last_name: detail.last_name,
+          phone_number: detail.phone_number,
+          dob: detail.dob,
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setDetail(updatedUser);
+        toast.success("Data updated successfully", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeButton: true,
+          draggable: true,
+        });
+      }
     } catch (error) {
-      console.error("Error", error);
+      toast.error("Data update failed", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
     }
   };
 
-  let [detail, setDetail] = useState([]);
-
-  let userdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/alldata");
-    setDetail(response.data);
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "full_name") {
+      const [first_name, ...lastNameParts] = value.split(" ");
+      const last_name = lastNameParts.join(" ");
+      setDetail({
+        ...detail,
+        first_name: first_name,
+        last_name: last_name,
+      });
+    } else {
+      setDetail({ ...detail, [name]: value });
+    }
   };
-  userdata();
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (!storedUser) {
+      navigate("/login");
+    } else {
+      setDetail({
+        first_name: storedUser.first_name || "",
+        last_name: storedUser.last_name || "",
+        phone_number: storedUser.phone_number || "",
+        dob: storedUser.dob || "",
+        email: storedUser.email || "",
+      });
+    }
+  }, [navigate]);
+
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
 
   return (
     <>
@@ -207,65 +263,73 @@ function CustomerAccount() {
           </div>
 
           <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
-            {Array.isArray(detail) && detail.length > 0 ? (
-              detail.slice(0, 1).map((data, key) => (
-                <div
-                  className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1"
-                  key={key}
-                >
-                  <div className="free-shipping d-flex flex-row me-3 mt-2">
-                    <span className="d-flex align-items-center gap-2">
-                      <div className="d-sm-flex d-flex pt-1">
-                        <Link to="/user/dashboard" className="nav-link">
-                          {data.first_name ? (
-                            <div
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                borderRadius: "50%",
-                                color: "white",
-                                fontSize: "18px",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                              className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
-                            >
-                              {data.first_name.charAt(0).toUpperCase()}
-                            </div>
-                          ) : (
-                            <img
-                              src={Profile}
-                              alt="Profile"
-                              className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
-                            />
-                          )}
-                        </Link>
-
-                        <div className="d-flex flex-column me-0">
-                          <span className="me-4 pe-2">
-                            Hello {data.first_name || "User"}
-                          </span>
-                          <span className="ms-4">{data.email}</span>
-                        </div>
-
-                        <Link to="/cart" className="nav-link d-flex mt-2">
-                          <img
-                            src={Cart}
-                            alt="Cart"
-                            className="img-fluid profile1 me-2"
-                          />
-                          <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
-                            {count}
+            {detail && detail.first_name ? (
+              <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
+                <div className="free-shipping d-flex flex-row me-3 mt-2">
+                  <span className="d-flex align-items-center gap-2">
+                    <div className="d-sm-flex d-flex pt-1">
+                      <Link to={`/${url.userDashboard}`} className="nav-link">
+                        {detail.first_name ? (
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              borderRadius: "50%",
+                              color: "white",
+                              fontSize: "18px",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
+                          >
+                            {detail.first_name.charAt(0).toUpperCase()}
                           </div>
-                        </Link>
+                        ) : (
+                          <img
+                            src={Profile}
+                            alt="Profile"
+                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
+                          />
+                        )}
+                      </Link>
+
+                      <div className="d-flex flex-column me-0">
+                        <span className="me-4 pe-2">
+                          Hello {detail.first_name}
+                        </span>
+                        <span className="ms-4">
+                          {detail.email || "No Email"}
+                        </span>
                       </div>
-                    </span>
-                  </div>
+
+                      <Link
+                        to={`/${url.cart}`}
+                        className="nav-link d-flex mt-2"
+                      >
+                        <img
+                          src={Cart}
+                          alt="Cart image"
+                          className="img-fluid profile1 me-2"
+                          style={{
+                            position: "relative",
+                            cursor: "pointer",
+                            zIndex: "1000",
+                          }}
+                        />
+                        <div className="addcarts-lyte2 ms-3 mt-2 pt-2">
+                          {count}
+                        </div>
+                      </Link>
+                    </div>
+                  </span>
                 </div>
-              ))
+              </div>
             ) : (
-              <Link className="text-decoration-none text-dark" to="/login">
+              <Link
+                className="text-decoration-none text-dark"
+                to={`/${url.login}`}
+              >
                 <div className="d-flex align-items-end justify-content-end">
                   <div
                     style={{
@@ -275,23 +339,35 @@ function CustomerAccount() {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
                     }}
                     className="profile-lyt img-fluid me-2 mb-1 border rounded-5 py-1 bg-light"
                   >
                     <FontAwesomeIcon icon={faUser} />
                   </div>
-                  <div className="d-flex flex-column mt-2">
+
+                  <div
+                    className="d-flex flex-column mt-2"
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
+                    }}
+                  >
                     <span className="text-start me-5">Hello User</span>
                     <span className="text-start">
                       <Link
-                        to="/login"
+                        to={`/${url.login}`}
                         className="text-decoration-none text-dark"
                       >
                         Login / Register
                       </Link>
                     </span>
                   </div>
-                  <Link to="/cart" className="nav-link d-flex mb-2">
+
+                  <Link to={`/${url.cart}`} className="nav-link d-flex mb-2">
                     <img
                       src={Cart}
                       alt="Cart"
@@ -308,11 +384,14 @@ function CustomerAccount() {
         <div className="container bg-light">
           <div className="row d-flex justify-content-start text-center align-items-start mt-0 mb-lg-0 mb-2">
             <div className="col-12 col-md-8 d-flex align-items-center mb-4 mt-0 d-flex flex-row">
-              <img
-                src={Tonic}
-                alt="404"
-                className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
-              />
+              <Link className="navbar-brand d-non d-lg-block" to="/">
+                <img
+                  src={logoUrl || Tonic}
+                  alt="Tonic Logo"
+                  className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                  style={{ height: `${logoHeight}px`, width: "200px" }}
+                />
+              </Link>
 
               <div className="input-welcome1 d-flex flex-row align-items-center mt-3 pt-4">
                 <input
@@ -525,56 +604,56 @@ function CustomerAccount() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 customer-dashboard text-start bg-body shadow-lg rounded-0 ms-0">
               <ul className="px-3 py-3 list-lyte">
                 <li>
-                  <Link to="/user/dashboard" className="text-dark">
+                  <Link to={`/${url.userDashboard}`} className="text-dark">
                     <img src={Over} alt="404" className="me-2" />
                     Overview
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/orders" className="text-dark">
+                  <Link to={`/${url.userOrders}`} className="text-dark">
                     <img src={Cart_user} alt="404" className="me-2" />
                     Orders
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/product-reviews" className="text-dark">
+                  <Link to={`/${url.userProductReviews}`} className="text-dark">
                     <img src={Cart_reviews} alt="404" className="me-2" />
                     Reviews
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/downloads" className="text-dark">
+                  <Link to={`/${url.userDownloads}`} className="text-dark">
                     <img src={Cart_download} alt="404" className="me-2" />
                     Downloads
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/order-returns" className="text-dark">
+                  <Link to={`/${url.userOrderReturns}`} className="text-dark">
                     <img src={Cart_order} alt="404" className="me-2" />
                     Order Returns Requets
                   </Link>
                 </li>
 
                 <li>
-                  <Link to="/user/address" className="text-dark">
+                  <Link to={`/${url.userAddress}`} className="text-dark">
                     <img src={Address} alt="404" className="me-2" />
                     Addresses
                   </Link>
                 </li>
 
                 <li>
-                  <Link to={`/user/edit-account/${1}`} className="text-dark">
+                  <Link to={`/${url.userEditAccount}`} className="text-dark">
                     <img src={Cart_setting} alt="404" className="me-2" />
                     Account Settings
                   </Link>
                 </li>
 
-                <li>
-                  <img src={Cart_logout} alt="404" className="me-2" />
+                <li onClick={handleDelete} style={{ cursor: "pointer" }}>
+                  <img src={Cart_logout} alt="Logout" className="me-2" />
                   Logout
                 </li>
               </ul>
@@ -588,7 +667,7 @@ function CustomerAccount() {
                 >
                   <Link
                     className="text-decoration-none"
-                    to={`/user/edit-account/${1}`}
+                    to={`/${url.userEditAccount}`}
                     style={{ color: "#0c55aa" }}
                   >
                     Profile
@@ -599,26 +678,29 @@ function CustomerAccount() {
                   <Link
                     className="text-decoration-none"
                     style={{ color: "#0c55aa" }}
-                    to={`/user/change-password/${user.id}`}
+                    to={`/${url.changePassword}`}
                   >
                     Change Password
                   </Link>
                 </button>
               </div>
+
               <form action="" method="" className="w-100">
                 <div className="d-flex justify-content- name-user w-100 gap-3">
                   <div className="d-flex flex-column justify-content-between w-100">
-                    <label htmlFor="">Full Name</label>
+                    <label htmlFor="full_name">Full Name</label>
                     <input
                       type="text"
-                      placeholder="Enter name"
+                      placeholder="Enter full name"
                       className="form-control mt-2 py-4 address-name"
-                      name="name"
-                      value={name}
+                      name="full_name"
+                      value={`${detail.first_name || ""} ${
+                        detail.last_name || ""
+                      }`}
                       onChange={onInputChange}
                     />
-                    {errors.name && (
-                      <div className="text-danger">{errors.name}</div>
+                    {errors.full_name && (
+                      <div className="text-danger">{errors.full_name}</div>
                     )}
                   </div>
                 </div>
@@ -628,17 +710,16 @@ function CustomerAccount() {
                   <input
                     type="date"
                     className="form-control mt-2 py-4 address-name"
-                    name="date"
-                    value={date}
+                    name="dob"
+                    value={detail.dob || ""}
                     onChange={onInputChange}
                     style={{
-                      cursor: "pointer",
                       zIndex: "1000",
                       position: "relative",
                     }}
                   />
-                  {errors.date && (
-                    <div className="text-danger">{errors.date}</div>
+                  {errors.dob && (
+                    <div className="text-danger">{errors.dob}</div>
                   )}
                 </div>
 
@@ -648,7 +729,7 @@ function CustomerAccount() {
                     type="email"
                     className="form-control mt-2 py-4 address-name"
                     name="email"
-                    value={email}
+                    value={detail.email}
                     disabled
                   />
                   {errors.email && (
@@ -661,12 +742,12 @@ function CustomerAccount() {
                   <input
                     type="text"
                     className="form-control mt-2 py-4 address-name"
-                    name="phone"
-                    value={phone}
+                    name="phone_number"
+                    value={detail.phone_number}
                     onChange={onInputChange}
                   />
-                  {errors.phone && (
-                    <div className="text-danger">{errors.phone}</div>
+                  {errors.phone_number && (
+                    <div className="text-danger">{errors.phone_number}</div>
                   )}
                 </div>
 
@@ -680,6 +761,7 @@ function CustomerAccount() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">

@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ThemeNewsLetters.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
@@ -14,6 +15,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ThemeNewsLetters() {
   const [query, setQuery] = useState("");
@@ -43,7 +46,6 @@ function ThemeNewsLetters() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -62,13 +64,10 @@ function ThemeNewsLetters() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -76,6 +75,9 @@ function ThemeNewsLetters() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -133,7 +135,19 @@ function ThemeNewsLetters() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -180,19 +194,125 @@ function ThemeNewsLetters() {
     }
   };
 
-  const [showPalette, setShowPalette] = useState(false);
-
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
-  };
-
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
+
+  let [user, setUser] = useState({
+    news_popup: "",
+    popup_title: "",
+    popup_subtitle: "",
+    popup_description: "",
+    popup_delay: "",
+    display_page: "",
+    file: null,
+  });
+
+  const {
+    news_popup,
+    popup_title,
+    popup_subtitle,
+    popup_description,
+    popup_delay,
+    display_page,
+    file,
+  } = user;
+
+  const handleSubmit = async () => {
+    const formdata = new FormData();
+    formdata.append("news_popup", user.news_popup);
+    formdata.append("popup_title", user.popup_title);
+    formdata.append("popup_subtitle", user.popup_subtitle);
+    formdata.append("popup_description", user.popup_description);
+    formdata.append("popup_delay", user.popup_delay);
+    formdata.append("display_page", user.display_page);
+    if (user.file) {
+      formdata.append("file", user.file);
+    } else if (user.image === "") {
+      formdata.append("deleteImage", "true");
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/themenewspost", formdata);
+      toast.success("Newsletter successfully created", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newletter is not created", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const onInputChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setUser((prevUser) => {
+      if (type === "checkbox") {
+        if (name === "display_page") {
+          let updatedPages = prevUser.display_page
+            ? prevUser.display_page.split(",")
+            : [];
+          if (checked) {
+            updatedPages.push(value);
+          } else {
+            updatedPages = updatedPages.filter((page) => page !== value);
+          }
+          return { ...prevUser, display_page: updatedPages.join(",") };
+        } else {
+          return { ...prevUser, [name]: checked ? "yes" : "no" };
+        }
+      } else {
+        return { ...prevUser, [name]: value };
+      }
+    });
+  };
+
+  useEffect(() => {
+    const fetchNewsletterData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/themenewsdata"
+        );
+        if (response.data) {
+          setUser((prevUser) => ({
+            ...prevUser,
+            news_popup: response.data.news_popup || "no",
+            popup_title: response.data.popup_title || "",
+            popup_subtitle: response.data.popup_subtitle || "",
+            popup_description: response.data.popup_description || "",
+            popup_delay: response.data.popup_delay || "",
+            display_page: response.data.display_page || "",
+            image: response.data.image || "",
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching newsletter data:", error);
+      }
+    };
+    fetchNewsletterData();
+  }, []);
+
+  const deleteImage = () => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      image: "",
+      file: null,
+    }));
+    setImageUrl(null);
+  };
 
   return (
     <>
@@ -212,11 +332,13 @@ function ThemeNewsLetters() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1300,9 +1422,9 @@ function ThemeNewsLetters() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1328,9 +1450,9 @@ function ThemeNewsLetters() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1356,9 +1478,9 @@ function ThemeNewsLetters() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2129,7 +2251,7 @@ function ThemeNewsLetters() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
@@ -2512,14 +2634,17 @@ function ThemeNewsLetters() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-2 mb-lg-0">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-3 me-2 border d-flex">
+            <button
+              className="btn btn-success button-change-news py-4 mt-4 mt-lg-3 me-2 border d-flex"
+              onClick={handleSubmit}
+            >
               Save Changes
             </button>
           </div>
 
-          <hr className="custom-changes1" />
+          <hr className="custom-changes-news" />
           <form className="content-form ms-3 me-3">
             <div className="mb-3 mt-3">
               <div>
@@ -2528,9 +2653,17 @@ function ThemeNewsLetters() {
                 </label>
                 <div className="form-check form-switch mb-3">
                   <input
-                    className="form-check-input"
                     type="checkbox"
+                    className="form-check-input"
                     id="has-action"
+                    name="news_popup"
+                    checked={user.news_popup === "yes"}
+                    onChange={(e) =>
+                      setUser({
+                        ...user,
+                        news_popup: e.target.checked ? "yes" : "no",
+                      })
+                    }
                   />
                 </div>
 
@@ -2538,25 +2671,46 @@ function ThemeNewsLetters() {
                   <label className="form-label" htmlFor="site-title">
                     Popup Image
                   </label>
+
                   <div
-                    className="image-placeholder image-admin1"
+                    className="image-placeholder image-admin1 position-relative"
                     onClick={() => document.getElementById("fileInput").click()}
                   >
+                    {(imageUrl || user.image) && (
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="position-absolute top-0 end-0 m-2 bg-secondary rounded-circle p-1 text-light"
+                        style={{ zIndex: 1000 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteImage();
+                        }}
+                      />
+                    )}
+
                     {imageUrl ? (
                       <img
                         alt="Uploaded preview"
                         src={imageUrl}
                         width="100"
                         height="100"
+                        className="img-fluid w-100 h-100 rounded-2"
+                      />
+                    ) : user.image ? (
+                      <img
+                        src={`/api/src/image/${user.image}`}
+                        alt="Uploaded preview"
+                        className="img-fluid w-100 h-100 rounded-2"
                       />
                     ) : (
                       <img
                         src={Cutting}
-                        alt="404"
+                        alt="Fallback preview"
                         className="img-fluid w-100 h-100 rounded-2"
                       />
                     )}
                   </div>
+
                   <input
                     id="fileInput"
                     type="file"
@@ -2581,30 +2735,43 @@ function ThemeNewsLetters() {
                   </Link>
                 </div>
 
-                <label className="form-label" htmlFor="date-format">
-                  Popup Title
-                </label>
-                <input
-                  type="text"
-                  className="label-hotline form-control py-4"
-                />
+                <div>
+                  <label className="form-label" htmlFor="date-format">
+                    Popup Title
+                  </label>
+                  <input
+                    type="text"
+                    className="label-hotline form-control py-4"
+                    name="popup_title"
+                    value={user.popup_title}
+                    onChange={onInputChange}
+                  />
+                </div>
 
-                <label className="form-label mt-3" htmlFor="date-format">
-                  Popup Subtitle
-                </label>
-                <input
-                  type="text"
-                  className="label-hotline form-control py-4"
-                />
+                <div>
+                  <label className="form-label mt-3" htmlFor="date-format">
+                    Popup Subtitle
+                  </label>
+                  <input
+                    type="text"
+                    className="label-hotline form-control py-4"
+                    name="popup_subtitle"
+                    value={user.popup_subtitle}
+                    onChange={onInputChange}
+                  />
 
-                <label className="form-label mt-3" htmlFor="hotline">
-                  Popup Description
-                </label>
-                <textarea
-                  className="form-control py-4 label-hotline"
-                  type="text"
-                  style={{ height: "78px" }}
-                />
+                  <label className="form-label mt-3" htmlFor="hotline">
+                    Popup Description
+                  </label>
+                  <textarea
+                    className="form-control label-hotline"
+                    type="text"
+                    style={{ height: "73px" }}
+                    name="popup_description"
+                    value={user.popup_description}
+                    onChange={onInputChange}
+                  />
+                </div>
               </div>
             </div>
 
@@ -2613,14 +2780,19 @@ function ThemeNewsLetters() {
                 Popup Delay (seconds)
               </label>
               <input
+                type="number"
                 className="form-control py-4 label-hotline"
                 id="site-title"
-                type="number"
+                name="popup_delay"
+                value={user.popup_delay}
+                onChange={onInputChange}
               />
-              <small className="text-muted">
-                Set the delay time to show the popup after the page is loaded.
-                Set 0 to show the popup immediately.
-              </small>
+              <div className="mt-1">
+                <small className="text-muted">
+                  Set the delay time to show the popup after the page is loaded.
+                  Set 0 to show the popup immediately.
+                </small>
+              </div>
             </div>
 
             <div>
@@ -2628,19 +2800,35 @@ function ThemeNewsLetters() {
                 Display on pages
               </label>
               <div className="d-lg-flex mt-2">
-                <input type="checkbox" className="form-check-input" />
-                <label htmlFor="" className="ms-2">
-                  Homepage
-                </label>
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  name="display_page"
+                  value="Homepage"
+                  checked={
+                    user.display_page?.split(",").includes("Homepage") || false
+                  }
+                  onChange={onInputChange}
+                />
+                <label className="ms-2">Homepage</label>
 
-                <input type="checkbox" className="form-check-input ms-3 mt-" />
-                <label htmlFor="" className="ms-2">
-                  All pages
-                </label>
+                <input
+                  type="checkbox"
+                  className="form-check-input ms-3"
+                  name="display_page"
+                  value="All pages"
+                  checked={
+                    user.display_page?.split(",").includes("All pages") || false
+                  }
+                  onChange={onInputChange}
+                />
+                <label className="ms-2">All pages</label>
               </div>
             </div>
           </form>
         </div>
+
+        <ToastContainer />
       </div>
     </>
   );

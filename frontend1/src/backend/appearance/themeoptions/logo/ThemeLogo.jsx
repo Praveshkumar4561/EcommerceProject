@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ThemeLogo.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
@@ -13,9 +13,9 @@ import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
-import Shofy from "../../../../assets/shofy.webp";
-import Shofy1 from "../../../../assets/shofy1.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ThemeLogo() {
   const [query, setQuery] = useState("");
@@ -45,7 +45,6 @@ function ThemeLogo() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -64,13 +63,10 @@ function ThemeLogo() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -78,6 +74,9 @@ function ThemeLogo() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -124,27 +123,10 @@ function ThemeLogo() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
-  };
 
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
@@ -190,6 +172,97 @@ function ThemeLogo() {
     }
   };
 
+  const [logoLightUrl, setLogoLightUrl] = useState(null);
+  const [faviconUrl, setFaviconUrl] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [error, setError] = useState("");
+
+  const [user, setUser] = useState({
+    favicon: null,
+    logo: null,
+    logo_height: "",
+    logo_light: null,
+  });
+  const { logo_height } = user;
+
+  const handleFileChange = (event, type) => {
+    const file = event.target.files[0];
+    if (file) {
+      setUser((prevUser) => ({ ...prevUser, [type]: file }));
+      const fileUrl = URL.createObjectURL(file);
+      if (type === "favicon") setFaviconUrl(fileUrl);
+      if (type === "logo") setLogoUrl(fileUrl);
+      if (type === "logo_light") setLogoLightUrl(fileUrl);
+    }
+  };
+
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "logo_height") {
+      if (value > 150) {
+        setError("Logo height must be less than or equal to 150px.");
+      } else {
+        setError("");
+      }
+    }
+    setUser({ ...user, [name]: value });
+  };
+
+  const handleSaveChanges = async () => {
+    const formData = new FormData();
+    if (user.favicon) formData.append("favicon", user.favicon);
+    if (user.logo) formData.append("logo", user.logo);
+    if (user.logo_light) formData.append("logo_light", user.logo_light);
+    formData.append("logo_height", user.logo_height);
+    try {
+      const response = await axios.post(
+        "http://89.116.170.231:1600/update-settings",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Logo updated successfully!", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error(response.data.message || "Failed to update Logo!", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } catch (error) {
+      console.error("Error updating logo:", error);
+      toast.error("Failed to update logo!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => setUser(response.data))
+      .catch((error) => console.error("Error fetching font settings:", error));
+  }, []);
+
   return (
     <>
       <div
@@ -208,11 +281,13 @@ function ThemeLogo() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1297,9 +1372,9 @@ function ThemeLogo() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1325,9 +1400,9 @@ function ThemeLogo() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1353,9 +1428,9 @@ function ThemeLogo() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2126,7 +2201,7 @@ function ThemeLogo() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded">
+        <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
           <nav className="nav flex-column bg-light general-theme pt-2 ps-2 ps-lg-0">
@@ -2508,162 +2583,186 @@ function ThemeLogo() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
           <div className="d-flex justify-content-end mt-2 mt-lg-3 me-2">
-            <button className="btn btn-success button-change py-4 mt-0 border d-flex">
+            <button
+              className="btn btn-success button-change-logos py-4 mt-0 border d-flex"
+              onClick={handleSaveChanges}
+            >
               Save Changes
             </button>
           </div>
-          <hr className="custom-changes3" />
+
+          <hr className="custom-changes3-logos mt-3" />
           <form className="content-form-page ms-3">
             <div className="mb-3">
               <div className="mt-3 pt-2">
-                <label className="mt-5">Logo light</label>
-                <div
-                  className="image-placeholder image-admin2 mt-3"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={imageUrl}
-                      width="100"
-                      height="100"
-                    />
-                  ) : (
-                    <img src={Cutting} alt="404" className="w-75 h-75" />
-                  )}
+                <div>
+                  <label className="mt-5 pt-2">Favicon</label>
+                  <div
+                    className="image-placeholder image-admin2 mt-3"
+                    onClick={() =>
+                      document.getElementById("fileInputFavicon").click()
+                    }
+                  >
+                    {faviconUrl ? (
+                      <img
+                        alt="Uploaded preview"
+                        src={faviconUrl}
+                        width="100"
+                        height="100"
+                      />
+                    ) : (
+                      <img
+                        src={`/api/src/image/${user.favicon_url}`}
+                        alt="404"
+                        className="w-100 h-100 rounded img-thumbnail"
+                      />
+                    )}
+                  </div>
+                  <input
+                    id="fileInputFavicon"
+                    type="file"
+                    name="file"
+                    style={{ display: "none" }}
+                    onChange={(event) => handleFileChange(event, "favicon")}
+                  />
+                  <Link
+                    className="ms-2 text-decoration-none choose-url"
+                    to="#"
+                    onClick={() =>
+                      document.getElementById("fileInputFavicon").click()
+                    }
+                  >
+                    Choose image <br />
+                  </Link>
+                  <span className="ms-3 me-2">or</span>
+                  <Link to="#" className="text-decoration-none choose-url">
+                    Add from URL
+                  </Link>
+                  <br />
                 </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose image <br />
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
-                <br />
 
-                <label className="mt-2">Favicon</label>
-                <div
-                  className="image-placeholder image-admin2 mt-3"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={imageUrl}
-                      width="100"
-                      height="100"
-                    />
-                  ) : (
-                    <img
-                      src={Shofy}
-                      alt="404"
-                      className="w-100 h-100 rounded img-thumbnail"
-                    />
-                  )}
+                <div>
+                  <label className="mt-2">Logo</label>
+                  <div
+                    className="image-placeholder image-admin2 mt-3"
+                    onClick={() =>
+                      document.getElementById("fileInputLogo").click()
+                    }
+                  >
+                    {logoUrl ? (
+                      <img
+                        alt="Uploaded preview"
+                        src={logoUrl}
+                        width="100"
+                        height="100"
+                      />
+                    ) : (
+                      <img
+                        src={`/api/src/image/${user.logo_url}`}
+                        alt="404"
+                        className="w-100 h-100 img-thumbnail rounded"
+                      />
+                    )}
+                  </div>
+
+                  <input
+                    id="fileInputLogo"
+                    type="file"
+                    name="file"
+                    style={{ display: "none" }}
+                    onChange={(event) => handleFileChange(event, "logo")}
+                  />
+                  <Link
+                    className="ms-2 text-decoration-none choose-url"
+                    to="#"
+                    onClick={() =>
+                      document.getElementById("fileInputLogo").click()
+                    }
+                  >
+                    Choose image <br />
+                  </Link>
+                  <span className="ms-3 me-2">or</span>
+                  <Link to="#" className="text-decoration-none choose-url">
+                    Add from URL
+                  </Link>
                 </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose image <br />
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
 
-                <br />
+                <div className="mt-2 me-3">
+                  <div className="mb-2">
+                    <label className="form-label" htmlFor="show-site-name">
+                      Logo height (px)
+                    </label>
 
-                <label className="mt-2">Logo</label>
-                <div
-                  className="image-placeholder image-admin2 mt-3"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={imageUrl}
-                      width="100"
-                      height="100"
+                    <input
+                      type="number"
+                      className="form-control py-4 label-hotline"
+                      name="logo_height"
+                      value={logo_height}
+                      onChange={onInputChange}
                     />
-                  ) : (
-                    <img
-                      src={Shofy1}
-                      alt="404"
-                      className="w-100 h-100 img-thumbnail rounded"
-                    />
-                  )}
+                    {error && <small className="text-danger">{error}</small>}
+                  </div>
+
+                  <small className="text-muted">
+                    Set the height of the logo in pixels. The default value is
+                    50px.
+                  </small>
                 </div>
-                <input
-                  id="fileInput"
-                  type="file"
-                  name="file"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  Choose image <br />
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
+
+                <div>
+                  <label className="mt-2">Logo light</label>
+                  <div
+                    className="image-placeholder image-admin2 mt-3"
+                    onClick={() =>
+                      document.getElementById("fileInputLogoLight").click()
+                    }
+                  >
+                    {logoLightUrl ? (
+                      <img
+                        alt="Uploaded preview"
+                        src={logoLightUrl}
+                        width="100"
+                        height="100"
+                      />
+                    ) : (
+                      <img
+                        src={`/api/src/image/${user.logo_light}`}
+                        alt="404"
+                        className="w-100 h-100 rounded"
+                      />
+                    )}
+                  </div>
+
+                  <input
+                    id="fileInputLogoLight"
+                    type="file"
+                    name="file"
+                    style={{ display: "none" }}
+                    onChange={(event) => handleFileChange(event, "logo_light")}
+                  />
+
+                  <Link
+                    className="ms-2 text-decoration-none choose-url"
+                    to="#"
+                    onClick={() =>
+                      document.getElementById("fileInputLogoLight").click()
+                    }
+                  >
+                    Choose image <br />
+                  </Link>
+                  <span className="ms-3 me-2">or</span>
+                  <Link to="#" className="text-decoration-none choose-url">
+                    Add from URL
+                  </Link>
+                  <br />
+                </div>
               </div>
             </div>
-
-            <div className="mb-3">
-              <label className="form-label" htmlFor="show-site-name">
-                Logo height (px)
-              </label>
-              <input
-                type="number"
-                className="form-control py-4 label-hotline"
-              />
-            </div>
-            <small className="text-muted">
-              <p>
-                Set the height of the logo in pixels. The default value is 35px.
-              </p>
-            </small>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

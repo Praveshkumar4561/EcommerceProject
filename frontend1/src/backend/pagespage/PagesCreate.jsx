@@ -17,24 +17,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import Cutting from "../../assets/Cutting.webp";
-
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function PagesCreate() {
   let navigate = useNavigate();
-  const [editorData, setEditorData] = useState("");
-
-  const handleEditorChange = (event, editor) => {
-    const data = editor.getData();
-    setEditorData(data);
-  };
-
-  const insertHtml = () => {
-    const htmlToInsert = "<p>Your HTML content here</p>";
-    setEditorData((prevData) => prevData + htmlToInsert);
-  };
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -95,6 +84,9 @@ function PagesCreate() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -141,7 +133,7 @@ function PagesCreate() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -186,7 +178,19 @@ function PagesCreate() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -209,7 +213,7 @@ function PagesCreate() {
 
   const [user, setUser] = useState({
     name: "",
-    permalink: "http://rxlyte.com/",
+    permalink: "",
     description: "",
     status: "",
     template: "",
@@ -245,17 +249,27 @@ function PagesCreate() {
     formData.append("file", user.file);
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/pagespost",
+        "http://89.116.170.231:1600/pagespost",
         formData
       );
-      if (response.status === 200) {
-        alert("Data successfully submitted and file uploaded");
-        navigate("/admin/pages");
-      } else {
-        console.error("Error during submission");
-      }
+      toast.success("Data successfully submitted and file uploaded", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      navigate("/admin/pages");
     } catch (error) {
-      console.error("Error during submission:", error);
+      toast.error("Data is not submitted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -362,11 +376,13 @@ function PagesCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1451,9 +1467,9 @@ function PagesCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1479,9 +1495,9 @@ function PagesCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1507,9 +1523,9 @@ function PagesCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2297,8 +2313,8 @@ function PagesCreate() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2327,9 +2343,9 @@ function PagesCreate() {
                     <input
                       type="text"
                       className="form-control mt-2 py-4"
-                      placeholder="Name"
+                      placeholder="permalink"
                       name="permalink"
-                      value={user.permalink}
+                      value={permalink}
                       onChange={onInputChange}
                     />
                   </div>
@@ -2338,7 +2354,7 @@ function PagesCreate() {
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="Short description"
                       name="description"
                       value={description}
@@ -2459,7 +2475,7 @@ function PagesCreate() {
                     <div className="mb-3">
                       <textarea
                         id="content2"
-                        className="form-control text-create"
+                        className="form-control"
                         placeholder="Short description"
                         value={textAreaData2}
                         onChange={handleTextAreaChange2}
@@ -2467,7 +2483,6 @@ function PagesCreate() {
                       />
                     </div>
                   )}
-                  <div className="mt-3"></div>
                 </div>
 
                 <div className="d-flex flex-column mb-4 mt-0 w-100">
@@ -2486,6 +2501,130 @@ function PagesCreate() {
                   />
                 </div>
               </form>
+
+              <div className="card mt-3 seo-metas1">
+                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                  <div>
+                    <h5 className="card-title1">Search Engine Optimize</h5>
+                    <Link
+                      to="#"
+                      className="link-primary1 primary2 meta float-end"
+                      onClick={seodatapage}
+                      style={{ zIndex: "100" }}
+                    >
+                      Edit SEO meta
+                    </Link>
+                    <hr />
+                    <p className="card-text text-dark">
+                      Setup meta title & description to make your site easy to
+                      discovered on search engines such as Google
+                      <hr />
+                      {seo && (
+                        <>
+                          <div className="mt-3">
+                            <label htmlFor="">SEO Title</label>
+                            <input
+                              type="text"
+                              className="form-control mt-2 py-4 seo-edit"
+                              placeholder="SEO Title"
+                            />
+                          </div>
+
+                          <div className="mt-3">
+                            <label htmlFor="seo-description">
+                              SEO Description
+                            </label>
+                            <textarea
+                              id="seo-description"
+                              className="form-control mt-2 seo-edit"
+                              placeholder="SEO Description"
+                              style={{
+                                height: "100px",
+                                overflow: "auto",
+                                resize: "vertical",
+                                minHeight: "100px",
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="mt-3 pt-2 ms-2">SEO image</label>
+                            <div className="image-card border-0 ps-1">
+                              <div
+                                className="image-placeholder"
+                                onClick={() =>
+                                  document.getElementById("fileInput").click()
+                                }
+                              >
+                                {imageUrl ? (
+                                  <img
+                                    alt="Uploaded preview"
+                                    src={imageUrl}
+                                    width="100"
+                                    height="100"
+                                  />
+                                ) : (
+                                  <img
+                                    src={Cutting}
+                                    alt="404"
+                                    className="w-75 h-75 img-fluid"
+                                  />
+                                )}
+                              </div>
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="file"
+                                style={{ display: "none" }}
+                                onChange={handleFileChange}
+                              />
+                              <Link
+                                className="ms-5"
+                                to="#"
+                                onClick={() =>
+                                  document.getElementById("fileInput").click()
+                                }
+                              >
+                                Choose image <br />
+                              </Link>
+                              <span className="ms-2 me-2 ms-5">or</span>
+                              <Link to="#" onClick={handleAddFromUrl}>
+                                Add from URL
+                              </Link>
+                            </div>
+                          </div>
+
+                          <div className="d-flex gap-2 ms-2">
+                            <label htmlFor="">Index</label>
+                          </div>
+
+                          <div className="ms-2 mt-2 pb-2">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="check"
+                              checked
+                            />
+                            <label htmlFor="" className="ms-2">
+                              Index
+                            </label>
+
+                            <input
+                              className="form-check-input ms-2"
+                              type="radio"
+                              value="index"
+                              name="check"
+                            />
+                            <label htmlFor="" className="ms-2">
+                              No index
+                            </label>
+                          </div>
+                        </>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
@@ -2518,9 +2657,9 @@ function PagesCreate() {
                   onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="">Published</option>
-                  <option value="">Draft</option>
-                  <option value="">Pending</option>
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                  <option value="pending">Pending</option>
                 </select>
               </div>
 
@@ -2530,14 +2669,14 @@ function PagesCreate() {
                 <select
                   className="form-select w-100"
                   style={{ height: "45px" }}
-                  name="status"
-                  value={status}
+                  name="template"
+                  value={template}
                   onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="">Default</option>
-                  <option value="">Full width</option>
-                  <option value="">Without layout</option>
+                  <option value="default">Default</option>
+                  <option value="full-width">Full width</option>
+                  <option value="without layout">Without layout</option>
                 </select>
               </div>
 
@@ -2585,8 +2724,8 @@ function PagesCreate() {
                 <select
                   className="form-select w-100"
                   style={{ height: "45px" }}
-                  name="status"
-                  value={status}
+                  name="breadcrumb"
+                  value={breadcrumb}
                   onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
@@ -2599,6 +2738,7 @@ function PagesCreate() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -17,13 +17,13 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import Cutting from "../../assets/Cutting.webp";
-
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function GalleryCreate() {
   let navigate = useNavigate();
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -33,11 +33,6 @@ function GalleryCreate() {
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
-  let [seo, setSeo] = useState(false);
-
-  const [showEdit2, setShowEdit2] = useState(true);
-  const [editorData2, setEditorData2] = useState("");
-  const [textAreaData2, setTextAreaData2] = useState("");
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
 
@@ -47,43 +42,6 @@ function GalleryCreate() {
 
   let togglespecification = () => {
     setSpecifcation(!Specification);
-  };
-
-  const handleTextAreaChange2 = (e) => {
-    setTextAreaData2(e.target.value);
-  };
-
-  const showEditorClicked2 = (e) => {
-    e.preventDefault();
-    setShowEdit2(!showEdit2);
-  };
-
-  const mediaUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      }
-    });
   };
 
   const routes = {
@@ -97,7 +55,6 @@ function GalleryCreate() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -116,13 +73,10 @@ function GalleryCreate() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -130,6 +84,9 @@ function GalleryCreate() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -173,14 +130,10 @@ function GalleryCreate() {
     }
   };
 
-  let seodata = () => {
-    setSeo(!seo);
-  };
-
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -219,24 +172,40 @@ function GalleryCreate() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [user, setUser] = useState({
     name: "",
     permalink: "",
+    description: "",
     orders: "",
     date: "",
     feature: false,
     status: "",
     file: null,
   });
-  let { name, permalink, orders, date, feature, status, file } = user;
+  let { name, permalink, description, orders, date, feature, status, file } =
+    user;
 
   let handleSubmit = async () => {
     let formData = new FormData();
     formData.append("name", name);
     formData.append("permalink", permalink);
+    const cleanContent = stripHTML(user.description);
+    formData.append("description", cleanContent);
     formData.append("orders", orders);
     formData.append("date", date);
     formData.append("feature", feature ? "Yes" : "No");
@@ -244,12 +213,30 @@ function GalleryCreate() {
     formData.append("file", file);
 
     const response = await axios.post(
-      "http://54.183.54.164:1600/gallerypost",
+      "http://89.116.170.231:1600/gallerypost",
       formData
     );
     if (response.status === 200) {
-      navigate("/admin/galleries");
-      alert("data successfully submitted and file upload");
+      try {
+        toast.success("data successfully submitted and file upload", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/admin/galleries");
+      } catch (error) {
+        toast.error("Data is not submitted", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     } else {
       console.error("error");
     }
@@ -263,6 +250,81 @@ function GalleryCreate() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
+  const [editorData2, setEditorData2] = useState(user.description || "");
+  const [textAreaData2, setTextAreaData2] = useState(description);
+  const [showEdit2, setShowEdit2] = useState(true);
+
+  const handleEditorChange2 = (event, editor) => {
+    const data = editor.getData();
+    setEditorData2(data);
+    setUser((prevState) => ({
+      ...prevState,
+      description: data,
+    }));
+  };
+
+  const handleTextAreaChange2 = (e) => {
+    const data = e.target.value;
+    setTextAreaData2(data);
+    setUser((prevState) => ({
+      ...prevState,
+      description: data,
+    }));
+  };
+
+  const showEditorClicked2 = (e) => {
+    e.preventDefault();
+    setShowEdit2(!showEdit2);
+  };
+
+  const mediaUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("Image upload failed");
+          }
+
+          const data = await response.json();
+          console.log("Image uploaded successfully", data);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      }
+    });
+  };
+
+  const stripHTML = (htmlContent) => {
+    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  useEffect(() => {
+    setEditorData2(user.description || "");
+  }, [user.description]);
+
+  useEffect(() => {
+    setUser((prevState) => ({
+      ...prevState,
+      description: prevState.description || "",
+    }));
+  }, []);
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
@@ -300,11 +362,13 @@ function GalleryCreate() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
           <input
             type="search"
@@ -1388,9 +1452,9 @@ function GalleryCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1416,9 +1480,9 @@ function GalleryCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1444,9 +1508,9 @@ function GalleryCreate() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2237,8 +2301,8 @@ function GalleryCreate() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2297,10 +2361,13 @@ function GalleryCreate() {
                       <div className="mb-3 w-100">
                         <CKEditor
                           editor={ClassicEditor}
-                          data={editorData2}
+                          data={user.description || ""}
                           onChange={(event, editor) => {
                             const data = editor.getData();
-                            setEditorData2(data);
+                            setUser((prevState) => ({
+                              ...prevState,
+                              description: data,
+                            }));
                           }}
                           config={{
                             toolbar: [
@@ -2384,7 +2451,7 @@ function GalleryCreate() {
                       <div className="mb-3">
                         <textarea
                           id="content2"
-                          className="form-control text-create"
+                          className="form-control"
                           placeholder="Short description"
                           value={textAreaData2}
                           onChange={handleTextAreaChange2}
@@ -2406,6 +2473,18 @@ function GalleryCreate() {
                       id="name-create1"
                       name="orders"
                       value={orders}
+                      onChange={onInputChange}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-column mb-1 mt-1 w-100">
+                    <label htmlFor="">Created At</label>
+                    <input
+                      type="date"
+                      className="form-control py-4 mt-2"
+                      id="name-create1"
+                      name="date"
+                      value={date}
                       onChange={onInputChange}
                     />
                   </div>
@@ -2460,9 +2539,9 @@ function GalleryCreate() {
                   onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="">Published</option>
-                  <option value="">Draft</option>
-                  <option value="">Pending</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
                 </select>
               </div>
 
@@ -2506,6 +2585,7 @@ function GalleryCreate() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

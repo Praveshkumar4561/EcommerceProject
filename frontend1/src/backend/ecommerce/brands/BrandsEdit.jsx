@@ -16,6 +16,8 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BrandsEdit() {
   const [query, setQuery] = useState("");
@@ -25,6 +27,11 @@ function BrandsEdit() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  let [brand1, setBrand1] = useState(false);
+
+  let brandclicked1 = () => {
+    setBrand1(!brand1);
+  };
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -45,7 +52,6 @@ function BrandsEdit() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -64,13 +70,10 @@ function BrandsEdit() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -78,8 +81,10 @@ function BrandsEdit() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -135,7 +140,19 @@ function BrandsEdit() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -203,7 +220,7 @@ function BrandsEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://54.183.54.164:1600/brandupdate/${id}`,
+        `http://89.116.170.231:1600/brandupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -224,7 +241,7 @@ function BrandsEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/brandssomedata/${id}`
+      `http://89.116.170.231:1600/brandssomedata/${id}`
     );
     setUser(response.data[0]);
   };
@@ -250,7 +267,7 @@ function BrandsEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -279,11 +296,13 @@ function BrandsEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1367,9 +1386,9 @@ function BrandsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1395,9 +1414,9 @@ function BrandsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1423,9 +1442,9 @@ function BrandsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2218,8 +2237,8 @@ function BrandsEdit() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2324,6 +2343,148 @@ function BrandsEdit() {
                   </div>
                 </div>
               </form>
+              <div className="card mt-3 seo-metas1">
+                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                  <div className="w-100">
+                    <h5 className="card-title1">Search Engine Optimize</h5>
+                    <Link
+                      to="#"
+                      className="link-primary1 primary2 meta float-end"
+                      onClick={brandclicked1}
+                      style={{ zIndex: "100" }}
+                    >
+                      Edit SEO meta
+                    </Link>
+                    <div className="border seo-names mt-3"></div>
+                    <div className="lh-base d-flex flex-column mt-2">
+                      <h5 className="seo-name">{user.name}</h5>
+                      <span className="seo-name1">{user.permalink}</span>
+                      <span>
+                        <span className="text-secondary">
+                          {new Date(user.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "2-digit",
+                            year: "numeric",
+                          })}
+                          :
+                        </span>
+                        <span className="card-text text-dark ms-2">
+                          {user.description}
+                          <div className="border seo-names mt-3"></div>
+                          {brand1 && (
+                            <>
+                              <div className="mt-3">
+                                <label htmlFor="">SEO Title</label>
+                                <input
+                                  type="text"
+                                  className="form-control mt-2 py-4 seo-edit"
+                                  placeholder="SEO Title"
+                                />
+                              </div>
+
+                              <div className="mt-3">
+                                <label htmlFor="seo-description">
+                                  SEO Description
+                                </label>
+                                <textarea
+                                  id="seo-description"
+                                  className="form-control mt-2 seo-edit"
+                                  placeholder="SEO Description"
+                                  style={{
+                                    height: "100px",
+                                    overflow: "auto",
+                                    resize: "vertical",
+                                    minHeight: "100px",
+                                  }}
+                                />
+                              </div>
+
+                              <div>
+                                <label className="mt-3 pt-2 ms-2">
+                                  SEO image
+                                </label>
+                                <div className="image-card border-0 ps-1">
+                                  <div
+                                    className="image-placeholder"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInput")
+                                        .click()
+                                    }
+                                  >
+                                    {imageUrl ? (
+                                      <img
+                                        alt="Uploaded preview"
+                                        src={imageUrl}
+                                        width="100"
+                                        height="100"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={Cutting}
+                                        alt="404"
+                                        className="w-75 h-75 img-fluid"
+                                      />
+                                    )}
+                                  </div>
+                                  <input
+                                    id="fileInput"
+                                    type="file"
+                                    name="file"
+                                    style={{ display: "none" }}
+                                    onChange={handleFileChange}
+                                  />
+                                  <Link
+                                    className="ms-5"
+                                    to="#"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInput")
+                                        .click()
+                                    }
+                                  >
+                                    Choose image <br />
+                                  </Link>
+                                  <span className="ms-2 me-2 ms-5">or</span>
+                                  <Link to="#" onClick={handleAddFromUrl}>
+                                    Add from URL
+                                  </Link>
+                                </div>
+                              </div>
+
+                              <div className="d-flex gap-2 ms-2">
+                                <label htmlFor="">Index</label>
+                              </div>
+
+                              <div className="ms-2 mt-2 pb-2">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="check"
+                                  checked
+                                />
+                                <label htmlFor="" className="ms-2">
+                                  Index
+                                </label>
+
+                                <input
+                                  className="form-check-input ms-2"
+                                  type="radio"
+                                  value="index"
+                                  name="check"
+                                />
+                                <label htmlFor="" className="ms-2">
+                                  No index
+                                </label>
+                              </div>
+                            </>
+                          )}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
@@ -2422,6 +2583,7 @@ function BrandsEdit() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

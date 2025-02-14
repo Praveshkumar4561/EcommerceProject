@@ -16,7 +16,7 @@ body {
 
 #container-custom {
   width: 100vw;
-  height: 180px;
+  height: 190px;
   background-color: #f2f5f7;
   display: flex;
   align-items: center;
@@ -123,7 +123,7 @@ body {
     bottom: 0.9rem;
     right: -2rem;
   }
-  .navbar-icons {
+  .navbar-icons1 {
     position: absolute;
     top: 1.4rem;
     right: 5rem;
@@ -148,10 +148,21 @@ body {
   font-family: Verdana, Tahoma, sans-serif;
 }
 
-@media (max-width: 450px) {
-  .navbar-icons {
+@media (max-width: 576px) {
+  .navbar-icons1 {
     display: flex;
     flex-wrap: nowrap;
+    position: absolute;
+    right: 19%;
+  }
+}
+
+@media (max-width: 450px) {
+  .navbar-icons1 {
+    display: flex;
+    flex-wrap: nowrap;
+    position: absolute;
+    right: 19%;
   }
 }
 
@@ -178,7 +189,7 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
-  bottom: 42%;
+  bottom: 32%;
 }
 
 #container-contact1 {
@@ -286,6 +297,9 @@ body {
 .button-account {
   background-color: #0a9a73;
   color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .login {
@@ -372,4 +386,29 @@ h1.checkout {
 .address-register {
   width: 100%;
   max-width: 100%;
+}
+
+.login-alignment {
+  margin-left: -13.2%;
+}
+@media (max-width: 768px) {
+  .login-alignment {
+    margin-left: -1.4%;
+  }
+}
+@media (min-width: 768px) and (max-width: 992px) {
+  .login-alignment {
+    margin-left: -1.4%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .login-alignment {
+    margin-left: -16%;
+  }
+}
+
+@media (min-width: 767px) and (max-width: 769px) {
+  .login-alignment1 {
+    margin-top: -36.2%;
+  }
 }

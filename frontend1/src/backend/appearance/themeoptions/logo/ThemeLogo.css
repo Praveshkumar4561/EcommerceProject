@@ -599,8 +599,6 @@ input[type="search"] {
   }
 }
 
-
-
 .choose-url {
   color: rgba(32, 107, 196, 1);
 }
@@ -649,13 +647,16 @@ input[type="search"] {
   bottom: 5.4rem;
 }
 
-.custom-changes3 {
+.custom-changes3-logos {
   position: relative;
-  bottom: 0.89rem;
+  bottom: 0.6rem;
 }
-.button-change1 {
+
+.button-change-logos {
   position: relative;
-  bottom: 3.3rem;
+  bottom: 0.3rem;
+  cursor: pointer;
+  z-index: 1000;
 }
 
 .image-admin2 {
@@ -668,9 +669,9 @@ input[type="search"] {
     width: 100%;
     max-width: 40%;
   }
-  .button-change1 {
+  .button-change-logos {
     position: relative;
-    bottom: 1.5rem;
+    top: 0.5rem;
     cursor: pointer;
   }
 }
@@ -679,9 +680,9 @@ input[type="search"] {
     width: 100%;
     max-width: 40%;
   }
-  .button-change1 {
+  .button-change-logos {
     position: relative;
-    bottom: 1.5rem;
+    bottom: 0.5rem;
     cursor: pointer;
   }
 }

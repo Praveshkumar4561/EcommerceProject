@@ -1,22 +1,24 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Shop.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import Shipping from "../../assets/Shipping.svg";
-import Support from "../../assets/Support.svg";
+import free from "../../assets/free.webp";
+import Cash from "../../assets/Cash.webp";
+import Discount from "../../assets/discount.webp";
+import Hoursupport from "../../assets/hoursupport.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
-
 import axios from "axios";
 import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Shop() {
   let { count, setCount } = useContext(UserContext);
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const toggleButtonRef = useRef(null);
@@ -46,7 +48,9 @@ function Shop() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -57,7 +61,9 @@ function Shop() {
   let [image, setImage] = useState([]);
 
   let productimage = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/productpagedata");
+    let response = await axios.get(
+      "http://89.116.170.231:1600/productpagedata"
+    );
     setImage(response.data);
   };
 
@@ -65,14 +71,12 @@ function Shop() {
     productimage();
   }, []);
 
-  let { navigate } = useNavigate();
-
   let [detail, setDetail] = useState([]);
 
   let detailsdata = async () => {
     try {
       let response = await axios.get(
-        "http://54.183.54.164:1600/productpagedata"
+        "http://89.116.170.231:1600/productpagedata"
       );
       setDetail(response.data);
     } catch (error) {
@@ -94,19 +98,26 @@ function Shop() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/addcart",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        "http://89.116.170.231:1600/addcart",
+        formData
       );
-      alert("Product successfully added in the cart");
-      navigate("/cart");
-      detailsdata();
+      toast.success("Product successfully added on the cart", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error adding item to cart:", error);
+      toast.error("Product is not added on the cart", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -114,7 +125,7 @@ function Shop() {
 
   let labeldata = async () => {
     let response = await axios.get(
-      "http://54.183.54.164:1600/productlabelsdata"
+      "http://89.116.170.231:1600/productlabelsdata"
     );
     setLabel(response.data);
   };
@@ -123,6 +134,10 @@ function Shop() {
   let addWishlistItem = async (data) => {
     const formData = new FormData();
     formData.append("product_name", data.name);
+    formData.append("store", data.store);
+    formData.append("price", data.price);
+    formData.append("price_sale", data.price_sale);
+    formData.append("sku", data.sku);
     const imageFileName = data.image ? data.image.split("/").pop() : null;
     if (imageFileName) {
       formData.append("image", imageFileName);
@@ -131,24 +146,119 @@ function Shop() {
     }
     try {
       const response = await axios.post(
-        "http://54.183.54.164:1600/wishlistpost",
+        "http://89.116.170.231:1600/wishlistpost",
         formData
       );
-      alert("Product successfully added to the wishlist");
+      toast.success("Product successfully added on the wishlist", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (error) {
-      console.error("Error adding to wishlist:", error);
+      toast.error("Product is not added on the wishlist", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
+  let [user, setUser] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
   return (
     <>
-      <div className="container" id="container-custom">
-        <div className="container-custom ms-2">
+      <div
+        className="container"
+        id="container-custom"
+        style={{
+          backgroundColor:
+            user?.background_color ||
+            (user?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: user?.background_image
+            ? `url(/api/src/image/${user.background_image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: user?.breadcrumb_height
+            ? `${user.breadcrumb_height}px`
+            : "190px",
+        }}
+      >
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
 
                 <button
@@ -162,7 +272,7 @@ function Shop() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
@@ -179,18 +289,14 @@ function Shop() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -202,15 +308,19 @@ function Shop() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
@@ -238,18 +348,14 @@ function Shop() {
                       Shop
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
+
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -264,21 +370,44 @@ function Shop() {
           </header>
 
           <main className="container mt-5 cart-cart">
-            <h1 className="fw-medium mb-3 text-center container-contact fs-2">
-              Shop
-            </h1>
-            <nav aria-label="breadcrumb" id="container-contact1">
-              <ol className="breadcrumb d-flex flex-wrap gap-0">
-                <li className="breadcrumb-item navbar-item fw-medium">
-                  <Link target="blank" to="/" className="text-dark">
-                    Home
-                  </Link>
-                </li>
-                <li className="breadcrumb-item navbar-item fw-medium text-dark">
-                  Shop
-                </li>
-              </ol>
-            </nav>
+            {user?.enable_breadcrumb === "yes" &&
+              user?.breadcrumb_style !== "none" && (
+                <>
+                  {user?.hide_title !== "yes" && (
+                    <h1
+                      className={`fw-medium mb-3 text-center container-contact fs-2 container-style ${
+                        user?.breadcrumb_style === "without title"
+                          ? "d-none"
+                          : ""
+                      }`}
+                    >
+                      Shop
+                    </h1>
+                  )}
+
+                  <nav
+                    aria-label="breadcrumb"
+                    id="container-contact1"
+                    className={`ms-5 ps-3 ms-lg-0 ps-lg-0 ${
+                      user?.breadcrumb_style === "without title" ||
+                      user?.breadcrumb_style === "align start"
+                        ? "d-flex justify-content-start align-items-center w-50"
+                        : "d-flex justify-content-center align-items-center"
+                    }`}
+                  >
+                    <ol className="breadcrumb d-flex flex-wrap gap-0">
+                      <li className="breadcrumb-item navbar-item fw-medium">
+                        <Link target="_blank" to="/" className="text-dark">
+                          Home
+                        </Link>
+                      </li>
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                        Shop
+                      </li>
+                    </ol>
+                  </nav>
+                </>
+              )}
           </main>
         </div>
       </div>
@@ -293,7 +422,7 @@ function Shop() {
                   className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product"
                   key={key}
                 >
-                  <Link to="/product-details" className="text-dark">
+                  <Link to={`/${url.productDetails}`} className="text-dark">
                     <img
                       src={`/api/src/image/${data.image}`}
                       alt={`Product Image ${key + 1}`}
@@ -317,29 +446,40 @@ function Shop() {
         <div className="container">
           <div className="row gap-0 gap-lg-2 d-flex flex-row flex-wrap">
             <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-xxl-3 py-xl-3 shop-icon me-auto">
-              <img src={Shipping} alt="" className="img-fluid mt-4 mb-4" />
+              <img src={free} alt="" className="img-fluid mt-4 mb-4 w-25" />
               <div className="d-flex flex-column mt-4 ms-3 pt-">
                 <span>Free Delivery</span>
                 <span>Orders from all item</span>
               </div>
             </div>
             <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-3 shop-icon me-auto">
-              <img src={Shipping} alt="" className="img-fluid" />
+              <img src={Cash} alt="" className="img-fluid w-25 mt-4 mb-4" />
               <div className="d-flex flex-column mt-2 mt-lg-4 ms-3">
                 <span>Return & Refund</span>
                 <span>Money-back guarantee</span>
               </div>
             </div>
             <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-3 shop-icon me-auto">
-              <img src={Shipping} alt="" className="img-fluid mt-3 mb-4" />
-              <div className="d-flex flex-column mt-4 ms-1">
+              <img
+                src={Discount}
+                alt=""
+                className="img-fluid mt-2 mb-4 w-25 rounded-5 pt-3"
+              />
+              <div className="d-flex flex-column mt-4 ms-3">
                 <span>Member Discount</span>
-                <span>Every order over $140.00</span>
+                <span>
+                  Every order over{" "}
+                  <span style={{ fontFamily: "verdana" }}>$140.00</span>
+                </span>
               </div>
             </div>
             <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-3 shop-icon me-auto">
-              <img src={Support} alt="" className="img-fluid mt-3 mb-4" />
-              <div className="d-flex flex-column mt-4 ms-1">
+              <img
+                src={Hoursupport}
+                alt=""
+                className="img-fluid mt-3 mb-4 w-25 pt-2"
+              />
+              <div className="d-flex flex-column mt-4 ms-2 ps-1">
                 <span>Support 24/7</span>
                 <span>Contact us 24 hours a day</span>
               </div>
@@ -374,7 +514,7 @@ function Shop() {
                         {data.label}
                       </button>
                     )}
-                    <Link to="/product-details">
+                    <Link to={`/${url.productDetails}`}>
                       <img
                         src={productImage}
                         alt={data.name || "Product Image"}
@@ -413,13 +553,16 @@ function Shop() {
                     <h5 className="mt-0 lh-base text-start text-lg-start">
                       {data.name || "Product Name"}
                     </h5>
+                    <h6 className="mt-0 lh-base text-start text-lg-start">
+                      SKU:{data.sku || "Product Name"}
+                    </h6>
                     <div
                       className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
                       style={{ fontFamily: "verdana" }}
                     >
                       <h6 className="me-1">{data.price || "Price"}</h6>
                       <strike className="text-danger fw-medium">
-                        {data.discountPrice || "$54"}
+                        {data.price_sale || "$54"}
                       </strike>
                     </div>
                   </div>
@@ -428,6 +571,7 @@ function Shop() {
             })}
           </div>
         </div>
+        <ToastContainer />
       </div>
 
       <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">

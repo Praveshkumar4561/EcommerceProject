@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./BlogPostEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import Cutting from "../../assets/Cutting.webp";
 import {
   faAngleDown,
   faBell,
@@ -16,9 +17,10 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BlogPostEdit() {
   let navigate = useNavigate();
@@ -47,7 +49,19 @@ function BlogPostEdit() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -59,7 +73,7 @@ function BlogPostEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -74,8 +88,6 @@ function BlogPostEdit() {
     setSeo(!seo);
   };
 
-  const [editorData, setEditorData] = useState("");
-
   const routes = {
     "/admin/welcome": "# Dashboard",
     "/admin/pages": "# Pages",
@@ -87,7 +99,6 @@ function BlogPostEdit() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -106,13 +117,10 @@ function BlogPostEdit() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -120,8 +128,10 @@ function BlogPostEdit() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -190,6 +200,7 @@ function BlogPostEdit() {
     author_name: "",
     permalink: "",
     description: "",
+    content: "",
     feature: false,
     status: "",
     categories: "",
@@ -202,6 +213,7 @@ function BlogPostEdit() {
     author_name,
     permalink,
     description,
+    content,
     feature,
     status,
     categories,
@@ -215,6 +227,8 @@ function BlogPostEdit() {
     formData.append("author_name", author_name);
     formData.append("permalink", permalink);
     formData.append("description", description);
+    const cleanContent = stripHTML(user.content);
+    formData.append("content", cleanContent);
     formData.append("feature", feature ? "Yes" : "No");
     formData.append("status", status);
     formData.append("categories", categories);
@@ -222,7 +236,7 @@ function BlogPostEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://54.183.54.164:1600/blogpostupdate/${id}`,
+        `http://89.116.170.231:1600/blogpostupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -248,9 +262,74 @@ function BlogPostEdit() {
 
   let blogpostsdata = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/blogsomedata/${id}`
+      `http://89.116.170.231:1600/blogsomedata/${id}`
     );
     setUser(response.data[0]);
+  };
+
+  const [editorData2, setEditorData2] = useState(content);
+  const [textAreaData2, setTextAreaData2] = useState(content);
+  const [showEdit2, setShowEdit2] = useState(true);
+
+  const handleEditorChange2 = (event, editor) => {
+    const data = editor.getData();
+    const cleanText = stripHTML(data);
+    setEditorData2(cleanText);
+    setUser((prevState) => ({
+      ...prevState,
+      content: cleanText,
+    }));
+  };
+
+  const stripHTML = (htmlContent) => {
+    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const handleTextAreaChange2 = (e) => {
+    const data = e.target.value;
+    setTextAreaData2(data);
+    setUser((prevState) => ({
+      ...prevState,
+      content: data,
+    }));
+  };
+
+  const showEditorClicked2 = (e) => {
+    e.preventDefault();
+    setShowEdit2(!showEdit2);
+  };
+
+  const mediaUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("Image upload failed");
+          }
+
+          const data = await response.json();
+          console.log("Image uploaded successfully", data);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      }
+    });
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -271,72 +350,6 @@ function BlogPostEdit() {
     }
   };
 
-  let [addproducts, setAddProducts] = useState([]);
-
-  let addProduct = () => {
-    setAddProducts([...addproducts, { question: "", answer: "" }]);
-  };
-
-  let handleInputChange = (index, type, value) => {
-    const updatedProducts = [...addproducts];
-    updatedProducts[index][type] = value;
-    setAddProducts(updatedProducts);
-  };
-
-  let removeProduct = (index) => {
-    const updatedProducts = addproducts.filter((_, i) => i !== index);
-    setAddProducts(updatedProducts);
-  };
-
-  const [showEdit, setShowEdit] = useState(true);
-  const [showEdit1, setShowEdit1] = useState(true);
-  const [textAreaData, setTextAreaData] = useState("");
-
-  const handleTextAreaChange = (e) => {
-    setTextAreaData(e.target.value);
-  };
-
-  const [showEdit2, setShowEdit2] = useState(true);
-  const [editorData2, setEditorData2] = useState("");
-  const [textAreaData2, setTextAreaData2] = useState("");
-
-  const handleTextAreaChange2 = (e) => {
-    setTextAreaData2(e.target.value);
-  };
-
-  const showEditorClicked2 = (e) => {
-    e.preventDefault();
-    setShowEdit2(!showEdit2);
-  };
-
-  const mediaUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      }
-    });
-  };
-
   return (
     <>
       <div
@@ -355,11 +368,13 @@ function BlogPostEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1446,9 +1461,9 @@ function BlogPostEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1474,9 +1489,9 @@ function BlogPostEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1502,9 +1517,9 @@ function BlogPostEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2273,7 +2288,7 @@ function BlogPostEdit() {
             <Link to="/admin/blog/posts">POSTS</Link>
           </li>
 
-          <li className="breadcrumb-item fw-medium ms-2 text-dark">
+          <li className="breadcrumb-item fw-medium ms-0 text-dark">
             EDIT "{user.name}"
           </li>
         </ol>
@@ -2300,8 +2315,8 @@ function BlogPostEdit() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2353,7 +2368,7 @@ function BlogPostEdit() {
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       name="description"
                       value={description}
                       onChange={onInputChange}
@@ -2383,11 +2398,10 @@ function BlogPostEdit() {
                     </label>
                   </div>
 
-                  <div className="d-flex flex-column mb-1 mt-0 w-100">
+                  <div className="mb-3 text-start">
                     <label htmlFor="content2" className="form-label fw-lighter">
                       Content
                     </label>
-
                     <div className="d-flex gap-2 flex-row">
                       <button
                         className="btn bg-body border d-flex py-4 mb-2"
@@ -2407,10 +2421,13 @@ function BlogPostEdit() {
                       <div className="mb-3">
                         <CKEditor
                           editor={ClassicEditor}
-                          data={editorData2}
+                          data={user.content || ""}
                           onChange={(event, editor) => {
                             const data = editor.getData();
-                            setEditorData2(data);
+                            setUser((prevState) => ({
+                              ...prevState,
+                              content: data,
+                            }));
                           }}
                           config={{
                             toolbar: [
@@ -2494,33 +2511,34 @@ function BlogPostEdit() {
                       <div className="mb-3">
                         <textarea
                           id="content2"
-                          className="form-control text-create"
+                          className="form-control"
                           placeholder="Short description"
-                          value={textAreaData2}
-                          onChange={handleTextAreaChange2}
-                          style={{
-                            height: "58px",
-                            zIndex: "1000",
-                            position: "relative",
-                          }}
+                          value={user.content || ""}
+                          onChange={(e) =>
+                            setUser((prevState) => ({
+                              ...prevState,
+                              description: e.target.value,
+                            }))
+                          }
                         />
                       </div>
                     )}
-                    <div className="d-flex flex-column mb-3 mt-0 w-100">
-                      <label htmlFor="">Start Date</label>
-                      <input
-                        type="date"
-                        className="form-control mt-2 py-4"
-                        name="date"
-                        value={date}
-                        onChange={onInputChange}
-                        style={{
-                          cursor: "pointer",
-                          zIndex: "1000",
-                          position: "relative",
-                        }}
-                      />
-                    </div>
+                  </div>
+
+                  <div className="d-flex flex-column mb-2 mt-0 w-100">
+                    <label htmlFor="">Start Date</label>
+                    <input
+                      type="date"
+                      className="form-control mt-2 py-4"
+                      name="date"
+                      value={date}
+                      onChange={onInputChange}
+                      style={{
+                        cursor: "pointer",
+                        zIndex: "1000",
+                        position: "relative",
+                      }}
+                    />
                   </div>
                 </div>
               </form>
@@ -2556,9 +2574,9 @@ function BlogPostEdit() {
                   onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="">Published</option>
-                  <option value="">Draft</option>
-                  <option value="">Pending</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
                 </select>
               </div>
 
@@ -2624,7 +2642,145 @@ function BlogPostEdit() {
               </div>
             </div>
           </div>
+
+          <div className="card mt-3 seo-metas">
+            <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+              <div className="w-100">
+                <h5 className="card-title1">Search Engine Optimize</h5>
+                <Link
+                  to="#"
+                  className="link-primary1 primary2 meta float-end"
+                  onClick={seodatablog}
+                  style={{ zIndex: "100" }}
+                >
+                  Edit SEO meta
+                </Link>
+                <div className="border seo-names mt-3"></div>
+                <div className="lh-base d-flex flex-column mt-2">
+                  <h5 className="seo-name">{user.name}</h5>
+                  <span className="seo-name1">{user.permalink}</span>
+                  <span>
+                    <span className="text-secondary">
+                      {new Date(user.date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                      :
+                    </span>
+                    <span className="card-text text-dark ms-2">
+                      {user.description}
+                      <div className="border seo-names mt-3"></div>
+                      {seo && (
+                        <>
+                          <div className="mt-3">
+                            <label htmlFor="">SEO Title</label>
+                            <input
+                              type="text"
+                              className="form-control mt-2 py-4 seo-edit"
+                              placeholder="SEO Title"
+                            />
+                          </div>
+
+                          <div className="mt-3">
+                            <label htmlFor="seo-description">
+                              SEO Description
+                            </label>
+                            <textarea
+                              id="seo-description"
+                              className="form-control mt-2 seo-edit"
+                              placeholder="SEO Description"
+                              style={{
+                                height: "100px",
+                                overflow: "auto",
+                                resize: "vertical",
+                                minHeight: "100px",
+                              }}
+                            />
+                          </div>
+
+                          <div>
+                            <label className="mt-3 pt-2 ms-2">SEO image</label>
+                            <div className="image-card border-0 ps-1">
+                              <div
+                                className="image-placeholder"
+                                onClick={() =>
+                                  document.getElementById("fileInput").click()
+                                }
+                              >
+                                {imageUrl ? (
+                                  <img
+                                    alt="Uploaded preview"
+                                    src={imageUrl}
+                                    width="100"
+                                    height="100"
+                                  />
+                                ) : (
+                                  <img
+                                    src={Cutting}
+                                    alt="404"
+                                    className="w-75 h-75 img-fluid"
+                                  />
+                                )}
+                              </div>
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="file"
+                                style={{ display: "none" }}
+                                onChange={handleFileChange}
+                              />
+                              <Link
+                                className="ms-5"
+                                to="#"
+                                onClick={() =>
+                                  document.getElementById("fileInput").click()
+                                }
+                              >
+                                Choose image <br />
+                              </Link>
+                              <span className="ms-2 me-2 ms-5">or</span>
+                              <Link to="#" onClick={handleAddFromUrl}>
+                                Add from URL
+                              </Link>
+                            </div>
+                          </div>
+
+                          <div className="d-flex gap-2 ms-2">
+                            <label htmlFor="">Index</label>
+                          </div>
+
+                          <div className="ms-2 mt-2 pb-2">
+                            <input
+                              className="form-check-input"
+                              type="radio"
+                              name="check"
+                              checked
+                            />
+                            <label htmlFor="" className="ms-2">
+                              Index
+                            </label>
+
+                            <input
+                              className="form-check-input ms-2"
+                              type="radio"
+                              value="index"
+                              name="check"
+                            />
+                            <label htmlFor="" className="ms-2">
+                              No index
+                            </label>
+                          </div>
+                        </>
+                      )}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

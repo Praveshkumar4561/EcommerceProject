@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BreadCrumb.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
@@ -14,6 +15,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function BreadCrumb() {
   const [query, setQuery] = useState("");
@@ -43,7 +46,6 @@ function BreadCrumb() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -62,13 +64,10 @@ function BreadCrumb() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -76,6 +75,9 @@ function BreadCrumb() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -117,23 +119,6 @@ function BreadCrumb() {
       setResults([]);
       setIsOpen(false);
     }
-  };
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -183,10 +168,129 @@ function BreadCrumb() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
+
+  const colorPickerRef = useRef(null);
+
+  const handleSpanClick = () => {
+    if (colorPickerRef.current) {
+      colorPickerRef.current.click();
+    }
+  };
+
+  const [imageDeleted, setImageDeleted] = useState(false);
+
+  let [user, setUser] = useState({
+    enable_breadcrumb: "",
+    breadcrumb_style: "",
+    hide_title: "",
+    background_color: "",
+    breadcrumb_height: "",
+    mobile_length: "",
+    file: null,
+  });
+
+  const {
+    enable_breadcrumb,
+    breadcrumb_style,
+    hide_title,
+    background_color,
+    breadcrumb_height,
+    mobile_length,
+    file,
+  } = user;
+
+  const handleSubmit = async () => {
+    const formdata = new FormData();
+    if (enable_breadcrumb)
+      formdata.append("enable_breadcrumb", enable_breadcrumb);
+    if (breadcrumb_style) formdata.append("breadcrumb_style", breadcrumb_style);
+    if (hide_title) formdata.append("hide_title", hide_title);
+    if (background_color) formdata.append("background_color", background_color);
+    if (breadcrumb_height)
+      formdata.append("breadcrumb_height", breadcrumb_height);
+    if (mobile_length) formdata.append("mobile_length", mobile_length);
+    formdata.append("imageDeleted", imageDeleted ? "true" : "false");
+    if (!imageDeleted && file) {
+      formdata.append("file", file);
+    }
+    try {
+      await axios.post(
+        "http://89.116.170.231:1600/breadcrumb-settings",
+        formdata
+      );
+      toast.success("breadcrumb successfully updated?", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setImageDeleted(false);
+    } catch (error) {
+      toast.error("Breadcrumb is not updated", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const onInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "radio" ? (checked ? value : user[name]) : value;
+    setUser({ ...user, [name]: newValue });
+  };
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-breadcrumb")
+      .then((response) => setUser(response.data))
+      .catch((error) => console.error("Error fetching font settings:", error));
+  }, []);
+
+  const handleCloseClick = () => {
+    setImageUrl(null);
+    setImage(null);
+    setUser((prev) => ({ ...prev, file: null, background_image: null }));
+    setImageDeleted(true);
+  };
+
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImage(file);
+      setImageUrl(url);
+      setUser({ ...user, file: file });
+    }
+  };
+
+  const handleAddFromUrl = () => {
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
+  };
 
   return (
     <>
@@ -206,11 +310,13 @@ function BreadCrumb() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1294,9 +1400,9 @@ function BreadCrumb() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1322,9 +1428,9 @@ function BreadCrumb() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1350,9 +1456,9 @@ function BreadCrumb() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2123,7 +2229,7 @@ function BreadCrumb() {
       </nav>
 
       <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded">
+        <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
           <nav className="nav flex-column bg-light general-theme pt-2 ps-2 ps-lg-0">
@@ -2505,30 +2611,51 @@ function BreadCrumb() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-3 mb-lg-0">
           <div className="d-flex justify-content-end mt-2 mt-lg-0">
-            <button className="btn btn-success button-change py-4 mt-3 me-2 border d-flex">
+            <button
+              className="btn btn-success button-change py-4 mt-4 me-2 border d-flex"
+              onClick={handleSubmit}
+            >
               Save Changes
             </button>
           </div>
-          <hr className="custom-changes3" />
+
+          <hr className="custom-changes-bread mt-3" />
           <form className="content-form-page ms-3 me-3">
             <div className="mb-3">
-              <div className="mt-4 pt-2">
-                <label className="form-label mt-4 pt-3" htmlFor="date-format">
-                  Enable breadcrumb?
-                </label>
+              <div className="mt-5 pt-4">
+                <label htmlFor="breadcrumb">Enable breadcrumb?</label>
+                <div className="d-flex flex-row gap-2 mt-2">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="breadcrumbYes"
+                    name="enable_breadcrumb"
+                    value="yes"
+                    checked={enable_breadcrumb === "yes"}
+                    onChange={onInputChange}
+                  />
+                  <label htmlFor="breadcrumbYes" className="ms-1">
+                    Yes
+                  </label>
 
-                <select
-                  className="form-select label-hotline"
-                  id="date-format"
-                  style={{ height: "50px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </select>
+                  <input
+                    className="form-check-input ms-2"
+                    type="radio"
+                    id="breadcrumbNo"
+                    name="enable_breadcrumb"
+                    value="no"
+                    checked={enable_breadcrumb === "no"}
+                    onChange={onInputChange}
+                  />
+                  <label htmlFor="breadcrumbNo" className="ms-1">
+                    No
+                  </label>
+                </div>
+              </div>
 
+              <div>
                 <label className="form-label mt-3" htmlFor="date-format">
                   Breadcrumb style
                 </label>
@@ -2537,13 +2664,19 @@ function BreadCrumb() {
                   className="form-select label-hotline"
                   id="date-format"
                   style={{ height: "50px" }}
+                  name="breadcrumb_style"
+                  value={breadcrumb_style}
+                  onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="Align start">Align start</option>
-                  <option value="Align center">Align center</option>
-                  <option value="Without title">Without title</option>
+                  <option value="none">None</option>
+                  <option value="align start">Align start</option>
+                  <option value="align center">Align end</option>
+                  <option value="without title">Without title</option>
                 </select>
+              </div>
 
+              <div>
                 <label className="form-label mt-3" htmlFor="date-format">
                   Hide title?
                 </label>
@@ -2552,48 +2685,99 @@ function BreadCrumb() {
                   className="form-select label-hotline"
                   id="date-format"
                   style={{ height: "50px" }}
+                  name="hide_title"
+                  value={hide_title}
+                  onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
                   <option value="no">No</option>
                   <option value="yes">Yes</option>
                 </select>
+              </div>
 
-                <div className="mt-3">
-                  <label className="form-label ms-1" htmlFor="site-title">
-                    Breadcrumb background color
-                  </label>
+              <div className="mt-3">
+                <label className="form-label ms-1" htmlFor="site-title">
+                  Breadcrumb background color
+                </label>
 
-                  <div className="cookie-color1 border w-auto py-1 ms-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-
-                <h6 className="mt-3">Breadcrumb background image</h6>
                 <div
-                  className="image-placeholder image-admin mt-3"
-                  onClick={() => document.getElementById("fileInput").click()}
+                  className="cookie-color-bread h-auto border py-1 ms-1 rounded-0 d-flex flex-row flex-nowrap py-1 position-relative"
+                  style={{ height: "30px" }}
                 >
+                  <input
+                    type="color"
+                    style={{
+                      opacity: 0,
+                      cursor: "pointer",
+                      position: "absolute",
+                      top: "65%",
+                      right: "66px",
+                      transform: "translateY(-50%)",
+                      width: "30px",
+                      height: "30px",
+                    }}
+                    name="background_color"
+                    value={background_color}
+                    onChange={onInputChange}
+                    ref={colorPickerRef}
+                  />
+
+                  <div
+                    className="me-1 mt-0 rounded ms-2"
+                    style={{
+                      width: "700px",
+                      height: "30px",
+                      backgroundColor: background_color,
+                      border: "1px solid #ccc",
+                      cursor: "pointer",
+                    }}
+                    onClick={handleSpanClick}
+                  ></div>
+
+                  <span
+                    className="ms-1 me-1 mt-1 position-relative"
+                    style={{ cursor: "pointer" }}
+                    onClick={handleSpanClick}
+                  >
+                    ▼
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h6 className="mt-3">Breadcrumb background image</h6>
+                <div className="image-placeholder image-admin w-50 mt-2 position-relative">
                   {imageUrl ? (
                     <img
                       alt="Uploaded preview"
                       src={imageUrl}
                       width="100"
                       height="100"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                     />
                   ) : (
-                    <img src={Cutting} alt="404" className="w-75 h-75" />
+                    <img
+                      src={
+                        user.background_image
+                          ? `/api/src/image/${user.background_image}`
+                          : Cutting // Your placeholder image
+                      }
+                      alt="Background"
+                      className="w-100 h-100 rounded"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                    />
                   )}
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                    onClick={handleCloseClick}
+                  />
                 </div>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -2616,13 +2800,14 @@ function BreadCrumb() {
                 >
                   Add from URL
                 </Link>
+                <div className="mt-0">
+                  <small className="text-muted">
+                    If you select an image, the background color will be
+                    ignored.
+                  </small>
+                </div>
               </div>
             </div>
-            <small className="text-muted">
-              <p className="mb-1">
-                If you select an image, the background color will be ignored.
-              </p>
-            </small>
 
             <div className="mb-3">
               <label className="form-label" htmlFor="show-site-name">
@@ -2631,13 +2816,18 @@ function BreadCrumb() {
               <input
                 type="number"
                 className="form-control py-4 label-hotline"
+                name="breadcrumb_height"
+                value={breadcrumb_height}
+                onChange={onInputChange}
               />
+              <div className="mt-1">
+                <small className="text-muted">
+                  Leave empty to use default height.
+                </small>
+              </div>
             </div>
-            <small className="text-muted">
-              <p>Leave empty to use default height.</p>
-            </small>
 
-            <div className="mb-3">
+            <div className="mt-0">
               <label className="form-label" htmlFor="show-site-name">
                 Breadcrumb reduce length on mobile
               </label>
@@ -2645,6 +2835,9 @@ function BreadCrumb() {
                 className="form-select label-hotline"
                 id="show-site-name"
                 style={{ height: "50px" }}
+                name="mobile_length"
+                value={mobile_length}
+                onChange={onInputChange}
               >
                 <option value="">Select an option</option>
                 <option value="no">No</option>
@@ -2653,6 +2846,8 @@ function BreadCrumb() {
             </div>
           </form>
         </div>
+
+        <ToastContainer />
       </div>
     </>
   );

@@ -26,7 +26,9 @@ function BlogDetails() {
 
   const cartdata = async () => {
     try {
-      const response = await axios.get("http://54.183.54.164:1600/allcartdata");
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
       setCount(response.data.length);
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -65,14 +67,14 @@ function BlogDetails() {
   let [detail1, setDetail1] = useState([]);
 
   let blogsdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/blogpostdata");
+    let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
     setDetail(response.data);
     setDetail1(response.data);
   };
   blogsdata();
 
   let alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/blogalldata");
+    let response = await axios.get("http://89.116.170.231:1600/blogalldata");
     setWelcome(response.data);
   };
   alldata();
@@ -81,7 +83,7 @@ function BlogDetails() {
     const fetchBlogDetails = async () => {
       try {
         const response = await axios.get(
-          `http://54.183.54.164:1600/blogpostdata/${id}`
+          `http://89.116.170.231:1600/blogpostdata/${id}`
         );
         setBlog(response.data);
       } catch (error) {
@@ -91,15 +93,63 @@ function BlogDetails() {
     fetchBlogDetails();
   }, [id]);
 
+  const defaultUrlState = {
+    login: "login",
+    register: "register",
+    changePassword: "user/change-password",
+    cart: "cart",
+    checkout: "checkout",
+    ordersTracking: "orders/tracking",
+    wishlist: "wishlist",
+    productDetails: "product/details",
+    userDashboard: "user/dashboard",
+    userAddress: "user/address",
+    userDownloads: "user/downloads",
+    userOrderReturns: "user/order-returns",
+    userProductReviews: "user/product-reviews",
+    userEditAccount: "user/edit-account",
+    userOrders: "user/orders",
+  };
+  const [url, setUrl] = useState(
+    JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
+  );
+
+  useEffect(() => {
+    const storedUrlState = JSON.parse(localStorage.getItem("urlState"));
+    if (storedUrlState) {
+      setUrl(storedUrlState);
+    }
+  }, []);
+
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
   return (
     <>
       <div className="container cart-cart" id="container-custom">
         <div className="container-custom ms-3 ms-lg-0 me-3">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
-            <nav className="navbar navbar-expand-lg navbar-light w-100">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
-                <Link className="navbar-brand d-non d-lg-block" to="#">
-                  <img src={image1} alt="Tonic Logo" className="img-fluid" />
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
                 </Link>
                 <button
                   type="button"
@@ -112,7 +162,7 @@ function BlogDetails() {
                     <img
                       src={Hamburger}
                       alt="Menu"
-                      className="img-fluid hamburger-image"
+                      className="img-fluid hamburger-images"
                     />
                   </span>
                 </button>
@@ -129,18 +179,14 @@ function BlogDetails() {
                         Shop
                       </Link>
                     </li>
-                    <li className="nav-item">
-                      <Link className="nav-link" to={`/blog-details/${1}`}>
-                        Pages
-                      </Link>
-                    </li>
+
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/cart">
+                      <Link className="nav-link" to={`/${url.cart}`}>
                         Cart
                       </Link>
                     </li>
@@ -152,15 +198,18 @@ function BlogDetails() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons d-sm-flex">
-                  <Link to="/login" className="nav-link">
+                <div className="navbar-icons1 d-sm-flex">
+                  <Link to={`/${url.login}`} className="nav-link">
                     <img
                       src={Profile}
                       alt="Profile"
                       className="profiles img-fluid me-3"
                     />
                   </Link>
-                  <Link to="/cart" className="nav-link d-flex nav-properties1">
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
                     <img
                       src={Cart}
                       alt="Cart"
@@ -188,18 +237,14 @@ function BlogDetails() {
                       Shop
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link className="nav-link" to={`/blog-details/${1}`}>
-                      Pages
-                    </Link>
-                  </li>
+
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/cart">
+                    <Link className="nav-link" to={`/${url.cart}`}>
                       Cart
                     </Link>
                   </li>
@@ -223,11 +268,15 @@ function BlogDetails() {
                 <span></span>
               )}
             </p>
-            <nav aria-label="breadcrumb" id="container-contact1">
-              <ol className="breadcrumb d-flex flex-wrap gap-0 link-class">
+            <nav
+              aria-label="breadcrumb"
+              id="container-contact1"
+              className="ms-5 ps-3 ms-lg-0 ps-lg-0"
+            >
+              <ol className="breadcrumb d-flex flex-wrap gap-0 link-class mt-5">
                 <li className="breadcrumb-item navbar-item fw-bold">
                   <Link
-                    target="blank"
+                    target="_blank"
                     to="/"
                     className="text-dark cart-cart fw-medium"
                     style={{ zIndex: "1000", position: "relative" }}

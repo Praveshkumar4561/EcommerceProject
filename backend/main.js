@@ -16,10 +16,11 @@ const { ppid } = require("process");
 const PDFDocument = require("pdfkit");
 const app = express();
 const salt = 10;
+const saltRounds = 10;
 
 app.use(
   cors({
-    origin: "http://54.183.54.164",
+    origin: "http://89.116.170.231",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -28,9 +29,36 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/src/image", express.static(path.join(__dirname, "src/image")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use("/src/image", express.static(path.join(__dirname, "src/image")));
+
+const uploadDir = path.join(__dirname, "src/image");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.use("/uploads", express.static(uploadDir));
+
+app.get("/get-homepage", (req, res) => {
+  res.status(200).json({ homepageSettings });
+});
+
+app.use(
+  "/get-theme-logo/src/image",
+  express.static(path.join(__dirname, "src/image"))
+);
 
 app.use(
   "/productpagedata/src/image",
@@ -46,11 +74,6 @@ app.use(
   "/blogpostdata/src/image",
   express.static(path.join(__dirname, "src/image"))
 );
-
-const uploadDir = path.join(__dirname, "src/image");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -68,16 +91,29 @@ db.connect((err) => {
   }
 });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
+let homepageSettings = {
+  homepage: "",
+  aboutpage: "",
+  shop: "",
+  blog: "",
+  contactus: "",
+  faqs: "",
+};
 
-const upload = multer({ storage: storage });
+app.post("/save-homepage", (req, res) => {
+  const { homepage, aboutpage, shop, blog, contactus } = req.body;
+  homepageSettings = {
+    homepage: homepage || homepageSettings.homepage,
+    aboutpage: aboutpage || homepageSettings.aboutpage,
+    shop: shop || homepageSettings.shop,
+    blog: blog || homepageSettings.blog,
+    contactus: contactus || homepageSettings.contactus,
+  };
+  res.status(200).json({
+    message: "Homepage settings saved successfully",
+    homepageSettings,
+  });
+});
 
 app.get("/page-seo/:id", (req, res) => {
   const pageId = req.params.id;
@@ -85,7 +121,6 @@ app.get("/page-seo/:id", (req, res) => {
   const query = "SELECT * FROM pagesseo WHERE id = ?";
   db.query(query, [pageId], (err, results) => {
     if (err) throw err;
-
     if (results.length > 0) {
       const pageData = results[0];
       res.send(`
@@ -104,7 +139,6 @@ app.get("/page-seo/:id", (req, res) => {
         <body>
             <h1>${pageData.title}</h1>
             <div>${pageData.content}</div>
-            <script type="module" src="/src/main.jsx"></script> 
         </body>
         </html>
       `);
@@ -136,8 +170,11 @@ app.get("/", verifyUser, (req, res) => {
 
 app.post("/submit", (req, res) => {
   const { first_name, last_name, phone_number, email, password } = req.body;
-  bcrypt.hash(password.toString(), salt, (err, hash) => {
-    if (err) return res.json({ Error: "Password hashing error" });
+  bcrypt.hash(password.toString(), saltRounds, (err, hash) => {
+    if (err) {
+      console.error("Password hashing error:", err);
+      return res.status(500).json({ Error: "Password hashing error" });
+    }
     const value = [[first_name, last_name, phone_number, email, hash]];
     const sql =
       "INSERT INTO user(first_name, last_name, phone_number, email, password) VALUES ?";
@@ -160,42 +197,60 @@ app.post("/submit", (req, res) => {
   });
 });
 
+// const secret = crypto.randomBytes(64).toString('hex');
+// console.log(secret);
+
 app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ Error: "Both email and password are required" });
+  }
   const sql = "SELECT * FROM user WHERE email=?";
-  db.query(sql, [req.body.email], (err, data) => {
+  db.query(sql, [email], (err, data) => {
     if (err) {
       console.error("Database error:", err);
       return res.status(500).json({ Error: "Login error" });
     }
     if (data.length > 0) {
-      bcrypt.compare(
-        req.body.password.toString(),
-        data[0].password,
-        (err, response) => {
-          if (err) {
-            console.error("Error comparing password:", err);
-            return res.status(500).json({ Error: "Password compare error" });
-          }
-          if (response) {
-            let name = data[0].first_name;
-            let token = jwt.sign({ name }, "jwt-secret-key", {
-              expiresIn: "1d",
-            });
-            res.cookie("token", token, {
-              httpOnly: true,
-              secure: false,
-              sameSite: "None",
-              maxAge: 86400000,
-            });
-            return res
-              .status(200)
-              .json({ Status: "Success", message: "Login successful" });
-          } else {
-            console.log("Password not matched.");
-            return res.status(400).json({ Error: "Password not matched" });
-          }
+      const storedHashedPassword = data[0].password;
+      bcrypt.compare(password, storedHashedPassword, (err, response) => {
+        if (err) {
+          console.error("Error comparing password:", err);
+          return res.status(500).json({ Error: "Password comparison error" });
         }
-      );
+
+        if (response) {
+          let user = {
+            id: data[0].id,
+            first_name: data[0].first_name,
+            last_name: data[0].last_name,
+            email: data[0].email,
+          };
+
+          let token = jwt.sign({ name: user.first_name }, "JWT_SECRET", {
+            expiresIn: "3h",
+          });
+          const tokenExpirationTime = Date.now() + 3 * 60 * 60 * 1000;
+          res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "None",
+            maxAge: 3 * 60 * 60 * 1000,
+          });
+
+          return res.status(200).json({
+            Status: "Success",
+            message: "Login successful",
+            user: user,
+            tokenExpiration: tokenExpirationTime,
+          });
+        } else {
+          console.log("Password not matched.");
+          return res.status(400).json({ Error: "Password not matched" });
+        }
+      });
     } else {
       console.log("No user found with the email.");
       return res.status(404).json({ Error: "No user with the provided email" });
@@ -204,20 +259,12 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "None" });
-  res.send({ Status: "Success", message: "Logged out successfully" });
-});
-
-app.get("/changepassword/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = "SELECT * FROM user WHERE id = ?";
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error("Error executing query:", err);
-      return res.status(500).json({ Error: "Database error" });
-    }
-    res.json(result);
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "None",
   });
+  return res.json({ Status: "Success", message: "Logged out successfully" });
 });
 
 app.get("/alldata", (req, res) => {
@@ -230,55 +277,55 @@ app.get("/alldata", (req, res) => {
   });
 });
 
-app.put("/passwordupdate/:id", (req, res) => {
-  const id = req.params.id;
-  const { currentPassword, newPassword } = req.body;
-  if (!currentPassword || !newPassword) {
-    return res
-      .status(400)
-      .json({ Error: "Both current and new passwords are required" });
-  }
-  const sql = "SELECT * FROM user WHERE id = ?";
-  db.query(sql, [id], (err, result) => {
-    if (err) {
-      console.error("Error fetching user:", err);
-      return res.status(500).json({ Error: "Database error" });
+app.put("/passwordupdate", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res
+        .status(401)
+        .json({ Error: "Unauthorized. No token provided." });
     }
-    if (result.length === 0) {
-      return res.status(404).json({ Error: "User not found" });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = decoded.id;
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ Error: "Both current and new passwords are required." });
     }
-    const user = result[0];
-    bcrypt.compare(currentPassword, user.password, (err, isMatch) => {
+    const sql = "SELECT * FROM user WHERE id = ?";
+    db.query(sql, [userId], async (err, result) => {
       if (err) {
-        console.error("Error comparing passwords:", err);
-        return res.status(500).json({ Error: "Password comparison error" });
+        console.error("Error fetching user:", err);
+        return res.status(500).json({ Error: "Database error." });
       }
+      if (result.length === 0) {
+        return res.status(404).json({ Error: "User not found." });
+      }
+      const user = result[0];
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
-        return res.status(400).json({ Error: "Current password is incorrect" });
+        return res
+          .status(400)
+          .json({ Error: "Current password is incorrect." });
       }
-      bcrypt.hash(newPassword, 10, (err, hashedPassword) => {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const updateSql = "UPDATE user SET password = ? WHERE id = ?";
+      db.query(updateSql, [hashedPassword, userId], (err, result) => {
         if (err) {
-          console.error("Error hashing new password:", err);
-          return res.status(500).json({ Error: "Password hashing error" });
+          console.error("Error updating password:", err);
+          return res.status(500).json({ Error: "Database error." });
         }
-        const updateSql = "UPDATE user SET password = ? WHERE id = ?";
-        db.query(updateSql, [hashedPassword, id], (err, result) => {
-          if (err) {
-            console.error("Error updating password:", err);
-            return res.status(500).json({ Error: "Database error" });
-          }
-          if (result.affectedRows > 0) {
-            res.json({
-              Status: "Success",
-              Message: "Password updated successfully!",
-            });
-          } else {
-            res.status(404).json({ Error: "User not found" });
-          }
+        res.json({
+          Status: "Success",
+          Message: "Password updated successfully!",
         });
       });
     });
-  });
+  } catch (error) {
+    console.error("Token Verification Error:", error);
+    return res.status(401).json({ Error: "Invalid or expired token." });
+  }
 });
 
 app.get("/check-auth", (req, res) => {
@@ -590,6 +637,17 @@ app.get("/contactsomedata/:id", (req, res) => {
   });
 });
 
+app.delete("/contactdelete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "delete from contact where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data deleted");
+    }
+  });
+});
+
 app.post("/announce", (req, res) => {
   const { name, content, start_date, end_date, active } = req.body;
   const value = [[name, content, start_date, end_date, active]];
@@ -746,11 +804,14 @@ app.post("/gallerypost", upload.single("file"), (req, res) => {
   const orders = req.body.orders;
   const date = req.body.date;
   const feature = req.body.feature;
+  const description = req.body.description;
   const status = req.body.status;
   const image = req.file.filename;
-  let value = [[name, permalink, orders, date, feature, status, image]];
+  let value = [
+    [name, permalink, orders, date, feature, description, status, image],
+  ];
   const sql =
-    "insert into gallery(name,permalink,orders,date,feature,status,image)values ?";
+    "insert into gallery(name,permalink,orders,date,feature,description,status,image)values ?";
   db.query(sql, [value], (err, result) => {
     if (err) throw err;
     else {
@@ -792,12 +853,13 @@ app.delete("/deletegallery/:id", (req, res) => {
 });
 
 app.put("/galleryupdates/:id", upload.single("file"), (req, res) => {
-  const { name, permalink, orders, date, feature, status } = req.body;
+  const { name, permalink, orders, date, feature, description, status } =
+    req.body;
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
   let sql =
-    "update gallery set name = ?, permalink = ?, orders = ?, date = ?, feature= ?, status= ?";
-  let values = [name, permalink, orders, date, feature, status];
+    "update gallery set name=?, permalink=?, orders=?, date=?, feature=?,description=?, status=?";
+  let values = [name, permalink, orders, date, feature, description, status];
   if (image) {
     sql += ", image = ?";
     values.push(image);
@@ -1102,6 +1164,15 @@ app.get("/pagesdata", (req, res) => {
   });
 });
 
+app.get("/pagesdata/:slug", (req, res) => {
+  const { slug } = req.params;
+  db.query("SELECT * FROM pages WHERE name = ?", [slug], (err, result) => {
+    if (err || result.length === 0)
+      return res.status(404).json({ error: "Page Not Found" });
+    res.json(result[0]);
+  });
+});
+
 app.delete("/pagesdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from pages where id=?";
@@ -1383,6 +1454,7 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
   const author_name = req.body.author_name;
   const permalink = req.body.permalink;
   const description = req.body.description;
+  const content = req.body.content;
   const feature = req.body.feature;
   const status = req.body.status;
   const categories = req.body.categories;
@@ -1394,6 +1466,7 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
       author_name,
       permalink,
       description,
+      content,
       feature,
       status,
       categories,
@@ -1402,7 +1475,7 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
     ],
   ];
   const sql =
-    "insert into blogpost(name,author_name,permalink,description,feature,status,categories,date,image)values ?";
+    "insert into blogpost(name,author_name,permalink,description,content,feature,status,categories,date,image)values ?";
   db.query(sql, [value], (err, result) => {
     if (err) throw err;
     else {
@@ -1442,6 +1515,7 @@ app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
     author_name,
     permalink,
     description,
+    content,
     feature,
     status,
     categories,
@@ -1450,12 +1524,13 @@ app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
   let sql =
-    "update blogpost set name = ?, author_name=?, permalink = ?,description=?,feature= ?, status= ?,categories=?, date = ?";
+    "update blogpost set name = ?, author_name=?, permalink = ?,description=?,content=?,feature= ?, status= ?,categories=?, date = ?";
   let values = [
     name,
     author_name,
     permalink,
     description,
+    content,
     feature,
     status,
     categories,
@@ -1508,21 +1583,15 @@ app.get("/blogpostsearch/:value", (req, res) => {
   });
 });
 
-app.post("/adspost", upload.single("file"), (req, res) => {
-  const {
-    name,
-    title,
-    subtitle,
-    button,
-    keyads,
-    orders,
-    adstype,
-    status,
-    expired,
-  } = req.body;
-  const image = req.file.filename;
-  const value = [
-    [
+app.post(
+  "/adspost",
+  upload.fields([
+    { name: "file", maxCount: 1 },
+    { name: "desktopImage", maxCount: 1 },
+    { name: "mobileImage", maxCount: 1 },
+  ]),
+  (req, res) => {
+    const {
       name,
       title,
       subtitle,
@@ -1532,18 +1601,48 @@ app.post("/adspost", upload.single("file"), (req, res) => {
       adstype,
       status,
       expired,
-      image,
-    ],
-  ];
-  const sql =
-    "insert into ads(name,title,subtitle,button,keyads,orders,adstype,status,expired,image)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
+    } = req.body;
+    const image = req.files["file"] ? req.files["file"][0].filename : null;
+    const desktopImage = req.files["desktopImage"]
+      ? req.files["desktopImage"][0].filename
+      : null;
+    const mobileImage = req.files["mobileImage"]
+      ? req.files["mobileImage"][0].filename
+      : null;
+    if (!image && !desktopImage && !mobileImage) {
+      return res
+        .status(400)
+        .send("At least one image (main, desktop, or mobile) is required.");
     }
-  });
-});
+    const value = [
+      [
+        name,
+        title,
+        subtitle,
+        button,
+        keyads,
+        orders,
+        adstype,
+        status,
+        expired,
+        image,
+        desktopImage,
+        mobileImage,
+      ],
+    ];
+
+    const sql =
+      "INSERT INTO ads (name, title, subtitle, button, keyads, orders, adstype, status, expired, image, desktopImage, mobileImage) VALUES ?";
+
+    db.query(sql, [value], (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+        return res.status(500).send("Database insertion failed.");
+      }
+      res.send("Data submitted successfully.");
+    });
+  }
+);
 
 app.get("/adsdata", (req, res) => {
   const sql = "select *from ads";
@@ -2394,6 +2493,65 @@ app.put("/userupdate/:id", upload.single("file"), (req, res) => {
   }
 });
 
+app.put("/passwordupdate", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    console.log("Received Token:", token);
+    if (!token) {
+      console.log("Token is missing from request headers");
+      return res
+        .status(401)
+        .json({ status: "error", message: "Unauthorized. No token provided." });
+    }
+
+    const decoded = jwt.verify(token, secretKey);
+    const userId = decoded.id;
+
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "All fields are required." });
+    }
+    const sql = "SELECT password FROM user WHERE id = ?";
+    db.query(sql, [userId], async (err, result) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ status: "error", message: "Database error." });
+      if (result.length === 0) {
+        return res
+          .status(404)
+          .json({ status: "error", message: "User not found." });
+      }
+      const storedPassword = result[0].password;
+      const match = await bcrypt.compare(currentPassword, storedPassword);
+      if (!match) {
+        return res
+          .status(401)
+          .json({ status: "error", message: "Incorrect current password." });
+      }
+      const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+      const sqlUpdate = "UPDATE user SET password = ? WHERE id = ?";
+      db.query(sqlUpdate, [hashedNewPassword, userId], (err, updateResult) => {
+        if (err)
+          return res
+            .status(500)
+            .json({ status: "error", message: "Error updating password." });
+
+        return res.json({
+          status: "success",
+          message: "Password updated successfully.",
+        });
+      });
+    });
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ status: "error", message: "Invalid or expired token." });
+  }
+});
+
 app.get("/somecustomerdata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select *from user where id=?";
@@ -3019,15 +3177,56 @@ app.get("/dashboardsome/:id", (req, res) => {
   });
 });
 
-app.put("/userupdate/1", (req, res) => {
-  const data = req.body;
-  const sql = "UPDATE dashboard SET name=?, date=?, phone=? WHERE id=1";
-  db.query(sql, [data.name, data.date, data.phone], (err, result) => {
-    if (err) {
-      throw err;
-    } else {
-      res.send("Data updated");
+app.put("/userupdated/:id", (req, res) => {
+  const { first_name, last_name, dob, phone_number } = req.body;
+  if (!first_name || !last_name || !dob || !phone_number) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  const [first, ...lastParts] = first_name.split(" ");
+  const last = lastParts.join(" ");
+  const sql =
+    "UPDATE user SET first_name=?, last_name=?, dob=?, phone_number=? WHERE id=?";
+  db.query(
+    sql,
+    [first, last, dob, phone_number, req.params.id],
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: "Failed to update data" });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json({ message: "Data updated successfully" });
     }
+  );
+});
+
+app.put("/changepassword/:id", (req, res) => {
+  const { currentPassword, password } = req.body;
+  const userId = req.params.id;
+  const sql = "SELECT * FROM user WHERE id = ?";
+  db.query(sql, [userId], async (err, result) => {
+    if (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    const user = result[0];
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+      return res.status(400).json({ error: "Current password is incorrect." });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updateSql = "UPDATE user SET password = ? WHERE id = ?";
+    db.query(updateSql, [hashedPassword, userId], (updateErr, updateResult) => {
+      if (updateErr) {
+        console.error("Error updating password:", updateErr);
+        return res.status(500).json({ error: "Failed to update password" });
+      }
+      res.json({ message: "Password changed successfully!" });
+    });
   });
 });
 
@@ -3345,12 +3544,13 @@ app.get("/specificationattributesearch/:value", (req, res) => {
 });
 
 app.post("/wishlistpost", upload.single("file"), (req, res) => {
-  const { product_name, image } = req.body;
-  if (!product_name || !image) {
+  const { product_name, image, store, price, price_sale, sku } = req.body;
+  if (!product_name || !image || !store || !price || !price_sale || !sku) {
     return res.status(400).send("Missing required fields");
   }
-  const value = [[product_name, image]];
-  const sql = "INSERT INTO wishlist(product_name, image) VALUES ?";
+  const value = [[product_name, image, store, price, price_sale, sku]];
+  const sql =
+    "INSERT INTO wishlist(product_name, image,store,price,price_sale,sku) VALUES ?";
   db.query(sql, [value], (err, result) => {
     if (err) throw err;
     else {
@@ -3369,48 +3569,18 @@ app.get("/wishlistdata", (req, res) => {
   });
 });
 
-// admin login logic
+app.delete("/wishlistdelete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "delete from wishlist where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data deleted");
+    }
+  });
+});
 
-// app.post("/adminlogin", (req, res) => {
-//   const { username, password } = req.body;
-//   if (!username || !password) {
-//     return res.status(400).send("Both username and password are required");
-//   }
-//   const sql = "SELECT * FROM adminlogin WHERE username = ?";
-//   db.query(sql, [username], (err, result) => {
-//     if (err) {
-//       return res.status(500).send("Internal server error");
-//     }
-//     if (result.length === 0) {
-//       return res.status(400).send("Invalid username or password.");
-//     }
-//     const hashedPassword = result[0].password;
-//     bcrypt.compare(password, hashedPassword, (err, isMatch) => {
-//       if (err) {
-//         return res.status(500).send("Error comparing passwords");
-//       }
-//       if (isMatch) {
-//         const token = jwt.sign(
-//           { userId: result[0].id, username: result[0].username },
-//           process.env.JWT_SECRET,
-//           { expiresIn: "6h" }
-//         );
-//         res.cookie("auth_token", token, {
-//           httpOnly: true,
-//           secure: process.env.NODE_ENV === "production",
-//           maxAge: 6 * 60 * 60 * 1000,
-//           sameSite: "Strict",
-//         });
-//         return res.send({
-//           message: "Successfully logged in!",
-//           user: result[0],
-//         });
-//       } else {
-//         return res.status(400).send("Invalid username or password.");
-//       }
-//     });
-//   });
-// });
+// admin login logic
 
 app.post("/adminlogin", (req, res) => {
   const { username, password } = req.body;
@@ -3496,7 +3666,7 @@ const transporter = nodemailer.createTransport({
 });
 
 function sendResetPasswordEmail(email, resetToken) {
-  const resetLink = `http://54.183.54.164:5173/admin/password/reset-password?token=${resetToken}`;
+  const resetLink = `http://89.116.170.231:5173/admin/password/reset-password?token=${resetToken}`;
   const mailOptions = {
     from: "pkumar@jainya.com",
     to: email,
@@ -3577,6 +3747,283 @@ app.get("/forgot-password", (req, res) => {
     else {
       res.json(result);
     }
+  });
+});
+
+app.get("/get-font-settings", (req, res) => {
+  db.query("SELECT * FROM settings LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({
+        font_family: "Arial",
+        body_font_size: "14px",
+        h1_font_size: "36px",
+        h2_font_size: "32px",
+        h3_font_size: "28px",
+        h4_font_size: "24px",
+        h5_font_size: "20px",
+        h6_font_size: "16px",
+      });
+    }
+    res.json(result[0]);
+  });
+});
+
+app.post("/update-font-settings", (req, res) => {
+  const {
+    font_family,
+    body_font_size,
+    h1_font_size,
+    h2_font_size,
+    h3_font_size,
+    h4_font_size,
+    h5_font_size,
+    h6_font_size,
+  } = req.body;
+  db.query("SELECT * FROM settings LIMIT 1", (err, result) => {
+    if (err) {
+      console.error("Error fetching existing settings:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    if (result.length === 0) {
+      return res.status(404).json({ error: "Settings not found" });
+    }
+    const existingSettings = result[0];
+    const updatedSettings = {
+      font_family: font_family || existingSettings.font_family,
+      body_font_size: body_font_size || existingSettings.body_font_size,
+      h1_font_size: h1_font_size || existingSettings.h1_font_size,
+      h2_font_size: h2_font_size || existingSettings.h2_font_size,
+      h3_font_size: h3_font_size || existingSettings.h3_font_size,
+      h4_font_size: h4_font_size || existingSettings.h4_font_size,
+      h5_font_size: h5_font_size || existingSettings.h5_font_size,
+      h6_font_size: h6_font_size || existingSettings.h6_font_size,
+    };
+    const sql = `
+      UPDATE settings 
+      SET 
+        font_family = ?, 
+        body_font_size = ?, 
+        h1_font_size = ?, 
+        h2_font_size = ?, 
+        h3_font_size = ?, 
+        h4_font_size = ?, 
+        h5_font_size = ?, 
+        h6_font_size = ?
+    `;
+    db.query(sql, Object.values(updatedSettings), (updateErr, updateResult) => {
+      if (updateErr) {
+        console.error("Error updating font settings:", updateErr);
+        return res.status(500).json({ error: "Update failed" });
+      }
+      res.json({
+        success: true,
+        message: "Font settings updated successfully!",
+      });
+    });
+  });
+});
+
+app.post(
+  "/update-settings",
+  upload.fields([
+    { name: "favicon" },
+    { name: "logo" },
+    { name: "logo_light" },
+  ]),
+  (req, res) => {
+    const logo_height = req.body.logo_height;
+    const favicon_url = req.files["favicon"]
+      ? req.files["favicon"][0].filename
+      : null;
+    const logo_url = req.files["logo"] ? req.files["logo"][0].filename : null;
+    const logo_light = req.files["logo_light"]
+      ? req.files["logo_light"][0].filename
+      : null;
+    let sql = "UPDATE logo SET";
+    let params = [];
+    if (favicon_url) {
+      sql += " favicon_url=?,";
+      params.push(favicon_url);
+    }
+    if (logo_url) {
+      sql += " logo_url=?,";
+      params.push(logo_url);
+    }
+    if (logo_light) {
+      sql += " logo_light=?,";
+      params.push(logo_light);
+    }
+    if (logo_height) {
+      sql += " logo_height=?,";
+      params.push(logo_height);
+    }
+    sql = sql.replace(/,$/, "");
+    sql += " WHERE id=1";
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Database update failed!" });
+      }
+      res.json({ success: true, message: "Settings updated successfully!" });
+    });
+  }
+);
+
+app.get("/get-theme-logo", (req, res) => {
+  db.query("SELECT * FROM logo LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({ result });
+    }
+    res.json(result[0]);
+  });
+});
+
+app.post("/breadcrumb-settings", upload.single("file"), (req, res) => {
+  let {
+    enable_breadcrumb,
+    breadcrumb_style,
+    hide_title,
+    background_color,
+    breadcrumb_height,
+    mobile_length,
+    imageDeleted,
+  } = req.body;
+
+  let newBackgroundImage;
+  if (imageDeleted === "true") {
+    newBackgroundImage = null;
+  } else if (req.file) {
+    newBackgroundImage = req.file.filename;
+  } else {
+    newBackgroundImage = undefined;
+  }
+  let query;
+  let params;
+  if (newBackgroundImage === undefined) {
+    query = `
+      UPDATE breadcrumb 
+      SET 
+        enable_breadcrumb = COALESCE(NULLIF(?, ''), enable_breadcrumb),
+        breadcrumb_style = COALESCE(NULLIF(?, ''), breadcrumb_style),
+        hide_title = COALESCE(NULLIF(?, ''), hide_title),
+        background_color = COALESCE(NULLIF(?, ''), background_color),
+        breadcrumb_height = COALESCE(NULLIF(?, ''), breadcrumb_height),
+        mobile_length = COALESCE(NULLIF(?, ''), mobile_length)
+      WHERE id = 1
+    `;
+    params = [
+      enable_breadcrumb,
+      breadcrumb_style,
+      hide_title,
+      background_color,
+      breadcrumb_height,
+      mobile_length,
+    ];
+  } else {
+    query = `
+      UPDATE breadcrumb 
+      SET 
+        enable_breadcrumb = COALESCE(NULLIF(?, ''), enable_breadcrumb),
+        breadcrumb_style = COALESCE(NULLIF(?, ''), breadcrumb_style),
+        hide_title = COALESCE(NULLIF(?, ''), hide_title),
+        background_color = COALESCE(NULLIF(?, ''), background_color),
+        breadcrumb_height = COALESCE(NULLIF(?, ''), breadcrumb_height),
+        mobile_length = COALESCE(NULLIF(?, ''), mobile_length),
+        background_image = ?
+      WHERE id = 1
+    `;
+    params = [
+      enable_breadcrumb,
+      breadcrumb_style,
+      hide_title,
+      background_color,
+      breadcrumb_height,
+      mobile_length,
+      newBackgroundImage,
+    ];
+  }
+
+  db.query(query, params, (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ message: "Database update failed" });
+    }
+    res
+      .status(200)
+      .json({ message: "Breadcrumb settings updated successfully" });
+  });
+});
+
+app.get("/get-theme-breadcrumb", (req, res) => {
+  db.query("SELECT * FROM breadcrumb LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({ result });
+    }
+    res.json(result[0]);
+  });
+});
+
+// theme newsletters popup
+
+app.post("/themenewspost", upload.single("file"), (req, res) => {
+  let {
+    news_popup,
+    popup_title,
+    popup_subtitle,
+    popup_description,
+    popup_delay,
+    display_page,
+    deleteImage,
+  } = req.body;
+  const image = req.file ? req.file.filename : null;
+  popup_delay =
+    popup_delay && !isNaN(popup_delay) ? parseInt(popup_delay, 10) : 0;
+  const displayPages = Array.isArray(display_page)
+    ? display_page.join(",")
+    : display_page;
+  const sql = "SELECT * FROM themenews WHERE id = 1";
+  db.query(sql, (err, rows) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+    if (rows.length === 0)
+      return res.status(404).json({ error: "Record not found" });
+    const updatedFields = {};
+    if (news_popup !== undefined) updatedFields.news_popup = news_popup;
+    if (popup_title !== undefined) updatedFields.popup_title = popup_title;
+    if (popup_subtitle !== undefined)
+      updatedFields.popup_subtitle = popup_subtitle;
+    if (popup_description !== undefined)
+      updatedFields.popup_description = popup_description;
+    if (popup_delay !== undefined) updatedFields.popup_delay = popup_delay;
+    if (displayPages !== undefined) updatedFields.display_page = displayPages;
+    if (deleteImage === "true") {
+      updatedFields.image = "";
+    } else if (image !== null) {
+      updatedFields.image = image;
+    }
+    const setClause = Object.keys(updatedFields)
+      .map((key) => `${key} = ?`)
+      .join(", ");
+    const values = Object.values(updatedFields);
+    if (setClause.length === 0)
+      return res.json({ message: "No changes made." });
+    const updateQuery = `UPDATE themenews SET ${setClause} WHERE id = 1`;
+    db.query(updateQuery, values, (err, result) => {
+      if (err) return res.status(500).json({ error: "Database error" });
+      res.json({ message: "Data successfully updated", result });
+    });
+  });
+});
+
+app.get("/themenewsdata", (req, res) => {
+  db.query("SELECT * FROM themenews LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({ result });
+    }
+    res.json(result[0]);
   });
 });
 

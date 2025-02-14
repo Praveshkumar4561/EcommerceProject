@@ -5,7 +5,6 @@ import Logo from "../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
-  faCheck,
   faEnvelope,
   faMoon,
   faPenToSquare,
@@ -18,15 +17,18 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Announcement() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
+
   let [user, setUser] = useState([]);
   let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
@@ -61,7 +63,6 @@ function Announcement() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -80,13 +81,10 @@ function Announcement() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -94,8 +92,10 @@ function Announcement() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -185,19 +185,28 @@ function Announcement() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/search/${search}`
+      `http://89.116.170.231:1600/search/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/getannounce");
+    let response = await axios.get("http://89.116.170.231:1600/getannounce");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://54.183.54.164:1600/deleteannoune/${id}`, user);
-    alert("data sucessfully deleted");
+    await axios.delete(`http://89.116.170.231:1600/deleteannoune/${id}`, user);
+    try {
+      toast.success("Data successfully deleted: ", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {}
   };
 
   return (
@@ -218,11 +227,13 @@ function Announcement() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1307,9 +1318,9 @@ function Announcement() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1335,9 +1346,9 @@ function Announcement() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1363,9 +1374,9 @@ function Announcement() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2215,17 +2226,6 @@ function Announcement() {
                       <i className="fas fa-sort ms-1"></i>
                     </th>
 
-                    <th scope="col">
-                      <img
-                        src="https://shofy.botble.com/vendor/core/core/base/img/flags/us.svg"
-                        title="English"
-                        className="flag rounded-1 ms-3"
-                        style={{ height: "16px" }}
-                        loading="lazy"
-                        alt="English flag"
-                      />
-                    </th>
-
                     <th scope="col" className="fw-normal">
                       Operations
                     </th>
@@ -2249,13 +2249,15 @@ function Announcement() {
                             Yes
                           </span>
                         </td>
-                        <td>{data.start_date}</td>
+
                         <td>
-                          <FontAwesomeIcon
-                            icon={faCheck}
-                            className="text-primary ms-3"
-                          />
+                          {
+                            new Date(data.start_date)
+                              .toISOString()
+                              .split("T")[0]
+                          }
                         </td>
+
                         <td style={{ whiteSpace: "nowrap" }}>
                           <button className="btn btn-edit me-2" type="button">
                             <Link to={`/admin/announcements/edit/${data.id}`}>
@@ -2287,6 +2289,7 @@ function Announcement() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

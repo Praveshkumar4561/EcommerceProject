@@ -1,0 +1,170 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 240vh;
+  width: 100vw;
+  margin: 0;
+  overflow-x: hidden;
+}
+#container-custom {
+  width: 100vw;
+  height: 450px;
+  background-color: #f2f5f7;
+}
+.container-custom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20rem;
+  flex-direction: column;
+  width: 100%;
+}
+.container-custom1 {
+  width: 72rem;
+  max-width: 100%;
+}
+.container-h1 {
+  position: relative;
+  left: 5rem;
+}
+.container-h2 {
+  position: relative;
+  left: 5.1rem;
+  top: 0.3rem;
+}
+.fontawesome {
+  position: relative;
+  top: 0.2rem;
+  font-size: 0.9rem;
+  font-size: 0.8rem;
+}
+@media (max-width: 768px) {
+  .container-h1 {
+    font-size: 1.5rem;
+  }
+
+  .container-h2 {
+    font-size: 0.875rem;
+  }
+
+  .fontawesome {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .shop-div {
+    width: 30rem;
+    height: 30rem;
+    justify-content: center;
+  }
+}
+@media (max-width: 768px) {
+  .shop-div {
+    width: 30rem;
+    height: 30rem;
+  }
+}
+@media (max-width: 576px) {
+  .shop-div {
+    width: 27rem;
+    height: 30rem;
+  }
+}
+.digital-table {
+  width: 5rem;
+  height: 5rem;
+}
+
+.table-class {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.brown-table {
+  margin-left: 0.5rem;
+}
+
+.brown-table1 {
+  margin-left: 0.5rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-dollar {
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .digital-table {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .table-class {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .brown-table,
+  .brown-table1 {
+    font-size: 0.875rem;
+  }
+
+  .table {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .table-class {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .digital-table {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .brown-table,
+  .brown-table1 {
+    font-size: 0.75rem;
+  }
+
+  .table {
+    font-size: 0.75rem;
+  }
+}
+
+.cart-border {
+  width: 25rem;
+  height: 20rem;
+  background-color: #f2f5f7;
+  text-align: center;
+}
+
+.subtotal {
+  position: relative;
+  left: -1rem;
+}
+.subtotal1 {
+  position: relative;
+  left: -4.9rem;
+}
+.shipping {
+  position: relative;
+  top: 0.3rem;
+}
+.button-check {
+  background-color: #0a9a73;
+}

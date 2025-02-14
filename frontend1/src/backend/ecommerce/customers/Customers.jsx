@@ -21,6 +21,8 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Customers() {
   let [isVisible, setIsVisible] = useState(false);
@@ -85,6 +87,9 @@ function Customers() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -176,7 +181,7 @@ function Customers() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/customersearch/${search}`
+      `http://89.116.170.231:1600/customersearch/${search}`
     );
     setUser(response.data);
   };
@@ -186,20 +191,32 @@ function Customers() {
   let [user, setUser] = useState([]);
 
   let alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/alldata");
+    let response = await axios.get("http://89.116.170.231:1600/alldata");
     setUser(response.data);
     setCount1(response.data.length);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://54.183.54.164:1600/customerdelete/${id}`, user);
-    alert("data sucessfully deleted");
+    try {
+      await axios.delete(
+        `http://89.116.170.231:1600/customerdelete/${id}`,
+        user
+      );
+      toast.success("data successfully deleted ", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {}
   };
 
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://54.183.54.164:1600/export-customerdata",
+        "http://89.116.170.231:1600/export-customerdata",
         {
           responseType: "blob",
         }
@@ -223,7 +240,7 @@ function Customers() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -246,11 +263,13 @@ function Customers() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1335,9 +1354,9 @@ function Customers() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1363,9 +1382,9 @@ function Customers() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1391,9 +1410,9 @@ function Customers() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2356,6 +2375,7 @@ function Customers() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

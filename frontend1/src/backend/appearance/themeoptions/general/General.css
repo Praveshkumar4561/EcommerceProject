@@ -711,3 +711,7 @@ input[type="search"] {
     font-size: 0.8rem;
   }
 }
+
+.form-check-input:checked {
+  background-color: #206bc4;
+}

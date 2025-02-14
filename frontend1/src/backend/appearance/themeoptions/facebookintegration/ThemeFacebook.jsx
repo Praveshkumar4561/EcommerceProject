@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./ThemeFacebook.css";
 import Hamburger from "../../../../assets/hamburger.svg";
-import Logo from "../../../../assets/Logo.webp";
+import Logo from "../../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
@@ -47,7 +48,6 @@ function ThemeFacebook() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -66,13 +66,10 @@ function ThemeFacebook() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -80,6 +77,9 @@ function ThemeFacebook() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -161,25 +161,30 @@ function ThemeFacebook() {
     }
   };
 
-  const [showPalette, setShowPalette] = useState(false);
-
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
-  };
-
-  let [facebook, setFacebook] = useState();
-
-  let facebookAdmins = () => {
-    setFacebook(!facebook);
-  };
-
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
+
+  const [facebook, setFacebook] = useState([]);
+
+  const facebookAdmins = (e) => {
+    e.preventDefault();
+    setFacebook([...facebook, ""]);
+  };
+
+  const handleInputChange = (e, index) => {
+    const updatedAdmins = [...facebookAdmins];
+    updatedAdmins[index] = e.target.value;
+    setFacebook(updatedAdmins);
+  };
+
+  const removeFacebookAdmin = (index) => {
+    setFacebook(facebook.filter((_, i) => i !== index));
+  };
 
   return (
     <>
@@ -199,11 +204,13 @@ function ThemeFacebook() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1287,9 +1294,9 @@ function ThemeFacebook() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1315,9 +1322,9 @@ function ThemeFacebook() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1343,9 +1350,9 @@ function ThemeFacebook() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2115,8 +2122,8 @@ function ThemeFacebook() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
-        <div className="sidebar-theme-options1 border rounded ms-md-aut">
+      <div className="container mt-4 d-flex ms-0">
+        <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
@@ -2499,38 +2506,39 @@ function ThemeFacebook() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-2 mb-lg-0">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-3 me-2 border d-flex">
+            <button className="btn btn-success button-facebook-change py-4 mt-4 mt-lg-3 me-2 ms-3 border d-flex">
               Save Changes
             </button>
           </div>
 
-          <hr className="custom-changes1" />
+          <hr className="custom-faceboook mt-3" />
           <form className="content-form ms-3 me-3">
             <div className="mb-3 mt-2">
               <div className="mb-3">
-                <label className="form-label" htmlFor="date-format">
-                  Enable Facebook comment in the product page?
-                </label>
+                <div className="facebook-integrate">
+                  <label className="form-label" htmlFor="date-format">
+                    Enable Facebook comment in the product page?
+                  </label>
 
-                <select
-                  className="form-select label-cookie"
-                  id="date-format"
-                  style={{ height: "50px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                </select>
+                  <select
+                    className="form-select facebook-integrate"
+                    style={{ height: "50px" }}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
 
-                <div>
+                <div className="facebook-integrate">
                   <label className="form-label mt-3" htmlFor="date-format">
                     Enable Facebook chat?
                   </label>
 
                   <select
-                    className="form-select label-hotline label-date"
+                    className="form-select facebook-integrate"
                     id="date-format"
                     style={{ height: "50px" }}
                   >
@@ -2554,13 +2562,14 @@ function ThemeFacebook() {
                   </div>
                 </div>
 
-                <div>
+                <div className="facebook-integrate">
                   <label className="form-label mt-3" htmlFor="hotline">
                     Facebook page ID
                   </label>
                   <input
-                    className="form-control py-4 label-hotline"
+                    className="form-control py-4 facebook-integrate"
                     type="text"
+                    placeholder="Enter facebook page ID"
                   />
                   <div className="mt-1">
                     <small className="text-muted">
@@ -2578,12 +2587,12 @@ function ThemeFacebook() {
               </div>
             </div>
 
-            <div className="mb-3">
+            <div className="mb-3 facebook-integrate">
               <label className="form-label" htmlFor="site-title">
                 Enable Facebook comment in post detail page?
               </label>
               <select
-                className="form-select label-cookie"
+                className="form-select facebook-integrate"
                 id="date-format"
                 style={{ height: "50px" }}
               >
@@ -2593,14 +2602,15 @@ function ThemeFacebook() {
               </select>
             </div>
 
-            <div className="mb-3">
+            <div className="mb-3 facebook-integrate">
               <label className="form-label" htmlFor="site-title">
                 Facebook App ID
               </label>
               <input
-                className="form-control py-4 label-hotline"
+                className="form-control py-4 facebook-integrate"
                 id="site-title"
                 type="text"
+                placeholder="Enter facebook app ID"
               />
               <div className="mt-1">
                 <small className="text-muted">
@@ -2619,37 +2629,50 @@ function ThemeFacebook() {
             <div>
               <label htmlFor="">Facebook Admins</label>
 
-              {facebook && (
-                <>
-                  <div className="border bg-light mt-2 py-4 rounded">
+              <div>
+                {facebook.map((_, index) => (
+                  <div
+                    key={index}
+                    className="border bg-light mt-2 py-4 rounded facebook-integrate1"
+                  >
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="float-end me-3 bg-secondary rounded-3 text-light px-2 py-1 fs-5 mb-2 facebook-admins"
+                      onClick={() => removeFacebookAdmin(index)}
+                    />
                     <label htmlFor="" className="ms-3">
-                      Facebook Admin ID
+                      Facebook Admin ID {index + 1}
                     </label>
                     <input
                       type="text"
+                      placeholder="Enter facebook admin ID"
                       className="form-control py-4 ms-3 mt-2 me-5 facebook-admin"
+                      value={facebookAdmins[index]}
+                      onChange={(e) => handleInputChange(e, index)}
                     />
                   </div>
-                </>
-              )}
-              <button
-                className="btn-success text-light rounded mt-3 mb-2 py-2 ms-2"
-                onClick={facebookAdmins}
-              >
-                Add new
-              </button>
+                ))}
 
-              <div className="mt-1 link-facebooks">
-                <small className="text-muted facebook-admin1">
-                  Facebook admins to manage comments{" "}
-                  <Link
-                    to="https://developers.facebook.com/docs/plugins/comments"
-                    className="link-facebook"
-                    target="_blank"
-                  >
-                    https://developers.facebook.com/docs/plugins/comments
-                  </Link>
-                </small>
+                <button
+                  className="btn-success text-light rounded mt-2 mb-2 py-2 ms-2"
+                  onClick={facebookAdmins}
+                >
+                  Add New
+                </button>
+
+                <div className="mt-1 link-facebooks ms-2">
+                  <small className="text-muted facebook-admin1">
+                    Facebook admins to manage comments{" "}
+                    <Link
+                      to="https://developers.facebook.com/docs/plugins/comments"
+                      className="link-facebook"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      https://developers.facebook.com/docs/plugin
+                    </Link>
+                  </small>
+                </div>
               </div>
             </div>
           </form>

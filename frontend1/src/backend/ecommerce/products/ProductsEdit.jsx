@@ -22,9 +22,10 @@ import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ProductsEdit() {
   const [editorData, setEditorData] = useState("");
@@ -59,9 +60,20 @@ function ProductsEdit() {
   };
 
   const handleAddFromUrl = () => {
-    alert("Functionality to add image from URL needs to be implemented.");
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
   };
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -123,6 +135,9 @@ function ProductsEdit() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -265,7 +280,7 @@ function ProductsEdit() {
     formData.append("label1", selectedLabels1 || "");
     try {
       const response = await axios.put(
-        `http://54.183.54.164:1600/productupdate/${id}`,
+        `http://89.116.170.231:1600/productupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -310,7 +325,7 @@ function ProductsEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/productsomedata/${id}`
+      `http://89.116.170.231:1600/productsomedata/${id}`
     );
     setUser(response.data[0]);
   };
@@ -336,7 +351,7 @@ function ProductsEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -517,7 +532,7 @@ function ProductsEdit() {
   const attributedata = async () => {
     try {
       let response = await axios.get(
-        "http://54.183.54.164:1600/attributesdata"
+        "http://89.116.170.231:1600/attributesdata"
       );
       setCreate(response.data);
     } catch (error) {
@@ -560,7 +575,7 @@ function ProductsEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://54.183.54.164:1600/productpagedata?search=${search}`
+          `http://89.116.170.231:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -597,11 +612,13 @@ function ProductsEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1685,9 +1702,9 @@ function ProductsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1713,9 +1730,9 @@ function ProductsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1741,9 +1758,9 @@ function ProductsEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2539,8 +2556,8 @@ function ProductsEdit() {
                 <path d="M12 9h.01"></path>
                 <path d="M11 12h1v4h1"></path>
               </svg>
-              You are editing <strong className="ms-2 me-2">"English"</strong>{" "}
-              version
+              You are editing{" "}
+              <strong className="ms-0 me-1 fw-medium">"English"</strong> version
             </div>
           </div>
         </div>
@@ -2689,7 +2706,7 @@ function ProductsEdit() {
                       <div className="mb-0">
                         <textarea
                           id="content1"
-                          className="form-control text-create"
+                          className="form-control"
                           placeholder="Short description"
                           value={textAreaData1}
                           onChange={handleTextAreaChange1}
@@ -2822,7 +2839,7 @@ function ProductsEdit() {
                       <div className="mb-3">
                         <textarea
                           id="content2"
-                          className="form-control text-create"
+                          className="form-control"
                           placeholder="Short description"
                           value={textAreaData2}
                           onChange={handleTextAreaChange2}
@@ -3676,7 +3693,7 @@ function ProductsEdit() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://54.183.54.164:1600/path/to/fallback-image.jpg")
+                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -3735,7 +3752,7 @@ function ProductsEdit() {
                                 alt="img not found"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://54.183.54.164:1600/path/to/fallback-image.jpg")
+                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -4192,6 +4209,7 @@ function ProductsEdit() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

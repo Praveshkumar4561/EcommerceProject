@@ -83,7 +83,7 @@ input[type="search"] {
   font-family: Verdana, Tahoma, sans-serif;
   position: relative;
   left: 0.7rem;
-  top: 0rem;
+  top: 0.18rem;
 }
 
 @media (max-width: 768px) {

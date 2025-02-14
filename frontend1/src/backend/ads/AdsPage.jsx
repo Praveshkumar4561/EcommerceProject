@@ -5,7 +5,7 @@ import Logo from "../../assets/Logo.webp";
 import {
   faAngleDown,
   faBell,
-  faCheck,
+  faCopy,
   faEnvelope,
   faMoon,
   faPenToSquare,
@@ -18,6 +18,8 @@ import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AdsPage() {
   let [user, setUser] = useState([]);
@@ -27,7 +29,6 @@ function AdsPage() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,6 @@ function AdsPage() {
     "/admin/newsletters": "# NewsLetters",
     "/admin/settings": "# Settings",
     "/admin/system": "# System",
-
     "/admin/ecommerce/products": "# Ecommerce > Products",
     "/admin/ecommerce/reports": "# Ecommerce > Reports",
     "/admin/ecommerce/orders": "# Ecommerce > Orders",
@@ -74,13 +74,10 @@ function AdsPage() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -88,6 +85,9 @@ function AdsPage() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -179,36 +179,66 @@ function AdsPage() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/adsearch/${search}`
+      `http://89.116.170.231:1600/adsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/adsdata");
+    let response = await axios.get("http://89.116.170.231:1600/adsdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://54.183.54.164:1600/deleteads/${id}`, user);
-    alert("data sucessfully deleted");
+    await axios.delete(`http://89.116.170.231:1600/deleteads/${id}`, user);
+    try {
+      toast.success("data sucessfully deleted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("data is not deleted", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   const copyToClipboard = (text) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("Copy Shortcode");
-      })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
+    navigator.clipboard.writeText(text);
+    try {
+      toast.success("Shortcode has been copy", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
       });
+    } catch (error) {
+      toast.error("Shortcode has not been copy", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
   };
 
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -231,11 +261,13 @@ function AdsPage() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1320,9 +1352,9 @@ function AdsPage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1348,9 +1380,9 @@ function AdsPage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1376,9 +1408,9 @@ function AdsPage() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2175,7 +2207,7 @@ function AdsPage() {
                 />
               </div>
               <div className="mt-2 mt-sm-0 mt-lg-0 d-flex flex-row ms-sm-2">
-                <Link to="/admin/ads/create">
+                <Link to="/admin/ads/create" className="text-decoration-none">
                   <button
                     className="btn btn-create me-2 bulk d-flex flex-row align-items-center"
                     type="button"
@@ -2258,17 +2290,6 @@ function AdsPage() {
                       <i className="fas fa-sort ms-1"></i>
                     </th>
 
-                    <th scope="col">
-                      <img
-                        src="https://shofy.botble.com/vendor/core/core/base/img/flags/us.svg"
-                        title="English"
-                        className="flag rounded-1 ms-3"
-                        style={{ height: "16px" }}
-                        loading="lazy"
-                        alt="English flag"
-                      />
-                    </th>
-
                     <th scope="col" className="fw-light">
                       Operations
                     </th>
@@ -2302,36 +2323,21 @@ function AdsPage() {
                         <td style={{ whiteSpace: "nowrap" }}>
                           <Link
                             to="#"
-                            className="text-light p-1 rounded-1 bg-secondary"
+                            className="text-light p-1 rounded-1 bg-secondary text-decoration-none"
+                            style={{ cursor: "inherit" }}
                           >
-                            [ads key="{data.keyads}"][/ads]
+                            [ads key="{data.keyads}"] [/ads]
                           </Link>
-                          <svg
+
+                          <FontAwesomeIcon
+                            icon={faCopy}
                             onClick={() =>
                               copyToClipboard(
                                 `[ads key="${data.keyads}"][/ads]`
                               )
                             }
-                            className="icon  svg-icon-ti-ti-clipboard ms-1 copy-path"
-                            data-clipboard-icon="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
-                            <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
-                          </svg>
+                            className="fs-4 ms-2 pointer-click text-success"
+                          />
                         </td>
 
                         <td>
@@ -2346,13 +2352,6 @@ function AdsPage() {
                           <span className="badge badge-success lh-base px-2 fw-light status-blog">
                             {data.status}
                           </span>
-                        </td>
-
-                        <td>
-                          <FontAwesomeIcon
-                            icon={faCheck}
-                            className="text-primary ms-3"
-                          />
                         </td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
@@ -2387,6 +2386,7 @@ function AdsPage() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

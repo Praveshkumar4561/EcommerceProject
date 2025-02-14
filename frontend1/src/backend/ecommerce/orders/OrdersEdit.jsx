@@ -5,7 +5,6 @@ import Logo from "../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
-  faCheck,
   faCreditCard,
   faDownload,
   faEnvelope,
@@ -94,6 +93,9 @@ function OrdersEdit() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
   };
 
   useEffect(() => {
@@ -140,7 +142,7 @@ function OrdersEdit() {
   let [count5, setCount5] = useState(0);
 
   let orderdata = async () => {
-    let response = await axios.get("http://54.183.54.164:1600/checkoutdata");
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCount5(response.data.length);
   };
   orderdata();
@@ -181,7 +183,7 @@ function OrdersEdit() {
 
   let alldata = async () => {
     let response = await axios.get(
-      `http://54.183.54.164:1600/checkoutsome/${id}`
+      `http://89.116.170.231:1600/checkoutsome/${id}`
     );
     setUser(response.data[0]);
     setOrder(response.data);
@@ -205,11 +207,13 @@ function OrdersEdit() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img
-              src={Logo}
-              alt="Logo"
-              className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
-            />
+            <Link to="/admin/welcome">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+              />
+            </Link>
           </ul>
 
           <input
@@ -1263,9 +1267,9 @@ function OrdersEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1291,9 +1295,9 @@ function OrdersEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -1319,9 +1323,9 @@ function OrdersEdit() {
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       >
                         <path
                           stroke="none"
@@ -2210,17 +2214,6 @@ function OrdersEdit() {
                           Save
                         </button>
                       </div>
-                    </div>
-                    <hr />
-
-                    <div className="d-flex justify-content-between flex-wrap align-items-end flex-row">
-                      <div className="d-flex gap-2 flex-row">
-                        <FontAwesomeIcon icon={faCheck} className="mt-1" />
-                        <p>Confirm order</p>
-                      </div>
-                      <button className="btn d-flex btn-outline-success py-4">
-                        Confirm
-                      </button>
                     </div>
 
                     <hr />
