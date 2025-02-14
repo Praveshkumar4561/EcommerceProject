@@ -22,6 +22,7 @@ const DynamicPage = () => {
       cart: "cart",
     }
   );
+
   const dropdownRef = useRef(null);
   const toggleButtonRef = useRef(null);
 
@@ -36,7 +37,6 @@ const DynamicPage = () => {
         console.error("Error fetching cart data:", error);
       }
     };
-
     fetchCartData();
   }, [setCount]);
 
@@ -67,7 +67,9 @@ const DynamicPage = () => {
   }, []);
 
   const [page, setPage] = useState(null);
-  let [user, setUser] = useState([]);
+  const [user, setUser] = useState([]);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [logoHeight, setLogoHeight] = useState("45");
 
   useEffect(() => {
     const fetchPageData = async () => {
@@ -77,18 +79,12 @@ const DynamicPage = () => {
         );
         setPage(response.data);
         setUser(Array.isArray(response.data) ? response.data : [response.data]);
-        console.log(response.data);
       } catch (error) {
         navigate("/error", { replace: true });
       }
     };
     fetchPageData();
   }, [pageName, navigate]);
-
-  if (!page) return null;
-
-  const [logoUrl, setLogoUrl] = useState(null);
-  const [logoHeight, setLogoHeight] = useState("45");
 
   useEffect(() => {
     axios
@@ -101,6 +97,8 @@ const DynamicPage = () => {
       })
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
+
+  if (!page) return null;
 
   return (
     <>
@@ -146,7 +144,6 @@ const DynamicPage = () => {
                         Shop
                       </Link>
                     </li>
-
                     <li className="nav-item">
                       <Link className="nav-link" to="/blog">
                         Blog
@@ -204,7 +201,6 @@ const DynamicPage = () => {
                       Shop
                     </Link>
                   </li>
-
                   <li className="nav-item">
                     <Link className="nav-link" to="/blog">
                       Blog
@@ -289,9 +285,9 @@ const DynamicPage = () => {
                 We assert that our online pharmacy, RxTonic.com, complies with
                 all local legal requirements while delivering healthcare
                 services over the internet platform. To provide our consumers
-                the finest pharmaceutical care possible,all pharmaceutical firms
-                and drug manufacturers have accredited facilities and trained
-                pharmacists on staff.
+                the finest pharmaceutical care possible, all pharmaceutical
+                firms and drug manufacturers have accredited facilities and
+                trained pharmacists on staff.
               </p>
             </div>
 
@@ -303,19 +299,16 @@ const DynamicPage = () => {
                     About Us
                   </Link>
                 </li>
-
                 <li className="pharmacy2">
                   <Link to="/blog" className="text-light">
                     Blog
                   </Link>
                 </li>
-
                 <li className="pharmacy2">
                   <Link to="#" className="text-light">
                     Payment Security
                   </Link>
                 </li>
-
                 <li className="pharmacy2">
                   <Link to="#" className="text-light">
                     Affiliate Marketing
@@ -352,10 +345,7 @@ const DynamicPage = () => {
               >
                 Sign Up for Newsletter
               </h4>
-              <p
-                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
-                  text-lg-start text-start pharmacy2 lh-lg"
-              >
+              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
                 Get updates by subscribing to our weekly newsletter.
               </p>
               <div className="d-flex flex-row signup-text">
