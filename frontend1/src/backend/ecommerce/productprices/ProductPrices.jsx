@@ -2274,7 +2274,7 @@ function ProductPrices() {
 
                         <td>
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             className="img-thumbnail rounded-1 image-price"
                           />
                         </td>

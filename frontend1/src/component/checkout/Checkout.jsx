@@ -251,7 +251,9 @@ function Checkout() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -284,7 +286,7 @@ function Checkout() {
             checkout?.background_color ||
             (checkout?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: checkout?.background_image
-            ? `url(/api/src/image/${checkout.background_image})`
+            ? `url(http://89.116.170.231:1600/api/src/image/${checkout.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -672,7 +674,7 @@ function Checkout() {
                         </div>
 
                         <img
-                          src={`/api/src/image/${data.image}`}
+                          src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                           alt=""
                           className="img- border rounded-0 number-item-img"
                         />

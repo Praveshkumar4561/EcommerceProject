@@ -2149,7 +2149,7 @@ function ShipmentEdit() {
 
                   <div>
                     <img
-                      src={`/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                       alt=""
                       className="img-thumbnail w-50"
                     />

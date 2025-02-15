@@ -129,7 +129,9 @@ function BlogDetails() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -308,7 +310,7 @@ function BlogDetails() {
                 >
                   <div className="blog-box1">
                     <img
-                      src={`/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                       alt="404"
                       className="img-fluid w-100 h-100 mb-0"
                     />
@@ -483,7 +485,7 @@ function BlogDetails() {
                     <div key={data.id}>
                       <div className="d-flex justify-content-center w-100 align-items-center">
                         <img
-                          src={`/api/src/image/${data.image}`}
+                          src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                           alt="404"
                           className="w-25 rounded-5"
                         />
@@ -510,7 +512,7 @@ function BlogDetails() {
                   detail1.slice(0, 3).map((data, key) => (
                     <div className="d-flex flex-row" key={key}>
                       <img
-                        src={`/api/src/image/${data.image}`}
+                        src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                         alt="404"
                         className="w-25 h-25 img-thumbnail me-2 mb-2 mb-lg-0"
                       />

@@ -203,7 +203,7 @@ function ProductDetail() {
                           <img
                             src={
                               selectedImage ||
-                              `/api/src/image/${detail[0].image}`
+                              `http://89.116.170.231:1600/api/src/image/${detail[0].image}`
                             }
                             alt="Product"
                             className="img-fluid"
@@ -464,7 +464,9 @@ function ProductDetail() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -653,7 +655,7 @@ function ProductDetail() {
                           key={key}
                           onClick={() =>
                             applyImage(
-                              `/api/src/image/${data.image}`,
+                              `http://89.116.170.231:1600/api/src/image/${data.image}`,
                               data.name,
                               data.description,
                               data.price,
@@ -663,7 +665,7 @@ function ProductDetail() {
                           }
                         >
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             alt=""
                             className="border"
                           />
@@ -674,7 +676,10 @@ function ProductDetail() {
                     )}
                   </div>
                   <img
-                    src={selectedImage || `/api/src/image/${shop[0]?.image}`}
+                    src={
+                      selectedImage ||
+                      `http://89.116.170.231:1600/api/src/image/${shop[0]?.image}`
+                    }
                     alt="404"
                     className="mb-lg-3"
                   />
@@ -870,8 +875,8 @@ function ProductDetail() {
                     ? productLabel.color
                     : "green";
                   const imageUrl = data.image
-                    ? `/api/src/image/${data.image}`
-                    : "/api/src/image/default-image.jpg";
+                    ? `http://89.116.170.231:1600/api/src/image/${data.image}`
+                    : "http://89.116.170.231:1600/api/src/image/default-image.jpg";
                   const getFormattedName = (name, index) => {
                     const words = name.split(" ");
                     if (index === 0) return words.slice(0, 4).join(" ");
@@ -1032,7 +1037,7 @@ function ProductDetail() {
                             {data.label}
                           </button>
                           <img
-                            src={`/api/src/image/${
+                            src={`http://89.116.170.231:1600/api/src/image/${
                               data.image || "default-image.jpg"
                             }`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"

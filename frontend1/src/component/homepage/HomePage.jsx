@@ -293,7 +293,9 @@ function HomePage() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -755,7 +757,7 @@ function HomePage() {
                         </button>
                         <Link to={`/${url.productDetails}`}>
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
                             style={{ cursor: "pointer" }}
                             alt={data.name || "Product Image"}
@@ -845,7 +847,7 @@ function HomePage() {
                         )}
                         <Link to={`/${url.productDetails}`}>
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
                             style={{ cursor: "pointer" }}
                             alt={data.name || "Product Image"}
@@ -934,7 +936,7 @@ function HomePage() {
 
                       <Link to={`/${url.productDetails}`}>
                         <img
-                          src={`/api/src/image/${data.image}`}
+                          src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                           alt={data.name || "Product Image"}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
@@ -1051,7 +1053,7 @@ function HomePage() {
                 className="col-12 col-xxl-4 col-lg-4 col-12 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center ms-lg- latest-read ms-md-3 mt-md-2"
               >
                 <img
-                  src={`/api/src/image/${post.image}`}
+                  src={`http://89.116.170.231:1600/api/src/image/${post.image}`}
                   alt={`img${index + 1}`}
                   className="img-fluid w-100"
                 />

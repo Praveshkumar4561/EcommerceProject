@@ -2270,7 +2270,7 @@ function Testimonial() {
                         <td>{data.id}</td>
                         <td>
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             alt="img not found"
                             className="rounded-2 image-test"
                           />

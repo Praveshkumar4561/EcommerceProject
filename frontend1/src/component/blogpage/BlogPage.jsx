@@ -106,7 +106,9 @@ function BlogPage() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -139,7 +141,7 @@ function BlogPage() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(/api/src/image/${cart.background_image})`
+            ? `url(http://89.116.170.231:1600/api/src/image/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -324,7 +326,7 @@ function BlogPage() {
                 >
                   <div className="image-page">
                     <img
-                      src={`/api/src/image/${blog.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${blog.image}`}
                       alt="404"
                       className="img-fluid w-100 h-501 mb-0 img-hover-effect"
                     />

@@ -206,7 +206,9 @@ function Shop() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -239,7 +241,7 @@ function Shop() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(/api/src/image/${user.background_image})`
+            ? `url(http://89.116.170.231:1600/api/src/image/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -424,7 +426,7 @@ function Shop() {
                 >
                   <Link to={`/${url.productDetails}`} className="text-dark">
                     <img
-                      src={`/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                       alt={`Product Image ${key + 1}`}
                     />
                     <div className="position-absolute ms-4 mt-2 fw-bold">
@@ -498,7 +500,7 @@ function Shop() {
               );
               const labelColor = productLabel ? productLabel.color : "green";
               const productImage = data.image
-                ? `/api/src/image/${data.image}`
+                ? `http://89.116.170.231:1600/api/src/image/${data.image}`
                 : "/path/to/default-image.jpg";
               return (
                 <div

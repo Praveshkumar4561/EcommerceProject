@@ -2168,7 +2168,7 @@ function OrdersCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `/api/src/image/${product.image}`;
+                        const imageUrl = `http://89.116.170.231:1600/api/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -2328,7 +2328,7 @@ function OrdersCreate() {
               <div className="customer-list">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
-                    const imageUrl1 = `/api/src/image/${customer.image}`;
+                    const imageUrl1 = `http://89.116.170.231:1600/api/src/image/${customer.image}`;
                     return (
                       <>
                         <div className="border rounded d-flex flex-row">

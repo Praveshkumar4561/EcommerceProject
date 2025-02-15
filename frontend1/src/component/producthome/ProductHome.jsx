@@ -170,7 +170,9 @@ function ProductHome() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -338,7 +340,7 @@ function ProductHome() {
 
             <div className="col-12 col-sm-12 col-md-6 col-lg-6 border admin-product d-flex justify-content-center align-items-center">
               <img
-                src={`/api/src/image/${user[currentImageIndex]?.image}`}
+                src={`http://89.116.170.231:1600/api/src/image/${user[currentImageIndex]?.image}`}
                 alt={`Product Image ${currentImageIndex + 1}`}
                 className="img-fluid"
               />
@@ -361,7 +363,7 @@ function ProductHome() {
                   key={key}
                 >
                   <img
-                    src={`/api/src/image/${data.image}`}
+                    src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                     alt={`Product Image ${key + 1}`}
                     className="img-fluid"
                   />
@@ -395,7 +397,7 @@ function ProductHome() {
                 <div className="row ms-lg-0 gap-4 d-flex flex-row" key={key}>
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
                     <img
-                      src={`/api/src/image/${
+                      src={`http://89.116.170.231:1600/api/src/image/${
                         data.image || "default-image.jpg"
                       }`}
                       alt={`Product Image ${key + 1}`}
@@ -409,7 +411,7 @@ function ProductHome() {
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
                     {nextImage.image && (
                       <img
-                        src={`/api/src/image/${
+                        src={`http://89.116.170.231:1600/api/src/image/${
                           nextImage.image || "default-image.jpg"
                         }`}
                         alt={`Product Image ${key + 2}`}
@@ -424,7 +426,7 @@ function ProductHome() {
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4 position-relative">
                     {nextImage2.image && (
                       <img
-                        src={`/api/src/image/${
+                        src={`http://89.116.170.231:1600/api/src/image/${
                           nextImage2.image || "default-image.jpg"
                         }`}
                         alt={`Product Image ${key + 3}`}
@@ -439,7 +441,7 @@ function ProductHome() {
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product position-relative">
                     {nextImage3.image && (
                       <img
-                        src={`/api/src/image/${
+                        src={`http://89.116.170.231:1600/api/src/image/${
                           nextImage3.image || "default-image.jpg"
                         }`}
                         alt={`Product Image ${key + 4}`}
@@ -454,7 +456,7 @@ function ProductHome() {
                   <div className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product mt-4 position-relative">
                     {nextImage4.image && (
                       <img
-                        src={`/api/src/image/${
+                        src={`http://89.116.170.231:1600/api/src/image/${
                           nextImage4.image || "default-image.jpg"
                         }`}
                         alt={`Product Image ${key + 5}`}
@@ -809,7 +811,7 @@ function ProductHome() {
                 <>
                   <div className="col-6 col-sm-6 col-md-4 col-lg-3 border rounded-0 digital-hello rounded">
                     <img
-                      src={`/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                       alt=""
                       className="ms-5"
                     />

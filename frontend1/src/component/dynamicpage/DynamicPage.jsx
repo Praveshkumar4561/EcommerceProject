@@ -91,7 +91,9 @@ const DynamicPage = () => {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -257,7 +259,7 @@ const DynamicPage = () => {
                   <p className="lh-lg text-start">{data.content}</p>
                   {data.image && (
                     <img
-                      src={`/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                       alt="404"
                       className="img-thumbnail w-auto"
                     />

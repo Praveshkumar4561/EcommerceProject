@@ -2113,7 +2113,7 @@ function OrdersEdit() {
                   <form key={key}>
                     <div className="d-flex flex-row flex-wrap order-edit justify-content-between">
                       <img
-                        src={`/api/src/image/${data.image}`}
+                        src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                         alt=""
                         className="img-thumbnail"
                       />
@@ -2284,7 +2284,7 @@ function OrdersEdit() {
                 <>
                   <div className="d-flex flex-row order-edit gap-2" key={key}>
                     <img
-                      src={`/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                       className="img-thumbnail"
                     />
                     <span className="text-success">{data.item_name}</span>

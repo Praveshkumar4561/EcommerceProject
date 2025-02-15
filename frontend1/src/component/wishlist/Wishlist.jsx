@@ -182,7 +182,9 @@ function Wishlist() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -215,7 +217,7 @@ function Wishlist() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(/api/src/image/${cart.background_image})`
+            ? `url(http://89.116.170.231:1600/api/src/image/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -419,7 +421,7 @@ function Wishlist() {
                               <td className="d-flex align-items-center flex-row flex-row">
                                 <div className="digital-table rounded-0 me-3 mb-4">
                                   <img
-                                    src={`/api/src/image/${data.image}`}
+                                    src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                                     alt=""
                                     className="img-fluid"
                                   />

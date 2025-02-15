@@ -2761,7 +2761,7 @@ function BreadCrumb() {
                     <img
                       src={
                         user.background_image
-                          ? `/api/src/image/${user.background_image}`
+                          ? `http://89.116.170.231:1600/api/src/image/${user.background_image}`
                           : Cutting // Your placeholder image
                       }
                       alt="Background"

@@ -3646,7 +3646,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `/api/src/image/${product.image}`;
+                        const imageUrl = `http://89.116.170.231:1600/api/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -3705,7 +3705,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.map((product2) => {
-                        const imageUrl = `/api/src/image/${product2.image}`;
+                        const imageUrl = `http://89.116.170.231:1600/api/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}

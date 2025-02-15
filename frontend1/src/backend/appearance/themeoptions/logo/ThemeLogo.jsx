@@ -2614,7 +2614,7 @@ function ThemeLogo() {
                       />
                     ) : (
                       <img
-                        src={`/api/src/image/${user.favicon_url}`}
+                        src={`http://89.116.170.231:1600/api/src/image/${user.favicon_url}`}
                         alt="404"
                         className="w-100 h-100 rounded img-thumbnail"
                       />
@@ -2660,7 +2660,7 @@ function ThemeLogo() {
                       />
                     ) : (
                       <img
-                        src={`/api/src/image/${user.logo_url}`}
+                        src={`http://89.116.170.231:1600/api/src/image/${user.logo_url}`}
                         alt="404"
                         className="w-100 h-100 img-thumbnail rounded"
                       />
@@ -2728,7 +2728,7 @@ function ThemeLogo() {
                       />
                     ) : (
                       <img
-                        src={`/api/src/image/${user.logo_light}`}
+                        src={`http://89.116.170.231:1600/api/src/image/${user.logo_light}`}
                         alt="404"
                         className="w-100 h-100 rounded"
                       />

@@ -2361,7 +2361,7 @@ function ProductCollectionsEdit() {
                     />
                   ) : (
                     <img
-                      src={`/api/src/image/${user.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${user.image}`}
                       alt=""
                       className="w-75 h-75 img-fluid rounded"
                     />

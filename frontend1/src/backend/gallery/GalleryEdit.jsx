@@ -2552,7 +2552,7 @@ function GalleryEdit() {
                     />
                   ) : (
                     <img
-                      src={`/api/src/image/${user.image}`}
+                      src={`http://89.116.170.231:1600/api/src/image/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

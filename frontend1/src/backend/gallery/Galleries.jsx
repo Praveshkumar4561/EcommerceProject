@@ -2268,7 +2268,7 @@ function Galleries() {
                         <td>{data.id}</td>
                         <td>
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             alt=""
                             className="rounded-2 img-fluid w-50"
                           />

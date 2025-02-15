@@ -2324,7 +2324,7 @@ function Reviews() {
 
                         <td>
                           <img
-                            src={`/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                             className="img-thumbnail w-auto"
                             alt="404"
                           />

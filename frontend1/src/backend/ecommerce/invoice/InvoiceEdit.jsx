@@ -234,7 +234,7 @@ function InvoiceEdit() {
         62
       );
       if (data.image) {
-        const img = `/api/src/image/${data.image}`;
+        const img = `http://89.116.170.231:1600/api/src/image/${data.image}`;
         doc.addImage(img, "JPEG", 14, 70, 40, 40);
       }
       let yOffset = 120;
@@ -2343,7 +2343,7 @@ function InvoiceEdit() {
                           <td>{data.id}</td>
                           <td>
                             <img
-                              src={`/api/src/image/${data.image}`}
+                              src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
                               alt=""
                               className="w-25 img-thumbnail"
                             />

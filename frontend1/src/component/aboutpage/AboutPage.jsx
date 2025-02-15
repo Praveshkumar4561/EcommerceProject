@@ -118,7 +118,9 @@ function AboutUsPage() {
       .get("http://89.116.170.231:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
-          setLogoUrl(`/api/src/image/${response.data.logo_url}`);
+          setLogoUrl(
+            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+          );
           setLogoHeight(response.data.logo_height || "45");
         }
       })
@@ -151,7 +153,7 @@ function AboutUsPage() {
             about?.background_color ||
             (about?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: about?.background_image
-            ? `url(/api/src/image/${about.background_image})`
+            ? `url(http://89.116.170.231:1600/api/src/image/${about.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -424,7 +426,7 @@ function AboutUsPage() {
                   id="column-div"
                 >
                   <img
-                    src={`/api/src/image/${user[index].image}`}
+                    src={`http://89.116.170.231:1600/api/src/image/${user[index].image}`}
                     alt="404"
                     className="mt-4 mb-1 about-name"
                   />

@@ -2255,7 +2255,7 @@ function ReviewsView() {
                   <hr />
                   {user.comment}
                   <img
-                    src={`/api/src/image/${user.image}`}
+                    src={`http://89.116.170.231:1600/api/src/image/${user.image}`}
                     alt=""
                     className="img-thumbnail w-25 mb-3 mt-2"
                   />
