@@ -8,7 +8,7 @@ import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
 import axios from "axios";
-import Page from "../../assets/Pagen.webp";
+import Page from "../../assets/pagen.webp";
 
 function ErrorPage() {
   let { count, setCount } = useContext(UserContext);
