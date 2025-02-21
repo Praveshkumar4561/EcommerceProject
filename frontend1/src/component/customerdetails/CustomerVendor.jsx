@@ -189,7 +189,7 @@ function CustomerVendor() {
             <div className="col-12 col-md-8 d-flex align-items-center mb-4 mt-0 d-flex flex-row">
               <img
                 src={Tonic}
-                alt="404"
+                alt="RxLYTE"
                 className="img-fluid me-3 me-md-0 mt-0 mt-lg-2"
               />
 
@@ -397,55 +397,55 @@ function CustomerVendor() {
               <ul className="px-3 py-3 list-lyte position-relative overflow-hidden">
                 <li>
                   <Link to={`/${url.userDashboard}`} className="text-dark">
-                    <img src={Over} alt="404" className="me-2" />
+                    <img src={Over} alt="RxLYTE" className="me-2" />
                     Overview
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userOrders}`} className="text-dark">
-                    <img src={Cart_user} alt="404" className="me-2" />
+                    <img src={Cart_user} alt="RxLYTE" className="me-2" />
                     Orders
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userProductReviews}`} className="text-dark">
-                    <img src={Cart_reviews} alt="404" className="me-2" />
+                    <img src={Cart_reviews} alt="RxLYTE" className="me-2" />
                     Reviews
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userDownloads}`} className="text-dark">
-                    <img src={Cart_download} alt="404" className="me-2" />
+                    <img src={Cart_download} alt="RxLYTE" className="me-2" />
                     Downloads
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userOrderReturns}`} className="text-dark">
-                    <img src={Cart_order} alt="404" className="me-2" />
+                    <img src={Cart_order} alt="RxLYTE" className="me-2" />
                     Order Returns Requets
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userAddress}`} className="text-dark">
-                    <img src={Address} alt="404" className="me-2" />
+                    <img src={Address} alt="RxLYTE" className="me-2" />
                     Addresses
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userEditAccount}`} className="text-dark">
-                    <img src={Cart_setting} alt="404" className="me-2" />
+                    <img src={Cart_setting} alt="RxLYTE" className="me-2" />
                     Account Settings
                   </Link>
                 </li>
 
                 <li>
-                  <img src={Cart_logout} alt="404" className="me-2" />
+                  <img src={Cart_logout} alt="RxLYTE" className="me-2" />
                   Logout
                 </li>
               </ul>

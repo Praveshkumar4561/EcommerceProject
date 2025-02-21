@@ -229,7 +229,7 @@ function AdminTheme() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2147,7 +2147,7 @@ function AdminTheme() {
         <div className="container ms-lg-4 theme-admin">
           <div className="row d-flex flex-row gap-1 ms-lg-5 ms-1 ms-sm-0">
             <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
-              <img src={Appath} alt="404" className="img-fluid w-100" />
+              <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
               <div className="d-flex flex-row gap-2 mb-2 ms-4 mt-2 active-button">
                 <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 px-3 active-btn text-light">
                   <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
@@ -2165,7 +2165,7 @@ function AdminTheme() {
             </div>
 
             <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
-              <img src={Appath} alt="404" className="img-fluid w-100" />
+              <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
               <div className="d-flex flex-row gap-2 mb-2 ms-4 mt-2 active-button">
                 <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 active-btn">
                   <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
@@ -2182,7 +2182,7 @@ function AdminTheme() {
             </div>
 
             <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
-              <img src={Appath} alt="404" className="img-fluid w-100" />
+              <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
               <div className="d-flex flex-row gap-2 mb-2 ms-4 mt-2 active-button">
                 <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 active-btn">
                   <FontAwesomeIcon icon={faCheck} className="text-light me-2" />

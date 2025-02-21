@@ -255,7 +255,7 @@ function ProductOptionsCreate() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>

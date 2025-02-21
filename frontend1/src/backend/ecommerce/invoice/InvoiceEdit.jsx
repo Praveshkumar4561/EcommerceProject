@@ -234,7 +234,7 @@ function InvoiceEdit() {
         62
       );
       if (data.image) {
-        const img = `http://89.116.170.231:1600/api/src/image/${data.image}`;
+        const img = `http://89.116.170.231:1600/src/image/${data.image}`;
         doc.addImage(img, "JPEG", 14, 70, 40, 40);
       }
       let yOffset = 120;
@@ -298,7 +298,7 @@ function InvoiceEdit() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2343,8 +2343,8 @@ function InvoiceEdit() {
                           <td>{data.id}</td>
                           <td>
                             <img
-                              src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
-                              alt=""
+                              src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                              alt="RxLYTE"
                               className="w-25 img-thumbnail"
                             />
                           </td>

@@ -118,13 +118,16 @@ body {
   .navbar-collapse {
     display: none;
   }
+
   .hamburger-images {
+    display: block;
+    width: 30px;
+    height: auto;
     position: relative;
-    bottom: 0.9rem;
-    left: 55%;
-    width: 100%;
-    max-width: 15%;
+    bottom: 0.5rem;
+    left: 60%;
   }
+
   .navbar-icons {
     position: absolute;
     top: 1.4rem;
@@ -137,31 +140,41 @@ body {
 
 @media (max-width: 576px) {
   .hamburger-images {
+    display: block;
+    width: 30px;
+    height: auto;
     position: relative;
-    bottom: 0.9rem;
-    left: 53%;
-    width: 100%;
-    max-width: 15%;
+    left: 74%;
   }
 }
 
 @media (max-width: 450px) {
   .hamburger-images {
+    display: block;
+    width: 30px;
+    height: auto;
     position: relative;
-    bottom: 0.9rem;
-    left: 59%;
-    width: 100%;
-    max-width: 15%;
+    left: 2.3rem;
+    top: -0.7rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .hamburger-images {
+    display: block;
+    width: 30px;
+    height: auto;
+    position: relative;
+    left: 1.6rem;
+    top: -0.7rem;
   }
 }
 
 @media (max-width: 380px) {
   .hamburger-images {
-    position: relative;
-    bottom: 0.9rem;
-    left: 65%;
-    width: 100%;
-    max-width: 15%;
+    display: block;
+    width: 30px;
+    height: auto;
   }
 }
 
@@ -302,7 +315,6 @@ body {
   font-size: 1.7rem;
   font-weight: 700;
   line-height: 1.5;
-  /* margin-top: -2.8rem; */
   font-family: "SanDiego";
 }
 
@@ -381,4 +393,8 @@ body {
   .home-button {
     width: auto;
   }
+}
+
+.lorem-error {
+  margin-top: 4.7%;
 }

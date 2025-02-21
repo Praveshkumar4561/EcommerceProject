@@ -14,7 +14,7 @@ body {
   position: relative;
 }
 
-#container-custom {
+#container-customx {
   width: 100vw;
   height: 180px;
   background-color: #f2f5f7;
@@ -33,9 +33,9 @@ body {
   margin-top: 3.4rem;
 }
 @media (max-width: 992px) {
-  #container-custom {
+  #container-customx {
     height: auto;
-    min-height: 340px;
+    min-height: 300px;
     width: 100%;
     overflow: hidden;
   }

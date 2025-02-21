@@ -313,7 +313,7 @@ function BreadCrumb() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2761,8 +2761,8 @@ function BreadCrumb() {
                     <img
                       src={
                         user.background_image
-                          ? `http://89.116.170.231:1600/api/src/image/${user.background_image}`
-                          : Cutting // Your placeholder image
+                          ? `http://89.116.170.231:1600/src/image/${user.background_image}`
+                          : Cutting
                       }
                       alt="Background"
                       className="w-100 h-100 rounded"

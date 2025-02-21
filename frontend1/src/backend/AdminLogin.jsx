@@ -112,7 +112,7 @@ function AdminLogin() {
             <div className="col-12 col-sm-12 col-md-6 col-lg-6 d-flex flex-column justify-content-center admin-login-image min-vh-100 admin-min admin-min1">
               <div className="d-flex flex-column justify-content-center align-class">
                 <div className="d-flex flex-column justify-content-center align-items-lg-center">
-                  <img src={Tonic} alt="404" className="img-fluid" />
+                  <img src={Tonic} alt="RxLYTE" className="img-fluid" />
                   <h5 className="mt-3 ms-2 text-light">Admin Login</h5>
                 </div>
 

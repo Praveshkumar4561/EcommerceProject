@@ -615,7 +615,7 @@ function ProductsEdit() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -3678,7 +3678,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://89.116.170.231:1600/api/src/image/${product.image}`;
+                        const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -3690,7 +3690,7 @@ function ProductsEdit() {
                             >
                               <img
                                 src={imageUrl}
-                                alt="img not found"
+                                alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
                                     "http://89.116.170.231:1600/path/to/fallback-image.jpg")
@@ -3737,7 +3737,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.map((product2) => {
-                        const imageUrl = `http://89.116.170.231:1600/api/src/image/${product2.image}`;
+                        const imageUrl = `http://89.116.170.231:1600/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}
@@ -3749,7 +3749,7 @@ function ProductsEdit() {
                             >
                               <img
                                 src={imageUrl}
-                                alt="img not found"
+                                alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
                                     "http://89.116.170.231:1600/path/to/fallback-image.jpg")
@@ -3903,7 +3903,7 @@ function ProductsEdit() {
                                   ) : (
                                     <img
                                       src={Cutting}
-                                      alt="404"
+                                      alt="RxLYTE"
                                       className="w-75 h-75 img-fluid"
                                     />
                                   )}

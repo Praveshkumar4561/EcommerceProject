@@ -274,7 +274,7 @@ function ProductPrices() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2190,7 +2190,7 @@ function ProductPrices() {
       </nav>
 
       <div className="col-12 col-md-12 col-lg-12 border product-price mt-4 rounded px-2 d-flex flex-row">
-        <img src={View} alt="" className="h-25 mt-2 me-2" />
+        <img src={View} alt="RxLYTE" className="h-25 mt-2 me-2" />
         <span className="mt-2 text-start">
           These prices represent the original costs of the product and may not
           reflect the final prices, which could vary due to factors such as
@@ -2274,7 +2274,7 @@ function ProductPrices() {
 
                         <td>
                           <img
-                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
                             className="img-thumbnail rounded-1 image-price"
                           />
                         </td>

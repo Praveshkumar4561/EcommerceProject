@@ -210,7 +210,7 @@ function OrdersEdit() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2113,8 +2113,8 @@ function OrdersEdit() {
                   <form key={key}>
                     <div className="d-flex flex-row flex-wrap order-edit justify-content-between">
                       <img
-                        src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
-                        alt=""
+                        src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                        alt="RxLYTE"
                         className="img-thumbnail"
                       />
                       <div className="d-flex flex-column">
@@ -2284,7 +2284,7 @@ function OrdersEdit() {
                 <>
                   <div className="d-flex flex-row order-edit gap-2" key={key}>
                     <img
-                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/src/image/${data.image}`}
                       className="img-thumbnail"
                     />
                     <span className="text-success">{data.item_name}</span>

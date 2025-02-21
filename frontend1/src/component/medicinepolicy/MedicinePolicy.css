@@ -512,6 +512,6 @@ body {
 }
 
 .lorem-medicine-policy::marker {
-  color: green;
+  color: #d46460;
   font-weight: bolder;
 }

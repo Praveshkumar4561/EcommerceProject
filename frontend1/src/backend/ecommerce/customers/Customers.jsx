@@ -266,7 +266,7 @@ function Customers() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -364,7 +364,7 @@ function Customers() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1 h-auto">
+        <div className="sidebar-back mt-1">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">

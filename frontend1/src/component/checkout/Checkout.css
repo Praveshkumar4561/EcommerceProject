@@ -259,10 +259,6 @@ body {
   src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
 }
 
-.container {
-  max-width: 100%;
-}
-
 .demo-shipping {
   position: relative;
   left: 23.8rem;

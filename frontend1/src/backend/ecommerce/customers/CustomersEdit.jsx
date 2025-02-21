@@ -354,7 +354,7 @@ function CustomerEdit() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2400,7 +2400,7 @@ function CustomerEdit() {
                       name="notes"
                       value={user.notes}
                       onChange={onInputChange}
-                      style={{ height: "68px" }}
+                      style={{ height: "100px" }}
                     ></textarea>
                     <label className="mb-3">
                       Private notes are only visible to admins.
@@ -2461,7 +2461,7 @@ function CustomerEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://89.116.170.231:1600/api/src/image/${user.image}`}
+                      src={`http://89.116.170.231:1600/src/image/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

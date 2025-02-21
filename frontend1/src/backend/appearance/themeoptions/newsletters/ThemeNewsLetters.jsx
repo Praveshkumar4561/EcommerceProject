@@ -335,7 +335,7 @@ function ThemeNewsLetters() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2698,7 +2698,7 @@ function ThemeNewsLetters() {
                       />
                     ) : user.image ? (
                       <img
-                        src={`http://89.116.170.231:1600/api/src/image/${user.image}`}
+                        src={`http://89.116.170.231:1600/src/image/${user.image}`}
                         alt="Uploaded preview"
                         className="img-fluid w-100 h-100 rounded-2"
                       />

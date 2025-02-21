@@ -232,7 +232,7 @@ function SocialLinks() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2605,7 +2605,7 @@ function SocialLinks() {
                         height="100"
                       />
                     ) : (
-                      <img src={Cutting} alt="404" className="w-75 h-75" />
+                      <img src={Cutting} alt="RxLYTE" className="w-75 h-75" />
                     )}
                   </div>
                   <input

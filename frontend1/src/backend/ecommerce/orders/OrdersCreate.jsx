@@ -258,7 +258,7 @@ function OrdersCreate() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2168,7 +2168,7 @@ function OrdersCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://89.116.170.231:1600/api/src/image/${product.image}`;
+                        const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -2177,7 +2177,7 @@ function OrdersCreate() {
                             <div className="d-flex flex-row">
                               <img
                                 src={imageUrl}
-                                alt="img not found"
+                                alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
                                     "http://89.116.170.231:1600/path/to/fallback-image.jpg")
@@ -2328,7 +2328,7 @@ function OrdersCreate() {
               <div className="customer-list">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
-                    const imageUrl1 = `http://89.116.170.231:1600/api/src/image/${customer.image}`;
+                    const imageUrl1 = `http://89.116.170.231:1600/src/image/${customer.image}`;
                     return (
                       <>
                         <div className="border rounded d-flex flex-row">
@@ -2352,7 +2352,7 @@ function OrdersCreate() {
                         >
                           <img
                             src={imageUrl1}
-                            alt="img not found"
+                            alt="RxLYTE"
                             className="customer-image rounded ms-2 img-thumbnail"
                           />
                           <div className="d-flex flex-column ms-2">

@@ -235,7 +235,7 @@ function Reports() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2283,13 +2283,13 @@ function Reports() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 border content-reports1 content-customer rounded d-flex flex-column py-3 me-3 me-lg-0 text-start">
               <h4>Customers</h4>
               <hr />
-              <img src={Viewer} alt="" className="w-100" />
+              <img src={Viewer} alt="RxLYTE" className="w-100" />
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 border content-reports1 rounded d-flex flex-column py-3 me-3 me-lg-0 ms-lg-3 ms-0 content-customer text-start">
               <h4>Orders</h4>
               <hr />
-              <img src={Viewer1} alt="" className="w-100" />
+              <img src={Viewer1} alt="RxLYTE" className="w-100" />
             </div>
           </div>
         </div>
@@ -2303,7 +2303,7 @@ function Reports() {
                 <h4>Sales Reports</h4>
                 <hr />
                 <div className="content-report4">
-                  <img src={Viewer2} alt="" className="w-100" />
+                  <img src={Viewer2} alt="RxLYTE" className="w-100" />
                 </div>
               </div>
             </div>

@@ -197,7 +197,7 @@ function IncompleOrders() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2120,7 +2120,7 @@ function IncompleOrders() {
           {incomplete.length === 0 ? (
             <div className="row border incomplete-order rounded">
               <div className="col-12 col-md-12 col-lg-12 rounded mt-lg-3 d-flex flex-column align-items-center lh-lg cart-cart py-2">
-                <img src={Output} alt="404" className="mt-4 img-fluid" />
+                <img src={Output} alt="RxLYTE" className="mt-4 img-fluid" />
                 <h3 className="mt-4 fw-medium">Manage incomplete orders</h3>
                 <span className="text-start content-customer mb-4">
                   Incomplete order is an order created when a customer adds a

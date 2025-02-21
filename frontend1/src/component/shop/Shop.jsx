@@ -5,6 +5,7 @@ import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import free from "../../assets/free.webp";
 import Cash from "../../assets/Cash.webp";
+import Close from "../../assets/Close.webp";
 import Discount from "../../assets/discount.webp";
 import Hoursupport from "../../assets/hoursupport.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Shop() {
   let { count, setCount } = useContext(UserContext);
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const toggleButtonRef = useRef(null);
@@ -39,7 +41,7 @@ function Shop() {
   }, []);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen((prev) => !prev);
   };
 
   useEffect(() => {
@@ -207,7 +209,7 @@ function Shop() {
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -235,13 +237,13 @@ function Shop() {
     <>
       <div
         className="container"
-        id="container-custom"
+        id="container-customx"
         style={{
           backgroundColor:
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://89.116.170.231:1600/api/src/image/${user.background_image})`
+            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -272,8 +274,9 @@ function Shop() {
                 >
                   <span className="navbar-toggler-icons">
                     <img
-                      src={Hamburger}
-                      alt="Menu"
+                      key={isDropdownOpen ? "Close" : "hamburger"}
+                      src={isDropdownOpen ? Close : Hamburger}
+                      alt={isDropdownOpen ? "Close" : "Menu"}
                       className="img-fluid hamburger-images"
                     />
                   </span>
@@ -298,8 +301,8 @@ function Shop() {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to={`/${url.cart}`}>
-                        Cart
+                      <Link className="nav-link" to="/privacy-policy">
+                        Privacy Policy
                       </Link>
                     </li>
                     <li className="nav-item">
@@ -311,7 +314,11 @@ function Shop() {
                 </div>
 
                 <div className="navbar-icons1 d-sm-flex">
-                  <Link to={`/${url.login}`} className="nav-link">
+                  <Link
+                    to={`/${url.login}`}
+                    className="nav-link"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <img
                       src={Profile}
                       alt="Profile"
@@ -357,8 +364,8 @@ function Shop() {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to={`/${url.cart}`}>
-                      Cart
+                    <Link className="nav-link" to="/privacy-policy">
+                      Privacy Policy
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -371,7 +378,7 @@ function Shop() {
             )}
           </header>
 
-          <main className="container mt-5 cart-cart">
+          <main className="container mt-5 cart-cart container-bread">
             {user?.enable_breadcrumb === "yes" &&
               user?.breadcrumb_style !== "none" && (
                 <>
@@ -397,13 +404,13 @@ function Shop() {
                         : "d-flex justify-content-center align-items-center"
                     }`}
                   >
-                    <ol className="breadcrumb d-flex flex-wrap gap-0">
-                      <li className="breadcrumb-item navbar-item fw-medium">
+                    <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
+                      <li className="breadcrumb-item navbar-item fw-medium p-0">
                         <Link target="_blank" to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
-                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark p-0">
                         Shop
                       </li>
                     </ol>
@@ -426,10 +433,10 @@ function Shop() {
                 >
                   <Link to={`/${url.productDetails}`} className="text-dark">
                     <img
-                      src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
+                      src={`http://89.116.170.231:1600/src/image/${data.image}`}
                       alt={`Product Image ${key + 1}`}
                     />
-                    <div className="position-absolute ms-4 mt-2 fw-bold">
+                    <div className="position-absolute ms-4 mt-2 fw-bold d-flex flex-row flex-md-nowrap w-100 cart-cart1">
                       {key === 0 && "HeadPhones"}
                       {key === 1 && "Digital Watch"}
                       {key === 2 && "Soundbar"}
@@ -447,27 +454,31 @@ function Shop() {
       <div className="container-fluid">
         <div className="container">
           <div className="row gap-0 gap-lg-2 d-flex flex-row flex-wrap">
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-xxl-3 py-xl-3 shop-icon me-auto">
-              <img src={free} alt="" className="img-fluid mt-4 mb-4 w-25" />
-              <div className="d-flex flex-column mt-4 ms-3 pt-">
+            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-0 py-xxl-1 py-xl-3 shop-icon me-auto align-items-md-center">
+              <img src={free} alt="RxLYTE" className="img-fluid mt-4 mb-4" />
+              <div className="d-flex flex-column mt-4 ms-3 text-start">
                 <span>Free Delivery</span>
                 <span>Orders from all item</span>
               </div>
             </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-3 shop-icon me-auto">
-              <img src={Cash} alt="" className="img-fluid w-25 mt-4 mb-4" />
-              <div className="d-flex flex-column mt-2 mt-lg-4 ms-3">
+            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-0 shop-icon me-auto align-items-md-center py-xxl-1 py-xl-1">
+              <img
+                src={Cash}
+                alt="RxLYTE"
+                className="img-fluid w-25 mt-4 mb-4"
+              />
+              <div className="d-flex flex-column mt-2 mt-lg-4 ms-3 text-start">
                 <span>Return & Refund</span>
                 <span>Money-back guarantee</span>
               </div>
             </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-3 shop-icon me-auto">
+            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-0 shop-icon me-auto align-items-md-center">
               <img
                 src={Discount}
-                alt=""
+                alt="RxLYTE"
                 className="img-fluid mt-2 mb-4 w-25 rounded-5 pt-3"
               />
-              <div className="d-flex flex-column mt-4 ms-3">
+              <div className="d-flex flex-column mt-4 ms-3 text-start">
                 <span>Member Discount</span>
                 <span>
                   Every order over{" "}
@@ -475,13 +486,13 @@ function Shop() {
                 </span>
               </div>
             </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-3 shop-icon me-auto">
+            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-0 shop-icon me-auto align-items-md-center">
               <img
                 src={Hoursupport}
-                alt=""
+                alt="RxLYTE"
                 className="img-fluid mt-3 mb-4 w-25 pt-2"
               />
-              <div className="d-flex flex-column mt-4 ms-2 ps-1">
+              <div className="d-flex flex-column mt-4 ms-2 ps-1 text-start">
                 <span>Support 24/7</span>
                 <span>Contact us 24 hours a day</span>
               </div>
@@ -500,11 +511,11 @@ function Shop() {
               );
               const labelColor = productLabel ? productLabel.color : "green";
               const productImage = data.image
-                ? `http://89.116.170.231:1600/api/src/image/${data.image}`
+                ? `http://89.116.170.231:1600/src/image/${data.image}`
                 : "/path/to/default-image.jpg";
               return (
                 <div
-                  className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                  className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch px-0 px-lg-1"
                   key={index}
                 >
                   <div className="feature-box rounded-0 position-relative rounded-1">
@@ -576,99 +587,101 @@ function Shop() {
         <ToastContainer />
       </div>
 
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
-        <div className="container text-center">
-          <div className="row justify-content-center">
-            <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
-              <img
-                src={Tonic}
-                alt="About Us"
-                className="img-fluid mb-2 me-5 pe-5 about-rx"
-              />
-              <h4 className="me-5 pe-5">About Us</h4>
-              <p className="mt-2 pharmacy2 text-start lh-lg">
-                We assert that our online pharmacy, RxTonic.com, complies with
-                all local legal requirements while delivering healthcare
-                services over the internet platform. To provide our consumers
-                the finest pharmaceutical care possible,all pharmaceutical firms
-                and drug manufacturers have accredited facilities and trained
-                pharmacists on staff.
-              </p>
-            </div>
-
-            <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
-              <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
-              <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
-                <li className="pharmacy2">
-                  <Link to="/about" className="text-light">
-                    About Us
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="/blog" className="text-light">
-                    Blog
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Payment Security
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Affiliate Marketing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
-              <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
-              <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
-                <li className="pharmacy2">
-                  <Link to="/faqs" className="text-light">
-                    FAQ
-                  </Link>
-                </li>
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Sitemap
-                  </Link>
-                </li>
-                <li className="pharmacy2">
-                  <Link to="/contact-us" className="text-light">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
-              <h4
-                className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
-                style={{ whiteSpace: "nowrap" }}
-              >
-                Sign Up for Newsletter
-              </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
-                Get updates by subscribing to our weekly newsletter.
-              </p>
-              <div className="d-flex flex-row signup-text">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
+      <div className="container-fluid bg-dark text-light py-4 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact min-vw-100 mt-5">
+        <footer className="footer-homepage">
+          <div className="container text-center d-flex justify-content-center">
+            <div className="row justify-content-center">
+              <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
+                <img
+                  src={Tonic}
+                  alt="About Us"
+                  className="img-fluid mb-2 me-5 pe-5 about-rx"
                 />
-                <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
-                  Subscribe
-                </button>
+                <h4 className="me-5 pe-5">About Us</h4>
+                <p className="mt-2 pharmacy2 text-start lh-lg">
+                  We assert that our online pharmacy, RxTonic.com, complies with
+                  all local legal requirements while delivering healthcare
+                  services over the internet platform. To provide our consumers
+                  the finest pharmaceutical care possible,all pharmaceutical
+                  firms and drug manufacturers have accredited facilities and
+                  trained pharmacists on staff.
+                </p>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
+                <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
+                <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
+                  <li className="pharmacy2">
+                    <Link to="/about" className="text-light">
+                      About Us
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="/blog" className="text-light">
+                      Blog
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Payment Security
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Affiliate Marketing
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
+                <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
+                <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
+                  <li className="pharmacy2">
+                    <Link to="/faqs" className="text-light">
+                      FAQ
+                    </Link>
+                  </li>
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Sitemap
+                    </Link>
+                  </li>
+                  <li className="pharmacy2">
+                    <Link to="/contact-us" className="text-light">
+                      Contact
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
+                <h4
+                  className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  Sign Up for Newsletter
+                </h4>
+                <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
+                  Get updates by subscribing to our weekly newsletter.
+                </p>
+                <div className="d-flex flex-row signup-text">
+                  <input
+                    type="email"
+                    placeholder="Email address"
+                    className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
+                  />
+                  <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </footer>
       </div>
     </>
   );

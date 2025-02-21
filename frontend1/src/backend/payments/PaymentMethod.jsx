@@ -253,7 +253,7 @@ function PaymentMethod() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2214,7 +2214,7 @@ function PaymentMethod() {
               <div className="border rounded p-2 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <img
                     src="https://shofy.botble.com/vendor/core/plugins/stripe/images/stripe.svg"
@@ -2416,7 +2416,7 @@ function PaymentMethod() {
               <div className="border rounded p-3 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <img
                     src="https://shofy.botble.com/vendor/core/plugins/paypal/images/paypal.svg"
@@ -2563,7 +2563,7 @@ function PaymentMethod() {
               <div className="border rounded p-3 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <img
                     src="https://shofy.botble.com/vendor/core/plugins/razorpay/images/razorpay.svg"
@@ -2728,7 +2728,7 @@ function PaymentMethod() {
               <div className="border rounded p-3 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <img
                     src="https://shofy.botble.com/vendor/core/plugins/paystack/images/paystack.png"
@@ -2877,7 +2877,7 @@ function PaymentMethod() {
               <div className="border rounded p-3 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <img
                     src="https://shofy.botble.com/vendor/core/plugins/mollie/images/mollie.png"
@@ -3024,7 +3024,7 @@ function PaymentMethod() {
               <div className="border rounded p-3 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <img
                     src="https://shofy.botble.com/vendor/core/plugins/sslcommerz/images/sslcommerz.png"
@@ -3186,7 +3186,7 @@ function PaymentMethod() {
               <div className="border rounded p-3 d-flex flex-column">
                 <div className="d-flex flex-row align-items-center">
                   <div className="vertical-line">
-                    <img src={Credit} alt="" />
+                    <img src={Credit} alt="RxLYTE" />
                   </div>
                   <span>Payment methods</span>
                   <div className="d-flex flex-column align-items-center text-start ms-3">

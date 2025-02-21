@@ -512,7 +512,7 @@ body {
 }
 
 .lorem-privacy1::marker {
-  color: green;
+  color: #d46460;
   font-weight: bolder;
 }
 

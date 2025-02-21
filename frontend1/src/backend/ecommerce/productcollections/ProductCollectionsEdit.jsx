@@ -278,7 +278,7 @@ function ProductCollectionsEdit() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2361,8 +2361,8 @@ function ProductCollectionsEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://89.116.170.231:1600/api/src/image/${user.image}`}
-                      alt=""
+                      src={`http://89.116.170.231:1600/src/image/${user.image}`}
+                      alt="RxLYTE"
                       className="w-75 h-75 img-fluid rounded"
                     />
                   )}

@@ -239,7 +239,7 @@ function App() {
       favicon.rel = "icon";
       document.head.appendChild(favicon);
     }
-    favicon.href = `http://89.116.170.231:1600/api/src/image/${faviconUrl}`;
+    favicon.href = `http://89.116.170.231:1600/src/image/${faviconUrl}`;
     favicon.setAttribute("sizes", "200x200");
   };
 
@@ -762,7 +762,7 @@ function App() {
                 <Route path="/terms-condition" element={<TermsCondition />} />
                 <Route path="/medicine-policy" element={<MedicinePolicy />} />
                 <Route path="/page-seo/:id" element={<Page />} />
-                <Route path="/products" element={<ProductHome />} />
+                {/* <Route path="/products" element={<ProductHome />} /> */}
               </Route>
 
               <Route path="/user">

@@ -241,7 +241,11 @@ function Invoice() {
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
-            <img src={Logo} alt="Logo" className="hamburger1 ms-3 mt-2 pt-1" />
+            <img
+              src={Logo}
+              alt="RxLYTE"
+              className="hamburger1 ms-3 mt-2 pt-1"
+            />
           </ul>
 
           <input

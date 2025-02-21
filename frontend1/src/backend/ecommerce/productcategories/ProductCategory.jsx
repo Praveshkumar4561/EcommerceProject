@@ -297,7 +297,7 @@ function ProductCategory() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2217,7 +2217,7 @@ function ProductCategory() {
           <div className="col-md-4 d-flex justify-content-lg-end justify-content-sm-start justify-content-md-center drag-category">
             <div className="card border">
               <div className="card-header text-success fw-light">
-                <img src={View} alt="" className="me-1" />
+                <img src={View} alt="RxLYTE" className="me-1" />
                 Drag and drop on the left to change the order or parent of the
                 categories.
               </div>
@@ -3047,7 +3047,7 @@ function ProductCategory() {
           <div className="col-md-8 drag-category drag-category1 d-flex justify-content-md-center justify-content-lg-start">
             <div className="card border">
               <div className="card-header border text-success fw-light">
-                <img src={View} alt="" className="me-1" />
+                <img src={View} alt="RxLYTE" className="me-1" />
                 You are editing "English" version
               </div>
               <div className="card-body">
@@ -3495,7 +3495,7 @@ function ProductCategory() {
                                 ) : (
                                   <img
                                     src={Cutting}
-                                    alt="404"
+                                    alt="RxLYTE"
                                     className="w-75 h-75 img-fluid"
                                   />
                                 )}

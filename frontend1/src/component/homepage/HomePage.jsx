@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./HomePage.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,9 @@ import {
   faArrowRight,
   faCartShopping,
   faHeart,
-  faUser,
+  faStar,
+  faAngleLeft,
+  faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import Panic from "../../assets/Panic Attacks.webp";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,8 +25,10 @@ import Support from "../../assets/Support.svg";
 import Payments from "../../assets/Payments.svg";
 import Returns from "../../assets/Returns.svg";
 import Shipping from "../../assets/Shipping.svg";
-import Profile from "../../assets/image.webp";
 import Cart from "../../assets/Cart.svg";
+import Carthome from "../../assets/Carthome.svg";
+import Wishlists from "../../assets/Wishlists.svg";
+import Accounts from "../../assets/Accounts.svg";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -121,7 +125,6 @@ function HomePage() {
 
   let [detail, setDetail] = useState([]);
   const [auth, setAuth] = useState(true);
-  const [message, setMessage] = useState("");
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -294,7 +297,7 @@ function HomePage() {
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -302,14 +305,52 @@ function HomePage() {
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
 
+  const [review, setReview] = useState([]);
+  const reviewsPerPage = 2;
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allreviewdata"
+        );
+        setReview(response.data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+    fetchReviews();
+  }, []);
+
+  const paginatedReviews = review.slice(
+    currentIndex,
+    currentIndex + reviewsPerPage
+  );
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex + reviewsPerPage >= review.length
+        ? 0
+        : prevIndex + reviewsPerPage
+    );
+  };
+
+  const handlePrevious = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0
+        ? review.length - (review.length % reviewsPerPage || reviewsPerPage)
+        : prevIndex - reviewsPerPage
+    );
+  };
+
   return (
     <>
       <div className="container-fluid">
-        <div className="row align-items-center justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
-          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-center ps-2 lorem-home mt-0">
+        <div className="row align-items-start justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
+          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-start ps-lg-2 ps-0 mt-2 mt-lg-3 lorem-home">
             {user.length > 0 && (
-              <div className="d-block d-lg-block text-start pt-1">
-                <p className="mb-0 mt-0 mt-lg-2 me-md-3 free-shipping d-flex flex-row">
+              <div className="d-block d-lg-block text-start pt-0">
+                <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping d-flex flex-row ms-2 ms-lg-0">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
                     className="me-2 text-success fs-6 d-block d-lg-block mt-1"
@@ -322,42 +363,39 @@ function HomePage() {
                     style={{ cursor: "pointer" }}
                     onClick={rightData}
                   />
-                  <div className="ms-0">{user[currentIndex].content}</div>
+                  <div className="ms-0">
+                    {user[currentIndex].content
+                      .split(" ")
+                      .slice(0, 7)
+                      .join(" ")}
+                  </div>
                 </p>
               </div>
             )}
           </div>
 
-          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block d-none">
+          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
             {detail && detail.first_name ? (
               <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
                 <div className="free-shipping d-flex flex-row me-3 mt-2">
                   <span className="d-flex align-items-center gap-2">
                     <div className="d-sm-flex pt-1">
                       <Link to={`/${url.userDashboard}`} className="nav-link">
-                        {detail.first_name ? (
-                          <div
-                            style={{
-                              width: "40px",
-                              height: "40px",
-                              borderRadius: "50%",
-                              color: "white",
-                              fontSize: "18px",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
-                          >
-                            {detail.first_name.charAt(0).toUpperCase()}
-                          </div>
-                        ) : (
-                          <img
-                            src={Profile}
-                            alt="Profile"
-                            className="profile-lyte1 img-fluid me-0 border rounded-5 py-1"
-                          />
-                        )}
+                        <div
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            color: "white",
+                            fontSize: "18px",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          className="profile-lyte1 img-fluid me-0 ms-1 border rounded-5 py-1 bg-success"
+                        >
+                          {detail.first_name.charAt(0).toUpperCase()}
+                        </div>
                       </Link>
 
                       <div className="d-flex flex-column me-0">
@@ -392,58 +430,42 @@ function HomePage() {
                 </div>
               </div>
             ) : (
-              <Link
-                className="text-decoration-none text-dark"
-                to={`/${url.login}`}
-              >
-                <div className="d-flex align-items-end justify-content-end">
-                  <div
-                    style={{
-                      width: "38px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      position: "relative",
-                      zIndex: "1000",
-                    }}
-                    className="profile-lyt img-fluid me-2 mb-1 border rounded-5 py-1 bg-light"
+              <div className="d-flex flex-row gap-2 justify-content-lg-end align-items-center icons-wishlist">
+                <Link to={`/${url.wishlist}`}>
+                  <img src={Wishlists} alt="RxLYTE" />
+                </Link>
+                <Link to={`/${url.login}`}>
+                  <img src={Accounts} alt="RxLYTE" />
+                </Link>
+                <Link to={`/${url.cart}`}>
+                  <span
+                    className="position-absolute ms-4 text-dark mt-1"
+                    style={{ fontFamily: "verdana" }}
                   >
-                    <FontAwesomeIcon icon={faUser} />
-                  </div>
-
-                  <div
-                    className="d-flex flex-column mt-2"
-                    style={{
-                      cursor: "pointer",
-                      position: "relative",
-                      zIndex: "1000",
-                    }}
-                  >
-                    <span className="text-start me-5">Hello User</span>
-                    <span className="text-start">
-                      <Link
-                        to={`/${url.login}`}
-                        className="text-decoration-none text-dark"
-                      >
-                        Login / Register
-                      </Link>
-                    </span>
-                  </div>
-
-                  <Link to={`/${url.cart}`} className="nav-link d-flex mb-2">
-                    <img
-                      src={Cart}
-                      alt="Cart"
-                      className="img-fluid profile1 me-2 ms-2"
-                    />
-                    <div className="addcarts-lyte2 ms-3 mt-1 pt-2">{count}</div>
-                  </Link>
-                </div>
-              </Link>
+                    {count}
+                  </span>
+                  <img src={Carthome} alt="RxLYTE" className="mt-3" />
+                </Link>
+              </div>
             )}
+          </div>
+
+          <div className="d-flex flex-row gap-2 justify-content-lg-end align-items-center icons-wishlist d-lg-none d-md-none">
+            <Link to={`/${url.wishlist}`}>
+              <img src={Wishlists} alt="RxLYTE" />
+            </Link>
+            <Link to={`/${url.login}`}>
+              <img src={Accounts} alt="RxLYTE" />
+            </Link>
+            <Link to={`/${url.cart}`}>
+              <span
+                className="position-absolute ms-4 text-dark mt-1"
+                style={{ fontFamily: "verdana" }}
+              >
+                {count}
+              </span>
+              <img src={Carthome} alt="RxLYTE" className="mt-3" />
+            </Link>
           </div>
         </div>
 
@@ -651,81 +673,118 @@ function HomePage() {
               </nav>
             </div>
 
-            <div className="d-none d-md-flex align-items-center mt-3 mt-md-0">
-              <FontAwesomeIcon
-                icon={faPhoneVolume}
-                className="text-success me-2 mt-0 fw-medium"
-              />
-              <span className="fw-medium" style={{ fontFamily: "verdana" }}>
-                1800-654-3210
+            <div className="d-none d-md-flex align-items-center mt-3 mt-md-0 d-lg-none d-xl-block d-xxl-block">
+              <span className="d-flex">
+                <FontAwesomeIcon
+                  icon={faPhoneVolume}
+                  className="text-success me-3 mt-1 fw-medium"
+                />
+                <span
+                  className="fw-medium d-lg-none d-xl-block d-xxl-block"
+                  style={{ fontFamily: "verdana" }}
+                >
+                  1800-654-3210
+                </span>
               </span>
             </div>
           </div>
         </div>
 
-        <div className="container-grid ms-0 ms-lg-0 lorem-home mt-0 w-100 ms-0">
-          <div
-            className="grid1 d-flex flex-column col-12 col-md-12 col-lg-8 col-xl-8 col-xxl-6 mt-lg-3 mt-0 me-4 me-lg-0 rounded-0"
-            id="grid2"
-          >
-            <h3 className="fw-bold mt-5 ms-5 pt-4 text-start">
-              Get rid of your <br /> Panic Attacks
-            </h3>
-            <p className="card-text1 ms-5 fs-6 text-start">Starting at $5.99</p>
-            <button className="btn btn-success d-flex ms-5 py-4   flex-row align-items-center">
-              Shop Now
-              <FontAwesomeIcon
-                icon={faArrowRightLong}
-                className="ms-2 mt-0 pt-1"
-              />
-            </button>
-            <img src={Panic} alt="Panic Attacks" className="img-fluid" />
-          </div>
+        <div className="container cart-cart">
+          <div className="row g-3 d-flex flex-row flex-lg-nowrap">
+            <div className="col-12 col-lg-8 m-0">
+              <div className="box-panic shadow-sm p-4 position-relative">
+                <div className="d-flex flex-column mt-4">
+                  <h3 className="text-start">Get rid of your Panic Attacks</h3>
+                  <p className="text-danger mb-3 text-start">
+                    Starting at $5.99
+                  </p>
+                  <Link
+                    to="/shop"
+                    className="text-decoration-none text-light cart-cart1 shop-right"
+                  >
+                    <button className="btn btn-success d-flex py-4 cart-cart1">
+                      <span className="d-flex align-items-center flex-row flex-nowrap">
+                        Shop Now
+                        <FontAwesomeIcon
+                          icon={faArrowRightLong}
+                          className="mt-0 ms-1 pt-1"
+                        />
+                      </span>
+                    </button>
+                  </Link>
+                </div>
+                <div className="d-flex justify-content-end align-items-end attack-img">
+                  <img
+                    src={Panic}
+                    alt="Panic Attacks"
+                    className="panic-img position-absolute lyte-pain"
+                  />
+                </div>
+              </div>
+            </div>
 
-          <div
-            className="grid1 d-flex flex-column justify-content-start col-12 col-md-12 col-lg-8 col-xl-8 col-xxl-6 me-4 me-lg-0 rounded-0"
-            id="grid3"
-          >
-            <h3 className="fw-bold ms-4 mt-4 text-start">
-              Buy Generic <br /> Medicines
-            </h3>
-            <p className="card-text1 ms-4 fs-6 text-start">Starting at $5.99</p>
-            <button className="btn btn-success d-flex ms-4 py-4 flex-row align-items-center">
-              Shop Now
-              <FontAwesomeIcon
-                icon={faArrowRightLong}
-                className="ms-2 mt-0 pt-1"
-              />
-            </button>
-            <img src={Generic} alt="Generic Medicines" className="img-fluid" />
-          </div>
+            <div className="col-12 col-lg-4 d-flex flex-column gap-3 gap-md-0 align-items-md-start align-items-lg-start align-items-xxl-center align-items-xl-center m-0 mt-3 mt-lg-2 mt-xl-0 mt-xxl-0 generic-lyte">
+              <div className="box-generic shadow-sm p-4 position-relative lh-lg">
+                <h4 className="text-start">Buy Generic Medicines</h4>
+                <p className="text-danger mb-3 text-start">Starting at $5.99</p>
 
-          <div
-            className="grid1 d-flex flex-row justify-content-start col-12 col-md-12 col-lg-8 col-xl-8 col-xxl-6 me-4 me-lg-0 h-auto rounded-0"
-            id="grid4"
-          >
-            <img
-              src={PainRelief}
-              alt="Generic Medicines"
-              className="img-fluid"
-            />
-            <div className="d-flex flex-column grid-doctor">
-              <p className="text-success fw-bold mt-lg-2 fs-5 ms-5 ps-1 product-lyte text-start">
-                Hot Product
-              </p>
-              <h3 className="fw-bold pain-relief ms-5 ps-1 mt-0 text-start">
-                Buy Pain Relief <br /> Medicines
-              </h3>
-              <p className="card-text1 ms-2 mb-1 percent-rupee ms-5 ps-2 text-start">
-                $199.00/60%
-              </p>
-              <button className="btn btn-success d-flex ms-4 py-4 flex-row align-items-center">
-                Shop Now
-                <FontAwesomeIcon
-                  icon={faArrowRightLong}
-                  className="ms-2 mt-0 pt-1"
-                />
-              </button>
+                <Link
+                  to="/shop"
+                  className="text-decoration-none text-light cart-cart1 shop-right"
+                >
+                  <button className="btn btn-success d-flex py-4 cart-cart1">
+                    <span className="d-flex align-items-center flex-row flex-nowrap">
+                      Shop Now
+                      <FontAwesomeIcon
+                        icon={faArrowRightLong}
+                        className="mt-0 ms-1 pt-1"
+                      />
+                    </span>
+                  </button>
+                </Link>
+
+                <div className="d-flex justify-content-end align-items-end">
+                  <img
+                    src={Generic}
+                    alt="Generic Medicines"
+                    className="generic-img position-absolute me-lg-2 me-0"
+                  />
+                </div>
+              </div>
+
+              <div className="box-pain shadow-sm p-4 position-relative w-100 mt-lg-2 mt-xl-3 mt-xxl-3 mt-md-2">
+                <div className="d-flex align-items-start flex-column align-items-lg-end lh-lg align-items-md-end">
+                  <div className="d-flex flex-column align-items-lg-start align-items-xl-start align-items-xxl-start product-homepage flex-wrap position-absolute start-50">
+                    <h5 className="text-success">Hot Product</h5>
+                    <h4 className="text-start text-lg-start text-md-end me-4">
+                      Buy Pain Relief Medicines
+                    </h4>
+                    <p className="text-danger mb-3">$199.00/60%</p>
+                    <Link
+                      to="/shop"
+                      className="text-decoration-none text-light cart-cart1 shop-right"
+                    >
+                      <button className="btn btn-success d-flex py-4 cart-cart1">
+                        <span className="d-flex align-items-center flex-row flex-nowrap">
+                          Shop Now
+                          <FontAwesomeIcon
+                            icon={faArrowRightLong}
+                            className="mt-0 ms-1 pt-1"
+                          />
+                        </span>
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+                <div className="d-flex justify-content-end justify-content-md-start align-items-end">
+                  <img
+                    src={PainRelief}
+                    alt="Pain Relief Medicines"
+                    className="pain-img position-absolute"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -745,19 +804,19 @@ function HomePage() {
 
                   return (
                     <div
-                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch px-lg-1 px-0"
                       key={index}
                     >
                       <div className="feature-box rounded-0 position-relative rounded-1">
                         <button
-                          className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                          className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light me-2"
                           style={{ backgroundColor: labelColor }}
                         >
                           {data.label || "Label"}
                         </button>
                         <Link to={`/${url.productDetails}`}>
                           <img
-                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
                             style={{ cursor: "pointer" }}
                             alt={data.name || "Product Image"}
@@ -791,9 +850,9 @@ function HomePage() {
                         <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
                           {data.store || "Product Store"}
                         </h6>
-                        <h5 className="mt-0 lh-base text-start text-lg-start">
+                        <h6 className="mt-0 lh-base text-start text-lg-start fw-bold">
                           {data.name || "Product Name"}
-                        </h5>
+                        </h6>
                         <h6 className="mt-0 lh-base text-start text-lg-start">
                           SKU:{data.sku || "Product Name"}
                         </h6>
@@ -819,6 +878,74 @@ function HomePage() {
         <ToastContainer />
 
         <div className="container-fluid mt-3 mt-lg-0 cart-cart">
+          <h3 className="mt-lg-4 mt-0 text-center mb-0">
+            What Our Customers Say
+          </h3>
+          <div className="container d-flex justify-content-center mt-0 align-items-center">
+            <div className="row gap-2 g-3 d-flex flex-row flex-lg-nowrap flex-md-nowrap flex-wrap customer-what">
+              {paginatedReviews.length > 0 ? (
+                paginatedReviews.map((item) => (
+                  <div
+                    key={item.id}
+                    className="col-12 col-md-6 col-lg-6 border text-start rounded d-flex flex-column justify-content-center align-items-center lh-lg mt-0"
+                  >
+                    <img
+                      src={`http://89.116.170.231:1600/src/image/${item.image}`}
+                      alt="Customer"
+                      className="img-fluid customer-homeimage mt-3"
+                    />
+                    <h5 className="mt-2 color-barnes">
+                      {item.first_name} {item.last_name}
+                    </h5>
+                    <span className="great-choice">{item.title}</span>
+                    <span className="ms-3 me-1">{item.notes}</span>
+
+                    <span className="d-flex flex-row flex-nowrap mb-3 gap-2 mt-1">
+                      {[...Array(item.rating)].map((_, i) => (
+                        <>
+                          <div className="bg-success text-light rounded px-1">
+                            <FontAwesomeIcon icon={faStar} />
+                          </div>
+                          <div className="bg-success text-light rounded px-1">
+                            <FontAwesomeIcon icon={faStar} />
+                          </div>
+                          <div className="bg-success text-light rounded px-1">
+                            <FontAwesomeIcon icon={faStar} />
+                          </div>
+                          <div className="bg-success text-light rounded px-1">
+                            <FontAwesomeIcon icon={faStar} />
+                          </div>
+                          <div className="bg-success text-light rounded px-1">
+                            <FontAwesomeIcon icon={faStar} />
+                          </div>
+                        </>
+                      ))}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center mt-0">No reviews available.</p>
+              )}
+            </div>
+          </div>
+
+          <div className="text-center mt-2 mt-lg-3 pointer-click">
+            <FontAwesomeIcon
+              icon={faAngleLeft}
+              className={`me-3 ${currentIndex === 0 ? "disabled" : ""}`}
+              onClick={handlePrevious}
+            />
+            <FontAwesomeIcon
+              icon={faAngleRight}
+              className={`${
+                currentIndex + reviewsPerPage >= review.length ? "disabled" : ""
+              }`}
+              onClick={handleNext}
+            />
+          </div>
+        </div>
+
+        <div className="container-fluid mt-3 mt-lg-0 cart-cart">
           <h3 className="mt-lg-4 mt-0 text-center">Trending Products</h3>
           <div className="container">
             <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
@@ -833,13 +960,13 @@ function HomePage() {
 
                   return (
                     <div
-                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                      className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch px-lg-0 px-0"
                       key={index}
                     >
                       <div className="feature-box rounded-0 position-relative rounded-1">
                         {data.label && (
                           <button
-                            className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                            className="position-absolute end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light me-2"
                             style={{ backgroundColor: labelColor }}
                           >
                             {data.label}
@@ -847,7 +974,7 @@ function HomePage() {
                         )}
                         <Link to={`/${url.productDetails}`}>
                           <img
-                            src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
+                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
                             style={{ cursor: "pointer" }}
                             alt={data.name || "Product Image"}
@@ -881,9 +1008,9 @@ function HomePage() {
                         <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
                           {data.store || "Product Store"}
                         </h6>
-                        <h5 className="mt-0 lh-base text-start text-lg-start">
+                        <h6 className="mt-0 lh-base text-start text-lg-start fw-bold">
                           {data.name || "Product Name"}
-                        </h5>
+                        </h6>
                         <h6 className="mt-0 lh-base text-start text-lg-start">
                           SKU:{data.sku || "Product Name"}
                         </h6>
@@ -921,7 +1048,7 @@ function HomePage() {
 
                 return (
                   <div
-                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
+                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch h-auto"
                     key={index}
                   >
                     <div className="feature-box rounded-0 position-relative rounded-1">
@@ -936,7 +1063,7 @@ function HomePage() {
 
                       <Link to={`/${url.productDetails}`}>
                         <img
-                          src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
+                          src={`http://89.116.170.231:1600/src/image/${data.image}`}
                           alt={data.name || "Product Image"}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
@@ -972,9 +1099,9 @@ function HomePage() {
                       <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
                         {data.store || "Product Store"}
                       </h6>
-                      <h5 className="mt-0 lh-base text-start text-lg-start">
+                      <h6 className="mt-0 lh-base text-start text-lg-start fw-bold">
                         {data.name || "Product Name"}
-                      </h5>
+                      </h6>
                       <h6 className="mt-0 lh-base text-start text-lg-start">
                         SKU:{data.sku || "Product Name"}
                       </h6>
@@ -1053,7 +1180,7 @@ function HomePage() {
                 className="col-12 col-xxl-4 col-lg-4 col-12 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center ms-lg- latest-read ms-md-3 mt-md-2"
               >
                 <img
-                  src={`http://89.116.170.231:1600/api/src/image/${post.image}`}
+                  src={`http://89.116.170.231:1600/src/image/${post.image}`}
                   alt={`img${index + 1}`}
                   className="img-fluid w-100"
                 />
@@ -1129,7 +1256,7 @@ function HomePage() {
               <div className="d-flex justify-content-center justify-content-sm-start align-items-center icon-text-container ms-2">
                 <img
                   src={Shipping}
-                  alt=""
+                  alt="RxLYTE"
                   className="img-fluid text-center-custom111 image1 ms-lg-5 ms-xxl-0 ms-xl-0"
                 />
                 <h3
@@ -1144,7 +1271,7 @@ function HomePage() {
               <div className="d-flex justify-content-center align-items-center icon-text-container ms-md-5 ms-lg-0 mb-md-2 justify-content-sm-start">
                 <img
                   src={Returns}
-                  alt="404"
+                  alt="RxLYTE"
                   className="img-fluid image image1 me-md-4 ms-lg-4 me-lg-0"
                 />
                 <h3
@@ -1161,8 +1288,8 @@ function HomePage() {
                 <div className="icon-container bg-light returns-easy1 ms-lg-5 mt-sm-3 ms-xl-0 ms-xxl-0">
                   <img
                     src={Payments}
-                    alt="img not found"
-                    className="img-flu image2 mt-md-4 mb-md-4 pb-md-2 mt-lg-2 mb-lg-5 ms-lg-1 payment-image"
+                    alt="RxLYTE"
+                    className="img-flu image2 mt-md-1 mb-md-4 pb-md-2 mt-lg-2 mb-lg-5 ms-lg-1 payment-image"
                   />
                 </div>
                 <h3 className="text-center-custom d-flex mt-1 mt-sm-0 d-flex flex-row returns-easy2 mt-lg-1">
@@ -1172,11 +1299,11 @@ function HomePage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 mt-4 pt-2">
-              <div className="d-flex justify-content-center align-items-center icon-text-container mb-md-4 justify-content-sm-start">
+              <div className="d-flex justify-content-center align-items-center icon-text-container mb-md-4 justify-content-sm-start icon-support">
                 <div className="icon-container bg-light">
                   <img
                     src={Support}
-                    alt=""
+                    alt="RxLYTE"
                     className="img-fluid image2 ms-2 ms-md-3 custom-support"
                   />
                 </div>
@@ -1192,99 +1319,101 @@ function HomePage() {
         </div>
       </div>
 
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
-        <div className="container text-center">
-          <div className="row justify-content-center">
-            <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
-              <img
-                src={Tonic}
-                alt="About Us"
-                className="img-fluid mb-2 me-5 pe-5 about-rx"
-              />
-              <h4 className="me-5 pe-5">About Us</h4>
-              <p className="mt-2 pharmacy2 text-start lh-lg">
-                We assert that our online pharmacy, RxTonic.com, complies with
-                all local legal requirements while delivering healthcare
-                services over the internet platform. To provide our consumers
-                the finest pharmaceutical care possible,all pharmaceutical firms
-                and drug manufacturers have accredited facilities and trained
-                pharmacists on staff.
-              </p>
-            </div>
-
-            <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
-              <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
-              <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
-                <li className="pharmacy2">
-                  <Link to="/about" className="text-light">
-                    About Us
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="/blog" className="text-light">
-                    Blog
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Payment Security
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Affiliate Marketing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
-              <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
-              <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
-                <li className="pharmacy2">
-                  <Link to="/faqs" className="text-light">
-                    FAQ
-                  </Link>
-                </li>
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Sitemap
-                  </Link>
-                </li>
-                <li className="pharmacy2">
-                  <Link to="/contact-us" className="text-light">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
-              <h4
-                className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
-                style={{ whiteSpace: "nowrap" }}
-              >
-                Sign Up for Newsletter
-              </h4>
-              <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
-                Get updates by subscribing to our weekly newsletter.
-              </p>
-              <div className="d-flex flex-row signup-text">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
+      <div className="container-fluid bg-dark text-light py-4 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact min-vw-100">
+        <footer className="footer-homepage">
+          <div className="container text-center d-flex justify-content-center">
+            <div className="row justify-content-center">
+              <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
+                <img
+                  src={Tonic}
+                  alt="About Us"
+                  className="img-fluid mb-2 me-5 pe-5 about-rx"
                 />
-                <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
-                  Subscribe
-                </button>
+                <h4 className="me-5 pe-5">About Us</h4>
+                <p className="mt-2 pharmacy2 text-start lh-lg">
+                  We assert that our online pharmacy, RxTonic.com, complies with
+                  all local legal requirements while delivering healthcare
+                  services over the internet platform. To provide our consumers
+                  the finest pharmaceutical care possible,all pharmaceutical
+                  firms and drug manufacturers have accredited facilities and
+                  trained pharmacists on staff.
+                </p>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
+                <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
+                <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
+                  <li className="pharmacy2">
+                    <Link to="/about" className="text-light">
+                      About Us
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="/blog" className="text-light">
+                      Blog
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Payment Security
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Affiliate Marketing
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
+                <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
+                <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
+                  <li className="pharmacy2">
+                    <Link to="/faqs" className="text-light">
+                      FAQ
+                    </Link>
+                  </li>
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Sitemap
+                    </Link>
+                  </li>
+                  <li className="pharmacy2">
+                    <Link to="/contact-us" className="text-light">
+                      Contact
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-5 signup-news mt-lg-1">
+                <h4
+                  className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  Sign Up for Newsletter
+                </h4>
+                <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg ms-md-4 ps-md-3">
+                  Get updates by subscribing to our weekly newsletter.
+                </p>
+                <div className="d-flex flex-row signup-text">
+                  <input
+                    type="email"
+                    placeholder="Email address"
+                    className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
+                  />
+                  <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </footer>
       </div>
     </>
   );

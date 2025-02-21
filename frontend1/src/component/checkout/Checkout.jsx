@@ -7,6 +7,7 @@ import Tonic from "../../assets/Tonic.svg";
 import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import Cart from "../../assets/Cart.svg";
+import Close from "../../assets/Close.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../../context/UserContext";
@@ -35,7 +36,7 @@ function Checkout() {
   }, []);
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+    setIsDropdownOpen((prev) => !prev);
   };
 
   useEffect(() => {
@@ -252,7 +253,7 @@ function Checkout() {
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/api/src/image/${response.data.logo_url}`
+            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -286,7 +287,7 @@ function Checkout() {
             checkout?.background_color ||
             (checkout?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: checkout?.background_image
-            ? `url(http://89.116.170.231:1600/api/src/image/${checkout.background_image})`
+            ? `url(http://89.116.170.231:1600/src/image/${checkout.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -317,8 +318,9 @@ function Checkout() {
                 >
                   <span className="navbar-toggler-icons">
                     <img
-                      src={Hamburger}
-                      alt="Menu"
+                      key={isDropdownOpen ? "Close" : "hamburger"}
+                      src={isDropdownOpen ? Close : Hamburger}
+                      alt={isDropdownOpen ? "Close" : "Menu"}
                       className="img-fluid hamburger-images"
                     />
                   </span>
@@ -343,8 +345,8 @@ function Checkout() {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to={`/${url.cart}`}>
-                        Cart
+                      <Link className="nav-link" to="/privacy-policy">
+                        Privacy Policy
                       </Link>
                     </li>
                     <li className="nav-item">
@@ -402,8 +404,8 @@ function Checkout() {
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to={`/${url.cart}`}>
-                      Cart
+                    <Link className="nav-link" to="/privacy-policy">
+                      Privacy Policy
                     </Link>
                   </li>
                   <li className="nav-item">
@@ -674,8 +676,8 @@ function Checkout() {
                         </div>
 
                         <img
-                          src={`http://89.116.170.231:1600/api/src/image/${data.image}`}
-                          alt=""
+                          src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                          alt="RxLYTE"
                           className="img- border rounded-0 number-item-img"
                         />
                         <p
@@ -743,6 +745,7 @@ function Checkout() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
 
       <h4 className="mt-lg-3 mt-0 mt-sm-3 cart-cart ms-lg-3 ms-0 w-50 text-lg-center text-center">
@@ -976,103 +979,101 @@ function Checkout() {
         </div>
       </div>
 
-      <div className="container-fluid bg-dark text-light py-5 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact rounded-0">
-        <div className="container text-center">
-          <div className="row justify-content-center">
-            <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
-              <img
-                src={Tonic}
-                alt="About Us"
-                className="img-fluid mb-2 me-5 pe-5 about-rx"
-              />
-              <h4 className="me-5 pe-5">About Us</h4>
-              <p className="mt-2 pharmacy2 text-start lh-lg">
-                We assert that our online pharmacy, RxTonic.com, complies with
-                all local legal requirements while delivering healthcare
-                services over the internet platform. To provide our consumers
-                the finest pharmaceutical care possible,all pharmaceutical firms
-                and drug manufacturers have accredited facilities and trained
-                pharmacists on staff.
-              </p>
-            </div>
-
-            <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
-              <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
-              <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
-                <li className="pharmacy2">
-                  <Link to="/about" className="text-light">
-                    About Us
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="/blog" className="text-light">
-                    Blog
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Payment Security
-                  </Link>
-                </li>
-
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Affiliate Marketing
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
-              <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
-              <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
-                <li className="pharmacy2">
-                  <Link to="/faqs" className="text-light">
-                    FAQ
-                  </Link>
-                </li>
-                <li className="pharmacy2">
-                  <Link to="#" className="text-light">
-                    Sitemap
-                  </Link>
-                </li>
-                <li className="pharmacy2">
-                  <Link to="/contact-us" className="text-light">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
-              <h4
-                className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
-                style={{ whiteSpace: "nowrap" }}
-              >
-                Sign Up for Newsletter
-              </h4>
-              <p
-                className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 
-              text-lg-start text-start pharmacy2 lh-lg"
-              >
-                Get updates by subscribing to our weekly newsletter.
-              </p>
-              <div className="d-flex flex-row signup-text">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
+      <div className="container-fluid bg-dark text-light py-4 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact min-vw-100">
+        <footer className="footer-homepage">
+          <div className="container text-center d-flex justify-content-center">
+            <div className="row justify-content-center">
+              <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
+                <img
+                  src={Tonic}
+                  alt="About Us"
+                  className="img-fluid mb-2 me-5 pe-5 about-rx"
                 />
-                <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
-                  Subscribe
-                </button>
+                <h4 className="me-5 pe-5">About Us</h4>
+                <p className="mt-2 pharmacy2 text-start lh-lg">
+                  We assert that our online pharmacy, RxTonic.com, complies with
+                  all local legal requirements while delivering healthcare
+                  services over the internet platform. To provide our consumers
+                  the finest pharmaceutical care possible,all pharmaceutical
+                  firms and drug manufacturers have accredited facilities and
+                  trained pharmacists on staff.
+                </p>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
+                <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
+                <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
+                  <li className="pharmacy2">
+                    <Link to="/about" className="text-light">
+                      About Us
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="/blog" className="text-light">
+                      Blog
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Payment Security
+                    </Link>
+                  </li>
+
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Affiliate Marketing
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
+                <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
+                <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
+                  <li className="pharmacy2">
+                    <Link to="/faqs" className="text-light">
+                      FAQ
+                    </Link>
+                  </li>
+                  <li className="pharmacy2">
+                    <Link to="#" className="text-light">
+                      Sitemap
+                    </Link>
+                  </li>
+                  <li className="pharmacy2">
+                    <Link to="/contact-us" className="text-light">
+                      Contact
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
+                <h4
+                  className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  Sign Up for Newsletter
+                </h4>
+                <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
+                  Get updates by subscribing to our weekly newsletter.
+                </p>
+                <div className="d-flex flex-row signup-text">
+                  <input
+                    type="email"
+                    placeholder="Email address"
+                    className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
+                  />
+                  <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <ToastContainer />
+        </footer>
       </div>
     </>
   );

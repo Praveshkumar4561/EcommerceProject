@@ -331,7 +331,7 @@ function ThemePage() {
             <Link to="/admin/welcome">
               <img
                 src={Logo}
-                alt="Logo"
+                alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -2679,7 +2679,7 @@ function ThemePage() {
                       className="w-100 h-100 rounded-1"
                     />
                   ) : (
-                    <img src={Page} alt="404" className="w-100 h-100" />
+                    <img src={Page} alt="RxLYTE" className="w-100 h-100" />
                   )}
                 </div>
 
