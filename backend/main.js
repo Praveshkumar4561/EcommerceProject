@@ -20,7 +20,7 @@ const saltRounds = 10;
 
 app.use(
   cors({
-    origin: "http://89.116.170.231",
+    origin: "*",
     methods: "GET, POST, PUT, DELETE",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -275,6 +275,18 @@ app.get("/alldata", (req, res) => {
       res.json(result);
     }
   });
+});
+
+app.get("/allreviewdata", async (req, res) => {
+  try {
+    const [rows] = await db
+      .promise()
+      .execute("SELECT * FROM user ORDER BY id ASC LIMIT 4");
+    res.json(rows);
+  } catch (error) {
+    console.error("Database error:", error);
+    res.status(500).json({ message: "Error fetching reviews" });
+  }
 });
 
 app.put("/passwordupdate", async (req, res) => {
