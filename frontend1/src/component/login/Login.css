@@ -148,13 +148,19 @@ body {
   font-family: Verdana, Tahoma, sans-serif;
 }
 
+.cart-user {
+  width: 40px;
+  height: 30px;
+  margin-top: 5%;
+}
+
 @media (max-width: 576px) {
   .navbar-icons1 {
     display: flex;
     flex-wrap: nowrap;
     position: absolute;
     right: 18%;
-    top:32%;
+    top: 32%;
   }
 }
 
@@ -163,8 +169,30 @@ body {
     display: flex;
     flex-wrap: nowrap;
     position: absolute;
-    right: 19%;
-    top:30%;
+    right: 13%;
+    top: 30%;
+  }
+  .dropdown-burger {
+    position: relative;
+    left: 3%;
+  }
+}
+@media (min-width: 768px) and (max-width: 992px) {
+  .navbar-icons1 {
+    display: flex;
+    flex-wrap: nowrap;
+    position: absolute;
+    right: 9%;
+    top: 30.9%;
+  }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+  .navbar-icons1 {
+    display: flex;
+    flex-wrap: nowrap;
+    position: absolute;
+    right: 10%;
+    top: 31%;
   }
 }
 

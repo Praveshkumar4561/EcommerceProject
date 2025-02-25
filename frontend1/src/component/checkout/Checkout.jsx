@@ -4,15 +4,16 @@ import { Link } from "react-router-dom";
 import "./Checkout.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import Cart from "../../assets/Cart.svg";
 import Close from "../../assets/Close.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Carthome from "../../assets/Carthome1.webp";
+import Wishlists from "../../assets/Wishlists1.webp";
+import Accounts from "../../assets/Accounts1.webp";
 
 function Checkout() {
   let { count, setCount } = useContext(UserContext);
@@ -40,20 +41,18 @@ function Checkout() {
   };
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
-  }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
-  cartdata();
+  });
 
   let [cart, setCart] = useState([]);
 
@@ -113,25 +112,45 @@ function Checkout() {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    const userdata = async () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
       try {
-        const response = await axios.get("http://89.116.170.231:1600/alldata");
-        if (response.data && response.data.length > 0) {
-          setContainer(response.data);
-          setUser((prevUser) => ({
-            ...prevUser,
-            email: response.data[0].email,
-            phone_number: response.data[0].phone_number,
-            first_name: response.data[0].first_name,
-            last_name: response.data[0].last_name,
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        const parsedUser = JSON.parse(storedUser);
+        setUser((prevUser) => ({
+          ...prevUser,
+          email: parsedUser.email || "",
+          phone_number: parsedUser.phone_number || "",
+          first_name: parsedUser.first_name || "",
+          last_name: parsedUser.last_name || "",
+        }));
+        setContainer(parsedUser);
+      } catch (err) {
+        console.error("Error parsing stored user data:", err);
       }
-    };
-    userdata();
+    }
   }, []);
+
+  // useEffect(() => {
+  //   const userdata = async () => {
+  //     try {
+  //       const storedUser = localStorage.getItem("registeredUser");
+  //       const response = await axios.get("http://89.116.170.231:1600/alldata");
+  //       if (response.data && response.data.length > 0) {
+  //         setContainer(response.data);
+  //         setUser((prevUser) => ({
+  //           ...prevUser,
+  //           email: response.data[0].email,
+  //           phone_number: response.data[0].phone_number,
+  //           first_name: response.data[0].first_name,
+  //           last_name: response.data[0].last_name,
+  //         }));
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  //   userdata();
+  // }, []);
 
   const onCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
@@ -261,7 +280,7 @@ function Checkout() {
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
 
-  let [checkout, setCheckout] = useState("");
+  let [check, setCheck] = useState("");
 
   useEffect(() => {
     const fetchBreadcrumbData = async () => {
@@ -269,7 +288,7 @@ function Checkout() {
         const response = await axios.get(
           "http://89.116.170.231:1600/get-theme-breadcrumb"
         );
-        setCheckout(response.data);
+        setCheck(response.data);
       } catch (error) {
         console.error("Error fetching breadcrumb settings:", error);
       }
@@ -277,22 +296,38 @@ function Checkout() {
     fetchBreadcrumbData();
   }, []);
 
+  let [cartwish, setCartWish] = useState([]);
+
+  useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCartWish(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
+    wishlistdata();
+  });
+
   return (
     <>
       <div
         className="container"
-        id="container-custom"
+        id="container-customx"
         style={{
           backgroundColor:
-            checkout?.background_color ||
-            (checkout?.background_image ? "transparent" : "#f2f5f7"),
-          backgroundImage: checkout?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${checkout.background_image})`
+            check?.background_color ||
+            (check?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: check?.background_image
+            ? `url(http://89.116.170.231:1600/src/image/${check.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: checkout?.breadcrumb_height
-            ? `${checkout.breadcrumb_height}px`
+          height: check?.breadcrumb_height
+            ? `${check.breadcrumb_height}px`
             : "190px",
         }}
       >
@@ -304,14 +339,14 @@ function Checkout() {
                   <img
                     src={logoUrl || image1}
                     alt="Tonic Logo"
-                    className="img-fluid"
+                    className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
                   />
                 </Link>
 
                 <button
                   type="button"
-                  className="navbar-toggler py-0 px-1 d-lg-none"
+                  className="navbar-toggler py-0 px-1 d-lg-none dropdown-burger"
                   onClick={toggleDropdown}
                   ref={toggleButtonRef}
                   aria-label="Toggle navigation"
@@ -358,11 +393,27 @@ function Checkout() {
                 </div>
 
                 <div className="navbar-icons1 d-sm-flex">
-                  <Link to={`/${url.login}`} className="nav-link">
+                  <Link
+                    to={`/${url.wishlist}`}
+                    className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
+                  >
+                    <span className="count-badge mt-2 mt-lg-1">{cartwish}</span>
                     <img
-                      src={Profile}
+                      src={Wishlists}
+                      alt="RxLYTE"
+                      className="cart-image profiles1 mt-1 navbar-shop"
+                    />
+                  </Link>
+
+                  <Link
+                    to={`/${url.login}`}
+                    className="nav-link"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <img
+                      src={Accounts}
                       alt="Profile"
-                      className="profiles img-fluid me-3"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
                     />
                   </Link>
 
@@ -371,11 +422,13 @@ function Checkout() {
                     className="nav-link d-flex nav-properties1"
                   >
                     <img
-                      src={Cart}
+                      src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
                     />
-                    <div className="addcarts ms-1 ps-1 pt-lg-1">{count}</div>
+                    <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
+                      {count}
+                    </div>
                   </Link>
                 </div>
               </div>
@@ -418,14 +471,14 @@ function Checkout() {
             )}
           </header>
 
-          <main className="container mt-5 cart-cart">
-            {checkout?.enable_breadcrumb === "yes" &&
-              checkout?.breadcrumb_style !== "none" && (
+          <main className="container mt-5 cart-cart container-bread">
+            {check?.enable_breadcrumb === "yes" &&
+              check?.breadcrumb_style !== "none" && (
                 <>
-                  {checkout?.hide_title !== "yes" && (
+                  {check?.hide_title !== "yes" && (
                     <h1
                       className={`fw-medium mb-3 text-center container-contact fs-2 container-style ${
-                        checkout?.breadcrumb_style === "without title"
+                        check?.breadcrumb_style === "without title"
                           ? "d-none"
                           : ""
                       }`}
@@ -438,19 +491,19 @@ function Checkout() {
                     aria-label="breadcrumb"
                     id="container-contact1"
                     className={`ms-5 ps-3 ms-lg-0 ps-lg-0 ${
-                      checkout?.breadcrumb_style === "without title" ||
-                      checkout?.breadcrumb_style === "align start"
+                      check?.breadcrumb_style === "without title" ||
+                      check?.breadcrumb_style === "align start"
                         ? "d-flex justify-content-start align-items-center w-50"
                         : "d-flex justify-content-center align-items-center"
                     }`}
                   >
-                    <ol className="breadcrumb d-flex flex-wrap gap-0">
-                      <li className="breadcrumb-item navbar-item fw-medium">
+                    <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
+                      <li className="breadcrumb-item navbar-item fw-medium p-0">
                         <Link target="_blank" to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
-                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark p-0">
                         Checkout
                       </li>
                     </ol>
@@ -462,23 +515,23 @@ function Checkout() {
       </div>
       <div></div>
 
-      <div className="d-flex flex-column demo-shipping mt-4 cart-cart">
-        <h2 className="">Pill Demo</h2>
-        <p className="text-dark">Cart / Information / Shipping / Payment</p>
+      <div className="d-flex flex-column demo-shipping mt-4 cart-cart1">
+        <h2 className="pills">Pill Demo</h2>
+        <p className="text-dark">Cart/Information/Shipping/Payment</p>
       </div>
 
       <div className="container-fluid overflow-hidden">
         <div className="container ms-0 ms-lg-2">
-          <div className="row mt-3 gap-0 d-flex justify-content-lg-start me-0 me-lg-0">
+          <div className="row mt-3 gap-0 d-flex justify-content-lg-start flex-row flex-lg-nowrap flex-xl-nowrap flex-xxl-nowrap me-0 me-lg-0">
             <div className="col-12 col-md-6 col-lg-12 col-xl-12 contact-page1 h-auto pb-5">
-              <div className="d-flex flex-row justify-content-between cart-cart">
+              <div className="d-flex flex-row justify-content-between cart-cart flex-wrap">
                 <h4
                   className="mt-3 ms-lg-2 text-start d-flex fw-medium"
                   style={{ whiteSpace: "nowrap" }}
                 >
                   Contact Information
                 </h4>
-                <p className="text-dark pt-5 mb-0 ps-lg-3 cart-cart">
+                <p className="text-dark pt-5 mb-0 ps-lg-3 cart-cart text-start">
                   Already have an account?
                   <Link
                     className="text-dark text-decoration-none ms-1"
@@ -490,88 +543,88 @@ function Checkout() {
               </div>
 
               <form onSubmit={handleSubmit}>
-                {Array.isArray(container) && container.length > 0 ? (
-                  container.slice(0, 1).map((data, key) => (
-                    <div key={key}>
-                      <div className="ms-0 ms-lg-2">
-                        <input
-                          type="email"
-                          className="form-control border-start border-end py-4 border-place1 fw-medium text-dark"
-                          placeholder="Email"
-                          name="email"
-                          value={user.email || data.email}
-                          onChange={onInputChange}
-                        />
-                      </div>
+                {container && Object.keys(container).length > 0 ? (
+                  <div>
+                    <div className="ms-0 ms-lg-2">
+                      <input
+                        type="email"
+                        className="form-control border-start border-end py-4 border-place1 fw-medium text-dark"
+                        placeholder="Email"
+                        name="email"
+                        value={user.email}
+                        onChange={onInputChange}
+                      />
+                    </div>
 
-                      <div className="ms-0 ms-lg-2 mt-4">
+                    <div className="ms-0 ms-lg-2 mt-3">
+                      <input
+                        type="text"
+                        className="form-control py-4 border-place1 fw-medium text-dark border-start border-end"
+                        placeholder="Phone number"
+                        name="phone_number"
+                        value={user.phone_number}
+                        onChange={onInputChange}
+                      />
+                    </div>
+
+                    <h4 className="mt-3 ms-lg-3 text-start fw-medium cart-cart">
+                      Shipping Address
+                    </h4>
+
+                    <div className="global-name">
+                      <div className="d-flex gap-3 ms-lg-2 ms-0 mt-3">
                         <input
                           type="text"
-                          className="form-control py-4 border-place1 fw-medium text-dark border-start border-end"
-                          placeholder="Phone number"
-                          name="phone_number"
-                          value={user.phone_number || data.phone_number}
+                          placeholder="First name"
+                          className="form-control fw-medium py-4 border-place1 border-start border-end"
+                          name="first_name"
+                          value={user.first_name}
+                          onChange={onInputChange}
+                        />
+                        <input
+                          type="text"
+                          placeholder="Last name"
+                          className="form-control fw-medium py-4 border-place1 border-start border-end"
+                          name="last_name"
+                          value={user.last_name}
                           onChange={onInputChange}
                         />
                       </div>
 
-                      <h4 className="mt-3 ms-lg-3 text-start fw-medium cart-cart">
-                        Shipping Address
-                      </h4>
+                      <div className="ms-lg-2 ms-0 text-start">
+                        <input
+                          type="text"
+                          placeholder="Address"
+                          className="form-control py-4 mt-4 ms-0 fw-medium border-place1 border-start border-end"
+                          name="address"
+                          value={user.address}
+                          onChange={onInputChange}
+                        />
+                        {errors.address && (
+                          <span className="text-danger cart-cart">
+                            {errors.address}
+                          </span>
+                        )}
+                      </div>
 
-                      <div className="global-name">
-                        <div className="d-flex gap-5 ms-lg-2 ms-0 mt-3">
-                          <input
-                            type="text"
-                            placeholder="First name"
-                            className="form-control fw-medium py-4 border-place1 border-start border-end"
-                            name="first_name"
-                            value={user.first_name || data.first_name}
-                            onChange={onInputChange}
-                          />
-                          <input
-                            type="text"
-                            placeholder="Last name"
-                            className="form-control fw-medium py-4 border-place1 border-start border-end"
-                            name="last_name"
-                            value={user.last_name || data.last_name}
-                            onChange={onInputChange}
-                          />
-                        </div>
+                      <div className="ms-lg-2 ms-0 text-start">
+                        <input
+                          type="text"
+                          placeholder="Apartment"
+                          className="form-control py-4 mt-4 fw-medium border-place1 border-start border-end"
+                          name="apartment"
+                          value={user.apartment}
+                          onChange={onInputChange}
+                        />
+                        {errors.apartment && (
+                          <span className="text-danger cart-cart">
+                            {errors.apartment}
+                          </span>
+                        )}
+                      </div>
 
-                        <div className="ms-lg-2 ms-0">
-                          <input
-                            type="text"
-                            placeholder="Address"
-                            className="form-control py-4 mt-5 ms-0 fw-medium border-place1 border-start border-end"
-                            name="address"
-                            value={user.address}
-                            onChange={onInputChange}
-                          />
-                          {errors.address && (
-                            <span className="text-danger">
-                              {errors.address}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="ms-lg-2 ms-0">
-                          <input
-                            type="text"
-                            placeholder="Apartment"
-                            className="form-control py-4 mt-5 fw-medium border-place1 border-start border-end"
-                            name="apartment"
-                            value={user.apartment}
-                            onChange={onInputChange}
-                          />
-                          {errors.apartment && (
-                            <span className="text-danger">
-                              {errors.apartment}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="d-flex gap-5 ms-lg-2 ms-0 mt-5">
+                      <div className="d-flex gap-3 ms-lg-2 ms-0 mt-4 text-start">
+                        <div className="d-flex flex-column w-100">
                           <input
                             type="text"
                             placeholder="Country"
@@ -581,13 +634,14 @@ function Checkout() {
                             onChange={onInputChange}
                           />
                           {errors.country && (
-                            <span className="text-danger">
+                            <span className="text-danger cart-cart">
                               {errors.country}
                             </span>
                           )}
-
+                        </div>
+                        <div className="d-flex flex-column w-100 text-start">
                           <input
-                            type="number"
+                            type="text"
                             placeholder="Postal Code"
                             className="form-control fw-medium py-4 border-place1 border-start border-end"
                             name="pincode"
@@ -595,32 +649,36 @@ function Checkout() {
                             onChange={onInputChange}
                           />
                           {errors.pincode && (
-                            <span className="text-danger">
+                            <span className="text-danger cart-cart">
                               {errors.pincode}
                             </span>
                           )}
                         </div>
+                      </div>
 
-                        <div className="ms-lg-2 ms-0">
-                          <input
-                            type="datetime-local"
-                            className="form-control py-4 mt-5 fw-medium border-place1 border-start border-end"
-                            name="date"
-                            value={user.date}
-                            onChange={onInputChange}
-                          />
-                          {errors.date && (
-                            <span className="text-danger">{errors.date}</span>
-                          )}
-                        </div>
+                      <div className="ms-lg-2 ms-0 text-start">
+                        <input
+                          type="datetime-local"
+                          className="form-control py-4 mt-4 fw-medium border-place1 border-start border-end"
+                          name="date"
+                          value={user.date}
+                          onChange={onInputChange}
+                        />
+                        {errors.date && (
+                          <span className="text-danger cart-cart">
+                            {errors.date}
+                          </span>
+                        )}
+                      </div>
 
-                        <div className="d-flex flex-row gap-2 ms-2 mt-3 cart-cart">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            checked={isChecked}
-                            onChange={onCheckboxChange}
-                          />
+                      <div className="d-flex flex-row gap-2 ms-2 mt-3 cart-cart">
+                        <input
+                          type="checkbox"
+                          className="form-check-input"
+                          checked={isChecked}
+                          onChange={onCheckboxChange}
+                        />
+                        <div className="d-flex flex-column">
                           <label htmlFor="">
                             I agree to the{" "}
                             <Link
@@ -636,28 +694,30 @@ function Checkout() {
                             </span>
                           )}
                         </div>
-
-                        <div className="d-flex flex-row gap-2 text-success mt-3 ms-1 ps-2 cart-cart">
-                          <FontAwesomeIcon
-                            icon={faArrowLeft}
-                            className="mt-1 fs-6"
-                          />
-                          <Link
-                            className="text-success text-decoration-none"
-                            to={`/${url.cart}`}
-                          >
-                            Back to Cart
-                          </Link>
-                        </div>
                       </div>
 
-                      <button className="btn btn-success d-flex mt-4 ms-lg-2 px-3 py-4 button-shipping rounded-0">
-                        Checkout
-                      </button>
+                      <div className="d-flex flex-row gap-2 text-success mt-3 ms-1 ps-2 cart-cart">
+                        <FontAwesomeIcon
+                          icon={faArrowLeft}
+                          className="mt-1 fs-6"
+                        />
+                        <Link
+                          className="text-success text-decoration-none"
+                          to={`/${url.cart}`}
+                        >
+                          Back to Cart
+                        </Link>
+                      </div>
                     </div>
-                  ))
+
+                    <button className="btn btn-success d-flex mt-4 ms-lg-2 px-3 py-4 button-shipping rounded-0">
+                      Checkout
+                    </button>
+                  </div>
                 ) : (
-                  <div></div>
+                  <>
+                    <div></div>
+                  </>
                 )}
               </form>
             </div>
@@ -715,15 +775,18 @@ function Checkout() {
                   </>
                 ))}
 
-                <div className="process d-flex flex-column me-lg-3 lh-lg">
+                <div className="process d-flex flex-column me-lg-3 lh-base">
                   <div className="mt-4 d-flex justify-content-between flex-row w-100">
                     <span className="ms-3">Subtotal:</span>
                     <span className="me-3" style={{ fontFamily: "verdana" }}>
                       ${subtotal.toFixed(2)}
                     </span>
                   </div>
+
                   <div className="mt-3 d-flex justify-content-between flex-row w-100">
-                    <span className="ms-3">Tax (Import Tax - 15%):</span>
+                    <span className="ms-md-3 ms-3">
+                      Tax (Import Tax - 15%):
+                    </span>
                     <span className="me-3" style={{ fontFamily: "verdana" }}>
                       ${tax.toFixed(2)}
                     </span>
@@ -748,13 +811,13 @@ function Checkout() {
         <ToastContainer />
       </div>
 
-      <h4 className="mt-lg-3 mt-0 mt-sm-3 cart-cart ms-lg-3 ms-0 w-50 text-lg-center text-center">
+      <h4 className="mt-lg-3 mt-2 mt-sm-3 cart-cart ms-lg-3 ms-0 w-50 mb-3 payment-span text-lg-start text-xl-start text-xxl-center">
         Payment method
       </h4>
 
-      <div className="container-fluid cart-cart ">
+      <div className="container-fluid cart-cart">
         <div className="container">
-          <div className="row">
+          <div className="row mt-0">
             <div className="col-12 col-md-12 col-lg-8 border rounded lh-lg bg-light payment-methods ms-lg-1 ms-0">
               <div className="d-flex flex-row mt-2 py-2">
                 <input
@@ -979,102 +1042,124 @@ function Checkout() {
         </div>
       </div>
 
-      <div className="container-fluid bg-dark text-light py-4 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact min-vw-100">
-        <footer className="footer-homepage">
-          <div className="container text-center d-flex justify-content-center">
-            <div className="row justify-content-center">
-              <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
-                <img
-                  src={Tonic}
-                  alt="About Us"
-                  className="img-fluid mb-2 me-5 pe-5 about-rx"
-                />
-                <h4 className="me-5 pe-5">About Us</h4>
-                <p className="mt-2 pharmacy2 text-start lh-lg">
+      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+        <div className="container text-center text-md-left">
+          <div className="row footer-lyte">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
+              <img
+                src={Tonic}
+                alt="RxTonic"
+                className="img-fluid mb-3"
+                style={{ maxWidth: "190px" }}
+              />
+              <h4 className="mb-2">About Us</h4>
+              <p className="text-start lh-lg footer-list">
+                <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
                   the finest pharmaceutical care possible,all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
-                </p>
-              </div>
+                </li>
+              </p>
+            </div>
 
-              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
-                <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
-                <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
-                  <li className="pharmacy2">
-                    <Link to="/about" className="text-light">
-                      About Us
-                    </Link>
-                  </li>
+            <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
+              <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
+                <div className="text-start">
+                  <h5 className="mb-3">Company</h5>
+                  <ul className="lh-lg footer-list p-0">
+                    <li>
+                      <Link
+                        to="/about"
+                        className="text-white text-decoration-none"
+                      >
+                        About Us
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/blog"
+                        className="text-white text-decoration-none"
+                      >
+                        Blog
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Payment Security
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Affiliate Marketing
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
 
-                  <li className="pharmacy2">
-                    <Link to="/blog" className="text-light">
-                      Blog
-                    </Link>
-                  </li>
-
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Payment Security
-                    </Link>
-                  </li>
-
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Affiliate Marketing
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
-                <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
-                <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
-                  <li className="pharmacy2">
-                    <Link to="/faqs" className="text-light">
-                      FAQ
-                    </Link>
-                  </li>
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Sitemap
-                    </Link>
-                  </li>
-                  <li className="pharmacy2">
-                    <Link to="/contact-us" className="text-light">
-                      Contact
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
-                <h4
-                  className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  Sign Up for Newsletter
-                </h4>
-                <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
-                  Get updates by subscribing to our weekly newsletter.
-                </p>
-                <div className="d-flex flex-row signup-text">
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
-                  />
-                  <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
-                    Subscribe
-                  </button>
+                <div className="text-start ms-5 ps-5 ps-lg-0">
+                  <h5 className="mb-3">Help?</h5>
+                  <ul className="lh-lg footer-list p-0">
+                    <li>
+                      <Link
+                        to="/faqs"
+                        className="text-white text-decoration-none"
+                      >
+                        FAQ
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Sitemap
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/contact-us"
+                        className="text-white text-decoration-none"
+                      >
+                        Contact
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
+
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+              <h5 className="mb-lg-3 mb-3 text-start">
+                Sign Up for Newsletter
+              </h5>
+              <form className="d-flex flex-row flex-nowrap">
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  className="form-control me-2 py-4 cart-cart1"
+                  aria-label="Email address"
+                />
+                <button
+                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  type="submit"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
           </div>
-        </footer>
-      </div>
+
+          <hr className="my-4 me-3" />
+
+          <div className="row align-items-center footer-lyte1">
+            <div className="col-md-6 col-lg-7">
+              <p className="text-md-start text-center mb-0">
+                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

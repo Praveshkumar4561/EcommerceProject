@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./CustomerAddress.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,7 +11,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
-import Cart from "../../assets/Cart.svg";
 import Output from "../../assets/output.webp";
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
@@ -26,28 +25,29 @@ import axios from "axios";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Carthome from "../../assets/Carthome.svg";
-import Wishlists from "../../assets/Wishlists.svg";
-import Accounts from "../../assets/Accounts.svg";
+import Close from "../../assets/Close.webp";
+import Carthome from "../../assets/Carthome1.webp";
+import Wishlists from "../../assets/Wishlists1.webp";
+import Accounts from "../../assets/Accounts1.webp";
+import image1 from "../../assets/Tonic.svg";
+import Hamburger from "../../assets/hamburger.svg";
 
 function CustomerAddress() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
-  }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
-  cartdata();
+  });
 
   const [user, setUser] = useState([]);
 
@@ -145,8 +145,6 @@ function CustomerAddress() {
       if (!storedUser || isAuthenticated !== "true") {
         navigate("/login");
       } else if (storedUser && storedUser.tokenExpiration) {
-        console.log("Stored expiration:", storedUser.tokenExpiration);
-        console.log("Current time:", Date.now());
         if (Date.now() > storedUser.tokenExpiration) {
           console.log("Token expired. Logging out...");
           localStorage.removeItem("user");
@@ -212,11 +210,235 @@ function CustomerAddress() {
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
 
+  let [cartwish, setCartWish] = useState([]);
+
+  useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCartWish(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
+    wishlistdata();
+  });
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const toggleButtonRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !toggleButtonRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
   return (
     <>
+      <div
+        className="container d-lg-none d-block"
+        id="container-customx1"
+        style={{
+          backgroundColor:
+            user?.background_color ||
+            (user?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: user?.background_image
+            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: user?.breadcrumb_height
+            ? `${user.breadcrumb_height}px`
+            : "190px",
+        }}
+      >
+        {customer.length > 0 && (
+          <div className="d-block d-lg-block text-start pt-2 pb-2">
+            <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                className="me-2 text-success fs-6 d-block d-lg-block mt-1"
+                style={{ cursor: "pointer", position: "relative", zIndex: "1" }}
+                onClick={leftData}
+              />
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="me-2 text-success fs-6 d-block d-lg-block mt-1"
+                style={{ cursor: "pointer", position: "relative", zIndex: "1" }}
+                onClick={rightData}
+              />
+              <div className="ms-0">
+                {customer[currentIndex].content
+                  .split(" ")
+                  .slice(0, 6)
+                  .join(" ")}
+              </div>
+            </p>
+          </div>
+        )}
+
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+          <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
+            <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
+              <div className="container">
+                <Link className="navbar-brand d-non d-lg-block" to="/">
+                  <img
+                    src={logoUrl || image1}
+                    alt="Tonic Logo"
+                    className="img-fluid image-galaxy"
+                    style={{ height: `${logoHeight}px`, width: "200px" }}
+                  />
+                </Link>
+
+                <button
+                  type="button"
+                  className="navbar-toggler py-0 px-1 d-lg-none dropdown-burger"
+                  onClick={toggleDropdown}
+                  ref={toggleButtonRef}
+                  aria-label="Toggle navigation"
+                >
+                  <span className="navbar-toggler-icons">
+                    <img
+                      key={isDropdownOpen ? "Close" : "hamburger"}
+                      src={isDropdownOpen ? Close : Hamburger}
+                      alt={isDropdownOpen ? "Close" : "Menu"}
+                      className="img-fluid hamburger-images"
+                    />
+                  </span>
+                </button>
+
+                <div className="navbar-collapse d-none d-lg-block">
+                  <ul className="navbar-nav ms-auto cart-cart">
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/">
+                        Home
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/shop">
+                        Shop
+                      </Link>
+                    </li>
+
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/blog">
+                        Blog
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/privacy-policy">
+                        Privacy Policy
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/contact-us">
+                        Contact
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="navbar-icons1 d-sm-flex mt-1 mt-md-0 gap-0 navbar-mobile">
+                  <Link
+                    to={`/${url.wishlist}`}
+                    className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
+                  >
+                    <span className="count-badge mt-1">{cartwish}</span>
+                    <img
+                      src={Wishlists}
+                      alt="RxLYTE"
+                      className="cart-image profiles1 mt-1"
+                    />
+                  </Link>
+
+                  <Link
+                    to={`/${url.login}`}
+                    className="nav-link"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <img
+                      src={Accounts}
+                      alt="Profile"
+                      className="profiles1 img-fluid me-3 mt-1"
+                    />
+                  </Link>
+
+                  <Link
+                    to={`/${url.cart}`}
+                    className="nav-link d-flex nav-properties1"
+                  >
+                    <img
+                      src={Carthome}
+                      alt="Cart"
+                      className="img-fluid profiles1 mt-1 pt-1 "
+                    />
+                    <div className="addcarts ms-1 ps-1 pt-lg-1 count-badge1">
+                      {count}
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </nav>
+
+            {isDropdownOpen && (
+              <div
+                className="custom-dropdown cart-cart rounded-0"
+                ref={dropdownRef}
+              >
+                <ul className="navbar-nav">
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/">
+                      Home
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/shop">
+                      Shop
+                    </Link>
+                  </li>
+
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/blog">
+                      Blog
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/privacy-policy">
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/contact-us">
+                      Contact
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </header>
+        </div>
+      </div>
+      <div></div>
+
       <div className="container-fluid">
         <div className="row align-items-start justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
-          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-start ps-lg-2 ps-0 mt-2 mt-lg-3 lorem-home">
+          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-start ps-lg-2 ps-0 mt-2 mt-lg-3 lorem-home d-lg-block d-none">
             {customer.length > 0 && (
               <div className="d-block d-lg-block text-start pt-0">
                 <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping d-flex flex-row ms-2 ms-lg-0">
@@ -243,7 +465,7 @@ function CustomerAddress() {
             )}
           </div>
 
-          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block">
+          <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block d-none">
             {detail && detail.first_name ? (
               <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
                 <div className="free-shipping d-flex flex-row me-3 mt-2">
@@ -276,81 +498,121 @@ function CustomerAddress() {
                         </span>
                       </div>
 
-                      <Link
-                        to={`/${url.cart}`}
-                        className="nav-link d-flex mt-2"
-                      >
-                        <img
-                          src={Cart}
-                          alt="Cart"
-                          className="img-fluid profile1 me-2 ms-1"
-                          style={{
-                            position: "relative",
-                            cursor: "pointer",
-                            zIndex: 1000,
-                          }}
-                        />
-                        <div className="addcarts-lyte2 ms-3 mt-2 pt-1">
-                          {count}
-                        </div>
-                      </Link>
+                      <div className="d-flex flex-row gap-2">
+                        <Link
+                          to={`/${url.wishlist}`}
+                          className="nav-link d-flex mt-2"
+                        >
+                          <img
+                            src={Wishlists}
+                            alt="Cart"
+                            className="img-fluid cart-dashboard me-2 ms-1 mt-1"
+                            style={{
+                              position: "relative",
+                              cursor: "pointer",
+                              zIndex: 1,
+                            }}
+                          />
+                          <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1">
+                            {count}
+                          </div>
+                        </Link>
+
+                        <Link
+                          to={`/${url.login}`}
+                          className="nav-link d-flex mt-2"
+                        >
+                          <img
+                            src={Accounts}
+                            alt="Cart"
+                            className="img-fluid cart-dashboard me-2 ms-1 mt-1"
+                            style={{
+                              position: "relative",
+                              cursor: "pointer",
+                              zIndex: 1000,
+                            }}
+                          />
+                          <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1"></div>
+                        </Link>
+
+                        <Link
+                          to={`/${url.cart}`}
+                          className="nav-link d-flex mt-2"
+                        >
+                          <img
+                            src={Carthome}
+                            alt="Cart"
+                            className="img-fluid cart-dashboard me-2 ms-1 mt-1"
+                            style={{
+                              position: "relative",
+                              cursor: "pointer",
+                              zIndex: 1000,
+                            }}
+                          />
+                          <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1">
+                            {count}
+                          </div>
+                        </Link>
+                      </div>
                     </div>
                   </span>
                 </div>
               </div>
             ) : (
-              <div className="d-flex flex-row gap-2 justify-content-lg-end align-items-center icons-wishlist">
+              <div className="d-flex flex-row justify-content-lg-end align-items-end float-end gap-4">
                 <Link to={`/${url.wishlist}`}>
-                  <img src={Wishlists} alt="RxLYTE" />
-                </Link>
-                <Link to={`/${url.login}`}>
-                  <img src={Accounts} alt="RxLYTE" />
-                </Link>
-                <Link to={`/${url.cart}`}>
                   <span
-                    className="position-absolute ms-4 text-dark mt-1"
+                    className="position-absolute ms-2 ps-1 mt-0 count-badge1"
                     style={{ fontFamily: "verdana" }}
                   >
                     {count}
                   </span>
-                  <img src={Carthome} alt="RxLYTE" className="mt-3" />
+                  <img
+                    src={Wishlists}
+                    alt="RxLYTE"
+                    className="mt-3 cart-image"
+                  />
+                </Link>
+
+                <Link to={`/${url.login}`}>
+                  <img
+                    src={Accounts}
+                    alt="RxLYTE"
+                    className="cart-image mt-2"
+                  />
+                </Link>
+
+                <Link to={`/${url.cart}`}>
+                  <span
+                    className="position-absolute ms-2 mt-0 count-badge1"
+                    style={{ fontFamily: "verdana" }}
+                  >
+                    {count}
+                  </span>
+                  <img
+                    src={Carthome}
+                    alt="RxLYTE"
+                    className="mt-3 cart-image"
+                  />
                 </Link>
               </div>
             )}
           </div>
-
-          <div className="d-flex flex-row gap-2 justify-content-lg-end align-items-center icons-wishlist d-lg-none d-md-none">
-            <Link to={`/${url.wishlist}`}>
-              <img src={Wishlists} alt="RxLYTE" />
-            </Link>
-            <Link to={`/${url.login}`}>
-              <img src={Accounts} alt="RxLYTE" />
-            </Link>
-            <Link to={`/${url.cart}`}>
-              <span
-                className="position-absolute ms-4 text-dark mt-1"
-                style={{ fontFamily: "verdana" }}
-              >
-                {count}
-              </span>
-              <img src={Carthome} alt="RxLYTE" className="mt-3" />
-            </Link>
-          </div>
         </div>
 
-        <div className="container bg-light">
+        <div className="container bg-light d-lg-block d-none">
           <div className="row d-flex justify-content-start text-center align-items-start mt-0 mb-lg-0 mb-2">
-            <div className="col-12 col-md-8 d-flex align-items-center mb-4 mt-0 d-flex flex-row">
+            <div className="col-12 col-md-8 d-flex align-items-center mb-2 mt-0 flex-row">
               <Link className="navbar-brand d-non d-lg-block" to="/">
                 <img
                   src={logoUrl || Tonic}
                   alt="Tonic Logo"
-                  className="img-fluid me-3 me-md-0 mt-0 mt-lg-0"
+                  className="img-fluid me-3 me-md-0 mt-0"
                   style={{ height: `${logoHeight}px`, width: "200px" }}
                 />
               </Link>
 
-              <div className="input-welcome-user d-flex flex-row align-items-center mt-1">
+              <div className="input-welcome1-home position-relative start-501 d-flex flex-row align-items-center mt-1">
                 <input
                   type="search"
                   className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none border-end-0 me- pe-2"
@@ -507,7 +769,7 @@ function CustomerAddress() {
               </div>
 
               <nav>
-                <ul className="nav-list d-flex flex-wrap mb-0 gap-3 gap-md-4">
+                <ul className="nav-list d-flex flex-wrap mb-0 gap-3 gap-md-4 ">
                   <li className="nav-item">
                     <div className="nav-link-wrapper">
                       <Link to="/" className="nav-link fw-medium text-success">
@@ -542,7 +804,7 @@ function CustomerAddress() {
               </nav>
             </div>
 
-            <div className="d-none d-md-flex align-items-center mt-3 mt-md-0 d-lg-none d-xl-block d-xxl-block">
+            <div className="d-none d-md-flex align-items-center mt-3 mt-md-0 d-lg-none d-xl-block d-xxl-block d-lg-block d-none">
               <span className="d-flex">
                 <FontAwesomeIcon
                   icon={faPhoneVolume}
@@ -699,102 +961,124 @@ function CustomerAddress() {
         </div>
       </div>
 
-      <div className="container-fluid bg-dark text-light py-4 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact min-vw-100">
-        <footer className="footer-homepage">
-          <div className="container text-center d-flex justify-content-center">
-            <div className="row justify-content-center">
-              <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
-                <img
-                  src={Tonic}
-                  alt="About Us"
-                  className="img-fluid mb-2 me-5 pe-5 about-rx"
-                />
-                <h4 className="me-5 pe-5">About Us</h4>
-                <p className="mt-2 pharmacy2 text-start lh-lg">
+      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+        <div className="container text-center text-md-left">
+          <div className="row footer-lyte">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
+              <img
+                src={Tonic}
+                alt="RxTonic"
+                className="img-fluid mb-3"
+                style={{ maxWidth: "190px" }}
+              />
+              <h4 className="mb-2">About Us</h4>
+              <p className="text-start lh-lg footer-list">
+                <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
                   the finest pharmaceutical care possible,all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
-                </p>
-              </div>
+                </li>
+              </p>
+            </div>
 
-              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
-                <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
-                <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
-                  <li className="pharmacy2">
-                    <Link to="/about" className="text-light">
-                      About Us
-                    </Link>
-                  </li>
+            <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
+              <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
+                <div className="text-start">
+                  <h5 className="mb-3">Company</h5>
+                  <ul className="lh-lg footer-list p-0">
+                    <li>
+                      <Link
+                        to="/about"
+                        className="text-white text-decoration-none"
+                      >
+                        About Us
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/blog"
+                        className="text-white text-decoration-none"
+                      >
+                        Blog
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Payment Security
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Affiliate Marketing
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
 
-                  <li className="pharmacy2">
-                    <Link to="/blog" className="text-light">
-                      Blog
-                    </Link>
-                  </li>
-
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Payment Security
-                    </Link>
-                  </li>
-
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Affiliate Marketing
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
-                <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
-                <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
-                  <li className="pharmacy2">
-                    <Link to="/faqs" className="text-light">
-                      FAQ
-                    </Link>
-                  </li>
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Sitemap
-                    </Link>
-                  </li>
-                  <li className="pharmacy2">
-                    <Link to="/contact-us" className="text-light">
-                      Contact
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
-                <h4
-                  className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  Sign Up for Newsletter
-                </h4>
-                <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
-                  Get updates by subscribing to our weekly newsletter.
-                </p>
-                <div className="d-flex flex-row signup-text">
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
-                  />
-                  <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
-                    Subscribe
-                  </button>
+                <div className="text-start ms-5 ps-5 ps-lg-0">
+                  <h5 className="mb-3">Help?</h5>
+                  <ul className="lh-lg footer-list p-0">
+                    <li>
+                      <Link
+                        to="/faqs"
+                        className="text-white text-decoration-none"
+                      >
+                        FAQ
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Sitemap
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/contact-us"
+                        className="text-white text-decoration-none"
+                      >
+                        Contact
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
+
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+              <h5 className="mb-lg-3 mb-3 text-start">
+                Sign Up for Newsletter
+              </h5>
+              <form className="d-flex flex-row flex-nowrap">
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  className="form-control me-2 py-4 cart-cart1"
+                  aria-label="Email address"
+                />
+                <button
+                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  type="submit"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
           </div>
-        </footer>
-      </div>
+
+          <hr className="my-4 me-3" />
+
+          <div className="row align-items-center footer-lyte1">
+            <div className="col-md-6 col-lg-7">
+              <p className="text-md-start text-center mb-0">
+                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

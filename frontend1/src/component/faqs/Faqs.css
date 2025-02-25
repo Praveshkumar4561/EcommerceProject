@@ -280,8 +280,7 @@ body {
 }
 @media (max-width: 576px) {
   .faqs-page1 {
-    height: 100rem;
-    max-height: 41rem;
+    height: auto;
   }
 }
 
@@ -390,20 +389,17 @@ body {
     height: 100%;
   }
   .faqs-page1 {
-    height: 100rem;
-    max-height: 40rem;
+    height: auto;
   }
 }
 
 @media (max-width: 992px) {
   .faqs-page1 {
-    height: 100rem;
-    max-height: 41rem;
+    height: auto;
   }
 }
 @media (max-width: 1200px) {
   .faqs-page1 {
-    height: 100rem;
-    max-height: 41rem;
+    height: auto;
   }
 }

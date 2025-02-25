@@ -202,7 +202,7 @@ function Customers() {
         `http://89.116.170.231:1600/customerdelete/${id}`,
         user
       );
-      toast.success("data successfully deleted ", {
+      toast.success("customer data successfully deleted ", {
         position: "bottom-right",
         autoClose: 1500,
         hideProgressBar: false,
@@ -239,11 +239,13 @@ function Customers() {
 
   let [count5, setCount5] = useState(0);
 
-  let orderdata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setCount5(response.data.length);
-  };
-  orderdata();
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  });
 
   return (
     <>

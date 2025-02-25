@@ -209,11 +209,13 @@ function FaqsEdit() {
 
   let [count5, setCount5] = useState(0);
 
-  let orderdata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setCount5(response.data.length);
-  };
-  orderdata();
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  });
 
   const [showEdit2, setShowEdit2] = useState(true);
   const [editorData2, setEditorData2] = useState("");

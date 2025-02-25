@@ -555,3 +555,124 @@ body {
   position: relative;
   left: 18%;
 }
+
+.footer-lyte {
+  width: 100%;
+  max-width: 68% !important;
+  margin-left: 17%;
+}
+.footer-lyte1 {
+  margin-left: 18.4%;
+}
+
+@media (max-width: 576px) {
+  .footer-lyte {
+    margin-left: 0% !important;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .footer-lyte1 {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .footer-list li {
+    font-size: 15px;
+  }
+  .footer-help-blog2 {
+    position: absolute !important;
+    bottom: 6.2%;
+    right: -17%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .footer-lyte {
+    margin-left: 0% !important;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .footer-lyte1 {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .footer-help-blog2 {
+    position: absolute !important;
+    bottom: 5.5%;
+    right: -17%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .footer-lyte {
+    margin-left: 0% !important;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .footer-lyte1 {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .footer-lyte {
+    margin-left: 0% !important;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .footer-lyte1 {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .footer-list h5 {
+    font-size: 17.7px;
+  }
+}
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .footer-lyte {
+    margin-left: 0% !important;
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .footer-lyte1 {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.footer-list li {
+  list-style: none;
+}
+
+@media (max-width: 450px) {
+  .footer-help-blog2 {
+    position: absolute !important;
+    bottom: 6%;
+    right: -17%;
+  }
+}
+@media (min-width: 365px) and (max-width: 370px) {
+  .footer-help-blog2 {
+    position: absolute !important;
+    bottom: 2.83%;
+    right: 0%;
+  }
+}
+@media (max-width: 360px) {
+  .footer-help-blog2 {
+    position: absolute !important;
+    bottom: 7.7%;
+    right: -17%;
+  }
+}
+@media (max-width: 320px) {
+  .footer-help-blog2 {
+    position: absolute !important;
+    bottom: 2.95%;
+    right: -17%;
+  }
+}

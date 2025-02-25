@@ -558,8 +558,6 @@ body {
   transform: scale(1.1);
 }
 
-.feature-box1 {
-}
 .feature-box2 {
   width: 100%;
   max-width: 16%;
@@ -646,6 +644,11 @@ body {
   word-spacing: 2px;
 }
 
+.product-evolve {
+  width: 100%;
+  max-width: 20% !important;
+}
+
 @media (max-width: 576px) {
   .product-viva1 li {
     position: relative;
@@ -691,6 +694,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media (max-width: 576px) {
+  .cart-style1 {
+    position: relative;
+    left: 3%;
+  }
+  .cart-style {
+    width: 100%;
+    max-width: 90%;
+  }
+  .home-detail {
+    font-size: 20px;
+  }
 }
 
 .feature-box {
@@ -740,4 +757,20 @@ body {
 
 .wishlist-button:hover .wishlist-button-content {
   display: block;
+}
+
+.card-details {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 576px) {
+  .card-details {
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .card-details {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }

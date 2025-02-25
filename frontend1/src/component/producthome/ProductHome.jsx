@@ -28,20 +28,18 @@ function ProductHome() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
-  }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
-  cartdata();
+  });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -832,102 +830,124 @@ function ProductHome() {
         </div>
       </div>
 
-      <div className="container-fluid bg-dark text-light py-4 mt-4 mb-0 d-flex justify-content-center align-items-center lorem-contact min-vw-100">
-        <footer className="footer-homepage">
-          <div className="container text-center d-flex justify-content-center">
-            <div className="row justify-content-center">
-              <div className="col-lg-3 col-md-6 col-12 d-flex flex-column align-items-start mb-4 list-contact2">
-                <img
-                  src={Tonic}
-                  alt="About Us"
-                  className="img-fluid mb-2 me-5 pe-5 about-rx"
-                />
-                <h4 className="me-5 pe-5">About Us</h4>
-                <p className="mt-2 pharmacy2 text-start lh-lg">
+      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+        <div className="container text-center text-md-left">
+          <div className="row footer-lyte">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
+              <img
+                src={Tonic}
+                alt="RxTonic"
+                className="img-fluid mb-3"
+                style={{ maxWidth: "190px" }}
+              />
+              <h4 className="mb-2">About Us</h4>
+              <p className="text-start lh-lg footer-list">
+                <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
                   the finest pharmaceutical care possible,all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
-                </p>
-              </div>
+                </li>
+              </p>
+            </div>
 
-              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center mb-lg-4 list-contact mt-md-4 pt-md-3 mt-lg-0 pt-lg-0 mt-xxl-1 pt-xxl-0 list-contact3">
-                <h4 className="mt-lg-5 mt-md-2 company-footer">Company</h4>
-                <ul className="mt-2 lh-lg text-start pharmacy3 ms-lg-0 ms-md-5 pharmacy-about pharmacy-list1 pharmacy-link">
-                  <li className="pharmacy2">
-                    <Link to="/about" className="text-light">
-                      About Us
-                    </Link>
-                  </li>
+            <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
+              <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
+                <div className="text-start">
+                  <h5 className="mb-3">Company</h5>
+                  <ul className="lh-lg footer-list p-0">
+                    <li>
+                      <Link
+                        to="/about"
+                        className="text-white text-decoration-none"
+                      >
+                        About Us
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/blog"
+                        className="text-white text-decoration-none"
+                      >
+                        Blog
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Payment Security
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Affiliate Marketing
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
 
-                  <li className="pharmacy2">
-                    <Link to="/blog" className="text-light">
-                      Blog
-                    </Link>
-                  </li>
-
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Payment Security
-                    </Link>
-                  </li>
-
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Affiliate Marketing
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="col-lg-3 col-md-6 col-6 d-flex flex-column align-items-lg-center align-items-start mb-lg-4 list-contact list-contact1 help-sitemap">
-                <h4 className="mt-lg-4 pt-lg-4 mt-3 mt-sm-0 mt-md-0">Help?</h4>
-                <ul className="mt-2 lh-lg text-start me-4 pe-2 pharmacy3">
-                  <li className="pharmacy2">
-                    <Link to="/faqs" className="text-light">
-                      FAQ
-                    </Link>
-                  </li>
-                  <li className="pharmacy2">
-                    <Link to="#" className="text-light">
-                      Sitemap
-                    </Link>
-                  </li>
-                  <li className="pharmacy2">
-                    <Link to="/contact-us" className="text-light">
-                      Contact
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="col-lg-3 col-md-6 d-flex flex-column align-items-lg-center mb-4 signup-news mt-lg-1">
-                <h4
-                  className="mb-2 mt-lg-4 pt-lg-3 me-sm-4"
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  Sign Up for Newsletter
-                </h4>
-                <p className="ps-lg-0 ps-xl-3 ps-xxl-1 me-2 text-lg-start text-start pharmacy2 lh-lg">
-                  Get updates by subscribing to our weekly newsletter.
-                </p>
-                <div className="d-flex flex-row signup-text">
-                  <input
-                    type="email"
-                    placeholder="Email address"
-                    className="form-control mb-2 py-4 ms-lg-2 rounded-0 cart-cart"
-                  />
-                  <button className="btn btn-success d-flex px-lg-2 py-4 me-0 ms-1 rounded-0 cart-cart">
-                    Subscribe
-                  </button>
+                <div className="text-start ms-5 ps-5 ps-lg-0">
+                  <h5 className="mb-3">Help?</h5>
+                  <ul className="lh-lg footer-list p-0">
+                    <li>
+                      <Link
+                        to="/faqs"
+                        className="text-white text-decoration-none"
+                      >
+                        FAQ
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-white text-decoration-none">
+                        Sitemap
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/contact-us"
+                        className="text-white text-decoration-none"
+                      >
+                        Contact
+                      </Link>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
+
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+              <h5 className="mb-lg-3 mb-3 text-start">
+                Sign Up for Newsletter
+              </h5>
+              <form className="d-flex flex-row flex-nowrap">
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  className="form-control me-2 py-4 cart-cart1"
+                  aria-label="Email address"
+                />
+                <button
+                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  type="submit"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
           </div>
-        </footer>
-      </div>
+
+          <hr className="my-4 me-3" />
+
+          <div className="row align-items-center footer-lyte1">
+            <div className="col-md-6 col-lg-7">
+              <p className="text-md-start text-center mb-0">
+                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

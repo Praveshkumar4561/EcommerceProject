@@ -367,9 +367,10 @@ body {
   left: 16rem;
   bottom: 81%;
 }
+
 .process {
   width: 23.2rem;
-  height: 14.5rem;
+  height: 12.5rem;
   background-color: #f2f5f7;
   position: relative;
   top: auto;
@@ -382,13 +383,18 @@ body {
   left: 80%;
   top: -4rem;
 }
+.pills {
+  font-size: 22px;
+}
 
 @media (max-width: 576px) {
   .process {
     position: relative;
     left: 0;
+    height: 14rem;
     width: 100%;
     max-width: 100%;
+    top: 1rem;
   }
   .lorem-border {
     margin-left: -7%;
@@ -495,7 +501,7 @@ body {
     position: relative;
     left: 0%;
     width: 100%;
-    max-width: 67%;
+    max-width: 61%;
   }
   .lorem-border {
     margin-left: 0;
@@ -544,7 +550,12 @@ body {
 @media (max-width: 576px) {
   .payment-methods {
     width: 100%;
-    max-width: 94%;
+    max-width: 99%;
+  }
+  .payment-span {
+    font-size: 22px;
+    position: relative;
+    left: 1rem;
   }
 }
 @media (min-width: 576px) and (max-width: 768px) {
@@ -552,11 +563,21 @@ body {
     width: 100%;
     max-width: 94%;
   }
+  .payment-span {
+    font-size: 25px;
+    position: relative;
+    left: 1rem;
+  }
 }
 @media (min-width: 768px) and (max-width: 992px) {
   .payment-methods {
     width: 100%;
     max-width: 98%;
+  }
+  .payment-span {
+    font-size: 25px;
+    position: relative;
+    left: 1rem;
   }
 }
 @media (min-width: 992px) and (max-width: 1200px) {

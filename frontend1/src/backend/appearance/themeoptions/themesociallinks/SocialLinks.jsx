@@ -205,11 +205,13 @@ function SocialLinks() {
   };
   let [count5, setCount5] = useState(0);
 
-  let orderdata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setCount5(response.data.length);
-  };
-  orderdata();
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  });
 
   return (
     <>
