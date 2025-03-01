@@ -209,7 +209,7 @@ function ThemeEcommerce() {
     try {
       toast.success("URLs have been changed!", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -218,7 +218,7 @@ function ThemeEcommerce() {
     } catch (error) {
       toast.error("URLs have been changed!", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

@@ -646,6 +646,8 @@ function App() {
                 <Route path="edit/:id" element={<AdsEdit />} />
               </Route>
 
+              {/* <PushNotifications /> */}
+
               <Route path="/">
                 <Route
                   path="/"

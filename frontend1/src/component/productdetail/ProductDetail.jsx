@@ -20,26 +20,28 @@ import axios from "axios";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
+import JsonLd from "../JsonLd";
 
 function ProductDetail() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
+
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -64,21 +66,22 @@ function ProductDetail() {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
 
   const [activeTab, setActiveTab] = useState("description");
 
@@ -241,6 +244,10 @@ function ProductDetail() {
 
   let [detail, setDetail] = useState([]);
 
+  useEffect(() => {
+    detailsdata();
+  }, []);
+
   let detailsdata = async () => {
     try {
       let response = await axios.get(
@@ -251,23 +258,23 @@ function ProductDetail() {
       console.error("Error occurred", error);
     }
   };
-  detailsdata();
 
   let [shop, setShop] = useState([]);
 
   useEffect(() => {
-    const shopdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/productpagedata"
-        );
-        setShop(response.data);
-      } catch (error) {
-        console.error("Error occurred", error);
-      }
-    };
     shopdata();
   }, []);
+
+  const shopdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/productpagedata"
+      );
+      setShop(response.data);
+    } catch (error) {
+      console.error("Error occurred", error);
+    }
+  };
 
   let increment = () => {
     if (counts === 100) {
@@ -278,8 +285,8 @@ function ProductDetail() {
   };
 
   let decrement = () => {
-    if (counts === 100) {
-      setCounts(counts(100));
+    if (counts === 1) {
+      setCounts(counts(1));
     } else {
       setCounts(counts - 1);
     }
@@ -329,9 +336,10 @@ function ProductDetail() {
         "http://89.116.170.231:1600/addcart",
         formData
       );
+      setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -340,7 +348,7 @@ function ProductDetail() {
     } catch (error) {
       toast.error("Product is not added on the cart", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -368,9 +376,10 @@ function ProductDetail() {
         "http://89.116.170.231:1600/wishlistpost",
         formData
       );
+      setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -380,7 +389,7 @@ function ProductDetail() {
     } catch (error) {
       toast.error("Product is not added on the wishlist", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -414,9 +423,10 @@ function ProductDetail() {
         "http://89.116.170.231:1600/addcart",
         formData
       );
+      setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -426,7 +436,7 @@ function ProductDetail() {
     } catch (error) {
       toast.error("Product is not added on the cart", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -508,8 +518,57 @@ function ProductDetail() {
     fetchBreadcrumbData();
   }, []);
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "http://srv724100.hstgr.cloud/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Products",
+            item: "http://srv724100.hstgr.cloud/product/details",
+          },
+        ],
+      },
+      ...detail.map((item) => ({
+        "@type": "Product",
+        name: item.name,
+        image: item.image,
+        description: item.description,
+        brand: {
+          "@type": "Brand",
+          name: item.brand,
+        },
+        sku: item.sku,
+        offers: {
+          "@type": "Offer",
+          url: item.url || window.location.href,
+          priceCurrency: "USD",
+          price: item.price_sale ? item.price_sale : item.price,
+          priceValidUntil: item.saleEndDate || undefined,
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: item.ratingValue || 4.9,
+          bestRating: item.bestRating || 5,
+          ratingCount: item.ratingCount || 5842,
+        },
+      })),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={schemaData} />
+
       <div
         className="container"
         id="container-customx"
@@ -593,11 +652,11 @@ function ProductDetail() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-2 mt-lg-1">{cartwish}</span>
+                    <span className="count-badge mt-2 mt-lg-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -609,7 +668,7 @@ function ProductDetail() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
@@ -620,7 +679,7 @@ function ProductDetail() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
                     <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
                       {count}
@@ -713,15 +772,15 @@ function ProductDetail() {
 
       <div className="container-fluid overflow-hidden d-flex justify-content-center align-items-center position-relative overflow-x-hidden">
         <div className="container d-flex justify-content-center">
-          <div className="row mt-5 d-flex flex me-md-1">
+          <div className="row mt-lg-5 mt-4 d-flex flex me-md-1">
             {Array.isArray(shop) && shop.length > 0 ? (
               shop.slice(0, 1).map((key) => (
                 <div
-                  className="col-12 col-lg-6 col-md-6 shop-div d-flex gap-2 d-flex w-100 border"
+                  className="col-12 col-lg-6 col-md-6 shop-div d-flex gap-3 d-flex w-100 position-relative border"
                   key={key}
                 >
                   <div
-                    className="d-flex flex-lg-column flex-row flex-md-column gap-1 gap-lg-3 flex-wrap"
+                    className="d-flex flex-lg-column flex-row flex-md-column gap-1 gap-lg-2 flex-sm-column flex-wrap mt-0"
                     style={{ cursor: "pointer" }}
                   >
                     {Array.isArray(shop) && shop.length > 0 ? (
@@ -757,16 +816,16 @@ function ProductDetail() {
                       `http://89.116.170.231:1600/src/image/${shop[0]?.image}`
                     }
                     alt="RxLYTE"
-                    className="mb-lg-3"
+                    className="mb-lg-3 head-image"
                   />
                 </div>
               ))
             ) : (
-              <p>No shop data available</p>
+              <p className="">No shop data available</p>
             )}
 
             <div className="col-12 col-lg-6 col-md-6 single-shop bg-light pb-4">
-              <div className="d-flex align-items-center flex-column h-auto">
+              <div className="d-flex align-items-start align-items-lg-start flex-column h-auto">
                 {Array.isArray(shop) && shop.length > 0 ? (
                   shop.slice(0, 1).map((key) => (
                     <>
@@ -774,19 +833,19 @@ function ProductDetail() {
                         className="d-flex flex-row me- pe-41 pe-lg-0 googles1"
                         key={key}
                       >
-                        <h3 className="mt-2 pt-3 me-md-5 me-lg-5 me-xxl-4 pe-lg-5 ms-0 ms-lg-0 ps-0 ps-lg-0 ms-lg-0 cart-cart text-start home-detail me-auto">
+                        <h3 className="mt-2 pt-3 me-md-5 me-lg-5 me-xxl-4 pe-lg-5 ms-0 ms-lg-2 ps-0 ps-lg-0 ms-lg-0 cart-cart text-start home-detail ms-3 me-auto">
                           {selectedName || shop[0]?.name}
                         </h3>
                       </div>
 
                       <h4
-                        className="mt-0 pt-0 text-success fw-medium d-flex flex-row me-auto"
+                        className="mt-0 pt-0 text-success fw-medium d-flex flex-row me-auto ms-lg-1"
                         style={{ fontFamily: "verdana" }}
                       >
                         {selectedStore || shop[0]?.store}
                       </h4>
 
-                      <p className="text-dark text-start lh-lg cart-cart me-2">
+                      <p className="text-dark text-start lh-lg cart-cart me-2 pe-3 pe-lg-0 ms-lg-1">
                         {selectedDescription || shop[0]?.description}
                       </p>
 
@@ -812,7 +871,7 @@ function ProductDetail() {
                     </>
                   ))
                 ) : (
-                  <p>No shop details available</p>
+                  <p className="mt-3 cart-cart">No shop details available</p>
                 )}
               </div>
 
@@ -840,7 +899,7 @@ function ProductDetail() {
                       </div>
 
                       <button
-                        className="cart-cart px-2 py-2 rounded btn d-flex py-4 rounded-0 btn-success text-light mt-2 cart-style cart-style1"
+                        className="cart-cart1 px-2 py-2 rounded btn d-flex py-4 rounded-0 btn-success text-light mt-2 cart-style cart-style1"
                         style={{ marginLeft: "13%" }}
                         onClick={() => addCartItem(data)}
                       >
@@ -849,19 +908,13 @@ function ProductDetail() {
                     </>
                   ))
                 ) : (
-                  <p>No items available for purchase</p>
+                  <p className="text-center cart-cart ms-5">
+                    No items available for purchase
+                  </p>
                 )}
               </div>
 
-              <div>
-                <Link to={`/${url.checkout}`} className="text-decoration-none">
-                  <button className="cart-cart px-2 py-2 rounded btn d-flex py-4 rounded-0 mt-3 btn-success text-light mt-2 cart-style">
-                    Buy Now
-                  </button>
-                </Link>
-              </div>
-
-              <div className="mt-2 cart-cart text-start">
+              <div className="mt-3 cart-cart text-start">
                 {Array.isArray(detail) && detail.length > 0 ? (
                   detail.slice(0, 1).map((data) => (
                     <>
@@ -1266,7 +1319,7 @@ function ProductDetail() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -1280,6 +1333,7 @@ function ProductDetail() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -1291,7 +1345,7 @@ function ProductDetail() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

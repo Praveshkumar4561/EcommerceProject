@@ -180,7 +180,7 @@ function GalleryEdit() {
         "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -221,7 +221,7 @@ function GalleryEdit() {
       );
       toast.success("data sucessfully deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -231,7 +231,7 @@ function GalleryEdit() {
     } catch (error) {
       toast.error("Data is not deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

@@ -174,7 +174,7 @@ function AdminLogin() {
                       </div>
                     )}
                     {apiError && (
-                      <div className="text-danger mt-2 error-message-admin">
+                      <div className="text-danger mt-2 error-message-admin cart-cart1">
                         {apiError}
                       </div>
                     )}

@@ -1,36 +1,36 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./Faqs.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import axios from "axios";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Close from "../../assets/Close.webp";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
+import JsonLd from "../JsonLd";
 
 function Faqs() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
+
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
   const generateRandomNumber = () => Math.floor(Math.random() * 10) + 1;
 
@@ -96,7 +96,7 @@ function Faqs() {
       );
       toast.success("Faqs successfully submitted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -105,7 +105,7 @@ function Faqs() {
     } catch (error) {
       toast.error("Faqs not submitted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -198,27 +198,73 @@ function Faqs() {
     fetchBreadcrumbData();
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
+    wishlistdata();
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
+
+  let [faqs, setFaqs] = useState([]);
+
+  useEffect(() => {
+    const faqdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://89.116.170.231:1600/pagesdatafaqs"
         );
-        setCartWish(response.data.length);
+        setFaqs(response.data);
       } catch (error) {
-        console.error("Error fetching wishlist data:", error);
+        console.error("Error fetching data:", error);
       }
     };
-    wishlistdata();
-  });
+    faqdata();
+  }, []);
+
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Product",
+        name: "RxLyte, Ecommerce, premium healthcare, online pharmacy, RxLyte Ecommerce site",
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          bestRating: "5",
+          ratingCount: "5932",
+        },
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      },
+    ],
+  };
 
   return (
     <>
+      <JsonLd data={schemaData} />
+
       <div
         className="container"
-        id="container-custom"
+        id="container-customx"
         style={{
           backgroundColor:
             cart?.background_color ||
@@ -299,11 +345,13 @@ function Faqs() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-2 mt-lg-1 pt-0 mt-md-1">
+                      {count6}
+                    </span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -315,20 +363,22 @@ function Faqs() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
                   <Link
                     to={`/${url.cart}`}
                     className="nav-link d-flex nav-properties1"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
+                      onClick={(e) => e.stopPropagation()}
                     />
-                    <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
+                    <div className="addcarts ps-2 pt-lg-0 mt-lg-0 count-badge1">
                       {count}
                     </div>
                   </Link>
@@ -373,7 +423,7 @@ function Faqs() {
             )}
           </header>
 
-          <main className="container mt-5 cart-cart">
+          <main className="container mt-5 cart-cart container-bread">
             {cart?.enable_breadcrumb === "yes" &&
               cart?.breadcrumb_style !== "none" && (
                 <>
@@ -399,13 +449,13 @@ function Faqs() {
                         : "d-flex justify-content-center align-items-center"
                     }`}
                   >
-                    <ol className="breadcrumb d-flex flex-wrap gap-0">
-                      <li className="breadcrumb-item navbar-item fw-medium">
+                    <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
+                      <li className="breadcrumb-item navbar-item fw-medium p-0">
                         <Link target="_blank" to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
-                      <li className="breadcrumb-item navbar-item fw-medium text-dark">
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark p-0">
                         Faqs
                       </li>
                     </ol>
@@ -458,8 +508,8 @@ function Faqs() {
               </div>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 mt-sm-0 mt-md-0 mt-xl-0 mt-xxl-0 faqs-page faqs-page1">
-              <div className="d-flex flex-column text-start ms-0">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 mt-sm-0 mt-md-0 mt-xl-0 mt-xxl-0 faqs-page faqs-page1 faq-enhance">
+              <div className="d-flex flex-column text-start ms-0 faq-enhance">
                 <h6 className="question fs-4 mt-lg-4 mt-0 ms-4 pt-2 fw-medium cart-cart">
                   Ask a Question
                 </h6>
@@ -625,7 +675,7 @@ function Faqs() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -639,6 +689,7 @@ function Faqs() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -650,7 +701,7 @@ function Faqs() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

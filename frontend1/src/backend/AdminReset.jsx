@@ -37,7 +37,7 @@ function AdminReset() {
       if (response.ok) {
         toast.success("Password reset link sent to your email!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -46,7 +46,7 @@ function AdminReset() {
       } else {
         toast.error("Failed to send reset link. Please try again.", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -56,7 +56,7 @@ function AdminReset() {
     } catch (error) {
       toast.error("An error occurred. Please try again.", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

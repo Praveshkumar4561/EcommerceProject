@@ -89,7 +89,7 @@ function SimpleSliders() {
     try {
       toast.success("Data successfully deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -98,7 +98,7 @@ function SimpleSliders() {
     } catch (error) {
       toast.error("Data is not deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

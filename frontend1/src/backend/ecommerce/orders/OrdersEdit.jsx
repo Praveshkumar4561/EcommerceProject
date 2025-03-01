@@ -15,7 +15,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-
 import axios from "axios";
 
 function OrdersEdit() {
@@ -2308,7 +2307,7 @@ function OrdersEdit() {
                 <>
                   <div className="d-flex flex-column lh-lg" key={key}>
                     <div className="d-flex flex-column">
-                      <div className="d-flex flex-row fw-bold">
+                      <div className="d-flex flex-row fw-bold cart-cart1">
                         New order from {data.first_name}
                         <span className="ms-1">{data.last_name}</span>
                       </div>
@@ -2316,7 +2315,7 @@ function OrdersEdit() {
                     </div>
 
                     <div className="d-flex flex-column">
-                      <div className="d-flex flex-row fw-bold">
+                      <div className="d-flex flex-row fw-bold cart-cart1">
                         Order is created from checkout page
                       </div>
                       <span>{data.date}</span>

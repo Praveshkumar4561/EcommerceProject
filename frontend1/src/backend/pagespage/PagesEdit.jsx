@@ -181,7 +181,7 @@ function PagesEdit() {
         "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -257,7 +257,7 @@ function PagesEdit() {
       );
       toast.success("Data successfully updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -267,7 +267,7 @@ function PagesEdit() {
     } catch (error) {
       toast.error("Data is not updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

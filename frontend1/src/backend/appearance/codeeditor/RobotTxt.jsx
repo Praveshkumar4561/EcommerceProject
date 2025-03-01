@@ -180,7 +180,7 @@ function RobotTxt() {
       try {
         toast.success("Please upload a valid .txt file.: ", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,

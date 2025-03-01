@@ -78,7 +78,7 @@ function AnnouncementEdit() {
       );
       toast.success("New announcement is updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -88,7 +88,7 @@ function AnnouncementEdit() {
     } catch (error) {
       toast.error("New announcement is not updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

@@ -234,7 +234,7 @@ function ThemePage() {
     if (!pageSettings.homepage) {
       toast.error("Please select a homepage before saving.", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -270,7 +270,7 @@ function ThemePage() {
       if (isHomepageUpdated) {
         toast.success("Homepage updated successfully!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -280,7 +280,7 @@ function ThemePage() {
       if (isImageUpdated) {
         toast.success("404 Image updated successfully!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -291,7 +291,7 @@ function ThemePage() {
       console.error("Error saving page settings:", error);
       toast.error("Failed to save settings. Please try again.", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

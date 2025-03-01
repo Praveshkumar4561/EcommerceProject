@@ -237,7 +237,7 @@ function ProductPrices() {
       });
       toast.success("Price successfully updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -246,7 +246,7 @@ function ProductPrices() {
     } catch (error) {
       toast.error("Price is not updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

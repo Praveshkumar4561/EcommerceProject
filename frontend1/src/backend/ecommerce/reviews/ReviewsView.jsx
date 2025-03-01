@@ -138,7 +138,7 @@ function ReviewsView() {
         "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -238,7 +238,7 @@ function ReviewsView() {
     try {
       toast.success("Data deleted successfully", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -247,7 +247,7 @@ function ReviewsView() {
     } catch (error) {
       toast.error("Data is not deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

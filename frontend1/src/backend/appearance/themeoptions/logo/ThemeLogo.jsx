@@ -229,7 +229,7 @@ function ThemeLogo() {
       if (response.status === 200) {
         toast.success("Logo updated successfully!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -238,7 +238,7 @@ function ThemeLogo() {
       } else {
         toast.error(response.data.message || "Failed to update Logo!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -249,7 +249,7 @@ function ThemeLogo() {
       console.error("Error updating logo:", error);
       toast.error("Failed to update logo!", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

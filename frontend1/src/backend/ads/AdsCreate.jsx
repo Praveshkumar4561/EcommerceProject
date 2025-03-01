@@ -206,7 +206,7 @@ function AdsCreate() {
           "Please upload at least one image (Main, Tablet, or Mobile.",
           {
             position: "bottom-right",
-            autoClose: 1500,
+            autoClose: 1000,
             hideProgressBar: true,
             closeButton: true,
             draggable: true,
@@ -229,7 +229,7 @@ function AdsCreate() {
       try {
         toast.success("Error submitting the form: ", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -266,7 +266,7 @@ function AdsCreate() {
         "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,

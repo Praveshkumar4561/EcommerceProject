@@ -129,7 +129,7 @@ function CustomerEdit() {
         "Functionality to add image from URL needs to be implemented. ",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -226,7 +226,7 @@ function CustomerEdit() {
     if (showPasswordFields && user.password !== user.confirmPassword) {
       toast.error("Passwords do not match!", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -266,7 +266,7 @@ function CustomerEdit() {
         localStorage.setItem("user", JSON.stringify(updatedUser));
         toast.success("Data successfully updated!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -278,7 +278,7 @@ function CustomerEdit() {
       console.error("Error during update:", error);
       toast.error("Failed to update data. Please try again later.", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

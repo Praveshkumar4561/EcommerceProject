@@ -135,7 +135,7 @@ function TestimonialCreate() {
       );
       toast.success("Data successfully submitted and file uploaded", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -145,7 +145,7 @@ function TestimonialCreate() {
     } catch (error) {
       toast.error("Data is not submitted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -292,7 +292,7 @@ function TestimonialCreate() {
         "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,

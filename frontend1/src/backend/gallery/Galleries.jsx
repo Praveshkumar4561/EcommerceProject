@@ -41,7 +41,6 @@ function Galleries() {
 
   let showdata = async () => {
     let response = await axios.get("http://89.116.170.231:1600/gallerydata");
-
     setUser(response.data);
   };
 
@@ -50,16 +49,17 @@ function Galleries() {
     try {
       toast.success("data sucessfully deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
+      setUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {
       toast.error("Data is not deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

@@ -204,12 +204,14 @@ function Customers() {
       );
       toast.success("customer data successfully deleted ", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
+      setUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      setCount1((prevCount) => prevCount - 1);
     } catch (error) {}
   };
 

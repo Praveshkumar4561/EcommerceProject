@@ -194,16 +194,17 @@ function AdsPage() {
     try {
       toast.success("data sucessfully deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
+      setUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {
       toast.error("data is not deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -217,7 +218,7 @@ function AdsPage() {
     try {
       toast.success("Shortcode has been copy", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -226,7 +227,7 @@ function AdsPage() {
     } catch (error) {
       toast.error("Shortcode has not been copy", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

@@ -220,7 +220,7 @@ function ProductInventory() {
       );
       toast.success("Data updated successfully", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -229,7 +229,7 @@ function ProductInventory() {
     } catch (error) {
       toast.error("Data is not updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

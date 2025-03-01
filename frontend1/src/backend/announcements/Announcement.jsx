@@ -202,12 +202,13 @@ function Announcement() {
     try {
       toast.success("Data successfully deleted: ", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
+      setUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {}
   };
 
@@ -2253,11 +2254,14 @@ function Announcement() {
                         </td>
 
                         <td>
-                          {
-                            new Date(data.start_date)
-                              .toISOString()
-                              .split("T")[0]
-                          }
+                          {(() => {
+                            const startDate = new Date(data.start_date);
+                            if (!isNaN(startDate.getTime())) {
+                              return startDate.toISOString().split("T")[0];
+                            } else {
+                              return "Invalid date";
+                            }
+                          })()}
                         </td>
 
                         <td style={{ whiteSpace: "nowrap" }}>

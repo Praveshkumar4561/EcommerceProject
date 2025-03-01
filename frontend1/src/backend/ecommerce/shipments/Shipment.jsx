@@ -181,7 +181,7 @@ function Shipment() {
       try {
         toast.success("Text copied to clipboard!", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -190,7 +190,7 @@ function Shipment() {
       } catch (error) {
         toast.error("Failed to copy text", {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -218,16 +218,17 @@ function Shipment() {
       await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
       toast.success("Data successfully deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
+      setshipment((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {
       toast.error("Data is not deleted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

@@ -336,13 +336,17 @@ body {
   position: relative;
   right: 2%;
 }
+.head-image{
+  width: 100%;
+  max-width: 80% !important;
+}
 
-@media (min-width: 375px) and (max-width: 450px) {
+@media (min-width: 300px) and (max-width: 450px) {
   .shop-div {
     width: 100%;
-    max-width: 98%;
+    max-width: 95%;
     position: relative;
-    right: 2%;
+    right: 3%;
   }
   .single-shop {
     width: 100%;
@@ -353,6 +357,10 @@ body {
   .color1 {
     position: relative;
     left: -8.7rem;
+  }
+  .shop-div img {
+    width: 100%;
+    max-width: 60%;
   }
 }
 

@@ -226,7 +226,7 @@ function BreadCrumb() {
       );
       toast.success("breadcrumb successfully updated?", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -236,7 +236,7 @@ function BreadCrumb() {
     } catch (error) {
       toast.error("Breadcrumb is not updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -284,7 +284,7 @@ function BreadCrumb() {
         "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,

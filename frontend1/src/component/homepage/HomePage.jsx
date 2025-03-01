@@ -16,9 +16,12 @@ import {
   faAngleLeft,
   faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
+import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
 import image1 from "../../assets/Tonic.svg";
-import Hamburger from "../../assets/hamburger.svg";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
 import Panic from "../../assets/Panic Attacks.webp";
 import { Link, useNavigate } from "react-router-dom";
 import Generic from "../../assets/Lytes.svg";
@@ -28,12 +31,10 @@ import Support from "../../assets/Support.svg";
 import Payments from "../../assets/Payments.svg";
 import Returns from "../../assets/Returns.svg";
 import Shipping from "../../assets/Shipping.svg";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import JsonLd from "../JsonLd";
 
 function HomePage() {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -55,18 +56,19 @@ function HomePage() {
   let [faqs, setFaqs] = useState([]);
 
   useEffect(() => {
-    const faqdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/pagesdatafaqs"
-        );
-        setFaqs(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
     faqdata();
   }, []);
+
+  const faqdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/pagesdatafaqs"
+      );
+      setFaqs(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   let [blog, setBlog] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -158,34 +160,36 @@ function HomePage() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
+
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
 
   const [product, setProduct] = useState([]);
 
@@ -229,6 +233,7 @@ function HomePage() {
         "http://89.116.170.231:1600/addcart",
         formData
       );
+      setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
         autoClose: 3000,
@@ -265,6 +270,7 @@ function HomePage() {
         "http://89.116.170.231:1600/wishlistpost",
         formData
       );
+      setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
         autoClose: 3000,
@@ -382,8 +388,109 @@ function HomePage() {
     setIsDropdownOpen((prev) => !prev);
   };
 
+  const schemaData = {
+    "@context": "http://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        name: "RxLYTE",
+        url: "https://rxlyte.com/",
+        logo: "https://rxlyte.com/Tonic.svg",
+        description:
+          "RxLyte is a leading eCommerce platform offering a premium selection of healthcare and wellness products, ensuring high-quality and affordable solutions for customers.",
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: "+1-800-654-3210",
+          contactType: "customer service",
+          areaServed: "US",
+          availableLanguage: "English",
+        },
+      },
+      {
+        "@type": "WebSite",
+        name: "RxLYTE",
+        url: "https://rxlyte.com/",
+        description:
+          "Shop the latest healthcare products at RxLyte, your trusted online pharmacy for premium wellness essentials.",
+        keywords:
+          "RxLYTE, Ecommerce, healthcare, online pharmacy, wellness products",
+      },
+      {
+        "@type": "LocalBusiness",
+        name: "RxLYTE Healthcare Store",
+        url: "https://rxlyte.com/",
+        image: "https://rxlyte.com/Tonic.svg",
+        description:
+          "RxLyte's physical store provides top-tier healthcare and wellness products, ensuring convenient access for all customers.",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "123 Healthcare Street",
+          addressLocality: "New York",
+          addressRegion: "NY",
+          postalCode: "10001",
+          addressCountry: "US",
+        },
+        telephone: "+1-800-654-3210",
+        areaServed: "US",
+      },
+
+      {
+        "@type": "FAQPage",
+        name: "FAQs",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      },
+
+      ...product.map((item) => ({
+        "@type": "Product",
+        name: item.name,
+        image: item.image,
+        description: item.description,
+        brand: {
+          "@type": "Brand",
+          name: item.brand,
+        },
+        sku: item.sku,
+        offers: {
+          "@type": "Offer",
+          url: item.url || window.location.href,
+          priceCurrency: "USD",
+          price: item.price_sale ? item.price_sale : item.price,
+          priceValidUntil: item.saleEndDate || undefined,
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: item.ratingValue || 4.9,
+          bestRating: item.bestRating || 5,
+          ratingCount: item.ratingCount || 5842,
+        },
+      })),
+
+      ...blog.map((blogItem) => ({
+        "@type": "Blog",
+        name: blogItem.name,
+        image: blogItem.image,
+        description: blogItem.description,
+        url: blogItem.url,
+        datePublished: blogItem.datePublished,
+        author: {
+          "@type": "Person",
+          name: blogItem.author_name,
+        },
+      })),
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={schemaData} />
+
       <div
         className="container d-lg-none d-block"
         id="container-customx1"
@@ -489,11 +596,11 @@ function HomePage() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-2">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1"
+                      className="cart-image profiles1 mt-2 mt-lg-1"
                     />
                   </Link>
 
@@ -598,7 +705,7 @@ function HomePage() {
           <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block d-none">
             {detail && detail.first_name ? (
               <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
-                <div className="free-shipping d-flex flex-row me-3 mt-2">
+                <div className="free-shipping d-flex flex-row me-3 mt-21">
                   <span className="d-flex align-items-center gap-2">
                     <div className="d-sm-flex pt-1">
                       <Link to={`/${url.userDashboard}`} className="nav-link">
@@ -632,55 +739,38 @@ function HomePage() {
                         <div className="d-flex flex-row gap-2">
                           <Link
                             to={`/${url.wishlist}`}
-                            className="nav-link d-flex mt-2"
+                            className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                           >
+                            <span className="count-badge mt-2">{count6}</span>
                             <img
                               src={Wishlists}
-                              alt="Cart"
-                              className="img-fluid cart-dashboard me-2 ms-1 mt-1"
-                              style={{
-                                position: "relative",
-                                cursor: "pointer",
-                                zIndex: 1,
-                              }}
+                              alt="RxLYTE"
+                              className="cart-image1 profiles1 mt-2"
                             />
-                            <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1">
-                              {count}
-                            </div>
                           </Link>
 
                           <Link
                             to={`/${url.login}`}
-                            className="nav-link d-flex mt-2"
+                            className="nav-link"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <img
                               src={Accounts}
-                              alt="Cart"
-                              className="img-fluid cart-dashboard me-2 ms-1 mt-1"
-                              style={{
-                                position: "relative",
-                                cursor: "pointer",
-                                zIndex: 1000,
-                              }}
+                              alt="Profile"
+                              className="cart-image2 img-fluid me-3 mt-1"
                             />
-                            <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1"></div>
                           </Link>
 
                           <Link
                             to={`/${url.cart}`}
-                            className="nav-link d-flex mt-2"
+                            className="nav-link d-flex nav-properties1"
                           >
                             <img
                               src={Carthome}
                               alt="Cart"
-                              className="img-fluid cart-dashboard me-2 ms-1 mt-1"
-                              style={{
-                                position: "relative",
-                                cursor: "pointer",
-                                zIndex: 1000,
-                              }}
+                              className="img-fluid cart-image mt-1 pt-1 mt-lg-2 pt-md-0"
                             />
-                            <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1">
+                            <div className="addcarts ms-1 ps-1 count-badge1 count-cart">
                               {count}
                             </div>
                           </Link>
@@ -694,15 +784,15 @@ function HomePage() {
               <div className="d-flex flex-row justify-content-lg-end align-items-end float-end gap-4 mt-1">
                 <Link to={`/${url.wishlist}`}>
                   <span
-                    className="position-absolute ms-2 ps-1 mt-1 count-badge1"
+                    className="position-absolute ms-1 ps-1 mt-0 count-badge1"
                     style={{ fontFamily: "verdana" }}
                   >
-                    {count}
+                    {count6}
                   </span>
                   <img
                     src={Wishlists}
                     alt="RxLYTE"
-                    className="mt-3 cart-image"
+                    className="mt-3 cart-image1"
                   />
                 </Link>
 
@@ -710,13 +800,13 @@ function HomePage() {
                   <img
                     src={Accounts}
                     alt="RxLYTE"
-                    className="cart-image mt-2"
+                    className="cart-image2 mt-2"
                   />
                 </Link>
 
                 <Link to={`/${url.cart}`}>
                   <span
-                    className="position-absolute ms-2 mt-1 count-badge1"
+                    className="position-absolute ms-2 mt-0 count-badge1"
                     style={{ fontFamily: "verdana" }}
                   >
                     {count}
@@ -1146,6 +1236,7 @@ function HomePage() {
           <h3 className="mt-lg-4 mt-0 text-center mb-0 faq-typo1">
             What Our Customers Say
           </h3>
+
           <div className="container d-flex justify-content-center mt-0 align-items-center">
             <div className="row gap-2 g-3 d-flex flex-row flex-lg-nowrap flex-md-nowrap flex-wrap customer-what">
               {paginatedReviews.length > 0 ? (
@@ -1166,24 +1257,17 @@ function HomePage() {
                     <span className="ms-3 me-1">{item.notes}</span>
 
                     <span className="d-flex flex-row flex-nowrap mb-3 gap-2 mt-1">
-                      {[...Array(item.rating)].map((_, i) => (
-                        <>
-                          <div className="bg-success text-light rounded px-1">
-                            <FontAwesomeIcon icon={faStar} />
-                          </div>
-                          <div className="bg-success text-light rounded px-1">
-                            <FontAwesomeIcon icon={faStar} />
-                          </div>
-                          <div className="bg-success text-light rounded px-1">
-                            <FontAwesomeIcon icon={faStar} />
-                          </div>
-                          <div className="bg-success text-light rounded px-1">
-                            <FontAwesomeIcon icon={faStar} />
-                          </div>
-                          <div className="bg-success text-light rounded px-1">
-                            <FontAwesomeIcon icon={faStar} />
-                          </div>
-                        </>
+                      {[...Array(5)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`bg-${
+                            i < item.rating ? "success" : "success"
+                          } text-${
+                            i < item.rating ? "light" : "light"
+                          } rounded px-1`}
+                        >
+                          <FontAwesomeIcon icon={faStar} />
+                        </div>
                       ))}
                     </span>
                   </div>
@@ -1427,9 +1511,11 @@ function HomePage() {
                         </div>
                       </div>
                       {activeIndex === index && (
-                        <div className="mt-2 ms-2 text-start">
-                          <p>{item.answer}</p>
-                        </div>
+                        <p>
+                          <div className="mt-2 ms-2 text-start">
+                            {item.answer}
+                          </div>
+                        </p>
                       )}
                     </div>
                   ))}
@@ -1676,7 +1762,7 @@ function HomePage() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-4 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -1690,6 +1776,7 @@ function HomePage() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -1701,7 +1788,7 @@ function HomePage() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

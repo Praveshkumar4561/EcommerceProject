@@ -466,3 +466,16 @@ body {
 .add-to-cart-button:hover {
   background-color: #0c55aa;
 }
+
+.cart-wishlist {
+  width: 25px;
+  height: 38px;
+}
+.cart-wishlist1 {
+  width: 25px;
+  height: 38px;
+}
+.cart-wishlist2 {
+  width: 25px;
+  height: 31px;
+}

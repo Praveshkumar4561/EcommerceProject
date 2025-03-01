@@ -3,38 +3,38 @@ import "./AboutPages.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import { Link } from "react-router-dom";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
 import free from "../../assets/free.webp";
 import Cash from "../../assets/Cash.webp";
 import Hoursupport from "../../assets/hoursupport.webp";
 import Quality from "../../assets/quality.webp";
 import Close from "../../assets/Close.webp";
-import Cart from "../../assets/Cart.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
+import JsonLd from "../JsonLd";
 
 function AboutUsPage() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
+
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -146,24 +146,72 @@ function AboutUsPage() {
     fetchBreadcrumbData();
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
+
+  const schemaData = {
+    "@context": "http://schema.org",
+    "@graph": [
+      {
+        "@type": "AboutPage",
+        name: "About RxLyte",
+        url: "http://srv724100.hstgr.cloud/about",
+        description:
+          "Learn more about RxLyte, a modern ecommerce platform offering premium healthcare products.",
+        mainEntity: {
+          "@type": "Organization",
+          name: "RxLyte",
+          url: "http://srv724100.hstgr.cloud/",
+          logo: "https://rxlyte.com/Tonic.svg",
+          description:
+            "RxLyte is a trusted ecommerce store providing high-quality healthcare products.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+1-800-654-3210",
+            contactType: "customer service",
+            areaServed: "US",
+            availableLanguage: "English",
+          },
+        },
+      },
+
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "http://srv724100.hstgr.cloud/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "About",
+            item: "http://srv724100.hstgr.cloud/about",
+          },
+        ],
+      },
+    ],
+  };
 
   return (
     <>
+      <JsonLd data={schemaData} />
       <div
         className="container"
         id="container-customx"
@@ -247,11 +295,11 @@ function AboutUsPage() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -263,7 +311,7 @@ function AboutUsPage() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
@@ -274,7 +322,7 @@ function AboutUsPage() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
                     <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
                       {count}
@@ -366,7 +414,7 @@ function AboutUsPage() {
       <div></div>
 
       <div className="container-xl text-lg-center mt-3 lorem-about">
-        <h2 className="tonic-font fs-5 ms-lg-0 ms-xxl-5 me-lg-0 me-xxl-5 me-xl-5 lh-lg">
+        <h2 className="tonic-font fs-5 ms-lg-0 ms-xxl-5 me-lg-0 me-xxl-5 me-xl-5 lh-base cart-cart">
           Rx Tonic is dedicated to assisting individuals in obtaining the
           prescription drugs they need at a reasonable cost.
         </h2>
@@ -412,7 +460,8 @@ function AboutUsPage() {
       <div className="container-fluid d-flex justify-content-center align-items-center">
         <div className="container text-center container-width h-auto pb-4">
           <h3 className="fw-medium fs-2 mt-4 lorem-about">Our Expertise</h3>
-          <div className="row mt-5 d-flex justify-content-lg-end justify-content-center align-items-center gap-lg-3 gap-md-1 flex-row me-1 ms-1 me-lg-4 ms-lg-0">
+
+          <div className="row mt-lg-5 d-flex justify-content-lg-end justify-content-center align-items-center gap-lg-3 gap-md-1 flex-row me-1 ms-1 me-lg-4 ms-lg-0">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mb-4 box1 bg-light rounded-1 d-flex flex-column align-items-center lorem-about h-auto shadow-lg me-2 me-lg-3 me-xl-0 me-xxl-0">
               <img src={free} alt="RxLYTE" className="mt-3" />
 
@@ -471,7 +520,7 @@ function AboutUsPage() {
                   <h3 className="fw-medium text-center mt-1 load-rubb1">
                     {user[index].name}
                   </h3>
-                  <p className="text-dark text-start lh-lg load-rubb1">
+                  <p className="text-dark text-start lh-lg cart-cart">
                     {user[index].content}
                   </p>
                 </div>
@@ -575,7 +624,7 @@ function AboutUsPage() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -589,6 +638,7 @@ function AboutUsPage() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -600,7 +650,7 @@ function AboutUsPage() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

@@ -10,32 +10,31 @@ import {
   faEnvelope,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import Cart from "../../assets/Cart.svg";
 import Close from "../../assets/Close.webp";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
 
 function BlogDetails() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
+
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -139,26 +138,59 @@ function BlogDetails() {
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
+    wishlistdata();
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
+
+  let [cart, setCart] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
         );
-        setCartWish(response.data.length);
+        setCart(response.data);
       } catch (error) {
-        console.error("Error fetching wishlist data:", error);
+        console.error("Error fetching breadcrumb settings:", error);
       }
     };
-    wishlistdata();
-  });
+    fetchBreadcrumbData();
+  }, []);
 
   return (
     <>
-      <div className="container cart-cart" id="container-custom">
-        <div className="container-custom ms-3 ms-lg-0 me-3">
+      <div
+        className="container"
+        id="container-customx"
+        style={{
+          backgroundColor:
+            cart?.background_color ||
+            (cart?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: cart?.background_image
+            ? `url(http://89.116.170.231:1600/src/image/${cart.background_image})`
+            : "none",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          height: cart?.breadcrumb_height
+            ? `${cart.breadcrumb_height}px`
+            : "190px",
+        }}
+      >
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -224,11 +256,13 @@ function BlogDetails() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-2 mt-lg-1 mt-md-1 count-car">
+                      {count6}
+                    </span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -240,7 +274,7 @@ function BlogDetails() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
@@ -251,7 +285,7 @@ function BlogDetails() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
                     <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
                       {count}
@@ -298,8 +332,8 @@ function BlogDetails() {
             )}
           </header>
 
-          <main className="container mt-4">
-            <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-1 ms-4 me-4 pt-3 lorem-space cart-cart fs-4 expert-blog">
+          <main className="container mt-4 clutch-detail">
+            <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-1 ms-4 me-4 pt-3 lorem-space cart-cart fs-5 expert-blog">
               {Array.isArray(detail1) && detail1.length > 0 ? (
                 detail1
                   .slice(0, 1)
@@ -308,12 +342,13 @@ function BlogDetails() {
                 <span></span>
               )}
             </p>
+
             <nav
               aria-label="breadcrumb"
               id="container-contact1"
-              className="ms-5 ps-3 ms-lg-0 ps-lg-0"
+              className="ms-0 ps-0 ms-lg-0 ps-lg-0 export-blog1"
             >
-              <ol className="breadcrumb d-flex flex-wrap gap-0 link-class mt-5">
+              <ol className="breadcrumb d-flex flex-wrap gap-2 link-class mt-3 mt-lg-5">
                 <li className="breadcrumb-item navbar-item fw-bold">
                   <Link
                     target="_blank"
@@ -324,11 +359,8 @@ function BlogDetails() {
                     Home
                   </Link>
                 </li>
-                <li
-                  className="breadcrumb-item navbar-item fw-medium lorem-space text-dark cart-cart"
-                  style={{ zIndex: "1000", position: "relative" }}
-                >
-                  Blog Deatils
+                <li className="breadcrumb-item navbar-item fw-medium lorem-space text-dark cart-cart">
+                  Blog Details
                 </li>
               </ol>
             </nav>
@@ -354,30 +386,30 @@ function BlogDetails() {
                     />
                   </div>
 
-                  <div className="bg-light">
+                  <div className="bg-light d-flex flex-column">
                     <div className="d-flex flex-row gap-2 ms-2 mt-0">
                       <FontAwesomeIcon
                         icon={faCalendarDays}
                         className="text-success ms-1 mt-2 pt-lg-1"
                       />
-                      <p className="mt-lg-2 mt-1 fw-medium text-dark lorem-space">
+                      <p className="mt-lg-2 mt-1 fw-medium text-dark lorem-space mb-0">
                         {new Date(data.date).toLocaleDateString()}
                       </p>
                     </div>
 
-                    <h2 className="lorem-dummy ms-2 me-5 mt text-start lorem-space fw-normal lh-base">
+                    <h3 className="lorem-dummy ms-2 me-5 text-start lorem-space m-0 fw-normal lh-base mb-0 pb-0">
                       {data.name}
-                    </h2>
+                    </h3>
 
-                    <h4 className="english-read ms-2 mt-1 me-5 text-start lorem-space lh-lg text-dark">
+                    <h4 className="english-read ms-2 mt-0 me-5 mb-0 text-start lorem-space lh-lg text-dark">
                       {data.categories}
                     </h4>
 
-                    <h4 className="english-read ms-2 mt-0 me-5 text-start lorem-space lh-lg text-dark">
+                    <h4 className="english-read ms-2 mt-0 me-5 text-start lorem-space text-dark">
                       {data.author_name}
                     </h4>
 
-                    <p className="english-read ms-2 me-5 text-start lorem-space lh-lg text-dark">
+                    <p className="english-read cart-cart1 ms-2 me-5 mt-1 text-start lh-lg text-dark">
                       {data.description}
                     </p>
 
@@ -691,7 +723,7 @@ function BlogDetails() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -705,6 +737,7 @@ function BlogDetails() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -716,7 +749,7 @@ function BlogDetails() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

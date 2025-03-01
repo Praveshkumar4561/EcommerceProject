@@ -5,17 +5,15 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import "./Cart.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import Carts from "../../assets/Cart.svg";
 import Close from "../../assets/Close.webp";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
 
 function Cart() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -68,9 +66,10 @@ function Cart() {
       await axios.delete(`http://89.116.170.231:1600/deletecart/${id}`);
       const updatedUser = user.filter((item) => item.id !== id);
       setUser(updatedUser);
+      setCount(updatedUser.length);
       toast.success("Product successfully removed on the cart", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -79,7 +78,7 @@ function Cart() {
     } catch (error) {
       toast.error("Product is not removed on the cart", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -167,21 +166,22 @@ function Cart() {
     fetchBreadcrumbData();
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
 
   return (
     <>
@@ -268,11 +268,11 @@ function Cart() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -284,7 +284,7 @@ function Cart() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
@@ -295,7 +295,7 @@ function Cart() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
                     <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
                       {count}
@@ -527,7 +527,7 @@ function Cart() {
                       </span>
                     </div>
 
-                    <button className="btn btn-success cart-cart w-75 w-auto py-4 mt-4 ms-lg-4 d-flex mb-2 rounded-0">
+                    <button className="btn btn-success cart-cart1 w-auto py-4 mt-4 ms-lg-1 d-flex mb-2 rounded-0">
                       <Link
                         className="text-light text-decoration-none"
                         to={`/${url.checkout}`}
@@ -537,7 +537,7 @@ function Cart() {
                     </button>
 
                     <Link
-                      className="text-dark text-decoration-underline mt-2"
+                      className="text-dark text-decoration-underline mt-0"
                       to={`/${url.productDetails}`}
                     >
                       Continue Shopping
@@ -649,7 +649,7 @@ function Cart() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -663,6 +663,7 @@ function Cart() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -674,7 +675,7 @@ function Cart() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

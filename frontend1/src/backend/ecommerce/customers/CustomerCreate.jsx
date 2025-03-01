@@ -130,7 +130,7 @@ function CustomerCreate() {
         "Functionality to add image from URL needs to be implemented. ",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,

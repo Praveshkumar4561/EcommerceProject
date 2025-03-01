@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -185,8 +185,6 @@ function BlogTags() {
     }
   }, [search]);
 
-  let { id } = useParams();
-
   let searchbar = async () => {
     let response = await axios.get(
       `http://89.116.170.231:1600/blogtagsearch/${search}`
@@ -204,12 +202,13 @@ function BlogTags() {
     try {
       toast.success("data sucessfully deleted ", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
+      setUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {}
   };
 

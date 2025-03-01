@@ -298,6 +298,11 @@ button {
   letter-spacing: 1px;
 }
 
+.navbar-shop {
+  width: 25px !important;
+  height: 23px !important;
+}
+
 @media (max-width: 576px) {
   .yoga-mask {
     position: relative;
@@ -305,7 +310,7 @@ button {
   }
   .navbar-shop {
     width: 22px !important;
-    height: 25px !important;
+    height: 24px !important;
     position: relative;
     top: 0.2rem;
   }
@@ -313,12 +318,14 @@ button {
 
 @media (max-width: 380px) {
   .navbar-shop {
-    width: 18px !important;
+    width: 19px !important;
   }
   .image-galaxy {
-    width: 180px !important;
+    width: 170px !important;
   }
 }
+
+
 
 @media (min-width: 992px) and (max-width: 1200px) {
   .yoga-mask2 {
@@ -616,7 +623,6 @@ h4.fs-5 {
     max-width: 97%;
   }
 }
-
 
 @media (min-width: 768px) {
   #custom-border1 {
@@ -1151,8 +1157,18 @@ li a {
 }
 
 .cart-image {
-  width: 30px;
-  height: 24.7px;
+  width: 27px !important;
+  height: 21px !important;
+}
+
+.cart-image1 {
+  width: 23px !important;
+  height: 20px !important;
+}
+
+.cart-image2 {
+  width: 22px !important;
+  height: 23px !important;
 }
 
 .cart-count {
@@ -1380,10 +1396,19 @@ li a {
   align-items: center;
 }
 
+@media (min-width: 576px) and (max-width: 768px) {
+  .count-badge {
+    top: -20px;
+  } 
+  .count-badge1 {
+    top: 0.4rem !important;
+  }
+}
+
 .count-badge1 {
   color: #d46460 !important;
   position: relative;
-  top: -0.1rem;
+  top: 0.1rem;
 }
 
 @media (max-width: 768px) {
@@ -1404,6 +1429,23 @@ li a {
   }
 }
 
+@media (max-width: 360px) {
+  .cart-image {
+    width: 23px !important;
+    height: 21px !important;
+  }
+
+  .cart-image1 {
+    width: 23px !important;
+    height: 18px !important;
+  }
+
+  .cart-image2 {
+    width: 22px !important;
+    height: 21px !important;
+  }
+}
+
 .cart-dashboard {
   width: 30px;
   height: 25px;
@@ -1412,6 +1454,7 @@ li a {
 .shipping-free {
   font-size: 20px !important;
 }
+
 @media (max-width: 576px) {
   .shipping-free {
     font-size: 19px !important;
@@ -1433,7 +1476,7 @@ li a {
   margin-left: 17%;
 }
 .footer-lyte1 {
-  margin-left: 18.4%;
+  margin-left: 16.8% !important;
 }
 
 @media (max-width: 576px) {
@@ -1528,4 +1571,9 @@ li a {
 
 .footer-list li {
   list-style: none;
+}
+
+.count-cart {
+  position: relative;
+  top: 0rem !important;
 }

@@ -191,7 +191,7 @@ function AnnouncementCreate() {
       );
       toast.success("New announcement successfully created", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -201,7 +201,7 @@ function AnnouncementCreate() {
     } catch (error) {
       toast.error("New announcement is not created", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

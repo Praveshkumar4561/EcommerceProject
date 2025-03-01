@@ -223,7 +223,7 @@ function Typography() {
       applyTypographyStyles(user);
       toast.success("Typography updated successfully!", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -232,7 +232,7 @@ function Typography() {
     } catch (error) {
       toast.error("Typography is not updated", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

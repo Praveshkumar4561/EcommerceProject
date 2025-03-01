@@ -140,7 +140,7 @@ function ThemeNewsLetters() {
         "Functionality to add image from URL needs to be implemented. ",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -241,7 +241,7 @@ function ThemeNewsLetters() {
       await axios.post("http://89.116.170.231:1600/themenewspost", formdata);
       toast.success("Newsletter successfully created", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -250,7 +250,7 @@ function ThemeNewsLetters() {
     } catch (error) {
       toast.error("Newletter is not created", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

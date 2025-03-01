@@ -26,9 +26,9 @@ import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Close from "../../assets/Close.webp";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
 import image1 from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
 
@@ -36,18 +36,19 @@ function CustomerView() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
+
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
   const [user, setUser] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -105,7 +106,7 @@ function CustomerView() {
     try {
       toast.success("File uploaded successfully", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -125,7 +126,7 @@ function CustomerView() {
       await axios.delete(`http://89.116.170.231:1600/deleteorder`);
       toast.success("All products deleted successfully", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -134,7 +135,7 @@ function CustomerView() {
     } catch (error) {
       toast.error("Data is not submitted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -455,21 +456,22 @@ function CustomerView() {
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -601,7 +603,7 @@ function CustomerView() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
@@ -710,7 +712,7 @@ function CustomerView() {
           <div className="col-12 col-md-6 d-flex justify-content-md-end mt-2 mt-md-0 lorem-home d-md-none d-lg-block d-none">
             {detail && detail.first_name ? (
               <div className="d-flex align-items-center float-end gap-0 d-none d-lg-block mt-1">
-                <div className="free-shipping d-flex flex-row me-3 mt-2">
+                <div className="free-shipping d-flex flex-row me-3 mt-21">
                   <span className="d-flex align-items-center gap-2">
                     <div className="d-sm-flex pt-1">
                       <Link to={`/${url.userDashboard}`} className="nav-link">
@@ -741,78 +743,63 @@ function CustomerView() {
                       </div>
 
                       <div className="d-flex flex-row gap-2">
-                        <Link
-                          to={`/${url.wishlist}`}
-                          className="nav-link d-flex mt-2"
-                        >
-                          <img
-                            src={Wishlists}
-                            alt="Cart"
-                            className="img-fluid cart-dashboard me-2 ms-1 mt-1"
-                            style={{
-                              position: "relative",
-                              cursor: "pointer",
-                              zIndex: 1,
-                            }}
-                          />
-                          <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1">
-                            {count}
-                          </div>
-                        </Link>
+                        <div className="d-flex flex-row gap-2">
+                          <Link
+                            to={`/${url.wishlist}`}
+                            className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
+                          >
+                            <span className="count-badge mt-2">{count6}</span>
+                            <img
+                              src={Wishlists}
+                              alt="RxLYTE"
+                              className="cart-image1 profiles1 mt-2"
+                            />
+                          </Link>
 
-                        <Link
-                          to={`/${url.login}`}
-                          className="nav-link d-flex mt-2"
-                        >
-                          <img
-                            src={Accounts}
-                            alt="Cart"
-                            className="img-fluid cart-dashboard me-2 ms-1 mt-1"
-                            style={{
-                              position: "relative",
-                              cursor: "pointer",
-                              zIndex: 1000,
-                            }}
-                          />
-                          <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1"></div>
-                        </Link>
+                          <Link
+                            to={`/${url.login}`}
+                            className="nav-link"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <img
+                              src={Accounts}
+                              alt="Profile"
+                              className="cart-image2 img-fluid me-3 mt-1"
+                            />
+                          </Link>
 
-                        <Link
-                          to={`/${url.cart}`}
-                          className="nav-link d-flex mt-2"
-                        >
-                          <img
-                            src={Carthome}
-                            alt="Cart"
-                            className="img-fluid cart-dashboard me-2 ms-1 mt-1"
-                            style={{
-                              position: "relative",
-                              cursor: "pointer",
-                              zIndex: 1000,
-                            }}
-                          />
-                          <div className="addcarts-lyte2 ms-3 mt-2 pt-0 count-badge1">
-                            {count}
-                          </div>
-                        </Link>
+                          <Link
+                            to={`/${url.cart}`}
+                            className="nav-link d-flex nav-properties1"
+                          >
+                            <img
+                              src={Carthome}
+                              alt="Cart"
+                              className="img-fluid cart-image mt-1 pt-1 mt-lg-2 pt-md-0"
+                            />
+                            <div className="addcarts ms-1 ps-1 count-badge1 count-cart">
+                              {count}
+                            </div>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </span>
                 </div>
               </div>
             ) : (
-              <div className="d-flex flex-row justify-content-lg-end align-items-end float-end gap-4">
+              <div className="d-flex flex-row justify-content-lg-end align-items-end float-end gap-4 mt-1">
                 <Link to={`/${url.wishlist}`}>
                   <span
-                    className="position-absolute ms-2 ps-1 mt-0 count-badge1"
+                    className="position-absolute ms-1 ps-1 mt-0 count-badge1"
                     style={{ fontFamily: "verdana" }}
                   >
-                    {count}
+                    {count6}
                   </span>
                   <img
                     src={Wishlists}
                     alt="RxLYTE"
-                    className="mt-3 cart-image"
+                    className="mt-3 cart-image1"
                   />
                 </Link>
 
@@ -820,7 +807,7 @@ function CustomerView() {
                   <img
                     src={Accounts}
                     alt="RxLYTE"
-                    className="cart-image mt-2"
+                    className="cart-image2 mt-2"
                   />
                 </Link>
 
@@ -1502,7 +1489,7 @@ function CustomerView() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -1516,6 +1503,7 @@ function CustomerView() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -1527,7 +1515,7 @@ function CustomerView() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

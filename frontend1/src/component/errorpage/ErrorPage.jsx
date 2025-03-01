@@ -3,16 +3,17 @@ import { Link } from "react-router-dom";
 import "./ErrorPage.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import Cart from "../../assets/Cart.svg";
 import UserContext from "../../context/UserContext";
 import axios from "axios";
 import Page from "../../assets/pagen.webp";
 import Close from "../../assets/Close.webp";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import JsonLd from "../JsonLd";
 
 function ErrorPage() {
   let { count, setCount } = useContext(UserContext);
@@ -31,7 +32,6 @@ function ErrorPage() {
       console.error("Error fetching cart data:", error);
     }
   };
-  cartdata();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -145,24 +145,43 @@ function ErrorPage() {
     fetchBreadcrumbData();
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
+
+  const schemaData = {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    name: "RxLYTE - 404 Error",
+    url: "https://www.rxlyte.com/error",
+    description:
+      "Rxlyte is the ecommerce site. The page you requested was not found.",
+    publisher: {
+      "@type": "Organization",
+      name: "RxLYTE",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://rxlye.com/Tonic.svg",
+      },
+    },
+  };
 
   return (
     <>
+      <JsonLd data={schemaData} />
       <div
         className="container"
         id="container-custom"
@@ -246,11 +265,11 @@ function ErrorPage() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -262,7 +281,7 @@ function ErrorPage() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
@@ -273,7 +292,7 @@ function ErrorPage() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
                     <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
                       {count}
@@ -332,7 +351,7 @@ function ErrorPage() {
                           : ""
                       }`}
                     >
-                      Error
+                      404
                     </h1>
                   )}
 
@@ -353,7 +372,7 @@ function ErrorPage() {
                         </Link>
                       </li>
                       <li className="breadcrumb-item navbar-item fw-medium text-dark">
-                        Error
+                        404
                       </li>
                     </ol>
                   </nav>
@@ -378,8 +397,11 @@ function ErrorPage() {
               </p>
 
               <button className="btn btn-success d-flex py-4 cart-cart1 rounded-0">
-                <Link to="/" className="text-light text-decoration-none">
-                  Back to Home
+                <Link
+                  to="/"
+                  className="text-light text-decoration-none d-flex flex-row flex-nowrap align-items-center gap-2"
+                >
+                  Back to Home <FontAwesomeIcon icon={faHouse} />
                 </Link>
               </button>
             </div>
@@ -473,7 +495,7 @@ function ErrorPage() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -487,6 +509,7 @@ function ErrorPage() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -498,7 +521,7 @@ function ErrorPage() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>

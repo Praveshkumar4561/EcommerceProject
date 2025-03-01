@@ -224,7 +224,7 @@ function PaymentMethod() {
         "Functionality to add image from URL needs to be implemented. ",
         {
           position: "bottom-right",
-          autoClose: 1500,
+          autoClose: 1000,
           hideProgressBar: false,
           closeOnClick: true,
           draggable: true,
@@ -2389,7 +2389,7 @@ function PaymentMethod() {
                                 try {
                                   toast.success("Add image from URL clicked", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2397,7 +2397,7 @@ function PaymentMethod() {
                                 } catch (error) {
                                   toast.error("An error occurred", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2536,7 +2536,7 @@ function PaymentMethod() {
                                 try {
                                   toast.success("Add image from URL clicked", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2544,7 +2544,7 @@ function PaymentMethod() {
                                 } catch (error) {
                                   toast.error("An error occurred", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2701,7 +2701,7 @@ function PaymentMethod() {
                                 try {
                                   toast.success("Add image from URL clicked", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2709,7 +2709,7 @@ function PaymentMethod() {
                                 } catch (error) {
                                   toast.error("An error occurred", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2850,7 +2850,7 @@ function PaymentMethod() {
                                 try {
                                   toast.success("Add image from URL clicked", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2858,7 +2858,7 @@ function PaymentMethod() {
                                 } catch (error) {
                                   toast.error("An error occurred", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -2997,7 +2997,7 @@ function PaymentMethod() {
                                 try {
                                   toast.success("Add image from URL clicked", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -3005,7 +3005,7 @@ function PaymentMethod() {
                                 } catch (error) {
                                   toast.error("An error occurred", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -3159,7 +3159,7 @@ function PaymentMethod() {
                                 try {
                                   toast.success("Add image from URL clicked", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,
@@ -3167,7 +3167,7 @@ function PaymentMethod() {
                                 } catch (error) {
                                   toast.error("An error occurred", {
                                     position: "bottom-right",
-                                    autoClose: 1500,
+                                    autoClose: 1000,
                                     hideProgressBar: true,
                                     closeButton: true,
                                     draggable: true,

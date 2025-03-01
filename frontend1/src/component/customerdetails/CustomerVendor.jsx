@@ -9,8 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link } from "react-router-dom";
-import Profile from "../../assets/image.webp";
-import Cart from "../../assets/Cart.svg";
+
 import Over from "../../assets/Over.webp";
 import Address from "../../assets/Cart_address.webp";
 import Cart_order from "../../assets/Cart_request.webp";
@@ -82,7 +81,7 @@ function CustomerVendor() {
       await axios.post("http://89.116.170.231:1600/vendorshop", user);
       toast.success("Shop registered successfully!", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -91,7 +90,7 @@ function CustomerVendor() {
     } catch (error) {
       toast.error("Shop is not registered", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,

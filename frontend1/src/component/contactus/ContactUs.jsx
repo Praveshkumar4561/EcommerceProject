@@ -4,9 +4,7 @@ import "./ContactUs.css";
 import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import "../../../src/assets/fonts/Roboto-BlackItalic.ttf";
-import Profile from "../../assets/image.webp";
 import Hamburger from "../../assets/hamburger.svg";
-import Cart from "../../assets/Cart.svg";
 import Close from "../../assets/Close.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,26 +17,28 @@ import axios from "axios";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Carthome from "../../assets/Carthome1.webp";
-import Wishlists from "../../assets/Wishlists1.webp";
-import Accounts from "../../assets/Accounts1.webp";
+import Carthome from "../../assets/Carthome.webp";
+import Wishlists from "../../assets/Wishlists.webp";
+import Accounts from "../../assets/Accounts.webp";
+import JsonLd from "../JsonLd";
 
 function ContactUs() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
-        );
-        setCount(response.data.length);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
     cartdata();
-  });
+  }, []);
+
+  const cartdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/allcartdata"
+      );
+      setCount(response.data.length);
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+    }
+  };
 
   let generateRandomNumber = () => {
     return Math.floor(Math.random() * 10) + 1;
@@ -129,7 +129,7 @@ function ContactUs() {
       }
       toast.success("Contact details successfully submitted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -138,7 +138,7 @@ function ContactUs() {
     } catch (error) {
       toast.error("Contact details is not submitted", {
         position: "bottom-right",
-        autoClose: 1500,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         draggable: true,
@@ -236,24 +236,73 @@ function ContactUs() {
     fetchBreadcrumbData();
   }, []);
 
-  let [cartwish, setCartWish] = useState([]);
+  let [count6, setCount6] = useState("");
 
   useEffect(() => {
-    const wishlistdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
-        );
-        setCartWish(response.data.length);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      }
-    };
     wishlistdata();
-  });
+  }, []);
+
+  const wishlistdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/wishlistdata"
+      );
+      setCount6(response.data.length);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    }
+  };
+
+  const schemaData = {
+    "@context": "http://schema.org",
+    "@graph": [
+      {
+        "@type": "ContactPage",
+        name: "RxLyte",
+        url: "http://srv724100.hstgr.cloud/about",
+        description:
+          "RxLyte is a modern ecommerce platform offering premium healthcare products.",
+        mainEntity: {
+          "@type": "Organization",
+          name: "RxLyte",
+          url: "http://srv724100.hstgr.cloud/",
+          logo: "https://rxlyte.com/Tonic.svg",
+          description:
+            "RxLyte is a trusted ecommerce store providing high-quality healthcare products.",
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+1-800-654-3210",
+            contactType: "customer service",
+            areaServed: "US",
+            availableLanguage: "English",
+          },
+        },
+      },
+
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "http://srv724100.hstgr.cloud/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: "Contact Us",
+            item: "http://srv724100.hstgr.cloud/contact-us",
+          },
+        ],
+      },
+    ],
+  };
 
   return (
     <>
+      <JsonLd data={schemaData} />
+
       <div
         className="container"
         id="container-customx"
@@ -337,11 +386,13 @@ function ContactUs() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{cartwish}</span>
+                    <span className="count-badge mt-2 mt-lg-1 pt-0 mt-md-1">
+                      {count6}
+                    </span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1 navbar-shop"
+                      className="profiles1 img-fluid mt-1 navbar-shop cart-image1"
                     />
                   </Link>
 
@@ -353,20 +404,22 @@ function ContactUs() {
                     <img
                       src={Accounts}
                       alt="Profile"
-                      className="profiles1 img-fluid me-3 mt-1 navbar-shop"
+                      className="profiles1 img-fluid me-3 mt-1 navbar-shop cart-image2"
                     />
                   </Link>
 
                   <Link
                     to={`/${url.cart}`}
                     className="nav-link d-flex nav-properties1"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop"
+                      className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
+                      onClick={(e) => e.stopPropagation()}
                     />
-                    <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
+                    <div className="addcarts ps-2 pt-lg-0 mt-lg-0 count-badge1">
                       {count}
                     </div>
                   </Link>
@@ -463,41 +516,41 @@ function ContactUs() {
                 <h2 className="text-start ps-5 ps-lg-0 ms-lg-0 mt-2 query-feel lorem-contact">
                   Feel Free to contact <br /> us for any query
                 </h2>
-                <div className="phone-mail d-flex align-items-center p-3 rounded-5 bg-light mt-0">
+                <div className="phone-mail d-flex align-items-center p-3 ps-0 rounded-5 bg-light mt-0">
                   <div className="rounded-border bg-success text-center text-white fs-3 d-flex align-items-center justify-content-center">
                     <FontAwesomeIcon icon={faPhoneVolume} />
                   </div>
 
                   <div className="ms-3 lorem-contact">
-                    <p className="fw-normal mb-1 text-lg-start mt-1">
+                    <h4 className="fw-normal mb-1 text-lg-start text-start mt-1">
                       Phone Number
-                    </p>
+                    </h4>
                     <p className="head-office fw-normal text-dark">
                       Head office: (210) 123 451
                     </p>
                   </div>
                 </div>
-                <div className="phone-mail d-flex align-items-center p-3 rounded-5 bg-light mt-0 lorem-contact">
+                <div className="phone-mail d-flex align-items-center p-3 rounded-5 ps-0 bg-light mt-0 lorem-contact">
                   <div className="rounded-border bg-success text-center text-white fs-3 d-flex align-items-center justify-content-center">
                     <FontAwesomeIcon icon={faCommentDots} />
                   </div>
                   <div className="ms-3">
-                    <p className="fw-normal mb-1 text-lg-start mt-1">
+                    <h4 className="fw-normal mb-1 text-lg-start mt-1 text-start">
                       Mail Address
-                    </p>
+                    </h4>
                     <p className="head-office fw-normal text-dark">
                       Webecyenvato12@gmail.com
                     </p>
                   </div>
                 </div>
-                <div className="phone-mail d-flex align-items-center p-3 rounded-5 bg-light mt-0 lorem-contact">
+                <div className="phone-mail d-flex align-items-center p-3 rounded-5 ps-0 bg-light mt-0 lorem-contact">
                   <div className="rounded-border bg-success text-center text-white fs-3 d-flex align-items-center justify-content-center">
                     <FontAwesomeIcon icon={faLocationDot} />
                   </div>
                   <div className="ms-3">
-                    <p className="fw-normal mb-1 text-lg-start mt-1">
+                    <h4 className="fw-normal mb-1 text-lg-start mt-1 text-start">
                       Office Address
-                    </p>
+                    </h4>
                     <p className="head-office fw-normal text-dark">
                       254 Lillian Blvd, Holbrook
                     </p>
@@ -529,7 +582,7 @@ function ContactUs() {
                     </div>
                   </div>
                   <div className="col-12 col-md-6 d-flex flex-column align-items-start align-items-md-start contact-name">
-                    <div className="form-group w-100 mt-sm-3 blackitalic text-start">
+                    <div className="form-group w-100 mt-sm-3 blackitalic text-start mt-3 mt-lg-3">
                       <label htmlFor="lastName">Email</label>
                       <input
                         type="email"
@@ -749,7 +802,7 @@ function ContactUs() {
               </div>
             </div>
 
-            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-2 ms-lg-5 mt-lg-5 pt-3 ms-0 footer-list">
+            <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
               <h5 className="mb-lg-3 mb-3 text-start">
                 Sign Up for Newsletter
               </h5>
@@ -763,6 +816,7 @@ function ContactUs() {
                 <button
                   className="btn btn-success d-flex cart-cart1 py-4 me-0"
                   type="submit"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Subscribe
                 </button>
@@ -774,7 +828,7 @@ function ContactUs() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-center mb-0">
+              <p className="text-md-start text-lg-start text-start mb-0">
                 &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
               </p>
             </div>
