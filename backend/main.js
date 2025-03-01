@@ -13,15 +13,16 @@ const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const { ppid } = require("process");
+const webpush = require("web-push");
 const PDFDocument = require("pdfkit");
 const app = express();
 const salt = 10;
 const saltRounds = 10;
 
 app.use(
-  cors({
+    cors({
     origin: "",
-    methods: "GET, POST, PUT, DELETE",
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
   })
@@ -32,6 +33,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use("/src/image", express.static(path.join(__dirname, "src/image")));
+app.set("trust proxy", true);
 
 const uploadDir = path.join(__dirname, "src/image");
 if (!fs.existsSync(uploadDir)) {
@@ -73,6 +75,16 @@ app.use(
 app.use(
   "/blogpostdata/src/image",
   express.static(path.join(__dirname, "src/image"))
+);
+
+const publicVapidKey =
+  "BPJVSJMYeYgCD13-Sv8ziP9m6ecOBSc8KfIJ055G9wsCmE80aYWKPEUKkamseWpIkorpD3-Vs3NLBmBLvXEASGI";
+const privateVapidKey = "h2r9X6cwNN1GxczN_e9N2Ggh0Ap3jcrmfBhWmW9xNX8";
+
+webpush.setVapidDetails(
+  "mailto:your-email@example.com",
+  publicVapidKey,
+  privateVapidKey
 );
 
 const db = mysql.createConnection({
@@ -1497,7 +1509,7 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
 });
 
 app.get("/blogpostdata", (req, res) => {
-  const sql = "select *from blogpost";
+  const sql = "select *from blogpost ORDER BY id DESC;";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3275,7 +3287,6 @@ app.post("/addcart", upload.single("file"), (req, res) => {
   const value = [[name, store, price, price_sale, image]];
   const sql =
     "INSERT INTO cart (name, store, price, price_sale, image) VALUES ?";
-
   db.query(sql, [value], (err, result) => {
     if (err) {
       console.error("Database error:", err);
@@ -4036,6 +4047,78 @@ app.get("/themenewsdata", (req, res) => {
       return res.json({ result });
     }
     res.json(result[0]);
+  });
+});
+
+// push notification code
+
+app.post("/subscribe", (req, res) => {
+  const subscription = req.body;
+  const { endpoint, keys } = subscription;
+  const ipAddress = req.headers["x-forwarded-for"]
+    ? req.headers["x-forwarded-for"].split(",")[0].trim()
+    : req.ip;
+  const sql = `INSERT INTO subscriptions (endpoint, p256dh, auth, ip_address, created_at)
+    VALUES (?, ?, ?, ?, NOW())`;
+  db.query(
+    sql,
+    [endpoint, keys.p256dh, keys.auth, ipAddress],
+    (err, results) => {
+      if (err) {
+        console.error("Error storing subscription:", err);
+        return res.status(500).json({ error: "Database error" });
+      }
+      res.status(201).json({ message: "Subscription stored successfully" });
+    }
+  );
+});
+
+app.post("/notify-update", (req, res) => {
+  const { title, body } = req.body;
+  db.query("SELECT * FROM subscriptions", (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Error fetching subscriptions" });
+    }
+    results.forEach((subscription) => {
+      const pushSubscription = {
+        endpoint: subscription.endpoint,
+        keys: {
+          p256dh: subscription.p256dh,
+          auth: subscription.auth,
+        },
+      };
+      const payload = JSON.stringify({ title, body });
+      webpush
+        .sendNotification(pushSubscription, payload)
+        .then(() => {
+          console.log("Notification sent successfully");
+        })
+        .catch((error) => {
+          if (error.statusCode === 410) {
+            console.log(
+              "Subscription expired or unsubscribed:",
+              subscription.endpoint
+            );
+            db.query(
+              "DELETE FROM subscriptions WHERE endpoint = ?",
+              [subscription.endpoint],
+              (err) => {
+                if (err) {
+                  console.error("Error removing subscription:", err);
+                } else {
+                  console.log(
+                    "Removed expired subscription from database: ",
+                    subscription.endpoint
+                  );
+                }
+              }
+            );
+          } else {
+            console.error("Error sending notification:", error);
+          }
+        });
+    });
+    res.status(200).json({ message: "Notifications sent to all subscribers" });
   });
 });
 
