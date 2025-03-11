@@ -2150,7 +2150,7 @@ function SocialSharing() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2536,7 +2536,7 @@ function SocialSharing() {
 
         <div className="col-12 col-sm-6 col-lg-6 border text-start mb-3 mb-lg-0">
           <div className="d-flex justify-content-end mt-3 me-2 ms-2">
-            <button className="btn btn-success d-flex py-4">
+            <button className="btn btn-success d-flex py-4 cart-cart1">
               Save Changes
             </button>
           </div>

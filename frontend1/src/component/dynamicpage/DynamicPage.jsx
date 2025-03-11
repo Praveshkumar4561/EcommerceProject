@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import image1 from "../../assets/Tonic.svg";
+
 import Hamburger from "../../assets/hamburger.svg";
 import UserContext from "../../context/UserContext";
 import Tonic from "../../assets/Tonic.svg";
@@ -10,11 +10,12 @@ import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import axios from "axios";
+import { Helmet } from "react-helmet";
 
 const DynamicPage = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { count, setCount } = useContext(UserContext);
-  const { name: pageName } = useParams();
+  const { name: pageName, productId } = useParams();
   const navigate = useNavigate();
 
   const defaultUrlState = {
@@ -25,7 +26,7 @@ const DynamicPage = () => {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -136,6 +137,27 @@ const DynamicPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>
+          {page?.name
+            ? `Buy Online at Best Price | Rxlyte`
+            : "Product Details - Buy Quality Products Online | Rxlyte"}
+        </title>
+        <meta
+          name="description"
+          content={
+            page?.description
+              ? page.description
+              : "Explore detailed information about our top-quality products. Buy online with secure checkout and fast delivery at Rxlyte."
+          }
+        />
+        <meta name="robots" content="index, follow" />
+        <link
+          rel="canonical"
+          href={`http://srv724100.hstgr.cloud/product-details/${productId}`}
+        />
+      </Helmet>
+
       <div
         className="container"
         id="container-customx"
@@ -159,7 +181,7 @@ const DynamicPage = () => {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -374,7 +396,7 @@ const DynamicPage = () => {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -406,7 +428,7 @@ const DynamicPage = () => {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -417,7 +439,10 @@ const DynamicPage = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

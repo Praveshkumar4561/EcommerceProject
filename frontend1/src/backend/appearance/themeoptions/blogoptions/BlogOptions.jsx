@@ -300,7 +300,7 @@ function BlogOptions() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -2117,7 +2117,7 @@ function BlogOptions() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2503,7 +2503,7 @@ function BlogOptions() {
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-2 mb-lg-0">
           <div className="d-flex justify-content-end mt-5 mt-lg-0 me-2">
             <button
-              className="btn btn-success button-change-change py-4 mt-lg-0 mt-4 ms-2 border d-flex"
+              className="btn btn-success button-change-change py-4 mt-lg-0 mt-4 ms-2 border d-flex cart-cart1"
               style={{ cursor: "pointer" }}
             >
               Save Changes

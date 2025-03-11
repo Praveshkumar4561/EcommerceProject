@@ -1,18 +1,22 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import "./TermsCondition.css";
-
+import "./Sitemap.css";
 import Tonic from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
-import Close from "../../assets/Close.webp";
 import UserContext from "../../context/UserContext";
-import axios from "axios";
+import Close from "../../assets/Close.webp";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import { Helmet } from "react-helmet";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 
-function TermsCondition() {
+function Sitemap() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
@@ -70,6 +74,7 @@ function TermsCondition() {
     userEditAccount: "user/edit-account",
     userOrders: "user/orders",
   };
+
   const [url, setUrl] = useState(
     JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
   );
@@ -114,6 +119,22 @@ function TermsCondition() {
     fetchBreadcrumbData();
   }, []);
 
+  let [about, setAbout] = useState("");
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setAbout(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
   let [count6, setCount6] = useState("");
 
   useEffect(() => {
@@ -131,19 +152,139 @@ function TermsCondition() {
     }
   };
 
+  const [detail, setDetail] = useState([]);
+  const [showProducts, setShowProducts] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6;
+
+  useEffect(() => {
+    fetchProductData();
+  }, []);
+
+  const fetchProductData = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/productpagedata"
+      );
+      setDetail(response.data);
+    } catch (error) {
+      console.error("Error occurred", error);
+    }
+  };
+
+  let currentProducts = detail;
+  let totalPages = 1;
+  if (detail.length >= 500) {
+    totalPages = Math.ceil(detail.length / productsPerPage);
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    currentProducts = detail.slice(indexOfFirstProduct, indexOfLastProduct);
+  }
+
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const toggleProducts = () => {
+    if (showProducts) {
+      setShowProducts(false);
+    } else {
+      setShowProducts(true);
+      setShowBlogs(false);
+    }
+  };
+
+  const [user, setUser] = useState([]);
+  const [showBlogs, setShowBlogs] = useState(false);
+  const [currentPage1, setCurrentPage1] = useState(1);
+  const productsPerPage1 = 6;
+
+  useEffect(() => {
+    alldata();
+  }, []);
+
+  const alldata = async () => {
+    try {
+      let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
+      setUser(response.data);
+    } catch (error) {
+      console.error("Error fetching blog data:", error);
+    }
+  };
+
+  let currentBlogs = user;
+  let totalPages1 = 1;
+  if (user.length >= 500) {
+    totalPages1 = Math.ceil(user.length / productsPerPage1);
+    const indexOfLastBlog = currentPage1 * productsPerPage1;
+    const indexOfFirstBlog = indexOfLastBlog - productsPerPage1;
+    currentBlogs = user.slice(indexOfFirstBlog, indexOfLastBlog);
+  }
+
+  const handlePageClick1 = (pageNumber) => {
+    setCurrentPage1(pageNumber);
+  };
+
+  const handlePrev1 = () => {
+    if (currentPage1 > 1) setCurrentPage1(currentPage1 - 1);
+  };
+
+  const handleNext1 = () => {
+    if (currentPage1 < totalPages1) setCurrentPage1(currentPage1 + 1);
+  };
+
+  const toggleBlogs = () => {
+    if (showBlogs) {
+      setShowBlogs(false);
+    } else {
+      setShowBlogs(true);
+      setShowProducts(false);
+    }
+  };
+
   return (
     <>
       <Helmet>
-        <title>Terms & Conditions - User Agreement & Policies | Rxlyte</title>
+        <title>Sitemap - RxLyte</title>
         <meta
           name="description"
-          content="Read our Terms & Conditions to understand your rights, responsibilities, and policies for using Rxlyte. Stay informed and shop with confidence."
+          content="Explore the Sitemap of YourSiteName to easily navigate our website. This page is optimized for SEO and is fully indexable."
         />
         <meta name="robots" content="index, follow" />
-        <link
-          rel="canonical"
-          href="http://srv724100.hstgr.cloud/terms-conditions"
-        />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/sitemap" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "SiteNavigationElement",
+              "name": "Sitemap",
+              "url": "http://srv724100.hstgr.cloud/sitemap",
+              "hasPart": [
+                {"@type": "SiteNavigationElement", "name": "Home", "url": "http://srv724100.hstgr.cloud/"},
+                {"@type": "SiteNavigationElement", "name": "About", "url": "http://srv724100.hstgr.cloud/about"},
+                {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://srv724100.hstgr.cloud/shop"},
+                {"@type": "SiteNavigationElement", "name": "Blog", "url": "https://www.yoursitename.com/blog"},
+                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://srv724100.hstgr.cloud/product-details"},
+                {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://srv724100.hstgr.cloud/cart"},
+                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://srv724100.hstgr.cloud/wishlist"},
+                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://srv724100.hstgr.cloud/contact-us"},
+                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "http://srv724100.hstgr.cloud/faqs"},
+                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "http://srv724100.hstgr.cloud/privacy-policy"},
+                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "http://srv724100.hstgr.cloud/medicine-policy"},
+                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "http://srv724100.hstgr.cloud/terms-condition"},
+                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "http://srv724100.hstgr.cloud/sitemap"}
+              ]
+            }
+          `}
+        </script>
       </Helmet>
 
       <div
@@ -151,15 +292,15 @@ function TermsCondition() {
         id="container-customx"
         style={{
           backgroundColor:
-            cart?.background_color ||
-            (cart?.background_image ? "transparent" : "#f2f5f7"),
-          backgroundImage: cart?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${cart.background_image})`
+            about?.background_color ||
+            (about?.background_image ? "transparent" : "#f2f5f7"),
+          backgroundImage: about?.background_image
+            ? `url(http://89.116.170.231:1600/src/image/${about.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          height: cart?.breadcrumb_height
-            ? `${cart.breadcrumb_height}px`
+          height: about?.breadcrumb_height
+            ? `${about.breadcrumb_height}px`
             : "190px",
         }}
       >
@@ -229,7 +370,9 @@ function TermsCondition() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{count6}</span>
+                    <span className="count-badge mt-2 mt-lg-1 pt-0 mt-md-2">
+                      {count6}
+                    </span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
@@ -252,13 +395,15 @@ function TermsCondition() {
                   <Link
                     to={`/${url.cart}`}
                     className="nav-link d-flex nav-properties1"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <img
                       src={Carthome}
                       alt="Cart"
                       className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
+                      onClick={(e) => e.stopPropagation()}
                     />
-                    <div className="addcarts ms-1 ps-1 pt-lg-0 count-badge1">
+                    <div className="addcarts ps-2 pt-lg-0 mt-lg-0 count-badge1">
                       {count}
                     </div>
                   </Link>
@@ -304,18 +449,18 @@ function TermsCondition() {
           </header>
 
           <main className="container mt-5 cart-cart container-bread">
-            {cart?.enable_breadcrumb === "yes" &&
-              cart?.breadcrumb_style !== "none" && (
+            {about?.enable_breadcrumb === "yes" &&
+              about?.breadcrumb_style !== "none" && (
                 <>
-                  {cart?.hide_title !== "yes" && (
+                  {about?.hide_title !== "yes" && (
                     <h1
                       className={`fw-medium mb-3 text-center container-contact fs-2 container-style ${
-                        cart?.breadcrumb_style === "without title"
+                        about?.breadcrumb_style === "without title"
                           ? "d-none"
                           : ""
                       }`}
                     >
-                      Terms Condition
+                      Sitemap
                     </h1>
                   )}
 
@@ -323,20 +468,20 @@ function TermsCondition() {
                     aria-label="breadcrumb"
                     id="container-contact1"
                     className={`ms-5 ps-3 ms-lg-0 ps-lg-0 ${
-                      cart?.breadcrumb_style === "without title" ||
-                      cart?.breadcrumb_style === "align start"
+                      about?.breadcrumb_style === "without title" ||
+                      about?.breadcrumb_style === "align start"
                         ? "d-flex justify-content-start align-items-center w-50"
                         : "d-flex justify-content-center align-items-center"
                     }`}
                   >
-                    <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
+                    <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden pe-4 pe-lg-0 pe-md-0">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
                         <Link target="_blank" to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
-                      <li className="breadcrumb-item navbar-item fw-medium text-dark me-4 p-0">
-                        Terms
+                      <li className="breadcrumb-item navbar-item fw-medium text-dark p-0">
+                        Sitemap
                       </li>
                     </ol>
                   </nav>
@@ -347,259 +492,153 @@ function TermsCondition() {
       </div>
       <div></div>
 
-      <div className="container-fluid overflow-x-hidden position-relative">
-        <div className="container">
-          <div className="row gap-3 mt-4 pt-3 d-flex justify-content-xxl-start justify-content-lg-center justify-content-md-center me-1 me-sm-0">
-            <div className="col-12 col-md-12 col-lg-12 blog-condition bg-light h-auto">
-              <h3 className="lorem-condition ms-2 ps-1 pt-4 text-start lorem-space fw-normal">
-                Terms and Conditions
-              </h3>
-
-              <div className="lorem-typo lh-lg">
-                <ul className="text-start me-sm-2 ms-4">
-                  <li className="mt-2 ms-0 lorem-terms">
-                    Before you do any business with Rx Lyte, please read the
-                    terms and conditions listed below very carefully.
-                  </li>
-
-                  <li className="mt-2 ms-0 lorem-terms">
-                    Please keep in mind that Rx Lyte can change its website,
-                    rules, and laws at any time and for any reason.
-                  </li>
-
-                  <li className="mt-2 ms-0 lorem-terms">
-                    Before you buy something from us, you should always check
-                    the most recent version of our terms and conditions.
-                  </li>
-                </ul>
-
-                <h3 className="lorem-privacy ms-2 pt-0 text-start lorem-space fw-normal">
-                  Things Being Sold
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start ms-4">
-                    <li className="mt-2 ms-0 lorem-terms">
-                      Rx Lyte gets its goods from trustworthy manufacturers in
-                      India and other places, making sure they meet FDA and WHO
-                      standards.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      People can buy in bulk, but they can only use the goods
-                      for their own purposes; they can't sell them to others.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-2 ps- pt-0 text-start lorem-space fw-normal">
-                  Quality and Composition of the Product
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start ms-4">
-                    <li className="mt-2 ms-0 lorem-terms">
-                      The generic drugs that Rx Lyte sells have the same
-                      chemicals as the brand-name drugs sold in the US.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      A lot of Indian drug companies buy rights from the big
-                      drug companies to make protected prescription drugs, which
-                      they then sell for a low price.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-2 pt-0 text-start lorem-space fw-normal">
-                  News about billing and orders
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start ms-4">
-                    <li className="mt-2 ms-0 lorem-terms">
-                      Your credit card will be charged right away after the buy,
-                      and you'll get an email confirming payment information.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      Please keep in mind that we don't ship orders within 24
-                      hours so that you have time to update, change, or delete
-                      your address and/or the item you ordered.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-2 pt-0 text-start lorem-space fw-normal">
-                  Terms of Service
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start me-2 ms-4">
-                    <li className="mt-2 ms-0 lorem-terms">
-                      People who use our services agree that the medicines they
-                      buy are only for their own use and not to be sold again.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      The person using the medicine knows and agrees that it is
-                      made and packed in different countries. The place of
-                      origin is clearly written on the package.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      People who want to take medicine should talk to a doctor
-                      or nurse first.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      If you use our services, you agree to follow all local and
-                      foreign rules about shopping for and using medicines.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      If there are any problems with a sale, buyers must first
-                      call Rx Lyte.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-2 pt-0 text-start lorem-space fw-normal">
-                  Agreement to the Terms
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start me-2 ms-4">
-                    <li className="mt-2 ms-0 lorem-terms">
-                      You agree to these terms and conditions freely when you
-                      buy something from our online medicine shop.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      The fact that you are using Rx Lyte means that you have
-                      read and agree to all of its policies.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-1 pt-0 text-start lorem-space fw-normal">
-                  The information about you
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start ms-4">
-                    <li className="mt-3 ms-0 lorem-terms">
-                      Your privacy and security are very important to us.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      The information we get from customers is only used to make
-                      shopping better for them.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      Rest assured that we will not share any information that
-                      could be used to identify you with a third party unless
-                      the law requires it.
-                    </li>
-
-                    <li className="mt-2 ms-0 lorem-terms">
-                      To protect customers' privacy, Rx Lyte uses SSL security
-                      to keep all personally identifiable information safe while
-                      it's being sent. To keep credit card information safe and
-                      private, it is kept in a computer that is protected and
-                      not connected to the internet.Not connected to the
-                      internet.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-terms ms-2 pt-0 text-start lorem-space fw-normal">
-                  Giving Your OK
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="me-2 ms-4">
-                    <li className="mt-0 ms-0 lorem-terms">
-                      If you use our services, you agree that we can receive and
-                      use your personally identifiable information in the ways
-                      that we explain in our Privacy Policy.
-                    </li>
-                    <li className="mt-0 ms-0 lorem-terms">
-                      If this policy is changed, it will be quickly posted on
-                      this page to let people know.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-1 pt-0 text-start lorem-space fw-normal">
-                  Your Thoughts
-                </h3>
-
-                <div className="lorem-typo">
-                  <ul className="text-start me-2 ms-4">
-                    <li className="mt-0 ms-0 lorem-terms">
-                      We value what you have to say. Please email us at
-                      info@Rxlyte.com if you have any questions or comments
-                      about our terms and conditions.
-                    </li>
-                  </ul>
-                </div>
-
-                <h3 className="lorem-privacy ms-2 pt-0 text-start lorem-space fw-normal">
-                  How to Ship Things
-                </h3>
-
-                <h4 className="lorem-privacy ms-3 pt-0 text-start lorem-space fw-normal">
-                  Costs and schedules for shipping
-                </h4>
-
-                <div className="lorem-typo">
-                  <ul className="text-start me-2 ms-4">
-                    <li className="mt-1 ms-0 lorem-terms">
-                      Shipping costs are based on the weight of the package for
-                      all sales. Shipping may take up to 4 business days.
-                    </li>
-                  </ul>
-                </div>
-
-                <h4 className="lorem-privacy ms-2 ms-3 pt-0 text-start lorem-space fw-normal">
-                  Changes to rates
-                </h4>
-                <div className="lorem-typo">
-                  <ul className="text-start me-2 ms-4">
-                    <li className="mt-1 ms-0 lorem-terms">
-                      Because of things we can't control, shipping rates and
-                      rules may change.
-                    </li>
-                  </ul>
-                </div>
-
-                <h4 className="lorem-privacy ms-2 ms-3 pt-0 text-start lorem-space fw-normal">
-                  Shipping Address by Default
-                </h4>
-                <div className="lorem-typo">
-                  <ul className="text-start me-2 ms-4">
-                    <li className="mt-1 ms-0 lorem-terms">
-                      The last address that was used for sending is the usual
-                      shipping address. If you want to change your postal
-                      address, you can do so by clicking the "Select A Different
-                      Address" button.
-                    </li>
-
-                    <li className="mt-1 ms-0 lorem-terms">
-                      You will be able to choose a different address from the
-                      ones that are already saved, or you can add a new one.
-                    </li>
-                  </ul>
-                </div>
-              </div>
+      <div className="container-fluid">
+        <div className="container ms-lg-2 m-0">
+          <h2 className="sitemap-name1 mt-4 cart-cart1">Pages</h2>
+          <div className="border sitemap-link1"></div>
+          <div className="row gap-0 p-0 mt-2 sitemap-link d-flex flex-md-row align-items-md-start flex-md-nowrap">
+            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-md-start align-items-sm-start px-41">
+              <Link to="/">Home</Link>
+              <Link to="/about">About</Link>
+              <Link onClick={toggleProducts}>Shop</Link>
+              <Link onClick={toggleBlogs}>Blog</Link>
+              <Link onClick={toggleProducts}>Product Details</Link>
+            </div>
+            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-sm-start px-41 align-items-md-start">
+              <Link to="/cart">Cart</Link>
+              <Link to="/wishlist">Wishlist</Link>
+              <Link to="/contact-us">Contact Us</Link>
+              <Link to="/faqs">FAQs</Link>
+              <Link to="/privacy-policy">Privacy Policy</Link>
+            </div>
+            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-sm-start align-items-md-start px-41">
+              <Link to="/medicine-policy">Medicine Policy</Link>
+              <Link to="/terms-condition">Terms & Conditions</Link>
+              <Link to="/sitemap">Sitemap</Link>
             </div>
           </div>
         </div>
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      {showProducts && (
+        <>
+          <div className="container-fluid">
+            <div className="container cart-cart">
+              {Array.isArray(detail) && detail.length > 0 ? (
+                <div className="row gap-0 mt-2">
+                  {currentProducts.map((data, key) => (
+                    <div
+                      className="col-lg-4 col-md-4 col-12 sitemap-images sitemap-images1 rounded d-flex flex-row flex-nowrap flex-column"
+                      key={key}
+                    >
+                      <li className="lh-base text-start">
+                        <Link to={`/${url.productDetails}`}>{data.name}</Link>
+                      </li>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>No products available.</p>
+              )}
+            </div>
+
+            {detail.length >= 500 && (
+              <div className="d-flex gap-2 justify-content-center mt-3 flex-row flex-nowrap">
+                <button
+                  className="btn btn-success d-flex cart-cart1 prev-site p-0 m-0"
+                  onClick={handlePrev}
+                  disabled={currentPage === 1}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    className="font-class"
+                  />
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index}
+                    className={`btn btn-success d-flex prev-site1 ${
+                      currentPage === index + 1 ? "active" : ""
+                    }`}
+                    onClick={() => handlePageClick(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+                <button
+                  className="btn btn-success d-flex cart-cart1 prev-site"
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronRight}
+                    className="font-class"
+                  />
+                </button>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {showBlogs && (
+        <div className="container-fluid">
+          <div className="container cart-cart me-4 me-lg-0">
+            {Array.isArray(user) && user.length > 0 ? (
+              <div className="row gap-0 mt-3">
+                {currentBlogs.map((data, key) => (
+                  <div
+                    className="col-lg-4 col-md-4 col-12 sitemap-images sitemap-images1 rounded d-flex flex-row flex-nowrap flex-column"
+                    key={key}
+                  >
+                    <div className="d-flex flex-row">
+                      <li className="mt-0 text-start">
+                        <Link to={`/blog-details/${data.id}`}>
+                          {data.name.split("").slice(0, 35).join("")}
+                        </Link>
+                      </li>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No blogs available.</p>
+            )}
+          </div>
+
+          {user.length >= 500 && (
+            <div className="d-flex gap-2 justify-content-center mt-3 flex-row flex-nowrap">
+              <button
+                className="btn btn-success d-flex cart-cart1 prev-site"
+                onClick={handlePrev1}
+                disabled={currentPage1 === 1}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} className="font-class" />
+              </button>
+              {Array.from({ length: totalPages1 }, (_, index) => (
+                <button
+                  key={index}
+                  className={`btn btn-success d-flex prev-site1 ${
+                    currentPage1 === index + 1 ? "active" : ""
+                  }`}
+                  onClick={() => handlePageClick1(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+              <button
+                className="btn btn-success d-flex cart-cart1 prev-site"
+                onClick={handleNext1}
+                disabled={currentPage1 === totalPages1}
+              >
+                <FontAwesomeIcon icon={faChevronRight} className="font-class" />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-5 sitemap-footer">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -667,6 +706,7 @@ function TermsCondition() {
                         FAQ
                       </Link>
                     </li>
+
                     <li>
                       <Link
                         className="text-white text-decoration-none"
@@ -675,6 +715,7 @@ function TermsCondition() {
                         Sitemap
                       </Link>
                     </li>
+
                     <li>
                       <Link
                         to="/contact-us"
@@ -725,4 +766,4 @@ function TermsCondition() {
   );
 }
 
-export default TermsCondition;
+export default Sitemap;

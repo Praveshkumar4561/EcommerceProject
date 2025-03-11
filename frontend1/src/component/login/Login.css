@@ -23,6 +23,7 @@ body {
   padding: 0 1rem;
   box-sizing: border-box;
 }
+
 .container-custom {
   display: flex;
   justify-content: space-between;
@@ -31,6 +32,7 @@ body {
   width: 100%;
   margin-top: 3.4rem;
 }
+
 @media (max-width: 992px) {
   #container-custom {
     height: auto;

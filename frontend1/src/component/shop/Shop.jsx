@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./Shop.css";
 import { Link } from "react-router-dom";
-import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import free from "../../assets/free.webp";
 import Cash from "../../assets/Cash.webp";
@@ -13,37 +12,15 @@ import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Hamburger from "../../assets/hamburger.svg";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import JsonLd from "../JsonLd";
+import { Helmet } from "react-helmet";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Shop() {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const toggleButtonRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        !toggleButtonRef.current.contains(event.target)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
   useEffect(() => {
     cartdata();
   }, []);
@@ -187,7 +164,7 @@ function Shop() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -292,61 +269,193 @@ function Shop() {
           },
         ],
       },
-      ...detail.slice(0, 5).map((item) => ({
-        "@type": "Product",
-        name: item.name,
-        image: item.image,
-        description: item.description,
-        brand: {
-          "@type": "Brand",
-          name: item.brand,
-        },
-        sku: item.sku,
-        offers: {
-          "@type": "Offer",
-          url: item.url || window.location.href,
-          priceCurrency: "USD",
-          price: item.price_sale ? item.price_sale : item.price,
-          priceValidUntil: item.saleEndDate || undefined,
-        },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: item.ratingValue || 4.9,
-          bestRating: item.bestRating || 5,
-          ratingCount: item.ratingCount || 5842,
-        },
-      })),
+
+      ...(Array.isArray(detail)
+        ? detail.slice(0, 5).map((item) => ({
+            "@type": "Product",
+            name: item.name,
+            image: item.image,
+            description: item.description,
+            brand: {
+              "@type": "Brand",
+              name: item.brand,
+            },
+            sku: item.sku,
+            offers: {
+              "@type": "Offer",
+              url: item.url || window.location.href,
+              priceCurrency: "USD",
+              price: item.price_sale ? item.price_sale : item.price,
+              priceValidUntil: item.saleEndDate || undefined,
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: item.ratingValue || 4.9,
+              bestRating: item.bestRating || 5,
+              ratingCount: item.ratingCount || 5842,
+            },
+          }))
+        : []),
     ],
+  };
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const toggleButtonRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !toggleButtonRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const [styles, setStyles] = useState({
+    primaryColor: "#971c1c",
+    headerBackgroundColor: "#######",
+    headerTextColor: "#7e1616",
+    headerBorder: "#2b0303",
+    stickyHeader: "no",
+    stickyHeaderMobile: "no",
+    headerMainColor: "#ffffff",
+    headerMainTextColor: "#000000",
+    headerMenuTextColor: "#000000",
+    headerMenuColor: "#000000",
+  });
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/get-theme-logo")
+      .then((response) => {
+        if (response.data) {
+          setLogoUrl(
+            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+          );
+          setLogoHeight(response.data.logo_height || "45");
+        }
+      })
+      .catch((error) => console.error("Error fetching logo:", error));
+  }, []);
+
+  useEffect(() => {
+    const fetchBreadcrumbData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/get-theme-breadcrumb"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching breadcrumb settings:", error);
+      }
+    };
+    fetchBreadcrumbData();
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://89.116.170.231:1600/themestylesdata")
+      .then((res) => setStyles(res.data))
+      .catch((err) => console.error("Error fetching styles:", err));
+  }, []);
+
+  const containerStyle = {
+    backgroundColor:
+      user?.background_color ||
+      (user?.background_image ? "transparent" : "#f2f5f7"),
+    backgroundImage: user?.background_image
+      ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+      : "none",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    height: user?.breadcrumb_height ? `${user.breadcrumb_height}px` : "190px",
+    ...(styles.stickyHeader === "yes" && {
+      position: "sticky",
+      top: 0,
+      zIndex: 1000,
+    }),
+  };
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const headerStyle = {
+    backgroundColor: styles.headerBackgroundColor || "#ffffff",
+    color: styles.headerMainTextColor || "#000000",
+    ...(isMobile &&
+      styles.stickyHeaderMobile === "yes" && {
+        position: "sticky",
+        top: 10,
+        zIndex: 1000,
+      }),
+  };
+
+  const menuStyle = {
+    color: styles.headerMenuTextColor,
+    backgroundColor: styles.headerMenu,
+  };
+
+  const navLinkStyle = {
+    color: styles.headerMainTextColor,
+  };
+
+  const navLinkStyle1 = {
+    color: styles.headerMenuTextColor,
   };
 
   return (
     <>
       <JsonLd data={schemaData} />
 
-      <div
-        className="container"
-        id="container-customx"
-        style={{
-          backgroundColor:
-            user?.background_color ||
-            (user?.background_image ? "transparent" : "#f2f5f7"),
-          backgroundImage: user?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
-            : "none",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          height: user?.breadcrumb_height
-            ? `${user.breadcrumb_height}px`
-            : "190px",
-        }}
-      >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
-          <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
+      <Helmet>
+        <title>Shop Online - Best Deals & Latest Collections | RxLyte</title>
+        <meta
+          name="description"
+          content="Explore our latest collection and shop online for the best deals on top-quality products. Fast shipping & secure checkout available."
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/shop" />
+      </Helmet>
+
+      <div className="container" id="container-customx" style={containerStyle}>
+        <div className="container-custom ms-2 pt-lg-0 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+          <header
+            style={headerStyle}
+            className="d-flex flex-wrap justify-content-between py-2 mt-lg-4 border-bottom rounded-2 container-custom1"
+          >
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -354,10 +463,10 @@ function Shop() {
                 </Link>
 
                 <button
+                  ref={toggleButtonRef}
                   type="button"
                   className="navbar-toggler py-0 px-1 d-lg-none dropdown-burger"
-                  onClick={toggleDropdown}
-                  ref={toggleButtonRef}
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   aria-label="Toggle navigation"
                 >
                   <span className="navbar-toggler-icons">
@@ -373,28 +482,43 @@ function Shop() {
                 <div className="navbar-collapse d-none d-lg-block">
                   <ul className="navbar-nav ms-auto cart-cart">
                     <li className="nav-item">
-                      <Link className="nav-link" to="/">
+                      <Link className="nav-link" to="/" style={navLinkStyle}>
                         Home
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/shop">
+                      <Link
+                        className="nav-link"
+                        to="/shop"
+                        style={navLinkStyle}
+                      >
                         Shop
                       </Link>
                     </li>
-
                     <li className="nav-item">
-                      <Link className="nav-link" to="/blog">
+                      <Link
+                        className="nav-link"
+                        to="/blog"
+                        style={navLinkStyle}
+                      >
                         Blog
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/privacy-policy">
+                      <Link
+                        className="nav-link"
+                        to="/privacy-policy"
+                        style={navLinkStyle}
+                      >
                         Privacy Policy
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link className="nav-link" to="/contact-us">
+                      <Link
+                        className="nav-link"
+                        to="/contact-us"
+                        style={navLinkStyle}
+                      >
                         Contact
                       </Link>
                     </li>
@@ -406,7 +530,7 @@ function Shop() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-2 mt-lg-1 pt-0 mt-md-1">
+                    <span className="count-badge mt-2 mt-lg-0 pt-lg-1 pt-0 mt-md-1">
                       {count6}
                     </span>
                     <img
@@ -431,13 +555,11 @@ function Shop() {
                   <Link
                     to={`/${url.cart}`}
                     className="nav-link d-flex nav-properties1"
-                    onClick={(e) => e.stopPropagation()}
                   >
                     <img
                       src={Carthome}
                       alt="Cart"
                       className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
-                      onClick={(e) => e.stopPropagation()}
                     />
                     <div className="addcarts ps-2 pt-lg-0 mt-lg-0 count-badge1">
                       {count}
@@ -451,31 +573,39 @@ function Shop() {
               <div
                 className="custom-dropdown cart-cart rounded-0"
                 ref={dropdownRef}
+                style={menuStyle}
               >
                 <ul className="navbar-nav">
                   <li className="nav-item">
-                    <Link className="nav-link" to="/">
+                    <Link className="nav-link" to="/" style={navLinkStyle1}>
                       Home
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/shop">
+                    <Link className="nav-link" to="/shop" style={navLinkStyle1}>
                       Shop
                     </Link>
                   </li>
-
                   <li className="nav-item">
-                    <Link className="nav-link" to="/blog">
+                    <Link className="nav-link" to="/blog" style={navLinkStyle1}>
                       Blog
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/privacy-policy">
+                    <Link
+                      className="nav-link"
+                      to="/privacy-policy"
+                      style={navLinkStyle1}
+                    >
                       Privacy Policy
                     </Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/contact-us">
+                    <Link
+                      className="nav-link"
+                      to="/contact-us"
+                      style={navLinkStyle1}
+                    >
                       Contact
                     </Link>
                   </li>
@@ -484,7 +614,7 @@ function Shop() {
             )}
           </header>
 
-          <main className="container mt-5 cart-cart container-bread">
+          <main className="container mt-5 pt-5 cart-cart container-bread position-relative">
             {user?.enable_breadcrumb === "yes" &&
               user?.breadcrumb_style !== "none" && (
                 <>
@@ -526,7 +656,6 @@ function Shop() {
           </main>
         </div>
       </div>
-      <div></div>
 
       <div className="container-fluid">
         <div className="container mb-5">
@@ -611,83 +740,88 @@ function Shop() {
         <h3 className="mt-lg-4 mt-0 text-start">Trending Products</h3>
         <div className="container">
           <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
-            {detail.map((data, index) => {
-              const productLabel = label.find(
-                (item) => item.name === data.label
-              );
-              const labelColor = productLabel ? productLabel.color : "green";
-              const productImage = data.image
-                ? `http://89.116.170.231:1600/src/image/${data.image}`
-                : "/path/to/default-image.jpg";
-              return (
-                <div
-                  className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch px-0 px-lg-1"
-                  key={index}
-                >
-                  <div className="feature-box rounded-0 position-relative rounded-1">
-                    {data.label && (
-                      <button
-                        className="position-absolute me-2 end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
-                        style={{ backgroundColor: labelColor }}
-                      >
-                        {data.label}
-                      </button>
-                    )}
-                    <Link to={`/${url.productDetails}`}>
-                      <img
-                        src={productImage}
-                        alt={data.name || "Product Image"}
-                        className="w-100 h-100 object-fit-cover border-0 image-watch"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </Link>
-                    <button
-                      className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
-                      onClick={() => addWishlistItem(data)}
-                    >
-                      <FontAwesomeIcon icon={faHeart} />
-                      <div className="wishlist-button-content">
-                        Add to Wishlist
-                      </div>
-                    </button>
-                    <div className="add-to-cart-button-container">
-                      <button
-                        className="add-to-cart-button mt-4 d-flex flex-row"
-                        style={{ whiteSpace: "nowrap" }}
-                        onClick={() => addCartItem(data)}
-                      >
-                        <FontAwesomeIcon
-                          icon={faCartShopping}
-                          className="me-2 mt-0"
+            {Array.isArray(detail) && detail.length > 0 ? (
+              detail.map((data, index) => {
+                const productLabel = label.find(
+                  (item) => item.name === data.label
+                );
+                const labelColor = productLabel ? productLabel.color : "green";
+                const productImage = data.image
+                  ? `http://89.116.170.231:1600/src/image/${data.image}`
+                  : "/path/to/default-image.jpg";
+
+                return (
+                  <div
+                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch px-0 px-lg-1"
+                    key={index}
+                  >
+                    <div className="feature-box rounded-0 position-relative rounded-1">
+                      {data.label && (
+                        <button
+                          className="position-absolute me-2 end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                          style={{ backgroundColor: labelColor }}
+                        >
+                          {data.label}
+                        </button>
+                      )}
+                      <Link to={`/${url.productDetails}`}>
+                        <img
+                          src={productImage}
+                          alt={data.name || "Product Image"}
+                          className="w-100 h-100 object-fit-cover border-0 image-watch"
+                          style={{ cursor: "pointer" }}
                         />
-                        Add to Cart
+                      </Link>
+                      <button
+                        className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
+                        onClick={() => addWishlistItem(data)}
+                      >
+                        <FontAwesomeIcon icon={faHeart} />
+                        <div className="wishlist-button-content">
+                          Add to Wishlist
+                        </div>
                       </button>
+                      <div className="add-to-cart-button-container">
+                        <button
+                          className="add-to-cart-button mt-4 d-flex flex-row cart-cart1"
+                          style={{ whiteSpace: "nowrap" }}
+                          onClick={() => addCartItem(data)}
+                        >
+                          <FontAwesomeIcon
+                            icon={faCartShopping}
+                            className="me-2 mt-0"
+                          />
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="ms-3">
+                      <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
+                        {data.store || "Product Name"}
+                      </h6>
+                      <h5 className="mt-0 lh-base text-start text-lg-start">
+                        {data.name || "Product Name"}
+                      </h5>
+                      <h6 className="mt-0 lh-base text-start text-lg-start">
+                        SKU: {data.sku || "Product Name"}
+                      </h6>
+                      <div
+                        className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
+                        style={{ fontFamily: "verdana" }}
+                      >
+                        <h6 className="me-1">{data.price || "Price"}</h6>
+                        <strike className="text-danger fw-medium">
+                          {data.price_sale || "$54"}
+                        </strike>
+                      </div>
                     </div>
                   </div>
-                  <hr />
-                  <div className="ms-3">
-                    <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
-                      {data.store || "Product Name"}
-                    </h6>
-                    <h5 className="mt-0 lh-base text-start text-lg-start">
-                      {data.name || "Product Name"}
-                    </h5>
-                    <h6 className="mt-0 lh-base text-start text-lg-start">
-                      SKU:{data.sku || "Product Name"}
-                    </h6>
-                    <div
-                      className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
-                      style={{ fontFamily: "verdana" }}
-                    >
-                      <h6 className="me-1">{data.price || "Price"}</h6>
-                      <strike className="text-danger fw-medium">
-                        {data.price_sale || "$54"}
-                      </strike>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <p className="text-center">No products available.</p>
+            )}
           </div>
         </div>
         <ToastContainer />
@@ -719,7 +853,7 @@ function Shop() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -751,7 +885,7 @@ function Shop() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -762,7 +896,10 @@ function Shop() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

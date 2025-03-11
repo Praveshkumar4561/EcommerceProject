@@ -978,7 +978,7 @@ li a {
 }
 
 .product-label {
-  z-index: 2;
+  z-index: 1;
   transition: background-color 0.3s ease;
 }
 

@@ -2124,7 +2124,7 @@ function ThemeFacebook() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex ms-0">
+      <div className="container mt-4 d-flex ms-0 cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2510,7 +2510,7 @@ function ThemeFacebook() {
 
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-2 mb-lg-0">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-facebook-change py-4 mt-4 mt-lg-3 me-2 ms-3 border d-flex">
+            <button className="btn btn-success button-facebook-change py-4 mt-4 mt-lg-3 me-2 ms-3 border d-flex cart-cart1">
               Save Changes
             </button>
           </div>

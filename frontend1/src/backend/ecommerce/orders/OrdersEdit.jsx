@@ -2245,7 +2245,9 @@ function OrdersEdit() {
                   >
                     <div className="bg-success mt-0 mb-1 text-light px-1 customer-profile d-flex justify-content-center align-items-center rounded-5">
                       <span className="fs-4">
-                        {data.first_name.charAt(0).toUpperCase()}
+                        {data?.first_name
+                          ? data.first_name.charAt(0).toUpperCase()
+                          : "?"}
                       </span>
                     </div>
                     <span className="d-flex flex-row fw-bold">

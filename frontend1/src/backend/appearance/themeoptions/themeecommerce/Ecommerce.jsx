@@ -209,11 +209,6 @@ function Ecommerce() {
       setIsNavbarExpanded(!isNavbarExpanded);
     }
   };
-  const [showPalette, setShowPalette] = useState(false);
-
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
-  };
 
   const [selectedStyle, setSelectedStyle] = useState("");
 
@@ -2167,7 +2162,7 @@ function Ecommerce() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2553,7 +2548,7 @@ function Ecommerce() {
 
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
           <div className="d-flex justify-content-end mt-3 me-2">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex">
+            <button className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex cart-cart1">
               Save Changes
             </button>
           </div>
@@ -2805,11 +2800,6 @@ function Ecommerce() {
                 <option value="1">1</option>
                 <option value="2">2</option>
               </select>
-            </div>
-
-            <div className="d-flex flex-column gap-1">
-              <span>Product gallery image style</span>
-              <span>Product gallery video position</span>
             </div>
 
             <div className="mt-3">

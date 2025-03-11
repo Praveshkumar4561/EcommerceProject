@@ -2,18 +2,20 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./Checkout.css";
-import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
+import { Helmet } from "react-helmet";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Checkout() {
   let { count, setCount } = useContext(UserContext);
@@ -224,7 +226,7 @@ function Checkout() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -294,8 +296,20 @@ function Checkout() {
     }
   };
 
+  const [selectedDate, setSelectedDate] = useState(null);
+
   return (
     <>
+      <Helmet>
+        <title>Secure Checkout - Complete Your Purchase | Rxlyte</title>
+        <meta
+          name="description"
+          content="Complete your purchase securely with our fast and safe checkout process. Enjoy hassle-free payments and quick order processing at Rxlyte."
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/checkout" />
+      </Helmet>
+
       <div
         className="container"
         id="container-customx"
@@ -319,7 +333,7 @@ function Checkout() {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -576,7 +590,7 @@ function Checkout() {
                       <div className="ms-lg-2 ms-0 text-start">
                         <input
                           type="text"
-                          placeholder="Address"
+                          placeholder="Address*"
                           className="form-control py-4 mt-4 ms-0 fw-medium border-place1 border-start border-end"
                           name="address"
                           value={user.address}
@@ -638,19 +652,77 @@ function Checkout() {
                         </div>
                       </div>
 
+                      <div className="d-flex gap-3 ms-lg-2 ms-0 mt-4 text-start">
+                        <div className="d-flex flex-column w-100">
+                          <DatePicker
+                            selected={selectedDate}
+                            onChanges={(date) => setSelectedDate(date)}
+                            placeholderText="Remind me/Followup for next ord"
+                            dateFormat="dd-MM-yyyy"
+                            className="form-control fw-medium py-4 border-place1 border-start border-end cart-cart111"
+                            name="date"
+                            value={user.date}
+                            onChange={onInputChange}
+                          />
+                          <div className="d-flex justify-content-end align-items-end w-100">
+                            <FontAwesomeIcon
+                              icon={faCalendarDays}
+                              className="position-absolute fs-4 me-2 m-0 mb-2 pb-1"
+                              onClick={() =>
+                                document
+                                  .querySelector("input[name='date']")
+                                  .focus()
+                              }
+                            />
+
+                            {errors?.date && (
+                              <span className="text-danger cart-cart">
+                                {errors.date}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="d-flex flex-column w-100 text-start">
+                          <select
+                            className="form-select border-place1-check cart-cart"
+                            style={{ height: "48.3px" }}
+                            defaultValue=""
+                          >
+                            <option disabled>Heard About Us</option>
+                            <option value="">Please select</option>
+                            <option value="Returning Customer">
+                              Returning Customer
+                            </option>
+                            <option value="By google">By google</option>
+                            <option value="I searched on web">
+                              I searched on web
+                            </option>
+                            <option value="Doctor recommended me">
+                              Doctor recommended me
+                            </option>
+                            <option value="someone referred me">
+                              someone referred me
+                            </option>
+                            <option value="Through Blogs/Forums">
+                              Through Blogs/Forums
+                            </option>
+                            <option value="Others">Others</option>
+                          </select>
+                        </div>
+                      </div>
+
                       <div className="ms-lg-2 ms-0 text-start">
-                        <input
-                          type="datetime-local"
-                          className="form-control py-4 mt-4 fw-medium border-place1 border-start border-end"
-                          name="date"
-                          value={user.date}
-                          onChange={onInputChange}
-                        />
-                        {errors.date && (
-                          <span className="text-danger cart-cart">
-                            {errors.date}
-                          </span>
-                        )}
+                        <select
+                          className="form-select mt-4 border-place1-check cart-cart"
+                          style={{ height: "47px" }}
+                        >
+                          <option value="">Please select</option>
+                          <option value="Email">Email</option>
+                          <option value="Phone">Phone</option>
+                          <option value="WhatsApp">WhatsApp</option>
+                          <option value="Sms">Sms</option>
+                        </select>
                       </div>
 
                       <div className="d-flex flex-row gap-2 ms-2 mt-3 cart-cart">
@@ -1050,7 +1122,7 @@ function Checkout() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -1082,7 +1154,7 @@ function Checkout() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -1093,7 +1165,10 @@ function Checkout() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

@@ -2151,7 +2151,7 @@ function BlogPost() {
       </nav>
 
       <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
-        <div className="card mt-3 testimonial">
+        <div className="card mt-3 testimonial table-price ms-2">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
               <div className="d-flex flex-row w-100">
@@ -2272,7 +2272,8 @@ function BlogPost() {
                           <img
                             src={`http://89.116.170.231:1600/src/image/${data.image}`}
                             alt="RxLYTE"
-                            className="w-75 rounded-2 img-fluid"
+                            className="rounded-2 img-fluid"
+                            style={{ width: "100px" }}
                           />
                         </td>
 

@@ -321,7 +321,7 @@ function MarketPlace() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -2138,7 +2138,7 @@ function MarketPlace() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2523,7 +2523,7 @@ function MarketPlace() {
 
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 save-changes">
           <div className="d-flex justify-content-end mt-lg-2 me-2 mt-3">
-            <button className="btn btn-success button-change2 py-4 border d-flex ">
+            <button className="btn btn-success button-change2 py-4 border d-flex cart-cart1">
               Save Changes
             </button>
           </div>

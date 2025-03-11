@@ -126,7 +126,7 @@ function CustomHtml() {
     }
   };
 
-  const [code, setCode] = useState("write custom HTML");
+  const [code, setCode] = useState("");
 
   const handleChanges = (editor, data, value) => {
     setCode(value);
@@ -2119,10 +2119,7 @@ function CustomHtml() {
       <div className="container">
         <div className="row d-flex justify-content-md-center ps-1">
           <div className="d-flex flex-column align-items-center mt-1 col-12 col-lg-6 w-100">
-            <div
-              className="position-relative border rounded-1 custom-code me-3"
-              // style={{ width: "90%", maxWidth: "1000px" }}
-            >
+            <div className="position-relative border rounded-1 custom-code me-3">
               <p className="ms-4 mt-3 text-start">Header HTML</p>
               <CodeMirror
                 className="border rounded ms-3 me-3 mb-3"

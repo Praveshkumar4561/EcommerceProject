@@ -81,6 +81,7 @@ function Widgets() {
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -219,7 +220,6 @@ function Widgets() {
   let [pageWidgets, setPageWidgets] = useState(false);
   let [productDetails, setProductDetails] = useState(false);
   let [brands, setBrands] = useState(false);
-  let [arrow, setArrow] = useState(false);
   let [sidebar1, setSidebar1] = useState(false);
   let [customProduct1, setCustomProducts1] = useState(false);
   let [bottomCategory, setBottomCategory] = useState(false);
@@ -228,69 +228,120 @@ function Widgets() {
   let [productTop, setProductTop] = useState(false);
   let [productBottom, setProductBottom] = useState(false);
   let [productPrimary, setProductPrimary] = useState(false);
+  const [rotateState, setRotateState] = useState({
+    blog: false,
+    footer: false,
+    footers: false,
+    footers1: false,
+    footers2: false,
+    details: false,
+    list: false,
+    bottom: false,
+    category: false,
+    sidebar: false,
+    brand: false,
+    products: false,
+    tag: false,
+    tag1: false,
+    primary: false,
+    info: false,
+    ecommerce: false,
+    news: false,
+    site: false,
+    payment: false,
+    blog1: false,
+    about: false,
+    posts: false,
+    blogcat: false,
+    blogtag: false,
+    primary1: false,
+    custom: false,
+    menu: false,
+    contact: false,
+    productcate1: false,
+    productcate2: false,
+    productcate3: false,
+    productcate4: false,
+  });
 
   let blogsidebar = () => {
     setSidebar(!sidebar);
+    setRotateState((prev) => ({ ...prev, blog: !prev.blog }));
   };
 
   let footerclicked = () => {
     setFooter(!footer);
+    setRotateState((prev) => ({ ...prev, footer: !prev.footer }));
   };
 
   let searchblog = () => {
     setSearch(!search);
+    setRotateState((prev) => ({ ...prev, blog1: !prev.blog1 }));
   };
 
   let blogaboutclick = () => {
     setBlogAbout(!blogAbout);
+    setRotateState((prev) => ({ ...prev, about: !prev.about }));
   };
 
   let blogposts = () => {
     setBlogPost(!blogPost);
+    setRotateState((prev) => ({ ...prev, posts: !prev.posts }));
   };
 
   let blogCategoryClicked = () => {
     setBlogCategory(!blogCategory);
+    setRotateState((prev) => ({ ...prev, blogcat: !prev.blogcat }));
   };
 
   let tagsClicked = () => {
     setTags(!tags);
+    setRotateState((prev) => ({ ...prev, blogtag: !prev.blogtag }));
   };
 
   let siteInformation = () => {
     setInformation(!site);
+    setRotateState((prev) => ({ ...prev, primary1: !prev.primary1 }));
   };
 
   let customMenu = () => {
     setCustom(!custom);
+    setRotateState((prev) => ({ ...prev, custom: !prev.custom }));
   };
 
   let customMenu1 = () => {
     setCustom1(!custom1);
+    setRotateState((prev) => ({ ...prev, menu: !prev.menu }));
   };
 
   let contactClicked = () => {
     setContact(!contact);
+    setRotateState((prev) => ({ ...prev, contact: !prev.contact }));
   };
 
   let productCategoryClicked = () => {
     setProductCategory(!productCategory);
+    setRotateState((prev) => ({ ...prev, productcate1: !prev.productcate1 }));
   };
 
   let productCategoryClicked1 = () => {
     setProductCategory1(!productCategory1);
+    setRotateState((prev) => ({ ...prev, productcate2: !prev.productcate2 }));
   };
 
   let productCategoryClicked2 = () => {
     setProductCategory2(!productCategory2);
+    setRotateState((prev) => ({ ...prev, productcate3: !prev.productcate3 }));
   };
 
   let productCategoryClicked3 = () => {
     setProductCategory3(!productCategory3);
+    setRotateState((prev) => ({ ...prev, productcate4: !prev.productcate4 }));
   };
 
   let footers = () => {
     setFooters1(!footers1);
+    setRotateState((prev) => ({ ...prev, footers: !prev.footers }));
   };
 
   let footerclicked1 = () => {
@@ -299,66 +350,77 @@ function Widgets() {
 
   let copyrightclicked = () => {
     setCopyRight(!copyright);
+    setRotateState((prev) => ({ ...prev, copyright: !prev.copyright }));
   };
 
   let paymentClicked = () => {
     setPayment(!payment);
+    setRotateState((prev) => ({ ...prev, payment: !prev.payment }));
   };
 
   let newsletterClicked = () => {
     setNewsLetters(!newsletters);
+    setRotateState((prev) => ({ ...prev, news: !prev.news }));
   };
 
   let listproduct = () => {
     setLists(!lists);
+    setRotateState((prev) => ({ ...prev, list: !prev.list }));
   };
 
   let pagewidgets = () => {
     setPageWidgets(!pageWidgets);
+    setRotateState((prev) => ({ ...prev, details: !prev.details }));
   };
 
   let productdetails = () => {
     setProductDetails(!productDetails);
+    setRotateState((prev) => ({ ...prev, info: !prev.info }));
   };
 
   let brandedclicked = () => {
     setBrands(!brands);
-  };
-
-  let productarrowclicked = () => {
-    setArrow(!arrow);
+    setRotateState((prev) => ({ ...prev, ecommerce: !prev.ecommerce }));
   };
 
   let sidebarClicked = () => {
     setSidebar1(!sidebar1);
+    setRotateState((prev) => ({ ...prev, bottom: !prev.bottom }));
   };
 
   let customproducts1 = () => {
     setCustomProducts1(!customProduct1);
+    setRotateState((prev) => ({ ...prev, category: !prev.category }));
   };
 
   let bottomCategoryClicked = () => {
     setBottomCategory(!bottomCategory);
+    setRotateState((prev) => ({ ...prev, sidebar: !prev.sidebar }));
   };
 
   let bottomCategoryClicked1 = () => {
     setBottomCategory1(!bottomCategory1);
+    setRotateState((prev) => ({ ...prev, brand: !prev.brand }));
   };
 
   let productCusrsorClicked = () => {
     setProductCursor(!productCusrsor);
+    setRotateState((prev) => ({ ...prev, products: !prev.products }));
   };
 
   let productTopClicked = () => {
     setProductTop(!productTop);
+    setRotateState((prev) => ({ ...prev, tag: !prev.tag }));
   };
 
   let productBottomClicked = () => {
     setProductBottom(!productBottom);
+    setRotateState((prev) => ({ ...prev, tag1: !prev.tag1 }));
   };
 
   let productPrimaryCliked = () => {
     setProductPrimary(!productPrimary);
+    setRotateState((prev) => ({ ...prev, primary: !prev.primary }));
   };
 
   let [count5, setCount5] = useState(0);
@@ -2305,7 +2367,7 @@ function Widgets() {
         </ol>
       </nav>
 
-      <div className="container container-create create-tag1 w-auto">
+      <div className="container container-widget create-tag1 cart-cart">
         <div
           className="alert alert-info bg-body editor-page border d-flex create-tag1 d-flex wigets-name2"
           id="role-announce"
@@ -2339,7 +2401,7 @@ function Widgets() {
 
         <h4 className="fw-medium">Available Widgets</h4>
 
-        <div className="row ms-1 me-1 ms-lg-0 d-flex">
+        <div className="row ms-1 me-1 ms-lg-0 gap-1">
           <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
             Simple Menu
           </div>
@@ -2352,8 +2414,12 @@ function Widgets() {
             Blog Sidebar
             <FontAwesomeIcon
               icon={faAngleUp}
-              className="faangle21 bg-light px-2 rounded float-end mt-1"
-              style={{ cursor: "pointer" }}
+              className="faangle1 bg-light px-2 rounded float-end mt-1"
+              style={{
+                cursor: "pointer",
+                transform: rotateState.blog ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 0.3s ease",
+              }}
               onClick={blogsidebar}
             />
             <label htmlFor="" className="custom-widgets">
@@ -2369,7 +2435,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.blog1
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={searchblog}
                   />
                   <hr />
@@ -2392,7 +2464,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-1 pe-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.about
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={blogaboutclick}
                   />
                   <hr />
@@ -2552,7 +2630,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 pe-1 mt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.posts
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={blogposts}
                   />
                   <hr />
@@ -2604,7 +2688,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-3 pe-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.blogcat
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={blogCategoryClicked}
                   />
                   <hr />
@@ -2660,7 +2750,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-3 pe-2"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.blogtag
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={tagsClicked}
                   />
                   <hr />
@@ -2705,6 +2801,9 @@ function Widgets() {
               className="ms-4 ps-1 bg-light faangle11 float-end me-2 pe-1 pe-lg-0 mt-1"
               style={{
                 cursor: "pointer",
+                transform: rotateState.footer
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
                 transition: "transform 0.3s ease",
               }}
               onClick={footerclicked}
@@ -2722,7 +2821,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.primary1
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={siteInformation}
                   />
                   <hr />
@@ -2826,7 +2931,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.custom
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={customMenu}
                   />
                   <hr />
@@ -2859,10 +2970,6 @@ function Widgets() {
                         <option value="information">Information</option>
                         <option value="main-menu-vi">Thực đơn chính</option>
                         <option value="my-account-vi">Tài khoản của tôi</option>
-                        <option value="information-vi">Thông tin</option>
-                        <option value="main-menu-ar">القائمة الرئيسية</option>
-                        <option value="my-account-ar">حسابي</option>
-                        <option value="information-ar">معلومة</option>
                       </select>
 
                       <div className="d-flex justify-content-around mt-3 mb-3">
@@ -2884,7 +2991,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="me-3 mt-1 float-end"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.menu
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={customMenu1}
                   />
                   <hr />
@@ -2931,42 +3044,6 @@ function Widgets() {
                         >
                           Information
                         </option>
-                        <option
-                          value="main-menu-vi"
-                          data-select2-id="select2-data-33-1mc3"
-                        >
-                          Thực đơn chính
-                        </option>
-                        <option
-                          value="my-account-vi"
-                          data-select2-id="select2-data-34-84kc"
-                        >
-                          Tài khoản của tôi
-                        </option>
-                        <option
-                          value="information-vi"
-                          data-select2-id="select2-data-35-88a0"
-                        >
-                          Thông tin
-                        </option>
-                        <option
-                          value="main-menu-ar"
-                          data-select2-id="select2-data-36-jym8"
-                        >
-                          القائمة الرئيسية
-                        </option>
-                        <option
-                          value="my-account-ar"
-                          data-select2-id="select2-data-37-6qjk"
-                        >
-                          حسابي
-                        </option>
-                        <option
-                          value="information-ar"
-                          data-select2-id="select2-data-38-ekjo"
-                        >
-                          معلومة
-                        </option>
                       </select>
 
                       <div className="d-flex justify-content-around mt-3 mb-3">
@@ -2988,7 +3065,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-2 pt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.contact
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={contactClicked}
                   />
                   <hr />
@@ -3064,7 +3147,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-2 pt-1 pe-"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.productcate1
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={productCategoryClicked}
                   />
                   <hr />
@@ -3509,7 +3598,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-2 pt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.productcate2
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={productCategoryClicked1}
                   />
                   <hr />
@@ -3954,7 +4049,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-2 pt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.productcate3
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={productCategoryClicked2}
                   />
                   <hr />
@@ -4399,7 +4500,13 @@ function Widgets() {
                   <FontAwesomeIcon
                     icon={faAngleDown}
                     className="float-end me-3 mt-2 pt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      transform: rotateState.productcate4
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
                     onClick={productCategoryClicked3}
                   />
                   <hr />
@@ -4841,7 +4948,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Blog about Me
               </div>
@@ -4855,7 +4962,13 @@ function Widgets() {
                 <FontAwesomeIcon
                   icon={faAngleUp}
                   className="faangle21 bg-light px-2 rounded float-end mt-1"
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    transform: rotateState.footers
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
                   onClick={footers}
                 />
                 <label htmlFor="" className="custom-widgets">
@@ -4871,7 +4984,13 @@ function Widgets() {
                       <FontAwesomeIcon
                         icon={faAngleDown}
                         className="float-end me-3 mt-1 pe-1"
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          cursor: "pointer",
+                          transform: rotateState.news
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s ease",
+                        }}
                         onClick={newsletterClicked}
                       />
                       <hr />
@@ -5104,6 +5223,9 @@ function Widgets() {
                   className="ms-4 ps-1 bg-light faangle11 float-end me-2 pe-1 pe-lg-0 mt-1"
                   style={{
                     cursor: "pointer",
+                    transform: rotateState.footer1
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                     transition: "transform 0.3s ease",
                   }}
                   onClick={footerclicked1}
@@ -5122,7 +5244,13 @@ function Widgets() {
                       <FontAwesomeIcon
                         icon={faAngleDown}
                         className="float-end me-3 mt-1"
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          cursor: "pointer",
+                          transform: rotateState.copyright
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s ease",
+                        }}
                         onClick={copyrightclicked}
                       />
                       <hr />
@@ -5193,7 +5321,13 @@ function Widgets() {
                       <FontAwesomeIcon
                         icon={faAngleDown}
                         className="float-end me-3 mt-1"
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          cursor: "pointer",
+                          transform: rotateState.payment
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s ease",
+                        }}
                         onClick={paymentClicked}
                       />
                       <hr />
@@ -5226,7 +5360,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Blog Posts
               </div>
@@ -5240,7 +5374,13 @@ function Widgets() {
                 <FontAwesomeIcon
                   icon={faAngleUp}
                   className="faangle21 bg-light px-2 rounded float-end mt-1"
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    transform: rotateState.details
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
                   onClick={pagewidgets}
                 />
                 <label htmlFor="" className="custom-widgets">
@@ -5256,7 +5396,13 @@ function Widgets() {
                       <FontAwesomeIcon
                         icon={faAngleDown}
                         className="float-end me-3 mt-1 pe-1"
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          cursor: "pointer",
+                          transform: rotateState.info
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s ease",
+                        }}
                         onClick={productdetails}
                       />
                       <hr />
@@ -5365,6 +5511,9 @@ function Widgets() {
                   className="ms-4 ps-1 bg-light float-end me-2 pe-1 pe-lg-0"
                   style={{
                     cursor: "pointer",
+                    transform: rotateState.list
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                     transition: "transform 0.3s ease",
                   }}
                   onClick={listproduct}
@@ -5382,7 +5531,13 @@ function Widgets() {
                       <FontAwesomeIcon
                         icon={faAngleDown}
                         className="float-end me-3 mt-1"
-                        style={{ cursor: "pointer" }}
+                        style={{
+                          cursor: "pointer",
+                          transform: rotateState.ecommerce
+                            ? "rotate(180deg)"
+                            : "rotate(0deg)",
+                          transition: "transform 0.3s ease",
+                        }}
                         onClick={brandedclicked}
                       />
                       <hr />
@@ -5476,7 +5631,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Tags
               </div>
@@ -5490,7 +5645,13 @@ function Widgets() {
                 <FontAwesomeIcon
                   icon={faAngleUp}
                   className="faangle21 bg-light px-2 rounded float-end mt-1"
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    transform: rotateState.bottom
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
                   onClick={sidebarClicked}
                 />
                 <label htmlFor="" className="custom-widgets">
@@ -5518,6 +5679,9 @@ function Widgets() {
                   className="ms-4 ps-1 bg-light float-end me-2 pe-1 pe-lg-0"
                   style={{
                     cursor: "pointer",
+                    transform: rotateState.category
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                     transition: "transform 0.3s ease",
                   }}
                   onClick={customproducts1}
@@ -5542,7 +5706,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Ecommerce Brands
               </div>
@@ -5556,7 +5720,13 @@ function Widgets() {
                 <FontAwesomeIcon
                   icon={faAngleUp}
                   className="faangle21 bg-light px-2 rounded float-end mt-1"
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    transform: rotateState.sidebar
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
                   onClick={bottomCategoryClicked}
                 />
                 <label htmlFor="" className="custom-widgets">
@@ -5585,6 +5755,9 @@ function Widgets() {
                   className="ms-4 ps-1 bg-light float-end me-2 pe-1 pe-lg-0"
                   style={{
                     cursor: "pointer",
+                    transform: rotateState.brand
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                     transition: "transform 0.3s ease",
                   }}
                   onClick={bottomCategoryClicked1}
@@ -5608,7 +5781,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Product Categories
               </div>
@@ -5622,7 +5795,13 @@ function Widgets() {
                 <FontAwesomeIcon
                   icon={faAngleUp}
                   className="faangle21 bg-light px-2 rounded float-end mt-1"
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    transform: rotateState.products
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
                   onClick={productCusrsorClicked}
                 />
                 <label htmlFor="" className="custom-widgets">
@@ -5650,6 +5829,9 @@ function Widgets() {
                   className="ms-4 ps-1 bg-light float-end me-2 pe-1 pe-lg-0"
                   style={{
                     cursor: "pointer",
+                    transform: rotateState.tag
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                     transition: "transform 0.3s ease",
                   }}
                   onClick={productTopClicked}
@@ -5673,7 +5855,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Site Accepted Payments
               </div>
@@ -5687,7 +5869,13 @@ function Widgets() {
                 <FontAwesomeIcon
                   icon={faAngleUp}
                   className="faangle21 bg-light px-2 rounded float-end mt-1"
-                  style={{ cursor: "pointer" }}
+                  style={{
+                    cursor: "pointer",
+                    transform: rotateState.tag1
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.3s ease",
+                  }}
                   onClick={productBottomClicked}
                 />
                 <label htmlFor="" className="custom-widgets">
@@ -5715,6 +5903,9 @@ function Widgets() {
                   className="ms-4 ps-1 bg-light float-end me-2 pe-1 pe-lg-0"
                   style={{
                     cursor: "pointer",
+                    transform: rotateState.primary
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
                     transition: "transform 0.3s ease",
                   }}
                   onClick={productPrimaryCliked}
@@ -5738,7 +5929,7 @@ function Widgets() {
           </div>
 
           <div className="container">
-            <div className="row d-flex mt-1">
+            <div className="row d-flex mt-1 gap-1">
               <div className="col-12 col-lg-3 border rounded py-3 mb-3 mb-lg-0 text-start name-widgets">
                 Site Copyright
               </div>

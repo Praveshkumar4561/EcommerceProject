@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Privacy.css";
-import image1 from "../../assets/Tonic.svg";
+
 import Tonic from "../../assets/Tonic.svg";
 
 import Hamburger from "../../assets/hamburger.svg";
@@ -12,6 +12,7 @@ import axios from "axios";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
+import { Helmet } from "react-helmet";
 
 function Privacy() {
   let { count, setCount } = useContext(UserContext);
@@ -62,7 +63,7 @@ function Privacy() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -134,6 +135,19 @@ function Privacy() {
 
   return (
     <>
+      <Helmet>
+        <title>Privacy Policy - How We Protect Your Data | Rxlyte</title>
+        <meta
+          name="description"
+          content="Read our Privacy Policy to understand how we collect, use, and protect your personal information at Rxlyte. Your data security is our top priority."
+        />
+        <meta name="robots" content="index, follow" />
+        <link
+          rel="canonical"
+          href="http://srv724100.hstgr.cloud/privacy-policy"
+        />
+      </Helmet>
+
       <div
         className="container"
         id="container-customx"
@@ -157,7 +171,7 @@ function Privacy() {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -585,7 +599,7 @@ function Privacy() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -617,7 +631,7 @@ function Privacy() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -628,7 +642,10 @@ function Privacy() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

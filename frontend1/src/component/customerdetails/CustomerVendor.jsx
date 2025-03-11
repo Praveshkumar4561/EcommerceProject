@@ -106,10 +106,7 @@ function CustomerVendor() {
   let [vendor, setVendor] = useState([]);
 
   let vendor_data = async () => {
-    let response = await axios.get(
-      "http://89.116.170.231:1600/vendordata",
-      user
-    );
+    let response = await axios.get("http://89.116.170.231:1600/vendordata", user);
     setVendor(response.data);
   };
   vendor_data();
@@ -122,7 +119,7 @@ function CustomerVendor() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -284,61 +281,61 @@ function CustomerVendor() {
                   aria-labelledby="categoryDropdown"
                 >
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       New Arrivals
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Electronics
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Gifts
                     </Link>
                   </li>
                   <li>
                     <Link
                       className="dropdown-item"
-                      href="#"
+                      to="#"
                       aria-labelledby="categoryDropdown"
                     >
                       Computers
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       SmartPhones & Tablets
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Tv,Vido & Music
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Cameras
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Cooking
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Accessories
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Sports
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#"
                       Electronics Gadgets
                     </Link>
                   </li>

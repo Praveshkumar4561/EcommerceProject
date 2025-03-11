@@ -88,6 +88,7 @@ function ProductOptions() {
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -345,7 +346,7 @@ function ProductOptions() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">

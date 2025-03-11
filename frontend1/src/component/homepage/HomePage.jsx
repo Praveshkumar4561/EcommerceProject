@@ -18,7 +18,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
-import image1 from "../../assets/Tonic.svg";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
@@ -35,6 +34,7 @@ import UserContext from "../../context/UserContext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import JsonLd from "../JsonLd";
+import { Helmet } from "react-helmet";
 
 function HomePage() {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -236,7 +236,7 @@ function HomePage() {
       setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: true,
         closeButton: true,
         draggable: true,
@@ -244,7 +244,7 @@ function HomePage() {
     } catch (error) {
       toast.error("Product is not added on the cart", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: true,
         closeButton: true,
         draggable: true,
@@ -273,7 +273,7 @@ function HomePage() {
       setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: true,
         closeButton: true,
         draggable: true,
@@ -289,7 +289,7 @@ function HomePage() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -394,8 +394,8 @@ function HomePage() {
       {
         "@type": "Organization",
         name: "RxLYTE",
-        url: "https://rxlyte.com/",
-        logo: "https://rxlyte.com/Tonic.svg",
+        url: "http://srv724100.hstgr.cloud/",
+        logo: "http://srv724100.hstgr.cloud/Tonic.svg",
         description:
           "RxLyte is a leading eCommerce platform offering a premium selection of healthcare and wellness products, ensuring high-quality and affordable solutions for customers.",
         contactPoint: {
@@ -409,7 +409,7 @@ function HomePage() {
       {
         "@type": "WebSite",
         name: "RxLYTE",
-        url: "https://rxlyte.com/",
+        url: "http://srv724100.hstgr.cloud/",
         description:
           "Shop the latest healthcare products at RxLyte, your trusted online pharmacy for premium wellness essentials.",
         keywords:
@@ -418,8 +418,8 @@ function HomePage() {
       {
         "@type": "LocalBusiness",
         name: "RxLYTE Healthcare Store",
-        url: "https://rxlyte.com/",
-        image: "https://rxlyte.com/Tonic.svg",
+        url: "http://srv724100.hstgr.cloud/",
+        image: "http://srv724100.hstgr.cloud/Tonic.svg",
         description:
           "RxLyte's physical store provides top-tier healthcare and wellness products, ensuring convenient access for all customers.",
         address: {
@@ -437,17 +437,19 @@ function HomePage() {
       {
         "@type": "FAQPage",
         name: "FAQs",
-        mainEntity: faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: faq.answer,
-          },
-        })),
+        mainEntity: Array.isArray(faqs)
+          ? faqs.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.answer,
+              },
+            }))
+          : [],
       },
 
-      ...product.map((item) => ({
+      ...(Array.isArray(product) ? product : []).map((item) => ({
         "@type": "Product",
         name: item.name,
         image: item.image,
@@ -472,7 +474,7 @@ function HomePage() {
         },
       })),
 
-      ...blog.map((blogItem) => ({
+      ...(Array.isArray(blog) ? blog : []).map((blogItem) => ({
         "@type": "Blog",
         name: blogItem.name,
         image: blogItem.image,
@@ -490,6 +492,56 @@ function HomePage() {
   return (
     <>
       <JsonLd data={schemaData} />
+
+      <Helmet>
+        <title>
+          RxLYTE - Buy Healthcare & Wellness Products Online | Best Prices
+        </title>
+
+        <meta
+          name="description"
+          content="Shop premium healthcare and wellness products online at RxLYTE. Discover high-quality medical essentials, vitamins, supplements, and personal care items at unbeatable prices. Enjoy fast delivery and secure checkout."
+        />
+        <meta
+          name="keywords"
+          content="RxLYTE, healthcare products, online pharmacy, wellness products, medical essentials, buy medicine online, vitamins, supplements, personal care, health & wellness, affordable healthcare, quality healthcare, RxLYTE store"
+        />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="RxLYTE Team" />
+        <meta name="language" content="English" />
+
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="RxLYTE - Buy Healthcare & Wellness Products Online | Best Prices"
+        />
+        <meta
+          property="og:description"
+          content="Shop premium healthcare and wellness products online at RxLYTE. High-quality medical essentials, vitamins, supplements, and personal care products available at unbeatable prices. Fast delivery & secure checkout."
+        />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+        <meta property="og:site_name" content="RxLYTE" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="RxLYTE - Buy Healthcare & Wellness Products Online | Best Prices"
+        />
+        <meta
+          name="twitter:description"
+          content="Shop premium healthcare and wellness products online at RxLYTE. Get high-quality medical essentials, vitamins, and personal care products at unbeatable prices."
+        />
+        <meta
+          name="twitter:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
 
       <div
         className="container d-lg-none d-block"
@@ -524,7 +576,9 @@ function HomePage() {
                 onClick={rightData}
               />
               <div className="ms-0">
-                {user[currentIndex].content.split(" ").slice(0, 6).join(" ")}
+                {user[currentIndex]?.content
+                  ? user[currentIndex].content.split(" ").slice(0, 6).join(" ")
+                  : "No content available"}
               </div>
             </p>
           </div>
@@ -536,7 +590,7 @@ function HomePage() {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -691,11 +745,14 @@ function HomePage() {
                     style={{ cursor: "pointer" }}
                     onClick={rightData}
                   />
+
                   <div className="ms-0">
-                    {user[currentIndex].content
-                      .split(" ")
-                      .slice(0, 7)
-                      .join(" ")}
+                    {user[currentIndex]?.content
+                      ? user[currentIndex].content
+                          .split(" ")
+                          .slice(0, 7)
+                          .join(" ")
+                      : "No content available"}
                   </div>
                 </p>
               </div>
@@ -929,61 +986,61 @@ function HomePage() {
                   aria-labelledby="categoryDropdown"
                 >
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       New Arrivals
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Electronics
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Gifts
                     </Link>
                   </li>
                   <li>
                     <Link
                       className="dropdown-item"
-                      href="#"
+                      to="#"
                       aria-labelledby="categoryDropdown"
                     >
                       Computers
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       SmartPhones & Tablets
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Tv,Vido & Music
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Cameras
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Cooking
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Accessories
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Sports
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" href="#">
+                    <Link className="dropdown-item" to="#">
                       Electronics Gadgets
                     </Link>
                   </li>
@@ -1188,7 +1245,7 @@ function HomePage() {
                         </button>
                         <div className="add-to-cart-button-container">
                           <button
-                            className="add-to-cart-button mt-4 d-flex flex-row"
+                            className="add-to-cart-button mt-4 d-flex flex-row cart-cart1"
                             style={{ whiteSpace: "nowrap" }}
                             onClick={() => addCartItem(data)}
                           >
@@ -1239,7 +1296,8 @@ function HomePage() {
 
           <div className="container d-flex justify-content-center mt-0 align-items-center">
             <div className="row gap-2 g-3 d-flex flex-row flex-lg-nowrap flex-md-nowrap flex-wrap customer-what">
-              {paginatedReviews.length > 0 ? (
+              {Array.isArray(paginatedReviews) &&
+              paginatedReviews.length > 0 ? (
                 paginatedReviews.map((item) => (
                   <div
                     key={item.id}
@@ -1342,7 +1400,7 @@ function HomePage() {
                         </button>
                         <div className="add-to-cart-button-container">
                           <button
-                            className="add-to-cart-button mt-4 d-flex flex-row"
+                            className="add-to-cart-button mt-4 d-flex flex-row cart-cart1"
                             style={{ whiteSpace: "nowrap" }}
                             onClick={() => addCartItem(data)}
                           >
@@ -1435,7 +1493,7 @@ function HomePage() {
 
                       <div className="add-to-cart-button-container">
                         <button
-                          className="add-to-cart-button mt-4 d-flex flex-row"
+                          className="add-to-cart-button mt-4 d-flex flex-row cart-cart1"
                           style={{ whiteSpace: "nowrap" }}
                           onClick={() => addCartItem(data)}
                         >
@@ -1485,40 +1543,41 @@ function HomePage() {
               <div className="custom-container text-center-custom lorem-home h-auto pb-4">
                 <h1 className="fw-normal fs-1 mt-4 text-center">FAQs</h1>
                 <div>
-                  {faqs.map((item, index) => (
-                    <div
-                      key={index}
-                      id="custom-border1"
-                      className="ms-lg-3 ms-2 mt-4 rounded-2 border d-flex flex-column w-100 h-auto position-relative"
-                    >
-                      <div className="d-flex align-items-center">
-                        <h4 className="fs-4 mb-0 text-start ms-0 faq-typo p-2 fw-normal ms-md-0">
-                          {item.question}
-                        </h4>
+                  {Array.isArray(faqs) && faqs.length > 0 ? (
+                    faqs.map((item, index) => (
+                      <div
+                        key={index}
+                        className="ms-lg-3 me-2 ms-2 mt-4 rounded-2 border d-flex flex-column h-auto position-relative"
+                      >
+                        <div className="d-flex align-items-center">
+                          <h4 className="fs-4 cart-cart mb-0 text-start ms-0 faq-typo p-2 fw-normal ms-md-0">
+                            {item.question}
+                          </h4>
 
-                        <div className="custom-button1">
-                          <button
-                            className="border rounded py-2 ms-2 px-2 bg-success text-light"
-                            onClick={() => faqsAnswer(index)}
-                          >
-                            <FontAwesomeIcon
-                              icon={faAngleDown}
-                              className={`fs-2 ${
-                                rotatedIndexes.includes(index) ? "rotate" : ""
-                              }`}
-                            />
-                          </button>
+                          <div className="custom-button1">
+                            <button
+                              className="border rounded py-2 ms-2 px-2 bg-success text-light"
+                              onClick={() => faqsAnswer(index)}
+                            >
+                              <FontAwesomeIcon
+                                icon={faAngleDown}
+                                className={`fs-2 ${
+                                  rotatedIndexes.includes(index) ? "rotate" : ""
+                                }`}
+                              />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                      {activeIndex === index && (
-                        <p>
-                          <div className="mt-2 ms-2 text-start">
+                        {activeIndex === index && (
+                          <div className="mt-lg-0 ms-2 text-start cart-cart mt-1">
                             {item.answer}
                           </div>
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                        )}
+                      </div>
+                    ))
+                  ) : (
+                    <p>Loading FAQs...</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -1530,36 +1589,40 @@ function HomePage() {
         <div className="container">
           <h2 className="text-center mt-4 fw-medium faq-typo1">Latest Blogs</h2>
           <div className="row mt-3 d-flex justify-content-start lorem-home1 flex-row gap-3 gap-xxl-4 me-lg-0 me-0 ms-lg-1">
-            {currentBlogs.map((post, index) => (
-              <div
-                key={index}
-                className="col-12 col-xxl-4 col-lg-4 col-12 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center ms-lg- latest-read ms-md-3 mt-md-2"
-              >
-                <img
-                  src={`http://89.116.170.231:1600/src/image/${post.image}`}
-                  alt={`img${index + 1}`}
-                  className="img-fluid w-100"
-                />
-                <div className="latest-moree">
-                  <h4 className="fw-medium fs-4 mt-2 lh-base text-start ms-2 ms-lg-2">
-                    {post.name.split(" ").slice(0, 8).join(" ")}
-                  </h4>
-                  <p className="text-dark text-start mt-0 px-lg-2 px-2">
-                    {post.description.split(" ").slice(0, 10).join(" ")}
-                  </p>
-                  <Link
-                    to={`/blog-details/${post.id}`}
-                    className="text-decoration-none mt-1"
-                  >
-                    <h3 className="read-more ms-5 mt-4">
-                      <button className="btn-success rounded text-light py-2 mt-2 more-button">
-                        Read more
-                      </button>
-                    </h3>
-                  </Link>
+            {Array.isArray(currentBlogs) && currentBlogs.length > 0 ? (
+              currentBlogs.map((post, index) => (
+                <div
+                  key={index}
+                  className="col-12 col-xxl-4 col-lg-4 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center ms-lg- latest-read ms-md-3 mt-md-2"
+                >
+                  <img
+                    src={`http://89.116.170.231:1600/src/image/${post.image}`}
+                    alt={`img${index + 1}`}
+                    className="img-fluid w-100"
+                  />
+                  <div className="latest-moree">
+                    <h4 className="fw-medium fs-4 mt-2 lh-base text-start ms-2 ms-lg-2">
+                      {post.name.split(" ").slice(0, 8).join(" ")}
+                    </h4>
+                    <p className="text-dark text-start mt-0 px-lg-2 px-2">
+                      {post.description.split(" ").slice(0, 10).join(" ")}
+                    </p>
+                    <Link
+                      to={`/blog-details/${post.id}`}
+                      className="text-decoration-none mt-1"
+                    >
+                      <h3 className="read-more ms-5 mt-4">
+                        <button className="btn-success rounded text-light py-2 mt-2 more-button">
+                          Read more
+                        </button>
+                      </h3>
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p>Loading blogs...</p>
+            )}
           </div>
 
           <div className="pagination d-flex justify-content-center flex-row flex-nowrap mt-1">
@@ -1702,7 +1765,7 @@ function HomePage() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -1734,7 +1797,7 @@ function HomePage() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -1745,7 +1808,10 @@ function HomePage() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

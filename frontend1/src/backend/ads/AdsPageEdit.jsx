@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./AdsPageEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
-import Logo from "../../assets/Logo.webp";
+import Logo from "../../assets/Tonic.svg";
 import Cutting from "../../assets/Cutting.webp";
 import {
   faAngleDown,

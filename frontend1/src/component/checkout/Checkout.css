@@ -345,6 +345,20 @@ body {
   word-spacing: 2px;
 }
 
+.border-place1-check {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: #f2f5f7;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+
+.border-place1-check:focus {
+  background-color: #f2f5f7;
+  color: black;
+}
+
 .border-place1:focus {
   background-color: #f2f5f7;
   color: black;

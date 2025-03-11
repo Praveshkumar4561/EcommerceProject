@@ -5,22 +5,42 @@ import Logo from "../../../assets/Tonic.svg";
 import {
   faAngleDown,
   faBell,
+  faClose,
   faCreditCard,
   faEnvelope,
   faMoon,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function OrdersCreate() {
   const [search, setSearch] = useState("");
-  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [subAmount, setSubAmount] = useState(0);
+  const [taxAmount, setTaxAmount] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [status, setStatus] = useState("");
+  const TAX_PERCENTAGE = 10;
+  let [count5, setCount5] = useState(0);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  });
 
   useEffect(() => {
     if (search.trim() === "") {
@@ -28,7 +48,7 @@ function OrdersCreate() {
       return;
     }
 
-    const alldata = async () => {
+    const fetchProducts = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
@@ -37,14 +57,125 @@ function OrdersCreate() {
         setProducts(response.data);
       } catch (error) {
         setError("Failed to fetch products");
-        console.error(error);
       } finally {
         setLoading(false);
       }
     };
-
-    alldata();
+    fetchProducts();
   }, [search]);
+
+  const addProduct = (product) => {
+    if (!selectedProducts.some((p) => p.id === product.id)) {
+      const newSelectedProducts = [...selectedProducts, product];
+      setSelectedProducts(newSelectedProducts);
+      updateAmounts(newSelectedProducts);
+    }
+  };
+
+  const removeProduct = (productId) => {
+    const newSelectedProducts = selectedProducts.filter(
+      (p) => p.id !== productId
+    );
+    setSelectedProducts(newSelectedProducts);
+    updateAmounts(newSelectedProducts);
+  };
+
+  const updateAmounts = (products) => {
+    const subTotal = products.reduce((acc, product) => {
+      const price = parseFloat(product.price.replace(/[^0-9.]/g, "")) || 0;
+      return acc + price;
+    }, 0);
+
+    const tax = (subTotal * TAX_PERCENTAGE) / 100;
+    const total = subTotal + tax - discount;
+
+    setSubAmount(subTotal.toFixed(2));
+    setTaxAmount(tax.toFixed(2));
+    setTotalAmount(total.toFixed(2));
+  };
+
+  const addDiscount = (e) => {
+    e.preventDefault();
+  };
+
+  const handleCreateOrder = async (e) => {
+    e.preventDefault();
+    try {
+      if (!selectedCustomers.length || !selectedProducts.length) {
+        toast.error("Please select a customer and at least one product.", {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+        return;
+      }
+      toast.success("", {});
+    } catch (error) {
+      toast.error("An error occurred while creating the order.", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    const customer = selectedCustomers[0];
+    const orderData = {
+      email: customer.email,
+      phone_number: customer.phone_number,
+      first_name: customer.first_name,
+      last_name: customer.last_name || "",
+      address: "",
+      apartment: "",
+      country: "",
+      pincode: "",
+      payment: paymentMethod,
+      status: status,
+      date: new Date().toISOString().split("T")[0],
+      cart: selectedProducts.map((product) => ({
+        image: product.image,
+        name: product.name,
+        quantity: product.quantity || 1,
+        price: String(product.price).replace(/[^0-9.]/g, ""),
+        subtotal:
+          parseFloat(String(product.price).replace(/[^0-9.]/g, "")) *
+          (product.quantity || 1),
+        tax: taxAmount,
+        store: product.store,
+      })),
+      subtotal: subAmount,
+      tax: taxAmount,
+      shippingFee: 5.0,
+      total: totalAmount,
+    };
+    try {
+      await axios.post("http://89.116.170.231:1600/checkout", orderData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setCount5((prevCount) => prevCount + 1);
+      toast.success("Order created successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Failed to create order. Please try again", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
@@ -171,16 +302,6 @@ function OrdersCreate() {
     }
   };
 
-  let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
-
   let appearence = () => {
     setAppear(!appear);
   };
@@ -201,19 +322,17 @@ function OrdersCreate() {
     setBlog(!blog);
   };
 
-  let addDiscount = (e) => {
-    e.preventDefault();
-  };
-
   const [searchItem, setSearchItem] = useState("");
   const [customers, setCustomers] = useState([]);
   const [filteredCustomers, setFilteredCustomers] = useState([]);
 
+  useEffect(() => {
+    customerData();
+  }, []);
+
   const customerData = async () => {
     try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/customersdata"
-      );
+      const response = await axios.get("http://89.116.170.231:1600/alldata");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customer data:", error);
@@ -226,18 +345,28 @@ function OrdersCreate() {
     } else {
       const lowercasedSearchItem = searchItem.toLowerCase();
       setFilteredCustomers(
-        customers.filter(
-          (customer) =>
-            customer.name.toLowerCase().includes(lowercasedSearchItem) ||
-            customer.email.toLowerCase().includes(lowercasedSearchItem)
-        )
+        customers.filter((customer) => {
+          const name = customer.name ? customer.name.toLowerCase() : "";
+          const email = customer.email ? customer.email.toLowerCase() : "";
+
+          return (
+            name.includes(lowercasedSearchItem) ||
+            email.includes(lowercasedSearchItem)
+          );
+        })
       );
     }
   }, [searchItem, customers]);
 
-  useEffect(() => {
-    customerData();
-  }, []);
+  const addCustomer = (customer) => {
+    if (!selectedCustomers.some((c) => c.id === customer.id)) {
+      setSelectedCustomers([...selectedCustomers, customer]);
+    }
+  };
+
+  const removeCustomer = (customerId) => {
+    setSelectedCustomers(selectedCustomers.filter((c) => c.id !== customerId));
+  };
 
   return (
     <>
@@ -2148,48 +2277,94 @@ function OrdersCreate() {
       </nav>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row content-orders gap-2 gap-sm-2 gap-md-2 d-flex flex-lg-column flex-xxl-row flex-xl-row flex-md-column">
-            <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search ">
               Order information
-              <hr />
+              <div className="border w-100 mb-3 mt-3"></div>
               <form>
-                <div>
+                <div className="customer-email">
                   <input
                     type="text"
                     placeholder="Search or create a new product"
-                    className="form-control py-4 form-order"
+                    className="form-control py-4 form-order cart-cart"
                     name="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
 
-                  {loading && <p>Loading...</p>}
-                  {error && <p>{error}</p>}
+                  {selectedProducts.length > 0 && (
+                    <div className="selected-products border rounded p-2 mt-3 w-100">
+                      {selectedProducts.map((product) => (
+                        <div
+                          key={product.id}
+                          className="border rounded p-2 d-flex align-items-lg-center flex-row mt-2 position-relative"
+                        >
+                          <img
+                            src={`http://89.116.170.231:1600/src/image/${product.image}`}
+                            alt={product.name}
+                            className="product-image rounded img-thumbnail me-2"
+                            style={{ width: "50px", height: "50px" }}
+                          />
+                          <div>
+                            <p className="mb-1">
+                              <strong className="fw-light">
+                                {product.name}
+                              </strong>
+                            </p>
+                            <p
+                              className="mb-0"
+                              style={{ fontFamily: "verdana" }}
+                            >
+                              Price: {product.price}
+                            </p>
 
-                  <div className="product-list">
-                    {products.length > 0 ? (
+                            <p
+                              className="mb-0 d-none"
+                              style={{ fontFamily: "verdana" }}
+                            >
+                              Store: {product.store}
+                            </p>
+                          </div>
+                          <FontAwesomeIcon
+                            icon={faClose}
+                            className="ms-auto text-danger cursor-pointer"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => removeProduct(product.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="product-list mt-3">
+                    {!loading && products.length > 0 ? (
                       products.map((product) => {
                         const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
+
                         return (
                           <div
                             key={product.id}
-                            className="product-card border w-auto h-auto m-1 rounded"
+                            className="product-card border w-auto h-auto mt-2 rounded"
+                            onClick={() => addProduct(product)}
                           >
                             <div className="d-flex flex-row">
                               <img
                                 src={imageUrl}
-                                alt="RxLYTE"
+                                alt={product.name}
                                 onError={(e) =>
                                   (e.target.src =
                                     "http://89.116.170.231:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
-                              <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
+                              <h6 className="product-name d-flex flex-row mt-2 ms-2 pt-2 cart-cart">
                                 {product.name}
-                              </h5>
-                              <p className="product-price mt-4 ms-2 pt-2">
+                              </h6>
+                              <p
+                                className="product-price mt-3 text-end me-2 ms-2 pt-2"
+                                style={{ fontFamily: "verdana" }}
+                              >
                                 {product.price}
                               </p>
                             </div>
@@ -2197,7 +2372,7 @@ function OrdersCreate() {
                         );
                       })
                     ) : (
-                      <p className="mt-2 ms-2">No products found</p>
+                      <p className="mt-2 ms-2"></p>
                     )}
                   </div>
                 </div>
@@ -2206,30 +2381,34 @@ function OrdersCreate() {
                   <div className="mt-3 d-flex flex-column">
                     <label htmlFor="">Note</label>
                     <textarea
-                      className="form-control mt-2 form-order1"
+                      className="form-control mt-2 form-order1 cart-cart"
                       placeholder="Note for order..."
-                      style={{ height: "59px", width: "392px" }}
+                      style={{ height: "120px", width: "391px" }}
                     ></textarea>
                   </div>
 
                   <div className="d-flex flex-xxl-column flex-sm-column flex-md-column ps-lg-0 ps-sm-0 ps-0 align-items-sm-end ms-5 ms-sm-0 ms-md-0 ms-lg-0">
                     <div className="d-flex flex-row gap-5 mt-4 ms-5 ms-lg-0">
                       <label htmlFor="">Sub amount</label>
-                      <span style={{ fontFamily: "verdana" }}>$0.00</span>
+                      <span style={{ fontFamily: "verdana" }}>
+                        ${subAmount}
+                      </span>
                     </div>
                     <div className="d-flex mt-4 gap-5 ms-5 ps-0 flex-row">
                       <label htmlFor="">Tax amount</label>
-                      <span style={{ fontFamily: "verdana" }}>$0.00</span>
+                      <span style={{ fontFamily: "verdana" }}>
+                        ${taxAmount}
+                      </span>
                     </div>
-                    <div className="d-flex flex-row mt-4 gap-5 ms-0">
+                    <div className="d-flex flex-row mt-4 gap-4 ms-0">
                       <label htmlFor="">Promotion amount</label>
                       <span style={{ fontFamily: "verdana" }}>$0.00</span>
                     </div>
 
-                    <div className="d-flex mt-4 gap-5 ms-0 ms-md-0 flex-row">
+                    <div className="d-flex mt-4 gap-4 ms-0 ms-md-0 flex-row">
                       <button
-                        className="btn py-3 border d-flex btn-outline-success"
-                        style={{ whiteSpace: "nowrap" }}
+                        className="btn py-3 border d-flex btn-outline-success cart-cart"
+                        style={{ whiteSpace: "nowrap", height: "45px" }}
                         onClick={addDiscount}
                       >
                         Add discount
@@ -2244,7 +2423,9 @@ function OrdersCreate() {
 
                     <div className="d-flex mt-4 gap-5 ms-4 ps-3 flex-row">
                       <label htmlFor="">Total amount</label>
-                      <span style={{ fontFamily: "verdana" }}>$0.00</span>
+                      <span style={{ fontFamily: "verdana" }}>
+                        ${totalAmount}
+                      </span>
                     </div>
 
                     <div className="d-flex flex-column mt-3">
@@ -2252,9 +2433,17 @@ function OrdersCreate() {
                         Payment Method
                       </label>
                       <select
-                        className="form-select mt-0 payment-method mt-2"
-                        style={{ zIndex: "1000", width: "333px" }}
+                        className="form-select mt-0 payment-method mt-2 text-dark text-decoration-none"
+                        style={{
+                          zIndex: "1000",
+                          width: "333px",
+                          height: "45px",
+                        }}
+                        name="payment"
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
                       >
+                        <option value="">Select Payment Method</option>
                         <option value="Cash on Delivery(COD)">
                           Cash on Delivery (COD)
                         </option>
@@ -2273,14 +2462,21 @@ function OrdersCreate() {
                         Payment Status
                       </label>
                       <select
-                        className="form-select mt-0 payment-method mt-2"
-                        style={{ zIndex: "1000", width: "333px" }}
+                        className="form-select mt-0 payment-method mt-2 text-dark text-decoration-none"
+                        style={{
+                          zIndex: "1000",
+                          width: "333px",
+                          height: "45px",
+                        }}
+                        name="setStatus"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
                       >
+                        <option value="">Select an option</option>
                         <option value="Pending">Pending</option>
                         <option value="Completed">Completed</option>
                         <option value="Refunding">Refunding</option>
                         <option value="Refunded">Refunded</option>
-                        <option value="Fraud">Fraud</option>
                         <option value="Failed">Failed</option>
                       </select>
                     </div>
@@ -2293,14 +2489,15 @@ function OrdersCreate() {
                         type="text"
                         className="form-control mt-2 py-4 form-order ms-2"
                       />
-                      <span className="ms-lg-3 mt-2 me-5 me-lg-0">
+                      <span className="ms-lg-2 mt-2 me-5 me-lg-0">
                         You can leave this field empty if the payment method is
                         COD or Bank transfer
                       </span>
                     </div>
                   </div>
                 </div>
-                <hr />
+
+                <div className="border w-100 mb-3 mt-3"></div>
 
                 <div className="d-flex justify-content-between flex-wrap align-items-end flex-row">
                   <div className="d-flex gap-2 flex-row">
@@ -2308,8 +2505,8 @@ function OrdersCreate() {
                     <p>Confirm payment and create order</p>
                   </div>
                   <button
-                    className="btn d-flex btn-outline-success py-4"
-                    onClick={addDiscount}
+                    className="btn d-flex btn-outline-success py-4 cart-cart1 rounded-5"
+                    onClick={handleCreateOrder}
                   >
                     Create order
                   </button>
@@ -2317,61 +2514,86 @@ function OrdersCreate() {
               </form>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-6 col-lg-4 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start customer-new">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-4 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start customer-new mb-3 mb-lg-0">
               <h4>Customer Information</h4>
-              <hr />
+              <div className="border w-100 mb-3 mt-3"></div>
+
               <input
                 type="text"
                 placeholder="Search for a customer"
-                className="form-control py-4 form-order"
+                className="form-control py-4 form-order cart-cart"
                 value={searchItem}
                 onChange={(e) => setSearchItem(e.target.value)}
               />
-              <div className="customer-list">
+              {selectedCustomers.length > 0 && (
+                <div className="selected-customers border rounded p-2 mt-3 w-100">
+                  {selectedCustomers.map((customer) => (
+                    <div
+                      key={customer.id}
+                      className="border rounded p-2 d-flex flex-row align-items-lg-center mt-2"
+                    >
+                      <img
+                        src={`http://89.116.170.231:1600/src/image/${customer.image}`}
+                        alt="RxLYTE"
+                        className="customer-image rounded img-thumbnail me-2"
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                      <div>
+                        <p className="mb-1">
+                          <strong>{customer.name}</strong>
+                        </p>
+                        <p className="mb-0">Email:{customer.email}</p>
+                        <p className="mb-0 d-none">
+                          phone_number:{customer.phone_number}
+                        </p>
+                        <p className="mb-0 d-none">
+                          first_name:{customer.first_name}
+                        </p>
+                        <p className="mb-0 d-none">
+                          last_name:{customer.last_name}
+                        </p>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faClose}
+                        className="ms-auto text-danger cursor-pointer"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => removeCustomer(customer.id)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="customer-list mt-3 ">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
                     const imageUrl1 = `http://89.116.170.231:1600/src/image/${customer.image}`;
-                    return (
-                      <>
-                        <div className="border rounded d-flex flex-row">
-                          <Link
-                            className="text-decoration-none text-dark d-flex flex-row"
-                            to="/admin/customers"
-                          >
-                            <FontAwesomeIcon
-                              icon={faUser}
-                              className="mt-2 ms-2 text-success pt-1 border rounded px-2 py-2"
-                            />
-                            <p className="ms-2 mt-2 mb-2">
-                              Create a new customer
-                            </p>
-                          </Link>
-                        </div>
 
-                        <div
-                          key={customer.id}
-                          className="border border-top-0 border-bottom-1 d-flex flex-row py-3 me-3 me-lg-0 text-start overflow-hidden"
-                        >
-                          <img
-                            src={imageUrl1}
-                            alt="RxLYTE"
-                            className="customer-image rounded ms-2 img-thumbnail"
-                          />
-                          <div className="d-flex flex-column ms-2">
-                            <h5>{customer.name}</h5>
-                            <p>{customer.email}</p>
-                          </div>
+                    return (
+                      <div
+                        key={customer.id}
+                        className="border mb-1 rounded d-flex flex-row py-3 me-3 me-lg-0 text-start overflow-hidden customer-email"
+                        onClick={() => addCustomer(customer)}
+                      >
+                        <img
+                          src={imageUrl1}
+                          alt="RxLYTE"
+                          className="customer-image rounded ms-2 img-thumbnail"
+                        />
+                        <div className="d-flex flex-column ms-2">
+                          <p>Email:{customer.email}</p>
                         </div>
-                      </>
+                      </div>
                     );
                   })
                 ) : (
-                  <p className="mt-2 ms-2">No customers found</p>
+                  <p className="mt-2 ms-2"></p>
                 )}
               </div>
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

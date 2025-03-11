@@ -2182,7 +2182,7 @@ function Typography() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2569,7 +2569,7 @@ function Typography() {
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-1 mb-lg-0">
           <div className="d-flex justify-content-end mt-3 me-2">
             <button
-              className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex"
+              className="btn btn-success button-change py-4 mt-2 mt-lg-0 border d-flex cart-cart1"
               type="button"
               onClick={handleSubmit}
             >

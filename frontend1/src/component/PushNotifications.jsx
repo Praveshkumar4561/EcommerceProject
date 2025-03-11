@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_PUBLIC_VAPID_KEY;
 
@@ -10,50 +11,53 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 const PushNotifications = () => {
+  const [notificationStatus, setNotificationStatus] = useState("");
+
   useEffect(() => {
-    if (localStorage.getItem("pushSubscriptionSent") === "true") {
-      console.log("Push subscription already sent; skipping duplicate.");
-      return;
-    }
     if ("serviceWorker" in navigator && "PushManager" in window) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          subscribeUser();
-        } else if (permission === "denied") {
-          console.log("Notifications blocked; no data stored.");
-        } else {
-          console.log("User dismissed the notification prompt.");
-        }
-      });
+      if (Notification.permission === "granted") {
+        setNotificationStatus("Allowed");
+        registerAndSubscribe();
+      } else if (Notification.permission === "denied") {
+        setNotificationStatus("Blocked");
+      } else {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            setNotificationStatus("Allowed");
+            registerAndSubscribe();
+          } else if (permission === "denied") {
+            setNotificationStatus("Blocked");
+            console.log("User denied notifications.");
+          } else {
+            setNotificationStatus("Default");
+          }
+        });
+      }
     } else {
-      console.log("Push notifications are not supported in this browser.");
+      console.warn(
+        "Service workers or Push messaging aren't supported in this browser."
+      );
     }
   }, []);
 
-  const subscribeUser = async () => {
+  const registerAndSubscribe = async () => {
     try {
-      await navigator.serviceWorker.register("/sw.js");
-      const registration = await navigator.serviceWorker.ready;
+      const registration = await navigator.serviceWorker.register("/sw.js");
       let subscription = await registration.pushManager.getSubscription();
       if (!subscription) {
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
         });
-        await fetch("http://89.116.170.231:1600/notify-update", {
-          method: "POST",
+        await axios.post("http://89.116.170.231:1600/subscribe", subscription, {
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(subscription),
         });
-        localStorage.setItem("pushSubscriptionSent", "true");
-      } else {
-        console.log("Existing subscription found:", subscription);
-        localStorage.setItem("pushSubscriptionSent", "true");
       }
     } catch (error) {
-      console.error("Error during push subscription:", error);
+      console.error("Error during subscription process:", error);
     }
   };
+
   return null;
 };
 

@@ -2447,7 +2447,8 @@ function Products() {
                         <td>
                           <img
                             src={`http://89.116.170.231:1600/src/image/${data.image}`}
-                            className="img-thumbnail rounded-1 w-auto"
+                            className="img-thumbnail rounded-1"
+                            style={{ width: "100px" }}
                           />
                         </td>
 

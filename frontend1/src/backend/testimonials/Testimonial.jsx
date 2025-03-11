@@ -2276,6 +2276,7 @@ function Testimonial() {
                             src={`http://89.116.170.231:1600/src/image/${data.image}`}
                             alt="RxLYTE"
                             className="rounded-2 image-test"
+                            style={{ width: "140px" }}
                           />
                         </td>
                         <td>

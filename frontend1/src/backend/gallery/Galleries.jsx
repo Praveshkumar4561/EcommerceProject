@@ -2272,7 +2272,8 @@ function Galleries() {
                           <img
                             src={`http://89.116.170.231:1600/src/image/${data.image}`}
                             alt="RxLYTE"
-                            className="rounded-2 img-fluid w-50"
+                            className="rounded-2 img-fluid"
+                            style={{ width: "100px" }}
                           />
                         </td>
                         <td>

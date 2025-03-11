@@ -2230,7 +2230,7 @@ function BreadCrumb() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2613,10 +2613,10 @@ function BreadCrumb() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-3 mb-lg-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-3 mb-lg-0 ">
           <div className="d-flex justify-content-end mt-2 mt-lg-0">
             <button
-              className="btn btn-success button-change py-4 mt-4 me-2 border d-flex"
+              className="btn btn-success button-change py-4 mt-4 me-2 border d-flex cart-cart1"
               onClick={handleSubmit}
             >
               Save Changes

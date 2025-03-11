@@ -166,6 +166,7 @@ import ProtectedRoute from "./component/ProtectedRoute";
 import Wishlist from "./component/wishlist/Wishlist.jsx";
 import DynamicPage from "./component/dynamicpage/DynamicPage.jsx";
 import axios from "axios";
+import Sitemap from "./component/sitemap/Sitemap.jsx";
 
 function App() {
   useEffect(() => {
@@ -207,7 +208,7 @@ function App() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -646,8 +647,6 @@ function App() {
                 <Route path="edit/:id" element={<AdsEdit />} />
               </Route>
 
-              {/* <PushNotifications /> */}
-
               <Route path="/">
                 <Route
                   path="/"
@@ -760,6 +759,7 @@ function App() {
                 />
                 <Route path={`/${urlState.login}`} element={<Login />} />
                 {/* <Route path="/addcart" element={<AddCart />} /> */}
+                <Route path="/sitemap" element={<Sitemap />} />
                 <Route path="/privacy-policy" element={<Privacy />} />
                 <Route path="/terms-condition" element={<TermsCondition />} />
                 <Route path="/medicine-policy" element={<MedicinePolicy />} />

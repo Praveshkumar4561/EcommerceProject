@@ -24,9 +24,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Orders() {
   let [count5, setCount5] = useState(0);
-
   let [customer, setCustomer] = useState([]);
   let [search, setSearch] = useState("");
+
+  let searchbar = async () => {
+    let response = await axios.get(
+      `http://89.116.170.231:1600/customerget/${search}`
+    );
+    setCustomer(response.data);
+  };
 
   useEffect(() => {
     if (search) {
@@ -35,13 +41,6 @@ function Orders() {
       customerdata();
     }
   }, [search]);
-
-  let searchbar = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/customerget/${search}`
-    );
-    setCustomer(response.data);
-  };
 
   let customerdata = async () => {
     const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
@@ -60,7 +59,11 @@ function Orders() {
         draggable: true,
         progress: undefined,
       });
-      setCustomer((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      setCustomer((prevUsers) => {
+        const updatedUsers = prevUsers.filter((user) => user.id !== id);
+        setCount5(updatedUsers.length);
+        return updatedUsers;
+      });
     } catch (error) {
       toast.error("Failed to delete data.Please try again", {
         position: "bottom-right",
@@ -2194,7 +2197,7 @@ function Orders() {
                     className="text-decoration-none"
                   >
                     <button
-                      className="btn btn-create me-2 d-flex flex-row align-items-center"
+                      className="btn btn-create me-2 d-flex flex-row align-items-center cart-cart"
                       type="button"
                     >
                       <FontAwesomeIcon icon={faPlus} className="me-2" />
@@ -2343,9 +2346,11 @@ function Orders() {
                           {data.phone_number}
                         </td>
                         <td style={{ fontFamily: "verdana" }}>${data.total}</td>
-                        <td></td>
+                        <td>{data.payment}</td>
                         <td className="ps-4">
-                          <span className="badge badge-success fw-light cart-cart py-2"></span>
+                          <span className="badge badge-success fw-light cart-cart1 py-2">
+                            {data.status}
+                          </span>
                         </td>
                         <td className="ps-4"></td>
                         <td style={{ fontFamily: "verdana" }} className="ps-4">
@@ -2386,11 +2391,15 @@ function Orders() {
                 </tbody>
               </table>
 
-              {customer.map((data) => (
-                <div key={data.id} className="mt-3">
-                  {visibleStore === data.id && <div>Store: {data.store}</div>}{" "}
-                </div>
-              ))}
+              {Array.isArray(customer) && customer.length > 0 ? (
+                customer.map((data) => (
+                  <div key={data.id} className="mt-3">
+                    {visibleStore === data.id && <div>Store: {data.store}</div>}
+                  </div>
+                ))
+              ) : (
+                <p></p>
+              )}
             </div>
           </div>
         </div>

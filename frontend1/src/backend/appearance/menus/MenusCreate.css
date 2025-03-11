@@ -219,7 +219,7 @@ input[type="search"] {
   margin-top: 20px;
   padding: 1rem;
   width: calc(100% - 2rem);
-  max-width: 1200px;
+  max-width: 1200px !important;
 }
 
 .editor-page {

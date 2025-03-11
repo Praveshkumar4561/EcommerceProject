@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./Wishlist.css";
-import image1 from "../../assets/Tonic.svg";
+
 import Tonic from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
+import { Helmet } from "react-helmet";
 
 function Wishlist() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -119,7 +120,7 @@ function Wishlist() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -228,6 +229,16 @@ function Wishlist() {
 
   return (
     <>
+      <Helmet>
+        <title>Your Wishlist - Save Your Favorite Products | Rxlyte</title>
+        <meta
+          name="description"
+          content="Keep track of your favorite products in your wishlist at Rxlyte. Save items for later and shop when you're ready. Fast checkout & best deals!"
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/wishlist" />
+      </Helmet>
+
       <div
         className="container"
         id="container-customx"
@@ -251,7 +262,7 @@ function Wishlist() {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -518,7 +529,7 @@ function Wishlist() {
                                 className="d-flex flex-row"
                               >
                                 <button
-                                  className="btn btn-success d-flex rounded-0 py-4"
+                                  className="btn btn-success d-flex rounded-0 py-4 cart-cart1"
                                   onClick={() => addCartItem(data)}
                                 >
                                   Add To Cart
@@ -599,7 +610,7 @@ function Wishlist() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -631,7 +642,7 @@ function Wishlist() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -642,7 +653,10 @@ function Wishlist() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

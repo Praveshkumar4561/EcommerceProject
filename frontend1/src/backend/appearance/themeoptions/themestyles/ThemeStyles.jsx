@@ -2,17 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ThemeStyles.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "font-awesome/css/font-awesome.min.css";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
+import Appath from "../../../../assets/appath.webp";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ThemeStyles() {
   let [isVisible, setIsVisible] = useState(false);
@@ -20,13 +23,13 @@ function ThemeStyles() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
-  let [Specification, setSpecifcation] = useState(false);
-  let [payment, setPayment] = useState(false);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -80,6 +83,7 @@ function ThemeStyles() {
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -159,33 +163,137 @@ function ThemeStyles() {
     }
   };
 
-  const [showPalette, setShowPalette] = useState(false);
-
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
-  };
-
-  const [selectedShape, setSelectedShape] = useState(null);
-
-  const handleCheckboxChange = (id) => {
-    setSelectedShape(selectedShape === id ? null : id);
-  };
-
-  const [selectedHeader, setSelectedHeader] = useState(null);
-
-  const handleCheckboxChanges = (id) => {
-    setSelectedHeader(selectedHeader === id ? null : id);
-  };
-
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
     orderdata();
+  }, []);
+
+  let orderdata = async () => {
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+    setCount5(response.data.length);
+  };
+
+  const [user, setUser] = useState({
+    stickyHeader: "no",
+    stickyHeaderMobile: "no",
+    bottomMenuBarMobile: "no",
+    backToTopButton: "no",
+    primaryColor: "#000000",
+    headerBackgroundColor: "#ffffff",
+    headerTextColor: "#000000",
+    headerMainColor: "#000000",
+    headerMainTextColor: "#000000",
+    headerMenu: "#000000",
+    headerBorder: "#000000",
+    headerMenuTextColor: "#000000",
+    headerStyle: "header1",
+    sectionTitleShape: "style1",
   });
+
+  const {
+    stickyHeader,
+    stickyHeaderMobile,
+    bottomMenuBarMobile,
+    backToTopButton,
+    primaryColor,
+    headerBackgroundColor,
+    headerTextColor,
+    headerMainColor,
+    headerMainTextColor,
+    headerMenu,
+    headerBorder,
+    headerMenuTextColor,
+    headerStyle,
+    sectionTitleShape,
+  } = user;
+
+  const colorRefs = {
+    primaryColor: useRef(null),
+    headerBackgroundColor: useRef(null),
+    headerTextColor: useRef(null),
+    headerMainColor: useRef(null),
+    headerMainTextColor: useRef(null),
+    headerMenu: useRef(null),
+    headerBorder: useRef(null),
+    headerMenuTextColor: useRef(null),
+  };
+
+  const colorLabels = {
+    primaryColor: "Primary Color",
+    headerBackgroundColor: "Header Background Color",
+    headerTextColor: "Header Text Color",
+    headerMainColor: "Header Main Color",
+    headerMainTextColor: "Header Main Text Color",
+    headerMenu: "Header Menu Color",
+    headerBorder: "Header Border Color",
+    headerMenuTextColor: "Header Menu Text Color",
+  };
+
+  const handleToggleChange = (field, checked) => {
+    setUser((prev) => ({ ...prev, [field]: checked ? "yes" : "no" }));
+  };
+
+  const handleColorChange = (key, event) => {
+    setUser((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const handleColorClick = (key) => {
+    if (colorRefs[key].current) {
+      colorRefs[key].current.click();
+    }
+  };
+
+  const handleHeaderStyleChange = (style) => {
+    setUser((prev) => ({ ...prev, headerStyle: style }));
+  };
+
+  const handleSectionTitleShapeChange = (shape) => {
+    setUser((prev) => ({ ...prev, sectionTitleShape: shape }));
+  };
+
+  const handleSubmit = async () => {
+    const formData = new FormData();
+    formData.append("stickyHeader", stickyHeader);
+    formData.append("stickyHeaderMobile", stickyHeaderMobile);
+    formData.append("bottomMenuBarMobile", bottomMenuBarMobile);
+    formData.append("backToTopButton", backToTopButton);
+    formData.append("primaryColor", primaryColor);
+    formData.append("headerBackgroundColor", headerBackgroundColor);
+    formData.append("headerTextColor", headerTextColor);
+    formData.append("headerMainColor", headerMainColor);
+    formData.append("headerMainTextColor", headerMainTextColor);
+    formData.append("headerMenu", headerMenu);
+    formData.append("headerBorder", headerBorder);
+    formData.append("headerMenuTextColor", headerMenuTextColor);
+    formData.append("headerStyle", headerStyle);
+
+    try {
+      await axios.post("http://89.116.170.231:1600/updateSettings", user, {
+        headers: { "Content-Type": "application/json" },
+      });
+      toast.success("styles successfully updated", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    } catch (error) {
+      toast.error("styles is not updated", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    }
+  };
+
+  useEffect(() => {
+    themedata();
+  }, []);
+
+  let themedata = async () => {
+    const response = await axios.get(
+      "http://89.116.170.231:1600/themestylesdata"
+    );
+    setUser(response.data);
+  };
 
   return (
     <>
@@ -2123,7 +2231,7 @@ function ThemeStyles() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2509,470 +2617,307 @@ function ThemeStyles() {
 
         <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-4 mt-lg-3 me-2 border d-flex">
+            <button
+              className="btn btn-success py-4 mt-4 mt-lg-2 me-2 border d-flex cart-cart1"
+              onClick={handleSubmit}
+              style={{
+                position: "relative",
+                cursor: "pointer",
+                zIndex: "1",
+              }}
+            >
               Save Changes
             </button>
           </div>
 
-          <hr className="custom-changes1" />
+          <div className="custom-changes-style border w-100"></div>
           <form className="content-form ms-3 me-3">
-            <div className="mb-3 mt-2">
-              <div className="mb-3">
-                <label className="form-label" htmlFor="date-format">
+            <div className="mt-4">
+              <div className="mb-0 pt-4">
+                <label className="form-label" htmlFor="stickyHeader">
                   Enable sticky header
                 </label>
-
                 <div className="form-check form-switch mb-3">
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    id="has-action"
+                    id="stickyHeader"
+                    checked={stickyHeader === "yes"}
+                    onChange={(e) =>
+                      handleToggleChange("stickyHeader", e.target.checked)
+                    }
                   />
                 </div>
+              </div>
 
-                <div>
-                  <label className="form-label" htmlFor="date-format">
-                    Enable sticky header on mobile
-                  </label>
+              <div>
+                <label className="form-label" htmlFor="stickyHeaderMobile">
+                  Enable sticky header on mobile
+                </label>
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="stickyHeaderMobile"
+                    checked={stickyHeaderMobile === "yes"}
+                    onChange={(e) =>
+                      handleToggleChange("stickyHeaderMobile", e.target.checked)
+                    }
+                  />
+                </div>
+              </div>
 
-                  <div className="form-check form-switch mb-3">
+              <div>
+                <label className="form-label" htmlFor="bottomMenuBarMobile">
+                  Enable bottom menu bar on mobile
+                </label>
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="bottomMenuBarMobile"
+                    checked={bottomMenuBarMobile === "yes"}
+                    onChange={(e) =>
+                      handleToggleChange(
+                        "bottomMenuBarMobile",
+                        e.target.checked
+                      )
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="d-flex flex-column">
+                <label htmlFor="">Enable section title shape decorated</label>
+                <div
+                  className="d-flex gap-2 mt-2 w-100"
+                  style={{ cursor: "pointer" }}
+                >
+                  <div
+                    className="border rounded theme-title position-relative"
+                    onClick={() => handleSectionTitleShapeChange("style1")}
+                  >
                     <input
-                      className="form-check-input"
+                      id="style1"
                       type="checkbox"
-                      id="has-action"
+                      name="sectionTitleShape"
+                      className="form-imagecheck-style position-absolute mt-2 ms-3 form-check-input"
+                      checked={sectionTitleShape === "style1"}
+                      readOnly
+                    />
+                    <img
+                      src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-1.png"
+                      alt="Style 1"
+                      className="img-fluid"
                     />
                   </div>
-                </div>
-
-                <div>
-                  <label className="form-label" htmlFor="date-format">
-                    Enable bottom menu bar on mobile
-                  </label>
-
-                  <div className="form-check form-switch mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="has-action"
-                    />
-                  </div>
-                </div>
-
-                <div className="d-flex flex-column">
-                  <label htmlFor="">Enable section title shape decorated</label>
 
                   <div
-                    className="d-flex gap-2 mt-2 w-100"
-                    style={{ cursor: "pointer" }}
+                    className="border rounded theme-title position-relative"
+                    onClick={() => handleSectionTitleShapeChange("style2")}
                   >
+                    <input
+                      id="style2"
+                      type="checkbox"
+                      name="sectionTitleShape"
+                      className="form-imagecheck-style position-absolute mt-2 ms-3 form-check-input"
+                      checked={sectionTitleShape === "style2"}
+                      readOnly
+                    />
+                    <img
+                      src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-1.png"
+                      alt="Style 2"
+                      className="img-fluid"
+                    />
+                  </div>
+
+                  <div
+                    className="border rounded theme-title position-relative"
+                    onClick={() => handleSectionTitleShapeChange("style3")}
+                  >
+                    <input
+                      id="style3"
+                      type="checkbox"
+                      name="sectionTitleShape"
+                      className="form-imagecheck-style position-absolute mt-2 ms-3 form-check-input"
+                      checked={sectionTitleShape === "style3"}
+                      readOnly
+                    />
+                    <img
+                      src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-3.png"
+                      alt="Style 3"
+                      className="img-fluid mt-3"
+                    />
+                  </div>
+
+                  <div
+                    className="border rounded theme-title position-relative"
+                    onClick={() => handleSectionTitleShapeChange("style4")}
+                  >
+                    <input
+                      id="style4"
+                      type="checkbox"
+                      name="sectionTitleShape"
+                      className="form-imagecheck-style position-absolute mt-2 ms-3 form-check-input"
+                      checked={sectionTitleShape === "style4"}
+                      readOnly
+                    />
+                    <img
+                      src="https://shofy.botble.com/themes/shofy/images/section-title-shape/none.png"
+                      alt="Style 4"
+                      className="img-fluid"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3">
+                <label className="form-label" htmlFor="backToTopButton">
+                  Enable back to top button
+                </label>
+                <div className="form-check form-switch mb-3">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="backToTopButton"
+                    checked={backToTopButton === "yes"}
+                    onChange={(e) =>
+                      handleToggleChange("backToTopButton", e.target.checked)
+                    }
+                  />
+                </div>
+              </div>
+
+              {Object.keys(colorRefs).map((key) => (
+                <div className="mt-3 d-flex flex-column" key={key}>
+                  <label className="form-label">{colorLabels[key]}</label>
+
+                  <div
+                    className="color-picker-container d-flex flex-row flex-nowrap"
+                    style={{ position: "relative", display: "inline-block" }}
+                  >
+                    <input
+                      type="color"
+                      ref={colorRefs[key]}
+                      value={user[key]}
+                      style={{
+                        opacity: 0,
+                        position: "absolute",
+                        width: "30px",
+                        height: "30px",
+                      }}
+                      onChange={(e) => handleColorChange(key, e)}
+                    />
                     <div
-                      className="border rounded theme-title position-relative"
-                      onClick={() => handleCheckboxChange("style1")}
-                    >
-                      <input
-                        id="style1"
-                        type="checkbox"
-                        name="sectionTitleShape"
-                        className="form-imagecheck-style position-absolute mt-2 ms-3"
-                        checked={selectedShape === "style1"}
-                        readOnly
-                      />
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-1.png"
-                        alt="Style 1"
-                        className="img-fluid"
-                      />
-                    </div>
-
-                    <div
-                      className="border rounded theme-title position-relative"
-                      onClick={() => handleCheckboxChange("style2")}
-                    >
-                      <input
-                        id="style2"
-                        type="checkbox"
-                        name="sectionTitleShape"
-                        className="form-imagecheck-style position-absolute mt-2 ms-3"
-                        checked={selectedShape === "style2"}
-                        readOnly
-                      />
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-1.png"
-                        alt="Style 2"
-                        className="img-fluid"
-                      />
-                    </div>
-
-                    <div
-                      className="border rounded theme-title position-relative"
-                      onClick={() => handleCheckboxChange("style3")}
-                    >
-                      <input
-                        id="style3"
-                        type="checkbox"
-                        name="sectionTitleShape"
-                        className="form-imagecheck-style position-absolute mt-2 ms-3"
-                        checked={selectedShape === "style3"}
-                        readOnly
-                      />
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-3.png"
-                        alt="Style 3"
-                        className="img-fluid mt-3"
-                      />
-                    </div>
-
-                    <div
-                      className="border rounded theme-title position-relative"
-                      onClick={() => handleCheckboxChange("style4")}
-                    >
-                      <input
-                        id="style4"
-                        type="checkbox"
-                        name="sectionTitleShape"
-                        className="form-imagecheck-style position-absolute mt-2 ms-3"
-                        checked={selectedShape === "style4"}
-                        readOnly
-                      />
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/section-title-shape/none.png"
-                        alt="Style 4"
-                        className="img-fluid"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <label className="form-label" htmlFor="date-format">
-                    Enable back to top button
-                  </label>
-
-                  <div className="form-check form-switch mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="has-action"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <label className="form-label" htmlFor="date-format">
-                    Primary color
-                  </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
-                      style={{ cursor: "pointer" }}
-                    />
+                      className="color-preview"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        backgroundColor: user[key],
+                        border: "1px solid #ccc",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleColorClick(key)}
+                    ></div>
                     <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
+                      className="color-dropdown"
+                      style={{ cursor: "pointer", marginLeft: "10px" }}
+                      onClick={() => handleColorClick(key)}
                     >
                       ▼
                     </span>
                   </div>
                 </div>
+              ))}
 
-                <div className="mt-4">
-                  <label className="form-label" htmlFor="date-format">
-                    Header top background color
-                  </label>
+              <div className="d-flex flex-column mt-3">
+                <label htmlFor="">Header style</label>
 
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
+                <div
+                  className="border rounded mt-2 w-100 position-relative theme-lyte"
+                  onClick={() => handleHeaderStyleChange("header1")}
+                  style={{ cursor: "pointer" }}
+                >
+                  <input
+                    type="checkbox"
+                    name="headerStyle"
+                    id="header1"
+                    className="position-absolute form-check-input"
+                    style={{ top: "0px", left: "10px", cursor: "pointer" }}
+                    checked={headerStyle === "header1"}
+                    readOnly
+                  />
+                  <label htmlFor="header1" className="w-100 h-100">
+                    <img
+                      src={Appath}
+                      alt="Header 1"
+                      className="img-fluid w-100 h-100 rounded"
                       style={{ cursor: "pointer" }}
                     />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
+                  </label>
+                </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <p className="text-center mt-2 mb-0">Header 1</p>
                 </div>
 
-                <div className="mt-4">
-                  <label className="form-label" htmlFor="date-format">
-                    Header top text color
-                  </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
+                <div
+                  className="border rounded mt-2 w-100 position-relative theme-lyte"
+                  onClick={() => handleHeaderStyleChange("header2")}
+                  style={{ cursor: "pointer" }}
+                >
+                  <input
+                    type="checkbox"
+                    name="headerStyle"
+                    id="header2"
+                    className="position-absolute form-check-input"
+                    style={{ top: "0px", left: "10px", cursor: "pointer" }}
+                    checked={headerStyle === "header2"}
+                    readOnly
+                  />
+                  <label htmlFor="header2" className="w-100 h-100">
+                    <img
+                      src={Appath}
+                      alt="Header 2"
+                      className="img-fluid w-100 h-100 rounded"
                       style={{ cursor: "pointer" }}
                     />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
+                  </label>
+                </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <p className="text-center mt-2 mb-0">Header 2</p>
                 </div>
 
-                <div className="mt-4">
-                  <label className="form-label" htmlFor="date-format">
-                    Header main background color
+                <div
+                  className="border rounded mt-3 w-100 position-relative theme-lyte"
+                  onClick={() => handleHeaderStyleChange("header3")}
+                  style={{ cursor: "pointer" }}
+                >
+                  <input
+                    type="checkbox"
+                    name="headerStyle"
+                    id="header3"
+                    className="position-absolute form-check-input"
+                    style={{ top: "0px", left: "10px", cursor: "pointer" }}
+                    checked={headerStyle === "header3"}
+                    readOnly
+                  />
+                  <label htmlFor="header3" className="w-100 h-100">
+                    <img
+                      src={Appath}
+                      alt="Header 3"
+                      className="img-fluid w-100 h-100 rounded"
+                      style={{ cursor: "pointer" }}
+                    />
                   </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
                 </div>
-
-                <div className="mt-4">
-                  <label className="form-label" htmlFor="date-format">
-                    Header main text color
-                  </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="form-label" htmlFor="date-format">
-                    Header menu background color
-                  </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <label className="form-label" htmlFor="date-format">
-                    Header border color
-                  </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                  <p className="mt-2 text-muted">
-                    This option is only applied for header style 1
-                  </p>
-                </div>
-
-                <div className="mt-3">
-                  <label className="form-label" htmlFor="date-format">
-                    Header menu text color
-                  </label>
-
-                  <div className="style-toogle border w-auto py-1 rounded d-lg-flex">
-                    <input
-                      type="color"
-                      className="ms-2 mt-1 mb-1"
-                      style={{ cursor: "pointer" }}
-                    />
-                    <span
-                      className="ms-1 me-1 mt-1"
-                      style={{ cursor: "pointer" }}
-                    >
-                      ▼
-                    </span>
-                  </div>
-                  <p className="mt-2 text-muted">
-                    This option is only applied for header style 1
-                  </p>
-                </div>
-
-                <div className="d-flex flex-column">
-                  <label htmlFor="">Header style</label>
-
-                  <div
-                    className="border rounded mt-2 w-100 position-relative"
-                    onClick={() => handleCheckboxChanges("header1")}
-                  >
-                    <input
-                      type="checkbox"
-                      name="headerStyle"
-                      id="header1"
-                      className="position-absolute form-check-input"
-                      style={{ top: "0px", left: "10px", cursor: "pointer" }}
-                      checked={selectedHeader === "header1"}
-                      readOnly
-                    />
-
-                    <label htmlFor="header1" className="w-100 h-100">
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/header-styles/header-1.png"
-                        alt="Header 1"
-                        className="img-fluid w-100 h-100 rounded"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex justify-content-center mb-2 header1">
-                    <p className="text-center mt-2 mb-0 header1">Header 1</p>
-                  </div>
-
-                  <div
-                    className="border rounded mt-2 w-100 position-relative"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleCheckboxChanges("header2")}
-                  >
-                    <input
-                      type="checkbox"
-                      name="headerStyle"
-                      id="header2"
-                      className="position-absolute form-check-input"
-                      style={{ top: "0px", left: "10px", cursor: "pointer" }}
-                      checked={selectedHeader === "header2"}
-                      readOnly
-                    />
-                    <label htmlFor="header2" className="w-100 h-100">
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/header-styles/header-2.png"
-                        alt="Header 2"
-                        className="w-100 h-100 rounded"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex justify-content-center mb-2 header1">
-                    <p className="text-center mt-2 mb-0 header1">Header 2</p>
-                  </div>
-
-                  <div
-                    className="border rounded mt-3 w-100 position-relative"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleCheckboxChanges("header3")}
-                  >
-                    <input
-                      type="checkbox"
-                      name="headerStyle"
-                      id="header3"
-                      className="position-absolute form-check-input"
-                      style={{ top: "0px", left: "10px", cursor: "pointer" }}
-                      checked={selectedHeader === "header3"}
-                      readOnly
-                    />
-
-                    <label htmlFor="header3" className="w-100 h-100">
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/header-styles/header-3.png"
-                        alt="Header 3"
-                        className="w-100 h-100 img-fluid rounded"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex justify-content-center mb-2 header1">
-                    <p className="text-center mt-2 mb-0 header1">Header 3</p>
-                  </div>
-
-                  <div
-                    className="border rounded mt-3 w-100 position-relative"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleCheckboxChanges("header4")}
-                  >
-                    <input
-                      type="checkbox"
-                      name="headerStyle"
-                      id="header3"
-                      className="position-absolute form-check-input"
-                      style={{ top: "0px", left: "10px", cursor: "pointer" }}
-                      checked={selectedHeader === "header4"}
-                      readOnly
-                    />
-
-                    <label htmlFor="header3" className="w-100 h-100">
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/header-styles/header-4.png"
-                        alt="Header 3"
-                        className="w-100 h-100 img-fluid rounded"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex justify-content-center mb-2 header1">
-                    <p className="text-center mt-2 mb-0 header1">Header 4</p>
-                  </div>
-
-                  <div
-                    className="border rounded mt-3 w-100 position-relative"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleCheckboxChanges("header5")}
-                  >
-                    <input
-                      type="checkbox"
-                      name="headerStyle"
-                      id="header3"
-                      className="position-absolute form-check-input"
-                      style={{ top: "0px", left: "10px", cursor: "pointer" }}
-                      checked={selectedHeader === "header5"}
-                      readOnly
-                    />
-
-                    <label htmlFor="header3" className="w-100 h-100">
-                      <img
-                        src="https://shofy.botble.com/themes/shofy/images/header-styles/header-5.png"
-                        alt="Header 3"
-                        className="w-100 h-100 img-fluid rounded"
-                        style={{ cursor: "pointer" }}
-                      />
-                    </label>
-                  </div>
-
-                  <div className="d-flex justify-content-center mb-2 header1">
-                    <p className="text-center mt-2 mb-0 header1">Header 5</p>
-                  </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <p className="text-center mt-2 mb-0">Header 3</p>
                 </div>
               </div>
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

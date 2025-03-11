@@ -2246,7 +2246,7 @@ function ThemePage() {
         </ol>
       </nav>
 
-      <div className="container mt-4 d-flex">
+      <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
@@ -2632,7 +2632,7 @@ function ThemePage() {
         <div className="content d-flex flex-column justify-content-center content-theme border rounded-0 ms-0 mb-3 mb-lg-0">
           <div className="d-flex justify-content-end mt-2 mt-lg-0">
             <button
-              className="btn btn-success button-change1-theme py-4 mt-4 mt-lg-2 ms-2 me-2 border d-flex"
+              className="btn btn-success button-change1-theme py-4 mt-4 mt-lg-2 ms-2 me-2 border d-flex cart-cart1"
               onClick={handleSaveChanges}
             >
               Save Changes

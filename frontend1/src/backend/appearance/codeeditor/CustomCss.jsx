@@ -13,14 +13,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-// import { Controlled as CodeMirror } from "react-codemirror2";
-// import "codemirror/lib/codemirror.css";
-// import 'codemirror/theme/material.css';
-
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
-
 import axios from "axios";
 
 function CustomCss() {
@@ -131,19 +126,11 @@ function CustomCss() {
     }
   };
 
-  const [code, setCode] = useState("write custom css");
+  const [code, setCode] = useState("");
 
   const handleChanges = (editor, data, value) => {
     setCode(value);
   };
-
-  // const [code, setCode] = useState("");
-
-  // const handleChanges = (editor, data, value) => {
-  //   setCode(value);
-  // };
-
-  // const lineCount = code.split("\n").length;
 
   let toggleecommerce = () => {
     setCommerce(!commerce);
@@ -312,7 +299,7 @@ function CustomCss() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">

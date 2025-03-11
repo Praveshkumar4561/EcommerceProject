@@ -13,10 +13,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
+import axios from "axios";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
-import axios from "axios";
-// import 'codemirror/theme/material.css';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -86,6 +85,7 @@ function RobotTxt() {
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -127,14 +127,6 @@ function RobotTxt() {
     }
   };
 
-  const [code, setCode] = useState("");
-
-  const handleChanges = (editor, data, value) => {
-    setCode(value);
-  };
-
-  const lineCount = code.split("\n").length;
-
   let toggleecommerce = () => {
     setCommerce(!commerce);
   };
@@ -173,23 +165,6 @@ function RobotTxt() {
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type != "text/plain") {
-      event.target.value = "";
-      try {
-        toast.success("Please upload a valid .txt file.: ", {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        });
-      } catch (error) {}
-    }
-  };
-
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
@@ -199,6 +174,59 @@ function RobotTxt() {
     };
     orderdata();
   });
+
+  const [code, setCode] = useState("User-agent: *\nDisallow: /admin/\nAllow:");
+
+  useEffect(() => {
+    axios
+      .get("/robots.txt")
+      .then((response) => {
+        setCode(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching robots.txt", error);
+      });
+  }, []);
+
+  const handleChanges = (editor, data, value) => {
+    setCode(value);
+  };
+
+  const [fileContent, setFileContent] = useState("");
+
+  const handleFileChanges = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        setFileContent(evt.target.result);
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const saveRobotsTxt = async () => {
+    try {
+      await axios.post("http://89.116.170.231:1600/update-robots", {
+        content: code,
+      });
+      toast.success("robots.txt updated successfully!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error("Failed to update robots.txt", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -2139,11 +2167,10 @@ function RobotTxt() {
       <div className="container">
         <div className="row d-flex justify-content-md-center ps-1">
           <div className="d-flex flex-column align-items-center mt-1 col-12 col-lg-6 w-100">
-            <div
-              className="position-relative border rounded-1 custom-code me-3"
-              // style={{ width: "90%", maxWidth: "1000px" }}
-            >
-              <p className="ms-4 mt-3 text-start">Robots.txt Content</p>
+            <div className="position-relative border rounded-1 custom-code me-3">
+              <p className="ms-4 mt-3 text-start cart-cart">
+                Robots.txt Content
+              </p>
               <CodeMirror
                 className="border rounded ms-4 me-3 mb-3"
                 value={code}
@@ -2154,11 +2181,16 @@ function RobotTxt() {
                 }}
                 onBeforeChange={handleChanges}
               />
+
               <style>{code}</style>
 
-              <div className="ms-4 ps-1 mb-3">
+              <div className="ms-4 ps-1 mb-3 text-start cart-cart">
                 After saved, you can check your robots.txt here:{" "}
-                <Link className="text-decoration-none text-success">
+                <Link
+                  className="text-decoration-none text-success"
+                  to="/robots.txt"
+                  target="_blank"
+                >
                   /robots.txt
                 </Link>
               </div>
@@ -2172,10 +2204,13 @@ function RobotTxt() {
                   type="file"
                   className="ms-4 mt-2 border mb- me-2 rounded robot-upload"
                   accept=".txt"
-                  onChange={handleFileChange}
+                  onChange={handleFileChanges}
                 />
 
-                <label htmlFor="" className="ms-4 mt-1 ps-1 mb-3">
+                <label
+                  htmlFor=""
+                  className="ms-4 mt-1 ps-1 mb-3 text-start cart-cart"
+                >
                   If you want to upload a robots.txt file, please select it
                   here.
                 </label>
@@ -2183,10 +2218,13 @@ function RobotTxt() {
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-6 col-xxl-6 border rounded ms-2 mt- mt-md-3 mt-md-0 published-box mt-2 me-4 mb-4">
-              <p className="ms-4 mt-3 mb-3 text-start">Publish</p>
+              <p className="ms-4 mt-3 mb-3 text-start cart-cart1">Publish</p>
               <hr />
 
-              <button className="btn btn-success d-flex flex-wrap flex-column-reverse align-items-lg-center float-start px-3 py-4 mb-3 ms-3">
+              <button
+                className="btn btn-success d-flex flex-wrap flex-column-reverse align-items-lg-center float-start px-3 py-4 mb-3 ms-3 cart-cart1"
+                onClick={saveRobotsTxt}
+              >
                 <FontAwesomeIcon icon={faFloppyDisk} className="me-2" />
                 Save
               </button>

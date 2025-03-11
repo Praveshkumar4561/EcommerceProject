@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import image1 from "../../assets/Tonic.svg";
+
 import Tonic from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
+import { Helmet } from "react-helmet";
 
 function Login() {
   const navigate = useNavigate();
@@ -221,7 +222,7 @@ function Login() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -293,6 +294,16 @@ function Login() {
 
   return (
     <>
+      <Helmet>
+        <title>Login to Your Account - Secure Access | Rxlyte</title>
+        <meta
+          name="description"
+          content="Sign in to your Rxlyte account for a seamless shopping experience. Access your orders, wishlist, and exclusive deals securely."
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/login" />
+      </Helmet>
+
       <div
         className="container"
         id="container-custom"
@@ -316,7 +327,7 @@ function Login() {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -499,8 +510,8 @@ function Login() {
           <div className="row d-flex justify-content-start flex-md-nowrap flex-row gap-0 ">
             <div className="col-12 col-md-6 col-lg-6 mb-4 mb-lg-0 login-alignment1">
               <div className="card w-100">
-                <div className="card-body border rounded-1">
-                  <h3 className="card-title text-center login fw-medium">
+                <div className="card-body border rounded-1 cart-cart1">
+                  <h3 className="fw-lighter login cart-cart1 text-center">
                     Login
                   </h3>
                   <p className="text-center mb-3 account text-dark">
@@ -513,7 +524,7 @@ function Login() {
                       </label>
                       <input
                         type="email"
-                        className="form-control py-4 address-register"
+                        className="form-control py-4 cart-cart1 address-register"
                         id="loginEmail"
                         placeholder="Email Address"
                         name="email"
@@ -533,7 +544,7 @@ function Login() {
                       </label>
                       <input
                         type={shows ? "text" : "password"}
-                        className="form-control py-4 address-register"
+                        className="form-control py-4 address-register cart-cart1"
                         id="loginPassword"
                         placeholder="Password"
                         name="password"
@@ -566,7 +577,7 @@ function Login() {
                     >
                       <button
                         type="submit"
-                        className="btn btn-success button-account d-flex py-4 cart-cart w-100"
+                        className="btn btn-success button-account d-flex py-4 cart-cart1 w-100"
                       >
                         Sign In
                       </button>
@@ -597,7 +608,7 @@ function Login() {
             <div className="col-12 col-md-6 col-lg-6">
               <div className="card shadow-sm w-100 register mt-0 mt-lg-3 mt-md-3">
                 <div className="card-header text-center border rounded-2">
-                  <h3 className="fw-lighter login">Register</h3>
+                  <h3 className="fw-lighter login cart-cart1">Register</h3>
                   <p className="account fw-medium text-dark">
                     Don't have an account?{" "}
                     <Link
@@ -608,7 +619,7 @@ function Login() {
                     </Link>
                   </p>
                 </div>
-                <div className="card-body">
+                <div className="card-body cart-cart1">
                   <form onSubmit={handleRegisterSubmit}>
                     <div className="mb-3 text-start">
                       <label htmlFor="registerEmail" className="form-label">
@@ -616,7 +627,7 @@ function Login() {
                       </label>
                       <input
                         type="email"
-                        className="form-control py-4 address-register cart-cart"
+                        className="form-control py-4 address-register cart-cart1"
                         id="registerEmail"
                         placeholder="Email Address"
                         name="email"
@@ -636,7 +647,7 @@ function Login() {
                       </label>
                       <input
                         type={show ? "text" : "password"}
-                        className="form-control py-4 address-register cart-cart"
+                        className="form-control py-4 address-register cart-cart1"
                         id="registerPassword"
                         placeholder="Create Password"
                         name="password"
@@ -654,7 +665,9 @@ function Login() {
                           {registerErrors.password}
                         </small>
                       )}
-                      <p className="">Password must contain(@,letter,number)</p>
+                      <p className="mt-1">
+                        Password must contain(@,letter,number)
+                      </p>
                     </div>
 
                     <div className="mb-3 text-start">
@@ -663,7 +676,7 @@ function Login() {
                       </label>
                       <input
                         type="text"
-                        className="form-control py-4 address-register cart-cart"
+                        className="form-control py-4 address-register cart-cart1"
                         id="firstName"
                         placeholder="First Name"
                         name="first_name"
@@ -682,7 +695,7 @@ function Login() {
                       </label>
                       <input
                         type="text"
-                        className="form-control py-4 address-register cart-cart"
+                        className="form-control py-4 address-register cart-cart1"
                         id="lastName"
                         placeholder="Last Name"
                         name="last_name"
@@ -701,7 +714,7 @@ function Login() {
                       </label>
                       <input
                         type="number"
-                        className="form-control py-4 address-register cart-cart"
+                        className="form-control py-4 address-register cart-cart1"
                         id="phoneNumber"
                         placeholder="Phone Number"
                         name="phone_number"
@@ -714,7 +727,7 @@ function Login() {
                         </small>
                       )}
                     </div>
-                    <div className="mb-3 form-check text-start">
+                    <div className="mb-3 form-check text-start cart-cart1">
                       <input
                         type="checkbox"
                         className="form-check-input"
@@ -731,7 +744,7 @@ function Login() {
                     >
                       <button
                         type="submit"
-                        className="btn btn-success w-100 button-account d-flex py-4 cart-cart"
+                        className="btn btn-success w-100 button-account d-flex py-4 cart-cart1"
                       >
                         Create Account
                       </button>
@@ -771,7 +784,7 @@ function Login() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -803,7 +816,7 @@ function Login() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -814,7 +827,10 @@ function Login() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>

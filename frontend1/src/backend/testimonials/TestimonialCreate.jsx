@@ -127,7 +127,6 @@ function TestimonialCreate() {
     formData.append("date", user.date);
     formData.append("content", cleanContent);
     formData.append("file", user.file);
-
     try {
       const response = await axios.post(
         "http://89.116.170.231:1600/testimonials",

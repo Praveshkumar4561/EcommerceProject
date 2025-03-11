@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "./BlogDetails.css";
-import image1 from "../../assets/Tonic.svg";
 import Tonic from "../../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,11 +11,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
-import axios from "axios";
 import UserContext from "../../context/UserContext";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
+import { Helmet } from "react-helmet";
+import axios from "axios";
 
 function BlogDetails() {
   let { count, setCount } = useContext(UserContext);
@@ -59,25 +59,16 @@ function BlogDetails() {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const { id } = useParams();
-
-  const [blog, setBlog] = useState(null);
-  let [welcome, setWelcome] = useState([]);
-  let [detail, setDetail] = useState(false);
-  let [detail1, setDetail1] = useState([]);
-
-  let blogsdata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
-    setDetail(response.data);
-    setDetail1(response.data);
-  };
-  blogsdata();
-
   let alldata = async () => {
     let response = await axios.get("http://89.116.170.231:1600/blogalldata");
     setWelcome(response.data);
   };
   alldata();
+
+  const { id } = useParams();
+  const [blog, setBlog] = useState(null);
+  const [latestPosts, setLatestPosts] = useState([]);
+  const [welcome, setWelcome] = useState([]);
 
   useEffect(() => {
     const fetchBlogDetails = async () => {
@@ -85,13 +76,44 @@ function BlogDetails() {
         const response = await axios.get(
           `http://89.116.170.231:1600/blogpostdata/${id}`
         );
-        setBlog(response.data);
+        setBlog(
+          Array.isArray(response.data) ? response.data[0] : response.data
+        );
       } catch (error) {
-        console.error("Error fetching:", error);
+        console.error("Error fetching blog details:", error);
       }
     };
     fetchBlogDetails();
   }, [id]);
+
+  useEffect(() => {
+    const fetchLatestPosts = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/blogpostdata"
+        );
+        setLatestPosts(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Error fetching latest posts:", error);
+        setLatestPosts([]);
+      }
+    };
+    fetchLatestPosts();
+  }, []);
+
+  useEffect(() => {
+    const fetchWelcomeData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/welcomedata"
+        );
+        setWelcome(response.data);
+      } catch (error) {
+        console.error("Error fetching welcome data:", error);
+      }
+    };
+    fetchWelcomeData();
+  }, []);
 
   const defaultUrlState = {
     login: "login",
@@ -101,7 +123,7 @@ function BlogDetails() {
     checkout: "checkout",
     ordersTracking: "orders/tracking",
     wishlist: "wishlist",
-    productDetails: "product/details",
+    productDetails: "product-details",
     userDashboard: "user/dashboard",
     userAddress: "user/address",
     userDownloads: "user/downloads",
@@ -173,6 +195,19 @@ function BlogDetails() {
 
   return (
     <>
+      <Helmet>
+        <title>In-Depth Blog Insights - Read Expert Articles | Rxlyte</title>
+        <meta
+          name="description"
+          content="Explore in-depth articles, expert tips, and industry insights. Stay updated with the latest blogs on health, wellness, and shopping trends at Rxlyte."
+        />
+        <meta name="robots" content="index, follow" />
+        <link
+          rel="canonical"
+          href="http://srv724100.hstgr.cloud/blog-details"
+        />
+      </Helmet>
+
       <div
         className="container"
         id="container-customx"
@@ -196,7 +231,7 @@ function BlogDetails() {
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
                   <img
-                    src={logoUrl || image1}
+                    src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
@@ -334,10 +369,14 @@ function BlogDetails() {
 
           <main className="container mt-4 clutch-detail">
             <p className="fw-medium mb-3 text-start mt-lg-5 container-contact ps-lg-5 ms-lg-1 ms-4 me-4 pt-3 lorem-space cart-cart fs-5 expert-blog">
-              {Array.isArray(detail1) && detail1.length > 0 ? (
-                detail1
-                  .slice(0, 1)
-                  .map((data, key) => <span key={key}>{data.name}</span>)
+              {Array.isArray(blog) ? (
+                blog.length > 0 ? (
+                  blog.map((data, key) => <span key={key}>{data.name}</span>)
+                ) : (
+                  <span></span>
+                )
+              ) : blog && blog.name ? (
+                <span>{blog.name}</span>
               ) : (
                 <span></span>
               )}
@@ -372,126 +411,80 @@ function BlogDetails() {
       <div className="container-fluid">
         <div className="container">
           <div className="row gap-4 me-1 d-flex flex-lg-nowrap flex-md-wrap">
-            {Array.isArray(detail1) && detail1.length > 0 ? (
-              detail1.slice(0, 1).map((data) => (
-                <div
-                  className="col-12 col-sm-12 col-md-12 col-lg-8"
-                  key={data.id}
-                >
-                  <div className="blog-box1">
-                    <img
-                      src={`http://89.116.170.231:1600/src/image/${data.image}`}
-                      alt="RxLYTE"
-                      className="img-fluid w-100 h-100 mb-0"
+            {blog ? (
+              <div
+                className="col-12 col-sm-12 col-md-12 col-lg-8 mt-4"
+                key={blog.id}
+              >
+                <div className="blog-box1">
+                  <img
+                    src={`http://89.116.170.231:1600/src/image/${blog.image}`}
+                    alt="RxLYTE"
+                    className="img-fluid w-100 h-100 mb-0"
+                  />
+                </div>
+                <div className="bg-light d-flex flex-column">
+                  <div className="d-flex flex-row gap-2 ms-2 mt-0">
+                    <FontAwesomeIcon
+                      icon={faCalendarDays}
+                      className="text-success ms-1 mt-2 pt-lg-1"
                     />
-                  </div>
-
-                  <div className="bg-light d-flex flex-column">
-                    <div className="d-flex flex-row gap-2 ms-2 mt-0">
-                      <FontAwesomeIcon
-                        icon={faCalendarDays}
-                        className="text-success ms-1 mt-2 pt-lg-1"
-                      />
-                      <p className="mt-lg-2 mt-1 fw-medium text-dark lorem-space mb-0">
-                        {new Date(data.date).toLocaleDateString()}
-                      </p>
-                    </div>
-
-                    <h3 className="lorem-dummy ms-2 me-5 text-start lorem-space m-0 fw-normal lh-base mb-0 pb-0">
-                      {data.name}
-                    </h3>
-
-                    <h4 className="english-read ms-2 mt-0 me-5 mb-0 text-start lorem-space lh-lg text-dark">
-                      {data.categories}
-                    </h4>
-
-                    <h4 className="english-read ms-2 mt-0 me-5 text-start lorem-space text-dark">
-                      {data.author_name}
-                    </h4>
-
-                    <p className="english-read cart-cart1 ms-2 me-5 mt-1 text-start lh-lg text-dark">
-                      {data.description}
+                    <p className="mt-lg-2 mt-1 fw-medium text-dark lorem-space mb-0">
+                      {new Date(blog.date).toLocaleDateString()}
                     </p>
-
-                    <div className="d-flex flex-column">
-                      <div className="cart-cart d-flex ms-2 flex-row gap-1">
-                        <h4>Tags:</h4>
-                        {Array.isArray(welcome) && welcome.length > 0 ? (
-                          welcome.slice(0, 3).map((data, key) => (
-                            <div className="ms-0" key={key}>
-                              <button className="btn btn-transparent border d-flex">
-                                <Link
-                                  to="/blog"
-                                  className="text-decoration-none text-dark cart-cart"
-                                >
-                                  {data.name}
-                                </Link>
-                              </button>
-                            </div>
-                          ))
-                        ) : (
-                          <p></p>
-                        )}
-
-                        <div className="review-detail">
-                          <h4 className="fw-normal ms-2 mt-3 text-start mt-5 pt-0 cart-cart">
-                            Reviews
-                          </h4>
-                        </div>
+                  </div>
+                  <h3 className="lorem-dummy ms-2 me-5 text-start lorem-space m-0 fw-normal lh-base mb-0 pb-0">
+                    {blog.name}
+                  </h3>
+                  <h4 className="english-read ms-2 mt-0 me-5 mb-0 text-start lorem-space lh-lg text-dark">
+                    {blog.categories}
+                  </h4>
+                  <h4 className="english-read ms-2 mt-0 me-5 text-start lorem-space text-dark">
+                    {blog.author_name}
+                  </h4>
+                  <p className="english-read cart-cart1 ms-2 me-5 mt-1 text-start lh-lg text-dark">
+                    {blog.description}
+                  </p>
+                  <div className="d-flex flex-column">
+                    <div className="cart-cart d-flex ms-2 flex-row gap-1">
+                      <h4>Tags:</h4>
+                      {Array.isArray(welcome) && welcome.length > 0 ? (
+                        welcome.slice(0, 3).map((tag, key) => (
+                          <div className="ms-0" key={key}>
+                            <button className="btn btn-transparent border d-flex">
+                              <Link
+                                to="/blog"
+                                className="text-decoration-none text-dark cart-cart"
+                              >
+                                {tag.name}
+                              </Link>
+                            </button>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No tags</p>
+                      )}
+                      <div className="review-detail">
+                        <h4 className="fw-normal ms-2 mt-3 text-center mt-5 pt-0 cart-cart">
+                          Reviews
+                        </h4>
                       </div>
                     </div>
-
-                    <div className="container mt-0">
-                      <div className="row">
-                        <div className="col-12 col-md-8 col-lg-6 review-page mt-0 rounded-0">
-                          <h4 className="fw-normal mb-4 mt-1 lorem-space text-start">
-                            Write A Review
-                          </h4>
-                          <form action="" method="post">
-                            <div className="row mb-4 mt-3 mb-5">
-                              <div className="col-12 col-md-6 position-relative lorem-write1 border-top border-end border-start rounded">
-                                <FontAwesomeIcon
-                                  icon={faUser}
-                                  className="position-absolute text-success"
-                                  style={{
-                                    left: "35px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    zIndex: 1,
-                                  }}
-                                />
-                                <input
-                                  type="text"
-                                  className="form-control fw-medium border-top-0 py-4 control-form lorem-space lorem-write lorem-write1 ps-5 "
-                                  placeholder="Your Name*"
-                                />
-                              </div>
-
-                              <div className="col-12 col-md-6 mt-3 mt-md-0 position-relative lorem-write1">
-                                <FontAwesomeIcon
-                                  icon={faEnvelope}
-                                  className="position-absolute text-success"
-                                  style={{
-                                    left: "34px",
-                                    top: "50%",
-                                    transform: "translateY(-50%)",
-                                    zIndex: 1,
-                                  }}
-                                />
-                                <input
-                                  type="email"
-                                  className="form-control fw-medium py-4 ps-5 control-form lorem-write mt-md-3 mt-lg-0 border-top border-end border-start"
-                                  placeholder="Email Address*"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="col-12 position-relative mb-4">
+                  </div>
+                  <div className="container mt-0">
+                    <div className="row">
+                      <div className="col-12 col-md-8 col-lg-6 review-page mt-0 rounded-0">
+                        <h4 className="fw-normal mb-4 mt-1 lorem-space text-start">
+                          Write A Review
+                        </h4>
+                        <form action="" method="post">
+                          <div className="row mb-4 mt-3 mb-5">
+                            <div className="col-12 col-md-6 position-relative lorem-write1 border-top border-end border-start rounded">
                               <FontAwesomeIcon
-                                icon={faComment}
+                                icon={faUser}
                                 className="position-absolute text-success"
                                 style={{
-                                  left: "21px",
+                                  left: "35px",
                                   top: "50%",
                                   transform: "translateY(-50%)",
                                   zIndex: 1,
@@ -499,77 +492,103 @@ function BlogDetails() {
                               />
                               <input
                                 type="text"
-                                className="form-control px-5 fw-medium py-4 lorem-write control-form border-top border-end border-start border-top"
-                                placeholder="Write Comment"
+                                className="form-control fw-medium border-top-0 py-4 control-form lorem-space lorem-write lorem-write1 ps-5"
+                                placeholder="Your Name*"
                               />
                             </div>
-
-                            <div className="d-flex align-items-center mb-4 ms-1 flex-row">
+                            <div className="col-12 col-md-6 mt-3 mt-md-0 position-relative lorem-write1">
+                              <FontAwesomeIcon
+                                icon={faEnvelope}
+                                className="position-absolute text-success"
+                                style={{
+                                  left: "34px",
+                                  top: "50%",
+                                  transform: "translateY(-50%)",
+                                  zIndex: 1,
+                                }}
+                              />
                               <input
-                                type="checkbox"
-                                id="save-info"
-                                className="me-1 form-check-input"
+                                type="email"
+                                className="form-control fw-medium py-4 ps-5 control-form lorem-write mt-md-3 mt-lg-0 border-top border-end border-start"
+                                placeholder="Email Address*"
                               />
-                              <label
-                                htmlFor="save-info"
-                                className="save-para lorem-space text-dark text-start"
-                              >
-                                Save my name, email, and website in this browser
-                                for the next time I comment.
-                              </label>
                             </div>
-
-                            <button
-                              className="btn rounded text-light px-3 py-4 comment-post d-flex mt-3 mb-4 lorem-space"
-                              type="button"
+                          </div>
+                          <div className="col-12 position-relative mb-4">
+                            <FontAwesomeIcon
+                              icon={faComment}
+                              className="position-absolute text-success"
+                              style={{
+                                left: "21px",
+                                top: "50%",
+                                transform: "translateY(-50%)",
+                                zIndex: 1,
+                              }}
+                            />
+                            <input
+                              type="text"
+                              className="form-control px-5 fw-medium py-4 lorem-write control-form border-top border-end border-start border-top"
+                              placeholder="Write Comment"
+                            />
+                          </div>
+                          <div className="d-flex align-items-center mb-4 ms-1 flex-row">
+                            <input
+                              type="checkbox"
+                              id="save-info"
+                              className="me-1 form-check-input"
+                            />
+                            <label
+                              htmlFor="save-info"
+                              className="save-para lorem-space text-dark text-start"
                             >
-                              <Link
-                                to="/blog"
-                                className="text-light text-decoration-none"
-                              >
-                                Post Comment
-                              </Link>
-                            </button>
-                          </form>
-                        </div>
+                              Save my name, email, and website in this browser
+                              for the next time I comment.
+                            </label>
+                          </div>
+                          <button
+                            className="btn rounded text-light px-3 py-4 comment-post d-flex mt-3 mb-4 lorem-space"
+                            type="button"
+                          >
+                            <Link
+                              to="/blog"
+                              className="text-light text-decoration-none"
+                            >
+                              Post Comment
+                            </Link>
+                          </button>
+                        </form>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))
+              </div>
             ) : (
               <p></p>
             )}
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 mt-3">
               <input
                 type="search"
                 className="form-control border py-4 mt-2 mb-2"
                 placeholder="Search..."
               />
               <h5 className="mt-3 text-start">About Me</h5>
-
               <div className="border rounded p-3 mt-3">
-                {Array.isArray(detail1) && detail1.length > 0 ? (
-                  detail1.slice(0, 1).map((data) => (
-                    <div key={data.id}>
-                      <div className="d-flex justify-content-center w-100 align-items-center">
-                        <img
-                          src={`http://89.116.170.231:1600/src/image/${data.image}`}
-                          alt="RxLYTE"
-                          className="w-25 rounded-5"
-                        />
-                      </div>
-
-                      <div className="d-flex justify-content-center align-items-center mt-2 cart-cart">
-                        {Array.isArray(data) && data.length > 0 ? (
-                          data.name.split(" ").slice(0, 4).join(" ")
-                        ) : (
-                          <p></p>
-                        )}
-                      </div>
+                {blog ? (
+                  <div>
+                    <div className="d-flex justify-content-center w-100 align-items-center">
+                      <img
+                        src={`http://89.116.170.231:1600/src/image/${blog.image}`}
+                        alt="RxLYTE"
+                        className="w-25 rounded-5"
+                      />
                     </div>
-                  ))
+                    <div className="d-flex justify-content-center align-items-center mt-2 cart-cart">
+                      {blog.name
+                        ? blog.name.split(" ").slice(0, 4).join(" ")
+                        : ""}
+                    </div>
+                  </div>
                 ) : (
                   <p></p>
                 )}
@@ -578,25 +597,25 @@ function BlogDetails() {
               <h5 className="mt-3 text-start">Latest Posts</h5>
 
               <div className="border rounded p-3 mt-3">
-                {Array.isArray(detail1) && detail1.length > 0 ? (
-                  detail1.slice(0, 3).map((data, key) => (
+                {Array.isArray(latestPosts) && latestPosts.length > 0 ? (
+                  latestPosts.slice(0, 3).map((post, key) => (
                     <div className="d-flex flex-row" key={key}>
                       <img
-                        src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                        src={`http://89.116.170.231:1600/src/image/${post.image}`}
                         alt="RxLYTE"
                         className="w-25 h-25 img-thumbnail me-2 mb-2 mb-lg-0"
                       />
                       <div className="d-flex flex-column ms-2 lh-lg">
-                        <span>{data.date}</span>
+                        <span>{new Date(post.date).toLocaleDateString()}</span>
                         <span className="text-success text-start">
-                          {data.name}
+                          {post.name}
                         </span>
                         <div className="border border-secondary w-100"></div>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <p></p>
+                  <p>No latest posts</p>
                 )}
               </div>
 
@@ -612,23 +631,22 @@ function BlogDetails() {
               </div>
 
               <h5 className="mt-3 text-start">Popular Tags</h5>
-
               <div className="border rounded mt-3 lh-lg">
                 <div className="d-flex flex-row flex-wrap mt-2 ms-2 mb-2 gap-1">
                   {Array.isArray(welcome) && welcome.length > 0 ? (
-                    welcome.slice(0, 6).map((data, key) => (
+                    welcome.slice(0, 6).map((tag, key) => (
                       <Link
                         key={key}
                         to="/blog"
                         className="text-decoration-none text-light"
                       >
                         <button className="btn border d-flex btn-data">
-                          {data.name}
+                          {tag.name}
                         </button>
                       </Link>
                     ))
                   ) : (
-                    <p></p>
+                    <p>No tags</p>
                   )}
                 </div>
               </div>
@@ -663,7 +681,7 @@ function BlogDetails() {
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-3">Company</h5>
+                  <h5 className="mb-2 pb-0">Company</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -695,7 +713,7 @@ function BlogDetails() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-3">Help?</h5>
+                  <h5 className="mb-2 pb-0">Help?</h5>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -706,7 +724,10 @@ function BlogDetails() {
                       </Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
+                      <Link
+                        className="text-white text-decoration-none"
+                        to="/sitemap"
+                      >
                         Sitemap
                       </Link>
                     </li>
