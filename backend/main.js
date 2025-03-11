@@ -1,5 +1,7 @@
 require("dotenv").config();
 const express = require("express");
+const prerender = require("prerender-node");
+const { SitemapStream, streamToPromise } = require("sitemap");
 const mysql = require("mysql2");
 const cors = require("cors");
 const multer = require("multer");
@@ -20,7 +22,7 @@ const salt = 10;
 const saltRounds = 10;
 
 app.use(
-    cors({
+  cors({
     origin: "",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
@@ -28,12 +30,31 @@ app.use(
   })
 );
 
+prerender.set("prerenderToken", "LNOpIKN4lFVCHLfv1lca");
+app.use(prerender);
+app.use(express.static(path.join(__dirname, "../frontend1/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend1/dist", "index.html"));
+});
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use("/src/image", express.static(path.join(__dirname, "src/image")));
 app.set("trust proxy", true);
+
+app.post("/update-robots", (req, res) => {
+  const { content } = req.body;
+  const robotsPath = path.join(__dirname, "../frontend1/public/robots.txt");
+  fs.writeFile(robotsPath, content, (err) => {
+    if (err) {
+      console.error("Error writing robots.txt", err);
+      return res.status(500).json({ message: "Error saving robots.txt" });
+    }
+    res.json({ message: "robots.txt updated successfully" });
+  });
+});
 
 const uploadDir = path.join(__dirname, "src/image");
 if (!fs.existsSync(uploadDir)) {
@@ -100,6 +121,39 @@ db.connect((err) => {
     throw err;
   } else {
     console.log("database connected");
+  }
+});
+
+const getCurrentLastMod = () => new Date().toISOString();
+
+const links = [
+  { url: "/", lastmodISO: getCurrentLastMod(), priority: 1.0 },
+  { url: "/about", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/shop", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/blog", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/product/details", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/cart", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/wishlist", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/contact-us", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/faqs", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/privacy-policy", lastmodISO: getCurrentLastMod(), priority: 0.8 },
+  { url: "/medicine-policy", lastmodISO: getCurrentLastMod(), priority: 0.8 },
+  { url: "/terms-condition", lastmodISO: getCurrentLastMod(), priority: 0.8 },
+  { url: "/sitemap", lastmodISO: getCurrentLastMod(), priority: 1.0 },
+];
+
+app.get("/sitemap.xml", async (req, res, next) => {
+  try {
+    res.header("Content-Type", "application/xml");
+    const smStream = new SitemapStream({
+      hostname: "http://srv724100.hstgr.cloud",
+    });
+    links.forEach((link) => smStream.write(link));
+    smStream.end();
+    const sitemapOutput = await streamToPromise(smStream);
+    res.send(sitemapOutput.toString());
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -280,7 +334,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/alldata", (req, res) => {
-  const sql = "select *from user";
+  const sql = "SELECT * from user";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -353,7 +407,7 @@ app.put("/passwordupdate", async (req, res) => {
 });
 
 app.get("/check-auth", (req, res) => {
-  const sql = "select *from user";
+  const sql = "SELECT * from user";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -378,15 +432,15 @@ app.post("/checkout", (req, res) => {
     tax,
     shippingFee,
     total,
+    payment,
+    status,
   } = req.body;
-  const getLatestInvoiceSql = `
-    SELECT invoice_number FROM checkout
-    ORDER BY id DESC LIMIT 1
-  `;
+  if (!cart || cart.length === 0) {
+  }
+  const getLatestInvoiceSql = `SELECT invoice_number FROM checkout ORDER BY id DESC LIMIT 1`;
   db.query(getLatestInvoiceSql, (err, result) => {
     if (err) {
-      console.error("Error retrieving latest invoice number:", err);
-      return res.status(500).send("Error retrieving invoice number");
+      return res.status(500).json({ error: "Error retrieving invoice number" });
     }
     let newInvoiceNumber = "INV-1031";
     if (result.length > 0) {
@@ -398,50 +452,43 @@ app.post("/checkout", (req, res) => {
     const checkoutSql = `
       INSERT INTO checkout (
         email, phone_number, first_name, last_name, address, apartment, 
-        country, pincode, date, subtotal, tax, shippingfee, total, invoice_number
+        country, pincode, date, subtotal, tax, shippingFee, total, invoice_number,payment,status
       ) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
     `;
     const checkoutValues = [
-      email,
-      phone_number,
-      first_name,
-      last_name,
-      address,
-      apartment,
-      country,
-      pincode,
-      date,
-      subtotal,
-      tax,
-      shippingFee,
-      total,
-      newInvoiceNumber,
+      email || null,
+      phone_number || null,
+      first_name || null,
+      last_name && last_name !== "" ? last_name : null,
+      address || null,
+      apartment || null,
+      country || null,
+      pincode ? pincode : null,
+      date || null,
+      subtotal || null,
+      tax || null,
+      shippingFee || null,
+      total || null,
+      newInvoiceNumber || null,
+      payment || null,
+      status || null,
     ];
 
     db.query(checkoutSql, checkoutValues, (err, result) => {
       if (err) {
         console.error("Error inserting checkout data:", err);
-        return res.status(500).send("Error submitting data");
+        return res.status(500).json({ error: "Error submitting order" });
       }
-
       const checkoutId = result.insertId;
       const orderNumber = `#${checkoutId + 1000}`;
-
-      const updateOrderNumberSql = `
-        UPDATE checkout
-        SET order_number = ?
-        WHERE id = ?
-      `;
+      const updateOrderNumberSql = `UPDATE checkout SET order_number = ? WHERE id = ?`;
       db.query(updateOrderNumberSql, [orderNumber, checkoutId], (err) => {
         if (err) {
-          console.error("Error updating order number:", err);
-          return res.status(500).send("Error updating order number");
+          return res.status(500).json({ error: "Error updating order number" });
         }
         const cartSql = `
-          INSERT INTO cart_items (
-            checkout_id, image, name, quantity, price, subtotal, tax, store
-          ) 
+          INSERT INTO cart_items (checkout_id, image, name, quantity, price, subtotal, tax, store) 
           VALUES ?
         `;
         const cartValues = cart.map((item) => [
@@ -454,14 +501,14 @@ app.post("/checkout", (req, res) => {
           item.tax,
           item.store,
         ]);
-
         db.query(cartSql, [cartValues], (err) => {
           if (err) {
-            console.error("Error inserting cart data:", err);
-            return res.status(500).send("Error submitting cart data");
+            return res
+              .status(500)
+              .json({ error: "Error submitting cart data" });
           }
-          res.send({
-            message: "Data successfully submitted",
+          res.json({
+            message: "Order created successfully",
             orderNumber: orderNumber,
             invoiceNumber: newInvoiceNumber,
           });
@@ -492,7 +539,7 @@ app.get("/checkoutsome/:id", (req, res) => {
 
 app.get("/checkoutdata", (req, res) => {
   const sql = `
-    select
+    SELECT
       checkout.*,
       cart_items.checkout_id,
       cart_items.image,
@@ -550,7 +597,6 @@ app.get("/customerget/:value", (req, res) => {
 
 app.delete("/deleteorder1/:id", (req, res) => {
   let id = req.params.id;
-  console.log(`Attempting to delete order with ID: ${id}`);
   const sqlDeleteCartItems = "DELETE FROM cart_items WHERE checkout_id = ?";
   const sqlDeleteCheckout = "DELETE FROM checkout WHERE id = ?";
   db.beginTransaction((err) => {
@@ -558,7 +604,6 @@ app.delete("/deleteorder1/:id", (req, res) => {
       console.error("Transaction failed to start:", err);
       return res.status(500).json({ error: "Transaction failed to start" });
     }
-    console.log(`Deleting cart items for checkout_id: ${id}`);
     db.query(sqlDeleteCartItems, [id], (err, result) => {
       if (err) {
         console.error("Error deleting cart items:", err);
@@ -566,10 +611,7 @@ app.delete("/deleteorder1/:id", (req, res) => {
           res.status(500).json({ error: "Failed to delete cart items" });
         });
       }
-      console.log(
-        `Deleted ${result.affectedRows} cart items for checkout_id: ${id}`
-      );
-      console.log(`Deleting checkout record with ID: ${id}`);
+
       db.query(sqlDeleteCheckout, [id], (err, result) => {
         if (err) {
           console.error("Error deleting checkout record:", err);
@@ -577,9 +619,6 @@ app.delete("/deleteorder1/:id", (req, res) => {
             res.status(500).json({ error: "Failed to delete checkout record" });
           });
         }
-        console.log(
-          `Deleted ${result.affectedRows} checkout record with ID: ${id}`
-        );
         db.commit((err) => {
           if (err) {
             console.error("Transaction commit failed:", err);
@@ -587,7 +626,6 @@ app.delete("/deleteorder1/:id", (req, res) => {
               res.status(500).json({ error: "Transaction commit failed" });
             });
           }
-          console.log(`Transaction committed successfully`);
           res.send("Order and associated cart items deleted successfully.");
         });
       });
@@ -641,7 +679,7 @@ app.post("/contact", (req, res) => {
 });
 
 app.get("/contactreqdata", (req, res) => {
-  const sql = "select *from contact";
+  const sql = "SELECT * from contact";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -652,7 +690,7 @@ app.get("/contactreqdata", (req, res) => {
 
 app.get("/contactsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from contact where id=?";
+  const sql = "SELECT * from contact where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -686,7 +724,7 @@ app.post("/announce", (req, res) => {
 });
 
 app.get("/getannounce", (req, res) => {
-  const sql = "select *from announce";
+  const sql = "SELECT * from announce";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -719,7 +757,7 @@ app.put("/updateannnounce/:id", (req, res) => {
 
 app.get("/getann/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from announce where id=?";
+  const sql = "SELECT * from announce where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -730,7 +768,7 @@ app.get("/getann/:id", (req, res) => {
 
 app.get("/search/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from announce where name like ?";
+  const sql = "SELECT * from announce where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -759,7 +797,7 @@ app.post("/testimonials", upload.single("file"), (req, res) => {
 });
 
 app.get("/gettestimonials", (req, res) => {
-  const sql = "select *from testimonial";
+  const sql = "SELECT * from testimonial";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -770,7 +808,7 @@ app.get("/gettestimonials", (req, res) => {
 
 app.get("/testifilter/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from testimonial where name like ?";
+  const sql = "SELECT * from testimonial where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -813,7 +851,7 @@ app.put("/updatetest/:id", upload.single("file"), (req, res) => {
 
 app.get("/sometest/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from testimonial where id=?";
+  const sql = "SELECT * from testimonial where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -845,7 +883,7 @@ app.post("/gallerypost", upload.single("file"), (req, res) => {
 });
 
 app.get("/gallerydata", (req, res) => {
-  const sql = "select *from gallery";
+  const sql = "SELECT * from gallery";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -856,7 +894,7 @@ app.get("/gallerydata", (req, res) => {
 
 app.get("/galleryfil/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from gallery where name like ?";
+  const sql = "SELECT * from gallery where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -900,7 +938,7 @@ app.put("/galleryupdates/:id", upload.single("file"), (req, res) => {
 
 app.get("/gallerytests/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from gallery where id=?";
+  const sql = "SELECT * FROM gallery where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -923,7 +961,7 @@ app.post("/sliderspost", (req, res) => {
 });
 
 app.get("/sliderdata", (req, res) => {
-  const sql = "select *from sliders";
+  const sql = "SELECT * FROM sliders";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -945,7 +983,7 @@ app.delete("/slidersdelete/:id", (req, res) => {
 
 app.get("/searchslider/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from sliders where name like ?";
+  const sql = "SELECT * FROM sliders where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -968,7 +1006,7 @@ app.put("/sliderupdate/:id", (req, res) => {
 
 app.get("/someslider/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from sliders where id=?";
+  const sql = "SELECT * FROM sliders where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1055,7 +1093,7 @@ app.post("/contactdata", (req, res) => {
 });
 
 app.get("/allcontact", (req, res) => {
-  const sql = "select *from contactus";
+  const sql = "SELECT * FROM contactus";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1112,7 +1150,7 @@ app.put("/updatecontact/:id", (req, res) => {
 
 app.get("/contactusget/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from contactus where id=?";
+  const sql = "SELECT * FROM contactus where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1123,7 +1161,7 @@ app.get("/contactusget/:id", (req, res) => {
 
 app.get("/contactsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from contact where name like ?";
+  const sql = "SELECT * FROM contact where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1179,7 +1217,7 @@ app.post("/pagespost", upload.single("file"), (req, res) => {
 });
 
 app.get("/pagesdata", (req, res) => {
-  const sql = "select *from pages";
+  const sql = "SELECT * FROM pages";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1249,7 +1287,7 @@ app.put("/pageupdate/:id", upload.single("file"), (req, res) => {
 
 app.get("/pagesomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from pages where id=?";
+  const sql = "SELECT * FROM pages where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1260,7 +1298,7 @@ app.get("/pagesomedata/:id", (req, res) => {
 
 app.get("/pagesearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from pages where name like ?";
+  const sql = "SELECT * FROM pages where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1283,7 +1321,7 @@ app.post("/faqsubmit", (req, res) => {
 });
 
 app.get("/pagesdatafaqs", (req, res) => {
-  const sql = "select *from faqback";
+  const sql = "SELECT * FROM faqback";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1317,7 +1355,7 @@ app.put("/faqspageupdate/:id", (req, res) => {
 
 app.get("/faqsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from faqback where id=?";
+  const sql = "SELECT * FROM faqback where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1328,7 +1366,7 @@ app.get("/faqsomedata/:id", (req, res) => {
 
 app.get("/faqsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from faqback where question like ?";
+  const sql = "SELECT * FROM faqback where question like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1351,7 +1389,7 @@ app.post("/faqcategory", (req, res) => {
 });
 
 app.get("/faqcategorydata", (req, res) => {
-  const sql = "select *from faqcategory";
+  const sql = "SELECT * FROM faqcategory";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1385,7 +1423,7 @@ app.put("/faqcategoryupdate/:id", (req, res) => {
 
 app.get("/faqcategorysomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from faqcategory where id=?";
+  const sql = "SELECT * FROM faqcategory where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1396,7 +1434,7 @@ app.get("/faqcategorysomedata/:id", (req, res) => {
 
 app.get("/faqsearchcategory/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from faqcategory where name like ?";
+  const sql = "SELECT * FROM faqcategory where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1419,7 +1457,7 @@ app.post("/blogtagpost", (req, res) => {
 });
 
 app.get("/blogalldata", (req, res) => {
-  const sql = "select *from blogtags";
+  const sql = "SELECT * FROM blogtags";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1453,7 +1491,7 @@ app.put("/blogtagupdate/:id", (req, res) => {
 
 app.get("/blogtagdata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from blogtags where id=?";
+  const sql = "SELECT * FROM blogtags where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1464,7 +1502,7 @@ app.get("/blogtagdata/:id", (req, res) => {
 
 app.get("/blogtagsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from blogtags where name like ?";
+  const sql = "SELECT * FROM blogtags where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1498,18 +1536,33 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
       image,
     ],
   ];
-  const sql =
-    "insert into blogpost(name,author_name,permalink,description,content,feature,status,categories,date,image)values ?";
+
+  const sql = `INSERT INTO blogpost
+    (name, author_name, permalink, description, content, feature, status, categories, date, image)
+    VALUES ?`;
   db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
+    if (err) {
+      console.error("Error inserting blog post:", err);
+      return res.status(500).send("Error submitting data");
     }
+
+    const message = {
+      title: "New Blog Post Published!",
+      body: `${name} by ${author_name} is now live. Click to read more.`,
+    };
+    sendPushNotification(message)
+      .then(() => {
+        res.send("Blog post submitted and notifications sent");
+      })
+      .catch((notificationErr) => {
+        console.error("Push notification error:", notificationErr);
+        res.send("Blog post submitted but failed to send notifications");
+      });
   });
 });
 
 app.get("/blogpostdata", (req, res) => {
-  const sql = "select *from blogpost ORDER BY id DESC;";
+  const sql = "SELECT * FROM blogpost ORDER BY id DESC;";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1576,7 +1629,7 @@ app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
 
 app.get("/blogsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from blogpost where id=?";
+  const sql = "SELECT * FROM blogpost where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1598,7 +1651,7 @@ app.delete("/deleteblogpost/:id", (req, res) => {
 
 app.get("/blogpostsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from blogpost where name like ?";
+  const sql = "SELECT * FROM blogpost where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1669,7 +1722,7 @@ app.post(
 );
 
 app.get("/adsdata", (req, res) => {
-  const sql = "select *from ads";
+  const sql = "SELECT * FROM ads";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1721,7 +1774,7 @@ app.put("/adsupdate/:id", upload.single("file"), (req, res) => {
 
 app.get("/adsomedataads/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from ads where id=?";
+  const sql = "SELECT * FROM ads where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1743,7 +1796,7 @@ app.delete("/deleteads/:id", (req, res) => {
 
 app.get("/adsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from ads where name like ?";
+  const sql = "SELECT * FROM ads where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1766,7 +1819,7 @@ app.post("/producttags", (req, res) => {
 });
 
 app.get("/producttagdata", (req, res) => {
-  const sql = "select *from producttags";
+  const sql = "SELECT * FROM producttags";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1800,7 +1853,7 @@ app.put("/updateproducttags/:id", (req, res) => {
 
 app.get("/productsometag/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from producttags where id=?";
+  const sql = "SELECT * FROM producttags where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1811,7 +1864,7 @@ app.get("/productsometag/:id", (req, res) => {
 
 app.get("/searchtags/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from producttags where name like ?";
+  const sql = "SELECT * FROM producttags where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1869,7 +1922,7 @@ app.post("/productcollection", upload.single("file"), (req, res) => {
 });
 
 app.get("/collectionsdata", (req, res) => {
-  const sql = "select *from productcollection";
+  const sql = "SELECT * FROM productcollection";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1891,12 +1944,16 @@ app.delete("/collectiondelete/:id", (req, res) => {
 
 app.get("/searchcollections/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from productcollection where name like ?";
+  if (!data) {
+    return res.status(400).json({ error: "Search value is required" });
+  }
+  const sql = "SELECT * FROM productcollection WHERE name LIKE ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
-    if (err) throw err;
-    else {
-      res.json(result);
+    if (err) {
+      console.error("Database Error:", err);
+      return res.status(500).json({ error: "Database query failed" });
     }
+    res.json(result);
   });
 });
 
@@ -1923,7 +1980,7 @@ app.put("/collectionupdate/:id", upload.single("file"), (req, res) => {
 
 app.get("/collectionsome/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from productcollection where id=?";
+  const sql = "SELECT * FROM productcollection where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1945,7 +2002,7 @@ app.post("/productlabels", (req, res) => {
 });
 
 app.get("/productlabelsdata", (req, res) => {
-  const sql = "select *from productlabels";
+  const sql = "SELECT * FROM productlabels";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -1979,7 +2036,7 @@ app.put("/labelsupdate/:id", (req, res) => {
 
 app.get("/searchlabels/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from productlabels where name like ?";
+  const sql = "SELECT * FROM productlabels where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -1990,7 +2047,7 @@ app.get("/searchlabels/:value", (req, res) => {
 
 app.get("/productlabelsdata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from productlabels where id=?";
+  const sql = "SELECT * FROM productlabels where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2035,7 +2092,7 @@ app.post("/brandsubmit", upload.single("file"), (req, res) => {
 });
 
 app.get("/brandsdata", (req, res) => {
-  const sql = "select *from brands";
+  const sql = "SELECT * FROM brands";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2057,7 +2114,7 @@ app.delete("/deletebrands/:id", (req, res) => {
 
 app.get("/searchbrand/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from brands where name like ?";
+  const sql = "SELECT * FROM brands where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2107,7 +2164,7 @@ app.put("/brandupdate/:id", upload.single("file"), (req, res) => {
 
 app.get("/brandssomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from brands where id=?";
+  const sql = "SELECT * FROM brands where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2129,7 +2186,7 @@ app.post("/productoptions", (req, res) => {
 });
 
 app.get("/productoptiondata", (req, res) => {
-  const sql = "select *from productoptions";
+  const sql = "SELECT * FROM productoptions";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2151,7 +2208,7 @@ app.delete("/deleteproductoptions/:id", (req, res) => {
 
 app.get("/searchproductoption/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from productoptions where name like ?";
+  const sql = "SELECT * FROM productoptions where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2174,7 +2231,7 @@ app.put("/updateproductoptions/:id", (req, res) => {
 
 app.get("/optionsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from productoptions where id=?";
+  const sql = "SELECT * FROM productoptions where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2197,7 +2254,7 @@ app.post("/productattributes", (req, res) => {
 });
 
 app.get("/attributesdata", (req, res) => {
-  const sql = "select *from productattribute";
+  const sql = "SELECT * FROM productattribute";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2219,7 +2276,7 @@ app.delete("/attrubutedelete/:id", (req, res) => {
 
 app.get("/attributesearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from productattribute where title like ?";
+  const sql = "SELECT * FROM productattribute where title like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2247,7 +2304,7 @@ app.put("/updateattributes/:id", (req, res) => {
 
 app.get("/attributesomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from productattribute where id=?";
+  const sql = "SELECT * FROM productattribute where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2269,7 +2326,7 @@ app.post("/flashsales", (req, res) => {
 });
 
 app.get("/flashsalesdata", (req, res) => {
-  const sql = "select *from flashsales";
+  const sql = "SELECT * FROM flashsales";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2291,7 +2348,7 @@ app.delete("/flashsaledelete/:id", (req, res) => {
 
 app.get("/searchflash/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from flashsales where name like ?";
+  const sql = "SELECT * FROM flashsales where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2315,7 +2372,7 @@ app.put("/updateflashsales/:id", (req, res) => {
 
 app.get("/flashsalessome/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from flashsales where id=?";
+  const sql = "SELECT * FROM flashsales where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2368,7 +2425,7 @@ app.post("/usersubmit", upload.single("file"), (req, res) => {
 });
 
 app.get("/customersdata", (req, res) => {
-  const sql = "select *from customers";
+  const sql = "SELECT * FROM customers";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2419,7 +2476,7 @@ app.get("/export-customerdata", async (req, res) => {
 
 app.get("/customersearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from user where first_name like ?";
+  const sql = "SELECT * FROM user where first_name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2578,7 +2635,7 @@ app.put("/passwordupdate", async (req, res) => {
 
 app.get("/somecustomerdata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from user where id=?";
+  const sql = "SELECT * FROM user where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2601,7 +2658,7 @@ app.post("/customerpopupsubmit", (req, res) => {
 });
 
 app.get("/customerpopupdata", (req, res) => {
-  const sql = "select *from customerpopup";
+  const sql = "SELECT * FROM customerpopup";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2628,7 +2685,7 @@ app.post("/reviewdatasubmit", upload.single("file"), (req, res) => {
 });
 
 app.get("/reviewdata", (req, res) => {
-  const sql = "select *from reviews";
+  const sql = "SELECT * FROM reviews";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2650,7 +2707,7 @@ app.delete("/reviewdelete/:id", (req, res) => {
 
 app.get("/reviewsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from reviews where product_name like ?";
+  const sql = "SELECT * FROM reviews where product_name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2661,7 +2718,7 @@ app.get("/reviewsearch/:value", (req, res) => {
 
 app.get("/reviewsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from reviews where id=?";
+  const sql = "SELECT * FROM reviews where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2713,7 +2770,7 @@ app.post("/discountsubmit", (req, res) => {
 });
 
 app.get("/discountdata", (req, res) => {
-  const sql = "select *from discounts";
+  const sql = "SELECT * FROM discounts";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2735,7 +2792,7 @@ app.delete("/discountdelete/:id", (req, res) => {
 
 app.get("/discountsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from discounts where couponcode like ?";
+  const sql = "SELECT * FROM discounts where couponcode like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2758,7 +2815,7 @@ app.put("/discountupdate/:id", (req, res) => {
 
 app.get("/discountsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from discounts where id=?";
+  const sql = "SELECT * FROM discounts where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2820,16 +2877,26 @@ app.post("/productpage", upload.single("file"), (req, res) => {
       label1,
     ],
   ];
-  const sql =
-    "INSERT INTO products (name, permalink, description, sku, price, price_sale, cost, barcode, stockstatus, weight, length, wide, height, status, store, featured, brand, minimumorder, maximumorder, date, image, label,label1) VALUES ?";
-
+  const sql = `INSERT INTO products 
+    (name, permalink, description, sku, price, price_sale, cost, barcode, stockstatus, weight, length, wide, height, status, store, featured, brand, minimumorder, maximumorder, date, image, label, label1)
+    VALUES ?`;
   db.query(sql, [value], (err, result) => {
     if (err) {
       console.error("Error inserting product:", err);
       return res.status(500).send("Error inserting data");
-    } else {
-      res.send("Data submitted successfully");
     }
+    const message = {
+      title: "New Product Alert!",
+      body: `Introducing our new product: ${name}. Check it out now!`,
+    };
+    sendPushNotification(message)
+      .then(() => {
+        res.send("Product submitted and notifications sent");
+      })
+      .catch((notificationErr) => {
+        console.error("Push notification error:", notificationErr);
+        res.send("Product submitted but failed to send notifications");
+      });
   });
 });
 
@@ -2858,7 +2925,7 @@ app.delete("/deleteproductsdata/:id", (req, res) => {
 
 app.get("/productsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from products where name like ?";
+  const sql = "SELECT * FROM products where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -2941,7 +3008,7 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
 
 app.get("/productsomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from products where id=?";
+  const sql = "SELECT * FROM products where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -2991,7 +3058,7 @@ app.put("/productinventory/:id", (req, res) => {
 
 app.get("/exportexcel-productdata", async (req, res) => {
   try {
-    db.query("select * from products", async (err, results) => {
+    db.query("SELECT * FROM products", async (err, results) => {
       if (err) {
         console.error("Database query error:", err);
         res.status(500).send("Error querying the database.");
@@ -3043,7 +3110,7 @@ app.post("/menusubmit", (req, res) => {
 });
 
 app.get("/menusdata", (req, res) => {
-  const sql = "select *from menus";
+  const sql = "SELECT * FROM menus";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3054,7 +3121,7 @@ app.get("/menusdata", (req, res) => {
 
 app.get("/menusearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from menus where name like ?";
+  const sql = "SELECT * FROM menus where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -3076,7 +3143,7 @@ app.delete("/menusdelete/:id", (req, res) => {
 
 app.get("/menusomedata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from menus where id=?";
+  const sql = "SELECT * FROM menus where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3158,7 +3225,7 @@ app.post("/userdashboard", (req, res) => {
 });
 
 app.get("/userdashboarddata", (req, res) => {
-  const sql = "select *from dashboard";
+  const sql = "SELECT * FROM dashboard";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3192,7 +3259,7 @@ app.put("/dashboardedit/:id", (req, res) => {
 
 app.get("/dashboardsome/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from dashboard where id=?";
+  const sql = "SELECT * FROM dashboard where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3267,7 +3334,7 @@ app.post("/vendorshop", (req, res) => {
 });
 
 app.get("/vendordata", (req, res) => {
-  const sql = "select *from dashboard";
+  const sql = "SELECT * FROM dashboard";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3297,7 +3364,7 @@ app.post("/addcart", upload.single("file"), (req, res) => {
 });
 
 app.get("/allcartdata", (req, res) => {
-  const sql = "select *from cart";
+  const sql = "SELECT * FROM cart";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3308,7 +3375,7 @@ app.get("/allcartdata", (req, res) => {
 
 app.get("/dashboardsome/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from cart";
+  const sql = "SELECT * FROM cart";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3342,7 +3409,7 @@ app.delete("/deleteorder", (req, res) => {
 
 app.get("/customerdata/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "select *from cart where id=?";
+  const sql = "SELECT * FROM cart where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3353,7 +3420,7 @@ app.get("/customerdata/:id", (req, res) => {
 
 app.get("/cartsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from products where name like ?";
+  const sql = "SELECT * FROM products where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -3375,7 +3442,7 @@ app.post("/specification", (req, res) => {
 });
 
 app.get("/spceficationdata", (req, res) => {
-  const sql = "select *from group1";
+  const sql = "SELECT * FROM group1";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3397,7 +3464,7 @@ app.delete("/specificationdelete/:id", (req, res) => {
 
 app.get("/specificationsearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from group1 where name like ?";
+  const sql = "SELECT * FROM group1 where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -3408,7 +3475,7 @@ app.get("/specificationsearch/:value", (req, res) => {
 
 app.get("/spceficationdatasome/:id", (req, res) => {
   let id = req.params.id;
-  const sql = "select *from group1 where id=?";
+  const sql = "SELECT * FROM group1 where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3443,7 +3510,7 @@ app.post("/specificationtable", (req, res) => {
 });
 
 app.get("/spceficationtabledata", (req, res) => {
-  const sql = "select *from group2";
+  const sql = "SELECT * FROM group2";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3465,7 +3532,7 @@ app.delete("/specificationdeletetable/:id", (req, res) => {
 
 app.get("/spceficationdatasometable/:id", (req, res) => {
   let id = req.params.id;
-  const sql = "select *from group2 where id=?";
+  const sql = "SELECT * FROM group2 where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3488,7 +3555,7 @@ app.put("/spceficationupdatetable/:id", (req, res) => {
 
 app.get("/specificationtablesearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from group2 where name like ?";
+  const sql = "SELECT * FROM group2 where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -3512,7 +3579,7 @@ app.post("/specificationattribute", (req, res) => {
 });
 
 app.get("/spceficationattributedata", (req, res) => {
-  const sql = "select *from group3";
+  const sql = "SELECT * FROM group3";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3534,7 +3601,7 @@ app.delete("/specificationdeleteattribute/:id", (req, res) => {
 
 app.get("/spceficationdatasomeattribute/:id", (req, res) => {
   let id = req.params.id;
-  const sql = "select *from group3 where id=?";
+  const sql = "SELECT * FROM group3 where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -3557,7 +3624,7 @@ app.put("/spceficationupdateattribute/:id", (req, res) => {
 
 app.get("/specificationattributesearch/:value", (req, res) => {
   const data = req.params.value;
-  const sql = "select *from group3 where name like ?";
+  const sql = "SELECT * FROM group3 where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
     if (err) throw err;
     else {
@@ -3583,7 +3650,7 @@ app.post("/wishlistpost", upload.single("file"), (req, res) => {
 });
 
 app.get("/wishlistdata", (req, res) => {
-  const sql = "select *from wishlist";
+  const sql = "SELECT * FROM wishlist";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -3602,8 +3669,6 @@ app.delete("/wishlistdelete/:id", (req, res) => {
     }
   });
 });
-
-// admin login logic
 
 app.post("/adminlogin", (req, res) => {
   const { username, password } = req.body;
@@ -3764,7 +3829,7 @@ app.post("/reset-password", (req, res) => {
 
 app.get("/forgot-password", (req, res) => {
   const { username } = req.body;
-  const sql = "select *from adminlogin where username=?";
+  const sql = "SELECT * FROM adminlogin where username=?";
   db.query(sql, [username], (err, result) => {
     if (err) throw err;
     else {
@@ -3989,8 +4054,6 @@ app.get("/get-theme-breadcrumb", (req, res) => {
   });
 });
 
-// theme newsletters popup
-
 app.post("/themenewspost", upload.single("file"), (req, res) => {
   let {
     news_popup,
@@ -4050,8 +4113,6 @@ app.get("/themenewsdata", (req, res) => {
   });
 });
 
-// push notification code
-
 app.post("/subscribe", (req, res) => {
   const subscription = req.body;
   const { endpoint, keys } = subscription;
@@ -4073,52 +4134,98 @@ app.post("/subscribe", (req, res) => {
   );
 });
 
-app.post("/notify-update", (req, res) => {
-  const { title, body } = req.body;
-  db.query("SELECT * FROM subscriptions", (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: "Error fetching subscriptions" });
-    }
-    results.forEach((subscription) => {
-      const pushSubscription = {
-        endpoint: subscription.endpoint,
-        keys: {
-          p256dh: subscription.p256dh,
-          auth: subscription.auth,
-        },
-      };
-      const payload = JSON.stringify({ title, body });
-      webpush
-        .sendNotification(pushSubscription, payload)
-        .then(() => {
-          console.log("Notification sent successfully");
-        })
-        .catch((error) => {
-          if (error.statusCode === 410) {
-            console.log(
-              "Subscription expired or unsubscribed:",
-              subscription.endpoint
-            );
-            db.query(
-              "DELETE FROM subscriptions WHERE endpoint = ?",
-              [subscription.endpoint],
-              (err) => {
-                if (err) {
-                  console.error("Error removing subscription:", err);
-                } else {
-                  console.log(
-                    "Removed expired subscription from database: ",
-                    subscription.endpoint
-                  );
+function sendPushNotification(message) {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM subscriptions", (err, subscriptions) => {
+      if (err) {
+        return reject(err);
+      }
+      const notifications = subscriptions.map((subscription) => {
+        const pushSubscription = {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: subscription.p256dh,
+            auth: subscription.auth,
+          },
+        };
+        const payload = JSON.stringify(message);
+        return webpush
+          .sendNotification(pushSubscription, payload)
+          .catch((error) => {
+            if (error.statusCode === 410) {
+              db.query(
+                "DELETE FROM subscriptions WHERE endpoint = ?",
+                [subscription.endpoint],
+                (err) => {
+                  if (err) {
+                    console.error("Error removing subscription:", err);
+                  }
                 }
-              }
-            );
-          } else {
-            console.error("Error sending notification:", error);
-          }
-        });
+              );
+            } else {
+              console.error("Error sending notification:", error);
+            }
+          });
+      });
+      Promise.all(notifications)
+        .then(() => resolve())
+        .catch(reject);
     });
-    res.status(200).json({ message: "Notifications sent to all subscribers" });
+  });
+}
+module.exports = { sendPushNotification };
+
+app.post("/updateSettings", (req, res) => {
+  const fieldsToUpdate = {};
+  const allowedFields = [
+    "stickyHeader",
+    "stickyHeaderMobile",
+    "bottomMenuBarMobile",
+    "backToTopButton",
+    "primaryColor",
+    "headerBackgroundColor",
+    "headerTextColor",
+    "headerMainColor",
+    "headerMainTextColor",
+    "headerMenu",
+    "headerBorder",
+    "headerMenuTextColor",
+    "headerStyle",
+  ];
+
+  allowedFields.forEach((field) => {
+    if (req.body[field] !== undefined) {
+      fieldsToUpdate[field] = req.body[field];
+    }
+  });
+
+  if (Object.keys(fieldsToUpdate).length === 0) {
+    return res
+      .status(400)
+      .json({ error: "No valid fields provided for update" });
+  }
+
+  const setClause = Object.keys(fieldsToUpdate)
+    .map((field) => `${field} = ?`)
+    .join(", ");
+  const values = Object.values(fieldsToUpdate);
+  const sql = `UPDATE header SET ${setClause} WHERE id = 1`;
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Error updating settings:", err);
+      return res.status(500).json({ error: "Failed to update settings" });
+    }
+    res.json({ message: "Settings updated successfully" });
+  });
+});
+
+app.get("/themestylesdata", (req, res) => {
+  db.query("SELECT * FROM header LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({ result });
+    }
+    res.json(result[0]);
   });
 });
 
