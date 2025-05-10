@@ -3,6 +3,7 @@ const express = require("express");
 const prerender = require("prerender-node");
 const { SitemapStream, streamToPromise } = require("sitemap");
 const mysql = require("mysql2");
+const geoip = require("geoip-lite");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
@@ -30,12 +31,12 @@ app.use(
   })
 );
 
-prerender.set("prerenderToken", "LNOpIKN4lFVCHLfv1lca");
-app.use(prerender);
-app.use(express.static(path.join(__dirname, "../frontend1/dist")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend1/dist", "index.html"));
-});
+// prerender.set("prerenderToken", "LNOpIKN4lFVCHLfv1lca");
+// app.use(prerender);
+// app.use(express.static(path.join(__dirname, "../frontend1/dist")));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../frontend1/dist", "index.html"));
+// });
 
 app.use(express.json());
 app.use(cookieParser());
@@ -56,11 +57,6 @@ app.post("/update-robots", (req, res) => {
   });
 });
 
-const uploadDir = path.join(__dirname, "src/image");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -69,8 +65,27 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
-
 const upload = multer({ storage: storage });
+const uploadDir = path.join(__dirname, "src/image");
+const publicFolder = path.join(__dirname, "../frontend1/public");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+if (!fs.existsSync(publicFolder)) {
+  fs.mkdirSync(publicFolder, { recursive: true });
+}
+
+const adsStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, publicFolder);
+  },
+  filename: function (req, file, cb) {
+    cb(null, "ads.txt");
+  },
+});
+const adsUpload = multer({ storage: adsStorage });
 
 app.use("/uploads", express.static(uploadDir));
 
@@ -97,6 +112,8 @@ app.use(
   "/blogpostdata/src/image",
   express.static(path.join(__dirname, "src/image"))
 );
+
+app.use(express.static(path.join(__dirname, "../frontend1/public")));
 
 const publicVapidKey =
   "BPJVSJMYeYgCD13-Sv8ziP9m6ecOBSc8KfIJ055G9wsCmE80aYWKPEUKkamseWpIkorpD3-Vs3NLBmBLvXEASGI";
@@ -131,7 +148,12 @@ const links = [
   { url: "/about", lastmodISO: getCurrentLastMod(), priority: 0.9 },
   { url: "/shop", lastmodISO: getCurrentLastMod(), priority: 0.9 },
   { url: "/blog", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/product/details", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/product-details", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  {
+    url: "/product-categories",
+    lastmodISO: getCurrentLastMod(),
+    priority: 0.9,
+  },
   { url: "/cart", lastmodISO: getCurrentLastMod(), priority: 0.9 },
   { url: "/wishlist", lastmodISO: getCurrentLastMod(), priority: 0.9 },
   { url: "/contact-us", lastmodISO: getCurrentLastMod(), priority: 0.9 },
@@ -178,39 +200,6 @@ app.post("/save-homepage", (req, res) => {
   res.status(200).json({
     message: "Homepage settings saved successfully",
     homepageSettings,
-  });
-});
-
-app.get("/page-seo/:id", (req, res) => {
-  const pageId = req.params.id;
-
-  const query = "SELECT * FROM pagesseo WHERE id = ?";
-  db.query(query, [pageId], (err, results) => {
-    if (err) throw err;
-    if (results.length > 0) {
-      const pageData = results[0];
-      res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${pageData.title}</title>
-            <meta property="og:title" content="${pageData.og_title}" />
-            <meta property="og:description" content="${pageData.og_description}" />
-            <meta property="og:image" content="${pageData.og_image}" />
-            <meta property="og:url" content="http://yourwebsite.com/page-seo/${pageId}" />
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet"/>
-        </head>
-        <body>
-            <h1>${pageData.title}</h1>
-            <div>${pageData.content}</div>
-        </body>
-        </html>
-      `);
-    } else {
-      res.status(404).send("Page not found");
-    }
   });
 });
 
@@ -433,6 +422,7 @@ app.post("/checkout", (req, res) => {
     shippingFee,
     total,
     payment,
+    payment_status,
     status,
   } = req.body;
   if (!cart || cart.length === 0) {
@@ -449,10 +439,12 @@ app.post("/checkout", (req, res) => {
       const lastInvoiceNumberInt = parseInt(lastInvoiceNumberParts[1], 10);
       newInvoiceNumber = `INV-${lastInvoiceNumberInt + 1}`;
     }
+    const orderStatus = status || "pending";
+
     const checkoutSql = `
       INSERT INTO checkout (
         email, phone_number, first_name, last_name, address, apartment, 
-        country, pincode, date, subtotal, tax, shippingFee, total, invoice_number,payment,status
+        country, pincode, date, subtotal, tax, shippingFee, total, invoice_number,payment,payment_status
       ) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
     `;
@@ -472,6 +464,7 @@ app.post("/checkout", (req, res) => {
       total || null,
       newInvoiceNumber || null,
       payment || null,
+      payment_status || null,
       status || null,
     ];
 
@@ -579,6 +572,22 @@ app.get("/checkoutdata", (req, res) => {
     }, {});
     const response = Object.values(formattedResult);
     res.json(response);
+  });
+});
+
+app.get("/checkoutdata1", (req, res) => {
+  const query = `
+    SELECT DATE(date) AS date, COUNT(*) AS orders
+    FROM checkout
+    GROUP BY DATE(date)
+    ORDER BY DATE(date) ASC
+  `;
+  db.query(query, (error, results) => {
+    if (error) {
+      console.error("Error fetching orders data:", error);
+      return res.status(500).json({ error: "Database query error" });
+    }
+    res.json(results);
   });
 });
 
@@ -1015,6 +1024,40 @@ app.get("/someslider/:id", (req, res) => {
   });
 });
 
+app.post("/newsletterpost", (req, res) => {
+  const { email, name } = req.body;
+  const safeName = name ? name : null;
+  const sql = "INSERT INTO newsletters (email, name) VALUES (?, ?)";
+  db.query(sql, [email, safeName], (err, result) => {
+    if (err) {
+      console.error("Error submitting data:", err);
+      return res.status(500).send("Database error");
+    }
+    res.send("Data submitted successfully");
+  });
+});
+
+app.get("/newsletterdata", (req, res) => {
+  const sql = "select *from newsletters";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.get("/newsfilter/:value", (req, res) => {
+  const data = req.params.value;
+  const sql = "SELECT * from newsletters where email like ?";
+  db.query(sql, ["%" + data + "%"], (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
 app.get("/export-excel", async (req, res) => {
   try {
     db.query("SELECT * FROM newsletters", async (err, results) => {
@@ -1051,6 +1094,17 @@ app.get("/export-excel", async (req, res) => {
     console.error("Error generating Excel file:", error);
     res.status(500).send("Error generating Excel file.");
   }
+});
+
+app.delete("/newsletterdelete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "delete from newsletters where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data deleted");
+    }
+  });
 });
 
 app.post("/contactdata", (req, res) => {
@@ -1400,7 +1454,7 @@ app.get("/faqcategorydata", (req, res) => {
 
 app.delete("/faqcategorydelete/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "delete from faqback where id=?";
+  const sql = "delete from faqcategory where id=?";
   db.query(sql, [id], (err, result) => {
     if (err) throw err;
     else {
@@ -1521,6 +1575,7 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
   const status = req.body.status;
   const categories = req.body.categories;
   const date = req.body.date;
+  const tags = req.body.tags;
   const image = req.file.filename;
   const value = [
     [
@@ -1533,12 +1588,13 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
       status,
       categories,
       date,
+      tags,
       image,
     ],
   ];
 
   const sql = `INSERT INTO blogpost
-    (name, author_name, permalink, description, content, feature, status, categories, date, image)
+    (name, author_name, permalink, description, content, feature, status, categories, date,tags, image)
     VALUES ?`;
   db.query(sql, [value], (err, result) => {
     if (err) {
@@ -1597,11 +1653,12 @@ app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
     status,
     categories,
     date,
+    tags,
   } = req.body;
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
   let sql =
-    "update blogpost set name = ?, author_name=?, permalink = ?,description=?,content=?,feature= ?, status= ?,categories=?, date = ?";
+    "update blogpost set name = ?, author_name=?, permalink = ?,description=?,content=?,feature= ?, status= ?,categories=?, date = ?, tags=?";
   let values = [
     name,
     author_name,
@@ -1612,6 +1669,7 @@ app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
     status,
     categories,
     date,
+    tags,
   ];
   if (image) {
     sql += ", image = ?";
@@ -1660,6 +1718,56 @@ app.get("/blogpostsearch/:value", (req, res) => {
   });
 });
 
+// blog category
+
+app.post("/blogcategorypost", (req, res) => {
+  const { name, permalink, parent, description, is_featured, status } =
+    req.body;
+  const value = [[name, permalink, parent, description, is_featured, status]];
+  const sql =
+    "insert into blog_category(name,permalink,parent,description,is_featured,status)values ?";
+  db.query(sql, [value], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data submitted");
+    }
+  });
+});
+
+app.get("/allcategorydata", (req, res) => {
+  const sql = "select *from blog_category";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.delete("/categorydelete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "delete from blog_category where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data deleted");
+    }
+  });
+});
+
+app.put("/categoryupdate/:id", (req, res) => {
+  const id = req.params.id;
+  const data = req.body;
+  const sql = "UPDATE blog_category SET ? WHERE id = ?";
+  db.query(sql, [data, id], (err, result) => {
+    if (err) {
+      res.status(500).send("Error updating category");
+    } else {
+      res.send("data updated");
+    }
+  });
+});
+
 app.post(
   "/adspost",
   upload.fields([
@@ -1677,7 +1785,9 @@ app.post(
       orders,
       adstype,
       status,
+      location,
       expired,
+      ads_size,
     } = req.body;
     const image = req.files["file"] ? req.files["file"][0].filename : null;
     const desktopImage = req.files["desktopImage"]
@@ -1701,7 +1811,9 @@ app.post(
         orders,
         adstype,
         status,
+        location,
         expired,
+        ads_size,
         image,
         desktopImage,
         mobileImage,
@@ -1709,7 +1821,7 @@ app.post(
     ];
 
     const sql =
-      "INSERT INTO ads (name, title, subtitle, button, keyads, orders, adstype, status, expired, image, desktopImage, mobileImage) VALUES ?";
+      "INSERT INTO ads (name, title, subtitle, button, keyads, orders, adstype, status,location, expired,ads_size, image, desktopImage, mobileImage) VALUES ?";
 
     db.query(sql, [value], (err, result) => {
       if (err) {
@@ -1731,46 +1843,86 @@ app.get("/adsdata", (req, res) => {
   });
 });
 
-app.put("/adsupdate/:id", upload.single("file"), (req, res) => {
-  const {
-    name,
-    title,
-    subtitle,
-    button,
-    keyads,
-    orders,
-    adstype,
-    status,
-    expired,
-  } = req.body;
-  const id = req.params.id;
-  const image = req.file ? req.file.filename : null;
-  let sql =
-    "update ads set name=?,title=?, subtitle=?,button=?,keyads=?,orders=?, adstype=?,status=?,expired=?";
-  let values = [
-    name,
-    title,
-    subtitle,
-    button,
-    keyads,
-    orders,
-    adstype,
-    status,
-    expired,
-  ];
-  if (image) {
-    sql += ", image = ?";
-    values.push(image);
-  }
-  sql += " WHERE id = ?";
-  values.push(id);
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      throw err;
+app.put(
+  "/adsupdate/:id",
+  upload.fields([
+    { name: "file", maxCount: 1 },
+    { name: "desktopImage", maxCount: 1 },
+    { name: "mobileImage", maxCount: 1 },
+  ]),
+  (req, res) => {
+    const {
+      name,
+      title,
+      subtitle,
+      button,
+      keyads,
+      orders,
+      adstype,
+      status,
+      location,
+      expired,
+      ads_size,
+      removeImage,
+      removeTabletImage,
+      removeMobileImage,
+    } = req.body;
+    const id = req.params.id;
+
+    let sql =
+      "UPDATE ads SET name=?, title=?, subtitle=?, button=?, keyads=?, orders=?, adstype=?, status=?, location=?, expired=?, ads_size=?";
+    let values = [
+      name,
+      title,
+      subtitle,
+      button,
+      keyads,
+      orders,
+      adstype,
+      status,
+      location,
+      expired,
+      ads_size,
+    ];
+
+    if (removeImage === "true") {
+      sql += ", image = NULL";
+    } else if (req.files["file"] && req.files["file"].length > 0) {
+      sql += ", image = ?";
+      values.push(req.files["file"][0].filename);
     }
-    res.send("Data updated successfully.");
-  });
-});
+
+    if (removeTabletImage === "true") {
+      sql += ", desktopImage = NULL";
+    } else if (
+      req.files["desktopImage"] &&
+      req.files["desktopImage"].length > 0
+    ) {
+      sql += ", desktopImage = ?";
+      values.push(req.files["desktopImage"][0].filename);
+    }
+
+    if (removeMobileImage === "true") {
+      sql += ", mobileImage = NULL";
+    } else if (
+      req.files["mobileImage"] &&
+      req.files["mobileImage"].length > 0
+    ) {
+      sql += ", mobileImage = ?";
+      values.push(req.files["mobileImage"][0].filename);
+    }
+
+    sql += " WHERE id = ?";
+    values.push(id);
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.send("Data updated successfully.");
+    });
+  }
+);
 
 app.get("/adsomedataads/:id", (req, res) => {
   const id = req.params.id;
@@ -2174,14 +2326,23 @@ app.get("/brandssomedata/:id", (req, res) => {
 });
 
 app.post("/productoptions", (req, res) => {
-  const { name, date, status, featured } = req.body;
-  const value = [[name, date, status, featured]];
-  const sql = "insert into productoptions(name,date,status,featured)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
+  let { name, date, status, featured, options } = req.body;
+
+  if (!options || options === "null" || options.length === 0) {
+    options = null;
+  }
+
+  const sql =
+    "INSERT INTO productoptions (name, date, status, featured, options) VALUES (?, ?, ?, ?, ?)";
+  db.query(sql, [name, date, status, featured, options], (err, result) => {
+    if (err) {
+      console.error("DB insert error:", err);
+      return res.status(500).json({ error: "Database error" });
     }
+    res.status(200).json({
+      message: "Data submitted successfully",
+      id: result.insertId,
+    });
   });
 });
 
@@ -2218,21 +2379,92 @@ app.get("/searchproductoption/:value", (req, res) => {
 });
 
 app.put("/updateproductoptions/:id", (req, res) => {
-  const id = req.params.id;
-  const data = req.body;
-  const sql = "update productoptions set ? where id=?";
-  db.query(sql, [data, id], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data updated");
+  const { name, date, status, featured, options } = req.body;
+  const sql =
+    "UPDATE productoptions SET name = ?, date = ?, status = ?, featured = ?, options = ? WHERE id = ?";
+  db.query(
+    sql,
+    [name, date, status, featured, options, req.params.id],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err });
+      res.json({
+        message: "Updated successfully",
+        affected: result.affectedRows,
+      });
     }
-  });
+  );
 });
 
 app.get("/optionsomedata/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = "SELECT * FROM productoptions where id=?";
-  db.query(sql, [id], (err, result) => {
+  const sql =
+    "SELECT id, name, date, status, featured, options FROM productoptions WHERE id = ?";
+  db.query(sql, [req.params.id], (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    if (!results.length) return res.status(404).json({ error: "Not found" });
+    res.json(results[0]);
+  });
+});
+
+app.post(
+  "/productattributes",
+  upload.array("attributeImages"),
+  (req, res, next) => {
+    const { title, slug, sort, status, date, attributes } = req.body;
+
+    if (!title || !slug || !attributes) {
+      return res
+        .status(400)
+        .json({ message: "Title, slug and attributes are required" });
+    }
+
+    let parsedAttributes;
+    try {
+      parsedAttributes = JSON.parse(attributes);
+    } catch (err) {
+      return res.status(400).json({ message: "Invalid attributes format" });
+    }
+
+    const files = req.files || [];
+
+    const mapped = parsedAttributes.map((attr, index) => {
+      const image = files[index] ? files[index].filename : attr.imageUrl || "";
+      return {
+        title: attr.title,
+        isDefault: !!attr.isDefault,
+        color: attr.color,
+        image,
+      };
+    });
+
+    const sql = `
+    INSERT INTO productattribute (title, slug, sort, status, date, options)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+    const params = [
+      title,
+      slug,
+      sort || null,
+      status,
+      date,
+      JSON.stringify(mapped),
+    ];
+
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        console.error("Insert Error:", err);
+        return res.status(500).json({ message: "Database insert failed" });
+      }
+      res.json({
+        id: result.insertId,
+        message: "Attribute set created successfully",
+      });
+    });
+  }
+);
+
+app.get("/attributesdata", (req, res) => {
+  const sql = "SELECT * FROM productattribute order by id desc";
+  db.query(sql, (err, result) => {
     if (err) throw err;
     else {
       res.json(result);
@@ -2240,21 +2472,8 @@ app.get("/optionsomedata/:id", (req, res) => {
   });
 });
 
-app.post("/productattributes", (req, res) => {
-  const { title, slug, sort, status, date } = req.body;
-  const value = [[title, slug, sort, status, date]];
-  const sql =
-    "insert into productattribute(title,slug,sort,status,date)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
-    }
-  });
-});
-
-app.get("/attributesdata", (req, res) => {
-  const sql = "SELECT * FROM productattribute";
+app.get("/attributesdata1", (req, res) => {
+  const sql = "SELECT * FROM productattribute order by id desc limit 5";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2285,22 +2504,72 @@ app.get("/attributesearch/:value", (req, res) => {
   });
 });
 
-app.put("/updateattributes/:id", (req, res) => {
-  const id = req.params.id;
-  const data = req.body;
-  const sql =
-    "update productattribute set title=?, slug=?, sort=?, status=?, date=? where id=?";
-  db.query(
-    sql,
-    [data.title, data.slug, data.sort, data.status, data.date, id],
-    (err, result) => {
-      if (err) throw err;
-      else {
-        res.send("Data updated");
-      }
+app.put(
+  "/updateattributes/:id",
+  upload.array("attributeImages"),
+  (req, res, next) => {
+    const id = req.params.id;
+
+    const {
+      title,
+      slug,
+      sort,
+      status,
+      date,
+      attributes: rawAttributes,
+    } = req.body;
+
+    const sets = [];
+    const params = [];
+
+    if (title !== undefined) {
+      sets.push("title = ?");
+      params.push(title);
     }
-  );
-});
+    if (slug !== undefined) {
+      sets.push("slug = ?");
+      params.push(slug);
+    }
+    if (sort !== undefined) {
+      sets.push("sort = ?");
+      params.push(sort);
+    }
+    if (status !== undefined) {
+      sets.push("status = ?");
+      params.push(status);
+    }
+    if (date !== undefined) {
+      sets.push("date = ?");
+      params.push(date);
+    }
+
+    if (rawAttributes !== undefined) {
+      let optsArray;
+      try {
+        optsArray = JSON.parse(rawAttributes);
+      } catch {
+        return res.status(400).json({ message: "Invalid attributes JSON" });
+      }
+      sets.push("options = ?");
+      params.push(JSON.stringify(optsArray));
+    }
+
+    if (sets.length === 0) {
+      return res.status(400).json({ message: "Nothing to update" });
+    }
+
+    params.push(id);
+
+    const sql = `UPDATE productattribute
+                 SET ${sets.join(", ")}
+                 WHERE id = ?`;
+
+    db.query(sql, params, (err, result) => {
+      if (err) return next(err);
+      res.json({ message: "Attribute set updated" });
+    });
+  }
+);
 
 app.get("/attributesomedata/:id", (req, res) => {
   const id = req.params.id;
@@ -2314,35 +2583,105 @@ app.get("/attributesomedata/:id", (req, res) => {
 });
 
 app.post("/flashsales", (req, res) => {
-  const { name, start_date, status, end_date } = req.body;
-  const value = [[name, start_date, status, end_date]];
-  const sql = "insert into flashsales(name,start_date,status,end_date)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
+  const { name, start_date, end_date, status, products } = req.body;
+
+  const saleSql = `
+    INSERT INTO flashsales (name, start_date, status, end_date)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.query(saleSql, [name, start_date, status, end_date], (err, result) => {
+    if (err) {
+      console.error("Error inserting flashsale:", err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    const flashsaleId = result.insertId;
+
+    if (Array.isArray(products) && products.length) {
+      const values = products.map((p) => [
+        flashsaleId,
+        p.id,
+        p.name,
+        p.price,
+        p.quantity,
+        p.image,
+      ]);
+
+      const prodSql = `
+        INSERT INTO flashsale_products 
+          (flashsale_id, product_id, product_name, price, quantity, image)
+        VALUES ?
+      `;
+
+      db.query(prodSql, [values], (err2) => {
+        if (err2) {
+          console.error("Error inserting flashsale_products:", err2);
+          return res.status(500).json({ error: err2.message });
+        }
+        return res.json({
+          message: "Flash sale and products saved with names.",
+        });
+      });
+    } else {
+      return res.json({ message: "Flash sale created (no products)." });
     }
   });
 });
 
 app.get("/flashsalesdata", (req, res) => {
-  const sql = "SELECT * FROM flashsales";
-  db.query(sql, (err, result) => {
-    if (err) throw err;
-    else {
-      res.json(result);
+  const salesSql = "SELECT * FROM flashsales";
+  db.query(salesSql, (err, results) => {
+    if (err) {
+      console.error("Error fetching flashsales:", err);
+      return res.status(500).json({ error: err.message });
     }
+    res.json(results);
   });
 });
 
 app.delete("/flashsaledelete/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = "delete from flashsales where id=?";
-  db.query(sql, [id], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data deleted");
+  const flashsaleId = req.params.id;
+  db.beginTransaction((err) => {
+    if (err) {
+      console.error("Transaction error:", err);
+      return res.status(500).json({ error: err.message });
     }
+
+    const deleteProductsSql = `
+      DELETE FROM flashsale_products
+      WHERE flashsale_id = ?
+    `;
+    db.query(deleteProductsSql, [flashsaleId], (err) => {
+      if (err) {
+        return db.rollback(() => {
+          console.error("Error deleting products:", err);
+          res.status(500).json({ error: err.message });
+        });
+      }
+
+      const deleteSaleSql = `
+        DELETE FROM flashsales
+        WHERE id = ?
+      `;
+      db.query(deleteSaleSql, [flashsaleId], (err2) => {
+        if (err2) {
+          return db.rollback(() => {
+            console.error("Error deleting flashsale:", err2);
+            res.status(500).json({ error: err2.message });
+          });
+        }
+        db.commit((err3) => {
+          if (err3) {
+            return db.rollback(() => {
+              console.error("Commit error:", err3);
+              res.status(500).json({ error: err3.message });
+            });
+          }
+          res.json({ message: "Flash sale and associated products deleted." });
+        });
+      });
+    });
   });
 });
 
@@ -2359,25 +2698,96 @@ app.get("/searchflash/:value", (req, res) => {
 
 app.put("/updateflashsales/:id", (req, res) => {
   const id = req.params.id;
-  const { name, start_date, status, end_date } = req.body;
-  const sql =
-    "update flashsales set name=?, start_date=?, status=?, end_date=? where id=?";
-  db.query(sql, [name, start_date, status, end_date, id], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data updated");
+  const { name, start_date, status, end_date, products } = req.body;
+
+  const updateFlashSaleSql =
+    "UPDATE flashsales SET name = ?, start_date = ?, status = ?, end_date = ? WHERE id = ?";
+  const deleteProductsSql =
+    "DELETE FROM flashsale_products WHERE flashsale_id = ?";
+  const insertProductSql = `
+    INSERT INTO flashsale_products (flashsale_id, product_id, product_name, image, price, quantity)
+    VALUES ?
+  `;
+
+  db.query(
+    updateFlashSaleSql,
+    [name, start_date, status, end_date, id],
+    (err, result) => {
+      if (err) {
+        console.error("Error updating flash sale:", err);
+        return res.status(500).send("Error updating flash sale");
+      }
+
+      db.query(deleteProductsSql, [id], (err2) => {
+        if (err2) {
+          console.error("Error deleting old flashsale products:", err2);
+          return res.status(500).send("Error clearing old products");
+        }
+
+        if (!Array.isArray(products) || products.length === 0) {
+          return res.send("Flash sale updated (no products added)");
+        }
+
+        const values = products.map((p) => [
+          id,
+          p.id,
+          p.name,
+          p.image,
+          p.price,
+          p.quantity,
+        ]);
+
+        db.query(insertProductSql, [values], (err3) => {
+          if (err3) {
+            console.error("Error inserting products:", err3);
+            return res.status(500).send("Error inserting products");
+          }
+
+          res.send("Flash sale and products updated successfully");
+        });
+      });
     }
-  });
+  );
 });
 
 app.get("/flashsalessome/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "SELECT * FROM flashsales where id=?";
-  db.query(sql, [id], (err, result) => {
-    if (err) throw err;
-    else {
-      res.json(result);
+  const flashSaleSql = "SELECT * FROM flashsales WHERE id = ?";
+  const productsSql =
+    "SELECT product_id AS id, product_name AS name, image, price, quantity FROM flashsale_products WHERE flashsale_id = ?";
+
+  db.query(flashSaleSql, [id], (err, flashSaleResult) => {
+    if (err) {
+      console.error("Error fetching flash sale:", err);
+      return res.status(500).send("Error fetching flash sale");
     }
+
+    if (flashSaleResult.length === 0) {
+      return res.status(404).send("Flash sale not found");
+    }
+
+    db.query(productsSql, [id], (err2, productsResult) => {
+      if (err2) {
+        console.error("Error fetching products:", err2);
+        return res.status(500).send("Error fetching products");
+      }
+
+      const flashSale = flashSaleResult[0];
+      flashSale.products = productsResult;
+      res.json(flashSale);
+    });
+  });
+});
+
+app.get("/allflashdata", (req, res) => {
+  const salesSql = "SELECT * FROM flashsales";
+  const productsSql = "SELECT * FROM flashsale_products";
+  db.query(salesSql, (err, sales) => {
+    if (err) return res.status(500).json({ error: err.message });
+    db.query(productsSql, (err2, products) => {
+      if (err2) return res.status(500).json({ error: err2.message });
+      res.json({ sales, products });
+    });
   });
 });
 
@@ -2667,25 +3077,53 @@ app.get("/customerpopupdata", (req, res) => {
   });
 });
 
-app.post("/reviewdatasubmit", upload.single("file"), (req, res) => {
-  const { product_name, user_name, email, star, comment, status, date } =
-    req.body;
-  const image = req.file.filename;
-  const value = [
-    [product_name, user_name, email, star, comment, status, date, image],
-  ];
-  const sql =
-    "insert into reviews(product_name,user_name,email,star,comment,status,date,image)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
-    }
-  });
+app.post("/reviewdatasubmit", (req, res) => {
+  const contentType = req.headers["content-type"] || "";
+  if (contentType.includes("multipart/form-data")) {
+    upload.any()(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).send("File upload error");
+      } else if (err) {
+        return res.status(500).send("Server error");
+      }
+
+      const { product_name, user_name, email, star, comment } = req.body;
+
+      if (!user_name || !email || !star || !comment) {
+        return res.status(400).send("Please fill all required fields.");
+      }
+
+      let imageString = "";
+      if (req.files && req.files.length > 0) {
+        const imageNames = req.files.map((file) => file.filename);
+        imageString = imageNames.join(",");
+      }
+
+      const sql = `INSERT INTO reviews(product_name, user_name, email, star, comment, image) VALUES (?)`;
+      const values = [
+        product_name || "",
+        user_name,
+        email,
+        star,
+        comment || "",
+        imageString,
+      ];
+
+      db.query(sql, [values], (err, result) => {
+        if (err) {
+          console.error("Error inserting into database:", err);
+          return res.status(500).send("Server error");
+        }
+        res.status(200).send("Review submitted");
+      });
+    });
+  } else {
+    res.status(400).send("Invalid content-type");
+  }
 });
 
 app.get("/reviewdata", (req, res) => {
-  const sql = "SELECT * FROM reviews";
+  const sql = "SELECT * FROM reviews order by id desc";
   db.query(sql, (err, result) => {
     if (err) throw err;
     else {
@@ -2747,6 +3185,7 @@ app.post("/discountsubmit", (req, res) => {
     orders,
     start_date,
     end_date,
+    display,
   } = req.body;
   const value = [
     [
@@ -2757,10 +3196,11 @@ app.post("/discountsubmit", (req, res) => {
       orders,
       start_date,
       end_date,
+      display,
     ],
   ];
   const sql =
-    "insert into discounts(discounttype,couponcode,coupontype,conditions,orders,start_date,end_date)values ?";
+    "insert into discounts(discounttype,couponcode,coupontype,conditions,orders,start_date,end_date,display)values ?";
   db.query(sql, [value], (err, result) => {
     if (err) throw err;
     else {
@@ -2848,6 +3288,10 @@ app.post("/productpage", upload.single("file"), (req, res) => {
     date,
     label,
     label1,
+    tags,
+    categories,
+    attribute,
+    faqs,
   } = req.body;
   const image = req.file ? req.file.filename : null;
   const value = [
@@ -2875,20 +3319,28 @@ app.post("/productpage", upload.single("file"), (req, res) => {
       image,
       label,
       label1,
+      tags,
+      categories,
+      attribute,
+      faqs,
     ],
   ];
+
   const sql = `INSERT INTO products 
-    (name, permalink, description, sku, price, price_sale, cost, barcode, stockstatus, weight, length, wide, height, status, store, featured, brand, minimumorder, maximumorder, date, image, label, label1)
+    (name, permalink, description, sku, price, price_sale, cost, barcode, stockstatus, weight, length, wide, height, status, store, featured, brand, minimumorder, maximumorder, date, image, label, label1, tags, categories,attribute,faqs)
     VALUES ?`;
+
   db.query(sql, [value], (err, result) => {
     if (err) {
       console.error("Error inserting product:", err);
       return res.status(500).send("Error inserting data");
     }
+
     const message = {
       title: "New Product Alert!",
       body: `Introducing our new product: ${name}. Check it out now!`,
     };
+
     sendPushNotification(message)
       .then(() => {
         res.send("Product submitted and notifications sent");
@@ -2907,6 +3359,103 @@ app.get("/productpagedata", (req, res) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(result);
+  });
+});
+
+app.post("/combinedfilter", (req, res) => {
+  const {
+    brands,
+    tags,
+    category,
+    minPrice,
+    maxPrice,
+    sort,
+    color,
+    size,
+    boxes,
+    weight,
+  } = req.body;
+  let sql = `SELECT * FROM products WHERE 1=1`;
+  let params = [];
+
+  if (tags && tags.length > 0) {
+    const tagPlaceholders = tags.map(() => "?").join(",");
+    sql += ` AND tags IN (${tagPlaceholders})`;
+    params.push(...tags);
+  }
+
+  if (brands && brands.length > 0) {
+    const brandPlaceholders = brands.map(() => "?").join(",");
+    sql += ` AND brand IN (${brandPlaceholders})`;
+    params.push(...brands);
+  }
+
+  if (color && color !== "") {
+    sql += ` AND attribute LIKE ?`;
+    params.push(`%${color}%`);
+  }
+
+  if (size && size !== "") {
+    sql += ` AND attribute LIKE ?`;
+    params.push(`%${size}%`);
+  }
+
+  if (boxes && boxes !== "") {
+    sql += ` AND attribute LIKE ?`;
+    params.push(`%${boxes}%`);
+  }
+
+  if (weight && weight !== "") {
+    sql += ` AND attribute LIKE ?`;
+    params.push(`%${weight}%`);
+  }
+
+  if (category && category !== "") {
+    sql += ` AND categories LIKE ?`;
+    params.push(`%${category}%`);
+  }
+
+  if (minPrice !== undefined && maxPrice !== undefined) {
+    sql += `
+      AND CAST(REPLACE(REPLACE(REPLACE(price, ',', ''), ' USD', ''), '$', '') AS DECIMAL(10, 2))
+      BETWEEN ? AND ?
+    `;
+    params.push(minPrice, maxPrice);
+  }
+
+  switch (sort) {
+    case "Oldest":
+      sql += " ORDER BY date DESC";
+      break;
+    case "Newest":
+      sql += " ORDER BY date ASC";
+      break;
+    case "Price: low to high":
+      sql += `
+        ORDER BY CAST(REPLACE(REPLACE(REPLACE(price, ',', ''), ' USD', ''), '$', '') AS DECIMAL(10, 2)) ASC
+      `;
+      break;
+    case "Price: high to low":
+      sql += `
+        ORDER BY CAST(REPLACE(REPLACE(REPLACE(price, ',', ''), ' USD', ''), '$', '') AS DECIMAL(10, 2)) DESC
+      `;
+      break;
+    case "Name: A-Z":
+      sql += " ORDER BY id ASC";
+      break;
+    case "Name: Z-A":
+      sql += " ORDER BY id DESC";
+      break;
+    default:
+      break;
+  }
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      console.error("Combined filter error:", err);
+      return res.status(500).send("Internal Server Error");
     }
     res.json(result);
   });
@@ -2958,13 +3507,21 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
     date,
     label,
     label1,
+    tags,
+    categories,
+    attribute,
+    faqs,
   } = req.body;
 
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
-  let sql =
-    "UPDATE products SET name=?, permalink=?, description=?, sku=?, price=?, price_sale=?, cost=?, barcode=?, stockstatus=?, weight=?, length=?, wide=?, height=?, status=?, store=?, featured=?, brand=?, minimumorder=?, maximumorder=?, date=?, label=?,label1=?";
 
+  let sql = `
+    UPDATE products SET
+      name=?, permalink=?, description=?, sku=?, price=?, price_sale=?, cost=?,
+      barcode=?, stockstatus=?, weight=?, length=?, wide=?, height=?, status=?, store=?,
+      featured=?, brand=?, minimumorder=?, maximumorder=?, date=?, label=?, label1=?, tags=?, categories=?,attribute=?,faqs=?
+  `;
   let values = [
     name,
     permalink,
@@ -2988,6 +3545,10 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
     date,
     label,
     label1,
+    tags,
+    categories,
+    attribute,
+    faqs,
   ];
 
   if (image) {
@@ -2997,6 +3558,7 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
 
   sql += " WHERE id = ?";
   values.push(id);
+
   db.query(sql, values, (err, result) => {
     if (err) {
       console.error("Error updating product:", err);
@@ -3031,6 +3593,98 @@ app.put("/productpriceupdate/:id", (req, res) => {
       return res.status(500).send("Internal server error");
     }
     res.send("Data updated successfully");
+  });
+});
+
+// product categories
+
+app.post("/product-category", upload.single("file"), (req, res) => {
+  const payload = {};
+  [
+    "name",
+    "permalink",
+    "parent",
+    "description",
+    "status",
+    "is_featured",
+  ].forEach((field) => {
+    const val = req.body[field];
+    if (val !== undefined && val !== "") {
+      payload[field] = val;
+    }
+  });
+  if (req.file) {
+    payload.image = req.file.filename;
+  }
+  if (Object.keys(payload).length === 0) {
+    return res.status(400).send("No data provided");
+  }
+  const sql = "INSERT INTO product_category SET ?";
+  db.query(sql, payload, (err, result) => {
+    if (err) {
+      console.error("Error inserting product category:", err);
+      return res.status(500).send("Server error");
+    }
+    res.status(201).send("Data submitted");
+  });
+});
+
+app.get("/productcatdata", (req, res) => {
+  const sql = "select *from product_category";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.delete("/categoriesdelete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "delete from product_category where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data deleted");
+    }
+  });
+});
+
+app.put("/categoriesupdate/:id", upload.single("file"), (req, res) => {
+  const id = req.params.id;
+  const {
+    name,
+    permalink,
+    parent,
+    description,
+    status,
+    is_featured,
+    isImageRemoved,
+  } = req.body;
+
+  let imageSql = "";
+  const values = [name, permalink, parent, description, status, is_featured];
+
+  if (req.file) {
+    imageSql = ", image=?";
+    values.push(req.file.filename);
+  } else if (isImageRemoved === "true") {
+    imageSql = ", image=NULL";
+  }
+
+  const sql = `UPDATE product_category 
+               SET name=?, permalink=?, parent=?, description=?, status=?, is_featured=?${imageSql} 
+               WHERE id=?`;
+  values.push(id);
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("SQL error:", err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Category Update failed" });
+    }
+    res.json({ success: true, message: "Category updated successfully" });
   });
 });
 
@@ -3483,6 +4137,7 @@ app.get("/spceficationdatasome/:id", (req, res) => {
     }
   });
 });
+
 app.put("/spceficationupdate/:id", (req, res) => {
   let id = req.params.id;
   const data = req.body;
@@ -3540,6 +4195,7 @@ app.get("/spceficationdatasometable/:id", (req, res) => {
     }
   });
 });
+
 app.put("/spceficationupdatetable/:id", (req, res) => {
   let id = req.params.id;
   const data = req.body;
@@ -3670,77 +4326,264 @@ app.delete("/wishlistdelete/:id", (req, res) => {
   });
 });
 
+// app.post("/adminlogin", (req, res) => {
+//   const { first_name,last_name,email,role,username, password } = req.body;
+//   if (!username || !password) {
+//     return res.status(400).send("Both username and password are required");
+//   }
+//   const sql = "SELECT * FROM adminlogin WHERE username = ?";
+//   db.query(sql, [username], (err, result) => {
+//     if (err) {
+//       return res.status(500).send("Internal server error");
+//     }
+//     if (result.length === 0) {
+//       return res.status(400).send("Invalid username or password.");
+//     }
+//     const hashedPassword = result[0].password;
+//     const role = result[0].role;
+//     const lastLogin = result[0].last_login;
+//     bcrypt.compare(password, hashedPassword, (err, isMatch) => {
+//       if (err) {
+//         return res.status(500).send("Error comparing passwords");
+//       }
+//       if (isMatch) {
+//         let expiresIn;
+//         let maxAge;
+//         const currentTime = new Date().getTime();
+//         let lastLoginTime = lastLogin
+//           ? new Date(lastLogin).getTime()
+//           : currentTime;
+//         if (role === "superadmin") {
+//           expiresIn = "365d";
+//           maxAge = 365 * 24 * 60 * 60 * 1000;
+//         } else if (role === "admin") {
+//           const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+//           const timeElapsed = currentTime - lastLoginTime;
+//           if (timeElapsed < sevenDaysInMilliseconds) {
+//             expiresIn = (sevenDaysInMilliseconds - timeElapsed) / 1000;
+//             maxAge = expiresIn * 1000;
+//           } else {
+//             expiresIn = 7 * 24 * 60 * 60;
+//             maxAge = sevenDaysInMilliseconds;
+//           }
+//         }
+//         const sql = "UPDATE adminlogin SET last_login = ? WHERE username = ?";
+//         db.query(sql, [new Date(), username], (updateErr) => {
+//           if (updateErr) {
+//             return res.status(500).send("Error updating last login time");
+//           }
+//           const token = jwt.sign(
+//             { userId: result[0].id, username, role },
+//             process.env.JWT_SECRET,
+//             { expiresIn: "7d" }
+//           );
+//           res.cookie("auth_token", token, {
+//             httpOnly: true,
+//             secure: process.env.NODE_ENV === "production",
+//             maxAge: maxAge,
+//             sameSite: "Strict",
+//           });
+//           return res.send({
+//             message:
+//               role === "superadmin"
+//                 ? "Successfully logged in as Super Admin!"
+//                 : "Successfully logged in as Admin!",
+//             user: result[0],
+//             token: token,
+//             expiresIn: expiresIn,
+//           });
+//         });
+//       } else {
+//         return res.status(400).send("Invalid username or password.");
+//       }
+//     });
+//   });
+// });
+
 app.post("/adminlogin", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).send("Both username and password are required");
+    return res
+      .status(400)
+      .json({ error: "Both username (or email) and password are required." });
   }
-  const sql = "SELECT * FROM adminlogin WHERE username = ?";
-  db.query(sql, [username], (err, result) => {
-    if (err) {
-      return res.status(500).send("Internal server error");
-    }
-    if (result.length === 0) {
-      return res.status(400).send("Invalid username or password.");
-    }
-    const hashedPassword = result[0].password;
-    const role = result[0].role;
-    const lastLogin = result[0].last_login;
-    bcrypt.compare(password, hashedPassword, (err, isMatch) => {
-      if (err) {
-        return res.status(500).send("Error comparing passwords");
-      }
-      if (isMatch) {
-        let expiresIn;
-        let maxAge;
-        const currentTime = new Date().getTime();
-        let lastLoginTime = lastLogin
-          ? new Date(lastLogin).getTime()
-          : currentTime;
-        if (role === "superadmin") {
-          expiresIn = "365d";
-          maxAge = 365 * 24 * 60 * 60 * 1000;
-        } else if (role === "admin") {
-          const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-          const timeElapsed = currentTime - lastLoginTime;
-          if (timeElapsed < sevenDaysInMilliseconds) {
-            expiresIn = (sevenDaysInMilliseconds - timeElapsed) / 1000;
-            maxAge = expiresIn * 1000;
-          } else {
-            expiresIn = 7 * 24 * 60 * 60;
-            maxAge = sevenDaysInMilliseconds;
-          }
-        }
-        const sql = "UPDATE adminlogin SET last_login = ? WHERE username = ?";
-        db.query(sql, [new Date(), username], (updateErr) => {
-          if (updateErr) {
-            return res.status(500).send("Error updating last login time");
-          }
+  const sql = `
+    SELECT * 
+    FROM adminlogin 
+    WHERE username = ? OR email = ?
+    LIMIT 1
+  `;
+  db.query(sql, [username, username], (err, rows) => {
+    if (err) return res.status(500).json({ error: "Database error." });
+    if (!rows.length)
+      return res.status(400).json({ error: "email/username is incorrect." });
+    const userRow = rows[0];
+    bcrypt.compare(password, userRow.password, (bcryptErr, isMatch) => {
+      if (bcryptErr)
+        return res.status(500).json({ error: "Authentication error." });
+      if (!isMatch)
+        return res.status(400).json({ error: "email/username is incorrect." });
+      db.query(
+        "UPDATE adminlogin SET last_login = NOW() WHERE id = ?",
+        [userRow.id],
+        () => {
+          const expiresInDays = userRow.role === "superadmin" ? 365 : 7;
           const token = jwt.sign(
-            { userId: result[0].id, username, role },
+            {
+              userId: userRow.id,
+              username: userRow.username,
+              role: userRow.role,
+            },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: `${expiresInDays}d` }
           );
           res.cookie("auth_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: maxAge,
+            maxAge: expiresInDays * 24 * 60 * 60 * 1000,
             sameSite: "Strict",
           });
-          return res.send({
+
+          return res.json({
             message:
-              role === "superadmin"
-                ? "Successfully logged in as Super Admin!"
-                : "Successfully logged in as Admin!",
-            user: result[0],
-            token: token,
-            expiresIn: expiresIn,
+              userRow.role === "superadmin"
+                ? "Logged in as Super Admin"
+                : "Logged in as Admin",
+            user: {
+              id: userRow.id,
+              username: userRow.username,
+              email: userRow.email,
+              first_name: userRow.first_name,
+              last_name: userRow.last_name,
+              role: userRow.role,
+            },
+            token,
+            expiresIn: expiresInDays * 24 * 60 * 60,
           });
-        });
-      } else {
-        return res.status(400).send("Invalid username or password.");
-      }
+        }
+      );
     });
+  });
+});
+
+app.post("/adminregister", async (req, res) => {
+  const { first_name, last_name, email, role, username, password } = req.body;
+
+  if (!first_name || !last_name || !email || !role || !username || !password) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const insertSql = `
+      INSERT INTO adminlogin
+        (username, password, role, last_login, first_name, last_name, email)
+      VALUES (?, ?, ?, NOW(), ?, ?, ?)
+    `;
+    db.query(
+      insertSql,
+      [username, hashedPassword, role, first_name, last_name, email],
+      (err, result) => {
+        if (err) {
+          console.error("DB error on adminregister:", err);
+          return res.status(500).json({ error: "Internal server error." });
+        }
+        return res.status(201).json({
+          message: "Admin registered successfully.",
+          userId: result.insertId,
+        });
+      }
+    );
+  } catch (hashErr) {
+    console.error("Error hashing password:", hashErr);
+    return res.status(500).json({ error: "Error processing password." });
+  }
+});
+
+app.get("/alladmindata", (req, res) => {
+  const sql = "select *from adminlogin";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.delete("/admindelete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "delete from adminlogin where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.send("data deleted");
+    }
+  });
+});
+
+app.put("/adminupdate/:id", async (req, res) => {
+  const id = req.params.id;
+  const { currentPassword, confirmpassword, ...updateData } = req.body;
+  db.query(
+    "SELECT password FROM adminlogin WHERE id = ?",
+    [id],
+    async (err, rows) => {
+      if (err) return res.status(500).json({ error: "DB error" });
+      if (!rows.length)
+        return res.status(404).json({ error: "User not found" });
+
+      const hashed = rows[0].password;
+      const ok = await bcrypt.compare(currentPassword || "", hashed);
+      if (!ok) {
+        return res.status(400).json({ error: "Current password is incorrect" });
+      }
+      if (updateData.password) {
+        try {
+          updateData.password = await bcrypt.hash(
+            updateData.password,
+            saltRounds
+          );
+        } catch (hashErr) {
+          return res.status(500).json({ error: "Error hashing new password" });
+        }
+      } else {
+        delete updateData.password;
+      }
+      db.query(
+        "UPDATE adminlogin SET ? WHERE id = ?",
+        [updateData, id],
+        (uErr) => {
+          if (uErr) return res.status(500).json({ error: "Update failed" });
+          res.json({ message: "Admin updated successfully" });
+        }
+      );
+    }
+  );
+});
+
+app.get("/adminsomedata/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = "select * from adminlogin where id=?";
+  db.query(sql, [id], (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.get("/adminsearch/:value", (req, res) => {
+  const data = req.params.value;
+  const sql = "SELECT * FROM adminlogin WHERE username LIKE ? OR email LIKE ?";
+  db.query(sql, [`%${data}%`, `%${data}%`], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Database query failed" });
+    } else {
+      res.json(result);
+    }
   });
 });
 
@@ -4226,6 +5069,467 @@ app.get("/themestylesdata", (req, res) => {
       return res.json({ result });
     }
     res.json(result[0]);
+  });
+});
+
+app.post(
+  "/theme-options",
+  upload.fields([
+    { name: "seoOgImage", maxCount: 1 },
+    { name: "lazyPlaceholderImage", maxCount: 1 },
+  ]),
+  (req, res) => {
+    const {
+      site_title,
+      site_name,
+      title_separator,
+      seo_title,
+      seo_description,
+      seo_index,
+      terms_url,
+      copyright,
+      enable_preloader,
+      preloader_version,
+    } = req.body;
+    const seoOgFile = req.files["seoOgImage"]
+      ? req.files["seoOgImage"][0]
+      : null;
+    const lazyPlaceholderFile = req.files["lazyPlaceholderImage"]
+      ? req.files["lazyPlaceholderImage"][0]
+      : null;
+    let seoVal;
+    if (req.body.seoOgImage === "") {
+      seoVal = "";
+    } else if (seoOgFile) {
+      seoVal = seoOgFile.filename;
+    } else {
+      seoVal = req.body.seoOgImage;
+    }
+    let lazyVal;
+    if (req.body.lazyPlaceholderImage === "") {
+      lazyVal = "";
+    } else if (lazyPlaceholderFile) {
+      lazyVal = lazyPlaceholderFile.filename;
+    } else {
+      lazyVal = req.body.lazyPlaceholderImage;
+    }
+    const query = `
+      UPDATE theme_options SET
+        site_title = ?,
+        site_name = ?,
+        title_separator = ?,
+        seo_title = ?,
+        seo_description = ?,
+        seo_index = ?,
+        terms_url = ?,
+        copyright = ?,
+        enable_preloader = ?,
+        preloader_version = ?,
+        seo_og_image_url = CASE ? 
+                              WHEN '' THEN NULL 
+                              ELSE ? 
+                           END,
+        lazy_placeholder_image = CASE ? 
+                                    WHEN '' THEN NULL 
+                                    ELSE ? 
+                                 END
+      WHERE id = 1
+    `;
+
+    const values = [
+      site_title,
+      site_name,
+      title_separator,
+      seo_title,
+      seo_description,
+      seo_index,
+      terms_url,
+      copyright,
+      enable_preloader,
+      preloader_version,
+
+      seoVal,
+      seoVal,
+      lazyVal,
+      lazyVal,
+    ];
+
+    db.query(query, values, (err, results) => {
+      if (err) {
+        console.error("Error saving theme options:", err);
+        return res.status(500).json({ error: "Failed to save theme options" });
+      }
+      return res.json({
+        message: "Theme options saved successfully",
+        results,
+      });
+    });
+  }
+);
+
+app.get("/themeoptionsdata", (req, res) => {
+  db.query("SELECT * FROM theme_options LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({ result });
+    }
+    res.json(result[0]);
+  });
+});
+
+app.post("/save-custom-code", (req, res) => {
+  const {
+    custom_css,
+    header_html,
+    body_html,
+    footer_html,
+    header_js,
+    body_js,
+    footer_js,
+  } = req.body;
+
+  const query = `
+    UPDATE custom_code 
+    SET 
+      custom_css = COALESCE(?, custom_css),
+      header_html = COALESCE(?, header_html),
+      body_html = COALESCE(?, body_html),
+      footer_html = COALESCE(?, footer_html),
+      header_js = COALESCE(?, header_js),
+      body_js = COALESCE(?, body_js),
+      footer_js = COALESCE(?, footer_js)
+    WHERE id = 1
+  `;
+
+  db.query(
+    query,
+    [
+      custom_css,
+      header_html,
+      body_html,
+      footer_html,
+      header_js,
+      body_js,
+      footer_js,
+    ],
+    (err) => {
+      if (err) return res.status(500).json(err);
+      res.json({ message: "Custom code updated successfully" });
+    }
+  );
+});
+
+app.get("/get-custom-code", (req, res) => {
+  db.query("SELECT * FROM custom_code LIMIT 1", (err, results) => {
+    if (err) return res.status(500).json(err);
+    res.json(
+      results[0] || {
+        custom_css: "",
+        header_html: "",
+        body_html: "",
+        footer_html: "",
+        header_js: "",
+        body_js: "",
+        footer_js: "",
+      }
+    );
+  });
+});
+
+app.post("/ads-settings", adsUpload.single("adsTxtFile"), (req, res) => {
+  const snippet = req.body.googleAdsenseAutoAdsSnippet;
+  const clientId = req.body.googleAdsenseUnitAdsClientID;
+  const file = req.file;
+
+  if (
+    !file ||
+    ((!snippet || snippet.trim() === "") &&
+      (!clientId || clientId.trim() === ""))
+  ) {
+    return res.status(400).json({
+      message:
+        "Missing required fields. Please upload the .txt file and provide at least one: the Ad Snippet or the Client ID.",
+    });
+  }
+
+  if (
+    !file.mimetype.includes("text/plain") &&
+    !file.originalname.endsWith(".txt")
+  ) {
+    return res.status(400).json({
+      message: "Invalid file type. Only .txt files are allowed.",
+    });
+  }
+
+  const settings = {
+    googleAdsenseAutoAdsSnippet: snippet,
+    googleAdsenseUnitAdsClientID: clientId,
+    adsTxtFile: {
+      filename: "ads.txt",
+      url: `/images/ads.txt`,
+      originalName: file.originalname,
+    },
+  };
+
+  try {
+    fs.writeFileSync(
+      path.join(__dirname, "ads-settings.json"),
+      JSON.stringify(settings, null, 2)
+    );
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ message: "Error saving settings.", error: err });
+  }
+
+  res.json({ message: "Ads settings saved successfully!", settings });
+});
+
+app.delete("/ads-settings", (req, res) => {
+  const settingsFilePath = path.join(__dirname, "ads-settings.json");
+  if (!fs.existsSync(settingsFilePath)) {
+    return res.status(404).json({ message: "No settings found." });
+  }
+  const data = fs.readFileSync(settingsFilePath);
+  const settings = JSON.parse(data);
+  if (!settings.adsTxtFile || !settings.adsTxtFile.filename) {
+    return res.status(400).json({ message: "No file found in settings." });
+  }
+  const filePath = path.join(publicFolder, settings.adsTxtFile.filename);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ message: "File not found on disk." });
+  }
+
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error("Error deleting file:", err);
+      return res.status(500).json({ message: "Error deleting file." });
+    }
+    settings.adsTxtFile = null;
+    fs.writeFileSync(settingsFilePath, JSON.stringify(settings, null, 2));
+    res.json({ message: "File deleted successfully!" });
+  });
+});
+
+app.get("/ads-settings", (req, res) => {
+  const settingsFile = path.join(__dirname, "ads-settings.json");
+
+  if (fs.existsSync(settingsFile)) {
+    try {
+      const data = fs.readFileSync(settingsFile, "utf8");
+      const settings = JSON.parse(data);
+      return res.json(settings);
+    } catch (error) {
+      console.error("Error reading or parsing settings file:", error);
+      return res.status(500).json({ message: "Error reading settings file." });
+    }
+  } else {
+    return res.json({});
+  }
+});
+
+app.post("/cookiepost", (req, res) => {
+  const {
+    cookie,
+    style,
+    message,
+    button_text,
+    learn_url,
+    learn_text,
+    backgroundColor,
+    textColor,
+    width,
+  } = req.body;
+  const recordId = 1;
+  const checkSql = "SELECT * FROM cookie WHERE id = ?";
+  db.query(checkSql, [recordId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (result.length > 0) {
+      const updateSql = `
+        UPDATE cookie 
+        SET cookie = ?, style = ?, message = ?, button_text = ?, learn_url = ?, learn_text = ?, backgroundColor = ?, textColor = ?, width = ?
+        WHERE id = ?
+      `;
+      db.query(
+        updateSql,
+        [
+          cookie,
+          style,
+          message,
+          button_text,
+          learn_url,
+          learn_text,
+          backgroundColor,
+          textColor,
+          width,
+          recordId,
+        ],
+        (err, updateResult) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+          res.send("Data updated");
+        }
+      );
+    } else {
+      const insertSql = `
+        INSERT INTO cookie (id, cookie, style, message, button_text, learn_url, learn_text, backgroundColor, textColor, width)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      db.query(
+        insertSql,
+        [
+          recordId,
+          cookie,
+          style,
+          message,
+          button_text,
+          learn_url,
+          learn_text,
+          backgroundColor,
+          textColor,
+          width,
+        ],
+        (err, insertResult) => {
+          if (err) {
+            return res.status(500).json({ error: err.message });
+          }
+          res.send("Data submitted");
+        }
+      );
+    }
+  });
+});
+
+app.get("/cookiesalldata", (req, res) => {
+  db.query("SELECT * FROM cookie LIMIT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) {
+      return res.json({ result });
+    }
+    res.json(result[0]);
+  });
+});
+
+app.get("/track", (req, res) => {
+  let ip =
+    req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
+
+  ip = ip.split(",")[0].trim();
+
+  const isLocal =
+    ip === "::1" ||
+    ip === "127.0.0.1" ||
+    ip.startsWith("192.168") ||
+    ip.startsWith("10.") ||
+    ip.startsWith("172.");
+
+  const geo = geoip.lookup(ip);
+  let countryCode = geo && /^[A-Z]{2}$/.test(geo.country) ? geo.country : null;
+
+  if (isLocal && !countryCode) {
+    countryCode = "IN";
+  }
+
+  const userAgent = req.headers["user-agent"] || "unknown";
+  const page = req.query.page || "/";
+
+  const query = `
+    INSERT INTO visits (ip_address, user_agent, page, country_code)
+    VALUES (?, ?, ?, ?)
+  `;
+
+  db.query(query, [ip, userAgent, page, countryCode], (err) => {
+    if (err) {
+      console.error("Error inserting visit:", err);
+      return res.status(500).json({ error: "DB insert error" });
+    }
+
+    db.query("SELECT COUNT(*) AS total FROM visits", (err, results) => {
+      if (err) return res.status(500).json({ error: "DB count error" });
+      res.json({ total: results[0].total });
+    });
+  });
+});
+
+app.get("/analytics", (req, res) => {
+  const query = `
+    WITH allHours AS (
+      SELECT 0 AS hour
+      UNION ALL SELECT 1
+      UNION ALL SELECT 3
+      UNION ALL SELECT 5
+      UNION ALL SELECT 7
+      UNION ALL SELECT 9
+      UNION ALL SELECT 11
+      UNION ALL SELECT 13
+      UNION ALL SELECT 15
+      UNION ALL SELECT 17
+      UNION ALL SELECT 19
+      UNION ALL SELECT 21
+      UNION ALL SELECT 23
+    )
+    SELECT 
+      allHours.hour AS hoursAgo,
+      COALESCE(COUNT(v.id), 0) AS pageviews,
+      COALESCE(COUNT(DISTINCT v.ip_address), 0) AS visitors
+    FROM allHours
+    LEFT JOIN visits v 
+      ON FLOOR(TIMESTAMPDIFF(HOUR, v.visited_at, NOW())) = allHours.hour 
+      AND v.visited_at >= NOW() - INTERVAL 1 DAY
+    GROUP BY allHours.hour
+    ORDER BY allHours.hour;
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching analytics:", err);
+      return res.status(500).json({ error: "DB error" });
+    }
+    res.json(results);
+  });
+});
+
+app.get("/summary", (req, res) => {
+  const query = `
+    SELECT 
+      COUNT(DISTINCT ip_address) AS totalVisitors,
+      COUNT(*) AS totalPageviews
+    FROM visits
+    WHERE visited_at >= NOW() - INTERVAL 1 DAY
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching summary analytics:", err);
+      return res.status(500).json({ error: "DB error" });
+    }
+    res.json(results[0]);
+  });
+});
+
+app.get("/country-visits", (req, res) => {
+  const query = `
+    SELECT country_code, COUNT(*) AS visitors
+    FROM visits
+    WHERE visited_at >= NOW() - INTERVAL 1 DAY
+    GROUP BY country_code
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error fetching country visits:", err);
+      return res.status(500).json({ error: "DB error" });
+    }
+
+    const data = {};
+    results.forEach((row) => {
+      if (row.country_code && row.country_code !== "Unknown") {
+        data[row.country_code] = row.visitors;
+      }
+    });
+
+    res.json(data);
   });
 });
 
