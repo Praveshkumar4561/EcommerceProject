@@ -8,7 +8,7 @@ import Close from "../../assets/Close.webp";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -20,19 +20,18 @@ function Sitemap() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -135,22 +134,21 @@ function Sitemap() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   const [detail, setDetail] = useState([]);
   const [showProducts, setShowProducts] = useState(false);
@@ -250,6 +248,61 @@ function Sitemap() {
     }
   };
 
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <Helmet>
@@ -260,8 +313,10 @@ function Sitemap() {
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="http://srv724100.hstgr.cloud/sitemap" />
-        <script type="application/ld+json">
-          {`
+      </Helmet>
+
+      <script type="application/ld+json">
+        {`
             {
               "@context": "https://schema.org",
               "@type": "SiteNavigationElement",
@@ -273,6 +328,7 @@ function Sitemap() {
                 {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://srv724100.hstgr.cloud/shop"},
                 {"@type": "SiteNavigationElement", "name": "Blog", "url": "https://www.yoursitename.com/blog"},
                 {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://srv724100.hstgr.cloud/product-details"},
+                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "http://srv724100.hstgr.cloud/product-categories"},
                 {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://srv724100.hstgr.cloud/cart"},
                 {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://srv724100.hstgr.cloud/wishlist"},
                 {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://srv724100.hstgr.cloud/contact-us"},
@@ -284,8 +340,7 @@ function Sitemap() {
               ]
             }
           `}
-        </script>
-      </Helmet>
+      </script>
 
       <div
         className="container"
@@ -304,7 +359,7 @@ function Sitemap() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -476,7 +531,7 @@ function Sitemap() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden pe-4 pe-lg-0 pe-md-0">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -497,21 +552,22 @@ function Sitemap() {
           <h2 className="sitemap-name1 mt-4 cart-cart1">Pages</h2>
           <div className="border sitemap-link1"></div>
           <div className="row gap-0 p-0 mt-2 sitemap-link d-flex flex-md-row align-items-md-start flex-md-nowrap">
-            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-md-start align-items-sm-start px-41">
+            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-md-start align-items-sm-start">
               <Link to="/">Home</Link>
               <Link to="/about">About</Link>
               <Link onClick={toggleProducts}>Shop</Link>
               <Link onClick={toggleBlogs}>Blog</Link>
               <Link onClick={toggleProducts}>Product Details</Link>
             </div>
-            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-sm-start px-41 align-items-md-start">
+            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-sm-start  align-items-md-start">
+              <Link to="/product-categories">Product Categories</Link>
               <Link to="/cart">Cart</Link>
               <Link to="/wishlist">Wishlist</Link>
               <Link to="/contact-us">Contact Us</Link>
-              <Link to="/faqs">FAQs</Link>
-              <Link to="/privacy-policy">Privacy Policy</Link>
+              <Link to="/faqs">FAQ's</Link>
             </div>
-            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-sm-start align-items-md-start px-41">
+            <div className="col-lg-4 col-md-4 col-12 d-flex flex-column align-items-sm-start align-items-md-start">
+              <Link to="/privacy-policy">Privacy Policy</Link>
               <Link to="/medicine-policy">Medicine Policy</Link>
               <Link to="/terms-condition">Terms & Conditions</Link>
               <Link to="/sitemap">Sitemap</Link>
@@ -545,7 +601,7 @@ function Sitemap() {
             {detail.length >= 500 && (
               <div className="d-flex gap-2 justify-content-center mt-3 flex-row flex-nowrap">
                 <button
-                  className="btn btn-success d-flex cart-cart1 prev-site p-0 m-0"
+                  className="btn btn-success-product d-flex cart-cart1 prev-site p-0 m-0"
                   onClick={handlePrev}
                   disabled={currentPage === 1}
                 >
@@ -557,7 +613,7 @@ function Sitemap() {
                 {Array.from({ length: totalPages }, (_, index) => (
                   <button
                     key={index}
-                    className={`btn btn-success d-flex prev-site1 ${
+                    className={`btn btn-success-product d-flex prev-site1 ${
                       currentPage === index + 1 ? "active" : ""
                     }`}
                     onClick={() => handlePageClick(index + 1)}
@@ -566,7 +622,7 @@ function Sitemap() {
                   </button>
                 ))}
                 <button
-                  className="btn btn-success d-flex cart-cart1 prev-site"
+                  className="btn btn-success-product d-flex cart-cart1 prev-site"
                   onClick={handleNext}
                   disabled={currentPage === totalPages}
                 >
@@ -609,7 +665,7 @@ function Sitemap() {
           {user.length >= 500 && (
             <div className="d-flex gap-2 justify-content-center mt-3 flex-row flex-nowrap">
               <button
-                className="btn btn-success d-flex cart-cart1 prev-site"
+                className="btn btn-success-product d-flex cart-cart1 prev-site"
                 onClick={handlePrev1}
                 disabled={currentPage1 === 1}
               >
@@ -618,7 +674,7 @@ function Sitemap() {
               {Array.from({ length: totalPages1 }, (_, index) => (
                 <button
                   key={index}
-                  className={`btn btn-success d-flex prev-site1 ${
+                  className={`btn btn-success-product d-flex prev-site1 ${
                     currentPage1 === index + 1 ? "active" : ""
                   }`}
                   onClick={() => handlePageClick1(index + 1)}
@@ -627,7 +683,7 @@ function Sitemap() {
                 </button>
               ))}
               <button
-                className="btn btn-success d-flex cart-cart1 prev-site"
+                className="btn btn-success-product d-flex cart-cart1 prev-site"
                 onClick={handleNext1}
                 disabled={currentPage1 === totalPages1}
               >
@@ -648,23 +704,23 @@ function Sitemap() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -696,14 +752,14 @@ function Sitemap() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
                         to="/faqs"
                         className="text-white text-decoration-none"
                       >
-                        FAQ
+                        FAQ's
                       </Link>
                     </li>
 
@@ -730,20 +786,30 @@ function Sitemap() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-product d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={newsSubmit}
                 >
                   Subscribe
                 </button>
@@ -756,7 +822,7 @@ function Sitemap() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
               </p>
             </div>
           </div>

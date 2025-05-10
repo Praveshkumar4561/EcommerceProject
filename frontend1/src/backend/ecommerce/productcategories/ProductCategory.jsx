@@ -3,27 +3,30 @@ import "./ProductCategory.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import View from "../../../assets/view.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faSave,
+  faSignOut,
+  faXmark,
+  faImage,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import Cutting from "../../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function ProductCategory() {
-  let [user, setUser] = useState([]);
-
-  let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -32,10 +35,10 @@ function ProductCategory() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const resultsRef = useRef(null);
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  const resultsRef = useRef(null);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -88,7 +91,9 @@ function ProductCategory() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -168,84 +173,279 @@ function ProductCategory() {
     }
   };
 
-  useEffect(() => {
-    if (search) {
-      searchbar();
-    } else {
-      alldata();
-    }
-  }, [search]);
+  const [seoImageUrl, setSeoImageUrl] = useState(null);
 
-  const searchbar = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/productsearch/${search}`
-    );
-    setUser(Array.isArray(response.data) ? response.data : []);
-  };
-
-  const alldata = async () => {
-    let response = await axios.get(
-      "http://89.116.170.231:1600/productpagedata"
-    );
-    setUser(Array.isArray(response.data) ? response.data : []);
-  };
-
-  const onInputChange = (e, index) => {
-    const { name, value } = e.target;
-    setUser((prevUsers) => {
-      const newUsers = [...prevUsers];
-      newUsers[index] = { ...newUsers[index], [name]: value };
-      return newUsers;
-    });
-  };
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
+  const handleSeoFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
+      setSeoImageUrl(url);
     }
   };
 
-  const handleAddFromUrl = () => {
+  const handleSeoCloseClick = (e) => {
+    e.stopPropagation();
+    setSeoImageUrl(null);
+  };
+
+  const [cate, setCate] = useState([]);
+  const [user, setUser] = useState({
+    name: "",
+    permalink: "",
+    parent: "",
+    description: "",
+    status: "",
+    is_featured: "no",
+    file: null,
+  });
+  const { name, permalink, parent, description, status, is_featured, file } =
+    user;
+  const [errors, setErrors] = useState({});
+  const [editingId, setEditingId] = useState(null);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
+  const [mainImageUrl, setMainImageUrl] = useState(null);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
     try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented.",
-        {
+      const res = await axios.get("http://89.116.170.231:1600/productcatdata");
+      setCate(res.data);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onInputChange = (e) => {
+    const { name, value, files } = e.target;
+    if (files) {
+      const file = files[0];
+      setUser((prev) => ({ ...prev, file }));
+      setMainImageUrl(URL.createObjectURL(file));
+    } else {
+      setUser((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleFeaturedChange = (e) => {
+    setUser((prev) => ({
+      ...prev,
+      is_featured: e.target.checked ? "yes" : "no",
+    }));
+  };
+
+  const handleMainCloseClick = (e) => {
+    e.stopPropagation();
+    setMainImageUrl(null);
+    setUser((prev) => ({ ...prev, file: null }));
+    setIsImageRemoved(true);
+  };
+
+  const handleAddFromUrl = () => {
+    toast.info("Add-from-URL unimplemented", {
+      position: "bottom-right",
+      autoClose: 1000,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("permalink", permalink);
+    formData.append("parent", parent);
+    formData.append("description", description);
+    formData.append("status", status);
+    formData.append("is_featured", is_featured);
+    if (file) formData.append("file", file);
+    formData.append("isImageRemoved", isImageRemoved);
+
+    try {
+      let response;
+      if (editingId) {
+        response = await axios.put(
+          `http://89.116.170.231:1600/categoriesupdate/${editingId}`,
+          formData
+        );
+      } else {
+        response = await axios.post(
+          "http://89.116.170.231:1600/product-category",
+          formData
+        );
+      }
+      if (response.status === 200 && response.data.success) {
+        toast.success(
+          response.data.message ||
+            (editingId
+              ? "Category updated successfully"
+              : "Category created successfully"),
+          { position: "bottom-right", autoClose: 1000 }
+        );
+      } else {
+        toast.error(response.data.message || "Operation failed", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
+        });
+      }
+      const categoryRes = await axios.get(
+        "http://89.116.170.231:1600/productcatdata"
       );
-    } catch (error) {}
-  };
-  let [plus, setPlus] = useState(false);
-  let [computer, setComputer] = useState(false);
-  let [access, setAccess] = useState(false);
-  let [electronics, setElectronics] = useState(false);
-
-  let togglePlusSign = () => {
-    setPlus(!plus);
-  };
-
-  let computerclicked = () => {
-    setComputer(!computer);
+      setCate(categoryRes.data);
+      resetForm();
+    } catch (err) {
+      console.error("Submit error:", err);
+      toast.error("Operation failed", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    }
   };
 
-  let accessories = () => {
-    setAccess(!access);
+  const resetForm = () => {
+    setUser({
+      name: "",
+      permalink: "",
+      parent: "",
+      description: "",
+      status: "",
+      is_featured: "no",
+      file: null,
+    });
+    setMainImageUrl(null);
+    setIsImageRemoved(false);
+    setEditingId(null);
+    setErrors({});
   };
 
-  let electronicsgadgets = () => {
-    setElectronics(!electronics);
+  const handleItemClick = (id) => {
+    const sel = cate.find((c) => c.id === id);
+    setEditingId(id);
+    setUser({
+      name: sel.name,
+      permalink: sel.permalink,
+      parent: sel.parent_id || "",
+      description: sel.description,
+      status: sel.status,
+      is_featured: sel.is_featured,
+      file: null,
+    });
+    setMainImageUrl(sel.image_url || null);
+    setErrors({});
+  };
+
+  const [selectedId, setSelectedId] = useState(null);
+
+  const [product, setProduct] = useState([]);
+  const [counts, setCounts] = useState({});
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [catRes, prodRes] = await Promise.all([
+          axios.get("http://89.116.170.231:1600/productcatdata"),
+          axios.get("http://89.116.170.231:1600/productpagedata"),
+        ]);
+        setCate(catRes.data || []);
+        setProduct(prodRes.data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const tally = product.reduce((acc, p) => {
+      (p.categories || "")
+        .split(",")
+        .map((c) => c.trim())
+        .forEach((name) => {
+          if (!name) return;
+          acc[name] = (acc[name] || 0) + 1;
+        });
+      return acc;
+    }, {});
+    setCounts(tally);
+  }, [product]);
+
+  const deletedata = async (id) => {
+    try {
+      await axios.delete(`http://89.116.170.231:1600/categoriesdelete/${id}`);
+      setCate((prev) => prev.filter((c) => c.id !== id));
+      if (selectedId === id) setSelectedId(null);
+      toast.success("Category deleted successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    } catch (error) {
+      console.error("Delete failed", error);
+      toast.error("Category could not be deleted", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    }
+  };
+
+  const handleMainFileChange = (e) => {
+    const picked = e.target.files?.[0];
+    if (picked) {
+      setUser((prev) => ({ ...prev, file: picked }));
+      setMainImageUrl(URL.createObjectURL(picked));
+    }
+  };
+
+  const [showEdit2, setShowEdit2] = useState(true);
+
+  const mediaUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) {
+            throw new Error("Image upload failed");
+          }
+          const data = await response.json();
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      }
+    });
+  };
+
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  const toggleEditor2 = (e) => {
+    e.preventDefault();
+    setShowEdit2((prev) => !prev);
   };
 
   let [count5, setCount5] = useState(0);
@@ -256,7 +456,7 @@ function ProductCategory() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   let [cates, setCates] = useState(false);
 
@@ -264,22 +464,43 @@ function ProductCategory() {
     setCates(!cates);
   };
 
-  const handleEditorChange = (event, editor) => {
-    const data = editor.getData();
-    const plainText = stripHtmlTags(data);
-    setUser((prevState) => ({
-      ...prevState,
-      content: plainText,
-    }));
-  };
-
-  const stripHtmlTags = (html) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent || "";
-  };
-
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Product categories | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Product categories | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -361,7 +582,9 @@ function ProductCategory() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1564,7 +1787,7 @@ function ProductCategory() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2203,7 +2426,7 @@ function ProductCategory() {
       </div>
 
       <nav className="breadcrumb-container text-center pro-category">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2214,839 +2437,112 @@ function ProductCategory() {
         </ol>
       </nav>
 
-      <div className="container ms-lg-5 ps-lg-3 ms-3 ms-sm-0">
+      <div className="container ms-lg-5 ps-lg-3 ms-3 ms-sm-0 cart-cart text-start">
         <div className="row ms-lg-5">
-          <div className="col-md-4 d-flex justify-content-lg-end justify-content-sm-start justify-content-md-center drag-category">
+          <div className="col-md-4 text-start d-flex justify-content-lg-end justify-content-sm-start justify-content-md-center drag-category">
             <div className="card border">
-              <div className="card-header text-success fw-light">
+              <div className="card-header text-success fw-light text-start">
                 <img src={View} alt="RxLYTE" className="me-1" />
                 Drag and drop on the left to change the order or parent of the
                 categories.
               </div>
               <div className="card-body">
-                <button className="btn btn-success mb-3 d-flex py-4 me-0 px-3">
-                  + Create
+                <button
+                  className="btn btn-success mb-3 d-flex py-4 me-0 px-3 d-flex flex-row flex-nowrap align-items-center cart-cart1"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const hasAnyValueFilled =
+                      user.name.trim() !== "" ||
+                      user.permalink.trim() !== "" ||
+                      user.parent.trim() !== "" ||
+                      user.description.trim() !== "" ||
+                      user.status.trim() !== "" ||
+                      user.is_featured === "yes" ||
+                      user.file !== null;
+                    if (hasAnyValueFilled) {
+                      setUser({
+                        name: "",
+                        permalink: "",
+                        parent: "",
+                        description: "",
+                        status: "",
+                        is_featured: "no",
+                        file: null,
+                      });
+                      setMainImageUrl(null);
+                      setEditingId(null);
+                      setActiveCategory(null);
+                      setMainImageUrl(null);
+                      setErrors({});
+                    }
+                  }}
+                >
+                  <span className="fw-bold me-1 fs-5">+</span>Create
                 </button>
 
                 <ul className="list-group" style={{ cursor: "pointer" }}>
-                  <li className="list-group-item d-lg-flex d-sm-flex justify-content-start align-items-start border">
-                    <span className="d-lg-flex align-items-start">
-                      <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                      <svg
-                        className="icon svg-icon-ti-ti-file ms-lg-1 text-dark ms-1 mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1 mt-1 pt-">
-                        New Arrivals <span className="primary-data">(4)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li
-                    className="list-group-item mt-2 d-lg-flex justify-content-between align-items-lg-center border rounded"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    <span className="">
-                      <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                      <svg
-                        className="icon svg-icon-ti-ti-folder mb-1 text-dark ms-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Electronics <span className="primary-data">(5)</span>
-                      </span>
-                    </span>
-                    <i
-                      className={`fas ${
-                        plus
-                          ? "fa-minus float-end mt-2"
-                          : "fa-plus float-end mt-2"
-                      }`}
-                      style={{ cursor: "pointer" }}
-                      onClick={togglePlusSign}
-                    ></i>
-                  </li>
-
-                  {plus && (
-                    <>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-4">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Featured <span className="primary-data">(6)</span>
-                          </span>
-                        </span>
-                      </li>
-
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            New Arrivals{" "}
-                            <span className="primary-data">(3)</span>
-                          </span>
-                        </span>
-                      </li>
-
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Best Sellers{" "}
-                            <span className="primary-data">(6)</span>
-                          </span>
-                        </span>
-                      </li>
-
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-lg-center border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Mobile Phone{" "}
-                            <span className="primary-data">(7)</span>
-                          </span>
-                        </span>
-                      </li>
-                    </>
-                  )}
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Gifts <span className="primary-data">(4)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-lg-flex justify-content-between align-items-lg-center border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-folder mb-1 text-dark ms-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-                      </svg>
-                      <span className="ms-1">
-                        {" "}
-                        Computers <span className="primary-data">(10)</span>
-                      </span>
-                    </span>
-
-                    <i
-                      className={`fas ${
-                        computer
-                          ? "fa-minus float-end mt-2"
-                          : "fa-plus float-end mt-2"
-                      }`}
-                      style={{ cursor: "pointer" }}
-                      onClick={computerclicked}
-                    ></i>
-                  </li>
-
-                  {computer && (
-                    <>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Desktop <span className="primary-data">(3)</span>
-                          </span>
-                        </span>
-                      </li>
-
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Laptop <span className="primary-data">(4)</span>
-                          </span>
-                        </span>
-                      </li>
-
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Tablet <span className="primary-data">(6)</span>
-                          </span>
-                        </span>
-                      </li>
-
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Accessories{" "}
-                            <span className="primary-data">(3)</span>
-                          </span>
-                        </span>
-                      </li>
-                    </>
-                  )}
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span>
-                        {" "}
-                        Smartphones & Tablets{" "}
-                        <span className="primary-data">(7)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        {" "}
-                        TV, Video & Music{" "}
-                        <span className="primary-data">(6)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Cameras <span className="primary-data">(2)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border mt-2 rounded">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Cooking <span className="primary-data">(5)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-lg-flex justify-content-between rounded align-items-lg-center border mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-folder mb-1 text-dark ms-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Accessories <span className="primary-data">(10)</span>
-                      </span>
-                    </span>
-
-                    <i
-                      className={`fas ${
-                        access
-                          ? "fa-minus float-end mt-2"
-                          : "fa-plus float-end mt-2"
-                      }`}
-                      style={{ cursor: "pointer" }}
-                      onClick={accessories}
-                    ></i>
-                  </li>
-
-                  {access && (
-                    <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                      <span>
-                        <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                        <svg
-                          className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                  {cate.length > 0 ? (
+                    cate.map((cat) => {
+                      const count = counts[cat.name] || 0;
+                      const isSelected = cat.id === selectedId;
+                      return (
+                        <li
+                          key={cat.id}
+                          className="list-group-item d-flex align-items-center flex-row border align-items-lg-center"
+                          onClick={() => handleItemClick(cat.id)}
                         >
-                          <path
-                            stroke="none"
-                            d="M0 0h24v24H0z"
+                          <i className="fas fa-bars bg-light px-2 py-2 rounded me-2" />
+                          <svg
+                            className="icon svg-icon-ti-ti-file text-dark me-2"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
                             fill="none"
-                          ></path>
-                          <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                          <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                        </svg>
-                        <span className="ms-1">
-                          With Bluetooth{" "}
-                          <span className="primary-data">(11)</span>
-                        </span>
-                      </span>
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14 a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                          </svg>
+                          <span
+                            style={{
+                              fontWeight: isSelected ? "bold" : "normal",
+                              flexGrow: 1,
+                            }}
+                          >
+                            {cat.name}{" "}
+                            <small className="sales-font crisp-bread">
+                              ({count})
+                            </small>
+                          </span>
+                          {isSelected && (
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-6 text-light p-2 rounded bg-danger"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deletedata(cat.id);
+                              }}
+                            />
+                          )}
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <li className="text-start category-product text-start">
+                      No categories available
                     </li>
-                  )}
-
-                  <li className="list-group-item d-flex justify-content-between rounded align-items-start border mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        sports <span className="primary-data">(5)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-lg-flex justify-content-between rounded align-items-lg-center align-items-sm-start border mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-folder mb-1 text-dark ms-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Electronics Gadgets{" "}
-                        <span className="primary-data">(6)</span>
-                      </span>
-                    </span>
-                    <i
-                      className={`fas ${
-                        electronics
-                          ? "fa-minus float-end mt-2"
-                          : "fa-plus float-end mt-2"
-                      }`}
-                      style={{ cursor: "pointer" }}
-                      onClick={electronicsgadgets}
-                    ></i>
-                  </li>
-
-                  {electronics && (
-                    <>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Micrscope <span className="primary-data">(9)</span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Remote Control{" "}
-                            <span className="primary-data">(11)</span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Monitor <span className="primary-data">(10)</span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Thermometer{" "}
-                            <span className="primary-data">(9)</span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Backpack <span className="primary-data">(9)</span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="list-group-item mt-2 d-flex justify-content-between align-items-start border rounded ms-5">
-                        <span>
-                          <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                          <svg
-                            className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1 ms-1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path
-                              stroke="none"
-                              d="M0 0h24v24H0z"
-                              fill="none"
-                            ></path>
-                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                          </svg>
-                          <span className="ms-1">
-                            Headphones <span className="primary-data">(6)</span>
-                          </span>
-                        </span>
-                      </li>
-                    </>
                   )}
                 </ul>
               </div>
             </div>
           </div>
 
-          <div className="col-md-8 drag-category drag-category1 d-flex justify-content-md-center justify-content-lg-start">
+          <div className="col-md-8 col-lg-8 col-12 text-start drag-category drag-category1 d-flex justify-content-md-center justify-content-lg-start">
             <div className="card border">
               <div className="card-header border text-success fw-light">
                 <img src={View} alt="RxLYTE" className="me-1" />
@@ -3063,7 +2559,15 @@ function ProductCategory() {
                       className="form-control py-4 name-category mt-2"
                       id="name"
                       placeholder="Name"
+                      name="name"
+                      value={name}
+                      onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
 
                   <div className="form-group mt-4">
@@ -3074,236 +2578,164 @@ function ProductCategory() {
                       type="text"
                       className="form-control py-4 name-category mt-2"
                       id="permalink"
-                      value="https://shofy.botble.com/product-categories/"
+                      name="permalink"
+                      value={permalink}
+                      onChange={onInputChange}
                     />
                   </div>
 
-                  <div className="form-group mt-4 mb-3">
+                  <div className="form-group mt-4 mb-3 w-100">
                     <label for="parent" className="fw-normal">
                       Parent
                     </label>
 
                     <select
-                      className="select-search-full form-select select2-hidden-accessible py-4 mt-2 w-100"
-                      data-allow-clear="false"
-                      id="parent_id"
-                      name="parent_id"
-                      data-select2-id="select2-data-parent_id"
-                      tabindex="-1"
-                      aria-hidden="true"
+                      className="form-select mt-2 w-100"
+                      style={{ height: "50px" }}
+                      name="parent"
+                      value={parent}
+                      onChange={onInputChange}
                     >
-                      <option value="0" data-select2-id="select2-data-2-jmcn">
-                        None
-                      </option>
-                      <option value="1" data-select2-id="select2-data-10-lpfr">
-                        New Arrivals
-                      </option>
-                      <option value="2" data-select2-id="select2-data-11-r2yz">
-                        Electronics
-                      </option>
-                      <option value="3" data-select2-id="select2-data-12-tzb1">
-                        &nbsp;&nbsp;Featured
-                      </option>
-                      <option value="4" data-select2-id="select2-data-13-wqbc">
-                        &nbsp;&nbsp;&nbsp;&nbsp;New Arrivals
-                      </option>
-                      <option value="5" data-select2-id="select2-data-14-8t2w">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Best Sellers
-                      </option>
-                      <option value="6" data-select2-id="select2-data-15-231e">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Mobile Phone
-                      </option>
-                      <option value="7" data-select2-id="select2-data-16-ebh2">
-                        &nbsp;&nbsp;Computers &amp; Laptops
-                      </option>
-                      <option value="8" data-select2-id="select2-data-17-wclb">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Top Brands
-                      </option>
-                      <option value="9" data-select2-id="select2-data-18-tsxs">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Weekly Best Selling
-                      </option>
-                      <option value="10" data-select2-id="select2-data-19-2e4n">
-                        &nbsp;&nbsp;&nbsp;&nbsp;CPU Heat Pipes
-                      </option>
-                      <option value="11" data-select2-id="select2-data-20-8tj8">
-                        &nbsp;&nbsp;&nbsp;&nbsp;CPU Coolers
-                      </option>
-                      <option value="12" data-select2-id="select2-data-21-pb59">
-                        &nbsp;&nbsp;Accessories
-                      </option>
-                      <option value="13" data-select2-id="select2-data-22-fq2r">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Headphones
-                      </option>
-                      <option value="14" data-select2-id="select2-data-23-b62b">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Wireless Headphones
-                      </option>
-                      <option value="15" data-select2-id="select2-data-24-1mgy">
-                        &nbsp;&nbsp;&nbsp;&nbsp;TWS Earphones
-                      </option>
-                      <option value="16" data-select2-id="select2-data-25-0kh7">
-                        &nbsp;&nbsp;&nbsp;&nbsp;Smart Watch
-                      </option>
-                      <option value="17" data-select2-id="select2-data-26-xg15">
-                        &nbsp;&nbsp;Gaming Console
-                      </option>
-                      <option value="18" data-select2-id="select2-data-27-urjo">
-                        &nbsp;&nbsp;Playstation
-                      </option>
-                      <option value="19" data-select2-id="select2-data-28-okcq">
-                        Gifts
-                      </option>
-                      <option value="20" data-select2-id="select2-data-29-rqhd">
-                        Computers
-                      </option>
-                      <option value="21" data-select2-id="select2-data-30-j2aw">
-                        &nbsp;&nbsp;Desktop
-                      </option>
-                      <option value="22" data-select2-id="select2-data-31-ccxw">
-                        &nbsp;&nbsp;Laptop
-                      </option>
-                      <option value="23" data-select2-id="select2-data-32-sm7q">
-                        &nbsp;&nbsp;Tablet
-                      </option>
-                      <option value="24" data-select2-id="select2-data-33-eqlp">
-                        &nbsp;&nbsp;Accessories
-                      </option>
-                      <option value="25" data-select2-id="select2-data-34-8hpo">
-                        Smartphones &amp; Tablets
-                      </option>
-                      <option value="26" data-select2-id="select2-data-35-vwui">
-                        TV, Video &amp; Music
-                      </option>
-                      <option value="27" data-select2-id="select2-data-36-bcvh">
-                        Cameras
-                      </option>
-                      <option value="28" data-select2-id="select2-data-37-oai1">
-                        Cooking
-                      </option>
-                      <option value="29" data-select2-id="select2-data-38-tam5">
-                        Accessories
-                      </option>
-                      <option value="30" data-select2-id="select2-data-39-7xba">
-                        &nbsp;&nbsp;With Bluetooth
-                      </option>
-                      <option value="31" data-select2-id="select2-data-40-nno0">
-                        Sports
-                      </option>
-                      <option value="32" data-select2-id="select2-data-41-llcs">
-                        Electronics Gadgets
-                      </option>
-                      <option value="33" data-select2-id="select2-data-42-ltbb">
-                        &nbsp;&nbsp;Micrscope
-                      </option>
-                      <option value="34" data-select2-id="select2-data-43-59a9">
-                        &nbsp;&nbsp;Remote Control
-                      </option>
-                      <option value="35" data-select2-id="select2-data-44-lmjy">
-                        &nbsp;&nbsp;Monitor
-                      </option>
-                      <option value="36" data-select2-id="select2-data-45-241k">
-                        &nbsp;&nbsp;Thermometer
-                      </option>
-                      <option value="37" data-select2-id="select2-data-46-imjx">
-                        &nbsp;&nbsp;Backpack
-                      </option>
-                      <option value="38" data-select2-id="select2-data-47-hehd">
-                        &nbsp;&nbsp;Headphones
-                      </option>
+                      <option value="">None</option>
+                      {Array.isArray(cate) &&
+                        cate.length > 0 &&
+                        cate.map((data, index) => (
+                          <option key={index} value={data.name}>
+                            {data.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
 
-                  <div className="mb-3">
-                    <label htmlFor="content" className="form-label fw-lighter">
+                  <div className="mb-3 text-start">
+                    <label
+                      htmlFor="descEditor"
+                      className="form-label fw-lighter"
+                    >
                       Description
                     </label>
-                    <CKEditor
-                      editor={ClassicEditor}
-                      onChange={handleEditorChange}
-                      config={{
-                        toolbar: [
-                          "heading",
-                          "fontColor",
-                          "fontSize",
-                          "fontBackgroundColor",
-                          "fontFamily",
-                          "bold",
-                          "italic",
-                          "underline",
-                          "strikethrough",
-                          "link",
-                          "bulletedList",
-                          "numberedList",
-                          "alignment",
-                          "textDirection",
-                          "blockQuote",
-                          "indent",
-                          "outdent",
-                          "insertTable",
-                          "imageUpload",
-                          "mediaEmbed",
-                          "undo",
-                          "redo",
-                          "findAndReplace",
-                          "removeFormat",
-                          "source",
-                          "codeBlock",
-                          "fullscreen",
-                        ],
-                        heading: {
-                          options: [
-                            {
-                              model: "paragraph",
-                              title: "Paragraph",
-                              className: "ck-heading_paragraph",
+                    <div className="d-flex gap-2 flex-row">
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2 cart-cart"
+                        onClick={toggleEditor2}
+                      >
+                        Show/Hide Editor
+                      </button>
+                      <button
+                        className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center cart-cart"
+                        onClick={mediaUpload}
+                      >
+                        <FontAwesomeIcon icon={faImage} className="me-2" />
+                        Add Media
+                      </button>
+                    </div>
+
+                    {showEdit2 ? (
+                      <div className="mb-3">
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={user.description}
+                          onChange={(e, editor) => {
+                            const html = editor.getData();
+                            setUser((u) => ({ ...u, description: html }));
+                          }}
+                          config={{
+                            toolbar: [
+                              "heading",
+                              "fontColor",
+                              "fontSize",
+                              "fontBackgroundColor",
+                              "fontFamily",
+                              "bold",
+                              "italic",
+                              "underline",
+                              "strikethrough",
+                              "link",
+                              "bulletedList",
+                              "numberedList",
+                              "alignment",
+                              "textDirection",
+                              "blockQuote",
+                              "indent",
+                              "outdent",
+                              "insertTable",
+                              "imageUpload",
+                              "mediaEmbed",
+                              "undo",
+                              "redo",
+                              "findAndReplace",
+                              "removeFormat",
+                              "source",
+                              "codeBlock",
+                              "fullscreen",
+                            ],
+                            heading: {
+                              options: [
+                                { model: "paragraph", title: "Paragraph" },
+                                {
+                                  model: "heading1",
+                                  view: "h1",
+                                  title: "Heading 1",
+                                },
+                                {
+                                  model: "heading2",
+                                  view: "h2",
+                                  title: "Heading 2",
+                                },
+                                {
+                                  model: "heading3",
+                                  view: "h3",
+                                  title: "Heading 3",
+                                },
+                                {
+                                  model: "heading4",
+                                  view: "h4",
+                                  title: "Heading 4",
+                                },
+                                {
+                                  model: "heading5",
+                                  view: "h5",
+                                  title: "Heading 5",
+                                },
+                                {
+                                  model: "heading6",
+                                  view: "h6",
+                                  title: "Heading 6",
+                                },
+                              ],
                             },
-                            {
-                              model: "heading1",
-                              view: "h1",
-                              title: "Heading 1",
-                              className: "ck-heading_heading1",
-                            },
-                            {
-                              model: "heading2",
-                              view: "h2",
-                              title: "Heading 2",
-                              className: "ck-heading_heading2",
-                            },
-                            {
-                              model: "heading3",
-                              view: "h3",
-                              title: "Heading 3",
-                              className: "ck-heading_heading3",
-                            },
-                            {
-                              model: "heading4",
-                              view: "h4",
-                              title: "Heading 4",
-                              className: "ck-heading_heading4",
-                            },
-                            {
-                              model: "heading5",
-                              view: "h5",
-                              title: "Heading 5",
-                              className: "ck-heading_heading5",
-                            },
-                            {
-                              model: "heading6",
-                              view: "h6",
-                              title: "Heading 6",
-                              className: "ck-heading_heading6",
-                            },
-                          ],
-                        },
-                      }}
-                    />
-                    <div className="mt-3"></div>
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <textarea
+                        id="descEditor"
+                        className="form-control mb-0"
+                        placeholder="Short description"
+                        name="description"
+                        value={stripHtml(user.description)}
+                        onChange={(e) =>
+                          setUser((u) => ({
+                            ...u,
+                            description: e.target.value,
+                          }))
+                        }
+                        style={{ height: "110px" }}
+                      />
+                    )}
                   </div>
 
                   <div className="form-group mt-3">
                     <label for="status" className="fw-normal">
                       Status <span className="text-danger">*</span>
                     </label>
-                    <select className="form-control rounded-1 mt-2 py-4 name-category border">
+                    <select
+                      className="form-select rounded-1 mt-2 name-category border"
+                      style={{ height: "50px" }}
+                      name="status"
+                      value={status}
+                      onChange={onInputChange}
+                    >
                       <option value="">Select an option</option>
                       <option value="Published">Published</option>
                       <option value="Draft">Draft</option>
@@ -3313,119 +2745,73 @@ function ProductCategory() {
                 </form>
 
                 <div className="mt-1">
-                  <div className="image-card border-0 image-add ms-md-4 ms-lg-0 ms-0">
-                    <p className="fs-5 fw-lighter image-file">Image</p>
-                    <div
-                      className="image-placeholder"
-                      onClick={() =>
-                        document.getElementById("fileInput").click()
-                      }
-                    >
-                      {imageUrl ? (
+                  <div className="image-card border mt-3 image-add ms-md-4 ms-lg-0 ms-0">
+                    <h4 className="mt-0 text-start">Image</h4>
+                    <div className="image-placeholder mt-2 position-relative">
+                      {mainImageUrl ? (
                         <img
+                          src={mainImageUrl}
                           alt="Uploaded preview"
-                          src={imageUrl}
                           width="100"
                           height="100"
+                          onClick={() =>
+                            document.getElementById("fileInputMain").click()
+                          }
                         />
                       ) : (
                         <img
-                          alt="Placeholder image icon"
-                          src={Cutting}
-                          className="w-75 h-100"
+                          src={mainImageUrl || Cutting}
+                          alt="Placeholder"
+                          className="w-100 h-100 rounded"
+                          onClick={() =>
+                            document.getElementById("fileInputMain").click()
+                          }
+                        />
+                      )}
+                      {mainImageUrl && (
+                        <FontAwesomeIcon
+                          icon={faXmark}
+                          className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                          onClick={handleMainCloseClick}
                         />
                       )}
                     </div>
                     <input
-                      id="fileInput"
+                      id="fileInputMain"
                       type="file"
                       name="file"
                       style={{ display: "none" }}
-                      onChange={handleFileChange}
+                      onChange={handleMainFileChange}
                     />
+
                     <Link
+                      className="ms-2 text-decoration-none choose-url"
                       to="#"
                       onClick={() =>
-                        document.getElementById("fileInput").click()
+                        document.getElementById("fileInputMain").click()
                       }
                     >
-                      Choose image <br />
+                      Choose image
                     </Link>
-                    <span className="ms-2 me-2">or</span>
-                    <Link to="#" onClick={handleAddFromUrl}>
+                    <span className="ms-3 me-2">or</span>
+                    <Link
+                      to="#"
+                      onClick={handleAddFromUrl}
+                      className="text-decoration-none choose-url"
+                    >
                       Add from URL
                     </Link>
                   </div>
                 </div>
 
-                <div className="form-group mt-3">
-                  <label for="status" className="fw-normal">
-                    Icon
-                  </label>
-                  <select className="form-control rounded-1 mt-2 py-4 name-category border">
-                    <option value="">Select an option</option>
-                    <option value="Ex: ti ti-12-hours">
-                      Ex: ti ti-12-hours
-                    </option>
-                    <option value="ti ti-123">ti ti-123</option>
-                    <option value="ti ti-24-hours">ti ti-24-hours</option>
-                    <option value="ti ti-2fa">ti ti-2fa</option>
-                    <option value="ti ti-360-view">ti ti-360-view</option>
-                    <option value="ti ti-360">ti ti-360</option>
-                  </select>
-                </div>
-
-                <div className="mt-1">
-                  <div className="image-card border-0 image-add ms-md-4 ms-lg-0 ms-0">
-                    <p className="fs-5 fw-lighter image-file">Icon Image</p>
-                    <div
-                      className="image-placeholder"
-                      onClick={() =>
-                        document.getElementById("fileInput").click()
-                      }
-                    >
-                      {imageUrl ? (
-                        <img
-                          alt="Uploaded preview"
-                          src={imageUrl}
-                          width="100"
-                          height="100"
-                        />
-                      ) : (
-                        <img
-                          alt="Placeholder image icon"
-                          src={Cutting}
-                          className="w-75 h-100"
-                        />
-                      )}
-                    </div>
-                    <input
-                      id="fileInput"
-                      type="file"
-                      name="file"
-                      style={{ display: "none" }}
-                      onChange={handleFileChange}
-                    />
-                    <Link
-                      to="#"
-                      onClick={() =>
-                        document.getElementById("fileInput").click()
-                      }
-                    >
-                      Choose image <br />
-                    </Link>
-                    <span className="ms-2 me-2">or</span>
-                    <Link to="#" onClick={handleAddFromUrl}>
-                      Add from URL
-                    </Link>
-                  </div>
-                </div>
-
-                <div className="form-check form-switch mb-3">
+                <div className="form-check form-switch mt-3">
                   <input
                     className="form-check-input"
                     type="checkbox"
                     id="has-action"
+                    name="is_featured"
+                    checked={is_featured === "yes"}
+                    onChange={handleFeaturedChange}
                   />
                   <label
                     className="form-check-label ms-3 mt-1"
@@ -3435,22 +2821,25 @@ function ProductCategory() {
                   </label>
                 </div>
 
-                <div className="card tags-seo mt-4 ms-lg- tag-category">
+                <div className="card tags-seo mt-4 ms-lg- tag-category seo-metas1">
                   <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-                    <div>
-                      <h5 className="card-title1">Search Engine Optimize</h5>
+                    <div className="w-100">
+                      <h5 className="card-title1 seo-head">
+                        Search Engine Optimize
+                      </h5>
                       <Link
                         to="#"
-                        className="link-primary1 primary2 meta float-end meta-product"
+                        className="link-primary1 primary2 pt-1 pt-lg-0 meta float-end meta-product"
                         onClick={productcate}
                       >
                         Edit SEO meta
                       </Link>
-                      <hr />
+                      <div className="border w-100 mt-3 mb-3"></div>
                       <p className="card-text text-dark">
                         Setup meta title & description to make your site easy to
-                        discovered on search engines such as Google
+                        be discovered on search engines such as Google.
                       </p>
+
                       {cates && (
                         <>
                           <div>
@@ -3458,16 +2847,16 @@ function ProductCategory() {
                             <input
                               type="text"
                               className="form-control mt-2 py-4 seo-edit"
+                              placeholder="SEO Title"
                             />
                           </div>
-
                           <div className="mt-3">
                             <label htmlFor="seo-description">
                               SEO Description
                             </label>
                             <textarea
                               id="seo-description"
-                              className="form-control mt-2 py-4 seo-edit"
+                              className="form-control mt-2 seo-edit cart-cart"
                               placeholder="SEO Description"
                               style={{
                                 height: "100px",
@@ -3477,49 +2866,67 @@ function ProductCategory() {
                               }}
                             />
                           </div>
-
-                          <div>
-                            <label className="mt-3 pt-2 ms-2">SEO image</label>
-                            <div className="image-card border-0 ps-1">
-                              <div
-                                className="image-placeholder"
-                                onClick={() =>
-                                  document.getElementById("fileInput").click()
-                                }
-                              >
-                                {imageUrl ? (
+                          <div className="mt-1">
+                            <div className="image-card border-0 mt-3 image-add ms-md-4 ms-lg-0 ms-0">
+                              <p className="fs-5 fw-lighter">SEO Image</p>
+                              <div className="image-placeholder mt-2 position-relative">
+                                {seoImageUrl ? (
                                   <img
                                     alt="Uploaded preview"
-                                    src={imageUrl}
+                                    src={seoImageUrl}
                                     width="100"
                                     height="100"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInputSeo")
+                                        .click()
+                                    }
                                   />
                                 ) : (
                                   <img
                                     src={Cutting}
-                                    alt="RxLYTE"
-                                    className="w-75 h-75 img-fluid"
+                                    alt="Background"
+                                    className="w-100 h-100 rounded"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInputSeo")
+                                        .click()
+                                    }
+                                  />
+                                )}
+                                {seoImageUrl && (
+                                  <FontAwesomeIcon
+                                    icon={faXmark}
+                                    className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                                    onClick={handleSeoCloseClick}
                                   />
                                 )}
                               </div>
+
                               <input
-                                id="fileInput"
+                                id="fileInputSeo"
                                 type="file"
-                                name="file"
+                                name="seoFile"
                                 style={{ display: "none" }}
-                                onChange={handleFileChange}
+                                onChange={handleSeoFileChange}
                               />
                               <Link
-                                className="ms-5"
+                                className="ms-2 text-decoration-none choose-url"
                                 to="#"
                                 onClick={() =>
-                                  document.getElementById("fileInput").click()
+                                  document
+                                    .getElementById("fileInputSeo")
+                                    .click()
                                 }
                               >
-                                Choose image <br />
+                                Choose image
                               </Link>
-                              <span className="ms-2 me-2 ms-5">or</span>
-                              <Link to="#" onClick={handleAddFromUrl}>
+                              <span className="ms-3 me-2">or</span>
+                              <Link
+                                to="#"
+                                onClick={handleAddFromUrl}
+                                className="text-decoration-none choose-url"
+                              >
                                 Add from URL
                               </Link>
                             </div>
@@ -3528,25 +2935,24 @@ function ProductCategory() {
                           <div className="d-flex gap-2 ms-2">
                             <label htmlFor="">Index</label>
                           </div>
-
                           <div className="ms-2 mt-2 pb-2">
                             <input
                               className="form-check-input"
                               type="radio"
                               name="check"
-                              checked
+                              id="Index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="Index" className="ms-2">
                               Index
                             </label>
-
                             <input
                               className="form-check-input ms-2"
                               type="radio"
-                              value="index"
+                              value="noindex"
                               name="check"
+                              id="No index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="No index" className="ms-2">
                               No index
                             </label>
                           </div>
@@ -3558,18 +2964,32 @@ function ProductCategory() {
 
                 <div className="border mt-3 rounded h-auto ms-2 w-100 mb-2">
                   <p className="ms-2 mt-3">Publish</p>
-                  <hr />
-                  <button className="btn btn-save ms-2 mb-3" type="submit">
-                    <i className="fas fa-save"></i> Save
-                  </button>
-                  <button className="btn btn-secondary ms-3 mb-3 btn-exit">
-                    <i className="fas fa-sign-out-alt"></i> Save & Exit
-                  </button>
+                  <div className="border w-100 mb-3"></div>
+
+                  <div className="d-flex flex-row flex-nowrap gap-3 ms-2 mb-3">
+                    <button
+                      type="button"
+                      className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center cart-cart"
+                      onClick={handleSubmit}
+                    >
+                      <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                    </button>
+                    <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center cart-cart">
+                      <Link
+                        to="/admin/ecommerce/products"
+                        className="text-decoration-none text-dark"
+                      >
+                        <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                        Save & Exit
+                      </Link>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <ToastContainer />
       </div>
     </>

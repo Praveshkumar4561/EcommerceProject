@@ -3,6 +3,7 @@ import "./AdminTheme.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import Appath from "../../../assets/appath.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -11,23 +12,28 @@ import {
   faMoon,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function AdminTheme() {
-  let [user, setUser] = useState([]);
-  let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [commerce, setCommerce] = useState(false);
   let [appear, setAppear] = useState(false);
   let [count5, setCount5] = useState(0);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const resultsRef = useRef(null);
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let orderdata = async () => {
@@ -35,14 +41,7 @@ function AdminTheme() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const resultsRef = useRef(null);
-  const navigate = useNavigate();
-  let [Specification, setSpecifcation] = useState(false);
-  let [payment, setPayment] = useState(false);
+  }, []);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -95,6 +94,7 @@ function AdminTheme() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -176,42 +176,44 @@ function AdminTheme() {
     }
   };
 
-  useEffect(() => {
-    if (search) {
-      searchbar();
-    } else {
-      alldata();
-    }
-  }, [search]);
-
-  let searchbar = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/menusearch/${search}`
-    );
-    setUser(response.data);
-  };
-
-  let alldata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/menusdata");
-    setUser(response.data);
-  };
-
-  let deletedata = async (id) => {
-    await axios.delete(`http://89.116.170.231:1600/menusdelete/${id}`, user);
-    try {
-      toast.success("Data successfully deleted: ", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {}
-  };
-
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Themes | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="Themes | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -293,7 +295,9 @@ function AdminTheme() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1497,7 +1501,7 @@ function AdminTheme() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2147,10 +2151,10 @@ function AdminTheme() {
 
       <div className="container-fluid">
         <div className="container ms-lg-4 theme-admin">
-          <div className="row d-flex flex-row gap-1 ms-lg-5 ms-1 ms-sm-0">
+          <div className="row d-flex flex-row gap-1 ms-lg-5 ms-1 ms-sm-0 mb-3">
             <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
               <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
-              <div className="d-flex flex-row gap-2 mb-2 ms-4 mt-2 active-button">
+              <div className="d-flex flex-row justify-content-center gap-2 mb-2 mt-2 active-button">
                 <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 px-3 active-btn text-light">
                   <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
                   Active
@@ -2159,7 +2163,7 @@ function AdminTheme() {
                 <button className="btn d-flex flex-row align-items-center rounded py-4 remove-btn border text-dark">
                   <FontAwesomeIcon
                     icon={faTrashCan}
-                    className="me-2 text-dark"
+                    className="me-2 text-success"
                   />
                   Remove
                 </button>
@@ -2168,7 +2172,7 @@ function AdminTheme() {
 
             <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
               <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
-              <div className="d-flex flex-row gap-2 mb-2 ms-4 mt-2 active-button">
+              <div className="d-flex flex-row justify-content-center gap-2 mb-2 mt-2 active-button">
                 <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 active-btn">
                   <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
                   Active
@@ -2176,7 +2180,7 @@ function AdminTheme() {
                 <button className="btn d-flex flex-row align-items-center rounded py-4 remove-btn border text-dark">
                   <FontAwesomeIcon
                     icon={faTrashCan}
-                    className="me-2 text-dark"
+                    className="me-2 text-success"
                   />
                   Remove
                 </button>
@@ -2185,7 +2189,7 @@ function AdminTheme() {
 
             <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
               <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
-              <div className="d-flex flex-row gap-2 mb-2 ms-4 mt-2 active-button">
+              <div className="d-flex flex-row justify-content-center gap-2 mb-2 mt-2 active-button">
                 <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 active-btn">
                   <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
                   Active
@@ -2193,7 +2197,7 @@ function AdminTheme() {
                 <button className="btn d-flex flex-row align-items-center rounded py-4 remove-btn border text-dark">
                   <FontAwesomeIcon
                     icon={faTrashCan}
-                    className="me-2 text-dark"
+                    className="me-2 text-success"
                   />
                   Remove
                 </button>

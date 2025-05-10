@@ -160,3 +160,13 @@ input[type="search"] {
     height: 55rem;
   }
 }
+
+.flash-image {
+  max-width: 7%;
+}
+
+@media (max-width: 768px) {
+  .flash-image {
+    max-width: 11%;
+  }
+}

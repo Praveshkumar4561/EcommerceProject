@@ -7,6 +7,7 @@ import Mountain from "../assets/mountain.webp";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function AdminReset() {
   const [email, setEmail] = useState("");
@@ -38,7 +39,7 @@ function AdminReset() {
         toast.success("Password reset link sent to your email!", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -47,7 +48,7 @@ function AdminReset() {
         toast.error("Failed to send reset link. Please try again.", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -57,7 +58,7 @@ function AdminReset() {
       toast.error("An error occurred. Please try again.", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -71,6 +72,42 @@ function AdminReset() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Forgot Password | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Testimonials | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div className="container-fluid m-0 p-0">
         <div className="container">
           <div className="row mt-0 d-flex flex-row flex-wrap flex-lg-nowrap flex-md-wrap">

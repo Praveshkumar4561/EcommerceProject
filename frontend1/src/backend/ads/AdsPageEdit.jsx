@@ -3,6 +3,7 @@ import "./AdsPageEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import Cutting from "../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,14 +11,15 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function AdsEdit() {
   let navigate = useNavigate();
@@ -84,6 +86,7 @@ function AdsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -147,74 +150,6 @@ function AdsEdit() {
     setBlog(!blog);
   };
 
-  let [user, setUser] = useState({
-    name: "",
-    title: "",
-    subtitle: "",
-    button: "",
-    keyads: "",
-    orders: "",
-    adstype: "",
-    status: "",
-    expired: "",
-    file: null,
-  });
-
-  let {
-    name,
-    title,
-    subtitle,
-    button,
-    keyads,
-    orders,
-    adstype,
-    status,
-    expired,
-    file,
-  } = user;
-
-  let { id } = useParams();
-
-  let handleSubmit = async () => {
-    let formData = new FormData();
-    formData.append("name", name);
-    formData.append("title", title);
-    formData.append("subtitle", subtitle);
-    formData.append("button", button);
-    formData.append("keyads", keyads);
-    formData.append("orders", orders);
-    formData.append("adstype", adstype);
-    formData.append("status", status);
-    formData.append("expired", expired);
-    formData.append("file", file);
-    try {
-      const response = await axios.put(
-        `http://89.116.170.231:1600/adsupdate/${id}`,
-        formData
-      );
-      if (response.status === 200) {
-        navigate("/admin/ads");
-      }
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  let onInputChange = async (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
-  useEffect(() => {
-    editdata();
-  }, []);
-
-  let editdata = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/adsomedataads/${id}`
-    );
-    setUser(response.data[0]);
-  };
-
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
@@ -233,41 +168,162 @@ function AdsEdit() {
     }
   };
 
+  const { id } = useParams();
+
+  const [user, setUser] = useState({
+    name: "",
+    title: "",
+    subtitle: "",
+    button: "",
+    keyads: "",
+    orders: "",
+    adstype: "",
+    status: "",
+    location: "",
+    ads_size: "",
+    expired: "",
+    image: null,
+    desktopImage: null,
+    mobileImage: null,
+  });
+
+  const {
+    name,
+    title,
+    subtitle,
+    button,
+    keyads,
+    orders,
+    adstype,
+    location,
+    status,
+    ads_size,
+    expired,
+    image: userImage,
+    desktopImage: userTabletImage,
+    mobileImage: userMobileImage,
+  } = user;
+
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [tabletImage, setTabletImage] = useState(null);
   const [tabletImageUrl, setTabletImageUrl] = useState(null);
+  const [mobileImage, setMobileImage] = useState(null);
   const [mobileImageUrl, setMobileImageUrl] = useState(null);
+  const [removeMainImage, setRemoveMainImage] = useState(false);
+  const [removeTabletImage, setRemoveTabletImage] = useState(false);
+  const [removeMobileImage, setRemoveMobileImage] = useState(false);
+
+  const handleSubmit = async () => {
+    let formData = new FormData();
+    formData.append("name", name);
+    formData.append("title", title);
+    formData.append("subtitle", subtitle);
+    formData.append("button", button);
+    formData.append("keyads", keyads);
+    formData.append("orders", orders);
+    formData.append("adstype", adstype);
+    formData.append("status", status);
+    formData.append("ads_size", ads_size);
+    formData.append("location", location);
+    formData.append("expired", expired);
+
+    if (image) {
+      formData.append("file", image);
+    } else if (removeMainImage && userImage) {
+      formData.append("removeImage", "true");
+    }
+    if (tabletImage) {
+      formData.append("desktopImage", tabletImage);
+    } else if (removeTabletImage && userTabletImage) {
+      formData.append("removeTabletImage", "true");
+    }
+    if (mobileImage) {
+      formData.append("mobileImage", mobileImage);
+    } else if (removeMobileImage && userMobileImage) {
+      formData.append("removeMobileImage", "true");
+    }
+    try {
+      const response = await axios.put(
+        `http://89.116.170.231:1600/adsupdate/${id}`,
+        formData
+      );
+      if (response.status === 200) {
+        navigate("/admin/ads");
+      }
+    } catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  const onInputChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
   const handleFileChange = (event, type) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      if (type === "image") {
+      if (type === "normal") {
         setImage(file);
         setImageUrl(url);
+        setRemoveMainImage(false);
       } else if (type === "tablet") {
+        setTabletImage(file);
         setTabletImageUrl(url);
+        setRemoveTabletImage(false);
       } else if (type === "mobile") {
+        setMobileImage(file);
         setMobileImageUrl(url);
+        setRemoveMobileImage(false);
       }
     }
   };
 
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented.",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
+  const handleRemoveImage = (e) => {
+    e.stopPropagation();
+    setImage(null);
+    setImageUrl(null);
+    setRemoveMainImage(true);
   };
+
+  const handleRemoveTabletImage = (e) => {
+    e.stopPropagation();
+    setTabletImage(null);
+    setTabletImageUrl(null);
+    setRemoveTabletImage(true);
+  };
+
+  const handleRemoveMobileImage = (e) => {
+    e.stopPropagation();
+    setMobileImage(null);
+    setMobileImageUrl(null);
+    setRemoveMobileImage(true);
+  };
+
+  const handleAddFromUrl = () => {
+    toast.success(
+      "Functionality to add image from URL needs to be implemented.",
+      {
+        position: "bottom-right",
+        autoClose: 1000,
+      }
+    );
+  };
+
+  useEffect(() => {
+    const editData = async () => {
+      try {
+        let response = await axios.get(
+          `http://89.116.170.231:1600/adsomedataads/${id}`
+        );
+        setUser(response.data[0]);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+    editData();
+  }, [id]);
 
   let [count5, setCount5] = useState(0);
 
@@ -277,10 +333,45 @@ function AdsEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -362,7 +453,9 @@ function AdsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1564,7 +1657,7 @@ function AdsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2208,7 +2301,7 @@ function AdsEdit() {
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ads">ADS</Link>
           </li>
 
@@ -2282,7 +2375,7 @@ function AdsEdit() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
             <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
               <form>
@@ -2306,12 +2399,11 @@ function AdsEdit() {
                     <textarea
                       type="text"
                       className="form-control mt-2"
-                      placeholder="title"
+                      placeholder="Title"
                       name="title"
                       value={title}
                       onChange={onInputChange}
                       style={{
-                        cursor: "pointer",
                         height: "82px",
                         position: "relative",
                         zIndex: "1000",
@@ -2374,7 +2466,24 @@ function AdsEdit() {
                       name="orders"
                       value={orders}
                       onChange={onInputChange}
+                      style={{ fontFamily: "verdana" }}
                     />
+                  </div>
+                </div>
+
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
+                    <label htmlFor="">Ads size</label>
+                    <select
+                      className="form-select ads-height mt-2 w-100 cart-cart"
+                      name="ads_size"
+                      value={ads_size}
+                      onChange={onInputChange}
+                    >
+                      <option value="">select an option</option>
+                      <option value="default">Default</option>
+                      <option value="full-width">Full width</option>
+                    </select>
                   </div>
                 </div>
 
@@ -2383,11 +2492,11 @@ function AdsEdit() {
                     <label htmlFor="">Ads Type</label>
                     <select
                       type="text"
-                      className="form-select mt-2"
+                      className="form-select mt-2 w-100"
+                      style={{ height: "48px" }}
                       name="adstype"
                       value={adstype}
                       onChange={onInputChange}
-                      style={{ height: "48px" }}
                     >
                       <option value="">Select an option</option>
                       <option value="Custom ad">Custom Ad</option>
@@ -2398,7 +2507,7 @@ function AdsEdit() {
 
                 {adstype === "Custom ad" && (
                   <div className="border px-2 py-2 rounded bg-light mb-3">
-                    <div className="mt-1">
+                    <div className="mt-1 text-start">
                       <label htmlFor="">URL</label>
                       <input
                         type="text"
@@ -2406,6 +2515,7 @@ function AdsEdit() {
                         placeholder="URL"
                       />
                     </div>
+
                     <div className="form-check form-switch mb-3 d-flex flex-row name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                       <input
                         className="form-check-input"
@@ -2421,13 +2531,32 @@ function AdsEdit() {
                     </div>
 
                     <div className="border-0 rounded customer-page1 w-25">
-                      <h6 className="mt-0 text-start">Image</h6>
+                      <span className="mt-0 text-start">Image</span>
                       <div
-                        className="image-placeholder mt-2"
+                        className="image-placeholder mt-2 position-relative"
                         onClick={() =>
-                          document.getElementById("fileInputImage").click()
+                          document
+                            .getElementById("fileInputImageNormal")
+                            .click()
                         }
                       >
+                        {(imageUrl || (!removeMainImage && userImage)) && (
+                          <div
+                            className="remove-icon position-absolute"
+                            style={{
+                              top: "5px",
+                              right: "5px",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                            onClick={handleRemoveImage}
+                          >
+                            <FontAwesomeIcon
+                              icon={faXmark}
+                              className="bg-secondary px-1 py-1 rounded text-light"
+                            />
+                          </div>
+                        )}
                         {imageUrl ? (
                           <img
                             alt="Uploaded preview"
@@ -2436,24 +2565,39 @@ function AdsEdit() {
                             height="100"
                           />
                         ) : (
-                          <img
-                            src={`http://89.116.170.231:1600/src/image/${user.image}`}
-                            className="w-100 h-100 rounded"
-                          />
+                          (!removeMainImage && (
+                            <img
+                              src={
+                                userImage
+                                  ? `http://89.116.170.231:1600/src/image/${userImage}`
+                                  : Cutting
+                              }
+                              className="w-100 h-100 rounded"
+                              alt="User"
+                            />
+                          )) || (
+                            <img
+                              src={Cutting}
+                              className="w-100 h-100 rounded"
+                              alt="User"
+                            />
+                          )
                         )}
                       </div>
                       <input
-                        id="fileInputImage"
+                        id="fileInputImageNormal"
                         type="file"
                         name="file"
                         style={{ display: "none" }}
-                        onChange={(event) => handleFileChange(event, "image")}
+                        onChange={(event) => handleFileChange(event, "normal")}
                       />
                       <Link
                         className="text-decoration-none"
                         to="#"
                         onClick={() =>
-                          document.getElementById("fileInputImage").click()
+                          document
+                            .getElementById("fileInputImageNormal")
+                            .click()
                         }
                       >
                         Choose image or
@@ -2468,13 +2612,33 @@ function AdsEdit() {
                     </div>
 
                     <div className="border-0 rounded customer-page1 w-25 mt-2">
-                      <h6 className="mt-0 text-start">Tablet Image</h6>
+                      <span className="mt-0 text-start">Tablet Image</span>
                       <div
-                        className="image-placeholder mt-2"
+                        className="image-placeholder mt-2 position-relative"
                         onClick={() =>
-                          document.getElementById("fileInputTablet").click()
+                          document
+                            .getElementById("fileInputImageTablet")
+                            .click()
                         }
                       >
+                        {(tabletImageUrl ||
+                          (!removeTabletImage && userTabletImage)) && (
+                          <div
+                            className="remove-icon position-absolute"
+                            style={{
+                              top: "5px",
+                              right: "5px",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                            onClick={handleRemoveTabletImage}
+                          >
+                            <FontAwesomeIcon
+                              icon={faXmark}
+                              className="bg-secondary px-1 py-1 rounded text-light"
+                            />
+                          </div>
+                        )}
                         {tabletImageUrl ? (
                           <img
                             alt="Uploaded preview"
@@ -2482,14 +2646,24 @@ function AdsEdit() {
                             width="100"
                             height="100"
                           />
+                        ) : !removeTabletImage && userTabletImage ? (
+                          <img
+                            src={`http://89.116.170.231:1600/src/image/${userTabletImage}`}
+                            className="w-100 h-100 rounded"
+                            alt="Tablet"
+                          />
                         ) : (
-                          <img src={Cutting} className="w-75 h-75" />
+                          <img
+                            src={Cutting}
+                            className="w-100 h-100 rounded"
+                            alt="Tablet"
+                          />
                         )}
                       </div>
                       <input
-                        id="fileInputTablet"
+                        id="fileInputImageTablet"
                         type="file"
-                        name="file"
+                        name="desktopImage"
                         style={{ display: "none" }}
                         onChange={(event) => handleFileChange(event, "tablet")}
                       />
@@ -2497,7 +2671,9 @@ function AdsEdit() {
                         className="text-decoration-none"
                         to="#"
                         onClick={() =>
-                          document.getElementById("fileInputTablet").click()
+                          document
+                            .getElementById("fileInputImageTablet")
+                            .click()
                         }
                       >
                         Choose image or
@@ -2511,14 +2687,34 @@ function AdsEdit() {
                       </Link>
                     </div>
 
-                    <div className="border-0 rounded customer-page1 mt-2 mb-3 w-25">
-                      <h6 className="mt-0 text-start">Mobile Image</h6>
+                    <div className="border-0 rounded customer-page1 w-25 mt-2">
+                      <span className="mt-0 text-start">Mobile Image</span>
                       <div
-                        className="image-placeholder mt-2"
+                        className="image-placeholder mt-2 position-relative"
                         onClick={() =>
-                          document.getElementById("fileInputMobile").click()
+                          document
+                            .getElementById("fileInputImageMobile")
+                            .click()
                         }
                       >
+                        {(mobileImageUrl ||
+                          (!removeMobileImage && userMobileImage)) && (
+                          <div
+                            className="remove-icon position-absolute"
+                            style={{
+                              top: "5px",
+                              right: "5px",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                            onClick={handleRemoveMobileImage}
+                          >
+                            <FontAwesomeIcon
+                              icon={faXmark}
+                              className="bg-secondary px-1 py-1 rounded text-light"
+                            />
+                          </div>
+                        )}
                         {mobileImageUrl ? (
                           <img
                             alt="Uploaded preview"
@@ -2527,21 +2723,39 @@ function AdsEdit() {
                             height="100"
                           />
                         ) : (
-                          <img src={Cutting} className="w-75 h-75" />
+                          (!removeMobileImage && (
+                            <img
+                              src={
+                                userMobileImage
+                                  ? `http://89.116.170.231:1600/src/image/${userMobileImage}`
+                                  : Cutting
+                              }
+                              className="w-100 h-100 rounded"
+                              alt="Mobile"
+                            />
+                          )) || (
+                            <img
+                              src={Cutting}
+                              className="w-100 h-100 rounded"
+                              alt="Mobile"
+                            />
+                          )
                         )}
                       </div>
                       <input
-                        id="fileInputMobile"
+                        id="fileInputImageMobile"
                         type="file"
-                        name="file"
+                        name="mobileImage"
                         style={{ display: "none" }}
                         onChange={(event) => handleFileChange(event, "mobile")}
                       />
                       <Link
-                        to="#"
                         className="text-decoration-none"
+                        to="#"
                         onClick={() =>
-                          document.getElementById("fileInputMobile").click()
+                          document
+                            .getElementById("fileInputImageMobile")
+                            .click()
                         }
                       >
                         Choose image or
@@ -2574,7 +2788,7 @@ function AdsEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2582,21 +2796,30 @@ function AdsEdit() {
                     className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
                     onClick={handleSubmit}
                   >
-                    <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                    <FontAwesomeIcon icon={faSave} className="me-2" />
+                    Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ads"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Status</h4>
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Status</h5>
                 <hr />
                 <select
                   className="form-select mb-1 customer-page1"
                   style={{ height: "46px" }}
+                  name="status"
+                  value={status}
+                  onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
                   <option value="published">Published</option>
@@ -2605,13 +2828,17 @@ function AdsEdit() {
                 </select>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Location</h4>
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Location</h5>
                 <hr />
                 <select
                   className="form-select mb-1 customer-page1"
                   style={{ height: "46px" }}
+                  name="location"
+                  value={location}
+                  onChange={onInputChange}
                 >
+                  <option value="">Select an option</option>
                   <option value="Not set">Not set</option>
                   <option value="Header(before)">Header (before)</option>
                   <option value="Header(after)">Header (after)</option>
@@ -2632,7 +2859,7 @@ function AdsEdit() {
                 </select>
               </div>
 
-              <div className="border rounded p-3 customer-page1 mb-2">
+              <div className="border rounded p-2 customer-page1 mb-2">
                 <h5 className="mt-0 text-start">Expired At</h5>
                 <hr />
                 <input

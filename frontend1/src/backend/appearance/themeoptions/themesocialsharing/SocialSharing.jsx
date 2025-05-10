@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./SocialSharing.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -9,7 +10,6 @@ import {
   faMoon,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -17,6 +17,7 @@ import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function SocialSharing() {
   let [isVisible, setIsVisible] = useState(false);
@@ -83,6 +84,7 @@ function SocialSharing() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -126,14 +128,12 @@ function SocialSharing() {
     }
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -146,7 +146,7 @@ function SocialSharing() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -201,7 +201,7 @@ function SocialSharing() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   let [boxes, setBoxes] = useState([]);
 
@@ -216,6 +216,45 @@ function SocialSharing() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Theme Options - Social Sharing | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta
+          property="og:title"
+          content="Theme Options - Social Sharing | RxLYTE"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -297,7 +336,9 @@ function SocialSharing() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1499,7 +1540,7 @@ function SocialSharing() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>

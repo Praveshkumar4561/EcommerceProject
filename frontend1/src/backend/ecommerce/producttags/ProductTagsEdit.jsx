@@ -3,6 +3,7 @@ import "./ProductTagsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import Cutting from "../../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -11,13 +12,13 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ProductTagsEdit() {
   let navigate = useNavigate();
@@ -46,14 +47,12 @@ function ProductTagsEdit() {
     setSpecifcation(!Specification);
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -66,7 +65,7 @@ function ProductTagsEdit() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -118,6 +117,7 @@ function ProductTagsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -246,10 +246,44 @@ function ProductTagsEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -331,7 +365,9 @@ function ProductTagsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1535,7 +1571,7 @@ function ProductTagsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2178,7 +2214,7 @@ function ProductTagsEdit() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/product-tags">PRODUCT TAGS</Link>
           </li>
 
@@ -2254,7 +2290,7 @@ function ProductTagsEdit() {
                     <label htmlFor="">Description </label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="short description"
                       name="description"
                       value={description}
@@ -2280,7 +2316,7 @@ function ProductTagsEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2291,8 +2327,13 @@ function ProductTagsEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/product-tags"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
@@ -2416,18 +2457,14 @@ function ProductTagsEdit() {
                             </div>
                           </div>
 
-                          <div className="d-flex gap-2 ms-2">
-                            <label htmlFor="">Index</label>
-                          </div>
-
                           <div className="ms-2 mt-2 pb-2">
                             <input
                               className="form-check-input"
                               type="radio"
                               name="check"
-                              checked
+                              id="Index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="Index" className="ms-2">
                               Index
                             </label>
 
@@ -2436,8 +2473,9 @@ function ProductTagsEdit() {
                               type="radio"
                               value="index"
                               name="check"
+                              id="No index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="No index" className="ms-2">
                               No index
                             </label>
                           </div>

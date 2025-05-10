@@ -2,28 +2,34 @@ import React, { useEffect, useRef, useState } from "react";
 import "./DiscountsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function DiscountsCreate() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
-  const navigate = useNavigate();
-
   let [payment, setPayment] = useState(false);
+  let [isVisible, setIsVisible] = useState(false);
+  let [blog, setBlog] = useState(false);
+  let [ads, setAds] = useState(false);
+  let [commerce, setCommerce] = useState(false);
+  let [appear, setAppear] = useState(false);
+  let [Specification, setSpecifcation] = useState(false);
+  const navigate = useNavigate();
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -72,6 +78,7 @@ function DiscountsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -115,41 +122,6 @@ function DiscountsCreate() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented. ",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
-  let [isVisible, setIsVisible] = useState(false);
-  let [blog, setBlog] = useState(false);
-  let [ads, setAds] = useState(false);
-  let [commerce, setCommerce] = useState(false);
-  let [appear, setAppear] = useState(false);
-  let [Specification, setSpecifcation] = useState(false);
-
   let togglespecification = () => {
     setSpecifcation(!Specification);
   };
@@ -182,7 +154,11 @@ function DiscountsCreate() {
     orders: "",
     start_date: "",
     end_date: "",
+    display: "",
   });
+
+  const [neverExpired, setNeverExpired] = useState(false);
+
   const {
     discounttype,
     couponcode,
@@ -191,6 +167,7 @@ function DiscountsCreate() {
     orders,
     start_date,
     end_date,
+    display,
   } = user;
 
   const handleSubmit = async () => {
@@ -208,10 +185,22 @@ function DiscountsCreate() {
   };
 
   const handleInputChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
   };
 
-  const [couponCode, setCouponCode] = useState("");
+  const handleCheckboxChange = (e) => {
+    const checked = e.target.checked;
+    setNeverExpired(checked);
+    if (checked) {
+      setUser((prevUser) => ({ ...prevUser, end_date: "" }));
+    }
+  };
+
+  const handleDisplayChange = (e) => {
+    const checked = e.target.checked;
+    setUser({ ...user, display: checked ? "yes" : "no" });
+  };
 
   const generateCouponCode = () => {
     const chars =
@@ -220,7 +209,6 @@ function DiscountsCreate() {
     for (let i = 0; i < 12; i++) {
       coupon += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    setCouponCode(coupon);
     setUser({ ...user, couponcode: coupon });
   };
 
@@ -250,7 +238,7 @@ function DiscountsCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [isChecked, setIsChecked] = useState(true);
 
@@ -266,6 +254,41 @@ function DiscountsCreate() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create discount | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Create discount | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -347,7 +370,9 @@ function DiscountsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -383,7 +408,7 @@ function DiscountsCreate() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1549,7 +1574,7 @@ function DiscountsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2192,7 +2217,7 @@ function DiscountsCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/discounts">DISCOUNTS</Link>
           </li>
 
@@ -2211,15 +2236,15 @@ function DiscountsCreate() {
                   <div className="d-flex flex-column mb-3 mt-3 discount-discount w-100">
                     <label htmlFor="">Select type of discount</label>
                     <select
-                      className="form-select mt-2"
+                      className="form-select mt-2 w-100"
                       style={{ height: "47px" }}
                       name="discounttype"
                       value={discounttype}
                       onChange={handleInputChange}
                     >
                       <option value="">Select an option</option>
-                      <option value="">Coupon code</option>
-                      <option value="">Promotion</option>
+                      <option value="Coupon code">Coupon code</option>
+                      <option value="Promotion">Promotion</option>
                     </select>
                   </div>
                 </div>
@@ -2229,15 +2254,15 @@ function DiscountsCreate() {
                     <label htmlFor="">Create coupon code</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2 py-4 cart-cart1"
                       name="couponcode"
-                      value={couponCode}
+                      value={couponcode}
                       onChange={handleInputChange}
                     />
                     <button
                       type="button"
                       id="generate-coupon"
-                      className="generate-button position-absolute start-50 mt-3 ms-5 ps-5 end-0"
+                      className="generate-button position-absolute mt-3 ms-5 ps-5 end-0 cart-cart"
                       onClick={generateCouponCode}
                     >
                       Generate Coupon Code
@@ -2257,21 +2282,6 @@ function DiscountsCreate() {
                 </div>
 
                 <div className="d-flex flex-row gap-2 mt-2">
-                  <input type="checkbox" className="form-check-input" />
-                  <div className="d-flex flex-column">
-                    <label htmlFor="">Can be Used with flash sale?</label>
-                    <label
-                      htmlFor=""
-                      style={{ fontSize: "13px" }}
-                      className="text-start"
-                    >
-                      Allows customers to apply the coupon to items alreadyon
-                      flash sale,enabling combined discounts.
-                    </label>
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 mt-2">
                   <input
                     type="checkbox"
                     className="form-check-input"
@@ -2286,11 +2296,8 @@ function DiscountsCreate() {
                     <div className="d-flex flex-column mb-3 mt-lg-3 name-fo w-100">
                       <label>Enter number</label>
                       <input
-                        type="number"
+                        type="password"
                         className="form-control mt-2 py-4"
-                        name="orders"
-                        value={orders}
-                        onChange={handleInputChange}
                       />
                     </div>
                   </div>
@@ -2308,7 +2315,12 @@ function DiscountsCreate() {
                 </div>
 
                 <div className="d-flex flex-row gap-2 mt-2 mb-4">
-                  <input type="checkbox" className="form-check-input" />
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    checked={display === "yes"}
+                    onChange={handleDisplayChange}
+                  />
                   <div className="d-flex flex-column text-start">
                     <label htmlFor="">
                       Display coupon code at the checkout page?
@@ -2329,10 +2341,9 @@ function DiscountsCreate() {
                     <select
                       className="form-select w-100"
                       style={{ height: "50px" }}
-                      name="orders"
-                      value={orders}
+                      name="coupontype"
+                      value={coupontype}
                       onChange={handleCouponTypeChange}
-                      {...handleInputChange}
                     >
                       <option value="$">$</option>
                       <option value="Percentage discount(%)">
@@ -2349,6 +2360,9 @@ function DiscountsCreate() {
                           type="text"
                           className="form-control py-4"
                           placeholder="Discount 0 $"
+                          name="conditions"
+                          value={conditions}
+                          onChange={handleInputChange}
                         />
                       )}
 
@@ -2359,14 +2373,20 @@ function DiscountsCreate() {
                           type="text"
                           className="form-control py-4"
                           placeholder="Discount 0 %"
+                          name="conditions"
+                          value={conditions}
+                          onChange={handleInputChange}
                         />
                       )}
 
                     {couponType === "Same price" && (
                       <input
-                        type="number"
+                        type="text"
                         className="form-control py-4"
                         placeholder="is 0 $"
+                        name="conditions"
+                        value={conditions}
+                        onChange={handleInputChange}
                       />
                     )}
 
@@ -2375,8 +2395,12 @@ function DiscountsCreate() {
                         <select
                           className="form-select w-100"
                           style={{ height: "50px" }}
+                          name="orders"
+                          value={orders}
+                          onChange={handleInputChange}
                         >
-                          <option value="$">All orders</option>
+                          <option value="">Select an option</option>
+                          <option value="All orders">All orders</option>
                           <option value="Order amount from">
                             Order amount from
                           </option>
@@ -2402,7 +2426,11 @@ function DiscountsCreate() {
                         <select
                           className="form-select w-100"
                           style={{ height: "50px" }}
+                          name="orders"
+                          value={orders}
+                          onChange={handleInputChange}
                         >
+                          <option value="">Select an option</option>
                           <option value="Product collection">
                             Product collection
                           </option>
@@ -2421,17 +2449,21 @@ function DiscountsCreate() {
                         <select
                           className="form-select mb-4"
                           style={{ height: "50px" }}
+                          name="orders"
+                          value={orders}
+                          onChange={handleInputChange}
                         >
-                          <option value="Product collection">
+                          <option value="">Select an option</option>
+                          <option value="Weekly Gadget Spotlight">
                             Weekly Gadget Spotlight
                           </option>
-                          <option value="Product category">
+                          <option value="Electronic Trendsetters">
                             Electronic Trendsetters
                           </option>
-                          <option value="Product">
+                          <option value="Digital Workspace Gear">
                             Digital Workspace Gear
                           </option>
-                          <option value="Variant">
+                          <option value="Cutting-Edge Tech-Showcase">
                             Cutting-Edge Tech-Showcase
                           </option>
                         </select>
@@ -2439,9 +2471,12 @@ function DiscountsCreate() {
 
                     {couponType === "Free shipping" && (
                       <input
-                        type="number"
+                        type="text"
                         className="form-control py-4"
                         placeholder="When shipping fee less than 0 $"
+                        name="conditions"
+                        value={conditions}
+                        onChange={handleInputChange}
                       />
                     )}
 
@@ -2451,7 +2486,11 @@ function DiscountsCreate() {
                           <select
                             className="form-select w-100"
                             style={{ height: "50px" }}
+                            name="orders"
+                            value={orders}
+                            onChange={handleInputChange}
                           >
+                            <option value="">Select an option</option>
                             <option value="Product collection">
                               Product collection
                             </option>
@@ -2465,17 +2504,21 @@ function DiscountsCreate() {
                           <select
                             className="form-select w-100"
                             style={{ height: "50px" }}
+                            name="orders"
+                            value={orders}
+                            onChange={handleInputChange}
                           >
-                            <option value="Product collection">
+                            <option value="">Select an option</option>
+                            <option value="Weekly Gadget Spotlight">
                               Weekly Gadget Spotlight
                             </option>
-                            <option value="Product category">
+                            <option value="Electronic Trendsetters">
                               Electronic Trendsetters
                             </option>
-                            <option value="Product">
+                            <option value="Digital Workspace Gear">
                               Digital Workspace Gear
                             </option>
-                            <option value="Variant">
+                            <option value="Cutting-Edge Tech-Showcase">
                               Cutting-Edge Tech-Showcase
                             </option>
                           </select>
@@ -2506,14 +2549,20 @@ function DiscountsCreate() {
                     name="end_date"
                     value={end_date}
                     onChange={handleInputChange}
+                    disabled={neverExpired}
                   />
                   <div className="d-flex flex-row gap-2 ms-1">
-                    <input type="checkbox" className="form-check-input" />
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={neverExpired}
+                      onChange={handleCheckboxChange}
+                    />
                     <label htmlFor="">Never expired</label>
                   </div>
                   <div>
                     <button
-                      className="btn btn-success d-flex py-4 rounded-0 px-4"
+                      className="btn btn-success d-flex py-4 rounded-0 px-4 cart-cart1"
                       type="button"
                       onClick={handleSubmit}
                     >

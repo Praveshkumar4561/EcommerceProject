@@ -96,94 +96,17 @@ body {
   letter-spacing: 1px;
   word-spacing: 2px;
 }
+
 .user-cart {
   letter-spacing: 1px;
   word-spacing: 2px;
   line-height: 1.7rem;
 }
+
 .order-back {
   background-color: #cff4fc;
 }
 
-.input-welcome2 {
-  position: absolute;
-  right: 20.3%;
-  top: 2.9%;
-}
-
-@media (max-width: 576px) {
-  .input-welcome2 {
-    position: absolute;
-    right: 2%;
-    top: 7%;
-  }
-}
-
-.image-hello {
-  border-radius: 100%;
-  width: 100%;
-  max-width: 100%;
-  height: 5rem;
-}
-
-.round-round {
-  width: 100%;
-  max-width: 11%;
-  height: 0rem;
-}
-
-.dashboard-name {
-}
-.profile-lyte-image {
-  width: 100%;
-  max-width: 20%;
-  border-radius: 100%;
-  margin-left: 84%;
-}
-
-.dashboard-name {
-  width: 41px;
-  height: 40px;
-  border-radius: 100%;
+.details-user {
   color: white;
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.input-welcome-user {
-  position: absolute;
-  right: 21.1%;
-  top: 4.9%;
-}
-
-@media (max-width: 576px) {
-  .input-welcome-user {
-    position: absolute;
-    right: 2%;
-    top: 7%;
-  }
-}
-
-@media (min-width: 992px) and (max-width: 1200px) {
-  .input-welcome-user {
-    position: absolute;
-    right: 4%;
-    top: 4.4%;
-  }
-}
-@media (min-width: 1200px) and (max-width: 1400px) {
-  .input-welcome-user {
-    position: absolute;
-    right: 9.8%;
-    top: 4.4%;
-  }
-}
-
-@media (min-width: 1400px) and (max-width: 1600px) {
-  .input-welcome-user {
-    position: absolute;
-    right: 14%;
-  }
 }

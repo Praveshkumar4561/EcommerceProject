@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./PaymentLog.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faEnvelope,
@@ -11,10 +12,11 @@ import {
   faTrashCan,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function PaymentLog() {
   let [search, setSearch] = useState("");
@@ -85,7 +87,7 @@ function PaymentLog() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -130,6 +132,7 @@ function PaymentLog() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -175,6 +178,42 @@ function PaymentLog() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Payments Logs | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Payments Logs | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -256,7 +295,9 @@ function PaymentLog() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1459,7 +1500,7 @@ function PaymentLog() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2099,7 +2140,7 @@ function PaymentLog() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2107,7 +2148,7 @@ function PaymentLog() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex   justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex   justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial table-price ms-3 ms-lg-0">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2130,9 +2171,9 @@ function PaymentLog() {
                 </button>
 
                 <input
-                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0 mt-2 w-25"
+                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0 mt-2 w-25 ms-0 border"
                   placeholder="Search..."
-                  type="text"
+                  type="search"
                   name="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}

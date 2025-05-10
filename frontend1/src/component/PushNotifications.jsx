@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_PUBLIC_VAPID_KEY;
 
 function urlBase64ToUint8Array(base64String) {
@@ -57,7 +56,6 @@ const PushNotifications = () => {
       console.error("Error during subscription process:", error);
     }
   };
-
   return null;
 };
 

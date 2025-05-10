@@ -2,24 +2,62 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Reports.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
-import Viewer from "../../../assets/Viewer.webp";
-import Viewer1 from "../../../assets/Viewer1.webp";
-import Viewer2 from "../../../assets/Viewer2.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-
 import axios from "axios";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Helmet } from "react-helmet-async";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const formatDate = (date) => {
+  return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+};
+
+const getLastNDays = (n) => {
+  const dates = [];
+  const today = new Date();
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    dates.push(formatDate(d));
+  }
+  return dates;
+};
+
+const formatApiDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = formatDate(date);
+  return formattedDate;
+};
 
 function Reports() {
-  let [user, setUser] = useState([]);
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -29,10 +67,10 @@ function Reports() {
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
-  const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [search, setSearch] = useState("");
   let [payment, setPayment] = useState(false);
+  const navigate = useNavigate();
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -53,12 +91,111 @@ function Reports() {
     setReport(response.data);
   };
 
-  let [report, setReport] = useState([]);
+  const [report, setReport] = useState([]);
+  const [chartData1, setChartData1] = useState({});
+  const [totalSales, setTotalSales] = useState(0);
 
-  let customerdata = async () => {
-    const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setReport(response.data);
+  const chartOptions = {
+    scales: {
+      x: {
+        grid: { display: false },
+      },
+      y: {
+        grid: { display: true },
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: { display: true },
+      title: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const label = context.dataset.label || "";
+            const value =
+              context.parsed.y !== null
+                ? `$${context.parsed.y.toFixed(2)}`
+                : "";
+            return `${label}: ${value}`;
+          },
+        },
+      },
+    },
+    maintainAspectRatio: false,
   };
+
+  const getLast7OrderDates = (data) => {
+    const sortedData = [...data]
+      .filter((item) => !!item.date)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    const last7 = sortedData.slice(0, 7);
+    const formattedDates = last7
+      .map((item) =>
+        new Date(item.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+        })
+      )
+      .reverse();
+    return formattedDates;
+  };
+
+  const customerdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/checkoutdata"
+      );
+      const fetchedData = response.data || [];
+      setReport(fetchedData);
+      const last7OrderDates = getLast7OrderDates(fetchedData);
+      const salesMap = {};
+      last7OrderDates.forEach((date) => {
+        salesMap[date] = 0;
+      });
+      let total = 0;
+      fetchedData.forEach((item) => {
+        const formattedDate = new Date(item.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+        });
+        if (Array.isArray(item.cartItems)) {
+          item.cartItems.forEach((cartItem) => {
+            const price =
+              parseFloat(cartItem.price.replace(/[^0-9.-]+/g, "")) || 0;
+            if (salesMap.hasOwnProperty(formattedDate)) {
+              salesMap[formattedDate] += price;
+            }
+            total += price;
+          });
+        }
+      });
+      setTotalSales(total);
+
+      setChartData1({
+        labels: last7OrderDates,
+        datasets: [
+          {
+            label: "Sales Amount",
+            data: last7OrderDates.map((date) => salesMap[date]),
+            borderColor: "orange",
+            backgroundColor: "rgba(255, 165, 0, 0.2)",
+            fill: true,
+            tension: 0.3,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
+  const paginatedData = report.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   let togglespecification = () => {
     setSpecifcation(!Specification);
@@ -107,6 +244,7 @@ function Reports() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -192,19 +330,107 @@ function Reports() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
+      try {
+        let response = await axios.get(
+          "http://89.116.170.231:1600/checkoutdata"
+        );
+        setCount5(response.data.length);
+      } catch (error) {
+        console.error("error", error);
+      }
     };
     orderdata();
+  }, []);
+
+  let [count1, setCount1] = useState(0);
+
+  const [chartDataCustomer, setChartDataCustomer] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: "Number of customers",
+        data: [],
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        fill: true,
+        tension: 0.2,
+      },
+    ],
   });
 
-  let [count1, setCount1] = useState("");
+  const [optionCustomer, setOptionCustomer] = useState({
+    responsive: true,
+    maintainAspectRatio: false,
 
-  let custometdata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/alldata");
-    setCount1(response.data.length);
-  };
-  custometdata();
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const value =
+              context.parsed.y !== undefined ? context.parsed.y : "";
+            return `Number of customers: ${value}`;
+          },
+        },
+      },
+    },
+
+    scales: {
+      x: {
+        title: { display: true },
+        grid: { display: false },
+      },
+      y: {
+        position: "left",
+        title: {
+          display: true,
+        },
+        min: 0,
+        max: 10,
+        ticks: {
+          stepSize: 2,
+          callback: function (value) {
+            return value;
+          },
+        },
+        grid: {
+          display: true,
+        },
+      },
+    },
+  });
+
+  useEffect(() => {
+    let fetchCustomerData = async () => {
+      try {
+        const response = await axios.get("http://89.116.170.231:1600/alldata");
+        setCount1(response.data.length);
+        const rawData = response.data;
+        const data = rawData.map((item) => item.customers);
+        setChartDataCustomer({
+          labels: [],
+          datasets: [
+            {
+              label: "Number of customers",
+              data,
+              borderColor: "rgba(54, 162, 235, 1)",
+              backgroundColor: "rgba(54, 162, 235, 0.2)",
+              fill: true,
+              tension: 0.2,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+      }
+    };
+    fetchCustomerData();
+  }, []);
 
   let [count2, setCount2] = useState(0);
 
@@ -216,8 +442,168 @@ function Reports() {
   };
   showdata();
 
+  const initialLabels = getLastNDays(9);
+
+  const [chartData, setChartData] = useState({
+    labels: initialLabels,
+    datasets: [
+      {
+        label: "Orders",
+        data: Array(9).fill(0),
+        borderColor: "rgba(0, 122, 255, 1)",
+        backgroundColor: "rgba(0, 122, 255, 0.1)",
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  });
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: (context) => `Date: ${context[0].label}`,
+          label: (context) => `Number of orders: ${context.parsed.y || 0}`,
+        },
+      },
+      title: { display: false, text: "Orders Over Time" },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { autoSkip: false, color: "#6c757d" },
+      },
+      y: {
+        grid: { display: true },
+        min: 0,
+        beginAtZero: true,
+        ticks: { color: "#6c757d" },
+      },
+    },
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/checkoutdata1"
+        );
+        const fetchedOrders = response.data;
+
+        setChartData((prev) => {
+          const last9 = getLastNDays(9);
+          const orderMap = Object.fromEntries(last9.map((d) => [d, 0]));
+
+          fetchedOrders.forEach(({ date, orders }) => {
+            const fd = formatApiDate(date);
+            if (orderMap.hasOwnProperty(fd)) {
+              orderMap[fd] += Number(orders) || 0;
+            }
+          });
+
+          return {
+            labels: last9,
+            datasets: [
+              {
+                ...prev.datasets[0],
+                data: last9.map((d) => Math.max(orderMap[d], 0)),
+              },
+            ],
+          };
+        });
+      } catch (e) {
+        console.error("Error fetching chart data:", e);
+      }
+    };
+
+    fetchData();
+    const iv = setInterval(fetchData, 5000);
+    return () => clearInterval(iv);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/checkoutdata1"
+        );
+        const fetchedOrders = response.data;
+        setChartData((prevData) => {
+          const last9Days = getLastNDays(9);
+          const orderMap = {};
+          last9Days.forEach((date) => {
+            orderMap[date] = 0;
+          });
+          fetchedOrders.forEach((item) => {
+            const formattedDate = formatApiDate(item.date);
+            const orders = Number(item.orders) || 0;
+            if (orderMap.hasOwnProperty(formattedDate)) {
+              orderMap[formattedDate] += orders;
+            } else {
+              console.warn(
+                `Date ${formattedDate} is not in the expected range.`
+              );
+            }
+          });
+          return {
+            labels: last9Days,
+            datasets: [
+              {
+                ...prevData.datasets[0],
+                data: last9Days.map((date) => orderMap[date]),
+              },
+            ],
+          };
+        });
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Report | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Report | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -299,7 +685,9 @@ function Reports() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1502,7 +1890,7 @@ function Reports() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2149,9 +2537,9 @@ function Reports() {
       </nav>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row content-reports gap-2 gap-sm-2 gap-md-2">
-            <div className="col-12 col-sm-12 col-md-3 col-lg-3 border content-reports1 rounded d-flex flex-row py-3 me-3 me-lg-0">
+            <div className="col-12 col-sm-12 col-md-3 col-lg-3 border content-reports1 rounded d-flex flex-row flex-wrap flex-sm-nowrap py-3 me-3 me-lg-0 h-auto">
               <svg
                 className="icon icon-md text-white bg-danger rounded p-1 mt-2"
                 xmlns="http://www.w3.org/2000/svg"
@@ -2168,12 +2556,12 @@ function Reports() {
                 <path d="M12 3v3m0 12v3"></path>
               </svg>
               <div className="text mt-2 ms-2">
-                <h5 className="text-dark">Revenue</h5>
+                <h5 className="text-dark text-start">Revenue</h5>
                 <h3
                   className="fw-medium text-start"
                   style={{ fontFamily: "verdana" }}
                 >
-                  $0.00
+                  ${totalSales.toFixed(2)}
                 </h3>
               </div>
             </div>
@@ -2195,20 +2583,15 @@ function Reports() {
                 <path d="M4 6v6a8 3 0 0 0 16 0v-6"></path>
                 <path d="M4 12v6a8 3 0 0 0 16 0v-6"></path>
               </svg>
-              <Link
-                to="/admin/ecommerce/products"
-                className="text-decoration-none"
-              >
-                <div className="text mt-2 ms-2">
-                  <h5 className="text-dark">Products</h5>
-                  <h3
-                    className="fw-normal text-start text-dark"
-                    style={{ fontFamily: "verdana" }}
-                  >
-                    {count2}
-                  </h3>
-                </div>
-              </Link>
+              <div className="text mt-2 ms-2">
+                <h5 className="text-dark">Products</h5>
+                <h3
+                  className="fw-normal text-start text-dark"
+                  style={{ fontFamily: "verdana" }}
+                >
+                  {count2}
+                </h3>
+              </div>
             </div>
 
             <div className="col-12 col-sm-12 col-md-3 content-reports1 col-lg-3 border rounded d-flex flex-row py-3 me-3 me-lg-0">
@@ -2229,17 +2612,15 @@ function Reports() {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
               </svg>
-              <Link to="/admin/customers" className="text-decoration-none">
-                <div className="text mt-2 ms-2">
-                  <h5 className="text-dark">Customers</h5>
-                  <h3
-                    className="fw-normal text-start text-dark"
-                    style={{ fontFamily: "verdana" }}
-                  >
-                    0{count1}
-                  </h3>
-                </div>
-              </Link>
+              <div className="text mt-2 ms-2">
+                <h5 className="text-dark">Customers</h5>
+                <h3
+                  className="fw-normal text-start text-dark"
+                  style={{ fontFamily: "verdana" }}
+                >
+                  {count1}
+                </h3>
+              </div>
             </div>
 
             <div className="col-12 col-sm-12 content-reports1 col-md-3 col-lg-3 border rounded d-flex flex-row py-3 me-3 me-lg-0">
@@ -2260,52 +2641,64 @@ function Reports() {
                 <path d="M17 17h-11v-14h-2"></path>
                 <path d="M6 5l14 1l-1 7h-13"></path>
               </svg>
-              <Link
-                to="/admin/ecommerce/orders"
-                className="text-decoration-none text-dark"
-              >
-                <div className="text mt-2 ms-2">
-                  <h5 className="text-dark">Orders</h5>
-                  <h3
-                    className="fw-normal text-start"
-                    style={{ fontFamily: "verdana" }}
-                  >
-                    0{count5}
-                  </h3>
-                </div>
-              </Link>
+              <div className="text mt-2 ms-2">
+                <h5 className="text-dark text-start">Orders</h5>
+                <h3
+                  className="fw-normal text-start"
+                  style={{ fontFamily: "verdana" }}
+                >
+                  {count5}
+                </h3>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row content-reports gap-2 gap-sm-2 gap-md-2 d-flex flex-md-row">
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 border content-reports1 content-customer rounded d-flex flex-column py-3 me-3 me-lg-0 text-start">
               <h4>Customers</h4>
-              <hr />
-              <img src={Viewer} alt="RxLYTE" className="w-100" />
+              <div className="border w-100 mt-2 mb-2"></div>
+              <Line
+                data={chartDataCustomer}
+                options={optionCustomer}
+                className="text-start pb-2"
+              />
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 border content-reports1 rounded d-flex flex-column py-3 me-3 me-lg-0 ms-lg-3 ms-0 content-customer text-start">
               <h4>Orders</h4>
-              <hr />
-              <img src={Viewer1} alt="RxLYTE" className="w-100" />
+              <div className="border w-100 mt-2 mb-3"></div>
+              <Line data={chartData} options={options} className="w-100" />
             </div>
           </div>
         </div>
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row">
             <div className="col-12 col-sm-12 col-md-12 col-lg-12 border content-reports2 d-flex flex-wrap rounded me-3 mb-4 mb-lg-0">
               <div className="content-reports3 mt-3 text-start">
                 <h4>Sales Reports</h4>
-                <hr />
+                <div className="border w-100 mt-3 mb-0"></div>
                 <div className="content-report4">
-                  <img src={Viewer2} alt="RxLYTE" className="w-100" />
+                  {chartData1.labels && chartData1.labels.length > 0 ? (
+                    <div
+                      className="chartdata-labels mb-2 mt-0"
+                      style={{ width: "100%", height: "400px" }}
+                    >
+                      <Line data={chartData1} options={chartOptions} />
+                    </div>
+                  ) : (
+                    <p className="text-start">No data to display</p>
+                  )}
+                  <div className="mb-2 ms-1 fw-bold text-start">
+                    Items Earning Sales:{" "}
+                    <span className="sales-font">${totalSales.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2313,16 +2706,16 @@ function Reports() {
         </div>
       </div>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial recent-table">
           <div className="card-body">
             <span className="fw-medium">Recent Orders</span>
-            <hr />
+            <div className="border w-100 mt-2 mb-3"></div>
             <div className="d-flex justify-content-between mb-3">
               <div className="d-flex flex-row w-100">
                 <input
-                  className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-25"
-                  placeholder="Search..."
+                  className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-25 cart-cart1"
+                  placeholder="Search"
                   type="text"
                   name="search"
                   value={search}
@@ -2402,8 +2795,8 @@ function Reports() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(report) && report.length > 0 ? (
-                    report.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>{data.id}</td>
                         <td>
@@ -2415,15 +2808,16 @@ function Reports() {
                         <td></td>
                         <td style={{ whiteSpace: "nowrap" }}></td>
                         <td></td>
-                        <td>
-                          {new Date(data.date).toLocaleDateString("en-IN", {})}
+                        <td className="sales-font">
+                          {new Date(data.date).toISOString().split("T")[0]}
                         </td>
+
                         <td>{data.store}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center">
+                      <td colSpan="8" className="text-center cart-cart">
                         No reports available
                       </td>
                     </tr>
@@ -2431,6 +2825,66 @@ function Reports() {
                 </tbody>
               </table>
             </div>
+            {report.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(report.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(report.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(report.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
       </main>

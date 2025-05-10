@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ContactEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faEnvelope,
@@ -10,7 +11,6 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -82,6 +82,7 @@ function ContactsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -185,7 +186,7 @@ function ContactsEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -281,7 +282,9 @@ function ContactsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
           <FontAwesomeIcon
@@ -1482,7 +1485,7 @@ function ContactsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2192,7 +2195,7 @@ function ContactsEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 mt-2 mt-lg-0 review-public2 mt-lg-2 mt-xl-0 mt-xxl-0">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2202,8 +2205,13 @@ function ContactsEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/contacts"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>

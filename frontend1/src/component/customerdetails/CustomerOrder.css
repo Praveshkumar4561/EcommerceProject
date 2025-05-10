@@ -108,3 +108,7 @@ body {
     top: 7%;
   }
 }
+
+.order_number_family {
+  font-family: Verdana, Tahoma, sans-serif;
+}

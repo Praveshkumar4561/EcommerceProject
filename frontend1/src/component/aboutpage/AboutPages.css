@@ -24,14 +24,7 @@ body {
   box-sizing: border-box;
   overflow: hidden;
 }
-.container-custom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  margin-top: 3.4rem;
-}
+
 @media (max-width: 992px) {
   #container-customx {
     height: auto;
@@ -43,65 +36,6 @@ body {
     position: relative;
     bottom: 5rem;
   }
-}
-
-.container-custom1 {
-  width: 72rem;
-  max-width: 100%;
-  position: relative;
-  top: 2.4rem;
-  margin: 0 auto;
-}
-
-@media (max-width: 992px) {
-  .container-custom1 {
-    width: 100%;
-    margin: 0;
-  }
-  .container-custom1 {
-    width: 100%;
-    margin-left: -1.9rem;
-    margin-right: 0;
-    padding: 0;
-  }
-}
-
-.custom-dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0.2rem;
-  width: 303px;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1050;
-  border-radius: 10px;
-}
-
-.custom-dropdown ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.custom-dropdown .nav-item {
-  margin: 0;
-}
-
-.custom-dropdown .nav-link {
-  display: block;
-  padding: 8px 12px;
-  text-decoration: none;
-}
-
-.custom-dropdown .nav-link:hover {
-  background-color: #f0f0f0;
-}
-
-.navbar-toggler {
-  position: relative;
-  z-index: 1050;
-  border: none;
 }
 
 @media (max-width: 992px) {
@@ -135,140 +69,13 @@ body {
   }
 }
 
-.profiles {
-  width: 25px;
-  height: 25px;
-}
-.profiles1 {
-  width: 25px;
-  height: 25px;
-}
-
-.addcarts {
-  position: absolute;
-  top: 0.6rem;
-  font-family: Verdana, Tahoma, sans-serif;
-}
-
-@media (max-width: 450px) {
-  .navbar-icons {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-}
-
-@media (min-width: 993px) {
-  .custom-dropdown {
-    display: none;
-  }
-
-  .navbar-collapse {
-    display: flex;
-  }
-
-  .navbar-brand.d-lg-none {
-    display: none;
-  }
-}
-
-.navbar-toggler:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.container-contact {
-  text-align: center;
-  margin-bottom: 2rem;
-  position: relative;
-  bottom: 32%;
-}
-
-#container-contact1 {
-  font-family: "SanDiego";
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-  bottom: 100%;
-  left: 21%;
-}
-
-.breadcrumb {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-}
-
-.breadcrumb-item {
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-@media (max-width: 767px) {
-  .container-contact {
-    font-size: 1.5rem;
-  }
-
-  #container-contact1 {
-    text-align: center;
-    margin-top: 1rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .container-contact {
-    font-size: 1.75rem;
-  }
-
-  #container-contact1 {
-    text-align: left;
-    margin-top: 1.5rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb {
-    flex-direction: row;
-  }
-}
-
-@media (min-width: 992px) {
-  .container-contact {
-    font-size: 2rem;
-  }
-
-  #container-contact1 {
-    text-align: left;
-    margin-top: 2rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb {
-    flex-direction: row;
-  }
-}
-
-@font-face {
-  font-family: "SanDiego";
-  src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
-}
-
 .tonic-font {
   font-size: 1.3rem;
-  line-height: 1.4;
+  line-height: 1.5rem;
   margin: 0 auto;
   padding: 0 1rem;
   color: #071c1f;
   font-weight: 595;
-  line-height: 1.1rem;
   font-size: 30px;
 }
 
@@ -301,30 +108,33 @@ body {
 
 .para-class {
   font-size: 1.03rem;
-  line-height: 1.5;
+  line-height: 2rem;
   position: relative;
   left: 7rem;
   margin-right: 14rem;
   font-weight: 500;
 }
+
 .para-class1 {
   font-size: 1.03rem;
-  line-height: 1.5;
+  line-height: 2rem;
   position: relative;
   left: 7.5rem;
   top: -1.2rem;
   margin-right: 14.1rem;
   font-weight: 500;
 }
+
 .para-class2 {
   font-size: 1.03rem;
-  line-height: 1.5;
+  line-height: 2rem;
   position: relative;
   left: 7.5rem;
   top: -2.3rem;
   margin-right: 14.1rem;
   font-weight: 500;
 }
+
 @media (max-width: 1200px) {
   .para-class,
   .para-class1,
@@ -333,8 +143,6 @@ body {
     position: relative;
     left: 0;
     margin-right: 0;
-  }
-  .tonic-font {
   }
 }
 @media (max-width: 992px) {

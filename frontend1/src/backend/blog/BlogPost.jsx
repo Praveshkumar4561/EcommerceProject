@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./BlogPost.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -12,13 +13,13 @@ import {
   faRotate,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function BlogPost() {
   let [user, setUser] = useState([]);
@@ -37,7 +38,7 @@ function BlogPost() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -98,6 +99,7 @@ function BlogPost() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -178,6 +180,14 @@ function BlogPost() {
     }
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const paginatedData = user.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   useEffect(() => {
     if (search) {
       searchbar();
@@ -204,7 +214,7 @@ function BlogPost() {
       toast.success("Data sucessfully deleted ", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -215,6 +225,42 @@ function BlogPost() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Posts | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Posts | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -296,7 +342,9 @@ function BlogPost() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1501,7 +1549,7 @@ function BlogPost() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2141,7 +2189,7 @@ function BlogPost() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2150,7 +2198,7 @@ function BlogPost() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial table-price ms-2">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2158,7 +2206,7 @@ function BlogPost() {
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0 cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2166,7 +2214,7 @@ function BlogPost() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
+                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ cart-cart"
                   type="button"
                 >
                   Filters
@@ -2174,9 +2222,9 @@ function BlogPost() {
 
                 <div className="search-gallery">
                   <input
-                    className="form-control py-4 mt-2 mt-lg-0 rounded-2"
+                    className="form-control py-4 mt-2 mt-lg-0 rounded-2 ms-0 border cart-cart"
                     placeholder="Search..."
-                    type="text"
+                    type="search"
                     name="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -2187,18 +2235,26 @@ function BlogPost() {
               <div className="d-flex w-100 justify-content-end">
                 <div className="mt-2 mt-lg-0 ms-lg-2 ms-xl-0 ms-xxl-0">
                   <Link to="/admin/blog/posts/create">
-                    <button className="btn btn-create me-2" type="button">
+                    <button
+                      className="btn btn-create me-2 cart-cart"
+                      type="button"
+                    >
                       <FontAwesomeIcon icon={faPlus} className="me-2" />
                       Create
                     </button>
                   </Link>
-                  <button className="btn btn-reload border" type="button">
+                  <button
+                    className="btn btn-reload border cart-cart"
+                    type="button"
+                    onClick={alldata}
+                  >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
                   </button>
                 </div>
               </div>
             </div>
+
             <div className="table-responsive">
               <table className="table table-responsive table-striped">
                 <thead className="table-secondary">
@@ -2206,68 +2262,40 @@ function BlogPost() {
                     <th scope="col">
                       <input type="checkbox" className="form-check-input" />
                     </th>
-
                     <th scope="col" className="fw-light">
-                      <span
-                        className="d-flex mt-1"
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        ID
-                        <i className="fas fa-sort ms-1"></i>
-                      </span>
+                      ID
                     </th>
-
-                    <th
-                      scope="col"
-                      className="fw-light"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
+                    <th scope="col" className="fw-light">
                       Image
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
-
                     <th scope="col" className="fw-light">
                       Name
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
-
                     <th scope="col" className="fw-light">
                       Categories
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
-
                     <th scope="col" className="fw-light">
                       Author
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
-
-                    <th
-                      scope="col"
-                      className="fw-light"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
+                    <th scope="col" className="fw-light">
                       Created At
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
                     <th scope="col" className="fw-light">
                       Status
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
-
                     <th scope="col" className="fw-light">
                       Operations
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(user) && user.length > 0 ? (
-                    user.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>
                           <input type="checkbox" className="form-check-input" />
                         </td>
                         <td>{data.id}</td>
-
                         <td>
                           <img
                             src={`http://89.116.170.231:1600/src/image/${data.image}`}
@@ -2276,29 +2304,41 @@ function BlogPost() {
                             style={{ width: "100px" }}
                           />
                         </td>
-
                         <td>
                           <Link to={`/admin/blog/posts/edit/${data.id}`}>
                             {data.name}
                           </Link>
                         </td>
-
                         <td style={{ whiteSpace: "nowrap" }}>
-                          <Link to="#">{data.categories}</Link>
+                          <Link to={`/admin/blog/posts/edit/${data.id}`}>
+                            {data.categories}
+                          </Link>
                         </td>
-
                         <td style={{ whiteSpace: "nowrap" }}>
-                          <Link to="#">{data.author_name}</Link>
+                          <Link to={`/admin/blog/posts/edit/${data.id}`}>
+                            {data.author_name}
+                          </Link>
                         </td>
-
-                        <td style={{ whiteSpace: "nowrap" }}>{data.date}</td>
-
+                        <td
+                          style={{ whiteSpace: "nowrap" }}
+                          className="sales-font"
+                        >
+                          {data.date}
+                        </td>
                         <td>
-                          <span className="badge badge-success lh-base px-2 status-blog fw-light">
+                          <span
+                            className={`badge fw-light ${
+                              data.status === "Published" ||
+                              data.status === "Draft"
+                                ? "badge-success"
+                                : data.status === "Pending"
+                                ? "badge-danger"
+                                : "badge-secondary"
+                            }`}
+                          >
                             {data.status}
                           </span>
                         </td>
-
                         <td style={{ whiteSpace: "nowrap" }}>
                           <button className="btn btn-edit me-2" type="button">
                             <Link to={`/admin/blog/posts/edit/${data.id}`}>
@@ -2308,12 +2348,14 @@ function BlogPost() {
                               />
                             </Link>
                           </button>
-
-                          <button className="btn btn-delete" type="button">
+                          <button
+                            className="btn btn-delete"
+                            type="button"
+                            onClick={() => deletedata(data.id)}
+                          >
                             <FontAwesomeIcon
                               icon={faTrashCan}
                               className="fs-5"
-                              onClick={() => deletedata(data.id)}
                             />
                           </button>
                         </td>
@@ -2321,7 +2363,7 @@ function BlogPost() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center">
+                      <td colSpan="9" className="text-center cart-cart">
                         No data available
                       </td>
                     </tr>
@@ -2329,6 +2371,67 @@ function BlogPost() {
                 </tbody>
               </table>
             </div>
+
+            {user.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(user.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(user.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(user.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
         <ToastContainer />

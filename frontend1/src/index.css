@@ -37,3 +37,9 @@ h5 {
 h6 {
   font-size: var(--h6-font-size);
 }
+
+@font-face {
+  font-family: "SanDiego";
+  src: url("/fonts/SanDiego.woff") format("woff");
+  font-display: swap;
+}

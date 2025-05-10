@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./RobotTxt.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -9,7 +10,6 @@ import {
   faFloppyDisk,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -18,6 +18,7 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function RobotTxt() {
   let [isVisible, setIsVisible] = useState(false);
@@ -84,6 +85,7 @@ function RobotTxt() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -173,7 +175,7 @@ function RobotTxt() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [code, setCode] = useState("User-agent: *\nDisallow: /admin/\nAllow:");
 
@@ -192,15 +194,11 @@ function RobotTxt() {
     setCode(value);
   };
 
-  const [fileContent, setFileContent] = useState("");
-
   const handleFileChanges = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (evt) => {
-        setFileContent(evt.target.result);
-      };
+      reader.onload = (evt) => {};
       reader.readAsText(file);
     }
   };
@@ -213,7 +211,7 @@ function RobotTxt() {
       toast.success("robots.txt updated successfully!", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: true,
+        ProgressBar: true,
         closeButton: true,
         draggable: true,
       });
@@ -221,7 +219,7 @@ function RobotTxt() {
       toast.error("Failed to update robots.txt", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: true,
+        ProgressBar: true,
         closeButton: true,
         draggable: true,
       });
@@ -230,6 +228,42 @@ function RobotTxt() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Robots.txt Editor | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="Robots.txt Editor | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -311,7 +345,9 @@ function RobotTxt() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1514,7 +1550,7 @@ function RobotTxt() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2153,7 +2189,7 @@ function RobotTxt() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>

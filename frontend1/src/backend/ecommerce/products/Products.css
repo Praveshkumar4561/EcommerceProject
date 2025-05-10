@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: auto;
@@ -209,4 +210,15 @@ input[type="search"] {
 .digital-svg {
   position: relative;
   right: 0.3rem;
+}
+
+.category-arrive {
+  height: 500px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.product-list {
+  width: 100%;
+  max-width: 97%;
 }

@@ -4,6 +4,7 @@ import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import Credit from "../../assets/credit.webp";
 import Cutting from "../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faEnvelope,
@@ -11,13 +12,15 @@ import {
   faAngleDown,
   faSave,
   faArrowRight,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function PaymentMethod() {
   let [isVisible, setIsVisible] = useState(false);
@@ -86,7 +89,7 @@ function PaymentMethod() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -131,6 +134,7 @@ function PaymentMethod() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -205,37 +209,72 @@ function PaymentMethod() {
     setSsl(!ssl);
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [logos, setLogos] = useState({});
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileChange = (e, method) => {
+    const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
+      setLogos((prev) => ({
+        ...prev,
+        [method]: { file, url },
+      }));
     }
   };
 
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented. ",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
+  const removeLogo = (e, method) => {
+    e.stopPropagation();
+    setLogos((prev) => ({
+      ...prev,
+      [method]: { file: null, url: null },
+    }));
+  };
+
+  const handleAddFromUrl = (method) => {
+    toast.info(`Feature to add image from URL for ${method} not implemented.`, {
+      position: "bottom-right",
+      autoClose: 1000,
+    });
   };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Payments methods | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Payments methods | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back  ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -316,7 +355,9 @@ function PaymentMethod() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1518,7 +1559,7 @@ function PaymentMethod() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2176,7 +2217,7 @@ function PaymentMethod() {
           <div className="row gap-3 d-flex flex-row flex-lg-nowrap flex-wrap mt-lg-4 ms-lg-5 pe-3 pe-lg-0 ps-lg-4 ">
             <div className="col-12 col-sm-12 co-md-12 col-lg-4 border rounded d-flex flex-column lh-lg text-start  mt-2 mt-xl-0 mt-xxl-0">
               <h4 className="mt-3 fw-bold">Payment methods</h4>
-              <span className="mt-1">Setup payment methods for website</span>
+              <span className="pb-2">Setup payment methods for website</span>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-8 d-flex flex-column gap-3 mt-2 mt-lg-0 mt-lg-2 mt-xl-0 mt-xxl-0 payment-gateway1">
@@ -2184,7 +2225,7 @@ function PaymentMethod() {
                 <label htmlFor="" className="mt-1">
                   Default payment method
                 </label>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
                 <select
                   className="form-select mt-2 w-100 cart-cart"
                   style={{ height: "43px" }}
@@ -2260,7 +2301,7 @@ function PaymentMethod() {
                         <span className="fw-bold">
                           Configuration instruction for Stripe
                         </span>
-                        <label htmlFor="">To use Stripe, you need:</label>
+                        <label>To use Stripe, you need:</label>
                         <ol>
                           <li>
                             <Link
@@ -2285,10 +2326,8 @@ function PaymentMethod() {
                         <span>
                           Follow these steps to set up a Stripe webhook
                         </span>
-
                         <ol>
                           <li>
-                            {" "}
                             <span className="fw-bold">
                               Login to the Stripe Dashboard:
                             </span>{" "}
@@ -2303,21 +2342,17 @@ function PaymentMethod() {
                             and click on the "Add Endpoint" button in the
                             "webhooks" section of the "Developers" tab.
                           </li>
-
                           <li>
                             <span className="fw-bold">
                               Select Event and Configure Endpoint:
                             </span>{" "}
-                            Access the Select the "payment_intent succeeded"
-                            event and enter the following URL in the "Endpoint
-                            URL" field:
+                            Select the "payment_intent succeeded" event and
+                            enter the URL in the "Endpoint URL" field.
                           </li>
-
                           <li>
                             <span className="fw-bold">Add Endpoint:</span> Click
                             the "Add Endpoint" button to save the webhook.
                           </li>
-
                           <li>
                             <span className="fw-bold">
                               Copy Signing Secret:
@@ -2332,9 +2367,7 @@ function PaymentMethod() {
 
                       <div className="d-flex flex-column lh-lg ms-3">
                         <div>
-                          <label htmlFor="" className="fw-bold">
-                            Method name
-                          </label>
+                          <label className="fw-bold">Method name</label>
                           <input
                             type="text"
                             className="form-control py-4 mt-1"
@@ -2342,67 +2375,55 @@ function PaymentMethod() {
                         </div>
 
                         <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Description
-                          </label>
+                          <label className="fw-bold">Description</label>
                           <textarea
                             className="form-control mt-1"
                             style={{ height: "70px" }}
                           />
                         </div>
 
-                        <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Method logo
-                          </label>
+                        <div className="mt-2 d-flex flex-column">
+                          <label className="fw-bold">Method logo</label>
                           <div
-                            className="border rounded mt-2 w-50 px-3"
+                            className="image-wrapper-payment mt-2 w-50 border rounded position-relative"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("stripeFileInput").click()
                             }
                           >
+                            {logos["stripe"]?.url && (
+                              <FontAwesomeIcon
+                                icon={faXmark}
+                                className="remove-icon1"
+                                onClick={(e) => removeLogo(e, "stripe")}
+                              />
+                            )}
                             <img
-                              src={imageUrl || Cutting}
+                              src={logos["stripe"]?.url || Cutting}
                               alt="Method Logo"
-                              className="img-fluid"
+                              className="img-fluid uploaded-image1"
                             />
                           </div>
 
                           <input
-                            id="fileInput"
+                            id="stripeFileInput"
                             type="file"
                             name="file"
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, "stripe")}
                           />
 
                           <div
                             style={{ cursor: "pointer" }}
                             className="payment-method ms-lg-4 ms-0"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("stripeFileInput").click()
                             }
                           >
                             Choose image <br />
                             <span
-                              onClick={() => {
-                                try {
-                                  toast.success("Add image from URL clicked", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                } catch (error) {
-                                  toast.error("An error occurred", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddFromUrl("stripe");
                               }}
                             >
                               or Add from URL
@@ -2427,7 +2448,7 @@ function PaymentMethod() {
                   />
                   <div className="d-flex flex-column align-items-center text-start ms-3">
                     <Link
-                      className=" payment-method"
+                      className="payment-method"
                       target="_blank"
                       to="https://www.paypal.com/in/home"
                     >
@@ -2456,7 +2477,7 @@ function PaymentMethod() {
                         <span className="fw-bold">
                           Configuration instruction for Paypal
                         </span>
-                        <label htmlFor="">To use Paypal, you need:</label>
+                        <label>To use Paypal, you need:</label>
                         <ol>
                           <li>
                             <Link
@@ -2479,9 +2500,7 @@ function PaymentMethod() {
 
                       <div className="d-flex flex-column lh-lg ms-3">
                         <div>
-                          <label htmlFor="" className="fw-bold">
-                            Method name
-                          </label>
+                          <label className="fw-bold">Method name</label>
                           <input
                             type="text"
                             className="form-control py-4 mt-1"
@@ -2489,67 +2508,55 @@ function PaymentMethod() {
                         </div>
 
                         <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Description
-                          </label>
+                          <label className="fw-bold">Description</label>
                           <textarea
                             className="form-control mt-1"
                             style={{ height: "70px" }}
                           />
                         </div>
 
-                        <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Method logo
-                          </label>
+                        <div className="mt-2 d-flex flex-column">
+                          <label className="fw-bold">Method logo</label>
                           <div
-                            className="border rounded mt-2 w-50 px-3"
+                            className="image-wrapper-payment mt-2 w-50 border rounded position-relative"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("paypalFileInput").click()
                             }
                           >
+                            {logos["paypal"]?.url && (
+                              <FontAwesomeIcon
+                                icon={faXmark}
+                                className="remove-icon1"
+                                onClick={(e) => removeLogo(e, "paypal")}
+                              />
+                            )}
                             <img
-                              src={imageUrl || Cutting}
+                              src={logos["paypal"]?.url || Cutting}
                               alt="Method Logo"
-                              className="img-fluid"
+                              className="img-fluid uploaded-image1"
                             />
                           </div>
 
                           <input
-                            id="fileInput"
+                            id="paypalFileInput"
                             type="file"
                             name="file"
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, "paypal")}
                           />
 
                           <div
                             style={{ cursor: "pointer" }}
                             className="payment-method ms-lg-4 ms-0"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("paypalFileInput").click()
                             }
                           >
                             Choose image <br />
                             <span
-                              onClick={() => {
-                                try {
-                                  toast.success("Add image from URL clicked", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                } catch (error) {
-                                  toast.error("An error occurred", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddFromUrl("paypal");
                               }}
                             >
                               or Add from URL
@@ -2574,7 +2581,7 @@ function PaymentMethod() {
                   />
                   <div className="d-flex flex-column align-items-center text-start ms-3">
                     <Link
-                      className=" payment-method"
+                      className="payment-method"
                       to="https://razorpay.com/"
                       target="_blank"
                     >
@@ -2604,7 +2611,7 @@ function PaymentMethod() {
                         <span className="fw-bold">
                           Configuration instruction for Razorpay
                         </span>
-                        <label htmlFor="">To use Razorpay, you need:</label>
+                        <label>To use Razorpay, you need:</label>
                         <ol>
                           <li>
                             <Link
@@ -2628,9 +2635,9 @@ function PaymentMethod() {
                             <span className="fw-bold">Account Settings </span>{" "}
                             <FontAwesomeIcon icon={faArrowRight} />{" "}
                             <span className="fw-bold">API keys </span>
-                            <FontAwesomeIcon icon={faArrowRight} />
+                            <FontAwesomeIcon icon={faArrowRight} />{" "}
                             <span className="fw-bold">Webhooks</span> and paste
-                            the below url to{" "}
+                            the below URL to{" "}
                             <span className="fw-bold"> Webhook URL </span>{" "}
                             field. At{" "}
                             <span className="fw-bold">Active Events</span>{" "}
@@ -2644,9 +2651,7 @@ function PaymentMethod() {
 
                       <div className="d-flex flex-column lh-lg ms-3">
                         <div>
-                          <label htmlFor="" className="fw-bold">
-                            Method name
-                          </label>
+                          <label className="fw-bold">Method name</label>
                           <input
                             type="text"
                             className="form-control py-4 mt-1"
@@ -2654,67 +2659,59 @@ function PaymentMethod() {
                         </div>
 
                         <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Description
-                          </label>
+                          <label className="fw-bold">Description</label>
                           <textarea
                             className="form-control mt-1"
                             style={{ height: "70px" }}
                           />
                         </div>
 
-                        <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Method logo
-                          </label>
+                        <div className="mt-2 d-flex flex-column">
+                          <label className="fw-bold">Method logo</label>
                           <div
-                            className="border rounded mt-2 w-50 px-3"
+                            className="image-wrapper-payment mt-2 w-50 border rounded position-relative"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document
+                                .getElementById("razorpayFileInput")
+                                .click()
                             }
                           >
+                            {logos["razorpay"]?.url && (
+                              <FontAwesomeIcon
+                                icon={faXmark}
+                                className="remove-icon1"
+                                onClick={(e) => removeLogo(e, "razorpay")}
+                              />
+                            )}
                             <img
-                              src={imageUrl || Cutting}
+                              src={logos["razorpay"]?.url || Cutting}
                               alt="Method Logo"
-                              className="img-fluid"
+                              className="img-fluid uploaded-image1"
                             />
                           </div>
 
                           <input
-                            id="fileInput"
+                            id="razorpayFileInput"
                             type="file"
                             name="file"
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, "razorpay")}
                           />
 
                           <div
                             style={{ cursor: "pointer" }}
                             className="payment-method ms-lg-4 ms-0"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document
+                                .getElementById("razorpayFileInput")
+                                .click()
                             }
                           >
                             Choose image <br />
                             <span
-                              onClick={() => {
-                                try {
-                                  toast.success("Add image from URL clicked", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                } catch (error) {
-                                  toast.error("An error occurred", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddFromUrl("razorpay");
                               }}
                             >
                               or Add from URL
@@ -2739,7 +2736,7 @@ function PaymentMethod() {
                   />
                   <div className="d-flex flex-column align-items-center text-start ms-3">
                     <Link
-                      className=" payment-method"
+                      className="payment-method"
                       to="https://paystack.com/"
                       target="_blank"
                     >
@@ -2770,7 +2767,7 @@ function PaymentMethod() {
                         <span className="fw-bold">
                           Configuration instruction for Paystack
                         </span>
-                        <label htmlFor="">To use Paystack, you need:</label>
+                        <label>To use Paystack, you need:</label>
                         <ol>
                           <li>
                             <Link
@@ -2783,7 +2780,7 @@ function PaymentMethod() {
                           </li>
                           <li>
                             After registration at Paystack, you will have Public
-                            & Secret keys
+                            &amp; Secret keys
                           </li>
                           <li>
                             Enter Public, Secret into the box in right hand
@@ -2793,77 +2790,65 @@ function PaymentMethod() {
 
                       <div className="d-flex flex-column lh-lg ms-3">
                         <div>
-                          <label htmlFor="" className="fw-bold">
-                            Method name
-                          </label>
+                          <label className="fw-bold">Method name</label>
                           <input
                             type="text"
                             className="form-control py-4 mt-1"
                           />
                         </div>
-
                         <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Description
-                          </label>
+                          <label className="fw-bold">Description</label>
                           <textarea
                             className="form-control mt-1"
                             style={{ height: "70px" }}
                           />
                         </div>
-
-                        <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Method logo
-                          </label>
+                        <div className="mt-2 d-flex flex-column">
+                          <label className="fw-bold">Method logo</label>
                           <div
-                            className="border rounded mt-2 w-50 px-3"
+                            className="image-wrapper-payment mt-2 w-50 border rounded position-relative"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document
+                                .getElementById("paystackFileInput")
+                                .click()
                             }
                           >
+                            {logos["paystack"]?.url && (
+                              <FontAwesomeIcon
+                                icon={faXmark}
+                                className="remove-icon1"
+                                onClick={(e) => removeLogo(e, "paystack")}
+                              />
+                            )}
                             <img
-                              src={imageUrl || Cutting}
+                              src={logos["paystack"]?.url || Cutting}
                               alt="Method Logo"
-                              className="img-fluid"
+                              className="img-fluid uploaded-image1"
                             />
                           </div>
 
                           <input
-                            id="fileInput"
+                            id="paystackFileInput"
                             type="file"
                             name="file"
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, "paystack")}
                           />
 
                           <div
                             style={{ cursor: "pointer" }}
                             className="payment-method ms-lg-4 ms-0"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document
+                                .getElementById("paystackFileInput")
+                                .click()
                             }
                           >
                             Choose image <br />
                             <span
-                              onClick={() => {
-                                try {
-                                  toast.success("Add image from URL clicked", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                } catch (error) {
-                                  toast.error("An error occurred", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddFromUrl("paystack");
                               }}
                             >
                               or Add from URL
@@ -2888,7 +2873,7 @@ function PaymentMethod() {
                   />
                   <div className="d-flex flex-column align-items-center text-start ms-3">
                     <Link
-                      className=" payment-method"
+                      className="payment-method"
                       to="https://www.mollie.com/"
                       target="_blank"
                     >
@@ -2900,7 +2885,6 @@ function PaymentMethod() {
                     </span>
                   </div>
                 </div>
-
                 <div className="border w-100 border mt-2"></div>
                 <div className="d-flex justify-content-between mt-3 align-items-center text-start flex-row w-100">
                   <span>Use Payment with Mollie</span>
@@ -2920,7 +2904,7 @@ function PaymentMethod() {
                         <span className="fw-bold">
                           Configuration instruction for Mollie
                         </span>
-                        <label htmlFor="">To use Mollie, you need:</label>
+                        <label>To use Mollie, you need:</label>
                         <ol>
                           <li>
                             <Link
@@ -2928,11 +2912,12 @@ function PaymentMethod() {
                               to="https://my.mollie.com/dashboard/signup"
                               target="_blank"
                             >
-                              Register an account on Paystack
+                              Register an account on Mollie
                             </Link>
                           </li>
                           <li>
-                            After registration at Mollie, you will have API key
+                            After registration at Mollie, you will have an API
+                            key
                           </li>
                           <li>Enter API key into the box in right hand</li>
                         </ol>
@@ -2940,9 +2925,7 @@ function PaymentMethod() {
 
                       <div className="d-flex flex-column lh-lg ms-3">
                         <div>
-                          <label htmlFor="" className="fw-bold">
-                            Method name
-                          </label>
+                          <label className="fw-bold">Method name</label>
                           <input
                             type="text"
                             className="form-control py-4 mt-1"
@@ -2950,67 +2933,55 @@ function PaymentMethod() {
                         </div>
 
                         <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Description
-                          </label>
+                          <label className="fw-bold">Description</label>
                           <textarea
                             className="form-control mt-1"
                             style={{ height: "70px" }}
                           />
                         </div>
 
-                        <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Method logo
-                          </label>
+                        <div className="mt-2 d-flex flex-column">
+                          <label className="fw-bold">Method logo</label>
                           <div
-                            className="border rounded mt-2 w-50 px-3"
+                            className="image-wrapper-payment mt-2 w-50 border rounded position-relative"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("mollieFileInput").click()
                             }
                           >
+                            {logos["mollie"]?.url && (
+                              <FontAwesomeIcon
+                                icon={faXmark}
+                                className="remove-icon1"
+                                onClick={(e) => removeLogo(e, "mollie")}
+                              />
+                            )}
                             <img
-                              src={imageUrl || Cutting}
+                              src={logos["mollie"]?.url || Cutting}
                               alt="Method Logo"
-                              className="img-fluid"
+                              className="img-fluid uploaded-image1"
                             />
                           </div>
 
                           <input
-                            id="fileInput"
+                            id="mollieFileInput"
                             type="file"
                             name="file"
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, "mollie")}
                           />
 
                           <div
                             style={{ cursor: "pointer" }}
                             className="payment-method ms-lg-4 ms-0"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("mollieFileInput").click()
                             }
                           >
                             Choose image <br />
                             <span
-                              onClick={() => {
-                                try {
-                                  toast.success("Add image from URL clicked", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                } catch (error) {
-                                  toast.error("An error occurred", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddFromUrl("mollie");
                               }}
                             >
                               or Add from URL
@@ -3035,7 +3006,7 @@ function PaymentMethod() {
                   />
                   <div className="d-flex flex-column align-items-center text-start ms-3">
                     <Link
-                      className=" payment-method"
+                      className="payment-method"
                       to="https://sslcommerz.com/"
                       target="_blank"
                     >
@@ -3047,7 +3018,6 @@ function PaymentMethod() {
                     </span>
                   </div>
                 </div>
-
                 <div className="border w-100 border mt-2"></div>
                 <div className="d-flex justify-content-between mt-3 align-items-center text-start flex-row w-100">
                   <span>Use Payment with SSLCommerz</span>
@@ -3058,15 +3028,16 @@ function PaymentMethod() {
                     Edit
                   </button>
                 </div>
+
                 {ssl && (
                   <>
                     <div className="border w-100 border mt-2"></div>
                     <div className="d-flex flex-row flex-wrap text-start flex-lg-nowrap flex-md-nowrap mt-2 justify-content-between">
                       <div className="d-flex flex-column lh-lg stripe-pay">
                         <span className="fw-bold">
-                          Configuration instruction for Mollie
+                          Configuration instruction for SslCommerz
                         </span>
-                        <label htmlFor="">To use SslCommerz, you need:</label>
+                        <label>To use SslCommerz, you need:</label>
                         <ol>
                           <li className="d-fle">
                             For registration in Sandbox, click the link <br />
@@ -3075,7 +3046,7 @@ function PaymentMethod() {
                               to="https://developer.sslcommerz.com/registration/"
                               target="_blank"
                             >
-                              https://developer.sslcommerz.com/registration
+                              https://developer.sslcommerz.com{" "}
                             </Link>
                             <span>
                               For registration in Production, click the link{" "}
@@ -3088,7 +3059,6 @@ function PaymentMethod() {
                               https://signup.sslcommerz.com/register
                             </Link>
                           </li>
-
                           <li>
                             After registration at SslCommerz, you will have
                             Store ID and Store Password (API/Secret key)
@@ -3100,11 +3070,9 @@ function PaymentMethod() {
                         </ol>
                       </div>
 
-                      <div className="d-flex flex-column lh-lg ms-3">
+                      <div className="mt-2 d-flex flex-column">
                         <div>
-                          <label htmlFor="" className="fw-bold">
-                            Method name
-                          </label>
+                          <label className="fw-bold">Method name</label>
                           <input
                             type="text"
                             className="form-control py-4 mt-1"
@@ -3112,67 +3080,55 @@ function PaymentMethod() {
                         </div>
 
                         <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Description
-                          </label>
+                          <label className="fw-bold">Description</label>
                           <textarea
-                            className="form-control mt-1"
+                            className="form-control mt-1 py-"
                             style={{ height: "70px" }}
                           />
                         </div>
 
-                        <div className="mt-2">
-                          <label htmlFor="" className="fw-bold">
-                            Method logo
-                          </label>
+                        <div className="mt-3">
+                          <label className="fw-bold">Method logo</label>
                           <div
-                            className="border rounded mt-2 w-50 px-3"
+                            className="image-wrapper-payment mt-2 w-50 border rounded position-relative"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("sslFileInput").click()
                             }
                           >
+                            {logos["ssl"]?.url && (
+                              <FontAwesomeIcon
+                                icon={faXmark}
+                                className="remove-icon1"
+                                onClick={(e) => removeLogo(e, "ssl")}
+                              />
+                            )}
                             <img
-                              src={imageUrl || Cutting}
+                              src={logos["ssl"]?.url || Cutting}
                               alt="Method Logo"
-                              className="img-fluid"
+                              className="img-fluid uploaded-image1"
                             />
                           </div>
 
                           <input
-                            id="fileInput"
+                            id="sslFileInput"
                             type="file"
                             name="file"
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onChange={(e) => handleFileChange(e, "ssl")}
                           />
 
                           <div
                             style={{ cursor: "pointer" }}
                             className="payment-method ms-lg-4 ms-0"
                             onClick={() =>
-                              document.getElementById("fileInput").click()
+                              document.getElementById("sslFileInput").click()
                             }
                           >
                             Choose image <br />
                             <span
-                              onClick={() => {
-                                try {
-                                  toast.success("Add image from URL clicked", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                } catch (error) {
-                                  toast.error("An error occurred", {
-                                    position: "bottom-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: true,
-                                    closeButton: true,
-                                    draggable: true,
-                                  });
-                                }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddFromUrl("ssl");
                               }}
                             >
                               or Add from URL

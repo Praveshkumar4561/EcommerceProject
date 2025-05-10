@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Reviews.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -13,29 +14,29 @@ import {
   faStar,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function Reviews() {
-  let [user, setUser] = useState([]);
-  let [isVisible, setIsVisible] = useState(false);
-  let [blog, setBlog] = useState(false);
-  let [ads, setAds] = useState(false);
-  let [commerce, setCommerce] = useState(false);
-  let [search, setSearch] = useState("");
-  let [appear, setAppear] = useState(false);
+  const [user, setUser] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
+  const [blog, setBlog] = useState(false);
+  const [ads, setAds] = useState(false);
+  const [commerce, setCommerce] = useState(false);
+  const [search, setSearch] = useState("");
+  const [appear, setAppear] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
-  let [Specification, setSpecifcation] = useState(false);
-  let [payment, setPayment] = useState(false);
+  const [Specification, setSpecifcation] = useState(false);
+  const [payment, setPayment] = useState(false);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -88,6 +89,7 @@ function Reviews() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -184,13 +186,18 @@ function Reviews() {
     setUser(response.data);
   };
 
-  let [count4, setCount4] = useState(0);
-
   let alldata = async () => {
     let response = await axios.get("http://89.116.170.231:1600/reviewdata");
     setUser(response.data);
-    setCount4(response.data.length);
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 16;
+
+  const paginatedData = user.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   let deletedata = async (id) => {
     await axios.delete(`http://89.116.170.231:1600/reviewdelete/${id}`, user);
@@ -198,7 +205,7 @@ function Reviews() {
       toast.success("Data successfully updated", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -208,7 +215,7 @@ function Reviews() {
       toast.error("Data is not deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -224,10 +231,46 @@ function Reviews() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Reviews | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Reviews | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -309,7 +352,9 @@ function Reviews() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1512,7 +1557,7 @@ function Reviews() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2149,7 +2194,7 @@ function Reviews() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2158,7 +2203,7 @@ function Reviews() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial table-price ms-2 ms-lg-0">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2181,9 +2226,9 @@ function Reviews() {
                 </button>
 
                 <input
-                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0"
+                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0 ms-0 border"
                   placeholder="Search..."
-                  type="text"
+                  type="search"
                   name="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -2222,9 +2267,9 @@ function Reviews() {
                     </th>
 
                     <th scope="col" className="fw-light">
-                      <span className="d-flex">
+                      <span className="d-flex flex-row">
                         ID
-                        <i className="fas fa-sort ms-1"></i>
+                        <i className="fas fa-sort ms-1 mt-1"></i>
                       </span>
                     </th>
 
@@ -2270,15 +2315,6 @@ function Reviews() {
                       className="fw-light"
                       style={{ whiteSpace: "nowrap" }}
                     >
-                      Status
-                      <i className="fas fa-sort ms-1"></i>
-                    </th>
-
-                    <th
-                      scope="col"
-                      className="fw-light"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
                       Created At
                       <i className="fas fa-sort ms-1"></i>
                     </th>
@@ -2289,8 +2325,8 @@ function Reviews() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(user) && user.length > 0 ? (
-                    user.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>
                           <input type="checkbox" className="form-check-input" />
@@ -2307,39 +2343,47 @@ function Reviews() {
                         </td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
-                          <span className="sliders1 product-name">
+                          <Link to={`/admin/ecommerce/reviews/view/${data.id}`}>
                             {data.user_name}
-                          </span>
+                          </Link>
                         </td>
 
                         <td>
-                          <FontAwesomeIcon
-                            icon={faStar}
-                            className="fontawasome"
-                          />
+                          {[...Array(5)].map((_, i) => (
+                            <FontAwesomeIcon
+                              key={i}
+                              icon={faStar}
+                              className={
+                                i < data.star ? "text-warning" : "text-dark"
+                              }
+                            />
+                          ))}
                         </td>
 
                         <td>
-                          <span className="sliders1 product-name">
+                          <Link to={`/admin/ecommerce/reviews/view/${data.id}`}>
                             {data.comment}
-                          </span>
+                          </Link>
                         </td>
 
-                        <td>
-                          <img
-                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
-                            className="img-thumbnail w-auto"
-                            alt="RxLYTE"
-                          />
+                        <td className="d-flex flex-row">
+                          {data.image
+                            .split(",")
+                            .slice(0, 2)
+                            .map((img, index) => (
+                              <img
+                                key={index}
+                                src={`http://89.116.170.231:1600/src/image/${img.trim()}`}
+                                className="img-thumbnail me-2 mb-2"
+                                alt={`RxLYTE-${index}`}
+                                style={{ width: "100px" }}
+                              />
+                            ))}
                         </td>
 
-                        <td>
-                          <span className="badge badge-success lh-base px-2 py-1 status-blog product-name1 fw-light">
-                            {data.status}
-                          </span>
+                        <td className="sales-font">
+                          {new Date(data.date).toISOString().split("T")[0]}
                         </td>
-
-                        <td>{data.date}</td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
                           <button
@@ -2376,6 +2420,66 @@ function Reviews() {
                 </tbody>
               </table>
             </div>
+            {user.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(user.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(user.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(user.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
         <ToastContainer />

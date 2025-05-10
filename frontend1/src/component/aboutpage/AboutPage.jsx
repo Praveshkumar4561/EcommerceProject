@@ -16,25 +16,24 @@ import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import JsonLd from "../JsonLd";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function AboutUsPage() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -59,16 +58,22 @@ function AboutUsPage() {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  let [user, setUser] = useState([]);
   let [index, setIndex] = useState(0);
 
+  let [user, setUser] = useState([]);
+
   useEffect(() => {
-    let showdata = async () => {
+    const showdata = async () => {
       try {
-        let response = await axios.get(
+        const response = await axios.get(
           "http://89.116.170.231:1600/gettestimonials"
         );
-        setUser(response.data);
+        const filtered = response.data.filter(
+          (testimonial) =>
+            testimonial.status === "published" ||
+            testimonial.status === "default"
+        );
+        setUser(filtered);
       } catch (error) {
         console.error("Error fetching testimonials:", error);
       }
@@ -146,22 +151,21 @@ function AboutUsPage() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   const schemaData = {
     "@context": "http://schema.org",
@@ -209,6 +213,89 @@ function AboutUsPage() {
     ],
   };
 
+  let [cookie, setCookie] = useState([]);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      return;
+    }
+
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setCookie([response.data]);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
+
+  const handleCookieAccept = (data) => {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
+    setCookie((prevCookie) =>
+      prevCookie.filter((item) => item.cookie !== "yes")
+    );
+  };
+
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <JsonLd data={schemaData} />
@@ -217,7 +304,7 @@ function AboutUsPage() {
         <title>About Us - Learn More About Our eCommerce Brand</title>
         <meta
           name="description"
-          content="Discover our story, mission, and values at [Your Brand Name]. We are committed to providing top-quality products and exceptional customer service."
+          content="Discover our story, mission, and values at RxLYTE. We are committed to providing top-quality products and exceptional customer service."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="http://srv724100.hstgr.cloud/about" />
@@ -240,7 +327,7 @@ function AboutUsPage() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -250,6 +337,9 @@ function AboutUsPage() {
                     alt="Tonic Logo"
                     className="img-fluid image-galaxy"
                     style={{ height: `${logoHeight}px`, width: "200px" }}
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
                   />
                 </Link>
 
@@ -306,7 +396,7 @@ function AboutUsPage() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{count6}</span>
+                    <span className="count-badge mt-2 mt-lg-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
@@ -408,7 +498,7 @@ function AboutUsPage() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -425,7 +515,7 @@ function AboutUsPage() {
       <div></div>
 
       <div className="container-xl text-lg-center mt-3 lorem-about">
-        <h2 className="tonic-font fs-5 ms-lg-0 ms-xxl-5 me-lg-0 me-xxl-5 me-xl-5 lh-base cart-cart">
+        <h2 className="tonic-font fs-5 ms-lg-0 ms-xxl-5 me-lg-0 me-xxl-5 me-xl-5 cart-cart">
           Rx Tonic is dedicated to assisting individuals in obtaining the
           prescription drugs they need at a reasonable cost.
         </h2>
@@ -433,36 +523,36 @@ function AboutUsPage() {
         <div className="container">
           <div className="row mt-0">
             <div className="col-12">
-              <p className="para-class lh-lg text-start">
+              <div className="para-class text-start">
                 We at Rx Tonic think that everyone should have access to
                 resaonably priced prescription drugs.Nobody should ever have to
                 decide between providing for their family's needs and filling a
                 prescription.This explains thee existance of Rx Tonic and the
                 ardor with which our staff approaches our mission!
-              </p>
+              </div>
             </div>
           </div>
           <div className="row mt-2">
             <div className="col-12">
-              <p className="para-class1 text-start lh-lg">
+              <div className="para-class1 text-start mt-2">
                 With over 950 medicines that cover the majority of chronic
                 conditions, our fully regulated nonprofit online pharmacy is
                 accessible. Prescriptions may be readily mailed in quantities of
                 30, 60, 90, or 180 days to your house or the office of your
                 physician.
-              </p>
+              </div>
             </div>
           </div>
           <div className="row mt-1">
             <div className="col-12">
-              <p className="para-class2 text-start lh-lg">
+              <div className="para-class2 text-start mt-2">
                 Because of our dedication to patients and solid relationships
                 with pharmaceutical companies and donations, we are able to
                 lower the cost of prescriptions for you. Our team comprises more
                 than 70 certified pharmacists, pharmacy technicians, and patient
                 care advocates, all working together to provide reliable and
                 trustworthy healthcare solutions.
-              </p>
+              </div>
             </div>
           </div>
         </div>
@@ -495,16 +585,16 @@ function AboutUsPage() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mb-4 box1 bg-light rounded-1 d-flex flex-column align-items-center h-auto lorem-about shadow-lg me-2 me-lg-0">
               <img src={Hoursupport} alt="RxLYTE" className="mt-3" />
               <p className="fw-normal free-delivery fs-5 me-5 pe-2">
-                24/7 support
+                24/7 Support
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <h2 className="text-center fw-normal mt-5 lorem-about">
+      <h4 className="text-center fw-normal mt-5 lorem-about">
         Client Testimonial
-      </h2>
+      </h4>
 
       <div className="container-fluid d-flex justify-content-center">
         <div className="container mt-0 d-flex justify-content-center align-items-center mb-sm-5 me-sm-3">
@@ -549,7 +639,58 @@ function AboutUsPage() {
         </div>
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row theme-allow cart-cart">
+            {Array.isArray(cookie) && cookie.length > 0
+              ? cookie.map((data, key) => {
+                  if (data.cookie !== "yes") return null;
+                  const cardStyle = {
+                    backgroundColor: data.backgroundColor,
+                    color: data.textColor,
+                    ...(data.style === "Minimal" && {
+                      width: "388px",
+                      height: "135px",
+                      marginLeft: "2px",
+                    }),
+                  };
+
+                  return (
+                    <div
+                      className="col-12 col-lg-12 col-md-12 border d-flex justify-content-center gap-5 align-items-center"
+                      key={key}
+                      style={cardStyle}
+                    >
+                      <div className="d-flex align-items-center justify-content-between w-100">
+                        <span
+                          className={
+                            data.style === "Full Width"
+                              ? "message-cookie ms-1"
+                              : ""
+                          }
+                        >
+                          {data.message}.
+                        </span>
+                        <button
+                          className={`btn btn-dark d-flex cart-cart allow-site mt-1 button-cook mb-2 mt-2 btn-outline-light ${
+                            data.style === "Full Width"
+                              ? "button-cook-position"
+                              : ""
+                          }`}
+                          onClick={() => handleCookieAccept(data)}
+                        >
+                          {data.button_text}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -559,77 +700,54 @@ function AboutUsPage() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/about"
-                        className="text-white text-decoration-none"
-                      >
-                        About Us
-                      </Link>
+                      <Link to="/about">About Us</Link>
                     </li>
                     <li>
-                      <Link
-                        to="/blog"
-                        className="text-white text-decoration-none"
-                      >
-                        Blog
-                      </Link>
+                      <Link to="/blog">Blog</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Payment Security
-                      </Link>
+                      <Link>Payment Security</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Affiliate Marketing
-                      </Link>
+                      <Link>Affiliate Marketing</Link>
                     </li>
                   </ul>
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/faqs"
-                        className="text-white text-decoration-none"
-                      >
-                        FAQ
+                      <Link to="/faqs" className="text-decoration-none">
+                        FAQ's
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        className="text-white text-decoration-none"
-                        to="/sitemap"
-                      >
+                      <Link className="text-decoration-none" to="/sitemap">
                         Sitemap
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        to="/contact-us"
-                        className="text-white text-decoration-none"
-                      >
+                      <Link to="/contact-us" className="text-decoration-none">
                         Contact
                       </Link>
                     </li>
@@ -639,20 +757,31 @@ function AboutUsPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger-access text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-accesses d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={newsSubmit}
+                  aria-label="Subscribe to newsletter"
                 >
                   Subscribe
                 </button>
@@ -664,9 +793,9 @@ function AboutUsPage() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
-              </p>
+              <div className="text-md-start text-lg-start text-start mb-0">
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+              </div>
             </div>
           </div>
         </div>

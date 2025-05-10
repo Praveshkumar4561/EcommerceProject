@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./OrderReturns.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,13 +11,13 @@ import {
   faMoon,
   faRotate,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function OrderReturns() {
   let [isVisible, setIsVisible] = useState(false);
@@ -174,27 +175,6 @@ function OrderReturns() {
     }
   };
 
-  let searchbar = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/contactsearch/${search}`
-    );
-    setUser(response.data);
-  };
-
-  let deletedata = async (id) => {
-    await axios.delete(`http://89.116.170.231:1600/deletecontact/${id}`, user);
-    try {
-      toast.success("data sucessfully deleted", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {}
-  };
-
   const handleDownload = async () => {
     try {
       const response = await axios.get(
@@ -228,10 +208,45 @@ function OrderReturns() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Order returns | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Order returns | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -313,7 +328,9 @@ function OrderReturns() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -349,7 +366,7 @@ function OrderReturns() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1517,7 +1534,7 @@ function OrderReturns() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2156,7 +2173,7 @@ function OrderReturns() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2165,7 +2182,7 @@ function OrderReturns() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2173,7 +2190,7 @@ function OrderReturns() {
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2181,15 +2198,15 @@ function OrderReturns() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 py-4 d-flex btn-announ mt-lg-0"
+                  className="btn btn-secondary me-2 py-4 d-flex btn-announ mt-lg-0 cart-cart"
                   type="button"
                 >
                   Filters
                 </button>
                 <input
-                  className="form-control py-4 rounded-2 mt-lg-0"
+                  className="form-control py-4 rounded-2 mt-lg-0 cart-cart ms-0 border"
                   placeholder="Search..."
-                  type="text"
+                  type="search"
                   name="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -2198,7 +2215,7 @@ function OrderReturns() {
 
               <div className="d-flex flex-row ms-2">
                 <button
-                  className="btn btn-create me-2 mt-2 mt-sm-0 mt-lg-2 d-flex flex-row align-items-center"
+                  className="btn btn-create me-2 mt-2 mt-sm-0 mt-lg-2 d-flex flex-row align-items-center cart-cart"
                   type="button"
                   onClick={handleDownload}
                 >
@@ -2207,7 +2224,7 @@ function OrderReturns() {
                 </button>
 
                 <button
-                  className="btn btn-reload mt-2 mt-lg-2 mt-sm-0 border d-flex flex-row align-items-center"
+                  className="btn btn-reload mt-2 mt-lg-2 mt-sm-0 border d-flex flex-row align-items-center cart-cart"
                   type="button"
                 >
                   <FontAwesomeIcon icon={faRotate} className="me-2" />
@@ -2305,16 +2322,12 @@ function OrderReturns() {
                       <span className="sliders1"></span>
                     </td>
 
-                    <td>
-                      <span
-                        className="sliders1"
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        No data to display
-                      </span>
-                    </td>
-
                     <td></td>
+                    <td>
+                      <Link to="/admin/ecommerce/orders">
+                        No data to display
+                      </Link>
+                    </td>
 
                     <td></td>
 

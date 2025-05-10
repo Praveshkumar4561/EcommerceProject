@@ -2,18 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ThemeCookie.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ThemeCookie() {
   let [isVisible, setIsVisible] = useState(false);
@@ -21,14 +23,13 @@ function ThemeCookie() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
-  const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  const navigate = useNavigate();
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -81,7 +82,9 @@ function ThemeCookie() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -161,12 +164,6 @@ function ThemeCookie() {
     }
   };
 
-  const [showPalette, setShowPalette] = useState(false);
-
-  const togglePalette = () => {
-    setShowPalette((prev) => !prev);
-  };
-
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
@@ -175,10 +172,124 @@ function ThemeCookie() {
       setCount5(response.data.length);
     };
     orderdata();
+  }, []);
+
+  const [user, setUser] = useState({
+    cookie: "",
+    style: "",
+    message: "",
+    button_text: "",
+    learn_url: "",
+    learn_text: "",
+    backgroundColor: "#000000",
+    textColor: "#ffffff",
+    width: "",
   });
+
+  const { cookie, style, message, button_text, learn_url, learn_text, width } =
+    user;
+
+  const colorRefs = {
+    backgroundColor: useRef(null),
+    textColor: useRef(null),
+  };
+
+  const colorLabels = {
+    backgroundColor: "Background Color",
+    textColor: "Text Color",
+  };
+
+  const handleColorChange = (key, event) => {
+    setUser((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const handleColorClick = (key) => {
+    if (colorRefs[key].current) {
+      colorRefs[key].current.click();
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post("http://89.116.170.231:1600/cookiepost", user);
+      toast.success("Cookie updated successfully!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error("Cookie is not updated", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onInputChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Theme Options - Cookie Consent | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta
+          property="og:title"
+          content="Theme Options - Cookie Consent | RxLYTE"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -260,7 +371,9 @@ function ThemeCookie() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1462,7 +1575,7 @@ function ThemeCookie() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2116,7 +2229,7 @@ function ThemeCookie() {
       <div className="container mt-4 d-flex cart-cart">
         <div className="sidebar-theme-options1 border rounded-0 ms-md-aut">
           <h5 className="mt-3 ms-3">Theme Options</h5>
-          <hr className="custom-theme-hr" />
+          <hr className="custom-theme-hr custom-cookie" />
 
           <nav className="nav flex-column bg-light pt-2 ps-2 ps-lg-0">
             <Link
@@ -2497,16 +2610,19 @@ function ThemeCookie() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-4 mb-lg-0">
           <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-2 mt-lg-3 me-2 border d-flex cart-cart1">
+            <button
+              className="btn btn-success button-change py-4 mt-3 mt-lg-4 me-2 border d-flex cart-cart1"
+              onClick={handleSubmit}
+            >
               Save Changes
             </button>
           </div>
 
-          <hr className="custom-changes1" />
-          <form className="content-form">
-            <div className="mb-3 mt-2 ms-3 me-3">
+          <div className="border w-100"></div>
+          <form className="content-form w-100">
+            <div className="mb-3 mt-4 pt-3 ms-3 me-3">
               <div className="mb-3">
                 <label className="form-label" htmlFor="date-format">
                   Enable cookie consent?
@@ -2516,8 +2632,10 @@ function ThemeCookie() {
                   className="form-select label-cookie"
                   id="date-format"
                   style={{ height: "50px" }}
+                  name="cookie"
+                  value={cookie}
+                  onChange={onInputChange}
                 >
-                  <option value="">Select an option</option>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
                 </select>
@@ -2530,8 +2648,10 @@ function ThemeCookie() {
                   className="form-select label-hotline label-date"
                   id="date-format"
                   style={{ height: "50px" }}
+                  name="style"
+                  value={style}
+                  onChange={onInputChange}
                 >
-                  <option value="">Select an option</option>
                   <option value="Full Width">Full Width</option>
                   <option value="Minimal">Minimal</option>
                 </select>
@@ -2540,8 +2660,12 @@ function ThemeCookie() {
                   Message
                 </label>
                 <input
-                  className="form-control py-4 label-hotline"
+                  className="form-control py-4 label-hotline cart-cart"
                   type="text"
+                  placeholder="Message"
+                  name="message"
+                  value={message}
+                  onChange={onInputChange}
                 />
               </div>
             </div>
@@ -2552,9 +2676,13 @@ function ThemeCookie() {
                   Button text
                 </label>
                 <input
-                  className="form-control py-4 label-hotline"
+                  className="form-control py-4 label-hotline cart-cart"
                   id="site-title"
                   type="text"
+                  placeholder="Button text"
+                  name="button_text"
+                  value={button_text}
+                  onChange={onInputChange}
                 />
               </div>
 
@@ -2563,9 +2691,13 @@ function ThemeCookie() {
                   Learn more URL
                 </label>
                 <input
-                  className="form-control py-4 label-hotline"
+                  className="form-control py-4 label-hotline cart-cart"
                   id="site-title"
                   type="text"
+                  placeholder="Learn more URL"
+                  name="learn_url"
+                  value={learn_url}
+                  onChange={onInputChange}
                 />
               </div>
 
@@ -2574,63 +2706,76 @@ function ThemeCookie() {
                   Learn more text
                 </label>
                 <input
-                  className="form-control py-4 label-hotline"
+                  className="form-control py-4 label-hotline cart-cart"
                   id="site-title"
                   type="text"
+                  placeholder="Learn more text"
+                  name="learn_text"
+                  value={learn_text}
+                  onChange={onInputChange}
                 />
               </div>
 
-              <div className="mb-3">
-                <label className="form-label" htmlFor="site-title">
-                  Background color
-                </label>
+              {Object.keys(colorRefs).map((key) => (
+                <div className="mt-3 d-flex flex-column" key={key}>
+                  <label className="form-label">{colorLabels[key]}</label>
 
-                <div className="cookie-color1 border w-auto py-1 rounded d-lg-flex">
-                  <input
-                    type="color"
-                    className="ms-2 mt-1"
-                    style={{ cursor: "pointer" }}
-                  />
-                  <span
-                    className="ms-1 me-1 mt-1"
-                    style={{ cursor: "pointer" }}
+                  <div
+                    className="color-picker-container d-flex flex-row flex-nowrap"
+                    style={{ position: "relative", display: "inline-block" }}
                   >
-                    ▼
-                  </span>
+                    <input
+                      type="color"
+                      ref={colorRefs[key]}
+                      value={user[key]}
+                      style={{
+                        opacity: 0,
+                        position: "absolute",
+                        width: "30px",
+                        height: "30px",
+                      }}
+                      onChange={(e) => handleColorChange(key, e)}
+                    />
+                    <div
+                      className="color-preview"
+                      style={{
+                        width: "30px",
+                        height: "30px",
+                        backgroundColor: user[key],
+                        border: "1px solid #ccc",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleColorClick(key)}
+                    ></div>
+                    <span
+                      className="color-dropdown"
+                      style={{ cursor: "pointer", marginLeft: "10px" }}
+                      onClick={() => handleColorClick(key)}
+                    >
+                      ▼
+                    </span>
+                  </div>
                 </div>
-              </div>
-
-              <label className="form-label" htmlFor="site-title">
-                Text color
-              </label>
-
-              <div className="cookie-color1 border py-1 rounded d-lg-flex">
-                <input
-                  type="color"
-                  className="ms-2 mt-1"
-                  style={{ cursor: "pointer" }}
-                />
-                <span
-                  className="d-lg-flex align-items-center"
-                  style={{ cursor: "pointer" }}
-                >
-                  ▼
-                </span>
-              </div>
+              ))}
 
               <div className="mt-3">
                 <label className="form-label" htmlFor="site-title">
-                  Max width (px)
+                  Max width(px)
                 </label>
                 <input
-                  className="form-control py-4 label-cookie"
+                  className="form-control py-4 label-cookie cart-cart"
                   id="site-title"
                   type="number"
+                  placeholder="Max width(px)"
+                  name="width"
+                  value={width}
+                  onChange={onInputChange}
                 />
               </div>
             </div>
           </form>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   height: auto;
@@ -79,6 +80,7 @@ input[type="search"] {
   bottom: 0.98rem;
   cursor: pointer;
 }
+
 .count-value {
   font-family: Verdana, Tahoma, sans-serif;
   position: relative;
@@ -162,3 +164,19 @@ input[type="search"] {
   }
 }
 
+.expired-discount {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  font-weight: 600;
+  font-size: 0.91rem;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .expired-discount {
+    position: absolute;
+    top: 54px;
+    right: 7px;
+  }
+}

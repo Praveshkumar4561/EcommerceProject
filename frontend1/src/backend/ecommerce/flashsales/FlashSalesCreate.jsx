@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./FlashSalesCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -9,26 +10,16 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function FlashSalesCreate() {
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +27,14 @@ function FlashSalesCreate() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  }, []);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -88,7 +87,9 @@ function FlashSalesCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -130,44 +131,10 @@ function FlashSalesCreate() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented. ",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [commerce, setCommerce] = useState(false);
-  let [appear, setAppear] = useState(false);
-
-  let appearence = () => {
-    setAppear(!appear);
-  };
 
   let toggleecommerce = () => {
     setCommerce(!commerce);
@@ -183,33 +150,6 @@ function FlashSalesCreate() {
 
   const toggleblog = () => {
     setBlog(!blog);
-  };
-
-  let [user, setUser] = useState({
-    name: "",
-    start_date: "",
-    status: "",
-    end_date: "",
-  });
-
-  let { name, start_date, status, end_date } = user;
-
-  let handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/flashsales",
-        user
-      );
-      if (response.status === 200) {
-        navigate("/admin/ecommerce/flash-sales");
-      }
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  let onInputChange = async (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -230,37 +170,164 @@ function FlashSalesCreate() {
     }
   };
 
+  const [user, setUser] = useState({
+    name: "",
+    start_date: "",
+    status: "",
+    end_date: "",
+  });
+  const { name, start_date, status, end_date } = user;
+
+  const [errors, setErrors] = useState({});
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const wrapperRef = useRef(null);
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!start_date.trim()) newErrors.start_date = "Start date is required";
+    if (!status.trim()) newErrors.status = "Status is required";
+    if (!end_date.trim()) newErrors.end_date = "End date is required";
+    if (selectedProducts.length === 0)
+      newErrors.products = "Please select at least one product";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      const payload = {
+        ...user,
+        products: selectedProducts.map((prod) => ({
+          id: prod.id,
+          name: prod.name,
+          image: prod.image,
+          price: prod.price,
+          quantity: prod.quantity,
+        })),
+      };
+
+      const response = await axios.post(
+        "http://89.116.170.231:1600/flashsales",
+        payload
+      );
+      if (response.status === 200) {
+        navigate("/admin/ecommerce/flash-sales");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onInputChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
 
   useEffect(() => {
-    if (search.trim() === "") {
+    if (!search.trim()) {
       setProducts([]);
       return;
     }
 
-    const alldata = async () => {
+    (async () => {
       try {
         setLoading(true);
-        const response = await axios.get(
-          `http://89.116.170.231:1600/productpagedata?search=${search}`
+        setError("");
+        const { data } = await axios.get(
+          `http://89.116.170.231:1600/productpagedata?search=${encodeURIComponent(
+            search
+          )}`
         );
-        setProducts(response.data);
-      } catch (error) {
+        setProducts(data);
+      } catch {
         setError("Failed to fetch products");
-        console.error(error);
       } finally {
         setLoading(false);
       }
-    };
-
-    alldata();
+    })();
   }, [search]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setProducts([]);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelected = (product) => {
+    if (!selectedProducts.some((p) => p.id === product.id)) {
+      setSelectedProducts((prev) => [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          image: product.image,
+          price: product.price,
+          quantity: 1,
+        },
+      ]);
+    }
+    setSearch("");
+    setProducts([]);
+  };
+
+  const removeProduct = (id) => {
+    setSelectedProducts((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const updateSelectedProduct = (id, field, value) => {
+    setSelectedProducts((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, [field]: value } : p))
+    );
+  };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New flash sales | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="New flash sales | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -342,7 +409,9 @@ function FlashSalesCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1544,7 +1613,7 @@ function FlashSalesCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -1913,7 +1982,7 @@ function FlashSalesCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/flash-sales">FLASH SALES</Link>
           </li>
 
@@ -1925,7 +1994,7 @@ function FlashSalesCreate() {
 
       <div className="container-fluid">
         <div className="container">
-          <div className="row">
+          <div className="row cart-cart">
             <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
               <svg
                 className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
@@ -1954,25 +2023,28 @@ function FlashSalesCreate() {
       <div className="container-fluid">
         <div className="container">
           <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
-            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
-              <form>
+            <div className="col-12 col-lg-8 border rounded customer-page customer-page2 cart-cart">
+              <form onSubmit={handleSubmit}>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-3 w-100">
-                    <label htmlFor="">Name</label>
+                    <label>Name</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2 py-4 cart-cart"
                       placeholder="Name"
                       name="name"
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger mt-1">{errors.name}</small>
+                    )}
                   </div>
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
-                    <label htmlFor=""> Start date</label>
+                    <label>Start date</label>
                     <input
                       type="date"
                       className="form-control mt-2 py-4"
@@ -1981,19 +2053,149 @@ function FlashSalesCreate() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
                         position: "relative",
+                        zIndex: 1,
                       }}
                     />
+                    {errors.start_date && (
+                      <small className="text-danger mt-1">
+                        {errors.start_date}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div
+                  ref={wrapperRef}
+                  className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-column flex-md-nowrap flex-sm-nowrap border p-2 mb-3 rounded mt-3"
+                  style={{ position: "relative" }}
+                >
+                  <label className="mt-1 mb-1">Products</label>
+                  <div className="border w-100" />
+                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
+                    <input
+                      type="search"
+                      className="form-control mt-2 py-4 border cart-cart"
+                      placeholder="Search products"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      autoComplete="off"
+                    />
+                    {(loading ||
+                      error ||
+                      products.length > 0 ||
+                      selectedProducts.length > 0) && (
+                      <div
+                        className="border bg-white w-100"
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          zIndex: 1000,
+                          maxHeight: "200px",
+                          overflowY: "auto",
+                        }}
+                      >
+                        {loading && <div className="p-2">Loading…</div>}
+                        {error && (
+                          <div className="p-2 text-danger">{error}</div>
+                        )}
+                        {!loading &&
+                          !error &&
+                          products.map((prod) => (
+                            <div
+                              key={prod.id}
+                              className="p-2 border-bottom d-flex flex-row align-items-lg-center"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleSelected(prod)}
+                            >
+                              <img
+                                src={`http://89.116.170.231:1600/src/image/${prod.image}`}
+                                alt={prod.name}
+                                className="flash-image img-thumbnail"
+                              />
+                              <span className="fw-bold ms-2">{prod.name}</span>
+                            </div>
+                          ))}
+
+                        {selectedProducts.length > 0 && (
+                          <>
+                            <div className="ms-3 mt-1 fw-bold">
+                              Selected products
+                            </div>
+                            {selectedProducts.map((prod) => (
+                              <div
+                                key={prod.id}
+                                className="p-2 d-flex flex-column position-relative"
+                              >
+                                <FontAwesomeIcon
+                                  icon={faXmark}
+                                  className="position-absolute top-0 end-0 mt-0 me-2"
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => removeProduct(prod.id)}
+                                />
+                                <div className="d-flex flex-row align-items-center mb-2">
+                                  <img
+                                    src={`http://89.116.170.231:1600/src/image/${prod.image}`}
+                                    alt={prod.name}
+                                    className="flash-image img-thumbnail"
+                                  />
+                                  <span className="fw-bold ms-2">
+                                    {prod.name}
+                                  </span>
+                                </div>
+                                <div className="d-flex flex-row w-100 gap-3 mt-1">
+                                  <div className="w-50">
+                                    <label>Price *</label>
+                                    <input
+                                      type="text"
+                                      className="form-control mt-2 py-4"
+                                      value={prod.price}
+                                      onChange={(e) =>
+                                        updateSelectedProduct(
+                                          prod.id,
+                                          "price",
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                  <div className="w-50">
+                                    <label>Quantity *</label>
+                                    <input
+                                      type="text"
+                                      className="form-control mt-2 py-4"
+                                      value={prod.quantity}
+                                      onChange={(e) =>
+                                        updateSelectedProduct(
+                                          prod.id,
+                                          "quantity",
+                                          e.target.value
+                                        )
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                {errors.products && (
+                                  <small className="text-danger mt-1">
+                                    {errors.products}
+                                  </small>
+                                )}
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </form>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 cart-cart">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border w-100 mb-3"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2002,18 +2204,24 @@ function FlashSalesCreate() {
                   >
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
-                  <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
-                  </button>
+
+                  <Link
+                    to="/admin/ecommerce/flash-sales"
+                    className="text-decoration-none text-dark"
+                  >
+                    <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </button>
+                  </Link>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border w-100 mb-3 mt-2"></div>
                 <select
-                  className="w-100 rounded-1 py-2 border"
+                  className="w-100 rounded-1 py-2 border mb-2"
                   name="status"
                   value={status}
                   onChange={onInputChange}
@@ -2023,14 +2231,19 @@ function FlashSalesCreate() {
                   <option value="Draft">Draft</option>
                   <option value="Pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1 mb-4">
                 <h4 className="mt-0 text-start">End date</h4>
-                <hr />
+                <div className="border w-100 mb-3 mt-2"></div>
                 <input
                   type="date"
-                  className="form-control mt-2 py-4 px-2"
+                  className="form-control mt-2 py-4 px-2 mb-2"
                   name="end_date"
                   value={end_date}
                   onChange={onInputChange}
@@ -2040,11 +2253,15 @@ function FlashSalesCreate() {
                     position: "relative",
                   }}
                 />
+                {errors.end_date && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.end_date}
+                  </small>
+                )}
               </div>
             </div>
           </div>
         </div>
-        <ToastContainer />
       </div>
     </>
   );

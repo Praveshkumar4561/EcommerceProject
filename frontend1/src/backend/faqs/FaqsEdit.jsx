@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./FaqsEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -11,25 +12,22 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { Helmet } from "react-helmet-async";
 
 function FaqsEdit() {
   let { id } = useParams();
   let navigate = useNavigate();
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -88,7 +86,9 @@ function FaqsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -161,16 +161,17 @@ function FaqsEdit() {
   let { category, question, answer, date, status } = user;
 
   let handleSubmit = async () => {
+    const updatedUser = { ...user, answer: stripHtml(editorData2) };
     try {
       const response = await axios.put(
         `http://89.116.170.231:1600/faqspageupdate/${id}`,
-        user
+        updatedUser
       );
       if (response.status === 200) {
         navigate("/admin/faqs");
       }
     } catch (error) {
-      console.error("error", error);
+      console.error("Error updating FAQ:", error);
     }
   };
 
@@ -178,52 +179,36 @@ function FaqsEdit() {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  let [cat, setCat] = useState([]);
+
   useEffect(() => {
+    let categorydata = async () => {
+      let response = await axios.get(
+        "http://89.116.170.231:1600/faqcategorydata"
+      );
+      setCat(response.data);
+    };
+    categorydata();
+  }, []);
+
+  useEffect(() => {
+    let somedata = async () => {
+      try {
+        let response = await axios.get(
+          `http://89.116.170.231:1600/faqsomedata/${id}`
+        );
+        const fetchedData = response.data[0];
+        setUser(fetchedData);
+        setEditorData2(fetchedData.answer || "");
+      } catch (error) {
+        console.error("Error fetching FAQ data:", error);
+      }
+    };
     somedata();
   }, []);
 
-  let somedata = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/faqsomedata/${id}`
-    );
-    setUser(response.data[0]);
-  };
-
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
-
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 992);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const toggleNavbar = () => {
-    if (isMobile) {
-      setIsNavbarExpanded(!isNavbarExpanded);
-    }
-  };
-
-  let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
-
   const [showEdit2, setShowEdit2] = useState(true);
   const [editorData2, setEditorData2] = useState("");
-  const [textAreaData2, setTextAreaData2] = useState("");
-
-  const handleTextAreaChange2 = (e) => {
-    setTextAreaData2(e.target.value);
-  };
 
   const showEditorClicked2 = (e) => {
     e.preventDefault();
@@ -258,8 +243,77 @@ function FaqsEdit() {
     });
   };
 
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
+
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 992);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const toggleNavbar = () => {
+    if (isMobile) {
+      setIsNavbarExpanded(!isNavbarExpanded);
+    }
+  };
+
+  let [count5, setCount5] = useState(0);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit "{user.question}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -341,7 +395,9 @@ function FaqsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1543,7 +1599,7 @@ function FaqsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2238,9 +2294,17 @@ function FaqsEdit() {
                       className="border rounded-1 mt-2 py-2 w-100"
                     >
                       <option value="">Select a category</option>
-                      <option value="shipping">Shipping</option>
-                      <option value="payment">Payment</option>
-                      <option value="order&returns">Order & Returns</option>
+                      {cat
+                        .filter(
+                          (item) =>
+                            item.status === "Published" ||
+                            item.status === "Draft"
+                        )
+                        .map((item) => (
+                          <option key={item.id} value={item.name}>
+                            {item.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
                 </div>
@@ -2250,14 +2314,13 @@ function FaqsEdit() {
                     <label htmlFor="">Question</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="Content"
                       name="question"
                       value={question}
                       onChange={onInputChange}
                       style={{
                         height: "100px",
-                        cursor: "pointer",
                         position: "relative",
                         zIndex: "1000",
                       }}
@@ -2283,6 +2346,7 @@ function FaqsEdit() {
                         Add Media
                       </button>
                     </div>
+
                     {showEdit2 ? (
                       <div className="mb-0">
                         <CKEditor
@@ -2291,6 +2355,10 @@ function FaqsEdit() {
                           onChange={(event, editor) => {
                             const data = editor.getData();
                             setEditorData2(data);
+                            setUser((prevUser) => ({
+                              ...prevUser,
+                              answer: stripHtml(data),
+                            }));
                           }}
                           config={{
                             toolbar: [
@@ -2373,14 +2441,12 @@ function FaqsEdit() {
                     ) : (
                       <div className="mb-3">
                         <textarea
-                          className="form-control "
+                          className="form-control"
                           placeholder="Short description"
                           name="answer"
                           value={answer}
-                          onChange={handleTextAreaChange2}
-                          {...onInputChange}
                           style={{
-                            height: "58px",
+                            height: "154px",
                             zIndex: "1000",
                             position: "relative",
                           }}
@@ -2401,7 +2467,7 @@ function FaqsEdit() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
@@ -2412,8 +2478,8 @@ function FaqsEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-1 text-start">Publish</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2423,15 +2489,20 @@ function FaqsEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/faqs"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border mb-3 mt-2"></div>
                 <select
                   className="form-select mb-3 customer-page1"
                   style={{ height: "46px" }}

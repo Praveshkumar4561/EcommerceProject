@@ -21,10 +21,7 @@ body {
   flex-direction: column;
   width: 100%;
 }
-.container-custom1 {
-  width: 72rem;
-  max-width: 100%;
-}
+
 .container-h1 {
   position: relative;
   left: 5rem;
@@ -39,19 +36,6 @@ body {
   top: 0.2rem;
   font-size: 0.9rem;
   font-size: 0.8rem;
-}
-@media (max-width: 768px) {
-  .container-h1 {
-    font-size: 1.5rem;
-  }
-
-  .container-h2 {
-    font-size: 0.875rem;
-  }
-
-  .fontawesome {
-    font-size: 0.875rem;
-  }
 }
 
 @media (max-width: 992px) {
@@ -78,15 +62,7 @@ body {
   height: 5rem;
 }
 
-.table-class {
-  width: 2rem;
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
+
 
 .brown-table {
   margin-left: 0.5rem;
@@ -110,10 +86,6 @@ body {
     height: 4rem;
   }
 
-  .table-class {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
 
   .brown-table,
   .brown-table1 {
@@ -126,11 +98,7 @@ body {
 }
 
 @media (max-width: 576px) {
-  .table-class {
-    width: 1rem;
-    height: 1rem;
-  }
-
+  
   .digital-table {
     width: 3rem;
     height: 3rem;

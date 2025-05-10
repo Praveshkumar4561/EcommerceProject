@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Orders.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -14,11 +15,11 @@ import {
   faDownload,
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,13 +27,6 @@ function Orders() {
   let [count5, setCount5] = useState(0);
   let [customer, setCustomer] = useState([]);
   let [search, setSearch] = useState("");
-
-  let searchbar = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/customerget/${search}`
-    );
-    setCustomer(response.data);
-  };
 
   useEffect(() => {
     if (search) {
@@ -42,19 +36,39 @@ function Orders() {
     }
   }, [search]);
 
+  let searchbar = async () => {
+    let response = await axios.get(
+      `http://89.116.170.231:1600/customerget/${search}`
+    );
+    setCustomer(response.data);
+  };
+
   let customerdata = async () => {
     const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
     setCustomer(response.data);
     setCount5(response.data.length);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const paginatedData = customer.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   let deletedata = async (id) => {
     try {
       await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
+      const updatedData = customer.filter((item) => item.id !== id);
+      const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+      if (currentPage > newTotalPages && newTotalPages > 0) {
+        setCurrentPage(newTotalPages);
+      }
       toast.success("Order deleted successfully", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -68,7 +82,7 @@ function Orders() {
       toast.error("Failed to delete data.Please try again", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -158,6 +172,7 @@ function Orders() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -168,7 +183,6 @@ function Orders() {
         setResults([]);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -247,15 +261,48 @@ function Orders() {
   };
 
   const [visibleStore, setVisibleStore] = useState(null);
-  const [rotated, setRotated] = useState(false);
 
   const toggleStore = (id) => {
     setVisibleStore((prevState) => (prevState === id ? null : id));
-    setRotated((prevState) => (prevState === id ? !prevState : false));
   };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Orders | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Orders | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -337,7 +384,9 @@ function Orders() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -456,6 +505,37 @@ function Orders() {
                         <path d="M15 17v-3"></path>
                       </svg>
                       Report
+                    </li>
+                  </Link>
+
+                  <Link
+                    to="/admin/ecommerce/orders"
+                    className="text-light text-decoration-none"
+                  >
+                    <li>
+                      <svg
+                        className="icon  svg-icon-ti-ti-truck-delivery me-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path
+                          stroke="none"
+                          d="M0 0h24v24H0z"
+                          fill="none"
+                        ></path>
+                        <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                        <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                        <path d="M5 17h-2v-4m-1 -8h11v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5"></path>
+                        <path d="M3 9l4 0"></path>
+                      </svg>
+                      Orders
                     </li>
                   </Link>
 
@@ -1509,7 +1589,7 @@ function Orders() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2158,7 +2238,7 @@ function Orders() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart overflow-x-hidden">
         <div className="card mt-3 testimonial table-price ms-3 ms-lg-3">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2166,7 +2246,7 @@ function Orders() {
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0 cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2174,16 +2254,16 @@ function Orders() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
+                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ cart-cart"
                   type="button"
                 >
                   Filters
                 </button>
 
                 <input
-                  className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-50"
+                  className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-50 cart-cart ms-0 border"
                   placeholder="Search..."
-                  type="text"
+                  type="search"
                   name="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -2206,19 +2286,16 @@ function Orders() {
                   </Link>
 
                   <button
-                    className="btn btn-create me-2 bulk bg-secondary text-light d-flex flex-row align-items-center"
+                    className="btn btn-create me-2 bulk bg-secondary text-light d-flex flex-row align-items-center cart-cart"
                     type="button"
+                    onClick={handleDownload}
                   >
-                    <FontAwesomeIcon
-                      icon={faDownload}
-                      className="me-2"
-                      onClick={handleDownload}
-                    />
+                    <FontAwesomeIcon icon={faDownload} className="me-2" />
                     Export
                   </button>
 
                   <button
-                    className="btn btn-reload border mt-sm-0 mt-md-0 d-flex flex-row align-items-center"
+                    className="btn btn-reload border mt-sm-0 mt-md-0 d-flex flex-row align-items-center cart-cart"
                     type="button"
                   >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
@@ -2299,23 +2376,14 @@ function Orders() {
                       <i className="fas fa-sort ms-1"></i>
                     </th>
 
-                    <th
-                      scope="col"
-                      className="fw-normal"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
-                      Shipping Amount
-                      <i className="fas fa-sort ms-1"></i>
-                    </th>
-
                     <th scope="col" className="fw-normal">
                       Operations
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(customer) && customer.length > 0 ? (
-                    customer.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>
                           <div className="d-flex flex-column gap-1">
@@ -2343,22 +2411,30 @@ function Orders() {
                           <Link to={`/admin/ecommerce/orders/edit/${data.id}`}>
                             {data.email}
                           </Link>
-                          {data.phone_number}
+                          <span className="sales-font">
+                            {data.phone_number}
+                          </span>
                         </td>
                         <td style={{ fontFamily: "verdana" }}>${data.total}</td>
                         <td>{data.payment}</td>
-                        <td className="ps-4">
-                          <span className="badge badge-success fw-light cart-cart1 py-2">
-                            {data.status}
+
+                        <td>
+                          <span
+                            className={`badge ${
+                              data.payment_status === "completed"
+                                ? "badge-success"
+                                : "badge-danger"
+                            } fw-light`}
+                          >
+                            {data.payment_status}
                           </span>
                         </td>
+
                         <td className="ps-4"></td>
                         <td style={{ fontFamily: "verdana" }} className="ps-4">
                           ${data.tax}
                         </td>
-                        <td style={{ fontFamily: "verdana" }} className="ps-4">
-                          {data.shippingfee}
-                        </td>
+
                         <td style={{ whiteSpace: "nowrap" }}>
                           <button className="btn btn-edit me-2" type="button">
                             <Link
@@ -2391,17 +2467,75 @@ function Orders() {
                 </tbody>
               </table>
 
-              {Array.isArray(customer) && customer.length > 0 ? (
-                customer.map((data) => (
-                  <div key={data.id} className="mt-3">
-                    {visibleStore === data.id && <div>Store: {data.store}</div>}
-                  </div>
-                ))
-              ) : (
-                <p></p>
-              )}
+              {Array.isArray(customer) && customer.length > 0
+                ? customer.map((data) => (
+                    <div key={data.id} className="mt-3">
+                      {visibleStore === data.id && (
+                        <div>Store: {data.store}</div>
+                      )}
+                    </div>
+                  ))
+                : null}
             </div>
           </div>
+          {customer.length > itemsPerPage && (
+            <nav className="mt-3">
+              <ul className="pagination justify-content-center">
+                <li
+                  className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                >
+                  <button
+                    className="page-link me-2 btn d-flex cart-cart pagina"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                  >
+                    Prev
+                  </button>
+                </li>
+
+                {Array.from({
+                  length: Math.ceil(customer.length / itemsPerPage),
+                }).map((_, index) => (
+                  <li
+                    key={index}
+                    className={`page-item ${
+                      currentPage === index + 1 ? "active" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                      onClick={() => setCurrentPage(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                ))}
+
+                <li
+                  className={`page-item ${
+                    currentPage === Math.ceil(customer.length / itemsPerPage)
+                      ? "disabled"
+                      : ""
+                  }`}
+                >
+                  <button
+                    className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                    onClick={() =>
+                      setCurrentPage((prev) =>
+                        Math.min(
+                          prev + 1,
+                          Math.ceil(customer.length / itemsPerPage)
+                        )
+                      )
+                    }
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
         <ToastContainer />
       </main>

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./OrdersCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,7 +11,6 @@ import {
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -21,16 +21,14 @@ import "react-toastify/dist/ReactToastify.css";
 function OrdersCreate() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [products, setProducts] = useState([]);
   const [subAmount, setSubAmount] = useState(0);
   const [taxAmount, setTaxAmount] = useState(0);
-  const [discount, setDiscount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [status, setStatus] = useState("");
+  const [payment_status, setPayment_status] = useState("");
   const TAX_PERCENTAGE = 10;
   let [count5, setCount5] = useState(0);
 
@@ -40,7 +38,7 @@ function OrdersCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   useEffect(() => {
     if (search.trim() === "") {
@@ -55,11 +53,7 @@ function OrdersCreate() {
           `http://89.116.170.231:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
-      } catch (error) {
-        setError("Failed to fetch products");
-      } finally {
-        setLoading(false);
-      }
+      } catch (error) {}
     };
     fetchProducts();
   }, [search]);
@@ -105,19 +99,18 @@ function OrdersCreate() {
         toast.error("Please select a customer and at least one product.", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
         });
         return;
       }
-      toast.success("", {});
     } catch (error) {
       toast.error("An error occurred while creating the order.", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -134,7 +127,7 @@ function OrdersCreate() {
       country: "",
       pincode: "",
       payment: paymentMethod,
-      status: status,
+      payment_status: payment_status,
       date: new Date().toISOString().split("T")[0],
       cart: selectedProducts.map((product) => ({
         image: product.image,
@@ -160,7 +153,7 @@ function OrdersCreate() {
       toast.success("Order created successfully", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -169,7 +162,7 @@ function OrdersCreate() {
       toast.error("Failed to create order. Please try again", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -259,6 +252,7 @@ function OrdersCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -451,7 +445,9 @@ function OrdersCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1622,7 +1618,7 @@ function OrdersCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2439,7 +2435,7 @@ function OrdersCreate() {
                           width: "333px",
                           height: "45px",
                         }}
-                        name="payment"
+                        name="paymentMethod"
                         value={paymentMethod}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       >
@@ -2468,9 +2464,9 @@ function OrdersCreate() {
                           width: "333px",
                           height: "45px",
                         }}
-                        name="setStatus"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
+                        name="payment_status"
+                        value={payment_status}
+                        onChange={(e) => setPayment_status(e.target.value)}
                       >
                         <option value="">Select an option</option>
                         <option value="Pending">Pending</option>
@@ -2514,7 +2510,7 @@ function OrdersCreate() {
               </form>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-6 col-lg-4 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start customer-new mb-3 mb-lg-0">
+            <div className="col-12 col-sm-12 col-md-6 col-lg-4 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start customer-new mb-3 mb-lg-0 pb-lg-0">
               <h4>Customer Information</h4>
               <div className="border w-100 mb-3 mt-3"></div>
 

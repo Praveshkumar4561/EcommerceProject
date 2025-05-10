@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Faqs.css";
-
 import Tonic from "../../assets/Tonic.svg";
 import axios from "axios";
 import Hamburger from "../../assets/hamburger.svg";
@@ -13,25 +12,24 @@ import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import JsonLd from "../JsonLd";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function Faqs() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   const generateRandomNumber = () => Math.floor(Math.random() * 10) + 1;
 
@@ -98,7 +96,7 @@ function Faqs() {
       toast.success("Faqs successfully submitted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -107,7 +105,7 @@ function Faqs() {
       toast.error("Faqs not submitted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -199,22 +197,21 @@ function Faqs() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   let [faqs, setFaqs] = useState([]);
 
@@ -259,6 +256,61 @@ function Faqs() {
     ],
   };
 
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <JsonLd data={schemaData} />
@@ -290,7 +342,7 @@ function Faqs() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -462,7 +514,7 @@ function Faqs() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -483,13 +535,13 @@ function Faqs() {
           <div className="row d-flex justify-content-sm-center justify-content-md-center justify-content-xl-start justify-content-xxl-start mt-5 h-auto">
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 faqs-page bg-body h-auto">
               <div className="d-flex flex-column lorem-faqs text-start bg-transparent shadow-lg py-4">
-                <h2 className="general ms-4 mt-1 fw-medium cart-cart">
+                <h2 className="general ms-4 mt-1 fw-medium cart-cart general-faqs">
                   General Information
                 </h2>
-                <h4 className="ms-4 fw-medium cart-cart lh-base">
+                <h2 className="ms-4 fw-medium cart-cart buy-med mb-0">
                   Can you buy medicine online in USA?
-                </h4>
-                <p className="justo ms-4 me-1 mt-1 lh-lg cart-cart text-dark">
+                </h2>
+                <p className="justo ms-4 mb-2 me-1 mt-1 cart-cart text-dark">
                   Generally speaking, customers register for an account with a
                   legitimate online pharmacy and provide credit and insurance
                   details. The state in which the pharmacy is located has
@@ -497,10 +549,10 @@ function Faqs() {
                   registered, you need to send in a legitimate prescription.
                 </p>
 
-                <h4 className="ms-4 cart-cart fw-medium">
+                <h2 className="ms-4 fw-medium cart-cart buy-med mb-0">
                   Can medication be shipped to USA?
-                </h4>
-                <p className="justo ms-4 me-1 mt-2 lh-lg cart-cart text-dark">
+                </h2>
+                <p className="justo ms-4 me-1 mt-2 cart-cart text-dark mb-0">
                   Prescription medication cannot be sent to the United States
                   unless the Food and Drug Administration (FDA) has given the
                   go-ahead. There are a few outliers, however. Prescription
@@ -508,10 +560,10 @@ function Faqs() {
                   often only returnable to the original manufacturer.
                 </p>
 
-                <h4 className="ms-4 cart-cart fw-medium lh-base">
+                <h2 className="ms-4 fw-medium cart-cart buy-med mb-0 mt-1">
                   Is Canada Drug Warehouse legitimate?
-                </h4>
-                <p className="justo ms-4 mt-1 me-1 lh-lg cart-cart text-dark">
+                </h2>
+                <p className="justo ms-4 mt-1 me-1 cart-cart text-dark">
                   Canada Drug Warehouse has certifications from both the
                   International Pharmacy Association of British Columbia (IPABC)
                   and the Canadian International
@@ -521,11 +573,11 @@ function Faqs() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 col-xxl-6 mt-sm-0 mt-md-0 mt-xl-0 mt-xxl-0 faqs-page faqs-page1 faq-enhance">
               <div className="d-flex flex-column text-start ms-0 faq-enhance">
-                <h6 className="question fs-4 mt-lg-4 mt-0 ms-4 pt-2 fw-medium cart-cart">
+                <h2 className="question general-faqs mb-1 mt-lg-4 mt-0 ms-4 pt-2 fw-medium cart-cart">
                   Ask a Question
-                </h6>
+                </h2>
                 <p className="lorem-ipsum ms-4 me-0 lh-lg cart-cart text-dark">
-                  What innovative solutions does Rx Lyte offer to enhance
+                  What innovative solutions does RxLyte offer to enhance
                   medication adherence and optimize patient outcomes,
                   particularly for individuals managing chronic conditions?
                   Additionally, how does the platform integrate technology to
@@ -582,12 +634,12 @@ function Faqs() {
                       </button>
                     </div>
                     {error && (
-                      <p className="error-message1 ms-1 cart-cart">{error}</p>
+                      <p className="error-message1 ms-2 cart-cart">{error}</p>
                     )}
                   </div>
                   <button
                     type="submit"
-                    className="btn btn-success mt-lg-4 mt-2 d-flex py-4 ms-4 mb-3 mb-lg-0 rounded-0 cart-cart1"
+                    className="btn btn-success-product mt-lg-4 mt-2 d-flex py-4 ms-4 mb-3 mb-lg-0 rounded-0 cart-cart1"
                     onClick={handleCaptchaChange}
                   >
                     Send Message
@@ -600,7 +652,7 @@ function Faqs() {
         <ToastContainer />
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -610,23 +662,23 @@ function Faqs() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -658,16 +710,17 @@ function Faqs() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
                         to="/faqs"
                         className="text-white text-decoration-none"
                       >
-                        FAQ
+                        FAQ's
                       </Link>
                     </li>
+
                     <li>
                       <Link
                         className="text-white text-decoration-none"
@@ -690,20 +743,30 @@ function Faqs() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-product d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={newsSubmit}
                 >
                   Subscribe
                 </button>
@@ -716,7 +779,7 @@ function Faqs() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
               </p>
             </div>
           </div>

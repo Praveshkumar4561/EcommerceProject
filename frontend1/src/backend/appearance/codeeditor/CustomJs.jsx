@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./CustomJs.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -9,14 +10,15 @@ import {
   faFloppyDisk,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import axios from "axios";
-// import 'codemirror/theme/material.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function CustomJs() {
   let [isVisible, setIsVisible] = useState(false);
@@ -83,7 +85,9 @@ function CustomJs() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -124,14 +128,6 @@ function CustomJs() {
       setIsOpen(false);
     }
   };
-
-  const [code, setCode] = useState("");
-
-  const handleChanges = (editor, data, value) => {
-    setCode(value);
-  };
-
-  const lineCount = code.split("\n").length;
 
   let toggleecommerce = () => {
     setCommerce(!commerce);
@@ -179,10 +175,90 @@ function CustomJs() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
+
+  const [headerJs, setHeaderJs] = useState("");
+  const [bodyJs, setBodyJs] = useState("");
+  const [footerJs, setFooterJs] = useState("");
+
+  const handleHeaderChange = (editor, data, value) => {
+    setHeaderJs(value);
+  };
+
+  const handleBodyChange = (editor, data, value) => {
+    setBodyJs(value);
+  };
+
+  const handleFooterChange = (editor, data, value) => {
+    setFooterJs(value);
+  };
+
+  const saveCustomJS = async () => {
+    const customJSData = {
+      header_js: headerJs,
+      body_js: bodyJs,
+      footer_js: footerJs,
+    };
+
+    try {
+      await axios.post(
+        "http://89.116.170.231:1600/save-custom-code",
+        customJSData
+      );
+      toast.success("Custom Js applied successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        closeOnClick: true,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error("Error saving Custom JS", {
+        position: "bottom-right",
+        autoClose: 1000,
+        closeOnClick: true,
+        draggable: true,
+      });
+    }
+  };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Custom JS | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="Custom JS | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -264,7 +340,9 @@ function CustomJs() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1467,7 +1545,7 @@ function CustomJs() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2106,7 +2184,7 @@ function CustomJs() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2116,21 +2194,20 @@ function CustomJs() {
       </nav>
 
       <div className="container">
-        <div className="row d-flex justify-content-md-center ps-1">
+        <div className="row d-flex justify-content-md-center ps-1 cart-cart">
           <div className="d-flex flex-column align-items-center mt-1 col-12 col-lg-6 w-100">
             <div className="position-relative border rounded-1 custom-code me-3">
               <p className="ms-4 mt-3 text-start">Header JS</p>
               <CodeMirror
                 className="border rounded ms-3 me-3 mb-3"
-                value={code}
+                value={headerJs}
                 options={{
                   lineNumbers: true,
-                  mode: "css",
+                  mode: "javascript",
                   theme: "default",
                 }}
-                onBeforeChange={handleChanges}
+                onBeforeChange={handleHeaderChange}
               />
-              <style>{code}</style>
               <p
                 className="ms-3 text-start text-dark"
                 style={{ color: "#6c7a91" }}
@@ -2144,15 +2221,14 @@ function CustomJs() {
               <p className="ms-4 mt-3 text-start">Body JS</p>
               <CodeMirror
                 className="border rounded ms-3 me-3 mb-3"
-                value={code}
+                value={bodyJs}
                 options={{
                   lineNumbers: true,
-                  mode: "css",
+                  mode: "javascript",
                   theme: "default",
                 }}
-                onBeforeChange={handleChanges}
+                onBeforeChange={handleBodyChange}
               />
-              <style>{code}</style>
               <p
                 className="ms-3 text-start text-dark"
                 style={{ color: "#6c7a91" }}
@@ -2166,15 +2242,14 @@ function CustomJs() {
               <p className="ms-4 mt-3 text-start">Footer JS</p>
               <CodeMirror
                 className="border rounded ms-3 me-3 mb-3"
-                value={code}
+                value={footerJs}
                 options={{
                   lineNumbers: true,
-                  mode: "css",
+                  mode: "javascript",
                   theme: "default",
                 }}
-                onBeforeChange={handleChanges}
+                onBeforeChange={handleFooterChange}
               />
-              <style>{code}</style>
               <p
                 className="ms-3 text-start text-dark"
                 style={{ color: "#6c7a91" }}
@@ -2186,17 +2261,20 @@ function CustomJs() {
               </p>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-6 col-xxl-6 border rounded ms-2 mt- mt-md-3 mt-md-0 published-box mt-2 me-4 mb-4">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-6 col-xxl-6 border rounded ms-2 mt-md-3 mt-md-0 published-box mt-2 me-4 mb-4">
               <p className="ms-4 mt-3 mb-3 text-start">Publish</p>
               <hr />
-
-              <button className="btn btn-success d-flex flex-wrap flex-column-reverse align-items-lg-center float-start px-3 py-4 mb-3 ms-3">
+              <button
+                onClick={saveCustomJS}
+                className="btn btn-success d-flex flex-wrap flex-column-reverse align-items-lg-center float-start px-3 py-4 mb-3 ms-3 cart-cart1"
+              >
                 <FontAwesomeIcon icon={faFloppyDisk} className="me-2" />
                 Save
               </button>
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     </>
   );

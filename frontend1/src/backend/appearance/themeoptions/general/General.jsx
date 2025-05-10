@@ -2,13 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import "./General.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -16,6 +17,7 @@ import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function General() {
   const [query, setQuery] = useState("");
@@ -25,6 +27,11 @@ function General() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  let [isVisible, setIsVisible] = useState(false);
+  let [blog, setBlog] = useState(false);
+  let [ads, setAds] = useState(false);
+  let [appear, setAppear] = useState(false);
+  let [commerce, setCommerce] = useState(false);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -77,6 +84,7 @@ function General() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -119,41 +127,6 @@ function General() {
       setIsOpen(false);
     }
   };
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented. ",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
-  let [isVisible, setIsVisible] = useState(false);
-  let [blog, setBlog] = useState(false);
-  let [ads, setAds] = useState(false);
-  let [appear, setAppear] = useState(false);
-  let [commerce, setCommerce] = useState(false);
 
   let toggleecommerce = () => {
     setCommerce(!commerce);
@@ -201,10 +174,201 @@ function General() {
       setCount5(response.data.length);
     };
     orderdata();
+  }, []);
+
+  let [user, setUser] = useState({
+    site_title: "",
+    site_name: "",
+    title_separator: "",
+    seo_title: "",
+    seo_description: "",
+    seo_index: "index",
+    seo_og_image: null,
+    seo_og_image_url: "",
+    terms_url: "",
+    copyright: "",
+    enable_preloader: "",
+    preloader_version: "",
+    lazy_placeholder_image: null,
+    lazy_placeholder_image_url: "",
   });
+
+  const {
+    site_title,
+    site_name,
+    title_separator,
+    seo_title,
+    seo_description,
+    seo_index,
+    terms_url,
+    copyright,
+    enable_preloader,
+    preloader_version,
+  } = user;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("site_title", site_title);
+    formData.append("site_name", site_name);
+    formData.append("title_separator", title_separator);
+    formData.append("seo_title", seo_title);
+    formData.append("seo_description", seo_description);
+    formData.append("seo_index", seo_index);
+    if (user.seo_og_image) {
+      formData.append("seoOgImage", user.seo_og_image);
+    } else if (user.seo_og_image === null && user.seo_og_image_url === "") {
+      formData.append("seoOgImage", "");
+    } else {
+      formData.append("seoOgImage", user.seo_og_image_url);
+    }
+    formData.append("terms_url", terms_url);
+    formData.append("copyright", copyright);
+    formData.append("enable_preloader", user.enable_preloader);
+    formData.append("preloader_version", preloader_version);
+    if (user.lazy_placeholder_image) {
+      formData.append("lazyPlaceholderImage", user.lazy_placeholder_image);
+    } else if (
+      user.lazy_placeholder_image === null &&
+      user.lazy_placeholder_image_url === ""
+    ) {
+      formData.append("lazyPlaceholderImage", "");
+    } else {
+      formData.append("lazyPlaceholderImage", user.lazy_placeholder_image_url);
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/theme-options", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success("General updated successfully!", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error("General is not updated", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeButton: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e, type) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      if (type === "seoOpenGraph") {
+        setUser((prev) => ({
+          ...prev,
+          seo_og_image: file,
+          seo_og_image_url: previewUrl,
+        }));
+      } else if (type === "lazyPlaceholderImage") {
+        setUser((prev) => ({
+          ...prev,
+          lazy_placeholder_image: file,
+          lazy_placeholder_image_url: previewUrl,
+        }));
+      }
+    }
+  };
+
+  const handleAddFromUrl = () => {
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented. ",
+        {
+          position: "bottom-right",
+          autoClose: 1000,
+          ProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+    } catch (error) {}
+  };
+
+  const removeSeoOgImage = (e) => {
+    e.stopPropagation();
+    setUser((prev) => ({
+      ...prev,
+      seo_og_image: null,
+      seo_og_image_url: "",
+    }));
+  };
+
+  const removeLazyImage = (e) => {
+    e.stopPropagation();
+    setUser((prev) => ({
+      ...prev,
+      lazy_placeholder_image: null,
+      lazy_placeholder_image_url: "",
+    }));
+  };
+
+  useEffect(() => {
+    const generaldata = async () => {
+      try {
+        let response = await axios.get(
+          "http://89.116.170.231:1600/themeoptionsdata"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    generaldata();
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Theme Options | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="Theme Options | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -286,7 +450,9 @@ function General() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1489,7 +1655,7 @@ function General() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2145,7 +2311,7 @@ function General() {
           <h5 className="mt-3 ms-3">Theme Options</h5>
           <hr className="custom-theme-hr" />
 
-          <nav className="nav flex-column bg-light pt-2 ps-lg-0 ps-2">
+          <nav className="nav flex-column bg-light pt-2 ps-2 ps-lg-0">
             <Link
               className="nav-link general-theme text-dark"
               to="/admin/theme/options/opt-text-subsection-general"
@@ -2524,20 +2690,30 @@ function General() {
           </nav>
         </div>
 
-        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 ">
-          <div className="d-flex justify-content-end">
-            <button className="btn btn-success button-change py-4 mt-4 mt-lg-3 me-lg-2 border d-flex cart-cart1">
+        <div className="content d-flex flex-column justify-content-center content-theme border border-start-0 rounded-0 ms-0 mb-4">
+          <div className="d-flex justify-content-end mt-3 me-2 ms-2">
+            <button
+              className="btn btn-success d-flex py-4 cart-cart1"
+              onClick={handleSubmit}
+            >
               Save Changes
             </button>
           </div>
 
-          <hr className="custom-changes1" />
+          <div className="border mt-2 w-100"></div>
+
           <form className="content-form ms-3 me-3">
-            <div className="mb-3 mt-2">
+            <div className="mb-3 mt-5">
               <label className="form-label" htmlFor="hotline">
                 Site title
               </label>
-              <input className="form-control py-4 label-hotline" type="text" />
+              <input
+                type="text"
+                className="form-control py-4 label-hotline cart-cart"
+                name="site_title"
+                value={site_title}
+                onChange={onInputChange}
+              />
             </div>
 
             <div className="mb-3">
@@ -2546,10 +2722,14 @@ function General() {
               </label>
 
               <select
-                className="form-select label-hotline label-date"
+                className="form-select label-hotline label-date cart-cart"
                 id="date-format"
                 style={{ height: "50px" }}
+                name="site_name"
+                value={site_name}
+                onChange={onInputChange}
               >
+                <option value="">Select an option</option>
                 <option value="no">No</option>
                 <option value="yes">Yes</option>
               </select>
@@ -2560,10 +2740,14 @@ function General() {
                 SEO title separator
               </label>
               <select
-                className="form-select label-hotline label-date"
+                className="form-select label-hotline label-date cart-cart"
                 id="date-format"
                 style={{ height: "50px" }}
+                name="title_separator"
+                value={title_separator}
+                onChange={onInputChange}
               >
+                <option value="">Select an option</option>
                 <option value="-(dash)">- (dash)</option>
                 <option value="|(pipe)">| (pipe)</option>
               </select>
@@ -2575,8 +2759,11 @@ function General() {
               </label>
               <input
                 type="text"
-                className="form-control py-4"
+                className="form-control py-4 cart-cart"
                 placeholder="SEO Title"
+                name="seo_title"
+                value={seo_title}
+                onChange={onInputChange}
               />
             </div>
 
@@ -2585,9 +2772,12 @@ function General() {
                 SEO Description
               </label>
               <textarea
-                className="form-control label-hotline"
+                className="form-control label-hotline cart-cart"
                 rows="3"
-                style={{ height: "70px" }}
+                style={{ height: "110px" }}
+                name="seo_description"
+                value={seo_description}
+                onChange={onInputChange}
               ></textarea>
             </div>
 
@@ -2596,10 +2786,12 @@ function General() {
               <div className="d-flex flex-row mt-1">
                 <input
                   type="radio"
-                  className="form-check-input me-2 fs-5"
+                  className="form-check-input me-2 fs-5 cart-cart"
                   id="indexRadio"
-                  name="seoIndex"
-                  defaultChecked
+                  name="seo_index"
+                  value="index"
+                  checked={seo_index === "index"}
+                  onChange={onInputChange}
                 />
                 <label htmlFor="indexRadio" className="mt-1">
                   Index
@@ -2607,9 +2799,12 @@ function General() {
 
                 <input
                   type="radio"
-                  className="form-check-input ms-3 me-2 fs-5"
+                  className="form-check-input ms-3 me-2 fs-5 cart-cart"
                   id="noIndexRadio"
-                  name="seoIndex"
+                  name="seo_index"
+                  value="noindex"
+                  checked={seo_index === "noindex"}
+                  onChange={onInputChange}
                 />
                 <label htmlFor="noIndexRadio" className="mt-1">
                   No Index
@@ -2617,34 +2812,54 @@ function General() {
               </div>
             </div>
 
-            <div className="">
+            <div>
               <h6 className="mb-3">SEO default Open Graph image</h6>
               <div
                 className="image-placeholder image-admin1"
-                onClick={() => document.getElementById("fileInput").click()}
+                style={{ position: "relative" }}
+                onClick={() => document.getElementById("fileInputSEO").click()}
               >
-                {imageUrl ? (
-                  <img
-                    alt="Uploaded preview"
-                    src={imageUrl}
-                    width="100"
-                    height="100"
+                <img
+                  alt="Uploaded preview"
+                  src={
+                    user.seo_og_image_url
+                      ? user.seo_og_image_url.startsWith("blob:")
+                        ? user.seo_og_image_url
+                        : `http://89.116.170.231:1600/src/image/${user.seo_og_image_url}`
+                      : Cutting
+                  }
+                  width="100"
+                  height="100"
+                />
+                {user.seo_og_image_url && (
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    onClick={removeSeoOgImage}
+                    style={{
+                      position: "absolute",
+                      top: "5px",
+                      right: "5px",
+                      cursor: "pointer",
+                      background: "#fff",
+                      borderRadius: "50%",
+                      padding: "2px",
+                      fontSize: "22px",
+                      color: "black",
+                    }}
                   />
-                ) : (
-                  <img src={Cutting} alt="RxLYTE" className="w-75 h-75" />
                 )}
               </div>
               <input
-                id="fileInput"
+                id="fileInputSEO"
                 type="file"
-                name="file"
+                name="seoOgImage"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={(e) => handleFileChange(e, "seoOpenGraph")}
               />
               <Link
                 className="ms-2 text-decoration-none choose-url"
                 to="#"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("fileInputSEO").click()}
               >
                 Choose image <br />
               </Link>
@@ -2663,39 +2878,45 @@ function General() {
                 Terms and Privacy Policy URL
               </label>
               <input
-                className="form-control py-4 label-hotline"
+                className="form-control py-4 label-hotline cart-cart"
                 id="seo-title"
-                placeholder="https://example.com/term-and-privacy-policy"
+                placeholder="/privacy-policy"
                 type="text"
+                name="terms_url"
+                value={terms_url}
+                onChange={onInputChange}
               />
             </div>
 
-            <div className="mb-3">
+            <div className="mb-1">
               <label className="form-label" htmlFor="seo-description">
                 Copyright
               </label>
               <textarea
-                className="form-control label-hotline"
+                className="form-control label-hotline cart-cart"
                 rows="3"
                 style={{ height: "59px" }}
+                name="copyright"
+                value={copyright}
+                onChange={onInputChange}
               ></textarea>
             </div>
-            <small className="form-text text-muted">
-              <p>Choose date format for your front theme.</p>
-            </small>
 
-            <div className="mb-3">
+            <div className="mb-3 mt-3">
               <label className="form-label" htmlFor="show-site-name">
                 Enable Preloader?
               </label>
               <select
-                className="form-select label-hotline"
+                className="form-select label-hotline cart-cart"
                 id="show-site-name"
                 style={{ height: "50px" }}
+                name="enable_preloader"
+                value={enable_preloader}
+                onChange={onInputChange}
               >
                 <option selected>Select an option</option>
-                <option value="">No</option>
-                <option value="">Yes</option>
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
               </select>
             </div>
 
@@ -2704,60 +2925,71 @@ function General() {
                 Preloader Version
               </label>
               <select
-                className="form-select label-hotline"
+                className="form-select label-hotline cart-cart"
                 id="show-site-name"
                 style={{ height: "50px" }}
+                name="preloader_version"
+                value={preloader_version}
+                onChange={onInputChange}
               >
                 <option selected>Select an option</option>
-                <option value="">Default</option>
-                <option value="">Theme built-in</option>
+                <option value="default">Default</option>
+                <option value="theme built-in">Theme built-in</option>
               </select>
             </div>
 
-            <div className="mb-3">
-              <label className="form-label" htmlFor="show-site-name">
-                Preloader Version
-              </label>
-              <div className="form-check form-switch mb-3">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="has-action"
-                />
-              </div>
-            </div>
-            <span className="form-text text-muted">
-              Enable lazy load images to improve page load time.
-            </span>
-
-            <div className="">
+            <div>
               <h6 className="mb-3 mt-2">Lazy load placeholder image</h6>
               <div
                 className="image-placeholder image-admin1"
-                onClick={() => document.getElementById("fileInput").click()}
+                style={{ position: "relative" }}
+                onClick={() => document.getElementById("fileInputLazy").click()}
               >
-                {imageUrl ? (
-                  <img
-                    alt="Uploaded preview"
-                    src={imageUrl}
-                    width="100"
-                    height="100"
+                <img
+                  alt="Uploaded preview"
+                  src={
+                    user.lazy_placeholder_image_url
+                      ? user.lazy_placeholder_image_url.startsWith("blob:")
+                        ? user.lazy_placeholder_image_url
+                        : `http://89.116.170.231:1600/src/image/${user.lazy_placeholder_image_url}`
+                      : user.lazy_placeholder_image
+                      ? `http://89.116.170.231:1600/src/image/${user.lazy_placeholder_image}`
+                      : Cutting
+                  }
+                  width="100"
+                  height="100"
+                />
+
+                {(user.lazy_placeholder_image_url ||
+                  user.lazy_placeholder_image) && (
+                  <FontAwesomeIcon
+                    icon={faXmark}
+                    onClick={removeLazyImage}
+                    style={{
+                      position: "absolute",
+                      top: "5px",
+                      right: "5px",
+                      cursor: "pointer",
+                      background: "#fff",
+                      borderRadius: "50%",
+                      padding: "2px",
+                      fontSize: "22px",
+                      color: "black",
+                    }}
                   />
-                ) : (
-                  <img src={Cutting} alt="RxLYTE" className="w-75 h-75" />
                 )}
               </div>
               <input
-                id="fileInput"
+                id="fileInputLazy"
                 type="file"
-                name="file"
+                name="lazyPlaceholderImage"
                 style={{ display: "none" }}
-                onChange={handleFileChange}
+                onChange={(e) => handleFileChange(e, "lazyPlaceholderImage")}
               />
               <Link
                 className="ms-2 text-decoration-none choose-url"
                 to="#"
-                onClick={() => document.getElementById("fileInput").click()}
+                onClick={() => document.getElementById("fileInputLazy").click()}
               >
                 Choose image <br />
               </Link>
@@ -2770,12 +3002,13 @@ function General() {
                 Add from URL
               </Link>
             </div>
+
             <span className="ms-3 form-text text-muted">
               This image will be used as placeholder for lazy load images.
             </span>
           </form>
+          <ToastContainer />
         </div>
-        <ToastContainer />
       </div>
     </>
   );

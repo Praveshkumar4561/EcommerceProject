@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./TermsCondition.css";
-
 import Tonic from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
@@ -10,25 +9,24 @@ import axios from "axios";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function TermsCondition() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -114,21 +112,103 @@ function TermsCondition() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
 
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
+  let [cookie, setCookie] = useState([]);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      return;
     }
+
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setCookie([response.data]);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
+
+  const handleCookieAccept = (data) => {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
+    setCookie((prevCookie) =>
+      prevCookie.filter((item) => item.cookie !== "yes")
+    );
+  };
+
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
   };
 
   return (
@@ -163,7 +243,7 @@ function TermsCondition() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -229,7 +309,7 @@ function TermsCondition() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{count6}</span>
+                    <span className="count-badge mt-2 mt-lg-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
@@ -331,7 +411,7 @@ function TermsCondition() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -351,19 +431,19 @@ function TermsCondition() {
         <div className="container">
           <div className="row gap-3 mt-4 pt-3 d-flex justify-content-xxl-start justify-content-lg-center justify-content-md-center me-1 me-sm-0">
             <div className="col-12 col-md-12 col-lg-12 blog-condition bg-light h-auto">
-              <h3 className="lorem-condition ms-2 ps-1 pt-4 text-start lorem-space fw-normal">
+              <h2 className="lorem-condition ms-2 ps-1 pt-4 text-start lorem-space fw-normal">
                 Terms and Conditions
-              </h3>
+              </h2>
 
               <div className="lorem-typo lh-lg">
                 <ul className="text-start me-sm-2 ms-4">
                   <li className="mt-2 ms-0 lorem-terms">
-                    Before you do any business with Rx Lyte, please read the
+                    Before you do any business with RxLyte, please read the
                     terms and conditions listed below very carefully.
                   </li>
 
                   <li className="mt-2 ms-0 lorem-terms">
-                    Please keep in mind that Rx Lyte can change its website,
+                    Please keep in mind that RxLyte can change its website,
                     rules, and laws at any time and for any reason.
                   </li>
 
@@ -380,7 +460,7 @@ function TermsCondition() {
                 <div className="lorem-typo">
                   <ul className="text-start ms-4">
                     <li className="mt-2 ms-0 lorem-terms">
-                      Rx Lyte gets its goods from trustworthy manufacturers in
+                      RxLyte gets its goods from trustworthy manufacturers in
                       India and other places, making sure they meet FDA and WHO
                       standards.
                     </li>
@@ -399,7 +479,7 @@ function TermsCondition() {
                 <div className="lorem-typo">
                   <ul className="text-start ms-4">
                     <li className="mt-2 ms-0 lorem-terms">
-                      The generic drugs that Rx Lyte sells have the same
+                      The generic drugs that RxLyte sells have the same
                       chemicals as the brand-name drugs sold in the US.
                     </li>
 
@@ -459,7 +539,7 @@ function TermsCondition() {
 
                     <li className="mt-2 ms-0 lorem-terms">
                       If there are any problems with a sale, buyers must first
-                      call Rx Lyte.
+                      call RxLyte.
                     </li>
                   </ul>
                 </div>
@@ -476,7 +556,7 @@ function TermsCondition() {
                     </li>
 
                     <li className="mt-2 ms-0 lorem-terms">
-                      The fact that you are using Rx Lyte means that you have
+                      The fact that you are using RxLyte means that you have
                       read and agree to all of its policies.
                     </li>
                   </ul>
@@ -504,8 +584,8 @@ function TermsCondition() {
                     </li>
 
                     <li className="mt-2 ms-0 lorem-terms">
-                      To protect customers' privacy, Rx Lyte uses SSL security
-                      to keep all personally identifiable information safe while
+                      To protect customers' privacy, RxLyte uses SSL security to
+                      keep all personally identifiable information safe while
                       it's being sent. To keep credit card information safe and
                       private, it is kept in a computer that is protected and
                       not connected to the internet.Not connected to the
@@ -599,7 +679,58 @@ function TermsCondition() {
         </div>
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row theme-allow cart-cart">
+            {Array.isArray(cookie) && cookie.length > 0
+              ? cookie.map((data, key) => {
+                  if (data.cookie !== "yes") return null;
+                  const cardStyle = {
+                    backgroundColor: data.backgroundColor,
+                    color: data.textColor,
+                    ...(data.style === "Minimal" && {
+                      width: "388px",
+                      height: "135px",
+                      marginLeft: "2px",
+                    }),
+                  };
+
+                  return (
+                    <div
+                      className="col-12 col-lg-12 col-md-12 border d-flex justify-content-center gap-5 align-items-center"
+                      key={key}
+                      style={cardStyle}
+                    >
+                      <div className="d-flex align-items-center justify-content-between w-100">
+                        <span
+                          className={
+                            data.style === "Full Width"
+                              ? "message-cookie ms-1"
+                              : ""
+                          }
+                        >
+                          {data.message}.
+                        </span>
+                        <button
+                          className={`btn btn-dark d-flex cart-cart allow-site mt-1 button-cook mb-2 mt-2 btn-outline-light ${
+                            data.style === "Full Width"
+                              ? "button-cook-position"
+                              : ""
+                          }`}
+                          onClick={() => handleCookieAccept(data)}
+                        >
+                          {data.button_text}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -609,77 +740,54 @@ function TermsCondition() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/about"
-                        className="text-white text-decoration-none"
-                      >
-                        About Us
-                      </Link>
+                      <Link to="/about">About Us</Link>
                     </li>
                     <li>
-                      <Link
-                        to="/blog"
-                        className="text-white text-decoration-none"
-                      >
-                        Blog
-                      </Link>
+                      <Link to="/blog">Blog</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Payment Security
-                      </Link>
+                      <Link>Payment Security</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Affiliate Marketing
-                      </Link>
+                      <Link>Affiliate Marketing</Link>
                     </li>
                   </ul>
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/faqs"
-                        className="text-white text-decoration-none"
-                      >
-                        FAQ
+                      <Link to="/faqs" className="text-decoration-none">
+                        FAQ's
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        className="text-white text-decoration-none"
-                        to="/sitemap"
-                      >
+                      <Link className="text-decoration-none" to="/sitemap">
                         Sitemap
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        to="/contact-us"
-                        className="text-white text-decoration-none"
-                      >
+                      <Link to="/contact-us" className="text-decoration-none">
                         Contact
                       </Link>
                     </li>
@@ -689,20 +797,31 @@ function TermsCondition() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger-access text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-accesses d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={newsSubmit}
+                  aria-label="Subscribe to newsletter"
                 >
                   Subscribe
                 </button>
@@ -714,9 +833,9 @@ function TermsCondition() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
-              </p>
+              <div className="text-md-start text-lg-start text-start mb-0">
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+              </div>
             </div>
           </div>
         </div>

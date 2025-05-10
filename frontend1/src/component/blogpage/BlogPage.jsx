@@ -12,25 +12,24 @@ import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import JsonLd from "../JsonLd";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function BlogPage() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -64,7 +63,12 @@ function BlogPage() {
   const alldata = async () => {
     try {
       let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
-      setUser(response.data);
+      const filteredData = response.data.filter(
+        (blog) =>
+          (blog.status === "Published" || blog.status === "Draft") &&
+          String(blog.feature).toLowerCase() === "yes"
+      );
+      setUser(filteredData);
     } catch (error) {
       console.error("Error fetching blog data:", error);
     }
@@ -131,22 +135,21 @@ function BlogPage() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   const schemaData = {
     "@context": "http://schema.org",
@@ -217,6 +220,103 @@ function BlogPage() {
     ],
   };
 
+  let [ads, setAds] = useState([]);
+
+  useEffect(() => {
+    const adspagedata = async () => {
+      try {
+        const response = await axios.get("http://89.116.170.231:1600/adsdata");
+        setAds(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    adspagedata();
+  }, []);
+
+  let [cookie, setCookie] = useState([]);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      return;
+    }
+
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setCookie([response.data]);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
+
+  const handleCookieAccept = (data) => {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
+    setCookie((prevCookie) =>
+      prevCookie.filter((item) => item.cookie !== "yes")
+    );
+  };
+
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <JsonLd data={schemaData} />
@@ -229,6 +329,58 @@ function BlogPage() {
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="http://srv724100.hstgr.cloud/blog" />
       </Helmet>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row m-auto">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Header(before)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                return footerAd ? (
+                  <div className="ad-card border">
+                    <picture className="ad-picture">
+                      {footerAd.mobileImage && (
+                        <source
+                          media="(max-width: 767px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                        />
+                      )}
+                      {footerAd.desktopImage && (
+                        <source
+                          media="(min-width: 768px) and (max-width: 991px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                        />
+                      )}
+                      <img
+                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        alt="Advertisement"
+                        className="ad-img"
+                      />
+                    </picture>
+                    <div className="ad-overlay">
+                      <div className="ad-overlay-top">
+                        <button className="ad-button btn btn-success d-flex cart-cart1">
+                          <Link to="/shop" className="ad-link">
+                            {footerAd.button}
+                          </Link>
+                        </button>
+                      </div>
+                      <div className="ad-overlay-bottom cart-cart">
+                        <h3 className="ad-title">{footerAd.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div
         className="container"
@@ -247,7 +399,7 @@ function BlogPage() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -415,7 +567,7 @@ function BlogPage() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -431,20 +583,80 @@ function BlogPage() {
       </div>
       <div></div>
 
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row m-auto">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Header(after)" &&
+                    new Date(data.expired) > new Date()
+                );
+                return footerAd ? (
+                  <div className="ad-card border">
+                    <picture className="ad-picture">
+                      {footerAd.mobileImage && (
+                        <source
+                          media="(max-width: 767px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                        />
+                      )}
+                      {footerAd.desktopImage && (
+                        <source
+                          media="(min-width: 768px) and (max-width: 991px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                        />
+                      )}
+                      <img
+                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        alt="Advertisement"
+                        className="ad-img"
+                      />
+                    </picture>
+                    <div className="ad-overlay">
+                      <div className="ad-overlay-top">
+                        <button className="ad-button btn btn-success d-flex cart-cart1">
+                          <Link to="/shop" className="ad-link">
+                            {footerAd.button}
+                          </Link>
+                        </button>
+                      </div>
+                      <div className="ad-overlay-bottom cart-cart">
+                        <h3 className="ad-title">{footerAd.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="container-fluid overflow-hidden">
         <div className="container mt-2 pt-4 d-flex justify-content-start ms-0 ms-lg-0">
           <div className="row d-flex">
             {Array.isArray(user) && user.length > 0 ? (
               user.map((blog, index) => (
-                <div
+                <article
                   className="col-12 col-md-12 col-lg-12 blog-tonic mb-5 mb-lg-0 blog-light bg-body"
                   key={index}
+                  aria-labelledby={`blog-title-${index}`}
                 >
                   <div className="image-page">
                     <img
                       src={`http://89.116.170.231:1600/src/image/${blog.image}`}
-                      alt="RxLYTE"
-                      className="img-fluid w-100 h-501 mb-0 img-hover-effect"
+                      alt={
+                        blog.name
+                          ? `Image for ${blog.name}`
+                          : `Blog image ${index + 1}`
+                      }
+                      width="150"
+                      height="150"
+                      loading="lazy"
+                      className="img-fluid w-100 mb-0 img-hover-effect"
+                      style={{ objectFit: "cover", aspectRatio: "1 / 1" }}
                     />
                   </div>
 
@@ -461,38 +673,146 @@ function BlogPage() {
                       </div>
                     </div>
 
-                    <h4 className="fs-51 fw-medium text-start lorem-text mb-0 mb-lg-2 blog-cal1">
-                      {blog.name}
-                    </h4>
-                    <p className="fs-51 fw-medium text-start lorem-text blog-cal">
+                    <h2
+                      id={`blog-title-${index}`}
+                      className="blog-font fw-medium text-start lorem-text mb-0 mb-lg-2 blog-cal1 fw-bold"
+                    >
+                      {blog.name.split(" ").slice(0, 8).join(" ")}
+                    </h2>
+
+                    <p className="fw-medium text-start lorem-text blog-cal">
                       {blog.description.split("").slice(0, 125).join("")}
                     </p>
 
                     <div className="d-flex mt-0 align-items-center flex-row">
                       <Link
                         to={`/blog-details/${blog.id}`}
-                        className="text-decoration-none"
+                        className="btn btn-success-accesses rounded text-light mt-0 more-button d-flex align-items-center justify-content-center w-auto mb-4"
+                        aria-label={`Read full article about ${blog.name}`}
                       >
-                        <p className="read-more lorem-text mb-0">
-                          <button className="btn-success text-light rounded py-2 cart-cart1 px-2 mt-3">
-                            Read more
-                          </button>
-                        </p>
+                        <span className="visually-hidden">
+                          Read full article about{" "}
+                        </span>
+                        {blog.name.split(" ").slice(0, 2).join(" ")}
+                        <span className="visually-hidden"> article</span>
                       </Link>
                     </div>
                   </div>
-                </div>
+                </article>
               ))
             ) : (
-              <tr>
-                <td colSpan="9" className="text-center"></td>
-              </tr>
+              <div className="text-center cart-cart">
+                No blog posts available.
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4 blog-page-footer">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row theme-allow cart-cart">
+            {Array.isArray(cookie) && cookie.length > 0
+              ? cookie.map((data, key) => {
+                  if (data.cookie !== "yes") return null;
+                  const cardStyle = {
+                    backgroundColor: data.backgroundColor,
+                    color: data.textColor,
+                    ...(data.style === "Minimal" && {
+                      width: "388px",
+                      height: "135px",
+                      marginLeft: "2px",
+                    }),
+                  };
+
+                  return (
+                    <div
+                      className="col-12 col-lg-12 col-md-12 border d-flex justify-content-center gap-5 align-items-center"
+                      key={key}
+                      style={cardStyle}
+                    >
+                      <div className="d-flex align-items-center justify-content-between w-100">
+                        <span
+                          className={
+                            data.style === "Full Width"
+                              ? "message-cookie ms-1"
+                              : ""
+                          }
+                        >
+                          {data.message}.
+                        </span>
+                        <button
+                          className={`btn btn-dark d-flex cart-cart allow-site mt-1 button-cook mb-2 mt-2 btn-outline-light ${
+                            data.style === "Full Width"
+                              ? "button-cook-position"
+                              : ""
+                          }`}
+                          onClick={() => handleCookieAccept(data)}
+                        >
+                          {data.button_text}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row">
+            <div className="ad-container">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Footer(before)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                return footerAd ? (
+                  <div className="ad-card border">
+                    <picture className="ad-picture">
+                      {footerAd.mobileImage && (
+                        <source
+                          media="(max-width: 767px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                        />
+                      )}
+                      {footerAd.desktopImage && (
+                        <source
+                          media="(min-width: 768px) and (max-width: 991px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                        />
+                      )}
+                      <img
+                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        alt="Advertisement"
+                        className="ad-img"
+                      />
+                    </picture>
+                    <div className="ad-overlay">
+                      <div className="ad-overlay-top">
+                        <button className="ad-button btn btn-success d-flex cart-cart1">
+                          <Link to="/shop" className="ad-link">
+                            {footerAd.button}
+                          </Link>
+                        </button>
+                      </div>
+                      <div className="ad-overlay-bottom cart-cart">
+                        <h3 className="ad-title">{footerAd.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer pt-4 pb-4 cart-cart mt-4 blog-page-footer">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -502,77 +822,54 @@ function BlogPage() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/about"
-                        className="text-white text-decoration-none"
-                      >
-                        About Us
-                      </Link>
+                      <Link to="/about">About Us</Link>
                     </li>
                     <li>
-                      <Link
-                        to="/blog"
-                        className="text-white text-decoration-none"
-                      >
-                        Blog
-                      </Link>
+                      <Link to="/blog">Blog</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Payment Security
-                      </Link>
+                      <Link>Payment Security</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Affiliate Marketing
-                      </Link>
+                      <Link>Affiliate Marketing</Link>
                     </li>
                   </ul>
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/faqs"
-                        className="text-white text-decoration-none"
-                      >
-                        FAQ
+                      <Link to="/faqs" className="text-decoration-none">
+                        FAQ's
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        className="text-white text-decoration-none"
-                        to="/sitemap"
-                      >
+                      <Link className="text-decoration-none" to="/sitemap">
                         Sitemap
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        to="/contact-us"
-                        className="text-white text-decoration-none"
-                      >
+                      <Link to="/contact-us" className="text-decoration-none">
                         Contact
                       </Link>
                     </li>
@@ -582,20 +879,31 @@ function BlogPage() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger-access text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-accesses d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={newsSubmit}
+                  aria-label="Subscribe to newsletter"
                 >
                   Subscribe
                 </button>
@@ -607,13 +915,65 @@ function BlogPage() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
-              </p>
+              <div className="text-md-start text-lg-start text-start mb-0">
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+              </div>
             </div>
           </div>
         </div>
       </footer>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row m-0">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Footer(after)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                return footerAd ? (
+                  <div className="ad-card border">
+                    <picture className="ad-picture">
+                      {footerAd.mobileImage && (
+                        <source
+                          media="(max-width: 767px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                        />
+                      )}
+                      {footerAd.desktopImage && (
+                        <source
+                          media="(min-width: 768px) and (max-width: 991px)"
+                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                        />
+                      )}
+                      <img
+                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        alt="Advertisement"
+                        className="ad-img"
+                      />
+                    </picture>
+                    <div className="ad-overlay">
+                      <div className="ad-overlay-top">
+                        <button className="ad-button btn btn-success d-flex cart-cart1">
+                          <Link to="/shop" className="ad-link">
+                            {footerAd.button}
+                          </Link>
+                        </button>
+                      </div>
+                      <div className="ad-overlay-bottom cart-cart">
+                        <h3 className="ad-title">{footerAd.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

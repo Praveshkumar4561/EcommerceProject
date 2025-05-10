@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 html,
 body {
   width: 100vw;
@@ -12,95 +13,6 @@ body {
   overflow-x: hidden;
   font-family: "SanDiego";
   position: relative;
-}
-
-#container-custom {
-  width: 100vw;
-  height: 190px;
-  background-color: #f2f5f7;
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-.container-custom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  margin-top: 3.4rem;
-}
-
-@media (max-width: 992px) {
-  #container-custom {
-    height: auto;
-    min-height: 340px;
-    width: 100%;
-  }
-  .container-custom {
-    position: relative;
-    bottom: 5rem;
-  }
-}
-
-.container-custom1 {
-  width: 72rem;
-  max-width: 100%;
-  position: relative;
-  top: 2.4rem;
-  margin: 0 auto;
-}
-
-@media (max-width: 992px) {
-  .container-custom1 {
-    width: 100%;
-    margin: 0;
-  }
-  .container-custom1 {
-    width: 100%;
-    margin-left: -1.9rem;
-    margin-right: 0;
-    padding: 0;
-  }
-}
-
-.custom-dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0.2rem;
-  width: 303px;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1050;
-  border-radius: 10px;
-}
-
-.custom-dropdown ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.custom-dropdown .nav-item {
-  margin: 0;
-}
-
-.custom-dropdown .nav-link {
-  display: block;
-  padding: 8px 12px;
-  text-decoration: none;
-}
-
-.custom-dropdown .nav-link:hover {
-  background-color: #f0f0f0;
-}
-
-.navbar-toggler {
-  position: relative;
-  z-index: 1050;
-  border: none;
 }
 
 @media (max-width: 992px) {
@@ -119,91 +31,28 @@ body {
   .navbar-collapse {
     display: none;
   }
+
   .hamburger-image {
     position: relative;
     bottom: 0.9rem;
     right: -2rem;
   }
+
   .navbar-icons {
     position: absolute;
     top: 1.4rem;
     right: 5rem;
   }
+
   .addcartsx {
     margin-top: -1.2rem;
   }
-}
-
-.profiles {
-  width: 25px;
-  height: 25px;
-}
-.profiles1 {
-  width: 25px;
-  height: 25px;
 }
 
 .addcartsx {
   position: absolute;
   top: 0.6rem;
   font-family: Verdana, Tahoma, sans-serif;
-}
-
-@media (max-width: 450px) {
-  .navbar-icons {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-}
-
-@media (min-width: 993px) {
-  .custom-dropdown {
-    display: none;
-  }
-
-  .navbar-collapse {
-    display: flex;
-  }
-
-  .navbar-brand.d-lg-none {
-    display: none;
-  }
-}
-
-.navbar-toggler:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.container-contact {
-  text-align: center;
-  margin-bottom: 2rem;
-  position: relative;
-  bottom: 32%;
-}
-
-#container-contact1 {
-  font-family: "SanDiego";
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-  bottom: 100%;
-  left: 21%;
-}
-
-.breadcrumb {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-}
-
-.breadcrumb-item {
-  font-weight: bold;
-  white-space: nowrap;
 }
 
 @media (max-width: 767px) {
@@ -221,47 +70,11 @@ body {
     margin-top: 1rem;
     white-space: nowrap;
   }
+
   .breadcrumb {
     flex-direction: row;
     overflow-x: auto;
   }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .container-contact {
-    font-size: 1.75rem;
-  }
-
-  #container-contact1 {
-    text-align: left;
-    margin-top: 1.5rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb {
-    flex-direction: row;
-  }
-}
-
-@media (min-width: 992px) {
-  .container-contact {
-    font-size: 2rem;
-  }
-
-  #container-contact1 {
-    text-align: left;
-    margin-top: 2rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb {
-    flex-direction: row;
-  }
-}
-
-@font-face {
-  font-family: "SanDiego";
-  src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
 }
 
 .form-select {
@@ -363,16 +176,22 @@ body {
   font-size: 20px;
 }
 
+.feature-watch {
+  height: 28rem;
+}
+
 .shop-icon {
   width: 100%;
   max-width: 24.4%;
   letter-spacing: 1px;
   word-spacing: 2px;
 }
+
 .feature-watch {
   width: 100%;
   max-width: 24.4%;
 }
+
 .shop-icon img {
   width: 100%;
   max-width: 25%;
@@ -384,10 +203,13 @@ body {
     max-width: 97%;
     margin-right: 3%;
   }
+
   .feature-watch {
     width: 100%;
     max-width: 48.3%;
+    height: 33rem;
   }
+
   .shop-icon img {
     width: 100%;
     max-width: 15%;
@@ -478,4 +300,121 @@ body {
 .cart-wishlist2 {
   width: 25px;
   height: 31px;
+}
+
+.ad-card {
+  position: relative;
+  right: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+  margin-top: 10px;
+  border: 1px solid rgb(170, 149, 149);
+}
+
+.ad-card-container {
+  max-width: 500px;
+  padding: 0 15px;
+  margin-top: 10px;
+}
+
+.full-width-card {
+  width: 1140px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1140px) {
+  .full-width-card {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.ad-img {
+  width: 100%;
+  padding: 0px 1px;
+  height: 100%;
+  display: block;
+  margin-top: 10px;
+  object-position: center;
+}
+
+.ad-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.ad-overlay-top {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ad-overlay-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.ad-button {
+  background-color: #ff6f61;
+  border: none;
+  border-radius: 5px;
+  padding: 21px 11px !important;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ad-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.ad-title {
+  margin: 0;
+  color: black;
+  font-size: 1.5rem;
+  font-weight: 100;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 991px) {
+  .ad-title {
+    font-size: 1.3rem;
+  }
+
+  .ad-button {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .ad-card {
+    left: 0;
+    bottom: 5px;
+    border: 1px solid rgb(170, 149, 149);
+  }
+}
+
+.customer-homeimage1 {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 100%;
+}
+
+.customer-homeimage1 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-trend {
+  font-size: 24px;
 }

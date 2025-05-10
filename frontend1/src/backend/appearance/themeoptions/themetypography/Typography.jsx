@@ -2,19 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Typography.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function Typography() {
   const [query, setQuery] = useState("");
@@ -76,6 +77,7 @@ function Typography() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -171,7 +173,7 @@ function Typography() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const applyTypographyStyles = (settings) => {
     Object.entries(settings).forEach(([key, value]) => {
@@ -216,15 +218,12 @@ function Typography() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/update-font-settings",
-        user
-      );
+      await axios.post("http://89.116.170.231:1600/update-font-settings", user);
       applyTypographyStyles(user);
       toast.success("Typography updated successfully!", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -233,7 +232,7 @@ function Typography() {
       toast.error("Typography is not updated", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -248,6 +247,45 @@ function Typography() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Theme Options - Typography | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta
+          property="og:title"
+          content="Theme Options - Typography | RxLYTE"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -329,7 +367,9 @@ function Typography() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1531,7 +1571,7 @@ function Typography() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2642,7 +2682,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 16
                     </small>
                   </div>
@@ -2660,7 +2700,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 36
                     </small>
                   </div>
@@ -2678,7 +2718,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 32
                     </small>
                   </div>
@@ -2696,7 +2736,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 28
                     </small>
                   </div>
@@ -2714,7 +2754,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 24
                     </small>
                   </div>
@@ -2732,7 +2772,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 20
                     </small>
                   </div>
@@ -2750,7 +2790,7 @@ function Typography() {
                     onChange={onInputChange}
                   />
                   <div className="mt-1">
-                    <small className="text-muted">
+                    <small className="text-dark">
                       The font size in pixels (px). Default is 16
                     </small>
                   </div>

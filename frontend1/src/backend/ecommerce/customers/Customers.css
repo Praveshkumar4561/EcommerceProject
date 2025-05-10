@@ -178,7 +178,7 @@ input[type="search"] {
 }
 .image-default {
   width: 100%;
-  max-width: 23%;
+  max-width: 21%;
 }
 
 @media (max-width: 576px) {

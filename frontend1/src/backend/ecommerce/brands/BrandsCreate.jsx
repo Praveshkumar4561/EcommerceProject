@@ -3,6 +3,7 @@ import "./BrandsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import Cutting from "../../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,14 +11,15 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function BrandsCreate() {
   const [query, setQuery] = useState("");
@@ -84,7 +86,9 @@ function BrandsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -126,35 +130,6 @@ function BrandsCreate() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented. ",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -192,7 +167,6 @@ function BrandsCreate() {
     date: "",
     file: null,
   });
-
   let {
     name,
     permalink,
@@ -205,17 +179,104 @@ function BrandsCreate() {
     file,
   } = user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const [logoImage, setLogoImage] = useState(null);
+  const [logoImageUrl, setLogoImageUrl] = useState(null);
+
+  const handleLogoFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setLogoImage(file);
+      setLogoImageUrl(url);
+      setUser({ ...user, file: file });
+    }
+  };
+
+  const handleLogoCloseClick = (e) => {
+    e.stopPropagation();
+    setLogoImageUrl(null);
+    setLogoImage(null);
+  };
+
+  const [seoImage, setSeoImage] = useState(null);
+  const [seoImageUrl, setSeoImageUrl] = useState(null);
+
+  const handleSeoFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setSeoImage(file);
+      setSeoImageUrl(url);
+    }
+  };
+
+  const handleSeoCloseClick = (e) => {
+    e.stopPropagation();
+    setSeoImageUrl(null);
+    setSeoImage(null);
+  };
+
+  const handleAddFromUrl = () => {
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1000,
+          progress: true,
+          closeOnClick: true,
+          draggable: true,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = {
+      name,
+      permalink,
+      description,
+      website,
+      sort,
+      status,
+      featured,
+      date,
+      file,
+    };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     let formData = new FormData();
-    formData.append("name", name);
-    formData.append("permalink", permalink);
-    formData.append("description", description);
-    formData.append("website", website);
-    formData.append("sort", sort);
-    formData.append("featured", featured ? "Yes" : "No");
-    formData.append("status", status);
-    formData.append("date", date);
-    formData.append("file", file);
+    formData.append("name", user.name);
+    formData.append("permalink", user.permalink);
+    formData.append("description", user.description);
+    formData.append("website", user.website);
+    formData.append("sort", user.sort);
+    formData.append("featured", user.featured ? "Yes" : "No");
+    formData.append("status", user.status);
+    formData.append("date", user.date);
+    formData.append("file", user.file);
     try {
       const response = await axios.post(
         "http://89.116.170.231:1600/brandsubmit",
@@ -236,6 +297,7 @@ function BrandsCreate() {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
@@ -262,7 +324,7 @@ function BrandsCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   let [brands, setBrands] = useState(false);
 
@@ -272,6 +334,42 @@ function BrandsCreate() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New brand | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="New brand | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -353,7 +451,9 @@ function BrandsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1555,7 +1655,7 @@ function BrandsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2198,7 +2298,7 @@ function BrandsCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/brands">BRANDS</Link>
           </li>
 
@@ -2252,6 +2352,11 @@ function BrandsCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2266,26 +2371,35 @@ function BrandsCreate() {
                       value={permalink}
                       onChange={onInputChange}
                     />
+                    {errors.permalink && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.permalink}
+                      </small>
+                    )}
                   </div>
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
                     <label htmlFor="">Description</label>
-                    <input
+                    <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="Short description"
                       name="description"
                       value={description}
                       onChange={onInputChange}
                       style={{
-                        height: "70px",
-                        cursor: "pointer",
+                        height: "60px",
                         zIndex: "1000",
                         position: "relative",
                       }}
                     />
+                    {errors.description && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.description}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2300,6 +2414,11 @@ function BrandsCreate() {
                       value={website}
                       onChange={onInputChange}
                     />
+                    {errors.website && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.website}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2314,6 +2433,11 @@ function BrandsCreate() {
                       value={sort}
                       onChange={onInputChange}
                     />
+                    {errors.sort && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.sort}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2328,16 +2452,21 @@ function BrandsCreate() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
+                    {errors.date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.date}
+                      </small>
+                    )}
                   </div>
                 </div>
               </form>
 
               <div className="card mt-3 seo-metas1">
-                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center text-start">
                   <div className="w-100">
                     <h5 className="card-title1">Search Engine Optimize</h5>
                     <Link
@@ -2385,38 +2514,62 @@ function BrandsCreate() {
                             <label className="mt-3 pt-2 ms-2">SEO image</label>
                             <div className="image-card border-0 ps-1">
                               <div
-                                className="image-placeholder"
+                                className="image-placeholder position-relative"
                                 onClick={() =>
-                                  document.getElementById("fileInput").click()
+                                  document
+                                    .getElementById("fileInputSeo")
+                                    .click()
                                 }
                               >
-                                {imageUrl ? (
+                                {seoImageUrl ? (
                                   <img
                                     alt="Uploaded preview"
-                                    src={imageUrl}
+                                    src={seoImageUrl}
                                     width="100"
                                     height="100"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInputSeo")
+                                        .click()
+                                    }
                                   />
                                 ) : (
                                   <img
                                     src={Cutting}
                                     alt="RxLYTE"
                                     className="w-75 h-75 img-fluid"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInputSeo")
+                                        .click()
+                                    }
+                                  />
+                                )}
+                                {seoImageUrl && (
+                                  <FontAwesomeIcon
+                                    icon={faXmark}
+                                    className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleSeoCloseClick(e);
+                                    }}
                                   />
                                 )}
                               </div>
                               <input
-                                id="fileInput"
+                                id="fileInputSeo"
                                 type="file"
-                                name="file"
+                                name="seoFile"
                                 style={{ display: "none" }}
-                                onChange={handleFileChange}
+                                onChange={handleSeoFileChange}
                               />
                               <Link
-                                className="ms-5"
+                                className="ms-5 text-decoration-none choose-url"
                                 to="#"
                                 onClick={() =>
-                                  document.getElementById("fileInput").click()
+                                  document
+                                    .getElementById("fileInputSeo")
+                                    .click()
                                 }
                               >
                                 Choose image <br />
@@ -2437,9 +2590,9 @@ function BrandsCreate() {
                               className="form-check-input"
                               type="radio"
                               name="check"
-                              checked
+                              id="Index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="Index" className="ms-2">
                               Index
                             </label>
 
@@ -2448,8 +2601,9 @@ function BrandsCreate() {
                               type="radio"
                               value="index"
                               name="check"
+                              id="No index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="No index" className="ms-2">
                               No index
                             </label>
                           </div>
@@ -2463,7 +2617,7 @@ function BrandsCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2474,8 +2628,13 @@ function BrandsCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/brands"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
@@ -2494,49 +2653,75 @@ function BrandsCreate() {
                   <option value="Draft">Draft</option>
                   <option value="Pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Logo</h4>
                 <hr />
-                <div
-                  className="image-placeholder"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
-                  {imageUrl ? (
+                <div className="image-placeholder mt-2 position-relative">
+                  {logoImageUrl ? (
                     <img
                       alt="Uploaded preview"
-                      src={imageUrl}
+                      src={logoImageUrl}
                       width="100"
                       height="100"
+                      onClick={() =>
+                        document.getElementById("fileInputLogo").click()
+                      }
                     />
                   ) : (
                     <img
                       src={Cutting}
-                      alt="RxLYTE"
-                      className="w-75 h-75 img-fluid rounded"
+                      alt="Background"
+                      className="w-100 h-100 rounded"
+                      onClick={() =>
+                        document.getElementById("fileInputLogo").click()
+                      }
+                    />
+                  )}
+                  {logoImageUrl && (
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLogoCloseClick(e);
+                      }}
                     />
                   )}
                 </div>
                 <input
-                  id="fileInput"
+                  id="fileInputLogo"
                   type="file"
-                  name="file"
+                  name="logoFile"
                   style={{ display: "none" }}
-                  onChange={handleFileChange}
+                  onChange={handleLogoFileChange}
                 />
                 <Link
+                  className="ms-2 text-decoration-none choose-url"
                   to="#"
-                  onClick={() => document.getElementById("fileInput").click()}
+                  onClick={() =>
+                    document.getElementById("fileInputLogo").click()
+                  }
                 >
                   Choose image
                 </Link>
-                <span className="ms-2 me-2">or</span>
-                <Link to="#" onClick={handleAddFromUrl}>
+                <span className="ms-3 me-2">or</span>
+                <Link
+                  to="#"
+                  onClick={handleAddFromUrl}
+                  className="text-decoration-none choose-url"
+                >
                   Add from URL
                 </Link>
               </div>
-              <div className="border rounded p-3 customer-page1">
+
+              <div className="border rounded p-3 customer-page1 mb-4">
                 <h4 className="mt-0 text-start">Is featured?</h4>
                 <hr />
                 <div className="form-check form-switch mb-3">

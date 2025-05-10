@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./SpecificationAttributeCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,12 +11,13 @@ import {
   faFloppyDisk,
   faPlus,
   faTrashCan,
+  faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function SpecificationAttributeCreate() {
   let [count5, setCount5] = useState(0);
@@ -26,7 +28,7 @@ function SpecificationAttributeCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -76,6 +78,7 @@ function SpecificationAttributeCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -182,8 +185,30 @@ function SpecificationAttributeCreate() {
   });
   const { groupname, name, fieldtype, valuegroup, date } = user;
 
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { groupname, name, fieldtype, valuegroup, date };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   let handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       await axios.post(
         "http://89.116.170.231:1600/specificationattribute",
@@ -243,6 +268,44 @@ function SpecificationAttributeCreate() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create Specification Attributes | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:title"
+          content="Create Specification Attributes | RxLYTE"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -324,7 +387,9 @@ function SpecificationAttributeCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -364,7 +429,7 @@ function SpecificationAttributeCreate() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back4">
+        <div className="sidebar-back4 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1532,7 +1597,7 @@ function SpecificationAttributeCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2234,7 +2299,7 @@ function SpecificationAttributeCreate() {
                     <span className="text-danger fw-bold ms-2">*</span>
                   </label>
                   <select
-                    className="form-select mt-2 ms-0 mb-3 input-text"
+                    className="form-select mt-2 ms-0 input-text"
                     style={{ height: "50px" }}
                     name="groupname"
                     value={groupname}
@@ -2251,19 +2316,29 @@ function SpecificationAttributeCreate() {
                       <option disabled>No attributes available</option>
                     )}
                   </select>
+                  {errors.groupname && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.groupname}
+                    </small>
+                  )}
                 </div>
 
-                <div>
+                <div className="mb-3 mt-3">
                   <label htmlFor="description">
                     Name <span className="text-danger fw-bold">*</span>
                   </label>
                   <input
-                    className="form-control mt-2 py-4 mb-3 input-text"
+                    className="form-control mt-2 py-4 input-text"
                     placeholder="Name"
                     name="name"
                     value={name}
                     onChange={onInputChange}
                   />
+                  {errors.name && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.name}
+                    </small>
+                  )}
                 </div>
 
                 <div className="mb-3">
@@ -2284,27 +2359,42 @@ function SpecificationAttributeCreate() {
                     <option value="checkbox">Checkbox</option>
                     <option value="radio">Radio</option>
                   </select>
+                  {errors.fieldType && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.fieldType}
+                    </small>
+                  )}
                 </div>
 
                 <div>
                   <label htmlFor="description">Default Value</label>
                   <input
-                    className="form-control mt-2 py-4 mb-3 input-text"
+                    className="form-control mt-2 py-4 input-text"
                     name="valuegroup"
                     value={valuegroup}
                     onChange={onInputChange}
                   />
+                  {errors.valuegroup && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.valuegroup}
+                    </small>
+                  )}
                 </div>
 
-                <div>
+                <div className="mt-3">
                   <label htmlFor="date">Created At</label>
                   <input
                     type="date"
-                    className="form-control mt-2 py-4 mb-4 input-text"
+                    className="form-control mt-2 py-4 input-text"
                     name="date"
                     value={date}
                     onChange={onInputChange}
                   />
+                  {errors.date && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.date}
+                    </small>
+                  )}
                 </div>
                 <hr />
 
@@ -2358,11 +2448,11 @@ function SpecificationAttributeCreate() {
                   Save
                 </button>
                 <button className="btn btn-body border d-flex py-4 px-2 gap-1 d-flex flex-row align-items-center">
-                  <i className="fas fa-sign-out-alt"></i>
                   <Link
-                    className="ms-1 text-dark text-decoration-none"
                     to="/admin/ecommerce/specification-attributes"
+                    className="text-decoration-none text-dark"
                   >
+                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
                     Save & Exit
                   </Link>
                 </button>

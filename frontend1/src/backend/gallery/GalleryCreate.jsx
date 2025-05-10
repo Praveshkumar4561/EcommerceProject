@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./GalleryCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,8 +11,8 @@ import {
   faImage,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -21,6 +22,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function GalleryCreate() {
   let navigate = useNavigate();
@@ -87,6 +89,7 @@ function GalleryCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -138,7 +141,7 @@ function GalleryCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   let toggleecommerce = () => {
     setCommerce(!commerce);
@@ -160,14 +163,12 @@ function GalleryCreate() {
     setBlog(!blog);
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -180,13 +181,18 @@ function GalleryCreate() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          progress: true,
           closeOnClick: true,
           draggable: true,
-          progress: undefined,
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCloseClick = () => {
+    setImageUrl(null);
   };
 
   let [user, setUser] = useState({
@@ -202,7 +208,38 @@ function GalleryCreate() {
   let { name, permalink, description, orders, date, feature, status, file } =
     user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = {
+      name,
+      permalink,
+      description,
+      orders,
+      date,
+      feature,
+      status,
+    };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     let formData = new FormData();
     formData.append("name", name);
     formData.append("permalink", permalink);
@@ -223,7 +260,7 @@ function GalleryCreate() {
         toast.success("data successfully submitted and file upload", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -233,7 +270,7 @@ function GalleryCreate() {
         toast.error("Data is not submitted", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -348,6 +385,42 @@ function GalleryCreate() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create new gallery | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Create new gallery | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -428,7 +501,9 @@ function GalleryCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1630,7 +1705,7 @@ function GalleryCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2326,6 +2401,11 @@ function GalleryCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
 
                   <div className="d-flex flex-column mb-1 mt-0 w-100">
@@ -2338,6 +2418,11 @@ function GalleryCreate() {
                       value={permalink}
                       onChange={onInputChange}
                     />
+                    {errors.permalink && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.permalink}
+                      </small>
+                    )}
                   </div>
 
                   <div className="d-flex flex-column mb-1 mt-0 w-100">
@@ -2477,6 +2562,11 @@ function GalleryCreate() {
                       value={orders}
                       onChange={onInputChange}
                     />
+                    {errors.orders && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.orders}
+                      </small>
+                    )}
                   </div>
 
                   <div className="d-flex flex-column mb-1 mt-1 w-100">
@@ -2489,6 +2579,11 @@ function GalleryCreate() {
                       value={date}
                       onChange={onInputChange}
                     />
+                    {errors.date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.date}
+                      </small>
+                    )}
                   </div>
 
                   <div className="d-flex flex-row mb-3 mt-1 w-100 form-check form-switch">
@@ -2513,7 +2608,7 @@ function GalleryCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2524,8 +2619,13 @@ function GalleryCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/galleries"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
@@ -2545,26 +2645,49 @@ function GalleryCreate() {
                   <option value="Draft">Draft</option>
                   <option value="Pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Image</h4>
                 <hr />
-                <div
-                  className="image-placeholder"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
+                <div className="image-placeholder mt-2 position-relative">
                   {imageUrl ? (
                     <img
                       alt="Uploaded preview"
                       src={imageUrl}
                       width="100"
                       height="100"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                     />
                   ) : (
-                    <img src={Cutting} className="w-75 h-75" />
+                    <img
+                      src={Cutting}
+                      alt="Background"
+                      className="w-100 h-100 rounded"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                    />
+                  )}
+                  {imageUrl && (
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseClick();
+                      }}
+                    />
                   )}
                 </div>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -2573,14 +2696,18 @@ function GalleryCreate() {
                   onChange={handleFileChange}
                 />
                 <Link
-                  className="ms-5 ps-3"
+                  className="ms-2 text-decoration-none choose-url"
                   to="#"
                   onClick={() => document.getElementById("fileInput").click()}
                 >
-                  Choose image <br />
+                  Choose image
                 </Link>
-                <span className="ms-5 me-2 ps-3">or</span>
-                <Link to="#" onClick={handleAddFromUrl}>
+                <span className="ms-3 me-2">or</span>
+                <Link
+                  to="#"
+                  onClick={handleAddFromUrl}
+                  className="text-decoration-none choose-url"
+                >
                   Add from URL
                 </Link>
               </div>

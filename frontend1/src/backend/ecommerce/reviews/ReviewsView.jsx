@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ReviewsView.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -9,13 +10,13 @@ import {
   faMoon,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ReviewsView() {
   const [query, setQuery] = useState("");
@@ -77,7 +78,9 @@ function ReviewsView() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -119,35 +122,6 @@ function ReviewsView() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented.",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -174,87 +148,9 @@ function ReviewsView() {
     setBlog(!blog);
   };
 
-  let [user, setUser] = useState({
-    name: "",
-    product_name: "",
-    user_name: "",
-    email: "",
-    star: "",
-    comment: "",
-    status: "",
-    date: "",
-    file: null,
-  });
-
-  let {
-    name,
-    product_name,
-    user_name,
-    email,
-    star,
-    comment,
-    status,
-    date,
-    file,
-  } = user;
-
-  let handleSubmit = async () => {
-    let formData = new FormData();
-    formData.append("name", name);
-    formData.append("product_name", product_name);
-    formData.append("user_name", user_name);
-    formData.append("email", email);
-    formData.append("star", star);
-    formData.append("comment", comment);
-    formData.append("status", status);
-    formData.append("date", date);
-    formData.append("file", file);
-    try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/reviewdatasubmit",
-        formData
-      );
-      if (response.status === 200) {
-        navigate("/admin/ecommerce/reviews");
-      }
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  let onInputChange = async (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
+  const [user, setUser] = useState([]);
 
   let { id } = useParams();
-
-  let deletedata = async (id) => {
-    let response = await axios.delete(
-      `http://89.116.170.231:1600/deleteviewreview/${id}`,
-      {
-        data: user,
-      }
-    );
-    try {
-      toast.success("Data deleted successfully", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
-      toast.error("Data is not deleted", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  };
 
   useEffect(() => {
     somedata();
@@ -293,10 +189,45 @@ function ReviewsView() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>View review | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -378,7 +309,9 @@ function ReviewsView() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -414,7 +347,7 @@ function ReviewsView() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1580,7 +1513,7 @@ function ReviewsView() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2224,7 +2157,7 @@ function ReviewsView() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/reviews">REVIEWS</Link>
           </li>
 
@@ -2235,57 +2168,91 @@ function ReviewsView() {
       </nav>
 
       <div className="container-fluid overflow-hidden">
-        <div className="container container-create1 d-flex flex-wrap flex-lg-nowrap">
-          <div className="row border ms-1 rounded announcement-create me-4 create-tags create-tags1">
-            <div className="col-md-12 col-lg-8">
+        <div className="container d-flex flex-wrap flex-lg-nowrap container-create1 cart-cart">
+          <div className="row border ms-0 rounded announcement-create">
+            <div className="col-md-12 col-lg-12 col-12">
               <form>
                 <div className="me-2 mt-4 mb-4 d-flex gap-2 awasome-star d-flex flex-wrap flex-lg-nowrap flex-row">
-                  <FontAwesomeIcon icon={faStar} className="fontawasome" />
-                  <FontAwesomeIcon icon={faStar} className="fontawasome" />
-                  <FontAwesomeIcon icon={faStar} className="fontawasome" />
-                  <FontAwesomeIcon icon={faStar} className="fontawasome" />
-                  <FontAwesomeIcon icon={faStar} className="fontawasome" />
+                  {[...Array(5)].map((_, i) => (
+                    <FontAwesomeIcon
+                      key={i}
+                      icon={faStar}
+                      className={i < user.star ? "text-warning" : "text-dark"}
+                    />
+                  ))}
                   <span className="badge badge-success lh-base px-2 py-1 status-blog product-nam published-butto fw-light">
                     {user.status}
                   </span>
 
-                  <div style={{ whiteSpace: "nowrap" }}>
-                    {user.user_name}({user.email})
+                  <div className="text-start d-flex flex-row">
+                    <h5 className="me-1 fw-bold">{user.user_name}</h5>(
+                    {user.email})
                   </div>
                 </div>
+
                 <div className="d-flex flex-column">
-                  <hr />
-                  {user.comment}
-                  <img
-                    src={`http://89.116.170.231:1600/src/image/${user.image}`}
-                    alt="RxLYTE"
-                    className="img-thumbnail w-25 mb-3 mt-2"
-                  />
+                  <div className="border w-100"></div>
+                  <div className="d-flex flex-column justify-content-start">
+                    <div className="mt-3 text-start">{user.comment}</div>
+
+                    <div className="d-flex flex-wrap gap-2 mb-3 mt-2">
+                      {user.image &&
+                        user.image
+                          .split(",")
+                          .map((img, index) => (
+                            <img
+                              key={index}
+                              src={`http://89.116.170.231:1600/src/image/${img.trim()}`}
+                              alt={`RxLYTE-${index}`}
+                              className="img-thumbnail"
+                              style={{ width: "110px", height: "auto" }}
+                            />
+                          ))}
+                    </div>
+
+                    <div
+                      className="d-flex gap-2 justify-content-end align-items-end w-100 flex-row mb-2 mb-0 me-lg-0 me-0"
+                      style={{ whiteSpace: "nowrap" }}
+                    >
+                      <Link
+                        to="/admin/ecommerce/reviews"
+                        className="text-decoration-none"
+                      >
+                        <button className="btn btn-outline-danger py-4 px-3 px-4 d-flex cart-cart">
+                          Delete
+                        </button>
+                      </Link>
+                      <button
+                        className="btn btn-success d-flex px-3 py-4 cart-cart"
+                        onClick={(e) => e.preventDefault()}
+                        style={{
+                          cursor: "pointer",
+                          zIndex: "1",
+                          position: "relative",
+                        }}
+                      >
+                        UnPublish
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className="d-flex gap-2 justify-content-lg-end mb-2 accordion accord mb-0 me-lg-5"
-                  style={{ whiteSpace: "nowrap" }}
-                >
+
+                <div className="border w-100"></div>
+                <div className="mt-4 d-flex flex-column justify-content-end text-start">
+                  <label htmlFor="">Reply to review</label>
+                  <textarea
+                    className="form-control mb-3 mt-2 review-text cart-cart"
+                    placeholder="write your reply..."
+                    style={{ height: "59px" }}
+                  ></textarea>
+                  <div className="d-flex justify-content-end align-items-end w-100"></div>
                   <button
-                    className="btn btn-outline-danger py-4 px-3 px-4 d-flex accordion2"
-                    onClick={() => deletedata(data.id)}
+                    className="btn btn-success d-flex py-4 mb-3 ms-auto me-2 px-5 cart-cart button-review"
+                    onClick={(e) => e.preventDefault()}
                   >
-                    Delete
-                  </button>
-                  <button className="btn btn-success d-flex px-3 py-4 accordion2">
-                    UnPublish
+                    Reply
                   </button>
                 </div>
-                <hr />
-                <label htmlFor="">Reply to review</label>
-                <textarea
-                  className="form-control mb-3 mt-2 review-text"
-                  placeholder="write your reply..."
-                  style={{ height: "59px" }}
-                ></textarea>
-                <button className="btn btn-success d-flex float-end me-5 py-4 accordion1 mb-3 me-lg-">
-                  Reply
-                </button>
               </form>
             </div>
           </div>

@@ -3,6 +3,7 @@ import "./AdsCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import Cutting from "../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,14 +11,15 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function AdsCreate() {
   let [isVisible, setIsVisible] = useState(false);
@@ -84,6 +86,7 @@ function AdsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -156,6 +159,8 @@ function AdsCreate() {
     orders: "",
     adstype: "",
     status: "",
+    location: "",
+    ads_size: "",
     expired: "",
     file: null,
   });
@@ -169,8 +174,9 @@ function AdsCreate() {
     orders,
     adstype,
     status,
+    location,
+    ads_size,
     expired,
-    file,
   } = user;
 
   const [desktopImage, setDesktopImage] = useState(null);
@@ -179,7 +185,41 @@ function AdsCreate() {
   const [tabletImageUrl, setTabletImageUrl] = useState(null);
   const [mobileImageUrl, setMobileImageUrl] = useState(null);
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = {
+      name,
+      title,
+      subtitle,
+      button,
+      keyads,
+      orders,
+      status,
+      location,
+      ads_size,
+      expired,
+    };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     let formData = new FormData();
     formData.append("name", name);
     formData.append("title", title);
@@ -189,6 +229,8 @@ function AdsCreate() {
     formData.append("orders", orders);
     formData.append("adstype", adstype);
     formData.append("status", status);
+    formData.append("ads_size", ads_size);
+    formData.append("location", location);
     formData.append("expired", expired);
 
     if (user.file) {
@@ -207,7 +249,7 @@ function AdsCreate() {
           {
             position: "bottom-right",
             autoClose: 1000,
-            hideProgressBar: true,
+            ProgressBar: true,
             closeButton: true,
             draggable: true,
           }
@@ -230,7 +272,7 @@ function AdsCreate() {
         toast.success("Error submitting the form: ", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -251,13 +293,31 @@ function AdsCreate() {
         setUser({ ...user, file });
         setImageUrl(url);
       } else if (type === "tablet") {
-        setTabletImageUrl(url);
         setDesktopImage(file);
+        setTabletImageUrl(url);
       } else if (type === "mobile") {
-        setMobileImageUrl(url);
         setMobileImage(file);
+        setMobileImageUrl(url);
       }
     }
+  };
+
+  const handleRemoveImage = (e) => {
+    e.stopPropagation();
+    setUser({ ...user, file: null });
+    setImageUrl(null);
+  };
+
+  const handleRemoveTabletImage = (e) => {
+    e.stopPropagation();
+    setDesktopImage(null);
+    setTabletImageUrl(null);
+  };
+
+  const handleRemoveMobileImage = (e) => {
+    e.stopPropagation();
+    setMobileImage(null);
+    setMobileImageUrl(null);
   };
 
   const handleAddFromUrl = () => {
@@ -267,10 +327,6 @@ function AdsCreate() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
         }
       );
     } catch (error) {}
@@ -302,10 +358,46 @@ function AdsCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New ads | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="New ads | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -387,7 +479,9 @@ function AdsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1589,7 +1683,7 @@ function AdsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2233,7 +2327,7 @@ function AdsCreate() {
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ads">ADS</Link>
           </li>
 
@@ -2242,7 +2336,7 @@ function AdsCreate() {
       </nav>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row">
             <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
               <svg
@@ -2270,7 +2364,7 @@ function AdsCreate() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row">
             <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page editor-ads text-start me-3 me-md-0 me-lg-0 ">
               <svg
@@ -2292,9 +2386,8 @@ function AdsCreate() {
               </svg>
               If you are using Adblock browser extension, you need to disable
               this extension on your site first. It may block your ads if it is{" "}
-              <span className="ms-lg-4 ps-lg-2">enabled on your site!</span>{" "}
-              <br />
-              <span className="ms-lg-4 ps-lg-2">
+              <span>enabled on your site!</span> <br />
+              <span>
                 Tips: Image name SHOULD NOT contain some ads keywords (ad,
                 promotion...)
               </span>
@@ -2304,7 +2397,7 @@ function AdsCreate() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
             <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
               <form>
@@ -2319,6 +2412,11 @@ function AdsCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2328,7 +2426,7 @@ function AdsCreate() {
                     <textarea
                       type="text"
                       className="form-control mt-2"
-                      placeholder="title"
+                      placeholder="Title"
                       name="title"
                       value={title}
                       onChange={onInputChange}
@@ -2338,6 +2436,11 @@ function AdsCreate() {
                         zIndex: "1000",
                       }}
                     />
+                    {errors.title && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.title}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2357,6 +2460,11 @@ function AdsCreate() {
                         zIndex: "1000",
                       }}
                     />
+                    {errors.subtitle && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.subtitle}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2370,6 +2478,11 @@ function AdsCreate() {
                       value={button}
                       onChange={onInputChange}
                     />
+                    {errors.button && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.button}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2383,6 +2496,11 @@ function AdsCreate() {
                       value={keyads}
                       onChange={onInputChange}
                     />
+                    {errors.keyads && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.keyads}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2396,6 +2514,32 @@ function AdsCreate() {
                       value={orders}
                       onChange={onInputChange}
                     />
+                    {errors.orders && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.orders}
+                      </small>
+                    )}
+                  </div>
+                </div>
+
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
+                    <label htmlFor="">Ads size</label>
+                    <select
+                      className="form-select ads-height mt-2 w-100 cart-cart"
+                      name="ads_size"
+                      value={ads_size}
+                      onChange={onInputChange}
+                    >
+                      <option value="">select an option</option>
+                      <option value="default">Default</option>
+                      <option value="full-width">Full width</option>
+                    </select>
+                    {errors.ads_size && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.ads_size}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2445,7 +2589,7 @@ function AdsCreate() {
                     <div className="border-0 rounded customer-page1 w-25">
                       <h6 className="mt-0 text-start">Image</h6>
                       <div
-                        className="image-placeholder mt-2"
+                        className="image-placeholder mt-2 position-relative"
                         onClick={() =>
                           document.getElementById("fileInputImage").click()
                         }
@@ -2458,7 +2602,28 @@ function AdsCreate() {
                             height="100"
                           />
                         ) : (
-                          <img src={Cutting} className="w-75 h-75" />
+                          <img
+                            src={Cutting}
+                            className="w-75 h-75"
+                            alt="Default"
+                          />
+                        )}
+                        {imageUrl && (
+                          <div
+                            className="remove-icon position-absolute"
+                            style={{
+                              top: "5px",
+                              right: "5px",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                            onClick={handleRemoveImage}
+                          >
+                            <FontAwesomeIcon
+                              icon={faXmark}
+                              className="bg-secondary px-1 py-1 rounded text-light"
+                            />
+                          </div>
                         )}
                       </div>
                       <input
@@ -2489,7 +2654,7 @@ function AdsCreate() {
                     <div className="border-0 rounded customer-page1 w-25 mt-2">
                       <h6 className="mt-0 text-start">Tablet Image</h6>
                       <div
-                        className="image-placeholder mt-2"
+                        className="image-placeholder mt-2 position-relative"
                         onClick={() =>
                           document.getElementById("fileInputTablet").click()
                         }
@@ -2502,13 +2667,34 @@ function AdsCreate() {
                             height="100"
                           />
                         ) : (
-                          <img src={Cutting} className="w-75 h-75" />
+                          <img
+                            src={Cutting}
+                            className="w-75 h-75"
+                            alt="Default Tablet"
+                          />
+                        )}
+                        {tabletImageUrl && (
+                          <div
+                            className="remove-icon position-absolute"
+                            style={{
+                              top: "5px",
+                              right: "5px",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                            onClick={handleRemoveTabletImage}
+                          >
+                            <FontAwesomeIcon
+                              icon={faXmark}
+                              className="bg-secondary px-1 py-1 rounded text-light"
+                            />
+                          </div>
                         )}
                       </div>
                       <input
                         id="fileInputTablet"
                         type="file"
-                        name="desktopImage"
+                        name="tabletImage"
                         style={{ display: "none" }}
                         onChange={(event) => handleFileChange(event, "tablet")}
                       />
@@ -2530,10 +2716,10 @@ function AdsCreate() {
                       </Link>
                     </div>
 
-                    <div className="border-0 rounded customer-page1 mt-2 mb-3 w-25">
+                    <div className="border-0 rounded customer-page1 w-25 mt-2 mb-3">
                       <h6 className="mt-0 text-start">Mobile Image</h6>
                       <div
-                        className="image-placeholder mt-2"
+                        className="image-placeholder mt-2 position-relative"
                         onClick={() =>
                           document.getElementById("fileInputMobile").click()
                         }
@@ -2546,7 +2732,28 @@ function AdsCreate() {
                             height="100"
                           />
                         ) : (
-                          <img src={Cutting} className="w-75 h-75" />
+                          <img
+                            src={Cutting}
+                            className="w-75 h-75"
+                            alt="Default Mobile"
+                          />
+                        )}
+                        {mobileImageUrl && (
+                          <div
+                            className="remove-icon position-absolute"
+                            style={{
+                              top: "5px",
+                              right: "5px",
+                              cursor: "pointer",
+                              zIndex: 10,
+                            }}
+                            onClick={handleRemoveMobileImage}
+                          >
+                            <FontAwesomeIcon
+                              icon={faXmark}
+                              className="bg-secondary px-1 py-1 rounded text-light"
+                            />
+                          </div>
                         )}
                       </div>
                       <input
@@ -2593,7 +2800,7 @@ function AdsCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2603,15 +2810,21 @@ function AdsCreate() {
                   >
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
+
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ads"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Status</h4>
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Status</h5>
                 <hr />
                 <select
                   className="form-select mb-3 customer-page1"
@@ -2625,14 +2838,22 @@ function AdsCreate() {
                   <option value="default">Default</option>
                   <option value="pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Location</h4>
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Location</h5>
                 <hr />
                 <select
                   className="form-select mb-1 customer-page1"
                   style={{ height: "46px" }}
+                  name="location"
+                  value={location}
+                  onChange={onInputChange}
                 >
                   <option value="Not set">Not set</option>
                   <option value="Header(before)">Header (before)</option>
@@ -2652,9 +2873,14 @@ function AdsCreate() {
                     Detail Page (after)
                   </option>
                 </select>
+                {errors.location && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.location}
+                  </small>
+                )}
               </div>
 
-              <div className="border rounded p-3 customer-page1 mb-2">
+              <div className="border rounded p-2 customer-page1 mb-2">
                 <h5 className="mt-0 text-start">Expired At</h5>
                 <hr />
                 <input
@@ -2664,6 +2890,11 @@ function AdsCreate() {
                   value={expired}
                   onChange={onInputChange}
                 />
+                {errors.expired && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.expired}
+                  </small>
+                )}
               </div>
             </div>
           </div>

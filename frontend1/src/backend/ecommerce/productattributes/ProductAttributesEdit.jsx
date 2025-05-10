@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ProductAttributesCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,19 +11,18 @@ import {
   faSave,
   faSignOut,
   faTrashCan,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import cutting from "../../../assets/Cutting.webp";
-import { ToastContainer, toast } from "react-toastify";
+import { Helmet } from "react-helmet-async";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function ProductAttributesEdit() {
-  let navigate = useNavigate();
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -86,7 +86,9 @@ function ProductAttributesEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -148,33 +150,146 @@ function ProductAttributesEdit() {
     setBlog(!blog);
   };
 
-  let [user, setUser] = useState({
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const colorRefs = useRef([]);
+
+  const [user, setUser] = useState({
     title: "",
     slug: "",
     sort: "",
     status: "",
     date: "",
   });
-  let { title, slug, sort, status, date } = user;
+  const { title, slug, sort, status, date } = user;
 
-  let { id } = useParams();
+  const [attributes, setAttributes] = useState([]);
 
-  let handleSubmit = async () => {
-    try {
-      const response = await axios.put(
-        `http://89.116.170.231:1600/updateattributes/${id}`,
-        user
-      );
-      if (response.status === 200) {
-        navigate("/admin/ecommerce/product-attribute-sets");
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `http://89.116.170.231:1600/attributesomedata/${id}`
+        );
+        const row = data[0];
+        const raw = row.options;
+        let opts;
+        if (typeof raw === "string") {
+          try {
+            opts = JSON.parse(raw);
+          } catch {
+            opts = [];
+          }
+        } else {
+          opts = raw || [];
+        }
+
+        setAttributes(
+          opts.map((o, idx) => ({
+            id: idx + 1,
+            title: o.title,
+            isDefault: !!o.isDefault,
+            color: o.color,
+            imageUrl: o.imagePath ? `/uploads/${o.imagePath}` : "",
+            file: null,
+          }))
+        );
+      } catch (e) {
+        console.error("Load error", e);
       }
-    } catch (error) {
-      console.error("error", error);
-    }
+    })();
+  }, [id]);
+
+  const onInputChange = (e) =>
+    setUser({ ...user, [e.target.name]: e.target.value });
+
+  const validateForm = () => {
+    const newErr = {};
+    ["title", "slug", "sort", "status"].forEach((f) => {
+      if (!user[f]?.toString().trim())
+        newErr[f] = `${f[0].toUpperCase() + f.slice(1)} is required`;
+    });
+    setErrors(newErr);
+    return !Object.keys(newErr).length;
   };
 
-  const onInputChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+  const addNewAttribute = (e) => {
+    e.preventDefault();
+    const nextId = attributes.length
+      ? attributes[attributes.length - 1].id + 1
+      : 1;
+    setAttributes([
+      ...attributes,
+      {
+        id: nextId,
+        title: "",
+        isDefault: false,
+        color: "#000000",
+        imageUrl: "",
+        file: null,
+      },
+    ]);
+  };
+
+  const handleInputChange = (i, e) => {
+    const upd = [...attributes];
+    upd[i][e.target.name] = e.target.value;
+    setAttributes(upd);
+  };
+
+  const handleColorClick = (i) => {
+    colorRefs.current[i]?.click();
+  };
+
+  const handleColorChange = (i, e) => {
+    const upd = [...attributes];
+    upd[i].color = e.target.value;
+    setAttributes(upd);
+  };
+
+  const handleRemoveAttribute = (i) => {
+    setAttributes(attributes.filter((_, idx) => idx !== i));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const fm = new FormData();
+    fm.append("title", title);
+    fm.append("slug", slug);
+    fm.append("sort", sort);
+    fm.append("status", status);
+    fm.append("date", date);
+
+    const opts = attributes.map((a) => ({
+      title: a.title,
+      isDefault: a.isDefault,
+      color: a.color,
+      imagePath: a.file?.name || a.imageUrl?.split("/").pop() || "",
+    }));
+    fm.append("attributes", JSON.stringify(opts));
+
+    attributes.forEach((a) => {
+      if (a.file) fm.append("attributeImages", a.file);
+    });
+
+    try {
+      const res = await axios.put(
+        `http://89.116.170.231:1600/updateattributes/${id}`,
+        fm,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      if (res.status === 200) {
+        navigate("/admin/ecommerce/product-attribute-sets");
+      }
+    } catch (err) {
+      console.error("Update error", err);
+    }
   };
 
   useEffect(() => {
@@ -206,66 +321,6 @@ function ProductAttributesEdit() {
     }
   };
 
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented.",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
-  const [attributes, setAttributes] = useState([
-    { id: 1, title: "", isDefault: false, color: "#000000", imageUrl: "" },
-  ]);
-
-  const addNewAttribute = () => {
-    const newId = attributes.length
-      ? attributes[attributes.length - 1].id + 1
-      : 1;
-    setAttributes([
-      ...attributes,
-      {
-        id: newId,
-        title: "",
-        isDefault: false,
-        color: "#000000",
-        imageUrl: "",
-      },
-    ]);
-  };
-
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedAttributes = [...attributes];
-    updatedAttributes[index][name] = value;
-    setAttributes(updatedAttributes);
-  };
-
-  const handleRemoveAttribute = (index) => {
-    setAttributes(attributes.filter((_, i) => i !== index));
-  };
-
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
@@ -274,10 +329,45 @@ function ProductAttributesEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit product attributes | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Edit product attributes | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -359,7 +449,9 @@ function ProductAttributesEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1563,7 +1655,7 @@ function ProductAttributesEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2206,7 +2298,7 @@ function ProductAttributesEdit() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/product-attribute-sets">
               PRODUCT ATTRIBUTES
             </Link>
@@ -2253,11 +2345,11 @@ function ProductAttributesEdit() {
               <form>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-3 w-100">
-                    <label htmlFor="">Name</label>
+                    <label>Name</label>
                     <input
                       type="text"
                       className="form-control mt-2 py-4"
-                      placeholder="title"
+                      placeholder="Name"
                       name="title"
                       value={title}
                       onChange={onInputChange}
@@ -2266,7 +2358,7 @@ function ProductAttributesEdit() {
                 </div>
 
                 <div className="d-flex flex-column mb-3 mt-0 w-100">
-                  <label htmlFor="">Slug</label>
+                  <label>Slug</label>
                   <input
                     type="text"
                     className="form-control mt-2 py-4"
@@ -2278,7 +2370,7 @@ function ProductAttributesEdit() {
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="form-check form-switch mb-3 d-flex">
+                  <div className="form-check form-switch mb-3 d-flex flex-row">
                     <input
                       className="form-check-input"
                       type="checkbox"
@@ -2290,9 +2382,10 @@ function ProductAttributesEdit() {
                     </span>
                   </div>
                 </div>
+
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
-                    <label htmlFor=""> Start date</label>
+                    <label>Start date</label>
                     <input
                       type="date"
                       className="form-control mt-2 py-4"
@@ -2307,151 +2400,186 @@ function ProductAttributesEdit() {
                     />
                   </div>
                 </div>
-                <div className="ms-1 border mt-3 rounded ps-4 pt-2 align-items-center justify-content-center product-row mb-4">
-                  <span className="attributes-list text-start">
-                    {" "}
-                    Attributes list{" "}
-                  </span>
-                  <button
-                    className="mt-3 border rounded px-3 py-2 bg-light float-end new-attribute me-3 mb-3"
-                    style={{ whiteSpace: "nowrap", cursor: "pointer" }}
-                    onClick={addNewAttribute}
-                  >
-                    <span
-                      style={{
-                        cursor: "pointer",
-                        position: "relative",
-                        zIndex: "1000",
-                      }}
+
+                <div className="mt-4 border rounded p-3 mb-3">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <span>Attributes list</span>
+                    <button
+                      className="btn btn-light border d-flex py-4"
+                      onClick={addNewAttribute}
                     >
                       Add new attribute
-                    </span>
-                  </button>
+                    </button>
+                  </div>
 
-                  <hr className="me-1 mt-4 w-100" />
-                  <table className="table table-responsive-lg table-bordered table-hover">
-                    <thead className="fw-light">
+                  <div className="border mb-3"></div>
+
+                  <table className="table table-bordered">
+                    <thead>
                       <tr>
-                        <th className="pt-2 pb-2 text-center fw-light">#</th>
+                        <th className="text-center fw-light">#</th>
                         <th className="text-center fw-light">Is Default?</th>
                         <th className="text-center fw-light">Title</th>
-                        <th
-                          className="text-center pe-5 fw-light"
-                          style={{ whiteSpace: "nowrap" }}
-                        >
-                          Color
-                        </th>
-                        <th className="float-star ps-2 text-center fw-light">
-                          Image
-                        </th>
+                        <th className="text-center fw-light">Color</th>
+                        <th className="text-center fw-light">Image</th>
                         <th className="text-center fw-light">Remove</th>
                       </tr>
                     </thead>
                     <tbody>
                       {attributes.map((attribute, index) => (
                         <tr key={attribute.id}>
-                          <td className="bg-light text-center">
-                            {attribute.id}
-                          </td>
-                          <td>
+                          <td className="text-center">{attribute.id}</td>
+                          <td className="text-center">
                             <input
                               type="radio"
-                              className="ms-4"
+                              className="form-check-input"
                               checked={attribute.isDefault}
-                              onChange={() => {
-                                const updatedAttributes = attributes.map(
-                                  (attr, i) => ({
+                              onChange={() =>
+                                setAttributes(
+                                  attributes.map((attr, i) => ({
                                     ...attr,
                                     isDefault: i === index,
-                                  })
-                                );
-                                setAttributes(updatedAttributes);
-                              }}
+                                  }))
+                                )
+                              }
                             />
                           </td>
-                          <td className="w-auto">
+                          <td>
                             <input
                               type="text"
                               name="title"
-                              placeholder="Title"
                               value={attribute.title}
-                              className="rounded border py-2 px-2 w-100"
+                              className="form-control py-4 cart-cart"
+                              placeholder="Title"
                               onChange={(e) => handleInputChange(index, e)}
                             />
-                          </td>
-                          <td>
-                            <input
-                              type="color"
-                              name="color"
-                              value={attribute.color}
-                              className="w-25 border rounded-1 border p- border-secondary ms-3"
-                              onChange={(e) => handleInputChange(index, e)}
-                            />
-                          </td>
-                          <td>
-                            <div className="container attribute-choose">
-                              <div className="w-2">
-                                <div
-                                  className="image-placeholder attribute-choose me-5 border w-100"
-                                  onClick={() =>
-                                    document
-                                      .getElementById(`fileInput${index}`)
-                                      .click()
-                                  }
-                                >
-                                  {attribute.imageUrl ? (
-                                    <img
-                                      alt="Uploaded preview"
-                                      src={attribute.imageUrl}
-                                    />
-                                  ) : (
-                                    <img src={cutting} alt="RxLYTE" />
-                                  )}
-                                </div>
-                                <input
-                                  id={`fileInput${index}`}
-                                  type="file"
-                                  name="file"
-                                  style={{ display: "none" }}
-                                  onChange={(e) => {
-                                    const file = e.target.files[0];
-                                    if (file) {
-                                      const reader = new FileReader();
-                                      reader.onloadend = () => {
-                                        const updatedAttributes = [
-                                          ...attributes,
-                                        ];
-                                        updatedAttributes[index].imageUrl =
-                                          reader.result;
-                                        setAttributes(updatedAttributes);
-                                      };
-                                      reader.readAsDataURL(file);
-                                    }
-                                  }}
-                                />
-                                <span className="m me-1">or</span>
-                                <Link
-                                  to="#"
-                                  onClick={() => {
-                                    handleAddFromUrl();
-                                  }}
-                                >
-                                  Add from URL
-                                </Link>
-                              </div>
-                            </div>
                           </td>
 
                           <td>
+                            <div className="mt-2 mb-1 d-flex flex-column">
+                              <div
+                                className="color-picker-container d-flex flex-row flex-nowrap"
+                                style={{
+                                  position: "relative",
+                                  display: "inline-block",
+                                }}
+                              >
+                                <input
+                                  type="color"
+                                  ref={(el) => (colorRefs.current[index] = el)}
+                                  name="color"
+                                  value={attribute.color}
+                                  style={{
+                                    position: "absolute",
+                                    width: "30px",
+                                    height: "30px",
+                                    opacity: 0,
+                                  }}
+                                  onChange={(e) => handleColorChange(index, e)}
+                                />
+                                <div
+                                  className="color-preview"
+                                  style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    backgroundColor: attribute.color,
+                                    border: "1px solid #ccc",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => handleColorClick(index)}
+                                ></div>
+                                <span
+                                  className="color-dropdown"
+                                  style={{
+                                    cursor: "pointer",
+                                    marginLeft: "10px",
+                                  }}
+                                  onClick={() => handleColorClick(index)}
+                                >
+                                  ▼
+                                </span>
+                              </div>
+                              {errors.color && (
+                                <small className="text-danger text-start cart-cart mt-1">
+                                  {errors.color}
+                                </small>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="text-center">
+                            <div
+                              className="attribute-choose border position-relative rounded"
+                              style={{
+                                width: "60px",
+                                height: "60px",
+                                cursor: "pointer",
+                                overflow: "hidden",
+                              }}
+                              onClick={() =>
+                                document
+                                  .getElementById(`fileInput${index}`)
+                                  .click()
+                              }
+                            >
+                              {attribute.imageUrl ? (
+                                <>
+                                  <img
+                                    alt="Preview"
+                                    src={attribute.imageUrl}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      objectFit: "cover",
+                                    }}
+                                  />
+                                  <FontAwesomeIcon
+                                    icon={faXmark}
+                                    className="position-absolute top-0 end-0 m-1 text-white bg-danger rounded-circle p-1"
+                                    style={{
+                                      cursor: "pointer",
+                                      fontSize: "12px",
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      const updated = [...attributes];
+                                      updated[index].imageUrl = "";
+                                      delete updated[index].file;
+                                      setAttributes(updated);
+                                    }}
+                                  />
+                                </>
+                              ) : (
+                                <img src={cutting} alt="RxLYTE" height={50} />
+                              )}
+                            </div>
+                            <input
+                              id={`fileInput${index}`}
+                              type="file"
+                              name="file"
+                              style={{ display: "none" }}
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    const updated = [...attributes];
+                                    updated[index].imageUrl = reader.result;
+                                    updated[index].file = file;
+                                    setAttributes(updated);
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                          </td>
+
+                          <td className="text-center">
                             <FontAwesomeIcon
                               icon={faTrashCan}
-                              className="px-2 py-2 rounded text-danger fs-5 ms-3"
+                              className="text-danger fs-5"
                               onClick={() => handleRemoveAttribute(index)}
-                              style={{
-                                cursor: "pointer",
-                                position: "relative",
-                                zIndex: "1000",
-                              }}
+                              style={{ cursor: "pointer" }}
                             />
                           </td>
                         </tr>
@@ -2464,8 +2592,8 @@ function ProductAttributesEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2475,17 +2603,22 @@ function ProductAttributesEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/product-attribute-sets"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Status</h5>
+                <div className="border mb-3 mt-2"></div>
                 <select
-                  className="w-100 rounded-1 py-2 border"
+                  className="w-100 rounded-1 py-2  mb-2 border"
                   name="status"
                   value={status}
                   onChange={onInputChange}
@@ -2497,15 +2630,10 @@ function ProductAttributesEdit() {
                 </select>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Display Layout</h4>
-                <hr />
-                <select
-                  className="w-100 rounded-1 py-2 border"
-                  name="status"
-                  value={status}
-                  onChange={onInputChange}
-                >
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Display Layout</h5>
+                <div className="border mb-3 mt-2"></div>
+                <select className="w-100 rounded-1 py-2 border mb-2">
                   <option value="">Select an option</option>
                   <option value="Dropdown Swatch">Dropdown Swatch</option>
                   <option value="Visual Swatch">Visual Swatch</option>
@@ -2513,9 +2641,9 @@ function ProductAttributesEdit() {
                 </select>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Searchable</h4>
-                <hr />
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Searchable</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="form-check form-switch mb-3">
                   <input
                     className="form-check-input"
@@ -2526,9 +2654,9 @@ function ProductAttributesEdit() {
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Comparable</h4>
-                <hr />
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Comparable</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="form-check form-switch mb-3">
                   <input
                     className="form-check-input"
@@ -2539,9 +2667,9 @@ function ProductAttributesEdit() {
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Used in product listing</h4>
-                <hr />
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Used in product listing</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="form-check form-switch mb-3">
                   <input
                     className="form-check-input"
@@ -2552,14 +2680,13 @@ function ProductAttributesEdit() {
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Sort order</h4>
-                <hr />
+              <div className="border rounded p-2 customer-page1">
+                <h5 className="mt-0 text-start">Sort order</h5>
+                <div className="border mb-3 mt-2"></div>
                 <input
                   type="number"
-                  className="form-check-input w-100 rounded border py-3 px-2"
-                  placeholder="Order By"
-                  id="has-action"
+                  className="form-check-input w-100 rounded border py-4 px-2 mb-2"
+                  placeholder="Order by"
                   name="sort"
                   value={sort}
                   onChange={onInputChange}
@@ -2567,8 +2694,8 @@ function ProductAttributesEdit() {
               </div>
             </div>
           </div>
+          <ToastContainer />
         </div>
-        <ToastContainer />
       </div>
     </>
   );

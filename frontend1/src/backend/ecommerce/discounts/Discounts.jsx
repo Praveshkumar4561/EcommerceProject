@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Discounts.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -12,13 +13,13 @@ import {
   faRotate,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function Discounts() {
   let [user, setUser] = useState([]);
@@ -35,6 +36,8 @@ function Discounts() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -87,7 +90,9 @@ function Discounts() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -149,9 +154,6 @@ function Discounts() {
     setBlog(!blog);
   };
 
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
-
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 992);
   };
@@ -187,13 +189,26 @@ function Discounts() {
     setUser(response.data);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4;
+
+  const paginatedData = user.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   let deletedata = async (id) => {
     await axios.delete(`http://89.116.170.231:1600/discountdelete/${id}`, user);
+    const updatedData = user.filter((item) => item.id !== id);
+    const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+    if (currentPage > newTotalPages && newTotalPages > 0) {
+      setCurrentPage(newTotalPages);
+    }
     try {
-      toast.success("data successfully updated ", {
+      toast.success("Discount successfully deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -205,10 +220,10 @@ function Discounts() {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     try {
-      toast.success("Copied to couponcode ", {
+      toast.success("Couponcode copy ", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -224,10 +239,45 @@ function Discounts() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Discounts | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Discounts | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -309,7 +359,9 @@ function Discounts() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -345,7 +397,7 @@ function Discounts() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1512,7 +1564,7 @@ function Discounts() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2149,7 +2201,7 @@ function Discounts() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2158,7 +2210,7 @@ function Discounts() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial table-price ms-1 ms-lg-0">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2181,16 +2233,19 @@ function Discounts() {
                 </button>
 
                 <input
-                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0"
+                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0 ms-0 border"
                   placeholder="Search..."
-                  type="text"
+                  type="search"
                   name="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <div className="mt-2 mt-sm-0 mt-lg-0 d-flex ms-2 flex-row">
-                <Link to="/admin/ecommerce/discounts/create">
+                <Link
+                  to="/admin/ecommerce/discounts/create"
+                  className="text-decoration-none"
+                >
                   <button
                     className="btn btn-create me-2 bulk d-flex flex-row align-items-center"
                     type="button"
@@ -2218,7 +2273,7 @@ function Discounts() {
                     </th>
 
                     <th scope="col" className="fw-light">
-                      <span className="d-flex">
+                      <span className="d-flex flex-row align-items-center">
                         ID
                         <i className="fas fa-sort ms-1"></i>
                       </span>
@@ -2230,8 +2285,11 @@ function Discounts() {
                     </th>
 
                     <th scope="col" className="fw-light">
-                      Used
-                      <i className="fas fa-sort ms-1"></i>
+                      <span className="d-flex flex-row align-items-center">
+                        {" "}
+                        Used
+                        <i className="fas fa-sort ms-1"></i>
+                      </span>
                     </th>
 
                     <th
@@ -2267,94 +2325,181 @@ function Discounts() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(user) && user.length > 0 ? (
-                    user.map((data, key) => (
-                      <tr key={key}>
-                        <td>
-                          <input type="checkbox" className="form-check-input" />
-                        </td>
-                        <td>{data.id}</td>
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => {
+                      const isExpired = data.end_date
+                        ? new Date(data.end_date) < new Date()
+                        : false;
 
-                        <td>
-                          <div className="border w-auto h-auto bg-primary text-light p-2 rounded">
-                            CouponCode: {data.couponcode}
-                            <svg
-                              onClick={() => copyToClipboard(data.couponcode)}
-                              className="icon svg-icon-ti-ti-clipboard copy-path text-light"
-                              data-clipboard-icon="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path
-                                stroke="none"
-                                d="M0 0h24v24H0z"
-                                fill="none"
-                              ></path>
-                              <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
-                              <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
-                            </svg>
-                            <br />
-                            <p className="mt-3">
-                              Discount {data.conditions} for {data.orders}
-                            </p>
-                            (Coupon code cannot used with promotion)
-                          </div>
-                        </td>
-
-                        <td style={{ whiteSpace: "nowrap" }}>
-                          <span
-                            className="sliders1 product-name"
-                            style={{ fontFamily: "verdana" }}
-                          >
-                            0
-                          </span>
-                        </td>
-
-                        <td>{data.start_date}</td>
-
-                        <td>{data.end_date}</td>
-
-                        <td>--</td>
-
-                        <td style={{ whiteSpace: "nowrap" }}>
-                          <button className="btn btn-edit me-2" type="button">
-                            <Link
-                              to={`/admin/ecommerce/discounts/edit/${data.id}`}
-                            >
-                              <FontAwesomeIcon
-                                icon={faPenToSquare}
-                                className="fs-5 text-light"
-                              />
-                            </Link>
-                          </button>
-
-                          <button className="btn btn-delete" type="button">
-                            <FontAwesomeIcon
-                              icon={faTrashCan}
-                              className="fs-5"
-                              onClick={() => deletedata(data.id)}
+                      return (
+                        <tr key={key}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
                             />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+                          <td>{data.id}</td>
+                          <td>
+                            <div
+                              className={`border w-auto h-auto p-2 rounded cart-cart ${
+                                isExpired ? "text-dark" : "text-light"
+                              }`}
+                              style={{
+                                backgroundColor: isExpired
+                                  ? "#BBBBBB"
+                                  : "#1C8AA6",
+                                color: isExpired ? "black" : "white",
+                                position: "relative",
+                                textDecoration: "strike",
+                              }}
+                            >
+                              {isExpired && (
+                                <span className="text-danger cart-cart1 expired-discount">
+                                  Expired
+                                </span>
+                              )}
+                              CouponCode: {data.couponcode}
+                              <svg
+                                onClick={() => copyToClipboard(data.couponcode)}
+                                className="icon svg-icon-ti-ti-clipboard copy-path pointer-click"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path
+                                  stroke="none"
+                                  d="M0 0h24v24H0z"
+                                  fill="none"
+                                ></path>
+                                <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2"></path>
+                                <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z"></path>
+                              </svg>
+                              <br />
+                              <p className="mt-3">
+                                Discount {data.conditions} for {data.orders}
+                              </p>
+                              (Coupon code cannot be used with promotion)
+                            </div>
+                          </td>
+                          <td style={{ whiteSpace: "nowrap" }}>
+                            <span className="sliders1 product-name text-decoration-none sales-font">
+                              0
+                            </span>
+                          </td>
+                          <td className="sales-font">
+                            {data.start_date
+                              ? new Date(data.start_date).toLocaleDateString(
+                                  "en-CA"
+                                )
+                              : ""}
+                          </td>
+                          <td className="sales-font">
+                            {data.end_date
+                              ? new Date(data.end_date).toLocaleDateString(
+                                  "en-CA"
+                                )
+                              : ""}
+                          </td>
+                          <td>--</td>
+                          <td style={{ whiteSpace: "nowrap" }}>
+                            <button className="btn btn-edit me-2" type="button">
+                              <Link
+                                to={`/admin/ecommerce/discounts/edit/${data.id}`}
+                              >
+                                <FontAwesomeIcon
+                                  icon={faPenToSquare}
+                                  className="fs-5 text-light"
+                                />
+                              </Link>
+                            </button>
+                            <button className="btn btn-delete" type="button">
+                              <FontAwesomeIcon
+                                icon={faTrashCan}
+                                className="fs-5"
+                                onClick={() => deletedata(data.id)}
+                              />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center">
-                        No data available
+                      <td colSpan="8" className="text-center cart-cart">
+                        No discount available
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
             </div>
+            {user.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(user.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(user.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(user.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
         <ToastContainer />

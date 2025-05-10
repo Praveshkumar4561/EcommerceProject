@@ -10,31 +10,30 @@ import Hoursupport from "../../assets/hoursupport.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Hamburger from "../../assets/hamburger.svg";
-import axios from "axios";
 import UserContext from "../../context/UserContext";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import JsonLd from "../JsonLd";
-import { Helmet } from "react-helmet";
+import axios from "axios";
+import { Helmet } from "react-helmet-async";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Shop() {
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   let [image, setImage] = useState([]);
 
@@ -52,19 +51,21 @@ function Shop() {
   let [detail, setDetail] = useState([]);
 
   useEffect(() => {
+    const detailsdata = async () => {
+      try {
+        let response = await axios.get(
+          "http://89.116.170.231:1600/productpagedata"
+        );
+        const filteredData = response.data.filter(
+          (detail) => detail.status === "Published" || detail.status === "Draft"
+        );
+        setDetail(filteredData);
+      } catch (error) {
+        console.error("Error fetching blog data:", error);
+      }
+    };
     detailsdata();
   }, []);
-
-  let detailsdata = async () => {
-    try {
-      let response = await axios.get(
-        "http://89.116.170.231:1600/productpagedata"
-      );
-      setDetail(response.data);
-    } catch (error) {
-      console.error("Error occurred", error);
-    }
-  };
 
   let { count, setCount } = useContext(UserContext);
 
@@ -80,15 +81,12 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/addcart",
-        formData
-      );
+      await axios.post("http://89.116.170.231:1600/addcart", formData);
       setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -97,7 +95,7 @@ function Shop() {
       toast.error("Product is not added on the cart", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -108,14 +106,21 @@ function Shop() {
   let [label, setLabel] = useState([]);
 
   useEffect(() => {
-    let labeldata = async () => {
-      let response = await axios.get(
-        "http://89.116.170.231:1600/productlabelsdata"
-      );
-      setLabel(response.data);
+    const labeldata = async () => {
+      try {
+        let response = await axios.get(
+          "http://89.116.170.231:1600/productlabelsdata"
+        );
+        const filteredData = response.data.filter(
+          (label) => label.status === "Published" || label.status === "Draft"
+        );
+        setLabel(filteredData);
+      } catch (error) {
+        console.error("Error fetching blog data:", error);
+      }
     };
     labeldata();
-  });
+  }, []);
 
   let addWishlistItem = async (data) => {
     const formData = new FormData();
@@ -131,15 +136,12 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/wishlistpost",
-        formData
-      );
+      await axios.post("http://89.116.170.231:1600/wishlistpost", formData);
       setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -148,7 +150,7 @@ function Shop() {
       toast.error("Product is not added on the wishlist", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -218,22 +220,21 @@ function Shop() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchBreadcrumbData = async () => {
@@ -431,6 +432,103 @@ function Shop() {
     color: styles.headerMenuTextColor,
   };
 
+  let [ads, setAds] = useState([]);
+
+  useEffect(() => {
+    const adspagedata = async () => {
+      try {
+        const response = await axios.get("http://89.116.170.231:1600/adsdata");
+        setAds(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    adspagedata();
+  }, []);
+
+  let [cookie, setCookie] = useState([]);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      return;
+    }
+
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setCookie([response.data]);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
+
+  const handleCookieAccept = (data) => {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
+    setCookie((prevCookie) =>
+      prevCookie.filter((item) => item.cookie !== "yes")
+    );
+  };
+
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
+  };
+
   return (
     <>
       <JsonLd data={schemaData} />
@@ -444,6 +542,67 @@ function Shop() {
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="http://srv724100.hstgr.cloud/shop" />
       </Helmet>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row m-auto">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Header(before)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                if (!footerAd) return null;
+
+                const cardClass =
+                  footerAd.ads_size === "full-width"
+                    ? "ad-card full-width-card"
+                    : "ad-card";
+
+                return (
+                  <div className="ad-card-container">
+                    <div className={cardClass}>
+                      <picture className="ad-picture">
+                        {footerAd.mobileImage && (
+                          <source
+                            media="(max-width: 767px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          />
+                        )}
+                        {footerAd.desktopImage && (
+                          <source
+                            media="(min-width: 768px) and (max-width: 991px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          />
+                        )}
+                        <img
+                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          alt="Advertisement"
+                          className="ad-img"
+                        />
+                      </picture>
+                      <div className="ad-overlay">
+                        <div className="ad-overlay-top">
+                          <button className="ad-button btn btn-success d-flex cart-cart1">
+                            <Link to="/shop" className="ad-link">
+                              {footerAd.button}
+                            </Link>
+                          </button>
+                        </div>
+                        <div className="ad-overlay-bottom cart-cart">
+                          <h3 className="ad-title">{footerAd.title}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="container" id="container-customx" style={containerStyle}>
         <div className="container-custom ms-2 pt-lg-0 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
@@ -530,7 +689,7 @@ function Shop() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-2 mt-lg-0 pt-lg-1 pt-0 mt-md-1">
+                    <span className="count-badge mt-2 mt-lg-0 pt-lg-2 pt-0 mt-md-1">
                       {count6}
                     </span>
                     <img
@@ -561,7 +720,7 @@ function Shop() {
                       alt="Cart"
                       className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
-                    <div className="addcarts ps-2 pt-lg-0 mt-lg-0 count-badge1">
+                    <div className="addcarts ps-1 pt-lg-0 mt-lg-0 count-badge1">
                       {count}
                     </div>
                   </Link>
@@ -642,7 +801,7 @@ function Shop() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -658,6 +817,67 @@ function Shop() {
       </div>
 
       <div className="container-fluid">
+        <div className="container">
+          <div className="row m-auto">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Header(after)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                if (!footerAd) return null;
+
+                const cardClass =
+                  footerAd.ads_size === "full-width"
+                    ? "ad-card full-width-card"
+                    : "ad-card";
+
+                return (
+                  <div className="ad-card-container">
+                    <div className={cardClass}>
+                      <picture className="ad-picture">
+                        {footerAd.mobileImage && (
+                          <source
+                            media="(max-width: 767px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          />
+                        )}
+                        {footerAd.desktopImage && (
+                          <source
+                            media="(min-width: 768px) and (max-width: 991px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          />
+                        )}
+                        <img
+                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          alt="Advertisement"
+                          className="ad-img"
+                        />
+                      </picture>
+                      <div className="ad-overlay">
+                        <div className="ad-overlay-top">
+                          <button className="ad-button btn btn-success d-flex cart-cart1">
+                            <Link to="/shop" className="ad-link">
+                              {footerAd.button}
+                            </Link>
+                          </button>
+                        </div>
+                        <div className="ad-overlay-bottom cart-cart">
+                          <h3 className="ad-title">{footerAd.title}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="container-fluid">
         <div className="container mb-5">
           {Array.isArray(image) && image.length > 0 && (
             <div className="row ms-lg-0 gap-4 d-flex flex-row">
@@ -666,10 +886,20 @@ function Shop() {
                   className="col-6 col-sm-4 col-md-3 col-lg-2 border show-product"
                   key={key}
                 >
-                  <Link to={`/${url.productDetails}`} className="text-dark">
+                  <Link
+                    to="/product-categories"
+                    className="text-dark"
+                    aria-label={`View details for ${data.image}`}
+                  >
                     <img
                       src={`http://89.116.170.231:1600/src/image/${data.image}`}
-                      alt={`Product Image ${key + 1}`}
+                      alt={`Product ${key + 1}: ${data.image}`}
+                      srcSet={`
+                      http://89.116.170.231:1600/src/image/${data.image}?w=150&h=150&fit=cover 150w,
+                      http://89.116.170.231:1600/src/image/${data.image}?w=204&h=204&fit=cover 204w,
+                      http://89.116.170.231:1600/src/image/${data.image}?w=300&h=300&fit=cover 300w
+                    `}
+                      sizes="(max-width: 600px) 150px, (max-width: 1024px) 204px, 300px"
                     />
                     <div className="position-absolute ms-4 mt-2 fw-bold d-flex flex-row flex-md-nowrap w-100 cart-cart1">
                       {key === 0 && "HeadPhones"}
@@ -688,32 +918,90 @@ function Shop() {
 
       <div className="container-fluid">
         <div className="container">
+          <div className="row theme-allow cart-cart">
+            {Array.isArray(cookie) && cookie.length > 0
+              ? cookie.map((data, key) => {
+                  if (data.cookie !== "yes") return null;
+                  const cardStyle = {
+                    backgroundColor: data.backgroundColor,
+                    color: data.textColor,
+                    ...(data.style === "Minimal" && {
+                      width: "388px",
+                      height: "135px",
+                      marginLeft: "2px",
+                    }),
+                  };
+
+                  return (
+                    <div
+                      className="col-12 col-lg-12 col-md-12 border d-flex justify-content-center gap-5 align-items-center"
+                      key={key}
+                      style={cardStyle}
+                    >
+                      <div className="d-flex align-items-center justify-content-between w-100">
+                        <span
+                          className={
+                            data.style === "Full Width"
+                              ? "message-cookie ms-1"
+                              : ""
+                          }
+                        >
+                          {data.message}.
+                        </span>
+                        <button
+                          className={`btn btn-dark d-flex cart-cart allow-site mt-1 button-cook mb-2 mt-2 btn-outline-light ${
+                            data.style === "Full Width"
+                              ? "button-cook-position"
+                              : ""
+                          }`}
+                          onClick={() => handleCookieAccept(data)}
+                        >
+                          {data.button_text}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+
+      <div className="container-fluid">
+        <div className="container">
           <div className="row gap-2 gap-lg-2 d-flex flex-row flex-wrap">
             <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-0 py-xxl-1 py-xl-3 shop-icon me-auto align-items-md-center">
-              <img src={free} alt="RxLYTE" className="img-fluid mt-4 mb-4" />
-              <div className="d-flex flex-column mt-4 ms-3 text-start">
+              <img
+                src={free}
+                alt="RxLYTE"
+                className="img-fluid mt-4 mb-2 mb-lg-4"
+              />
+              <div className="d-flex flex-column mt-4 mt-md-0 mt-lg-2 ms-3 text-start">
                 <span>Free Delivery</span>
                 <span>Orders from all item</span>
               </div>
             </div>
+
             <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-0 shop-icon me-auto align-items-md-center py-xxl-1 py-xl-1">
               <img
                 src={Cash}
                 alt="RxLYTE"
-                className="img-fluid w-25 mt-4 mb-4"
+                className="img-fluid w-25 mt-4 mb-2 mb-lg-4"
               />
-              <div className="d-flex flex-column mt-2 mt-lg-4 ms-3 text-start">
+              <div className="d-flex flex-column mt-4 mt-md-0 mt-lg-2 ms-3 text-start">
                 <span>Return & Refund</span>
                 <span>Money-back guarantee</span>
               </div>
             </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-0 shop-icon me-auto align-items-md-center">
+
+            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-0 shop-icon me-auto align-items-md-center pb-md-3">
               <img
                 src={Discount}
                 alt="RxLYTE"
-                className="img-fluid mt-2 mb-4 w-25 rounded-5 pt-3"
+                className="img-fluid mt-3 mt-lg-0 mb-1 customer-homeimage1"
               />
-              <div className="d-flex flex-column mt-4 ms-3 text-start">
+
+              <div className="d-flex flex-column mt-4 ms-3 text-start pb-3">
                 <span>Member Discount</span>
                 <span>
                   Every order over{" "}
@@ -721,13 +1009,14 @@ function Shop() {
                 </span>
               </div>
             </div>
-            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-1 py-0 shop-icon me-auto align-items-md-center">
+
+            <div className="col-12 col-sm-6 col-md-6 col-lg-3 border rounded bg-light d-flex flex-row py-lg-0 shop-icon me-auto align-items-md-center py-xxl-1 py-xl-1">
               <img
                 src={Hoursupport}
                 alt="RxLYTE"
-                className="img-fluid mt-3 mb-4 w-25 pt-2"
+                className="img-fluid w-25 mt-3 mb-lg-1 mb-xxl-4 mb-xl-4 pb-2"
               />
-              <div className="d-flex flex-column mt-4 ms-2 ps-1 text-start">
+              <div className="d-flex flex-column mt-4 mt-md-0 mt-lg-2 ms-3 text-start">
                 <span>Support 24/7</span>
                 <span>Contact us 24 hours a day</span>
               </div>
@@ -737,7 +1026,9 @@ function Shop() {
       </div>
 
       <div className="container-fluid mt-3 mt-lg-0 cart-cart">
-        <h3 className="mt-lg-4 mt-0 text-start">Trending Products</h3>
+        <h2 className="mt-lg-3 mb-0 mt-0 text-start about-trend">
+          Trending Products
+        </h2>
         <div className="container">
           <div className="row row-cols-1 row-cols-sm-2 mt-0 row-cols-md-4 gap-2 g-3 d-flex flex-row flex-wrap me-md-2 me-lg-0">
             {Array.isArray(detail) && detail.length > 0 ? (
@@ -758,20 +1049,27 @@ function Shop() {
                     <div className="feature-box rounded-0 position-relative rounded-1">
                       {data.label && (
                         <button
-                          className="position-absolute me-2 end-0 btn d-flex mt-2 rounded-0 cart-cart product-label text-light"
+                          className="position-absolute me-2 end-0 btn d-flex mt-2 rounded px-2 cart-cart product-label text-light"
                           style={{ backgroundColor: labelColor }}
                         >
                           {data.label}
                         </button>
                       )}
+
                       <Link to={`/${url.productDetails}`}>
                         <img
                           src={productImage}
-                          alt={data.name || "Product Image"}
+                          alt={
+                            data.name
+                              ? `${data.name} product image`
+                              : "Product image"
+                          }
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
+                          loading="lazy"
                         />
                       </Link>
+
                       <button
                         className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success"
                         onClick={() => addWishlistItem(data)}
@@ -781,6 +1079,7 @@ function Shop() {
                           Add to Wishlist
                         </div>
                       </button>
+
                       <div className="add-to-cart-button-container">
                         <button
                           className="add-to-cart-button mt-4 d-flex flex-row cart-cart1"
@@ -795,24 +1094,26 @@ function Shop() {
                         </button>
                       </div>
                     </div>
-                    <hr />
+                    <div className="border w-100"></div>
                     <div className="ms-3">
-                      <h6 className="mt-2 mb-0 lh-base text-start text-lg-start">
-                        {data.store || "Product Name"}
-                      </h6>
-                      <h5 className="mt-0 lh-base text-start text-lg-start">
-                        {data.name || "Product Name"}
-                      </h5>
-                      <h6 className="mt-0 lh-base text-start text-lg-start">
-                        SKU: {data.sku || "Product Name"}
-                      </h6>
+                      <h3 className="mt-2 mb-0 lh-base text-start text-lg-start price-row">
+                        {data.store || "Product Store"}
+                      </h3>
+                      <h4 className="mt-0 lh-base text-start text-lg-start fw-bold price-name">
+                        {data.name.split(" ").slice(0, 6).join(" ")}
+                      </h4>
+                      <h4 className="mt-1 lh-base text-start text-lg-start price-row">
+                        SKU:{data.sku || "Product Name"}
+                      </h4>
                       <div
-                        className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-2 flex-row"
+                        className="d-flex justify-content-start justify-content-lg-start mb-2 gap-1 mt-1 flex-row"
                         style={{ fontFamily: "verdana" }}
                       >
-                        <h6 className="me-1">{data.price || "Price"}</h6>
-                        <strike className="text-danger fw-medium">
-                          {data.price_sale || "$54"}
+                        <span className="me-1 price-amount">
+                          {data.price || "Price"}
+                        </span>
+                        <strike className="text-danger-access fw-medium">
+                          {data.discountPrice || "$54"}
                         </strike>
                       </div>
                     </div>
@@ -827,7 +1128,68 @@ function Shop() {
         <ToastContainer />
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row m-auto">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Footer(before)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                if (!footerAd) return null;
+
+                const cardClass =
+                  footerAd.ads_size === "full-width"
+                    ? "ad-card full-width-card"
+                    : "ad-card";
+
+                return (
+                  <div className="ad-card-container">
+                    <div className={cardClass}>
+                      <picture className="ad-picture">
+                        {footerAd.mobileImage && (
+                          <source
+                            media="(max-width: 767px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          />
+                        )}
+                        {footerAd.desktopImage && (
+                          <source
+                            media="(min-width: 768px) and (max-width: 991px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          />
+                        )}
+                        <img
+                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          alt="Advertisement"
+                          className="ad-img"
+                        />
+                      </picture>
+                      <div className="ad-overlay">
+                        <div className="ad-overlay-top">
+                          <button className="ad-button btn btn-success d-flex cart-cart1">
+                            <Link to="/shop" className="ad-link">
+                              {footerAd.button}
+                            </Link>
+                          </button>
+                        </div>
+                        <div className="ad-overlay-bottom cart-cart">
+                          <h3 className="ad-title">{footerAd.title}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -837,77 +1199,54 @@ function Shop() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/about"
-                        className="text-white text-decoration-none"
-                      >
-                        About Us
-                      </Link>
+                      <Link to="/about">About Us</Link>
                     </li>
                     <li>
-                      <Link
-                        to="/blog"
-                        className="text-white text-decoration-none"
-                      >
-                        Blog
-                      </Link>
+                      <Link to="/blog">Blog</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Payment Security
-                      </Link>
+                      <Link>Payment Security</Link>
                     </li>
                     <li>
-                      <Link className="text-white text-decoration-none">
-                        Affiliate Marketing
-                      </Link>
+                      <Link>Affiliate Marketing</Link>
                     </li>
                   </ul>
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
-                      <Link
-                        to="/faqs"
-                        className="text-white text-decoration-none"
-                      >
-                        FAQ
+                      <Link to="/faqs" className="text-decoration-none">
+                        FAQ's
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        className="text-white text-decoration-none"
-                        to="/sitemap"
-                      >
+                      <Link className="text-decoration-none" to="/sitemap">
                         Sitemap
                       </Link>
                     </li>
                     <li>
-                      <Link
-                        to="/contact-us"
-                        className="text-white text-decoration-none"
-                      >
+                      <Link to="/contact-us" className="text-decoration-none">
                         Contact
                       </Link>
                     </li>
@@ -917,19 +1256,31 @@ function Shop() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger-access text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-accesses d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
+                  onClick={newsSubmit}
+                  aria-label="Subscribe to newsletter"
                 >
                   Subscribe
                 </button>
@@ -941,13 +1292,74 @@ function Shop() {
 
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
-              <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
-              </p>
+              <div className="text-md-start text-lg-start text-start mb-0">
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+              </div>
             </div>
           </div>
         </div>
       </footer>
+
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row m-auto">
+            <div className="ad-container m-0">
+              {(() => {
+                const footerAd = ads.find(
+                  (data) =>
+                    data.location === "Footer(after)" &&
+                    new Date(data.expired) > new Date() &&
+                    data.status !== "pending"
+                );
+                if (!footerAd) return null;
+
+                const cardClass =
+                  footerAd.ads_size === "full-width"
+                    ? "ad-card full-width-card"
+                    : "ad-card";
+
+                return (
+                  <div className="ad-card-container mb-2">
+                    <div className={cardClass}>
+                      <picture className="ad-picture">
+                        {footerAd.mobileImage && (
+                          <source
+                            media="(max-width: 767px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          />
+                        )}
+                        {footerAd.desktopImage && (
+                          <source
+                            media="(min-width: 768px) and (max-width: 991px)"
+                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          />
+                        )}
+                        <img
+                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          alt="Advertisement"
+                          className="ad-img"
+                        />
+                      </picture>
+                      <div className="ad-overlay">
+                        <div className="ad-overlay-top">
+                          <button className="ad-button btn btn-success d-flex cart-cart1">
+                            <Link to="/shop" className="ad-link">
+                              {footerAd.button}
+                            </Link>
+                          </button>
+                        </div>
+                        <div className="ad-overlay-bottom cart-cart">
+                          <h3 className="ad-title">{footerAd.title}</h3>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

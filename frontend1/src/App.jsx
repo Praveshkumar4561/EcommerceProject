@@ -126,7 +126,6 @@ import ThemeStyles from "./backend/appearance/themeoptions/themestyles/ThemeStyl
 import Privacy from "./component/privacypolicy/Privacy.jsx";
 import TermsCondition from "./component/termsandconditions/TermsCondition.jsx";
 import MedicinePolicy from "./component/medicinepolicy/MedicinePolicy.jsx";
-import Page from "./component/Pages.jsx";
 import Shipment from "./backend/ecommerce/shipments/Shipment.jsx";
 import Invoice from "./backend/ecommerce/invoice/Invoice.jsx";
 import InvoiceEdit from "./backend/ecommerce/invoice/InvoiceEdit.jsx";
@@ -167,6 +166,11 @@ import Wishlist from "./component/wishlist/Wishlist.jsx";
 import DynamicPage from "./component/dynamicpage/DynamicPage.jsx";
 import axios from "axios";
 import Sitemap from "./component/sitemap/Sitemap.jsx";
+import Users from "./Users.jsx";
+import AdsSettings from "./backend/ads/AdsSettings.jsx";
+import AdminDetails from "./backend/admindetails/AdminDetails.jsx";
+import AdminCreate from "./backend/admindetails/AdminCreate.jsx";
+import AdminEdit from "./backend/admindetails/AdminEdit.jsx";
 
 function App() {
   useEffect(() => {
@@ -277,6 +281,18 @@ function App() {
                 <Route path="customers" element={<Customers />} />
                 <Route path="menus" element={<Menus />} />
                 <Route path="widgets" element={<Widgets />} />
+              </Route>
+
+              <Route path="/admin/system/*" element={<ProtectedRoute />}>
+                <Route path="users" element={<AdminDetails />} />
+              </Route>
+
+              <Route path="/admin/system/users/*" element={<ProtectedRoute />}>
+                <Route path="create" element={<AdminCreate />} />
+              </Route>
+
+              <Route path="/admin/system/users/*" element={<ProtectedRoute />}>
+                <Route path="profile/:id" element={<AdminEdit />} />
               </Route>
 
               <Route path="/admin/password">
@@ -647,7 +663,11 @@ function App() {
                 <Route path="edit/:id" element={<AdsEdit />} />
               </Route>
 
-              <Route path="/">
+              <Route path="/admin/settings/*" element={<ProtectedRoute />}>
+                <Route path="ads" element={<AdsSettings />} />
+              </Route>
+
+              <Route path="/" element={<Users />}>
                 <Route
                   path="/"
                   element={
@@ -750,6 +770,7 @@ function App() {
                   element={<Navigate to={`/${urlState.checkout}`} replace />}
                 />
                 <Route path={`/${urlState.checkout}`} element={<Checkout />} />
+
                 <Route path="/blog-details/:id" element={<BlogDetails />} />
                 <Route path="/error" element={<ErrorPage />} />
 
@@ -763,8 +784,7 @@ function App() {
                 <Route path="/privacy-policy" element={<Privacy />} />
                 <Route path="/terms-condition" element={<TermsCondition />} />
                 <Route path="/medicine-policy" element={<MedicinePolicy />} />
-                <Route path="/page-seo/:id" element={<Page />} />
-                {/* <Route path="/products" element={<ProductHome />} /> */}
+                <Route path="/product-categories" element={<ProductHome />} />
               </Route>
 
               <Route path="/user">

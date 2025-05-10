@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./IncompleteOrders.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -13,11 +14,11 @@ import {
   faDownload,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import Output from "../../../assets/output.webp";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function IncompleOrders() {
   let [isVisible, setIsVisible] = useState(false);
@@ -83,6 +84,7 @@ function IncompleOrders() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -164,20 +166,54 @@ function IncompleOrders() {
     }
   };
 
-  let [incomplete, setIncomplete] = useState([]);
-
   let [count5, setCount5] = useState(0);
-  let [order, setOrder] = useState([]);
 
-  let customerdata = async () => {
-    const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setOrder(response.data);
-    setCount5(response.data.length);
-  };
-  customerdata();
+  useEffect(() => {
+    let customerdata = async () => {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/checkoutdata"
+      );
+      setCount5(response.data.length);
+    };
+    customerdata();
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Incomplete orders | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Incomplete orders | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -259,7 +295,9 @@ function IncompleOrders() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1461,7 +1499,7 @@ function IncompleOrders() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2122,7 +2160,7 @@ function IncompleOrders() {
               <div className="col-12 col-md-12 col-lg-12 rounded mt-lg-3 d-flex flex-column align-items-center lh-lg cart-cart py-2">
                 <img src={Output} alt="RxLYTE" className="mt-4 img-fluid" />
                 <h3 className="mt-4 fw-medium">Manage incomplete orders</h3>
-                <span className="text-start content-customer mb-4">
+                <span className="text-start mb-4">
                   Incomplete order is an order created when a customer adds a
                   product to the cart, proceeds to fill out the purchase
                   information but does not complete the checkout process.

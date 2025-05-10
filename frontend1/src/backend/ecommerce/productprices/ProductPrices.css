@@ -171,6 +171,7 @@ input[type="search"] {
   word-spacing: 2px;
   color: #f76707;
 }
+
 .table-price {
   width: 100%;
   max-width: 70%;
@@ -223,7 +224,8 @@ input[type="search"] {
   }
   .table-price {
     width: 100%;
-    max-width: 73%;
+    max-width: 70% !important;
+    margin-right: 3%;
   }
 }
 @media (min-width: 1100px) and (max-width: 1200px) {
@@ -234,7 +236,7 @@ input[type="search"] {
   }
   .table-price {
     width: 100%;
-    max-width: 74%;
+    max-width: 71% !important;
   }
 }
 @media (min-width: 1200px) and (max-width: 1300px) {
@@ -245,7 +247,7 @@ input[type="search"] {
   }
   .table-price {
     width: 100%;
-    max-width: 77%;
+    max-width: 75% !important;
   }
 }
 @media (min-width: 1300px) and (max-width: 1400px) {
@@ -256,7 +258,7 @@ input[type="search"] {
   }
   .table-price {
     width: 100%;
-    max-width: 80%;
+    max-width: 76% !important;
   }
 }
 @media (min-width: 1400px) and (max-width: 1600px) {
@@ -267,6 +269,6 @@ input[type="search"] {
   }
   .table-price {
     width: 100%;
-    max-width: 80.3%;
+    max-width: 78% !important;
   }
 }

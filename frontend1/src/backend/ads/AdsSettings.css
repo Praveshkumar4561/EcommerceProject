@@ -1,0 +1,195 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  overflow-x: hidden;
+  font-family: "SanDiego";
+}
+
+#container-custom {
+  width: 100vw;
+  height: 180px;
+  background-color: #f2f5f7;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.search-box1 {
+  width: 32px;
+  position: relative;
+  bottom: 0.98rem;
+  cursor: pointer;
+}
+
+.count-value {
+  font-family: Verdana, Tahoma, sans-serif;
+  position: relative;
+  left: 0.6rem;
+  top: 0.22rem;
+}
+
+.pointer-click {
+  cursor: pointer;
+}
+
+.editor-ads {
+  color: #f76707;
+}
+
+.ads-image {
+  width: 103px;
+  height: 83px;
+}
+
+@media (max-width: 769px) {
+  .ads-image {
+    width: 103px !important;
+    height: 63px !important;
+  }
+}
+
+.main-content {
+  margin-left: 27.6rem !important;
+  width: 100%;
+  max-width: 72%;
+}
+
+.save-ads {
+  width: 100%;
+  max-width: 15.9%;
+}
+
+.delete-ads {
+  width: 100%;
+  max-width: 16%;
+}
+
+.main-ads {
+  width: 100%;
+  max-width: 76.5%;
+}
+
+.where-back {
+  background-color: #f6f8fb;
+}
+
+.ads-adsense {
+  text-decoration: none;
+}
+.ads-adsense:hover {
+  text-decoration: underline;
+}
+
+.ads-adsense1 {
+  text-decoration: none;
+  color: #198754;
+}
+.ads-adsense1:hover {
+  text-decoration: underline;
+  color: #198754;
+}
+
+.adssense-unit {
+  background-color: #182433;
+}
+
+@media (min-width: 992px) {
+  .main-content {
+    margin-left: 20rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .save-ads {
+    width: 100%;
+    max-width: 39% !important;
+  }
+
+  .delete-ads {
+    width: 100%;
+    max-width: 39%;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0rem !important;
+    width: 100%;
+    max-width: 98%;
+  }
+  .main-ads {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+  .main-ads1 {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+  .save-ads {
+    width: 100%;
+    max-width: 29%;
+  }
+  .delete-ads {
+    width: 100%;
+    max-width: 39%;
+  }
+}
+
+@media (min-width: 993px) and (max-width: 1200px) {
+  .main-content {
+    margin-left: 18rem !important;
+    width: 100%;
+    max-width: 100%;
+  }
+  .main-ads {
+    width: 100%;
+    max-width: 50%;
+    margin: 0;
+  }
+  .save-ads {
+    width: 100%;
+    max-width: 33%;
+  }
+  .delete-ads {
+    width: 100%;
+    max-width: 39%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .main-content {
+    margin-left: 18rem !important;
+    width: 100%;
+    max-width: 100%;
+  }
+  .delete-ads {
+    width: 100%;
+    max-width: 23%;
+  }
+
+  .main-ads {
+    width: 100%;
+    max-width: 59%;
+    margin: 0;
+  }
+  .save-ads {
+    width: 100%;
+    max-width: 23%;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+  .delete-ads {
+    width: 100%;
+    max-width: 21%;
+  }
+}

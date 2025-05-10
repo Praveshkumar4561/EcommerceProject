@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Testimonial.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faEnvelope,
@@ -12,13 +13,13 @@ import {
   faTrashCan,
   faAngleDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function Testimonial() {
   let [user, setUser] = useState([]);
@@ -28,7 +29,13 @@ function Testimonial() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const resultsRef = useRef(null);
+  const navigate = useNavigate();
+  let [Specification, setSpecifcation] = useState(false);
+  let [payment, setPayment] = useState(false);
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
@@ -37,15 +44,7 @@ function Testimonial() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
-
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const resultsRef = useRef(null);
-  const navigate = useNavigate();
-  let [Specification, setSpecifcation] = useState(false);
-  let [payment, setPayment] = useState(false);
+  }, []);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -97,7 +96,9 @@ function Testimonial() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -162,8 +163,9 @@ function Testimonial() {
   useEffect(() => {
     if (search) {
       serachbar();
+    } else {
+      showdata();
     }
-    showdata();
   }, [search]);
 
   let serachbar = async () => {
@@ -172,7 +174,6 @@ function Testimonial() {
     );
     setUser(response.data);
   };
-  serachbar();
 
   let showdata = async () => {
     let response = await axios.get(
@@ -181,13 +182,26 @@ function Testimonial() {
     setUser(response.data);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
+
+  const paginatedData = user.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   let deletedata = async (id) => {
     try {
       await axios.delete(`http://89.116.170.231:1600/deletetest/${id}`);
+      const updatedData = user.filter((item) => item.id !== id);
+      const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+      if (currentPage > newTotalPages && newTotalPages > 0) {
+        setCurrentPage(newTotalPages);
+      }
       toast.success("Data successfully deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -197,7 +211,7 @@ function Testimonial() {
       toast.error("Data is not deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -225,6 +239,42 @@ function Testimonial() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Testimonials | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Testimonials | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -306,7 +356,9 @@ function Testimonial() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1508,7 +1560,7 @@ function Testimonial() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2147,7 +2199,7 @@ function Testimonial() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2155,7 +2207,7 @@ function Testimonial() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex  justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex  justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial ms-3 ms-lg-0 table-price">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2163,7 +2215,7 @@ function Testimonial() {
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ cart-cart "
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2171,15 +2223,15 @@ function Testimonial() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 py-4 d-flex btn-announ mt-0 mt-lg-0"
+                  className="btn btn-secondary me-2 py-4 d-flex btn-announ mt-0 mt-lg-0 cart-cart"
                   type="button"
                 >
                   Filters
                 </button>
                 <input
-                  className="form-control py-4 rounded-2 mt-0 mt-lg-0"
+                  className="form-control py-4 rounded-2 mt-0 mt-lg-0 border cart-cart"
                   placeholder="Search..."
-                  type="text"
+                  type="search"
                   name="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -2191,7 +2243,7 @@ function Testimonial() {
                   className="text-decoration-none"
                 >
                   <button
-                    className="btn btn-create me-2 d-flex flex-row align-items-center"
+                    className="btn btn-create me-2 d-flex flex-row align-items-center cart-cart"
                     type="button"
                   >
                     <FontAwesomeIcon icon={faPlus} className="me-2" />
@@ -2199,7 +2251,7 @@ function Testimonial() {
                   </button>
                 </Link>
                 <button
-                  className="btn btn-reload d-flex flex-row align-items-center border"
+                  className="btn btn-reload d-flex flex-row align-items-center border cart-cart"
                   type="button"
                 >
                   <FontAwesomeIcon icon={faRotate} className="me-2" />
@@ -2246,7 +2298,7 @@ function Testimonial() {
                       className="fw-normal"
                       style={{ whiteSpace: "nowrap" }}
                     >
-                      Is Active
+                      Status
                       <i className="fas fa-sort ms-1"></i>
                     </th>
                     <th
@@ -2264,8 +2316,8 @@ function Testimonial() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(user) && user.length > 0 ? (
-                    user.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>
                           <input type="checkbox" className="form-check-input" />
@@ -2284,12 +2336,23 @@ function Testimonial() {
                             {data.name}
                           </Link>
                         </td>
+
                         <td>
-                          <span className="badge badge-success fw-light">
-                            Yes
+                          <span
+                            className={`badge cart-cart ${
+                              data.status === "published" ||
+                              data.status === "default"
+                                ? "badge-success"
+                                : data.status === "pending"
+                                ? "badge-danger"
+                                : "badge-secondary"
+                            } fw-light`}
+                          >
+                            {data.status}
                           </span>
                         </td>
-                        <td>{data.date}</td>
+
+                        <td className="sales-font">{data.date}</td>
 
                         <td style={{ whiteSpace: "nowrap" }}>
                           <button className="btn btn-edit me-2" type="button">
@@ -2312,7 +2375,7 @@ function Testimonial() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center">
+                      <td colSpan="8" className="text-center cart-cart">
                         No testimonials available
                       </td>
                     </tr>
@@ -2320,6 +2383,66 @@ function Testimonial() {
                 </tbody>
               </table>
             </div>
+            {user.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(user.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(user.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(user.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
         <ToastContainer />

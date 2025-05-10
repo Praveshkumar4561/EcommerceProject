@@ -119,8 +119,6 @@ input[type="search"] {
   }
 }
 
-
-
 @media (max-width: 576px) {
   .icon-down {
     position: absolute;
@@ -151,7 +149,6 @@ input[type="search"] {
   }
 }
 
-
 .sidebar-container {
   position: absolute;
   top: 4.5rem;
@@ -169,7 +166,7 @@ input[type="search"] {
 }
 
 .sidebar-back4 {
-  height: 170rem;
+  height: 180rem;
 }
 
 .sidebar-back4 .list-unstyled {

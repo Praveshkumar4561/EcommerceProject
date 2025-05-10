@@ -297,6 +297,11 @@ input[type="search"] {
     width: 100%;
     overflow-x: auto;
   }
+  .button-print {
+    position: absolute;
+    right: 2% !important;
+    top: 11% !important;
+  }
 }
 
 @media (max-width: 480px) {

@@ -249,6 +249,12 @@ input[type="search"] {
 
 .badge-success {
   background-color: #28a745;
+  padding: 8px 8px;
+}
+
+.badge-danger {
+  background-color: #dc3545 !important;
+  padding: 8px 8px;
 }
 
 .sidebar {

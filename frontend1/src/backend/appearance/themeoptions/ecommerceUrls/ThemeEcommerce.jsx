@@ -2,19 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ThemeEcommerce.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ThemeEcommerce() {
   let [isVisible, setIsVisible] = useState(false);
@@ -81,6 +82,7 @@ function ThemeEcommerce() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -170,7 +172,7 @@ function ThemeEcommerce() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const savedUrlState = localStorage.getItem("urlState");
 
@@ -210,7 +212,7 @@ function ThemeEcommerce() {
       toast.success("URLs have been changed!", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -219,7 +221,7 @@ function ThemeEcommerce() {
       toast.error("URLs have been changed!", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -229,6 +231,45 @@ function ThemeEcommerce() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Theme Options - Ecommerce URLs | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta
+          property="og:title"
+          content="Theme Options - Ecommerce URLs | RxLYTE"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -310,7 +351,9 @@ function ThemeEcommerce() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1512,7 +1555,7 @@ function ThemeEcommerce() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2557,9 +2600,9 @@ function ThemeEcommerce() {
             </button>
           </div>
 
-          <hr className="custom-changes1" />
+          <div className="border w-100 mt-1"></div>
           <form className="content-form ms-3 me-3">
-            <div className="mb-3 mt-2">
+            <div className="mb-3 mt-4 pt-3">
               <span className="custom-user">
                 Customize the slugs used for ecommerce pages. Be cautious when
                 modifying as it can affect SEO and user experience. If something

@@ -15,3 +15,7 @@ export default defineConfig({
     },
   },
 });
+
+
+
+// http://89.116.170.231:1600/getannounce

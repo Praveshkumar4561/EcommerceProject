@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./OrdersEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -11,7 +12,6 @@ import {
   faMoon,
   faPrint,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -95,6 +95,7 @@ function OrdersEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -146,7 +147,7 @@ function OrdersEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   let appearence = () => {
     setAppear(!appear);
@@ -170,7 +171,6 @@ function OrdersEdit() {
 
   let { id } = useParams();
 
-  let [user, setUser] = useState([]);
   let [order, setOrder] = useState([]);
   let [payment, setPayment] = useState(false);
 
@@ -179,16 +179,14 @@ function OrdersEdit() {
   };
 
   useEffect(() => {
+    let alldata = async () => {
+      let response = await axios.get(
+        `http://89.116.170.231:1600/checkoutsome/${id}`
+      );
+      setOrder(response.data);
+    };
     alldata();
-  });
-
-  let alldata = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/checkoutsome/${id}`
-    );
-    setUser(response.data[0]);
-    setOrder(response.data);
-  };
+  }, []);
 
   return (
     <>
@@ -273,7 +271,9 @@ function OrdersEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -309,7 +309,7 @@ function OrdersEdit() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-orders mt-1">
+        <div className="sidebar-orders mt-1 ">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1444,7 +1444,7 @@ function OrdersEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2104,11 +2104,11 @@ function OrdersEdit() {
       </nav>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row content-orders gap-2 gap-sm-2 gap-md-2 d-flex flex-lg-column flex-xxl-row flex-xl-row flex-md-column">
             <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search">
               Order information
-              <hr />
+              <div className="w-100 border mt-2 mb-3"></div>
               {order.map((data, key) => (
                 <>
                   <form key={key}>
@@ -2129,7 +2129,7 @@ function OrdersEdit() {
                       </div>
                       <div style={{ fontFamily: "verdana" }}>${data.total}</div>
                     </div>
-                    <hr />
+                    <div className="w-100 border mt-2 mb-3"></div>
 
                     <div className="product-list"></div>
                     <div className="d-flex flex-lg-column flex-xxl-row flex-sm-column">
@@ -2183,18 +2183,21 @@ function OrdersEdit() {
                         <div className="d-flex mt-4 gap-5 ms-4 ps-3 flex-row">
                           <label htmlFor="">Payment status:</label>
                           <span style={{ fontFamily: "verdana" }}>
-                            <button className="btn btn-success d-flex rounded-0">
+                            <button
+                              className="btn btn-success d-flex rounded-0 cart-cart"
+                              onClick={(e) => e.preventDefault()}
+                            >
                               Pending
                             </button>
                           </span>
                         </div>
 
                         <div className="d-flex flex-row gap-2 mt-4">
-                          <button className="btn btn-transparent border d-flex flex-row align-items-center rounded-0 py-4 gap-1">
+                          <button className="btn btn-transparent border d-flex flex-row align-items-center rounded-0 py-4 gap-1 cart-cart">
                             <FontAwesomeIcon icon={faPrint} className="m" />
                             Print Invoice
                           </button>
-                          <button className="btn btn-transparent border rounded-0 py-4 d-flex flex-row align-items-center">
+                          <button className="btn btn-transparent border rounded-0 py-4 d-flex flex-row align-items-center cart-cart">
                             <FontAwesomeIcon
                               icon={faDownload}
                               className="me-1"
@@ -2206,25 +2209,29 @@ function OrdersEdit() {
                         <div className="mt-3 d-flex flex-column">
                           <label htmlFor="">Note</label>
                           <textarea
-                            className="form-control mt-2 form-order1"
+                            className="form-control mt-2 form-order1 cart-cart"
                             placeholder="Note for order..."
                             style={{ height: "59px", width: "392px" }}
                           ></textarea>
                         </div>
-                        <button className="btn btn-outline-success border d-flex py-4 mt-3 me-auto">
+                        <button
+                          className="btn btn-outline-success border d-flex py-4 mt-3 me-auto cart-cart"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           Save
                         </button>
                       </div>
                     </div>
-
-                    <hr />
-
+                    <div className="w-100 border mt-2 mb-3"></div>
                     <div className="d-flex justify-content-between flex-wrap align-items-end flex-row">
                       <div className="d-flex gap-2 flex-row">
                         <FontAwesomeIcon icon={faCreditCard} className="mt-1" />
                         <p>Pending Payment</p>
                       </div>
-                      <button className="btn d-flex btn-outline-success py-4">
+                      <button
+                        className="btn d-flex btn-outline-success py-4 cart-cart"
+                        onClick={(e) => e.preventDefault()}
+                      >
                         Confirm Payment
                       </button>
                     </div>
@@ -2235,7 +2242,7 @@ function OrdersEdit() {
 
             <div className="col-12 col-sm-12 col-md-6 col-lg-4 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start customer-new">
               <h4>Customer</h4>
-              <hr />
+              <div className="w-100 border mt-2 mb-3"></div>
 
               {order.map((data, key) => (
                 <>
@@ -2257,15 +2264,15 @@ function OrdersEdit() {
                     <div>{data.email}</div>
                     <span>{data.phone_number}</span>
                     <span>Have an account already</span>
-                    <hr />
+                    <div className="w-100 border mt-2 mb-3"></div>
                     <span className="fw-bold">Store</span>
                     <span className="text-success">{data.store}</span>
-                    <hr />
+                    <div className="w-100 border mt-2 mb-3"></div>
                     <div className="d-flex flex-row gap-2">
-                      <button className="btn btn-outline-success border d-flex py-4">
+                      <button className="btn btn-outline-success border d-flex py-4 cart-cart">
                         Reorder
                       </button>
-                      <button className="btn btn-outline-success border d-flex py-4">
+                      <button className="btn btn-outline-success border d-flex py-4 cart-cart">
                         Cancel
                       </button>
                     </div>
@@ -2278,11 +2285,11 @@ function OrdersEdit() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row content-orders gap-2 gap-sm-2 gap-md-2 d-flex flex-lg-column flex-xxl-row flex-xl-row flex-md-column">
-            <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search">
-              <span>Digital product downloads</span>
-              <hr />
+            <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search ">
+              <span className="fw-bold">Digital product downloads</span>
+              <div className="w-100 border mt-3 mb-3"></div>
               {order.map((data, key) => (
                 <>
                   <div className="d-flex flex-row order-edit gap-2" key={key}>
@@ -2300,11 +2307,11 @@ function OrdersEdit() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row content-orders gap-2 gap-sm-2 gap-md-2 d-flex flex-lg-column flex-xxl-row flex-xl-row flex-md-column">
             <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search">
-              <span>History</span>
-              <hr />
+              <h4 className="fw-bold">History</h4>
+              <div className="w-100 border mt-2 mb-2"></div>
               {order.map((data, key) => (
                 <>
                   <div className="d-flex flex-column lh-lg" key={key}>
@@ -2313,14 +2320,14 @@ function OrdersEdit() {
                         New order from {data.first_name}
                         <span className="ms-1">{data.last_name}</span>
                       </div>
-                      <span>{data.date}</span>
+                      <span className="sales-font">{data.date}</span>
                     </div>
 
                     <div className="d-flex flex-column">
                       <div className="d-flex flex-row fw-bold cart-cart1">
                         Order is created from checkout page
                       </div>
-                      <span>{data.date}</span>
+                      <span className="sales-font">{data.date}</span>
                     </div>
                   </div>
                 </>

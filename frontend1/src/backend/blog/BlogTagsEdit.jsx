@@ -3,6 +3,7 @@ import "./BlogTagsCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import Cutting from "../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -11,13 +12,13 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function BlogTagsEdit() {
   let { id } = useParams();
@@ -37,7 +38,7 @@ function BlogTagsEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -59,13 +60,12 @@ function BlogTagsEdit() {
     setEdit(!edit);
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -78,7 +78,7 @@ function BlogTagsEdit() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -130,6 +130,7 @@ function BlogTagsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -251,6 +252,41 @@ function BlogTagsEdit() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -332,7 +368,9 @@ function BlogTagsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1534,7 +1572,7 @@ function BlogTagsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2179,7 +2217,7 @@ function BlogTagsEdit() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">BLOG</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/blog/tags">TAGS</Link>
           </li>
 
@@ -2191,7 +2229,7 @@ function BlogTagsEdit() {
 
       <div className="container-fluid">
         <div className="container">
-          <div className="row">
+          <div className="row cart-cart">
             <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
               <svg
                 className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
@@ -2218,8 +2256,8 @@ function BlogTagsEdit() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
-          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+        <div className="container cart-cart">
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1 ">
             <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
               <form>
                 <div className="d-flex flex-column gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
@@ -2227,7 +2265,7 @@ function BlogTagsEdit() {
                     <label htmlFor="">Name</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2 py-4 cart-cart"
                       placeholder="Name"
                       name="name"
                       value={name}
@@ -2239,8 +2277,7 @@ function BlogTagsEdit() {
                     <label htmlFor="">Permalink</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="https://shofy.botble.com/tag/"
+                      className="form-control mt-2 py-4 cart-cart"
                       name="permalink"
                       value={permalink}
                       onChange={onInputChange}
@@ -2251,7 +2288,7 @@ function BlogTagsEdit() {
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control py-3 h mt-2"
+                      className="form-control py-3 mt-2 cart-cart"
                       placeholder="short description"
                       name="description"
                       value={description}
@@ -2291,10 +2328,10 @@ function BlogTagsEdit() {
               </form>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 cart-cart">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border w-100 mb-3 mt-2"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2304,17 +2341,22 @@ function BlogTagsEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/blog/tags"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border w-100 mb-3 mt-2"></div>
                 <select
-                  className="form-select w-100"
+                  className="form-select w-100 mb-2"
                   style={{ height: "45px" }}
                   name="status"
                   value={status}
@@ -2443,9 +2485,9 @@ function BlogTagsEdit() {
                               className="form-check-input"
                               type="radio"
                               name="check"
-                              checked
+                              id="Index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="Index" className="ms-2">
                               Index
                             </label>
 
@@ -2454,8 +2496,9 @@ function BlogTagsEdit() {
                               type="radio"
                               value="index"
                               name="check"
+                              id="No index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="No index" className="ms-2">
                               No index
                             </label>
                           </div>

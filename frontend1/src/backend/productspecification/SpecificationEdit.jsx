@@ -2,18 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import "./SpecificationEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faMoon,
   faEnvelope,
   faFloppyDisk,
+  faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function SpecificationEdit() {
   let [count5, setCount5] = useState(0);
@@ -24,7 +26,7 @@ function SpecificationEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -74,6 +76,7 @@ function SpecificationEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -225,6 +228,44 @@ function SpecificationEdit() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit Specification Group "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:title"
+          content="Create Specification Groups | RxLYTE"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -306,7 +347,9 @@ function SpecificationEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1514,7 +1557,7 @@ function SpecificationEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2197,7 +2240,7 @@ function SpecificationEdit() {
                 <div>
                   <label htmlFor="description">Description</label>
                   <textarea
-                    className="form-control mt-2 py-4 mb-3 input-text"
+                    className="form-control mt-2 mb-3 input-text"
                     placeholder="Short Description"
                     style={{ height: "82px" }}
                     name="description"
@@ -2236,11 +2279,11 @@ function SpecificationEdit() {
                   Save
                 </button>
                 <button className="btn btn-body border d-flex py-4 px-2 gap-1 d-flex flex-row align-items-center">
-                  <i className="fas fa-sign-out-alt"></i>
                   <Link
-                    className="ms-1 text-dark text-decoration-none"
-                    to="/admin/ecommerce/specification-groups"
+                    to="/admin/ecommerce/specification-tables"
+                    className="text-decoration-none text-dark"
                   >
+                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
                     Save & Exit
                   </Link>
                 </button>

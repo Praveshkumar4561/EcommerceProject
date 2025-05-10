@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./NewsLetters.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faDownload,
@@ -9,15 +10,17 @@ import {
   faMoon,
   faRotate,
   faAngleDown,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function NewsLetters() {
-  let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -110,7 +113,7 @@ function NewsLetters() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -155,6 +158,7 @@ function NewsLetters() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -198,8 +202,114 @@ function NewsLetters() {
     }
   };
 
+  let [news, setNews] = useState([]);
+  let [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (search) {
+      serachbar();
+    } else {
+      newsdata();
+    }
+  }, [search]);
+
+  let serachbar = async () => {
+    try {
+      const response = await axios.get(
+        `http://89.116.170.231:1600/newsfilter/${search}`
+      );
+      setNews(response.data);
+    } catch (error) {
+      console.error("Error filtering data", error);
+    }
+  };
+
+  let newsdata = async () => {
+    try {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/newsletterdata"
+      );
+      setNews(response.data);
+    } catch (error) {
+      console.error("Error fetching news data", error);
+    }
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const paginatedData = news.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  let deletedata = async (id) => {
+    try {
+      await axios.delete(`http://89.116.170.231:1600/newsletterdelete/${id}`);
+      const updatedData = news.filter((item) => item.id !== id);
+      const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+      if (currentPage > newTotalPages && newTotalPages > 0) {
+        setCurrentPage(newTotalPages);
+      }
+      toast.success("Data successfully deleted", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setNews((prevUsers) => prevUsers.filter((news) => news.id !== id));
+    } catch (error) {
+      toast.error("Data is not deleted", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Newsletters | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="Newsletters | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -281,7 +391,9 @@ function NewsLetters() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1483,7 +1595,7 @@ function NewsLetters() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2123,7 +2235,7 @@ function NewsLetters() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2131,15 +2243,15 @@ function NewsLetters() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex   justify-content-center align-items-center">
-        <div className="card mt-3 testimonial table-price ms-3 ms-lg-0">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
+        <div className="card mt-3 testimonial table-price ms-2">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
               <div className="d-flex flex-row w-100">
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0 cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2147,42 +2259,47 @@ function NewsLetters() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
+                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ cart-cart"
                   type="button"
                 >
                   Filters
                 </button>
 
-                <input
-                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0 mt-2 w-25"
-                  placeholder="Search..."
-                  type="text"
-                  name="search"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+                <div className="search-gallery">
+                  <input
+                    className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-100 cart-cart ms-0 border"
+                    placeholder="Search..."
+                    type="search"
+                    name="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
               </div>
-              <div className="mt-2 ms-sm-2 mt-lg-0 d-flex flex-row">
-                <button
-                  className="btn btn-create me-2 d-flex flex-row align-items-center"
-                  type="button"
-                  onClick={handleDownload}
-                >
-                  <FontAwesomeIcon icon={faDownload} className="me-2" />
-                  Export
-                </button>
 
-                <button
-                  className="btn btn-reload d-flex flex-row align-items-center border"
-                  type="button"
-                >
-                  <FontAwesomeIcon icon={faRotate} className="me-2" />
-                  Reload
-                </button>
+              <div className="d-flex w-100 justify-content-end">
+                <div className="mt-2 ms-sm-2 mt-lg-0 d-flex flex-row">
+                  <button
+                    className="btn btn-create me-2 d-flex flex-row align-items-center cart-cart"
+                    type="button"
+                    onClick={handleDownload}
+                  >
+                    <FontAwesomeIcon icon={faDownload} className="me-2" />
+                    Export
+                  </button>
+
+                  <button
+                    className="btn btn-reload d-flex flex-row align-items-center border cart-cart"
+                    type="button"
+                  >
+                    <FontAwesomeIcon icon={faRotate} className="me-2" />
+                    Reload
+                  </button>
+                </div>
               </div>
             </div>
             <div className="table-responsive">
-              <table className="table table-responsive table-striped1">
+              <table className="table table-responsive table-striped">
                 <thead className="table-secondary">
                   <tr>
                     <th scope="col">
@@ -2239,39 +2356,123 @@ function NewsLetters() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td></td>
-                    <td></td>
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
+                      <tr key={key}>
+                        <td>
+                          <input type="checkbox" className="form-check-input" />
+                        </td>
+                        <td>{data.id}</td>
 
-                    <td>
-                      <Link to="#"></Link>
-                    </td>
+                        <td>
+                          <Link to={`mailto:${data.email}`}>{data.email}</Link>
+                        </td>
 
-                    <td>
-                      <span className="sliders1"></span>
-                    </td>
+                        <td className="ps-2">{data.name || "--"}</td>
 
-                    <td>
-                      <p
-                        className="mt-2 pt-1 d-flex flex-row"
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        No data to display
-                      </p>
-                    </td>
+                        <td className="sales-font">
+                          {new Date(data.date).toISOString().split("T")[0]}
+                        </td>
 
-                    <td></td>
+                        <td>
+                          <span
+                            className={`badge cart-cart ${
+                              data.status === "Subscribed" ||
+                              data.status === "draft"
+                                ? "badge-success"
+                                : data.status === "pending"
+                                ? "badge-danger"
+                                : "badge-secondary"
+                            } fw-light`}
+                          >
+                            {data.status}
+                          </span>
+                        </td>
 
-                    <td>
-                      <FontAwesomeIcon className="text-primary ms-3" />
-                    </td>
-                    <td></td>
-                  </tr>
+                        <td style={{ whiteSpace: "nowrap" }}>
+                          <button className="btn btn-delete" type="button">
+                            <FontAwesomeIcon
+                              icon={faTrashCan}
+                              className="fs-5"
+                              onClick={() => deletedata(data.id)}
+                            />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="text-center">
+                        No data available
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+            {news.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(news.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(news.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(news.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
+        <ToastContainer />
       </main>
     </>
   );

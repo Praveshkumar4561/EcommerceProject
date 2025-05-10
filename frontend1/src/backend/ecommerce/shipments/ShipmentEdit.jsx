@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./ShipmentEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,15 +11,13 @@ import {
   faMoon,
   faPen,
   faPhone,
-  faPrint,
   faTruck,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function ShipmentEdit() {
   let [isVisible, setIsVisible] = useState(false);
@@ -27,14 +26,6 @@ function ShipmentEdit() {
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,6 +41,14 @@ function ShipmentEdit() {
   let togglespecification = () => {
     setSpecifcation(!Specification);
   };
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  }, []);
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -94,7 +93,9 @@ function ShipmentEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -193,6 +194,41 @@ function ShipmentEdit() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit shipping | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -274,7 +310,9 @@ function ShipmentEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1477,7 +1515,7 @@ function ShipmentEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2190,8 +2228,8 @@ function ShipmentEdit() {
         </div>
       </div>
 
-      <div className="container-fluid cart-cart">
-        <div className="container">
+      <div className="container-fluid">
+        <div className="container cart-cart">
           <div className="row gap-0 ms-lg-5 ps-lg-3 mt-lg-4 me-1 d-flex flex-row flex-lg-wrap flex-wrap flex-xl-nowrap">
             <div className="col-12 col-md-12 col-lg-8 border rounded py-2 text-start shipment-page">
               <h5 className="mt-2 fw-bold">Additional shipment information</h5>
@@ -2313,15 +2351,6 @@ function ShipmentEdit() {
                     </div>
                   </>
                 ))}
-              </div>
-
-              <div className="border rounded p-3 customer-page1 lh-lg text-start mb-3 mt-3">
-                <h6 className="mt-0 fw-bold">Shipping label</h6>
-                <hr />
-                <button className="btn btn-success d-flex flex-row align-items-center rounded cart-cart py-4">
-                  <FontAwesomeIcon icon={faPrint} className="me-2" />
-                  Print
-                </button>
               </div>
             </div>
           </div>

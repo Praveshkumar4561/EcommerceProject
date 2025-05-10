@@ -3,6 +3,7 @@ import "./ReviewsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import Cutting from "../../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,14 +11,15 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ReviewsCreate() {
   const [query, setQuery] = useState("");
@@ -79,6 +81,7 @@ function ReviewsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -122,14 +125,12 @@ function ReviewsCreate() {
     }
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -142,13 +143,18 @@ function ReviewsCreate() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          progress: true,
           closeOnClick: true,
           draggable: true,
-          progress: undefined,
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCloseClick = () => {
+    setImageUrl(null);
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -177,58 +183,6 @@ function ReviewsCreate() {
     setBlog(!blog);
   };
 
-  let [user, setUser] = useState({
-    name: "",
-    product_name: "",
-    user_name: "",
-    email: "",
-    star: "",
-    comment: "",
-    status: "",
-    date: "",
-    file: null,
-  });
-
-  let {
-    name,
-    product_name,
-    user_name,
-    email,
-    star,
-    comment,
-    status,
-    date,
-    file,
-  } = user;
-
-  let handleSubmit = async () => {
-    let formData = new FormData();
-    formData.append("name", name);
-    formData.append("product_name", product_name);
-    formData.append("user_name", user_name);
-    formData.append("email", email);
-    formData.append("star", star);
-    formData.append("comment", comment);
-    formData.append("status", status);
-    formData.append("date", date);
-    formData.append("file", file);
-    try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/reviewdatasubmit",
-        formData
-      );
-      if (response.status === 200) {
-        navigate("/admin/ecommerce/reviews");
-      }
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  let onInputChange = async (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
@@ -255,10 +209,165 @@ function ReviewsCreate() {
       setCount5(response.data.length);
     };
     orderdata();
+  }, []);
+
+  const [review, setReview] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [showProductSuggestions, setShowProductSuggestions] = useState(false);
+  const [customerData, setCustomerData] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
+  const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
+
+  const [user, setUser] = useState({
+    name: "",
+    product_name: "",
+    user_name: "",
+    email: "",
+    star: "",
+    comment: "",
+    date: "",
+    file: null,
   });
+  const { product_name, user_name, email, name, star, comment, date, file } =
+    user;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("name", name);
+    formData.append("product_name", product_name);
+    formData.append("user_name", user_name);
+    formData.append("email", email);
+    formData.append("star", star);
+    formData.append("comment", comment);
+    formData.append("date", date);
+    formData.append("file", file);
+    try {
+      const response = await axios.post(
+        "http://89.116.170.231:1600/reviewdatasubmit",
+        formData
+      );
+      if (response.status === 200) {
+        navigate("/admin/ecommerce/reviews");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  let onInputChange = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/productpagedata"
+        );
+        setReview(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get("http://89.116.170.231:1600/alldata");
+        setCustomerData(response.data);
+      } catch (error) {
+        console.error("Error fetching customers:", error);
+      }
+    };
+    fetchCustomers();
+  }, []);
+
+  const handleProductChange = (e) => {
+    const { value } = e.target;
+    setUser({ ...user, product_name: value });
+    if (value) {
+      const suggestions = review.filter((item) =>
+        item.name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredProducts(suggestions);
+      setShowProductSuggestions(true);
+    } else {
+      setShowProductSuggestions(false);
+    }
+  };
+
+  const handleCustomerChange = (e) => {
+    const { value } = e.target;
+    setUser({ ...user, user_name: value });
+    if (value) {
+      const suggestions = customerData.filter((cust) => {
+        const fullName = `${cust.first_name} ${cust.last_name}`.toLowerCase();
+        return fullName.includes(value.toLowerCase());
+      });
+      setFilteredCustomers(suggestions);
+      setShowCustomerSuggestions(true);
+    } else {
+      setShowCustomerSuggestions(false);
+    }
+  };
+
+  const handleManualChange = (e) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
+
+  const handleProductSuggestionClick = (selectedName) => {
+    setUser({ ...user, product_name: selectedName });
+    setShowProductSuggestions(false);
+  };
+
+  const handleCustomerSuggestionClick = (cust) => {
+    const fullName = `${cust.first_name} ${cust.last_name}`;
+    setUser({ ...user, user_name: fullName, email: cust.email });
+    setShowCustomerSuggestions(false);
+  };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create Review | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Create Review | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -340,7 +449,9 @@ function ReviewsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1542,7 +1653,7 @@ function ReviewsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2197,27 +2308,91 @@ function ReviewsCreate() {
 
       <div className="container-fluid">
         <div className="container">
-          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1 cart-cart">
             <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
               <form>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-3 w-100">
-                    <label htmlFor="">Product</label>
+                    <label htmlFor="product_name">Product</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="Product Name"
+                      className="form-control mt-2 py-4 cart-cart"
+                      placeholder="--Select--"
                       name="product_name"
+                      id="product_name"
                       value={product_name}
-                      onChange={onInputChange}
+                      onChange={handleProductChange}
                     />
+                    {showProductSuggestions &&
+                      product_name &&
+                      filteredProducts.length > 0 && (
+                        <div
+                          className="w-100"
+                          style={{
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            marginTop: "5px",
+                          }}
+                        >
+                          {filteredProducts.map((item) => (
+                            <div
+                              key={item.id}
+                              style={{ padding: "8px", cursor: "pointer" }}
+                              onClick={() =>
+                                handleProductSuggestionClick(item.name)
+                              }
+                            >
+                              {item.name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
-                    <label htmlFor=""> Choose from existing customers</label>
-                    <input type="text" className="form-control mt-2 py-4" />
+                  <div className="d-flex flex-column mb-2 w-100">
+                    <label htmlFor="existing_customer">
+                      Choose from existing customers
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control mt-2 py-4 cart-cart"
+                      placeholder="--Select--"
+                      name="user_name"
+                      id="existing_customer"
+                      value={user_name}
+                      onChange={handleCustomerChange}
+                      autoComplete="off"
+                    />
+                    {showCustomerSuggestions &&
+                      user_name &&
+                      filteredCustomers.length > 0 && (
+                        <div
+                          className="w-100"
+                          style={{
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                            maxHeight: "200px",
+                            overflowY: "auto",
+                            marginTop: "5px",
+                          }}
+                        >
+                          {filteredCustomers.map((cust) => (
+                            <div
+                              key={cust.id}
+                              style={{ padding: "8px", cursor: "pointer" }}
+                              onClick={() =>
+                                handleCustomerSuggestionClick(cust)
+                              }
+                            >
+                              {cust.first_name} {cust.last_name}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 </div>
 
@@ -2227,93 +2402,134 @@ function ReviewsCreate() {
                   </div>
                   <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                     <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
-                      <label htmlFor="">Customer Name</label>
-                      <input type="text" className="form-control mt-2 py-4" />
+                      <label htmlFor="manual_customer_name">
+                        Customer Name
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control mt-2 py-4 cart-cart"
+                        name="user_name"
+                        id="manual_customer_name"
+                        value={user_name}
+                        onChange={onInputChange}
+                      />
                     </div>
                   </div>
                   <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                     <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
-                      <label htmlFor="">Customer Email</label>
+                      <label htmlFor="manual_email">Customer Email</label>
                       <input
                         type="text"
-                        className="form-control mt-2 py-4"
-                        placeholder="e.g:example@domain.com"
+                        className="form-control mt-2 py-4 cart-cart"
+                        placeholder="e.g: example@domain.com"
+                        name="email"
+                        id="manual_email"
+                        value={email}
+                        onChange={handleManualChange}
                       />
                     </div>
                   </div>
                 </div>
+
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
                     <label htmlFor="">Star</label>
                     <input
-                      type="text"
-                      className="form-control mt-2 py-4"
+                      type="number"
+                      className="form-control mt-2 py-4 cart-cart"
                       placeholder="star rating"
-                    />
-                  </div>
-                </div>
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
-                    <label htmlFor="">Comment</label>
-                    <textarea
-                      type="text"
-                      className="form-control mt-2"
-                      placeholder="Enter comment here"
-                      style={{ height: "77px" }}
+                      name="star"
+                      value={star}
+                      onChange={onInputChange}
                     />
                   </div>
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 w-100 me-5">
-                    <h6 className="mb-0">Image</h6>
-                    <div className="border-0 rounded p-3 customer-page1 me-5 review-public1">
-                      <div
-                        className="image-placeholder w-50"
-                        onClick={() =>
-                          document.getElementById("fileInput").click()
-                        }
-                      >
-                        {imageUrl ? (
-                          <img
-                            alt="Uploaded preview"
-                            src={imageUrl}
-                            width="100"
-                            height="100"
-                          />
-                        ) : (
-                          <img src={Cutting} className="w-75 h-75" />
-                        )}
-                      </div>
-                      <input
-                        id="fileInput"
-                        type="file"
-                        name="file"
-                        style={{ display: "none" }}
-                        onChange={handleFileChange}
-                      />
-                      <Link
-                        to="#"
-                        onClick={() =>
-                          document.getElementById("fileInput").click()
-                        }
-                      >
-                        Choose image <br />
-                      </Link>
-                      <span className="">or</span>
-                      <Link to="#" onClick={handleAddFromUrl}>
-                        Add from URL
-                      </Link>
-                    </div>
+                  <div className="d-flex flex-column mb-3 mt-lg-0 w-100">
+                    <label htmlFor="">Comment</label>
+                    <textarea
+                      type="text"
+                      className="form-control mt-2 cart-cart"
+                      placeholder="Enter comment here"
+                      style={{ height: "77px" }}
+                      name="comment"
+                      value={comment}
+                      onChange={onInputChange}
+                    />
                   </div>
+                </div>
+
+                <div className="d-flex flex-column border rounded px-2 py-2 gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap mb-2">
+                  <h4 className="mt-0 text-start">Image</h4>
+                  <div className="border w-100 mb-2 mt-1"></div>
+                  <div className="image-placeholder mt-0 position-relative">
+                    {imageUrl ? (
+                      <img
+                        alt="Uploaded preview"
+                        src={imageUrl}
+                        width="100"
+                        height="100"
+                        onClick={() =>
+                          document.getElementById("fileInput").click()
+                        }
+                      />
+                    ) : (
+                      <img
+                        src={Cutting}
+                        alt="Background"
+                        className="w-100 h-100 rounded"
+                        onClick={() =>
+                          document.getElementById("fileInput").click()
+                        }
+                      />
+                    )}
+                    {imageUrl && (
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCloseClick();
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  <input
+                    id="fileInput"
+                    type="file"
+                    name="file"
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                  <span>
+                    <Link
+                      className="ms-2 text-decoration-none choose-url"
+                      to="#"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                    >
+                      Choose image
+                    </Link>
+                    <span className="ms-3 me-2">or</span>
+                    <Link
+                      to="#"
+                      onClick={handleAddFromUrl}
+                      className="text-decoration-none choose-url"
+                    >
+                      Add from URL
+                    </Link>
+                  </span>
                 </div>
               </form>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 review-public">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="d-flex flex-row gap-3 mb-2">
                   <button
                     type="button"
@@ -2323,30 +2539,27 @@ function ReviewsCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/reviews"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Status</h4>
-                <hr />
-                <select
-                  className="form-select mb-2 w-100"
-                  style={{ height: "46px" }}
-                >
-                  <option value="">Select an option</option>
-                  <option value="published">Published</option>
-                  <option value="default">Default</option>
-                  <option value="pending">Pending</option>
-                </select>
-              </div>
-
-              <div className="border rounded p-3 customer-page1 mb-3">
-                <h4 className="mt-0 text-start">Created At</h4>
-                <hr />
-                <input type="date" className="form-control py-4" />
+              <div className="border rounded p-2 customer-page1 mb-3">
+                <h5 className="mt-0 text-start">Created At</h5>
+                <div className="border mb-3 mt-2"></div>
+                <input
+                  type="date"
+                  className="form-control py-4 mb-2"
+                  name="date"
+                  value={date}
+                  onChange={onInputChange}
+                />
               </div>
             </div>
           </div>

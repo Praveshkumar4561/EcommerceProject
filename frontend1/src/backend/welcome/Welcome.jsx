@@ -2,17 +2,41 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Welcome.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faMoon,
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import axios from "axios";
-import { AgCharts } from "ag-charts-react";
+import { VectorMap } from "@react-jvectormap/core";
+import { worldMill } from "@react-jvectormap/world";
+import "react-tooltip/dist/react-tooltip.css";
+import { Chart } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  ChartTooltip,
+  Legend
+);
 
 function Welcome() {
   const [query, setQuery] = useState("");
@@ -64,6 +88,7 @@ function Welcome() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -165,7 +190,7 @@ function Welcome() {
     alldata();
   }, []);
 
-  let [count1, setCount1] = useState("");
+  let [count1, setCount1] = useState(0);
 
   let alldata = async () => {
     let response = await axios.get("http://89.116.170.231:1600/alldata");
@@ -198,7 +223,7 @@ function Welcome() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [displayedCount, setDisplayedCount] = useState(0);
 
@@ -208,89 +233,236 @@ function Welcome() {
     }
   }, [count5, displayedCount]);
 
-  let getData = () => {
-    return [
-      { month: "1h", subscriptions: 222, services: 250, products: 200 },
-      { month: "3h", subscriptions: 240, services: 255, products: 210 },
-      { month: "5h", subscriptions: 280, services: 245, products: 195 },
-      { month: "7h", subscriptions: 300, services: 260, products: 205 },
-      { month: "9h", subscriptions: 350, services: 235, products: 215 },
-      { month: "11h", subscriptions: 420, services: 270, products: 200 },
-      { month: "13h", subscriptions: 300, services: 255, products: 225 },
-      { month: "15h", subscriptions: 270, services: 305, products: 210 },
-      { month: "17h", subscriptions: 260, services: 280, products: 250 },
-      { month: "19h", subscriptions: 385, services: 250, products: 205 },
-      { month: "21h", subscriptions: 320, services: 265, products: 215 },
-      { month: "23h", subscriptions: 330, services: 255, products: 220 },
-    ];
-  };
+  let [user, setUser] = useState([]);
 
-  const [options, setOptions] = useState({
-    title: {},
-    data: getData(),
-    series: [
+  useEffect(() => {
+    const blogpostdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/blogpostdata"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    blogpostdata();
+  }, []);
+
+  const topPages = [
+    { url: "Shofy - Multipurpose eCommerce Laravel Script", views: 97 },
+    { url: "Login", views: 30 },
+    { url: "Homzen", views: 26 },
+    { url: "Gerow - Business Consulting", views: 20 },
+    { url: "MartFury - Laravel Ecommerce system", views: 20 },
+    { url: "Nest - Laravel Multipurpose eCommerce Script", views: 18 },
+    { url: "Flex Home", views: 17 },
+    { url: "Shofy - Multipurpose eCommerce Laravel Script", views: 16 },
+    { url: "Ninico - Minimal eCommerce", views: 15 },
+    { url: "Login", views: 13 },
+  ];
+
+  const topBrowsers = [
+    { browser: "Chrome", sessions: 251 },
+    { browser: "Safari", sessions: 19 },
+    { browser: "Edge", sessions: 18 },
+    { browser: "Firefox", sessions: 12 },
+    { browser: "Opera", sessions: 2 },
+    { browser: "(not set)", sessions: 1 },
+    { browser: "Android Webview", sessions: 1 },
+    { browser: "Samsung Internet", sessions: 1 },
+    { browser: "YaBrowser", sessions: 1 },
+    { browser: "(not set)", sessions: 1 },
+  ];
+
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
       {
-        type: "area",
-        xKey: "month",
-        yKey: "subscriptions",
-        yName: "Subscriptions",
-        stroke: "blue",
-        strokeWidth: 3,
-        lineDash: [3, 4],
-        fill: "lightBlue",
+        label: "Visitors",
+        data: [],
+        fill: true,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgba(54, 162, 235, 1)",
+        tension: 0.2,
       },
       {
-        type: "area",
-        xKey: "month",
-        yKey: "services",
-        yName: "Services",
-        stroke: "red",
-        strokeWidth: 3,
-        fill: "pink",
-        marker: {
-          enabled: true,
-          fill: "red",
-        },
-      },
-      {
-        type: "area",
-        xKey: "month",
-        yKey: "products",
-        yName: "Products",
-        stroke: "green",
-        strokeWidth: 3,
-        fill: "lightGreen",
-        label: {
-          enabled: true,
-          fontWeight: "bold",
-          formatter: ({ value }) => value.toFixed(0),
-        },
-      },
-    ],
-    axes: [
-      {
-        type: "category",
-        position: "bottom",
-        title: {
-          text: "Time (h)",
-        },
-      },
-      {
-        type: "number",
-        position: "left",
-        title: {},
-        min: 0,
-        max: 300,
-        nice: false,
-        tick: {
-          values: [0, 75, 150, 225, 300],
-        },
+        label: "Pageviews",
+        data: [],
+        fill: true,
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        tension: 0.2,
       },
     ],
   });
 
+  const [summary, setSummary] = useState({
+    totalVisitors: 0,
+    totalPageviews: 0,
+  });
+
+  const [visitorData, setVisitorData] = useState({});
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const label = context.dataset.label || "";
+            const value =
+              context.parsed.y !== undefined ? context.parsed.y : "";
+            return `${label}: ${value}`;
+          },
+        },
+      },
+      legend: { display: true },
+    },
+    scales: {
+      x: {
+        title: { display: true },
+        grid: {
+          display: false,
+        },
+      },
+      y: {
+        title: { display: true },
+        min: 0,
+        max: 400,
+        ticks: { stepSize: 100 },
+        grid: {
+          display: true,
+        },
+      },
+    },
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://89.116.170.231:1600/analytics");
+      const responseData = response.data;
+      const labels = [];
+      const visitors = [];
+      const pageviews = [];
+
+      responseData.forEach((d) => {
+        labels.push(`${d.hoursAgo}h`);
+        visitors.push(d.visitors);
+        pageviews.push(d.pageviews);
+      });
+
+      setChartData({
+        labels,
+        datasets: [
+          {
+            label: "Visitors",
+            data: visitors,
+            fill: true,
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            tension: 0.2,
+          },
+          {
+            label: "Pageviews",
+            data: pageviews,
+            fill: true,
+            backgroundColor: "rgba(255, 99, 132, 0.2)",
+            borderColor: "rgba(255, 99, 132, 1)",
+            tension: 0.2,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Error fetching analytics data:", error);
+    }
+  };
+
+  const fetchSummary = async () => {
+    try {
+      const response = await axios.get("http://89.116.170.231:1600/summary");
+      setSummary(response.data);
+    } catch (error) {
+      console.error("Error fetching summary", error);
+    }
+  };
+
+  const fetchCountryVisitors = async () => {
+    try {
+      const res = await fetch("http://89.116.170.231:1600/country-visits");
+      const data = await res.json();
+      setVisitorData(data);
+    } catch (error) {
+      console.error("Error fetching country visitors:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    fetchSummary();
+    const dataInterval = setInterval(() => {
+      fetchData();
+      fetchSummary();
+    }, 30000);
+    return () => clearInterval(dataInterval);
+  }, []);
+
+  useEffect(() => {
+    fetchCountryVisitors();
+    const countryInterval = setInterval(() => {
+      fetchCountryVisitors();
+    }, 30000);
+    return () => clearInterval(countryInterval);
+  }, []);
+
+  const handleRegionTipShow = (e, el, code) => {
+    if (visitorData[code]) {
+      el.html(`${el.html()}: ${visitorData[code]} Visitors`);
+    }
+  };
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Dashboard | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Dashboard | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -372,7 +544,9 @@ function Welcome() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1586,7 +1760,7 @@ function Welcome() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2233,7 +2407,7 @@ function Welcome() {
           <div className="d-flex flex-row justify-content-between align-items-center mb-3">
             <h4 className="ms-sm-1">DASHBOARD</h4>
 
-            <button className="btn d-flex py-4 border button-widget1 mt-2 me-sm-3 me-3 me-md-3 me-lg-3 me-xl-0 me-xxl-2 mt-lg-0">
+            <button className="btn d-flex py-4 border button-widget1 mt-2 me-sm-3 me-3 me-md-3 me-lg-3 me-xl-0 me-xxl-2 mt-lg-0 cart-cart">
               <svg
                 className="icon me-2 button-widget21"
                 style={{ color: "#4299e1" }}
@@ -2296,7 +2470,7 @@ function Welcome() {
                     style={{ fontFamily: "verdana" }}
                   >
                     <div className="number-scroll">
-                      <span>{`0${displayedCount}`}</span>
+                      <span>{`${displayedCount}`}</span>
                     </div>
                   </h2>
                 </div>
@@ -2328,7 +2502,7 @@ function Welcome() {
                     className="mt-4 fw-bold letter-space"
                     style={{ fontFamily: "verdana" }}
                   >
-                    0{count1}
+                    {count1}
                   </h2>
                 </div>
               </Link>
@@ -2354,17 +2528,47 @@ function Welcome() {
 
           <div className="analytics-box border rounded">
             <h5>Site Analytics</h5>
-            <hr />
-            <div className="chart rounded">
-              <AgCharts options={options} />;
+            <div className="border w-100 mb-3"></div>
+            <div className="w-100 d-flex flex-row flex-lg-nowrap flex-md-nowrap flex-wrap">
+              <div className="chart mb-0 site-chart">
+                <Chart type="line" data={chartData} options={options} />
+              </div>
+
+              <div
+                className="site-chart1 border-0 p-2"
+                style={{ flex: 1, minWidth: "300px" }}
+              >
+                {Object.keys(visitorData).length > 0 ? (
+                  <VectorMap
+                    map={worldMill}
+                    backgroundColor="#ffffff"
+                    containerStyle={{ width: "100%", height: "300px" }}
+                    regionStyle={{
+                      initial: { fill: "#e4e4e4", stroke: "none" },
+                      hover: { fill: "#007BFF" },
+                      selected: { fill: "#007BFF" },
+                    }}
+                    series={{
+                      regions: [
+                        {
+                          values: visitorData,
+                          scale: ["#C8EEFF", "#0071A4"],
+                          normalizeFunction: "polynomial",
+                        },
+                      ],
+                    }}
+                    onRegionTipShow={handleRegionTipShow}
+                  />
+                ) : null}
+              </div>
             </div>
 
-            <div className="stats d-flex gap-1 flex-wrap session-para1 mt-5 pt-5">
+            <div className="stats d-flex gap-0 flex-wrap session-para1 cart-cart">
               <div className="stat border mt-3 d-flex flex-row justify-content-start session-para1 align-items-start">
                 <i className="fas fa-eye bg-success px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2">Sessions</p>
-                  <h4 className="sessional1 ms-2">201</h4>
+                  <h4 className="sessional1 ms-2 sales-font">201</h4>
                 </div>
               </div>
 
@@ -2372,21 +2576,27 @@ function Welcome() {
                 <i className="fas fa-user bg-info px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2">Visitors</p>
-                  <h4 className="sessional1 ms-2">183</h4>
+                  <h4 className="sessional1 ms-2 sales-font">
+                    {summary.totalVisitors}
+                  </h4>
                 </div>
               </div>
+
               <div className="stat border mt-3 d-flex flex-row justify-content-start w- align-items-start">
                 <i className="fas fa-file-alt bg-primary px-2 py-2 rounded text-light mt-2"></i>
-                <div>
+                <div className="ms-2">
                   <p className="sessional ms-2 ms-lg-0">Pageviews</p>
-                  <h4 className="sessional1 ms-2">699</h4>
+                  <h4 className="sessional1 ms-0 sales-font text-start">
+                    {summary.totalPageviews}
+                  </h4>
                 </div>
               </div>
+
               <div className="stat border mt-3 d-flex flex-row justify-content-start w- align-items-start">
                 <i className="fas fa-bolt bg-warning px-2 py-2 rounded text-light mt-2"></i>
                 <div>
                   <p className="sessional ms-2">Bounce Rate</p>
-                  <h4 className="sessional1 ms-2">56%</h4>
+                  <h4 className="sessional1 ms-2 sales-font">56%</h4>
                 </div>
               </div>
             </div>
@@ -2394,443 +2604,340 @@ function Welcome() {
         </div>
       </div>
 
-      <div className="container-fluid">
-        <div className="container">
-          <div className="row gap-2 d-flex flex-row flex-lg-nowrap flex-wrap box-admin mt-0 mb-3">
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 border box-admin1">
-              <table className="table table-striped">
-                <thead>
-                  <th
-                    className="fw-light pt-3"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    Top Most Visit Pages
-                  </th>
-                  <th className="fw-light pt-3 text-end">Today</th>
-                </thead>
-                <thead className="bg-danger py-2">
-                  <tr>
-                    <th className="fw-light">#</th>
-                    <th className="fw-light">URL</th>
-                    <th className="fw-light text-end">VIEWS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>
-                      <Link className="shofy-website">
-                        Shofy - Multipurpose eCommerce Laravel Script
-                      </Link>
-                    </td>
-                    <td className="text-end">98</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>
-                      <Link className="shofy-website">
-                        MartFury - Laravel Ecommerce system
-                      </Link>
-                    </td>
-                    <td className="text-end">44</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>
-                      <Link className="shofy-website">Flex Home</Link>
-                    </td>
-                    <td className="text-end">42</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>
-                      <Link className="shofy-website">Web & App developer</Link>
-                    </td>
-                    <td className="text-end">30</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>
-                      <Link className="shofy-website">
-                        Farmart - Laravel Ecommerce system
-                      </Link>
-                    </td>
-                    <td className="text-end">27</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>
-                      <Link className="shofy-website">Login</Link>
-                    </td>
-                    <td className="text-end">27</td>
-                  </tr>
-                  <tr>
-                    <td>7</td>
-                    <td>
-                      <Link className="shofy-website">
-                        {" "}
-                        Showcasing Creative Designs and Innovative Projects
-                      </Link>
-                    </td>
-                    <td className="text-end">21</td>
-                  </tr>
-                  <tr>
-                    <td>8</td>
-                    <td>
-                      <Link className="shofy-website">
-                        Nest - Laravel Multipurpose eCommerce Script
-                      </Link>
-                    </td>
-                    <td className="text-end">19</td>
-                  </tr>
-                  <tr>
-                    <td>9</td>
-                    <td>
-                      <Link className="shofy-website">Products</Link>
-                    </td>
-                    <td className="text-end">19</td>
-                  </tr>
-                  <tr>
-                    <td>10</td>
-                    <td>
-                      <Link className="shofy-website">Homzen</Link>
-                    </td>
-                    <td className="text-end">18</td>
-                  </tr>
-                </tbody>
-              </table>
+      <div className="container browser-visit">
+        <div className="row g-0 m-0 cart-cart">
+          <div
+            className="col-lg-6 col-12 text-start browser-top1"
+            style={{ flex: "1" }}
+          >
+            <div className="card">
+              <div className="card-header fw-light text-start">
+                Top Most Visit Pages
+              </div>
+              <div className="card-body p-0">
+                <table className="table mb-0 table-striped">
+                  <thead>
+                    <tr>
+                      <th className="fw-bold">#</th>
+                      <th className="fw-bold">URL</th>
+                      <th className="fw-bold text-end">Views</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topPages.map((page, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <Link to="#" className="text-decoration-none">
+                            {page.url}
+                          </Link>
+                        </td>
+                        <td className="text-end">{page.views}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
+          </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 border box-admin1 box-admin2">
-              <table className="table table-striped">
-                <thead className="">
-                  <th className="fw-light pt-3">Top Browsers</th>
-                  <th className="fw-light pt-3 text-end">Today</th>
-                </thead>
-                <thead className="bg-danger py-2">
-                  <tr>
-                    <th className="fw-light">#</th>
-                    <th className="fw-light">BROWSER</th>
-                    <th className="fw-light text-end">SESSIONS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Chrome</td>
-                    <td className="text-end">236</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Edge</td>
-                    <td className="text-end">19</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Firefox</td>
-                    <td className="text-end">19</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>Safari</td>
-                    <td className="text-end">16</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>Opera</td>
-                    <td className="text-end">7</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>Samsung Internet</td>
-                    <td className="text-end">7</td>
-                  </tr>
-                  <tr>
-                    <td>7</td>
-                    <td>Safari (in-app)</td>
-                    <td className="text-end">1</td>
-                  </tr>
-                </tbody>
-              </table>
+          <div className="col-lg-6 browser-top" style={{ flex: "1" }}>
+            <div className="card">
+              <div className="card-header fw-light">Top Browsers</div>
+              <div className="card-body p-0">
+                <table className="table mb-0 table-striped">
+                  <thead>
+                    <tr>
+                      <th className="fw-bold">#</th>
+                      <th className="fw-bold">Browser</th>
+                      <th className="text-end">Sessions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topBrowsers.map((browser, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{browser.browser}</td>
+                        <td className="text-end">{browser.sessions}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container-fluid">
-        <div className="container">
-          <div className="row gap-2 d-flex flex-row flex-lg-nowrap flex-wrap box-admin mt-0 mb-3">
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 border box-admin1 box-admin3">
-              <table className="table table-striped">
-                <thead>
-                  <th className="fw-light pt-3">Top Referrers</th>
-                  <th className="fw-light pt-3 text-end">Today</th>
-                </thead>
-                <thead className="bg-danger py-2">
-                  <tr>
-                    <th className="fw-light">#</th>
-                    <th className="fw-light">URL</th>
-                    <th className="fw-light text-end">VIEWS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>(direct)</td>
-                    <td className="text-end">572</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>
-                      <Link className="shofy-website">(not set)</Link>
-                    </td>
-                    <td className="text-end">407</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>
-                      <Link className="shofy-website">codecanyon.net</Link>
-                    </td>
-                    <td className="text-end">385</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>
-                      <Link className="shofy-website">google</Link>
-                    </td>
-                    <td className="text-end">35</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>
-                      <Link className="shofy-website">l.facebook.com</Link>
-                    </td>
-                    <td className="text-end">23</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>
-                      <Link className="shofy-website">botble.ticksy.com</Link>
-                    </td>
-                    <td className="text-end">21</td>
-                  </tr>
-                  <tr>
-                    <td>7</td>
-                    <td>
-                      <Link className="shofy-website"> local</Link>
-                    </td>
-                    <td className="text-end">15</td>
-                  </tr>
-                  <tr>
-                    <td>8</td>
-                    <td>
-                      <Link className="shofy-website">kudo-moto.com</Link>
-                    </td>
-                    <td className="text-end">5</td>
-                  </tr>
-                  <tr>
-                    <td>9</td>
-                    <td>
-                      <Link className="shofy-website">
-                        kumasicentralmarket.com
-                      </Link>
-                    </td>
-                    <td className="text-end">3</td>
-                  </tr>
-                  <tr>
-                    <td>10</td>
-                    <td>
-                      <Link className="shofy-website">checkout.stripe.com</Link>
-                    </td>
-                    <td className="text-end">2</td>
-                  </tr>
-                </tbody>
-              </table>
+      <div className="container browser-visit">
+        <div className="row g-0 m-0 cart-cart">
+          <div
+            className="col-lg-6 col-12 text-start browser-top1"
+            style={{ flex: "1" }}
+          >
+            <div className="card">
+              <div className="card-header fw-light">Top Referrers</div>
+              <div className="card-body p-0">
+                <table className="table mb-0 table-striped w-100">
+                  <thead>
+                    <tr>
+                      <th className="fw-bold">#</th>
+                      <th className="fw-bold">URL</th>
+                      <th className="fw-bold text-end">Views</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>
+                        <Link>(direct)</Link>
+                      </td>
+                      <td className="text-start">572</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>
+                        <Link>(not set)</Link>
+                      </td>
+                      <td className="text-start">407</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>
+                        <Link>codecanyon.net</Link>
+                      </td>
+                      <td className="text-start">385</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>
+                        <Link>google</Link>
+                      </td>
+                      <td className="text-start">35</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>
+                        <Link>l.facebook.com</Link>
+                      </td>
+                      <td className="text-start">23</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td>
+                        <Link>botble.ticksy.com</Link>
+                      </td>
+                      <td className="text-start">21</td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                      <td>
+                        <Link> local</Link>
+                      </td>
+                      <td className="text-start">15</td>
+                    </tr>
+                    <tr>
+                      <td>8</td>
+                      <td>
+                        <Link>kudo-moto.com</Link>
+                      </td>
+                      <td className="text-start">5</td>
+                    </tr>
+                    <tr>
+                      <td>9</td>
+                      <td>
+                        <Link>kumasicentralmarket.com</Link>
+                      </td>
+                      <td className="text-start">3</td>
+                    </tr>
+                    <tr>
+                      <td>10</td>
+                      <td>
+                        <Link>checkout.stripe.com</Link>
+                      </td>
+                      <td className="text-start">2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+          </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 border box-admin1">
-              <table className="table table-striped">
-                <thead className="">
-                  <th
-                    className="fw-light pt-3"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    Top Browsers
-                  </th>
-                  <th className="fw-light pt-3 text-end">Today</th>
-                </thead>
-                <thead className="bg-danger py-2">
-                  <tr>
-                    <th className="fw-light">#</th>
-                    <th className="fw-light">NAME</th>
-                    <th
-                      className="fw-light text-end"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
-                      CREATED AT
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>
-                      <Link className="shofy-website">
-                        4 Expert Tips On How To Choose The Right Men’s Wallet
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>
-                      <Link className="shofy-website">
-                        Sexy Clutches: How to Buy & Wear a Designer Clutch Bag
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>
-                      <Link className="shofy-website">
-                        The Top 2020 Handbag Trends to Know
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>
-                      <Link className="shofy-website">
-                        How to Match the Color of Your Handbag With an Outfit
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>
-                      <Link className="shofy-website">
-                        How to Care for Leather Bags
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>
-                      <Link className="shofy-website">
-                        We're Crushing Hard on Summer's 10 Biggest Bag Trends
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>7</td>
-                    <td>
-                      <Link className="shofy-website">
-                        Essential Qualities of Highly Successful Music
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>8</td>
-                    <td>
-                      <Link className="shofy-website">
-                        9 Things I Love About Shaving My Head
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>9</td>
-                    <td>
-                      <Link className="shofy-website">
-                        Why Teamwork Really Makes The Dream Work
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>10</td>
-                    <td>
-                      <Link className="shofy-website">
-                        The World Caters to Average People
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                </tbody>
-              </table>
+          <div className="col-lg-6 browser-top" style={{ flex: "1" }}>
+            <div className="card">
+              <div className="card-header fw-light">Recent Posts</div>
+              <div className="card-body p-0">
+                <table className="table mb-0 table-striped">
+                  <thead>
+                    <tr>
+                      <th className="fw-bold">#</th>
+                      <th className="fw-bold">Browser</th>
+                      <th>Created At</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(user) && user.length > 0 ? (
+                      user.slice(0, 8).map((data, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <Link to={`/blog-details/${data.id}`}>
+                              {data.name}
+                            </Link>
+                          </td>
+                          <td className="text-end">{data.date}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-start">
+                          No blog posts available
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container-fluid">
-        <div className="container">
-          <div className="row gap-2 d-flex flex-row flex-lg-nowrap flex-wrap box-admin mt-0 mb-3">
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 border box-admin1">
-              <table className="table table-striped">
-                <thead>
-                  <th className="fw-light pt-3">Activities Logs</th>
-                </thead>
-                <tbody></tbody>
-              </table>
+      <div className="container browser-visit">
+        <div className="row g-0 m-0 cart-cart">
+          <div
+            className="col-lg-6 col-12 text-start browser-top1"
+            style={{ flex: "1" }}
+          >
+            <div className="card">
+              <div className="card-header fw-light">Activities Logs</div>
+              <div className="card-body p-0">
+                <table className="table mb-0 table-striped">
+                  <thead>
+                    <tr>
+                      <th className="fw-bold">#</th>
+                      <th className="fw-bold">URL</th>
+                      <th className="fw-bold text-end">Views</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>
+                        <Link>(direct)</Link>
+                      </td>
+                      <td className="text-end">572</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>
+                        <Link>(not set)</Link>
+                      </td>
+                      <td className="text-end">407</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>
+                        <Link>codecanyon.net</Link>
+                      </td>
+                      <td className="text-end">385</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>
+                        <Link>google</Link>
+                      </td>
+                      <td className="text-end">35</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>
+                        <Link>l.facebook.com</Link>
+                      </td>
+                      <td className="text-end">23</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td>
+                        <Link>botble.ticksy.com</Link>
+                      </td>
+                      <td className="text-end">21</td>
+                    </tr>
+                    <tr>
+                      <td>7</td>
+                      <td>
+                        <Link> local</Link>
+                      </td>
+                      <td className="text-end">15</td>
+                    </tr>
+                    <tr>
+                      <td>8</td>
+                      <td>
+                        <Link>kudo-moto.com</Link>
+                      </td>
+                      <td className="text-end">5</td>
+                    </tr>
+                    <tr>
+                      <td>9</td>
+                      <td>
+                        <Link>kumasicentralmarket.com</Link>
+                      </td>
+                      <td className="text-end">3</td>
+                    </tr>
+                    <tr>
+                      <td>10</td>
+                      <td>
+                        <Link>checkout.stripe.com</Link>
+                      </td>
+                      <td className="text-end">2</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+          </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-6 border box-admin1">
-              <table className="table table-striped">
-                <thead className="">
-                  <th
-                    className="fw-light pt-3"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    Request Errors
-                  </th>
-                </thead>
-                <thead className="bg-danger py-2">
-                  <tr>
-                    <th className="fw-light">#</th>
-                    <th className="fw-light">URL</th>
-                    <th
-                      className="fw-light text-end"
-                      style={{ whiteSpace: "nowrap" }}
-                    >
-                      STATUS CODE
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>
-                      <Link className="shofy-website">/error</Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>
-                      <Link className="shofy-website">
-                        https://shofy.botble.com/vi/tag/nature?layout=list
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>
-                      <Link className="shofy-website">
-                        https://shofy.botble.com/ar/products?categories%5B...
-                      </Link>
-                    </td>
-                    <td className="text-end">2024-11-24</td>
-                  </tr>
-                </tbody>
-              </table>
+          <div className="col-lg-6 browser-top" style={{ flex: "1" }}>
+            <div className="card">
+              <div className="card-header fw-light">Request Errors</div>
+              <div className="card-body p-0">
+                <table className="table mb-0 table-striped">
+                  <thead>
+                    <tr>
+                      <th className="fw-bold">#</th>
+                      <th className="fw-bold">URL</th>
+                      <th className="text-end">Status code</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>
+                        <Link to="/error">/error</Link>
+                      </td>
+                      <td className="text-end">404</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>
+                        <Link>
+                          https://shofy.botble.com/vi/tag/nature?layout=list
+                        </Link>
+                      </td>
+                      <td className="text-end">404</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>
+                        <Link>
+                          https://shofy.botble.com/ar/products?categories%5B...
+                        </Link>
+                      </td>
+                      <td className="text-end">404</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

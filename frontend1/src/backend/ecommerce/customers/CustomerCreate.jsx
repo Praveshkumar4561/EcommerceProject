@@ -3,6 +3,7 @@ import "./CustomersCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import Cutting from "../../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,14 +11,15 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function CustomerCreate() {
   const [query, setQuery] = useState("");
@@ -69,6 +71,7 @@ function CustomerCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -111,14 +114,12 @@ function CustomerCreate() {
     }
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -127,17 +128,22 @@ function CustomerCreate() {
   const handleAddFromUrl = () => {
     try {
       toast.success(
-        "Functionality to add image from URL needs to be implemented. ",
+        "Functionality to add image from URL needs to be implemented.",
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          progress: true,
           closeOnClick: true,
           draggable: true,
-          progress: undefined,
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCloseClick = () => {
+    setImageUrl(null);
   };
 
   let [isVisible, setIsVisible] = useState(false);
@@ -204,7 +210,42 @@ function CustomerCreate() {
     file,
   } = user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = {
+      first_name,
+      last_name,
+      phone_number,
+      email,
+      password,
+      confirmpassword,
+      dob,
+      notes,
+      status,
+      gender,
+      file,
+    };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     let formData = new FormData();
     formData.append("first_name", first_name);
     formData.append("last_name", last_name);
@@ -264,10 +305,45 @@ function CustomerCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create a customer | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Create a customer | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -349,7 +425,9 @@ function CustomerCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -385,7 +463,7 @@ function CustomerCreate() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-customer mt-1">
+        <div className="sidebar-customer mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1551,7 +1629,7 @@ function CustomerCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2194,7 +2272,7 @@ function CustomerCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/customers">CUSTOMERS</Link>
           </li>
 
@@ -2211,7 +2289,7 @@ function CustomerCreate() {
               <form>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-3 name-form1">
-                    <label htmlFor="">First_Name</label>
+                    <label htmlFor="">Full Name</label>
                     <input
                       type="text"
                       className="form-control mt-2 py-4"
@@ -2240,6 +2318,11 @@ function CustomerCreate() {
                         }
                       }}
                     />
+                    {errors.first_name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.first_name}
+                      </small>
+                    )}
                   </div>
 
                   <div className="d-flex flex-column mb-3 mt-lg-3 mt-md-3 mt-sm-3 name-form1">
@@ -2252,6 +2335,11 @@ function CustomerCreate() {
                       value={email}
                       onChange={onInputChange}
                     />
+                    {errors.email && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.email}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2266,6 +2354,11 @@ function CustomerCreate() {
                       value={phone_number}
                       onChange={onInputChange}
                     />
+                    {errors.phone_number && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.phone_number}
+                      </small>
+                    )}
                   </div>
                   <div className="d-flex flex-column mb-3 mt-lg-3 name-form1">
                     <label htmlFor="">Date of birth</label>
@@ -2276,6 +2369,11 @@ function CustomerCreate() {
                       value={dob}
                       onChange={onInputChange}
                     />
+                    {errors.dob && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.dob}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2289,6 +2387,11 @@ function CustomerCreate() {
                       value={password}
                       onChange={onInputChange}
                     />
+                    {errors.password && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.password}
+                      </small>
+                    )}
                   </div>
                   <div className="d-flex flex-column mb-3 mt-lg-3 name-form1">
                     <label htmlFor="">Password Confirmation</label>
@@ -2299,48 +2402,70 @@ function CustomerCreate() {
                       value={confirmpassword}
                       onChange={onInputChange}
                     />
+                    {errors.confirmpassword && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.confirmpassword}
+                      </small>
+                    )}
                   </div>
                 </div>
 
-                <div className="text-start d-flex flex-row gap-2 mb-2">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    checked={gender === "male"}
-                    onChange={onInputChange}
-                  />
-                  <label htmlFor="">Male</label>
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    checked={gender === "female"}
-                    onChange={onInputChange}
-                  />
-                  <label htmlFor="">Female</label>
+                <div className="d-flex flex-column">
+                  <div className="text-start d-flex flex-row gap-2 mb-2">
+                    <input
+                      type="radio"
+                      name="gender"
+                      id="male"
+                      value="male"
+                      checked={gender === "male"}
+                      onChange={onInputChange}
+                    />
+
+                    <label htmlFor="male">Male</label>
+                    <input
+                      type="radio"
+                      id="female"
+                      name="gender"
+                      value="female"
+                      checked={gender === "female"}
+                      onChange={onInputChange}
+                    />
+                    <label htmlFor="female">Female</label>
+                  </div>
+                  {errors.gender && (
+                    <small className="text-danger text-start cart-cart mt-0 mb-2">
+                      {errors.gender}
+                    </small>
+                  )}
                 </div>
 
                 <div className="text-start">
                   <label htmlFor="">Private notes</label>
                   <textarea
-                    className="form-control mt-2 mb-3 note-private"
+                    className="form-control mt-2 mb-1 note-private"
                     name="notes"
                     value={notes}
                     onChange={onInputChange}
                     style={{ height: "68px" }}
                   ></textarea>
-                  <label className="mb-3">
-                    Private notes are only visible to admins.
-                  </label>
+                  <div className="d-flex flex-column">
+                    {errors.notes && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.notes}
+                      </small>
+                    )}
+                    <label className="mb-3">
+                      Private notes are only visible to admins.
+                    </label>
+                  </div>
                 </div>
               </form>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border mb-3"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2350,17 +2475,22 @@ function CustomerCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/customers"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border mb-3 mt-2"></div>
                 <select
-                  className="form-select mb-3 w-100"
+                  className="form-select mb-1 w-100"
                   style={{ height: "46px" }}
                   name="status"
                   value={status}
@@ -2370,26 +2500,49 @@ function CustomerCreate() {
                   <option value="activated">Activated</option>
                   <option value="locked">Locked</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart">
+                    {errors.status}
+                  </small>
+                )}
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-3 customer-page1 mb-4">
                 <h4 className="mt-0 text-start">Avatar</h4>
-                <hr />
-                <div
-                  className="image-placeholder"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
+                <div className="border mb-3 mt-2"></div>
+                <div className="image-placeholder mt-2 position-relative">
                   {imageUrl ? (
                     <img
                       alt="Uploaded preview"
                       src={imageUrl}
                       width="100"
                       height="100"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                     />
                   ) : (
-                    <img src={Cutting} className="w-75 h-75" />
+                    <img
+                      src={Cutting}
+                      alt="Background"
+                      className="w-100 h-100 rounded"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                    />
+                  )}
+                  {imageUrl && (
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseClick();
+                      }}
+                    />
                   )}
                 </div>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -2398,14 +2551,18 @@ function CustomerCreate() {
                   onChange={handleFileChange}
                 />
                 <Link
-                  className="ms-5 ps-3"
+                  className="ms-2 text-decoration-none choose-url"
                   to="#"
                   onClick={() => document.getElementById("fileInput").click()}
                 >
-                  Choose image <br />
+                  Choose image
                 </Link>
-                <span className="ms-5 me-2 ps-3">or</span>
-                <Link to="#" onClick={handleAddFromUrl}>
+                <span className="ms-3 me-2">or</span>
+                <Link
+                  to="#"
+                  onClick={handleAddFromUrl}
+                  className="text-decoration-none choose-url"
+                >
                   Add from URL
                 </Link>
               </div>

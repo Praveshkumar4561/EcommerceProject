@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./InvoiceEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,13 +11,12 @@ import {
   faMoon,
   faPrint,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
-
 import axios from "axios";
 import { jsPDF } from "jspdf";
+import { Helmet } from "react-helmet-async";
 
 function InvoiceEdit() {
   let [isVisible, setIsVisible] = useState(false);
@@ -25,14 +25,6 @@ function InvoiceEdit() {
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +32,14 @@ function InvoiceEdit() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  }, []);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -92,6 +92,7 @@ function InvoiceEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -175,52 +176,49 @@ function InvoiceEdit() {
 
   let { id } = useParams();
 
-  let [user, setUser] = useState([]);
   let [invoice, setInvoice] = useState([]);
 
   useEffect(() => {
-    alldata();
-  });
-
-  let alldata = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/checkoutsome/${id}`
-    );
-    setUser(response.data[0]);
-    setInvoice(response.data);
-  };
-
-  const printInvoice = () => {
-    const printableContent = document.getElementById("invoice-content");
-    if (printableContent) {
-      const printWindow = window.open("", "", "height=800,width=1200");
-      printWindow.document.write(
-        "<html><head><title>Invoice</title></head><body>"
+    let alldata = async () => {
+      let response = await axios.get(
+        `http://89.116.170.231:1600/checkoutsome/${id}`
       );
-      printWindow.document.write(printableContent.innerHTML);
-      printWindow.document.write("</body></html>");
-      printWindow.document.close();
-      printWindow.print();
-    } else {
-      console.error("Invoice content not found!");
-    }
-  };
+      setInvoice(response.data);
+    };
+    alldata();
+  }, []);
 
-  const downloadInvoice = () => {
+  const loadImageAsBase64 = (url) =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        resolve(canvas.toDataURL("image/jpeg"));
+      };
+      img.onerror = reject;
+      img.src = url;
+    });
+
+  const downloadInvoice = async () => {
     const doc = new jsPDF();
+
     if (!invoice || !Array.isArray(invoice) || invoice.length === 0) {
       console.error("No invoice data available!");
       return;
     }
-    invoice.forEach((data) => {
+
+    for (let index = 0; index < invoice.length; index++) {
+      const data = invoice[index];
       doc.setFontSize(16);
       const invoiceX = 14;
       const orderNumberX = 120;
-      doc.text(
-        `Invoice Code: #${data.invoice_number.slice(-2).slice(0)}`,
-        invoiceX,
-        22
-      );
+
+      doc.text(`Invoice Code: #${data.invoice_number.slice(-2)}`, invoiceX, 22);
       doc.text(`Order Number: ${data.order_number}`, orderNumberX, 22);
       doc.text(`Customer: ${data.first_name} ${data.last_name}`, 14, 30);
       doc.text(`Email: ${data.email}`, 14, 38);
@@ -235,11 +233,21 @@ function InvoiceEdit() {
         14,
         62
       );
+
+      let yOffset = 70;
+
       if (data.image) {
-        const img = `http://89.116.170.231:1600/src/image/${data.image}`;
-        doc.addImage(img, "JPEG", 14, 70, 40, 40);
+        try {
+          const imageUrl = `http://89.116.170.231:1600/src/image/${data.image}`;
+          const base64 = await loadImageAsBase64(imageUrl);
+          doc.addImage(base64, "JPEG", 14, yOffset, 40, 40);
+          yOffset += 50;
+        } catch (err) {
+          console.warn("Image load failed:", err);
+          yOffset += 10;
+        }
       }
-      let yOffset = 120;
+
       doc.text(`Product Name: ${data.name}`, 14, yOffset);
       yOffset += 8;
       doc.text(`Quantity: ${data.quantity}`, 14, yOffset);
@@ -248,6 +256,7 @@ function InvoiceEdit() {
       yOffset += 8;
       doc.text(`Shipping Fee: $${data.shippingfee}`, 14, yOffset);
       yOffset += 8;
+
       doc.setFontSize(12);
       if (Array.isArray(data.items) && data.items.length > 0) {
         data.items.forEach((item) => {
@@ -269,18 +278,57 @@ function InvoiceEdit() {
           yOffset += 8;
         });
       }
+
       doc.text(`Payment Method: Cash on Delivery`, 14, yOffset);
       yOffset += 8;
       doc.text(`Grand Total: $${data.total}`, 14, yOffset);
-      if (invoice.length > 1 && data !== invoice[invoice.length - 1]) {
+      yOffset += 8;
+
+      if (invoice.length > 1 && index !== invoice.length - 1) {
         doc.addPage();
       }
-    });
+    }
+
     doc.save(`Invoice-${invoice[0].invoice_number}.pdf`);
   };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit INV | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Invoices | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -362,7 +410,9 @@ function InvoiceEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1565,7 +1615,7 @@ function InvoiceEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2238,13 +2288,11 @@ function InvoiceEdit() {
         <div className="container">
           <div className="row">
             <div className="col-lg-12 d-flex flex-row gap-2 justify-content-end ms-lg-5 button-print mt-2 me-0">
-              <button
-                className="btn btn-outline-success border d-flex flex-row align-items-center rounded py-4 gap-1 cart-cart"
-                onClick={printInvoice}
-              >
+              <button className="btn btn-outline-success border d-flex flex-row align-items-center rounded py-4 gap-1 cart-cart">
                 <FontAwesomeIcon icon={faPrint} className="me-1" />
                 Print Invoice
               </button>
+
               <button
                 className="btn btn-outline-success border rounded py-4 d-flex flex-row align-items-center cart-cart"
                 onClick={downloadInvoice}
@@ -2259,7 +2307,7 @@ function InvoiceEdit() {
 
       <div className="container-fluid cart-cart">
         <div className="container">
-          <div className="row">
+          <div className="row mb-3">
             <div
               className="col-12 col-sm-12 col-md-12 col-lg-12 border rounded d-flex flex-column py-3 me-3 me-lg-0 content-orders1"
               id="invoice-content"

@@ -2,13 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import "./BlogCategory.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
   faEnvelope,
   faMoon,
+  faSave,
+  faSignOut,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import Cutting from "../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,24 +19,16 @@ import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function BlogCategory() {
   let [user, setUser] = useState([]);
-  let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +36,14 @@ function BlogCategory() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  }, []);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -93,6 +96,7 @@ function BlogCategory() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -174,28 +178,6 @@ function BlogCategory() {
     }
   };
 
-  useEffect(() => {
-    if (search) {
-      searchbar();
-    } else {
-      alldata();
-    }
-  }, [search]);
-
-  const searchbar = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/productsearch/${search}`
-    );
-    setUser(Array.isArray(response.data) ? response.data : []);
-  };
-
-  const alldata = async () => {
-    let response = await axios.get(
-      "http://89.116.170.231:1600/productpagedata"
-    );
-    setUser(Array.isArray(response.data) ? response.data : []);
-  };
-
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -216,7 +198,7 @@ function BlogCategory() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -231,8 +213,196 @@ function BlogCategory() {
     setCate(!cate);
   };
 
+  let [category, setCategory] = useState({
+    name: "",
+    permalink: "",
+    parent: "",
+    description: "",
+    is_featured: "no",
+    status: "",
+  });
+  let { name, permalink, parent, description, status } = category;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    const required = ({ name, description, status } = category);
+
+    for (const key in required) {
+      if (
+        required[key] === "" ||
+        required[key] === null ||
+        required[key] === undefined ||
+        (typeof required[key] === "string" && required[key].trim() === "")
+      ) {
+        newErrors[key] = `${
+          key.charAt(0).toUpperCase() + key.slice(1)
+        } is required`;
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const [editingId, setEditingId] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    try {
+      if (editingId) {
+        await axios.put(
+          `http://89.116.170.231:1600/categoryupdate/${editingId}`,
+          category
+        );
+        toast.success("Category updated successfully", {
+          position: "bottom-right",
+          autoClose: 1000,
+        });
+      } else {
+        await axios.post(
+          "http://89.116.170.231:1600/blogcategorypost",
+          category
+        );
+        toast.success("Category created successfully", {
+          position: "bottom-right",
+          autoClose: 1000,
+        });
+      }
+      const categoryRes = await axios.get(
+        "http://89.116.170.231:1600/allcategorydata"
+      );
+      setCates(categoryRes.data || []);
+      setCategory({
+        name: "",
+        permalink: "",
+        parent: "",
+        description: "",
+        is_featured: "no",
+        status: "",
+      });
+      setErrors({});
+      setEditingId(null);
+      setActiveCategory(null);
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast.error("Operation failed", {
+        position: "bottom-right",
+        autoClose: 1000,
+      });
+    }
+  };
+
+  const onInputChange = (e) => {
+    const { name, value, checked } = e.target;
+    if (name === "is_featured") {
+      setCategory((prev) => ({
+        ...prev,
+        is_featured: checked ? "yes" : "no",
+      }));
+    } else {
+      setCategory((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const [seoPreview, setSeoPreview] = useState({
+    name: "",
+    permalink: "",
+    description: "",
+    date: "",
+  });
+
+  const [activeCategory, setActiveCategory] = useState(null);
+
+  let deletedata = async (id) => {
+    try {
+      await axios.delete(
+        `http://89.116.170.231:1600/categoriesdelete/${id}`,
+        cates
+      );
+      setCates((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Category deleted successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Category is not deleted", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const [cates, setCates] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [categoryRes, blogRes] = await Promise.all([
+          axios.get("http://89.116.170.231:1600/allcategorydata"),
+          axios.get("http://89.116.170.231:1600/blogpostdata"),
+        ]);
+        setCates(categoryRes.data || []);
+        setBlogs(blogRes.data || []);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Categories | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Categories | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -314,7 +484,9 @@ function BlogCategory() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1519,7 +1691,7 @@ function BlogCategory() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2159,7 +2331,7 @@ function BlogCategory() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2169,7 +2341,7 @@ function BlogCategory() {
       </nav>
 
       <div className="container ms-lg-5 ps-lg-3 ms-3">
-        <div className="row ms-lg-5">
+        <div className="row ms-lg-5 cart-cart">
           <div className="col-md-4 d-flex justify-content-end">
             <div className="card border">
               <div className="card-header text-success fw-light">
@@ -2193,193 +2365,122 @@ function BlogCategory() {
                 Drag and drop on the left to change the order or parent of the
                 categories.
               </div>
-              <hr />
+
               <div className="card-body">
-                <button className="btn btn-success mb-3 d-flex py-4 me-0 px-3">
-                  + Create
+                <button
+                  className="btn btn-success mb-3 d-flex py-4 me-0 px-3 cart-cart d-flex flex-row flex-nowrap align-items-center"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const hasDataFilled =
+                      category.name.trim() !== "" ||
+                      category.permalink.trim() !== "" ||
+                      category.parent.trim() !== "" ||
+                      category.description.trim() !== "" ||
+                      category.status.trim() !== "" ||
+                      category.is_featured === "yes";
+
+                    if (hasDataFilled) {
+                      setCategory({
+                        name: "",
+                        permalink: "",
+                        parent: "",
+                        description: "",
+                        is_featured: "no",
+                        status: "",
+                      });
+                      setEditingId(null);
+                      setActiveCategory(null);
+                    }
+                  }}
+                >
+                  <span className="fw-bold me-1 fs-5">+</span> Create
                 </button>
-                <hr />
 
-                <ul className="list-group" style={{ cursor: "pointer" }}>
-                  <li className="list-group-item d-lg-flex d-sm-flex justify-content-start align-items-start border">
-                    <span className="d-lg-flex align-items-start">
-                      <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
-                      <svg
-                        className="icon svg-icon-ti-ti-file ms-lg-1 text-dark ms-1 mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1 mt-1 pt-">
-                        Crisp Bread & Cake
-                        <span className="primary-data ms-1">(5)</span>
-                      </span>
-                    </span>
-                  </li>
+                <ul
+                  className="list-group text-start"
+                  style={{ cursor: "pointer" }}
+                >
+                  {Array.isArray(cates) && cates.length > 0 ? (
+                    cates.map((data, key) => {
+                      const blogCount = blogs.filter(
+                        (blog) => blog.categories?.trim() === data.name
+                      ).length;
 
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Fashion
-                        <span className="primary-data ms-1">(5)</span>
-                      </span>
-                    </span>
-                  </li>
+                      return (
+                        <li
+                          key={key}
+                          className="list-group-item d-lg-flex d-sm-flex justify-content-start align-items-start border rounded mt-2"
+                          onClick={() => {
+                            setActiveCategory(data.name);
+                            setEditingId(data.id);
+                            setCategory({
+                              name: data.name,
+                              permalink: data.permalink,
+                              parent: data.parent,
+                              description: data.description,
+                              is_featured: data.is_featured,
+                              status: data.status,
+                            });
 
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span>
-                        {" "}
-                        Electronic <span className="primary-data">(10)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        {" "}
-                        Commercial <span className="primary-data">(3)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border rounded mt-2">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Organic Fruits
-                        <span className="primary-data ms-1">(5)</span>
-                      </span>
-                    </span>
-                  </li>
-
-                  <li className="list-group-item d-flex justify-content-between align-items-start border mt-2 rounded">
-                    <span>
-                      <i className="fas fa-bars bg-light px-2 py-2 rounded"></i>
-                      <svg
-                        className="icon  svg-icon-ti-ti-file ms-lg-1 text-dark mb-1"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path
-                          stroke="none"
-                          d="M0 0h24v24H0z"
-                          fill="none"
-                        ></path>
-                        <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      </svg>
-                      <span className="ms-1">
-                        Ecological
-                        <span className="primary-data ms-2">(6)</span>
-                      </span>
-                    </span>
-                  </li>
+                            setSeoPreview({
+                              name: data.name,
+                              date: data.date,
+                              permalink: data.permalink,
+                              description: data.description,
+                            });
+                          }}
+                        >
+                          <span className="d-lg-flex d-flex flex-row align-items-start">
+                            <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
+                            <svg
+                              className="icon svg-icon-ti-ti-file ms-lg-1 text-dark ms-1 mb-1 mt-1"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path
+                                stroke="none"
+                                d="M0 0h24v24H0z"
+                                fill="none"
+                              />
+                              <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                              <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                            </svg>
+                            <span
+                              className={`ms-1 pt-1 ${
+                                activeCategory === data.name ? "fw-bold" : ""
+                              }`}
+                            >
+                              {data.name}
+                              <span className="ms-1 bigcount-color sales-font">
+                                ({blogCount})
+                              </span>
+                            </span>
+                            {activeCategory === data.name && (
+                              <FontAwesomeIcon
+                                icon={faTrashCan}
+                                className="fs-6 text-light p-2 rounded ms-2 bg-danger"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deletedata(data.id);
+                                }}
+                              />
+                            )}
+                          </span>
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <li className="list-group-item text-start">
+                      No categories available
+                    </li>
+                  )}
                 </ul>
               </div>
             </div>
@@ -2415,21 +2516,31 @@ function BlogCategory() {
                     </label>
                     <input
                       type="text"
-                      className="form-control py-4 name-category mt-2"
+                      className="form-control py-4 name-category mt-2 cart-cart"
                       id="name"
                       placeholder="Name"
+                      name="name"
+                      value={name}
+                      onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
+
                   <div className="form-group mt-4">
                     <label for="permalink" className="fw-normal">
                       Permalink <span className="text-danger">*</span>
                     </label>
                     <input
                       type="text"
-                      className="form-control py-4 name-category mt-2"
+                      className="form-control py-4 name-category mt-2 cart-cart"
                       id="permalink"
-                      value="https://shofy.botble.com/blog/"
-                      readonly
+                      name="permalink"
+                      value={permalink}
+                      onChange={onInputChange}
                     />
                   </div>
 
@@ -2437,104 +2548,63 @@ function BlogCategory() {
                     <label for="parent" className="fw-normal">
                       Parent
                     </label>
-
                     <select
-                      className="select-search-full form-select select2-hidden-accessible py-4 mt-2 w-100"
-                      data-allow-clear="false"
-                      id="parent_id"
-                      name="parent_id"
-                      data-select2-id="select2-data-parent_id"
-                      tabindex="-1"
-                      aria-hidden="true"
+                      className="select-search-full form-select select2-hidden-accessible mt-2 w-100"
+                      style={{ height: "50px" }}
+                      name="parent"
+                      value={parent}
+                      onChange={onInputChange}
                     >
                       <option value="0" data-select2-id="select2-data-2-maak">
                         None
                       </option>
-                      <option value="1" data-select2-id="select2-data-8-4obu">
-                        {" "}
-                        Crisp Bread &amp; Cake
-                      </option>
-                      <option value="2" data-select2-id="select2-data-9-d70p">
-                        {" "}
-                        Fashion
-                      </option>
-                      <option value="3" data-select2-id="select2-data-10-t5qq">
-                        {" "}
-                        Electronic
-                      </option>
-                      <option value="4" data-select2-id="select2-data-11-99s6">
-                        {" "}
-                        Commercial
-                      </option>
-                      <option value="5" data-select2-id="select2-data-12-azgk">
-                        {" "}
-                        Organic Fruits
-                      </option>
-                      <option value="6" data-select2-id="select2-data-13-0e1s">
-                        {" "}
-                        Ecological
-                      </option>
+                      {Array.isArray(cates) &&
+                        cates.length > 0 &&
+                        cates.map((cat) => (
+                          <option key={cat.id || cat.name} value={cat.name}>
+                            {cat.name}
+                          </option>
+                        ))}
                     </select>
                   </div>
+
                   <div className="form-group">
                     <label for="description" className="fw-light">
                       Description
                     </label>
 
                     <textarea
-                      className="form-control mt-2 border name-category"
+                      className="form-control mt-2 border name-category cart-cart py-2"
                       id="description"
-                      rows="5"
                       placeholder="Short description"
+                      name="description"
+                      value={description}
+                      onChange={onInputChange}
                       style={{
-                        height: "58px",
-                        cursor: "pointer",
-                        zIndex: "1000",
+                        height: "88px",
+                        zIndex: "1",
                         position: "relative",
                       }}
-                    ></textarea>
+                    />
+                    {errors.description && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.description}
+                      </small>
+                    )}
                   </div>
 
                   <div className="form-check form-switch mt-3">
                     <input
-                      className="form-check-input"
+                      id="is_featured"
+                      name="is_featured"
                       type="checkbox"
-                      id="has-action"
+                      className="form-check-input"
+                      checked={category.is_featured === "yes"}
+                      onChange={onInputChange}
                     />
                     <label
+                      htmlFor="is_featured"
                       className="form-check-label ms-3 mt-1"
-                      for="has-action"
-                    >
-                      Is featured?
-                    </label>
-                  </div>
-
-                  <div className="form-group mt-3">
-                    <label for="status" className="fw-normal ms-2">
-                      Icon
-                    </label>
-                    <select className="form-control rounded-1 mt-2 py-4 name-category border">
-                      <option value="">Select an option</option>
-                      <option value="Ex: ti ti-12-hours">
-                        Ex: ti ti-12-hours
-                      </option>
-                      <option value="ti ti-123">ti ti-123</option>
-                      <option value="ti ti-24-hours">ti ti-24-hours</option>
-                      <option value="ti ti-2fa">ti ti-2fa</option>
-                      <option value="ti ti-360-view">ti ti-360-view</option>
-                      <option value="ti ti-360">ti ti-360</option>
-                    </select>
-                  </div>
-
-                  <div className="form-check form-switch mt-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="has-action"
-                    />
-                    <label
-                      className="form-check-label ms-3 mt-1"
-                      for="has-action"
                     >
                       Is featured?
                     </label>
@@ -2544,38 +2614,86 @@ function BlogCategory() {
                     <label for="status" className="fw-normal">
                       Status <span className="text-danger">*</span>
                     </label>
-                    <select className="form-control rounded-1 mt-2 py-4 name-category border">
+                    <select
+                      className="form-select rounded-1 mt-2 name-category border"
+                      style={{ height: "47px" }}
+                      name="status"
+                      value={status}
+                      onChange={onInputChange}
+                    >
                       <option value="">Select an option</option>
                       <option value="Published">Published</option>
                       <option value="Draft">Draft</option>
                       <option value="Pending">Pending</option>
                     </select>
+                    {errors.status && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.status}
+                      </small>
+                    )}
                   </div>
                 </form>
 
-                <div className="card tags-seo tags-engine ms-1 mt-3">
-                  <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div className="card seo-metas1 text-start">
+                  <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center text-start">
                     <div>
-                      <h5 className="card-title1">Search Engine Optimize</h5>
+                      <h6 className="card-titl text-start">
+                        Search Engine Optimize
+                      </h6>
                       <Link
                         to="#"
-                        className="link-primary1 primary2 meta float-end meta-product"
+                        className="link-primary1 primary2 meta float-end edit-meta"
                         onClick={cateClicked}
                       >
                         Edit SEO meta
                       </Link>
-                      <hr />
-                      <p className="card-text text-dark">
-                        Setup meta title & description to make your site easy to
-                        discovered on search engines such as Google
-                      </p>
+                      <div className="border w-100 mb-2 mt-3"></div>
+                      {seoPreview.name ||
+                      seoPreview.permalink ||
+                      seoPreview.description ? (
+                        <div className="d-flex flex-column">
+                          <h6 className="crisp-bread mb-1">
+                            {seoPreview.name}
+                          </h6>
+                          <p className="text-success small mb-0">
+                            {seoPreview.permalink}
+                          </p>
+                          <div className="d-flex flex-row">
+                            <span className="text-success small sales-font d-flex flex-row flex-nowrap">
+                              {seoPreview.date &&
+                              !isNaN(new Date(seoPreview.date))
+                                ? new Date(seoPreview.date).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      month: "short",
+                                      day: "2-digit",
+                                      year: "numeric",
+                                    }
+                                  )
+                                : ""}
+                              :
+                            </span>
+
+                            <p className="text-dark text-start ms-1">
+                              {seoPreview.description}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="card-text text-dark text-start">
+                          Setup meta title & description to make your site easy
+                          to discovered on search engines such as Google
+                        </p>
+                      )}
+
                       {cate && (
                         <>
-                          <div>
+                          <div className="mt-3">
                             <label htmlFor="">SEO Title</label>
                             <input
                               type="text"
                               className="form-control mt-2 py-4 seo-edit"
+                              placeholder="SEO Title"
                             />
                           </div>
 
@@ -2585,7 +2703,7 @@ function BlogCategory() {
                             </label>
                             <textarea
                               id="seo-description"
-                              className="form-control mt-2 py-4 seo-edit"
+                              className="form-control mt-2 seo-edit cart-cart"
                               placeholder="SEO Description"
                               style={{
                                 height: "100px",
@@ -2652,9 +2770,9 @@ function BlogCategory() {
                               className="form-check-input"
                               type="radio"
                               name="check"
-                              checked
+                              id="Index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="Index" className="ms-2">
                               Index
                             </label>
 
@@ -2663,8 +2781,9 @@ function BlogCategory() {
                               type="radio"
                               value="index"
                               name="check"
+                              id="No index"
                             />
-                            <label htmlFor="" className="ms-2">
+                            <label htmlFor="No index" className="ms-2">
                               No index
                             </label>
                           </div>
@@ -2673,16 +2792,28 @@ function BlogCategory() {
                     </div>
                   </div>
                 </div>
-
-                <div className="border mt-3 rounded h-auto ms-2 w-100 mb-2">
+                <div className="border mt-3 rounded h-auto ms-2 w-100 mb-2 text-start">
                   <p className="ms-2 mt-3">Publish</p>
-                  <hr />
-                  <button className="btn btn-save ms-2 mb-3" type="submit">
-                    <i className="fas fa-save"></i> Save
-                  </button>
-                  <button className="btn btn-secondary ms-3 mb-3 btn-exit">
-                    <i className="fas fa-sign-out-alt"></i> Save & Exit
-                  </button>
+                  <div className="border w-100 mb-3"></div>
+
+                  <div className="d-flex flex-row flex-nowrap gap-3 ms-2 mb-3">
+                    <button
+                      type="button"
+                      className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center cart-cart"
+                      onClick={handleSubmit}
+                    >
+                      <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                    </button>
+                    <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center cart-cart">
+                      <Link
+                        to="/admin/blog/posts"
+                        className="text-decoration-none text-dark"
+                      >
+                        <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                        Save & Exit
+                      </Link>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Pages.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -12,13 +13,13 @@ import {
   faRotate,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function Pages() {
   let [user, setUser] = useState([]);
@@ -37,7 +38,7 @@ function Pages() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -98,6 +99,7 @@ function Pages() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -199,13 +201,26 @@ function Pages() {
     setUser(response.data);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const paginatedData = user.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   let deletedata = async (id) => {
     await axios.delete(`http://89.116.170.231:1600/pagesdelete/${id}`, user);
+    const updatedData = user.filter((item) => item.id !== id);
+    const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+    if (currentPage > newTotalPages && newTotalPages > 0) {
+      setCurrentPage(newTotalPages);
+    }
     try {
       toast.success("Data successfully deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -215,7 +230,7 @@ function Pages() {
       toast.error("Data is not deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -225,6 +240,42 @@ function Pages() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Pages | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Pages | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -306,7 +357,9 @@ function Pages() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1508,7 +1561,7 @@ function Pages() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2148,7 +2201,7 @@ function Pages() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2156,7 +2209,7 @@ function Pages() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial table-price ms-2">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2164,7 +2217,7 @@ function Pages() {
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0 cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2172,7 +2225,7 @@ function Pages() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
+                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ cart-cart"
                   type="button"
                 >
                   Filters
@@ -2180,9 +2233,9 @@ function Pages() {
 
                 <div className="search-gallery">
                   <input
-                    className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-75"
+                    className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-100 cart-cart ms-0 border"
                     placeholder="Search..."
-                    type="text"
+                    type="search"
                     name="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -2193,12 +2246,18 @@ function Pages() {
               <div className="d-flex w-100 justify-content-end">
                 <div className="mt-2 mt-lg-0 ms-lg-2 ms-xl-0 ms-xxl-0">
                   <Link to="/admin/pages/create">
-                    <button className="btn btn-create me-2" type="button">
+                    <button
+                      className="btn btn-create me-2 cart-cart"
+                      type="button"
+                    >
                       <FontAwesomeIcon icon={faPlus} className="me-2" />
                       Create
                     </button>
                   </Link>
-                  <button className="btn btn-reload border" type="button">
+                  <button
+                    className="btn btn-reload border cart-cart"
+                    type="button"
+                  >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
                   </button>
@@ -2259,8 +2318,8 @@ function Pages() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(user) && user.length > 0 ? (
-                    user.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>
                           <input type="checkbox" className="form-check-input" />
@@ -2280,7 +2339,16 @@ function Pages() {
                         <td>{data.date}</td>
 
                         <td>
-                          <span className="badge badge-success fw-medium lh-base px-2 bulk1">
+                          <span
+                            className={`badge cart-cart ${
+                              data.status === "published" ||
+                              data.status === "draft"
+                                ? "badge-success"
+                                : data.status === "pending"
+                                ? "badge-danger"
+                                : "badge-secondary"
+                            } fw-light`}
+                          >
                             {data.status}
                           </span>
                         </td>
@@ -2316,6 +2384,64 @@ function Pages() {
               </table>
             </div>
           </div>
+          {user.length > itemsPerPage && (
+            <nav className="mt-3">
+              <ul className="pagination justify-content-center">
+                <li
+                  className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+                >
+                  <button
+                    className="page-link me-2 btn d-flex cart-cart pagina"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                  >
+                    Prev
+                  </button>
+                </li>
+
+                {Array.from({
+                  length: Math.ceil(user.length / itemsPerPage),
+                }).map((_, index) => (
+                  <li
+                    key={index}
+                    className={`page-item ${
+                      currentPage === index + 1 ? "active" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                      onClick={() => setCurrentPage(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  </li>
+                ))}
+
+                <li
+                  className={`page-item ${
+                    currentPage === Math.ceil(user.length / itemsPerPage)
+                      ? "disabled"
+                      : ""
+                  }`}
+                >
+                  <button
+                    className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                    onClick={() =>
+                      setCurrentPage((prev) =>
+                        Math.min(
+                          prev + 1,
+                          Math.ceil(user.length / itemsPerPage)
+                        )
+                      )
+                    }
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
         <ToastContainer />
       </main>

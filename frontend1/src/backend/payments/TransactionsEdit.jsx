@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./TransactionsEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faEnvelope,
@@ -12,7 +13,6 @@ import {
   faPrint,
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -85,7 +85,7 @@ function TransactionsEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const routes = {
     "/admin/welcome": "# Dashboard",
@@ -130,6 +130,7 @@ function TransactionsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -256,7 +257,9 @@ function TransactionsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1479,7 +1482,7 @@ function TransactionsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2119,7 +2122,7 @@ function TransactionsEdit() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2200,8 +2203,8 @@ function TransactionsEdit() {
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 mt-2 mt-lg-0 review-public2 mt-lg-2 mt-xl-0 mt-xxl-0">
               <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Action</h4>
-                <hr />
-                <div className="d-flex flex-row gap-3 mb-3">
+                <div className="border w-100 mt-3 mb-3"></div>
+                <div className="d-flex flex-row gap-3 mb-2">
                   <button
                     type="button"
                     className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
@@ -2209,17 +2212,22 @@ function TransactionsEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/payments/transactions"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1 mb-4">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border w-100 mt-3 mb-3"></div>
                 <select
-                  className="form-select w-100"
+                  className="form-select w-100 mb-2"
                   style={{ height: "46px" }}
                   name="status"
                 >

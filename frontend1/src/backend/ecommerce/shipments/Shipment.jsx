@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "./Shipment.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -12,30 +13,23 @@ import {
   faRotate,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function Shipment() {
-  let [search, setSearch] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
+  const [shipment, setShipment] = useState([]);
+  const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +37,41 @@ function Shipment() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
+
+  useEffect(() => {
+    if (search.trim() !== "") {
+      searchbar();
+    } else {
+      orderdata();
+    }
+  }, [search]);
+
+  const searchbar = async () => {
+    try {
+      let response = await axios.get(
+        `http://89.116.170.231:1600/customerget/${search}`
+      );
+      setShipment(response.data);
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
+  };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
+
+  const paginatedData = shipment.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  let orderdata = async () => {
+    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+    setCount5(response.data.length);
+    setShipment(response.data);
+  };
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -95,7 +124,9 @@ function Shipment() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -157,9 +188,6 @@ function Shipment() {
     setBlog(!blog);
   };
 
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
-
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 992);
   };
@@ -182,7 +210,7 @@ function Shipment() {
         toast.success("Text copied to clipboard!", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -191,7 +219,7 @@ function Shipment() {
         toast.error("Failed to copy text", {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -202,34 +230,28 @@ function Shipment() {
     }
   };
 
-  useEffect(() => {
-    shipmentdata();
-  }, []);
-
-  let [shipment, setshipment] = useState([]);
-
-  let shipmentdata = async () => {
-    const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setshipment(response.data);
-  };
-
   let deletedata = async (id) => {
     try {
       await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
+      const updatedData = shipment.filter((item) => item.id !== id);
+      const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+      if (currentPage > newTotalPages && newTotalPages > 0) {
+        setCurrentPage(newTotalPages);
+      }
       toast.success("Data successfully deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
-      setshipment((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      setShipment((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {
       toast.error("Data is not deleted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -239,6 +261,41 @@ function Shipment() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Shipments | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Shipments | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -320,7 +377,9 @@ function Shipment() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1523,7 +1582,7 @@ function Shipment() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2163,7 +2222,7 @@ function Shipment() {
       </div>
 
       <nav className="breadcrumb-container text-center">
-        <ol className="breadcrumb ms-2">
+        <ol className="breadcrumb ms-2 cart-cart d-flex flex-wrap flex-lg-nowrap">
           <li className="breadcrumb-item fw-normal cart-cart">
             <Link to="/admin/welcome">DASHBOARD</Link>
           </li>
@@ -2176,7 +2235,7 @@ function Shipment() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center me-lg-4 me-xl-5 me-xxl-4">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center me-lg-4 me-xl-5 me-xxl-4 cart-cart">
         <div className="card mt-3 testimonial table-price ms-3">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
@@ -2184,7 +2243,7 @@ function Shipment() {
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0"
+                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ mt-2 mt-md-2 mt-lg-0 cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2192,7 +2251,7 @@ function Shipment() {
                   </button>
                 </div>
                 <button
-                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ"
+                  className="btn btn-secondary me-2 mt-2 mt-lg-0 py-4 d-flex btn-announ cart-cart"
                   type="button"
                 >
                   Filters
@@ -2200,9 +2259,9 @@ function Shipment() {
 
                 <div className="search-gallery">
                   <input
-                    className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-75"
+                    className="form-control py-4 mt-2 mt-lg-0 rounded-2 w-100 cart-cart ms-0 border"
                     placeholder="Search..."
-                    type="text"
+                    type="search"
                     name="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -2212,7 +2271,10 @@ function Shipment() {
 
               <div className="d-flex w-100 justify-content-end">
                 <div className="mt-2 mt-lg-0 ms-lg-2 ms-xl-0 ms-xxl-0">
-                  <button className="btn btn-reload border" type="button">
+                  <button
+                    className="btn btn-reload border cart-cart"
+                    type="button"
+                  >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
                   </button>
@@ -2284,8 +2346,8 @@ function Shipment() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(shipment) && shipment.length > 0 ? (
-                    shipment.map((data, key) => (
+                  {Array.isArray(paginatedData) && paginatedData.length > 0 ? (
+                    paginatedData.map((data, key) => (
                       <tr key={key}>
                         <td>
                           <input type="checkbox" className="form-check-input" />
@@ -2294,9 +2356,8 @@ function Shipment() {
 
                         <td className="cart-cart">
                           <Link
-                            to="#"
-                            className="text-decoration-none"
-                            style={{ fontFamily: "verdana" }}
+                            to={`/admin/ecommerce/shipments/edit/${data.id}`}
+                            className="text-decoration-none sales-font"
                           >
                             <span className="d-flex flex-row">
                               {data.order_number}
@@ -2311,32 +2372,37 @@ function Shipment() {
                         </td>
 
                         <td className="cart-cart d-flex flex-column">
-                          <span className="text-dark">
-                            {data.first_name} <span>{data.last_name}</span>
-                          </span>
-                          <span className="sliders1">{data.email}</span>
-                          <span>{data.phone_number}</span>
+                          <Link
+                            className="d-flex flex-column"
+                            to={`/admin/ecommerce/shipments/edit/${data.id}`}
+                          >
+                            <span className="text-dark">
+                              {data.first_name} <span>{data.last_name}</span>
+                            </span>
+                            <span className="sliders1">{data.email}</span>
+                            <span className="text-dark">
+                              {data.phone_number}
+                            </span>
+                          </Link>
                         </td>
 
                         <td
                           className="cart-cart ps-4"
                           style={{ fontFamily: "verdana" }}
-                        >
-                          ${data.shippingfee}
-                        </td>
+                        ></td>
 
                         <td>
-                          <span className="badge badge-success fw-medium lh-base px-2 bulk1">
+                          <span className="badge badge-success fw-medium lh-base px-2 cart-cart1">
                             Pending
                           </span>
                         </td>
 
                         <td className="ps-3">
-                          <span className="badge badge-success fw-medium lh-base px-2 bulk1">
+                          <span className="badge badge-success fw-medium lh-base px-2 cart-cart1">
                             Not Available
                           </span>
                         </td>
-                        <td className="ps-3">
+                        <td className="ps-3 sales-font">
                           {new Date(data.date).toISOString().split("T")[0]}
                         </td>
 
@@ -2364,7 +2430,7 @@ function Shipment() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="text-center">
+                      <td colSpan="9" className="text-center cart-cart">
                         No shipment available
                       </td>
                     </tr>
@@ -2372,6 +2438,66 @@ function Shipment() {
                 </tbody>
               </table>
             </div>
+            {shipment.length > itemsPerPage && (
+              <nav className="mt-3">
+                <ul className="pagination justify-content-center">
+                  <li
+                    className={`page-item ${
+                      currentPage === 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link me-2 btn d-flex cart-cart pagina"
+                      onClick={() =>
+                        setCurrentPage((prev) => Math.max(prev - 1, 1))
+                      }
+                    >
+                      Prev
+                    </button>
+                  </li>
+
+                  {Array.from({
+                    length: Math.ceil(shipment.length / itemsPerPage),
+                  }).map((_, index) => (
+                    <li
+                      key={index}
+                      className={`page-item ${
+                        currentPage === index + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link btn d-flex justify-content-center align-items-center ms-2 paginate"
+                        onClick={() => setCurrentPage(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+
+                  <li
+                    className={`page-item ${
+                      currentPage === Math.ceil(shipment.length / itemsPerPage)
+                        ? "disabled"
+                        : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link btn  ms-2 d-flex text-dark cart-cart"
+                      onClick={() =>
+                        setCurrentPage((prev) =>
+                          Math.min(
+                            prev + 1,
+                            Math.ceil(shipment.length / itemsPerPage)
+                          )
+                        )
+                      }
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            )}
           </div>
         </div>
         <ToastContainer />

@@ -235,8 +235,6 @@ input[type="search"] {
   width: 100%;
   max-width: 50%;
 }
-.customer-page1 {
-}
 
 @media (max-width: 576px) {
   .customer-page {
@@ -279,7 +277,7 @@ input[type="search"] {
     max-width: 71%;
   }
   .customer-page1 {
-    margin-left: 16%;
+    margin-left: 15%;
     width: 100%;
     max-width: 85.2%;
   }

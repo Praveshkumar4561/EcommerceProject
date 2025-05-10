@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "./ContactUs.css";
 import Tonic from "../../assets/Tonic.svg";
-import "../../../src/assets/fonts/Roboto-BlackItalic.ttf";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,25 +19,24 @@ import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
 import JsonLd from "../JsonLd";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function ContactUs() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   let generateRandomNumber = () => {
     return Math.floor(Math.random() * 10) + 1;
@@ -48,7 +46,6 @@ function ContactUs() {
   const [num1, setNum1] = useState(generateRandomNumber());
   const [num2, setNum2] = useState(generateRandomNumber());
   const [userAnswer, setUserAnswer] = useState("");
-  const [error, setError] = useState("");
 
   const handleCaptchaChange = () => {
     if (parseInt(userAnswer) === num1 + num2) {
@@ -56,7 +53,6 @@ function ContactUs() {
       setNum1(generateRandomNumber());
       setNum2(generateRandomNumber());
       setUserAnswer("");
-      setError("");
     } else {
       setError("Incorrect answer, please try again.");
       setCaptchaValid(false);
@@ -130,7 +126,7 @@ function ContactUs() {
       toast.success("Contact details successfully submitted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -139,7 +135,7 @@ function ContactUs() {
       toast.error("Contact details is not submitted", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -236,22 +232,21 @@ function ContactUs() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   const schemaData = {
     "@context": "http://schema.org",
@@ -299,6 +294,34 @@ function ContactUs() {
     ],
   };
 
+  let [cookie, setCookie] = useState([]);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      return;
+    }
+
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setCookie([response.data]);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
+
+  const handleCookieAccept = (data) => {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
+    setCookie((prevCookie) =>
+      prevCookie.filter((item) => item.cookie !== "yes")
+    );
+  };
+
   return (
     <>
       <JsonLd data={schemaData} />
@@ -330,7 +353,7 @@ function ContactUs() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -502,7 +525,7 @@ function ContactUs() {
                   >
                     <ol className="breadcrumb d-flex flex-nowrap flex-row gap-0 overflow-hidden">
                       <li className="breadcrumb-item navbar-item fw-medium p-0">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -532,9 +555,9 @@ function ContactUs() {
                   </div>
 
                   <div className="ms-3 lorem-contact">
-                    <h4 className="fw-normal mb-1 text-lg-start text-start mt-1">
+                    <h2 className="fw-normal mb-1 text-lg-start text-start mt-1 contact-phone">
                       Phone Number
-                    </h4>
+                    </h2>
                     <p className="head-office fw-normal text-dark">
                       Head office: (210) 123 451
                     </p>
@@ -545,9 +568,9 @@ function ContactUs() {
                     <FontAwesomeIcon icon={faCommentDots} />
                   </div>
                   <div className="ms-3">
-                    <h4 className="fw-normal mb-1 text-lg-start mt-1 text-start">
+                    <h2 className="fw-normal mb-1 text-lg-start mt-1 text-start contact-phone">
                       Mail Address
-                    </h4>
+                    </h2>
                     <p className="head-office fw-normal text-dark">
                       Webecyenvato12@gmail.com
                     </p>
@@ -558,9 +581,9 @@ function ContactUs() {
                     <FontAwesomeIcon icon={faLocationDot} />
                   </div>
                   <div className="ms-3">
-                    <h4 className="fw-normal mb-1 text-lg-start mt-1 text-start">
+                    <h2 className="fw-normal mb-1 text-lg-start mt-1 text-start contact-phone">
                       Office Address
-                    </h4>
+                    </h2>
                     <p className="head-office fw-normal text-dark">
                       254 Lillian Blvd, Holbrook
                     </p>
@@ -598,7 +621,7 @@ function ContactUs() {
                         type="email"
                         className="form-control mt-2 fw-normal py-4 lorem-contact1"
                         id="lastName"
-                        placeholder="Your Email"
+                        placeholder="Your email"
                         name="email"
                         value={email}
                         onChange={handleChange}
@@ -617,7 +640,7 @@ function ContactUs() {
                       <input
                         type="text"
                         className="form-control fw-normal mt-2 py-4 lorem-contact1"
-                        placeholder="Your Address"
+                        placeholder="Your address"
                         id="email"
                         name="address"
                         value={address}
@@ -638,7 +661,7 @@ function ContactUs() {
                       <input
                         type="number"
                         className="form-control fw-normal mt-2 py-4 lorem-contact1"
-                        placeholder="Your Phone"
+                        placeholder="Your phone"
                         id="phoneNumber"
                         name="phone"
                         value={phone}
@@ -673,7 +696,7 @@ function ContactUs() {
                   <textarea
                     className="form-control fw-normal mt-2 lorem-contact1 custom-message"
                     id="message"
-                    placeholder="Enter Message"
+                    placeholder="Enter message"
                     name="content"
                     value={content}
                     onChange={handleChange}
@@ -710,7 +733,7 @@ function ContactUs() {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-success d-flex flex-row align-items-center button-btn py-4 px-2 mt-4 ms-4 ms-lg-2 mb-4 blackitalic lorem-contact"
+                  className="btn btn-success-product d-flex flex-row align-items-center button-btn py-4 px-2 mt-4 ms-4 ms-lg-2 mb-4 blackitalic lorem-contact"
                   onClick={handleCaptchaChange}
                 >
                   Submit Request
@@ -726,7 +749,58 @@ function ContactUs() {
         <ToastContainer />
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row theme-allow cart-cart">
+            {Array.isArray(cookie) && cookie.length > 0
+              ? cookie.map((data, key) => {
+                  if (data.cookie !== "yes") return null;
+                  const cardStyle = {
+                    backgroundColor: data.backgroundColor,
+                    color: data.textColor,
+                    ...(data.style === "Minimal" && {
+                      width: "388px",
+                      height: "135px",
+                      marginLeft: "2px",
+                    }),
+                  };
+
+                  return (
+                    <div
+                      className="col-12 col-lg-12 col-md-12 border d-flex justify-content-center gap-5 align-items-center"
+                      key={key}
+                      style={cardStyle}
+                    >
+                      <div className="d-flex align-items-center justify-content-between w-100">
+                        <span
+                          className={
+                            data.style === "Full Width"
+                              ? "message-cookie ms-1"
+                              : ""
+                          }
+                        >
+                          {data.message}.
+                        </span>
+                        <button
+                          className={`btn btn-dark d-flex cart-cart allow-site mt-1 button-cook mb-2 mt-2 btn-outline-light ${
+                            data.style === "Full Width"
+                              ? "button-cook-position"
+                              : ""
+                          }`}
+                          onClick={() => handleCookieAccept(data)}
+                        >
+                          {data.button_text}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -736,23 +810,23 @@ function ContactUs() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -784,14 +858,14 @@ function ContactUs() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
                         to="/faqs"
                         className="text-white text-decoration-none"
                       >
-                        FAQ
+                        FAQ's
                       </Link>
                     </li>
                     <li>
@@ -816,9 +890,9 @@ function ContactUs() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
                 <input
                   type="email"
@@ -827,7 +901,7 @@ function ContactUs() {
                   aria-label="Email address"
                 />
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-product d-flex cart-cart1 py-4 me-0"
                   type="submit"
                   onClick={(e) => e.preventDefault()}
                 >
@@ -842,7 +916,7 @@ function ContactUs() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
               </p>
             </div>
           </div>

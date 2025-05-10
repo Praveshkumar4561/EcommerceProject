@@ -3,6 +3,7 @@ import "./ProductsEdit.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
 import Cutting from "../../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faArrowDown,
@@ -17,7 +18,6 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -26,26 +26,10 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ProductsEdit() {
-  const [editorData, setEditorData] = useState("");
-
-  const handleEditorChange = (event, editor) => {
-    const data = editor.getData();
-    setEditorData(data);
-  };
-
-  const insertHtml = () => {
-    const htmlToInsert = "<p>Your HTML content here</p>";
-    setEditorData((prevData) => prevData + htmlToInsert);
-  };
-
-  let [seo, setSeo] = useState(false);
-
-  let seodataedit = () => {
-    setSeo(!seo);
-  };
-
+  const [seo, setSeo] = useState(false);
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -66,7 +50,7 @@ function ProductsEdit() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -74,18 +58,19 @@ function ProductsEdit() {
       );
     } catch (error) {}
   };
-  let [isVisible, setIsVisible] = useState(false);
-  let [blog, setBlog] = useState(false);
-  let [ads, setAds] = useState(false);
-  let [commerce, setCommerce] = useState(false);
-  let [appear, setAppear] = useState(false);
+
+  const [isVisible, setIsVisible] = useState(false);
+  const [blog, setBlog] = useState(false);
+  const [ads, setAds] = useState(false);
+  const [commerce, setCommerce] = useState(false);
+  const [appear, setAppear] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
   const navigate = useNavigate();
-  let [Specification, setSpecifcation] = useState(false);
-  let [payment, setPayment] = useState(false);
+  const [Specification, setSpecifcation] = useState(false);
+  const [payment, setPayment] = useState(false);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -138,6 +123,7 @@ function ProductsEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
 
   useEffect(() => {
@@ -202,10 +188,8 @@ function ProductsEdit() {
   };
 
   let { id } = useParams();
-  const [selectedLabels, setSelectedLabels] = useState([]);
-  const [selectedLabels1, setSelectedLabels1] = useState([]);
 
-  let [user, setUser] = useState({
+  const [user, setUser] = useState({
     name: "",
     permalink: "",
     description: "",
@@ -225,11 +209,14 @@ function ProductsEdit() {
     brand: "",
     minimumorder: "",
     maximumorder: "",
+    tags: "",
+    faqs: "",
+    attribute: "",
     date: "",
     file: null,
   });
 
-  let {
+  const {
     name,
     permalink,
     description,
@@ -249,15 +236,30 @@ function ProductsEdit() {
     brand,
     minimumorder,
     maximumorder,
+    tags,
+    faqs,
     date,
     file,
   } = user;
 
-  let handleSubmit = async () => {
+  const handleSubmit = async () => {
+    const selectedCategories = getSelectedCategories();
+    const formattedAttributes = more
+      .filter((attr) => attr.attributeId && attr.attributeValue)
+      .map((attr) => {
+        const selectedAttr = create.find(
+          (item) => item.id === Number(attr.attributeId)
+        );
+        return `${selectedAttr?.title}:${attr.attributeValue}`;
+      })
+      .join(",");
+    const selectedQuestions = pages
+      .filter((p) => selectedIds.includes(p.id))
+      .map((p) => p.question);
     let formData = new FormData();
     formData.append("name", name);
     formData.append("permalink", permalink);
-    formData.append("description", description);
+    formData.append("description", stripHtml(editorData2));
     formData.append("sku", sku);
     formData.append("price", price);
     formData.append("price_sale", price_sale);
@@ -275,9 +277,14 @@ function ProductsEdit() {
     formData.append("minimumorder", minimumorder);
     formData.append("maximumorder", maximumorder);
     formData.append("date", date);
+    formData.append("faqs", selectedQuestions.join(", "));
+    formData.append("attribute", formattedAttributes);
     formData.append("file", file);
-    formData.append("label", selectedLabels || "");
-    formData.append("label1", selectedLabels1 || "");
+    formData.append("tags", selectedTags.join(","));
+    formData.append("label", selectedLabels.join(","));
+    formData.append("label1", selectedCollections.join(","));
+    formData.append("categories", selectedCategories.join(","));
+
     try {
       const response = await axios.put(
         `http://89.116.170.231:1600/productupdate/${id}`,
@@ -287,47 +294,681 @@ function ProductsEdit() {
         navigate("/admin/ecommerce/products");
       }
     } catch (error) {
-      console.error("error", error);
+      console.error("Error updating product:", error);
     }
+  };
+
+  let [create, setCreate] = useState([]);
+
+  useEffect(() => {
+    const attributedata = async () => {
+      try {
+        let response = await axios.get(
+          "http://89.116.170.231:1600/attributesdata"
+        );
+        setCreate(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    attributedata();
+  }, []);
+
+  const [more, setMore] = useState([{ attributeName: "", attributeValue: "" }]);
+
+  const deleteItem = (index) => {
+    if (more.length > 1) {
+      setMore((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      console.log("error", error);
+    }
+  };
+
+  const getSelectedCategories = () => {
+    const selected = [];
+    Object.keys(checkedItems).forEach((key) => {
+      if (checkedItems[key]) {
+        selected.push(key);
+      }
+    });
+    return selected;
   };
 
   const onInputChange = (e) => {
     const { name, type, checked, value } = e.target;
-    setUser((prevUser) => ({
-      ...prevUser,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
 
-  const handleCheckboxChange = (label) => {
-    setSelectedLabels((prevState) => {
-      if (prevState.includes(label)) {
-        return prevState.filter((item) => item !== label);
-      } else {
-        return [...prevState, label];
-      }
-    });
-  };
-
-  const handleCheckboxChange1 = (label1) => {
-    setSelectedLabels1((prevState) => {
-      if (prevState.includes(label1)) {
-        return prevState.filter((item) => item !== label1);
-      } else {
-        return [...prevState, label1];
-      }
-    });
+    if (name === "label") {
+      setSelectedLabels((prevLabels) => {
+        if (checked) {
+          return [...prevLabels, value];
+        } else {
+          return prevLabels.filter((label) => label !== value);
+        }
+      });
+    } else {
+      setUser((prevUser) => ({
+        ...prevUser,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   useEffect(() => {
-    somedata();
+    const loadAll = async () => {
+      try {
+        const [{ data: defs }, { data: prodArr }, { data: allFaqs }] =
+          await Promise.all([
+            axios.get("http://89.116.170.231:1600/attributesdata"),
+            axios.get(`http://89.116.170.231:1600/productsomedata/${id}`),
+            axios.get("http://89.116.170.231:1600/pagesdatafaqs"),
+          ]);
+        setCreate(defs || []);
+        const publishedFaqs = (allFaqs || []).filter(
+          (p) => p.status === "published" || p.status === "default"
+        );
+        setPages(publishedFaqs);
+        const pd = prodArr[0] || {};
+        setUser({
+          name: pd.name || "",
+          permalink: pd.permalink || "",
+          description: pd.description || "",
+          sku: pd.sku || "",
+          price: pd.price || "",
+          price_sale: pd.price_sale || "",
+          cost: pd.cost || "",
+          barcode: pd.barcode || "",
+          stockstatus: pd.stockstatus || "",
+          weight: pd.weight || "",
+          length: pd.length || "",
+          wide: pd.wide || "",
+          height: pd.height || "",
+          status: pd.status || "",
+          store: pd.store || "",
+          featured: pd.featured === "Yes",
+          brand: pd.brand || "",
+          minimumorder: pd.minimumorder || "",
+          maximumorder: pd.maximumorder || "",
+          tags: pd.tags || "",
+          date: pd.date || "",
+          image: pd.image || "",
+          file: null,
+        });
+        setEditorData2(pd.description || "");
+        setTextAreaData2(stripHtml(pd.description || ""));
+        setSelectedLabels(
+          pd.label ? pd.label.split(",").map((s) => s.trim()) : []
+        );
+        setSelectedCollections(
+          pd.label1 ? pd.label1.split(",").map((s) => s.trim()) : []
+        );
+        const catMap = {};
+        (pd.categories || "")
+          .split(",")
+          .map((s) => s.trim())
+          .forEach((c) => {
+            catMap[c] = true;
+          });
+        setCheckedItems(catMap);
+        if (pd.attribute) {
+          const arr = pd.attribute.split(",").map((pair) => {
+            const [rawName, rawValue] = pair.split(":").map((s) => s.trim());
+            const def = defs.find((d) => d.title === rawName);
+            return {
+              attributeId: def ? String(def.id) : "",
+              attributeValue: rawValue,
+            };
+          });
+          setMore(arr);
+        }
+        if (pd.faqs) {
+          const wanted = pd.faqs.split(",").map((s) => s.trim().toLowerCase());
+
+          const matchedIds = publishedFaqs
+            .filter((f) => wanted.includes(f.question.trim().toLowerCase()))
+            .map((f) => f.id);
+
+          setSelectedIds(matchedIds);
+          console.log("Matched FAQ IDs:", matchedIds);
+        }
+      } catch (err) {
+        console.error("Error loading edit data", err);
+      }
+    };
+
+    loadAll();
+  }, [id]);
+
+  const [searchText, setSearchText] = useState("");
+  const [checkedItems, setCheckedItems] = useState({});
+  const parentRefs = useRef({});
+
+  const categories = [
+    { name: "New Arrivals" },
+    {
+      name: "Electronics",
+      children: [
+        {
+          name: "Featured",
+          children: ["New Arrivals", "Best Sellers", "Mobile Phone"],
+        },
+        {
+          name: "Computers & Laptops",
+          children: [
+            "Top Brands",
+            "Weekly Best Selling",
+            "CPU Heat Pipes",
+            "CPU Coolers",
+          ],
+        },
+        {
+          name: "Accessories",
+          children: [
+            "Headphones",
+            "Wireless Headphones",
+            "TWS Earphones",
+            "Smart Watch",
+            "Gaming Console",
+            "PlayStation",
+          ],
+        },
+      ],
+    },
+    {
+      name: "Gifts",
+      children: [],
+    },
+    {
+      name: "Computers",
+      children: [
+        {
+          name: "Accessories",
+          children: ["Desktop", "Laptop", "Tablet"],
+        },
+      ],
+    },
+    {
+      name: "Accessories",
+      children: [
+        {
+          name: "With Bluetooth",
+          children: [],
+        },
+      ],
+    },
+    {
+      name: "Sports",
+      children: [],
+    },
+    {
+      name: "Electronic Gadgets",
+      children: [
+        {
+          name: "Microscope",
+          children: [],
+        },
+        {
+          name: "Remote Control",
+          children: [],
+        },
+        {
+          name: "Monitor",
+          children: [],
+        },
+        {
+          name: "Thermometer",
+          children: [],
+        },
+        {
+          name: "Backpack",
+          children: [],
+        },
+        {
+          name: "Headphones",
+          children: [],
+        },
+      ],
+    },
+  ];
+
+  const filteredCategories = categories
+    .map((mega) => {
+      if (mega.name.toLowerCase().includes(searchText.toLowerCase()))
+        return mega;
+
+      const filteredChildren = mega.children
+        ?.map((mini) => {
+          if (mini.name.toLowerCase().includes(searchText.toLowerCase()))
+            return mini;
+
+          const filteredGrandChildren = mini.children?.filter((child) =>
+            child.toLowerCase().includes(searchText.toLowerCase())
+          );
+
+          if (filteredGrandChildren?.length) {
+            return { ...mini, children: filteredGrandChildren };
+          }
+
+          return null;
+        })
+        .filter(Boolean);
+
+      if (filteredChildren?.length) {
+        return { ...mega, children: filteredChildren };
+      }
+
+      return null;
+    })
+    .filter(Boolean);
+
+  useEffect(() => {
+    Object.keys(parentRefs.current).forEach((key) => {
+      const ref = parentRefs.current[key];
+      if (ref) {
+        const allChildren = Object.keys(checkedItems).filter((item) =>
+          item.startsWith(key + " >")
+        );
+        const checkedChildren = allChildren.filter(
+          (item) => checkedItems[item]
+        );
+        ref.indeterminate =
+          checkedChildren.length > 0 &&
+          checkedChildren.length < allChildren.length;
+      }
+    });
+  }, [checkedItems]);
+
+  const toggleMega = (mega) => {
+    const updated = { ...checkedItems };
+    const isChecked = !checkedItems[mega.name];
+    updated[mega.name] = isChecked;
+
+    mega.children?.forEach((mini) => {
+      updated[`${mega.name} > ${mini.name}`] = isChecked;
+      mini.children?.forEach((child) => {
+        updated[`${mega.name} > ${mini.name} > ${child}`] = isChecked;
+      });
+    });
+
+    setCheckedItems(updated);
+  };
+
+  const toggleMini = (mega, mini) => {
+    const updated = { ...checkedItems };
+    const miniKey = `${mega.name} > ${mini.name}`;
+    const isChecked = !checkedItems[miniKey];
+    updated[miniKey] = isChecked;
+
+    mini.children?.forEach((child) => {
+      updated[`${miniKey} > ${child}`] = isChecked;
+    });
+
+    const allMiniKeys = mega.children.map((m) => `${mega.name} > ${m.name}`);
+    const allMinisChecked = allMiniKeys.every((k) => updated[k]);
+    updated[mega.name] = allMinisChecked;
+
+    setCheckedItems(updated);
+  };
+
+  const toggleChild = (mega, mini, child) => {
+    const updated = { ...checkedItems };
+    const childKey = `${mega.name} > ${mini.name} > ${child}`;
+    updated[childKey] = !checkedItems[childKey];
+
+    const miniKey = `${mega.name} > ${mini.name}`;
+    const allChildKeys = mini.children.map((c) => `${miniKey} > ${c}`);
+    const allChecked = allChildKeys.every((k) => updated[k]);
+
+    updated[miniKey] = allChecked;
+    updated[mega.name] = mega.children.every((m) => {
+      const mk = `${mega.name} > ${m.name}`;
+      const mChildren = m.children.map((c) => `${mk} > ${c}`);
+      return mChildren.every((k) => updated[k]);
+    });
+
+    setCheckedItems(updated);
+  };
+
+  const getIndeterminateState = (parentKey) => {
+    const allChildKeys = Object.keys(checkedItems).filter((key) =>
+      key.startsWith(`${parentKey} >`)
+    );
+
+    const checkedChildren = allChildKeys.filter((key) => checkedItems[key]);
+    return (
+      checkedChildren.length > 0 && checkedChildren.length < allChildKeys.length
+    );
+  };
+
+  const [editorData2, setEditorData2] = useState("");
+  const [textAreaData2, setTextAreaData2] = useState("");
+  const [showEdit2, setShowEdit2] = useState(true);
+
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  const handleEditorChange2 = (event, editor) => {
+    const data = editor.getData();
+    const plainText = stripHtml(data);
+    setEditorData2(data);
+    setUser((prevState) => ({
+      ...prevState,
+      description: plainText,
+    }));
+    setTextAreaData2(plainText);
+  };
+
+  const handleTextAreaChange2 = (e) => {
+    const data = e.target.value;
+    setTextAreaData2(data);
+    setUser((prevState) => ({
+      ...prevState,
+      description: data,
+    }));
+    setEditorData2(data);
+  };
+
+  const showEditorClicked2 = (e) => {
+    e.preventDefault();
+    setShowEdit2(!showEdit2);
+  };
+
+  const mediaUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) {
+            throw new Error("Image upload failed");
+          }
+          const data = await response.json();
+          console.log("Image uploaded successfully", data);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      }
+    });
+  };
+
+  const [tag1, setTag1] = useState([]);
+  const [tags1, setTags1] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+
+  useEffect(() => {
+    const tagsdata = async () => {
+      let response = await axios.get(
+        "http://89.116.170.231:1600/producttagdata"
+      );
+      setTag1(response.data);
+    };
+    tagsdata();
   }, []);
 
-  let somedata = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/productsomedata/${id}`
+  const handleInputChange1 = (e) => {
+    const value = e.target.value;
+    setTags1(value);
+
+    const filtered = tag1.filter((tag) =>
+      tag.name.toLowerCase().includes(value.toLowerCase())
     );
-    setUser(response.data[0]);
+    setFilteredSuggestions(filtered);
+  };
+
+  const handleAddTag = (tagName) => {
+    if (!selectedTags.includes(tagName)) {
+      setSelectedTags([...selectedTags, tagName]);
+    }
+    setTags1("");
+    setFilteredSuggestions([]);
+  };
+
+  const handleRemoveTag = (tagName) => {
+    setSelectedTags((prev) => prev.filter((tag) => tag !== tagName));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && tags1.trim() !== "") {
+      e.preventDefault();
+      const match = tag1.find(
+        (tag) => tag.name.toLowerCase() === tags1.trim().toLowerCase()
+      );
+
+      if (match) {
+        handleAddTag(match.name);
+      }
+    }
+  };
+
+  const [editorData1, setEditorData1] = useState(user.content || "");
+  const [textAreaData1, setTextAreaData1] = useState(
+    stripHtml(user.content || "")
+  );
+  const [showEdit1, setShowEdit1] = useState(true);
+
+  const showEditorClicked1 = (e) => {
+    e.preventDefault();
+    setShowEdit1(!showEdit1);
+  };
+
+  const handleEditorChange1 = (event, editor) => {
+    const data = editor.getData();
+    setEditorData1(data);
+    setUser((prevState) => ({
+      ...prevState,
+      content: data,
+    }));
+    setTextAreaData1(stripHtml(data));
+  };
+
+  const handleTextAreaChange1 = (e) => {
+    const data = e.target.value;
+    setTextAreaData1(data);
+    setUser((prevState) => ({
+      ...prevState,
+      content: data,
+    }));
+    setEditorData1(data);
+  };
+
+  const extendedTypes = ["Checkbox", "RadioButton", "Dropdown"];
+  const [options, setOptions] = useState([]);
+
+  const addOptions = (e) => {
+    e.preventDefault();
+    setOptions((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        name: "",
+        type: "",
+        required: false,
+        rows: [
+          { id: Date.now() + 1, label: "", price: "", priceType: "fixed" },
+        ],
+        priceRows: [{ id: Date.now() + 2, price: "", priceType: "fixed" }],
+      },
+    ]);
+  };
+
+  const deleteOptions = (optId) => {
+    setOptions((prev) => prev.filter((opt) => opt.id !== optId));
+  };
+
+  const handleInputChanges = (optId, field, value) => {
+    setOptions((prev) =>
+      prev.map((opt) => (opt.id === optId ? { ...opt, [field]: value } : opt))
+    );
+  };
+
+  const handleAddRow = (optId, e) => {
+    e.preventDefault();
+    setOptions((prev) =>
+      prev.map((opt) =>
+        opt.id === optId
+          ? {
+              ...opt,
+              rows: [
+                ...opt.rows,
+                { id: Date.now(), label: "", price: "", priceType: "fixed" },
+              ],
+            }
+          : opt
+      )
+    );
+  };
+
+  const handleDeleteRow = (optId, rowId) => {
+    setOptions((prev) =>
+      prev.map((opt) =>
+        opt.id === optId
+          ? { ...opt, rows: opt.rows.filter((r) => r.id !== rowId) }
+          : opt
+      )
+    );
+  };
+
+  const handleChanges = (optId, rowId, field, value) => {
+    setOptions((prev) =>
+      prev.map((opt) =>
+        opt.id === optId
+          ? {
+              ...opt,
+              rows: opt.rows.map((r) =>
+                r.id === rowId ? { ...r, [field]: value } : r
+              ),
+            }
+          : opt
+      )
+    );
+  };
+
+  const handleAddPrice = (optId, e) => {
+    e.preventDefault();
+    setOptions((prev) =>
+      prev.map((opt) =>
+        opt.id === optId
+          ? {
+              ...opt,
+              priceRows: [
+                ...opt.priceRows,
+                { id: Date.now(), price: "", priceType: "fixed" },
+              ],
+            }
+          : opt
+      )
+    );
+  };
+
+  const handlePriceChange = (optId, rowId, field, value) => {
+    setOptions((prev) =>
+      prev.map((opt) =>
+        opt.id === optId
+          ? {
+              ...opt,
+              priceRows: opt.priceRows.map((r) =>
+                r.id === rowId ? { ...r, [field]: value } : r
+              ),
+            }
+          : opt
+      )
+    );
+  };
+
+  let [attributes, setAttributes] = useState(false);
+
+  let addAttribute = (e) => {
+    e.preventDefault();
+    setAttributes(!attributes);
+  };
+
+  const [click, setClick] = useState(false);
+  const [global, setGlobal] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  useEffect(() => {
+    const globaldata = async () => {
+      const response = await axios.get(
+        "http://89.116.170.231:1600/productoptiondata"
+      );
+      setGlobal(response.data);
+    };
+    globaldata();
+  }, []);
+
+  const globalOptionsClicked = (e) => {
+    e.preventDefault();
+    const selected = global.find((item) => item.name === selectedOption);
+    if (selected) {
+      setClick(true);
+      setGlobalSelectedData(selected);
+    }
+  };
+
+  const trashDelete = (e) => {
+    e.preventDefault();
+    setClick(false);
+    setGlobalSelectedData(null);
+    setSelectedOption(null);
+  };
+
+  const addNewRow = (e) => {
+    e.preventDefault();
+    const newOption = {
+      id: Date.now(),
+      label: "",
+      price: 0,
+      priceType: "fixed",
+    };
+    setGlobalSelectedData((prevState) => ({
+      ...prevState,
+      options: [...(prevState.options || []), newOption],
+    }));
+  };
+
+  const [globalSelectedData, setGlobalSelectedData] = useState({
+    status: "Field",
+    options: [{ id: Date.now(), price: "", priceType: "fixed" }],
+  });
+
+  const addNewRowClicked = (e) => {
+    e.preventDefault();
+    const newOption = {
+      id: Date.now(),
+      price: "",
+      priceType: "fixed",
+    };
+    setGlobalSelectedData((prev) => ({
+      ...prev,
+      options: [...prev.options, newOption],
+    }));
+  };
+
+  const deleteRow = (id) => {
+    const updatedOptions = globalSelectedData.options.filter(
+      (opt) => opt.id !== id
+    );
+    setGlobalSelectedData({ ...globalSelectedData, options: updatedOptions });
+  };
+
+  const handlePriceTypeChange = (e, index) => {
+    const updatedOptions = [...globalSelectedData.options];
+    updatedOptions[index].priceType = e.target.value;
+    setGlobalSelectedData({ ...globalSelectedData, options: updatedOptions });
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -348,6 +989,29 @@ function ProductsEdit() {
     }
   };
 
+  const [seoImage, setSeoImage] = useState(null);
+  const [seoImageUrl, setSeoImageUrl] = useState(null);
+
+  const handleSeoFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setSeoImage(file);
+      setSeoImageUrl(url);
+    }
+  };
+
+  const handleSeoCloseClick = (e) => {
+    e.stopPropagation();
+    setSeoImageUrl(null);
+    setSeoImage(null);
+  };
+
+  const handleCloseClick = () => {
+    setImageUrl(null);
+    setImage(null);
+  };
+
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
@@ -356,37 +1020,62 @@ function ProductsEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
-  const [news, setNews] = useState(false);
-  const [more, setMore] = useState([{ attributeName: "", attributeValue: "" }]);
+  let [faqs1, setFaqs1] = useState(false);
 
-  const attributeNew = () => {
-    setNews(!news);
+  let faqsClicked = () => {
+    setFaqs1(!faqs1);
   };
 
-  let moreAttribute = () => {
-    setMore([...more, { attributeName: "", attributeValue: "" }]);
-  };
+  const [pages, setPages] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isOpens, setIsOpens] = useState(false);
+  const containerRef = useRef(null);
 
-  const deleteItem = (index) => {
-    if (more.length > 1) {
-      setMore((prev) => prev.filter((_, i) => i !== index));
-    } else {
-      console.log("error", error);
-    }
-  };
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data } = await axios.get(
+          "http://89.116.170.231:1600/pagesdatafaqs"
+        );
+        setPages(
+          data.filter((p) => p.status === "published" || p.status === "default")
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    load();
+  }, []);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsOpens(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const toggle = (id) =>
+    setSelectedIds((ids) =>
+      ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]
+    );
+
+  const headerText = selectedIds.length
+    ? pages
+        .filter((p) => selectedIds.includes(p.id))
+        .map((p) => p.question)
+        .join(", ")
+    : "Select FAQs";
 
   let [addproducts, setAddProducts] = useState([]);
 
-  let addProduct = () => {
+  let addProduct = (e) => {
+    e.preventDefault();
     setAddProducts([...addproducts, { question: "", answer: "" }]);
-  };
-
-  let handleInputChange = (index, type, value) => {
-    const updatedProducts = [...addproducts];
-    updatedProducts[index][type] = value;
-    setAddProducts(updatedProducts);
   };
 
   let removeProduct = (index) => {
@@ -399,137 +1088,6 @@ function ProductsEdit() {
   const handleSelectChange = (event) => {
     setSelectedSpec(event.target.value);
   };
-
-  const [options, setOptions] = useState([]);
-
-  const addOptions = () => {
-    setOptions([
-      ...options,
-      {
-        id: Date.now(),
-        name: "",
-        type: "",
-        required: false,
-      },
-    ]);
-  };
-
-  const deleteOptions = (id) => {
-    setOptions(options.filter((option) => option.id !== id));
-  };
-
-  const handleInputChanges = (id, field, value) => {
-    setOptions(
-      options.map((option) =>
-        option.id === id ? { ...option, [field]: value } : option
-      )
-    );
-  };
-
-  const [rows, setRows] = useState([
-    { id: 1, label: "", price: "0", priceType: "fixed" },
-  ]);
-
-  const handleDelete = (id) => {
-    setRows((prevRows) => prevRows.filter((row) => row.id !== id));
-  };
-
-  const handleChanges = (id, field, value) => {
-    setRows((prevRows) =>
-      prevRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
-    );
-  };
-
-  const handleAddRow = () => {
-    const newRow = {
-      id: rows.length + 1,
-      label: "",
-      price: "",
-      priceType: "fixed",
-    };
-    setRows((prevRows) => [...prevRows, newRow]);
-  };
-
-  const [showEdit1, setShowEdit1] = useState(true);
-  const [showEdit2, setShowEdit2] = useState(true);
-  const [editorData1, setEditorData1] = useState("");
-  const [editorData2, setEditorData2] = useState("");
-  const [textAreaData1, setTextAreaData1] = useState("");
-  const [textAreaData2, setTextAreaData2] = useState("");
-
-  const handleTextAreaChange1 = (e) => {
-    setTextAreaData1(e.target.value);
-  };
-
-  const handleTextAreaChange2 = (e) => {
-    setTextAreaData2(e.target.value);
-  };
-
-  const showEditorClicked1 = (e) => {
-    e.preventDefault();
-    setShowEdit1(!showEdit1);
-  };
-
-  const showEditorClicked2 = (e) => {
-    e.preventDefault();
-    setShowEdit2(!showEdit2);
-  };
-
-  const mediaUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-
-        try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
-
-          const data = await response.json();
-          const imageUrl = data.url;
-
-          if (showEdit1) {
-            const editor = document.querySelector(
-              ".ck-editor__editable"
-            ).editor;
-            editor.model.change((writer) => {
-              const imageElement = writer.createElement("image", {
-                src: imageUrl,
-              });
-              editor.model.insertContent(imageElement);
-            });
-          } else if (showEdit2) {
-            const editor = document.querySelector(
-              ".ck-editor__editable"
-            ).editor;
-            editor.model.change((writer) => {
-              const imageElement = writer.createElement("image", {
-                src: imageUrl,
-              });
-              editor.model.insertContent(imageElement);
-            });
-          }
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      }
-    });
-  };
-
-  let [create, setCreate] = useState([]);
 
   const attributedata = async () => {
     try {
@@ -596,8 +1154,136 @@ function ProductsEdit() {
   const [loading1, setLoading1] = useState(false);
   const [error1, setError1] = useState("");
 
+  useEffect(() => {
+    if (search1.trim() === "") {
+      setProducts1([]);
+      return;
+    }
+
+    const alldata1 = async () => {
+      try {
+        setLoading1(true);
+        const response = await axios.get(
+          `http://89.116.170.231:1600/productpagedata?search=${search}`
+        );
+        setProducts1(response.data);
+      } catch (error) {
+        setError1("Failed to fetch products");
+        console.error(error);
+      } finally {
+        setLoading1(false);
+      }
+    };
+    alldata1();
+  }, [search1]);
+
+  const [collections, setCollections] = useState([]);
+  const [selectedCollections, setSelectedCollections] = useState([]);
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/collectionsdata"
+        );
+        setCollections(response.data);
+      } catch (error) {
+        console.error("Error fetching collections:", error);
+      }
+    };
+
+    fetchCollections();
+  }, []);
+
+  const handleCheckboxChangeCollections = (collectionName) => {
+    if (selectedCollections.includes(collectionName)) {
+      setSelectedCollections((prevSelected) =>
+        prevSelected.filter((name) => name !== collectionName)
+      );
+    } else {
+      setSelectedCollections((prevSelected) => [
+        ...prevSelected,
+        collectionName,
+      ]);
+    }
+  };
+
+  const [labels, setLabels] = useState([]);
+  const [selectedLabels, setSelectedLabels] = useState([]);
+
+  useEffect(() => {
+    const labelsdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/productlabelsdata"
+        );
+        setLabels(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    labelsdata();
+  }, []);
+
+  const handleCheckboxChange = (labelName) => {
+    setSelectedLabels((prevSelected) =>
+      prevSelected.includes(labelName)
+        ? prevSelected.filter((label) => label !== labelName)
+        : [...prevSelected, labelName]
+    );
+  };
+
+  let [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    let brandsdata = async () => {
+      try {
+        let response = await axios.get("http://89.116.170.231:1600/brandsdata");
+        setBrands(response.data);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    brandsdata();
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit product "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Edit product | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -679,7 +1365,9 @@ function ProductsEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1882,7 +2570,7 @@ function ProductsEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2527,7 +3215,7 @@ function ProductsEdit() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/products">PRODUCTS</Link>
           </li>
 
@@ -2540,7 +3228,7 @@ function ProductsEdit() {
       <div className="container-fluid">
         <div className="container">
           <div className="row">
-            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 cart-cart">
               <svg
                 className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
                 xmlns="http://www.w3.org/2000/svg"
@@ -2566,7 +3254,7 @@ function ProductsEdit() {
       </div>
 
       <div className="container-fluid">
-        <div className="container">
+        <div className="container cart-cart">
           <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
             <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
               <form>
@@ -2591,7 +3279,6 @@ function ProductsEdit() {
                     <input
                       type="text"
                       className="form-control mt-2 py-4"
-                      placeholder="https://shofy.botble.com/products/"
                       name="permalink"
                       value={permalink}
                       onChange={onInputChange}
@@ -2599,9 +3286,129 @@ function ProductsEdit() {
                   </div>
                 </div>
 
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap overflow-hidden">
-                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
-                    <label htmlFor="">Description </label>
+                <div className="mb-3 text-start">
+                  <label htmlFor="descEditor" className="form-label fw-lighter">
+                    Description
+                  </label>
+                  <div className="d-flex gap-2 flex-row">
+                    <button
+                      className="btn bg-body border d-flex py-4 mb-2"
+                      onClick={showEditorClicked2}
+                    >
+                      Show/Hide Editor
+                    </button>
+                    <button
+                      className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
+                      onClick={mediaUpload}
+                    >
+                      <FontAwesomeIcon icon={faImage} className="me-2" />
+                      Add Media
+                    </button>
+                  </div>
+                  {showEdit2 ? (
+                    <div className="mb-3">
+                      <CKEditor
+                        editor={ClassicEditor}
+                        data={editorData2}
+                        onChange={handleEditorChange2}
+                        config={{
+                          toolbar: [
+                            "heading",
+                            "fontColor",
+                            "fontSize",
+                            "fontBackgroundColor",
+                            "fontFamily",
+                            "bold",
+                            "italic",
+                            "underline",
+                            "strikethrough",
+                            "link",
+                            "bulletedList",
+                            "numberedList",
+                            "alignment",
+                            "textDirection",
+                            "blockQuote",
+                            "indent",
+                            "outdent",
+                            "insertTable",
+                            "imageUpload",
+                            "mediaEmbed",
+                            "undo",
+                            "redo",
+                            "findAndReplace",
+                            "removeFormat",
+                            "source",
+                            "codeBlock",
+                            "fullscreen",
+                          ],
+                          heading: {
+                            options: [
+                              {
+                                model: "paragraph",
+                                title: "Paragraph",
+                                className: "ck-heading_paragraph",
+                              },
+                              {
+                                model: "heading1",
+                                view: "h1",
+                                title: "Heading 1",
+                                className: "ck-heading_heading1",
+                              },
+                              {
+                                model: "heading2",
+                                view: "h2",
+                                title: "Heading 2",
+                                className: "ck-heading_heading2",
+                              },
+                              {
+                                model: "heading3",
+                                view: "h3",
+                                title: "Heading 3",
+                                className: "ck-heading_heading3",
+                              },
+                              {
+                                model: "heading4",
+                                view: "h4",
+                                title: "Heading 4",
+                                className: "ck-heading_heading4",
+                              },
+                              {
+                                model: "heading5",
+                                view: "h5",
+                                title: "Heading 5",
+                                className: "ck-heading_heading5",
+                              },
+                              {
+                                model: "heading6",
+                                view: "h6",
+                                title: "Heading 6",
+                                className: "ck-heading_heading6",
+                              },
+                            ],
+                          },
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="mb-3">
+                      <textarea
+                        id="descEditor"
+                        className="form-control"
+                        placeholder="Short description"
+                        name="description"
+                        value={stripHtml(editorData2)}
+                        onChange={handleTextAreaChange2}
+                        style={{ height: "110px" }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
+                  <div className="d-flex flex-column mb-0 mt-lg-0 w-100 overflow-hidden">
+                    <label htmlFor="contentEditor" className="form-label">
+                      Content
+                    </label>
                     <div className="d-flex gap-2 flex-row mt-2">
                       <button
                         className="btn bg-body border d-flex py-4 mb-2"
@@ -2609,131 +3416,6 @@ function ProductsEdit() {
                       >
                         Show/Hide Editor
                       </button>
-                      <button
-                        className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                        onClick={mediaUpload}
-                      >
-                        <FontAwesomeIcon icon={faImage} className="me-2" />
-                        Add Media
-                      </button>
-                    </div>
-                    {showEdit1 ? (
-                      <div className="mb-0">
-                        <CKEditor
-                          editor={ClassicEditor}
-                          data={editorData1}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setEditorData1(data);
-                          }}
-                          config={{
-                            toolbar: [
-                              "heading",
-                              "fontColor",
-                              "fontSize",
-                              "fontBackgroundColor",
-                              "fontFamily",
-                              "bold",
-                              "italic",
-                              "underline",
-                              "strikethrough",
-                              "link",
-                              "bulletedList",
-                              "numberedList",
-                              "alignment",
-                              "textDirection",
-                              "blockQuote",
-                              "indent",
-                              "outdent",
-                              "insertTable",
-                              "imageUpload",
-                              "mediaEmbed",
-                              "undo",
-                              "redo",
-                              "findAndReplace",
-                              "removeFormat",
-                              "source",
-                              "codeBlock",
-                              "fullscreen",
-                            ],
-                            heading: {
-                              options: [
-                                {
-                                  model: "paragraph",
-                                  title: "Paragraph",
-                                  className: "ck-heading_paragraph",
-                                },
-                                {
-                                  model: "heading1",
-                                  view: "h1",
-                                  title: "Heading 1",
-                                  className: "ck-heading_heading1",
-                                },
-                                {
-                                  model: "heading2",
-                                  view: "h2",
-                                  title: "Heading 2",
-                                  className: "ck-heading_heading2",
-                                },
-                                {
-                                  model: "heading3",
-                                  view: "h3",
-                                  title: "Heading 3",
-                                  className: "ck-heading_heading3",
-                                },
-                                {
-                                  model: "heading4",
-                                  view: "h4",
-                                  title: "Heading 4",
-                                  className: "ck-heading_heading4",
-                                },
-                                {
-                                  model: "heading5",
-                                  view: "h5",
-                                  title: "Heading 5",
-                                  className: "ck-heading_heading5",
-                                },
-                                {
-                                  model: "heading6",
-                                  view: "h6",
-                                  title: "Heading 6",
-                                  className: "ck-heading_heading6",
-                                },
-                              ],
-                            },
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="mb-0">
-                        <textarea
-                          id="content1"
-                          className="form-control"
-                          placeholder="Short description"
-                          value={textAreaData1}
-                          onChange={handleTextAreaChange1}
-                          style={{
-                            height: "58px",
-                            zIndex: "1000",
-                            position: "relative",
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-0 mt-lg-0 w-100 overflow-hidden">
-                    <label htmlFor="">Content</label>
-                    <div className="d-flex gap-2 flex-row mt-2">
-                      <button
-                        className="btn bg-body border d-flex py-4 mb-2"
-                        onClick={showEditorClicked2}
-                      >
-                        Show/Hide Editor
-                      </button>
-
                       <button
                         className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
                         onClick={mediaUpload}
@@ -2750,15 +3432,12 @@ function ProductsEdit() {
                         UI Blocks
                       </button>
                     </div>
-                    {showEdit2 ? (
+                    {showEdit1 ? (
                       <div className="mb-3">
                         <CKEditor
                           editor={ClassicEditor}
-                          data={editorData2}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setEditorData2(data);
-                          }}
+                          data={editorData1}
+                          onChange={handleEditorChange1}
                           config={{
                             toolbar: [
                               "heading",
@@ -2840,11 +3519,11 @@ function ProductsEdit() {
                     ) : (
                       <div className="mb-3">
                         <textarea
-                          id="content2"
+                          id="contentEditor"
                           className="form-control"
                           placeholder="Short description"
-                          value={textAreaData2}
-                          onChange={handleTextAreaChange2}
+                          value={stripHtml(editorData1)}
+                          onChange={handleTextAreaChange1}
                           style={{
                             height: "58px",
                             zIndex: "1000",
@@ -2871,16 +3550,17 @@ function ProductsEdit() {
 
                 <div className="card tags-seo mb-3 mt-2">
                   <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-lg-center align-items-start">
-                    <div>
+                    <div className="w-100">
                       <h5 className="card-title1 mt-2 text-start">
-                        Specification Tables
+                        Specification Table
                       </h5>
+
                       <Link
                         to="#"
                         className="link-primary1 primary2 meta float-end"
                       >
                         <select
-                          className="w-100 rounded-1 py-2 border general-space"
+                          className="w-100 rounded-1 py-2 mt-2 mt-lg-0 border general-space"
                           style={{
                             zIndex: "1000",
                             cursor: "pointer",
@@ -2898,10 +3578,11 @@ function ProductsEdit() {
                           </option>
                         </select>
                       </Link>
-                      <hr className="mt-4" />
+
+                      <div className="border w-100 mt-4 mb-3"></div>
 
                       {selectedSpec === "None" && (
-                        <p className="card-text text-dark">
+                        <p className="card-text text-dark text-start">
                           Select the specification table to display in this
                           product
                         </p>
@@ -3079,7 +3760,10 @@ function ProductsEdit() {
                               <td>Display</td>
                               <td>Resolution</td>
                               <td>
-                                <select className="input-attribute py- form-select">
+                                <select
+                                  className="input-attribute py- form-select"
+                                  style={{ height: "49px" }}
+                                >
                                   <option value="">1920*1080</option>
                                   <option value="">2560*1440</option>
                                   <option value="">3840*2160</option>
@@ -3111,15 +3795,20 @@ function ProductsEdit() {
                         to="#"
                         className="link-primary1 primary2 meta float-end"
                       ></Link>
-                      <hr />
+                      <div className="border w-100 mt-3 mb-3"></div>
                       <div className="d-flex mb-4 text-start">
-                        <div className="me-2 flex-fill">
-                          <label htmlFor="coupon-type" className="form-label">
+                        <div className="me-2 flex-fill mt-3 mt-md-0 mt-lg-0 ms-0 ms-lg-0 sku-overview1">
+                          <label
+                            htmlFor="coupon-condition"
+                            className="form-label"
+                          >
                             SKU
                           </label>
                           <input
                             type="text"
-                            className="form-control w-aut py-4 sku-overview"
+                            className="form-control py-4 sku-overview1"
+                            id="discount"
+                            placeholder="$"
                             name="sku"
                             value={sku}
                             onChange={onInputChange}
@@ -3196,47 +3885,51 @@ function ProductsEdit() {
                         </div>
                       </div>
 
-                      <div className="d-flex1 ms-2 text-start">
-                        <input type="checkbox" className="form-check-input" />
-                        <label htmlFor="" className="ms-2">
-                          With storehouse management
-                        </label>
-                      </div>
-
                       <div className="border rounded bg-light mt-3 text-start">
-                        <label htmlFor="" className="ms-3 mt-3">
-                          Stock status
-                        </label>
-                        <div className="d-flex ms-3 mt-2 gap-2 mb-3 stock-radio flex-row">
-                          <input
-                            type="radio"
-                            className="form-check-input"
-                            name="stockstatus"
-                            value="In stock"
-                            onChange={onInputChange}
-                            checked={stockstatus === "In stock"}
-                          />
-                          <label htmlFor="">In stock</label>
-                          <input
-                            type="radio"
-                            className="ms-2 form-check-input"
-                            name="stockstatus"
-                            value="out_of_stock"
-                            onChange={onInputChange}
-                            checked={stockstatus === "out_of_stock"}
-                          />
-                          <label htmlFor="">Out of stock</label>
-                          <input
-                            type="radio"
-                            className="ms-2 form-check-input"
-                            name="stockstatus"
-                            value="backorder"
-                            onChange={onInputChange}
-                            checked={stockstatus === "backorder"}
-                          />
-                          <label htmlFor="" className="me-lg-0">
-                            on backorder
-                          </label>
+                        <label className="ms-3 mt-3">Stock status</label>
+                        <div className="d-flex ms-3 mt-2 gap-2 mb-3 stock-radio flex-row flex-wrap">
+                          <div className="d-flex align-items-center flex-row">
+                            <input
+                              id="in-stock"
+                              type="radio"
+                              className="form-check-input"
+                              name="stockstatus"
+                              value="In stock"
+                              onChange={onInputChange}
+                              checked={stockstatus === "In stock"}
+                            />
+                            <label htmlFor="in-stock" className="ms-1">
+                              In stock
+                            </label>
+                          </div>
+                          <div className="d-flex align-items-center flex-row">
+                            <input
+                              id="out-of-stock"
+                              type="radio"
+                              className="form-check-input ms-2"
+                              name="stockstatus"
+                              value="out_of_stock"
+                              onChange={onInputChange}
+                              checked={stockstatus === "out_of_stock"}
+                            />
+                            <label htmlFor="out-of-stock" className="ms-1">
+                              Out of stock
+                            </label>
+                          </div>
+                          <div className="d-flex align-items-center flex-row">
+                            <input
+                              id="backorder"
+                              type="radio"
+                              className="form-check-input ms-lg-2 ms-0"
+                              name="stockstatus"
+                              value="backorder"
+                              onChange={onInputChange}
+                              checked={stockstatus === "backorder"}
+                            />
+                            <label htmlFor="backorder" className="ms-1">
+                              on backorder
+                            </label>
+                          </div>
                         </div>
                       </div>
 
@@ -3325,350 +4018,703 @@ function ProductsEdit() {
                   </div>
                 </div>
 
-                <div className="border ms-1 rounded mt-3 mb-3 cart-cart bg-body d-flex flex-column">
+                <div className="border ms-1 rounded mt-3 mb-3 cart-cart bg-body d-flex flex-column w-100">
                   <div className="d-flex w-100">
-                    <label
-                      htmlFor=""
-                      className="fw-medium cart-cart ms-4 mt-lg-4 mt-4 flex-grow-1 attribute-produc"
-                    >
+                    <label className="fw-medium cart-cart ms-4 mt-lg-3 mb-3 mt-4 flex-grow-1 attribute-produc">
                       Attributes
                     </label>
-
-                    <button
-                      className="btn btn-success ms-auto d-flex me-2 mt-0 mt-lg-4 new-attribute new-attribute2 bg-body border text-dark py-4"
-                      onClick={attributeNew}
-                      style={{ zIndex: "100" }}
-                    >
-                      {news ? "Cancel" : "Add new attributes"}
-                    </button>
                   </div>
 
-                  <hr className="custom-hr mt-0" />
+                  <div className="border w-100 mt-3 mt-lg-0 mb-1"></div>
 
-                  <div className="mt-1 mb-3 me-4 ms-3 ms-lg-2">
+                  <div className="mt-1 mb-3 me-4 ms-3 ms-lg-2 text-start">
                     Adding new attributes helps the product to have many
                     options, such as size or color.
                   </div>
 
-                  {news && (
-                    <>
-                      <div className="border bg-light mb-2 attribute-select rounded">
-                        {more.map((attribute, index) => (
-                          <div className="d-flex w-100 mb-3 mt-3" key={index}>
-                            <div className="d-flex flex-column w-100 me-3">
-                              <label htmlFor="" className="ms-2 mt-2">
-                                Attribute Name
-                              </label>
-                              {Array.isArray(create) && create.length > 0 ? (
-                                create.slice(0, 1).map((data, key) => (
-                                  <div key={key}>
-                                    <select
-                                      name="attribute"
-                                      className="form-select w-75 mt-2 ms-2 mb-2 h-auto"
-                                    >
-                                      <option value="">Select Attribute</option>
-                                      {create.length > 0 ? (
-                                        create.map((item) => {
-                                          console.log("Item:", item);
-                                          console.log(
-                                            "Item title:",
-                                            item.title
-                                          );
-                                          return (
-                                            <option
-                                              key={item.id}
-                                              value={item.title}
-                                            >
-                                              {item.title}
-                                            </option>
-                                          );
-                                        })
-                                      ) : (
-                                        <option disabled></option>
-                                      )}
-                                    </select>
-                                  </div>
-                                ))
-                              ) : (
-                                <p></p>
-                              )}
-                            </div>
+                  <div className="border bg-light mb-2 ms-2 me-2 rounded product-att">
+                    {more.map((attribute, index) => {
+                      const selectedAttr = create.find(
+                        (attr) => attr.id === Number(attribute.attributeId)
+                      );
+                      const selectedAttributeIds = more.map(
+                        (item) => item.attributeId
+                      );
+                      const selectedValuesMap = {};
+                      more.forEach((item) => {
+                        if (item.attributeId) {
+                          if (!selectedValuesMap[item.attributeId]) {
+                            selectedValuesMap[item.attributeId] = [];
+                          }
+                          if (item.attributeValue) {
+                            selectedValuesMap[item.attributeId].push(
+                              item.attributeValue
+                            );
+                          }
+                        }
+                      });
 
-                            <div className="d-flex flex-column ms-2 ms-lg-0 w-100">
-                              <label htmlFor="" className="ms-0 mt-2">
-                                Value
-                              </label>
-                              <select
-                                name=""
-                                className="form-select w-75 ms-0 mt-2 mb-2 h-auto"
-                              >
-                                <option value="">Select Attribute</option>
-                                <option value="">S</option>
-                                <option value="">M</option>
-                                <option value="">L</option>
-                                <option value="">Xl</option>
-                                <option value="">XXL</option>
-                              </select>
+                      return (
+                        <div className="attribute-row mb-3 mt-3" key={index}>
+                          <div className="attribute-name">
+                            <label className="ms-2 mt-2 text-start">
+                              Attribute Name
+                            </label>
+                            <select
+                              className="form-select product-att2 mt-2 ms-2 mb-0"
+                              style={{ height: "45px" }}
+                              value={attribute.attributeId}
+                              onChange={(e) => {
+                                const newMore = [...more];
+                                newMore[index].attributeId = e.target.value;
+                                newMore[index].attributeValue = "";
+                                setMore(newMore);
+                              }}
+                            >
+                              <option value="">Select attribute</option>
+                              {create.map((item) => (
+                                <option
+                                  key={item.id}
+                                  value={item.id}
+                                  disabled={
+                                    selectedAttributeIds.includes(
+                                      String(item.id)
+                                    ) &&
+                                    String(item.id) !==
+                                      String(attribute.attributeId)
+                                  }
+                                >
+                                  {item.title}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
 
-                              <div
-                                className="ms-auto me-5 mt-4 pt-3"
-                                style={{ position: "absolute", left: "76rem" }}
-                              >
-                                <FontAwesomeIcon
-                                  icon={faTrashCan}
-                                  className="bg-danger px-2 py-2 rounded text-light"
-                                  onClick={() => deleteItem(index)}
-                                  style={{
-                                    cursor: "pointer",
-                                    position: "absolute",
-                                    top: "15px",
-                                    right: "-16px",
-                                    zIndex: "100",
-                                  }}
-                                />
-                              </div>
+                          <div className="attribute-value">
+                            <label className="ms-0 ms-lg-2 ms-2 mt-0">
+                              Value
+                            </label>
+                            <select
+                              className="form-select product-att2 mt-2 ms-2 mb-0"
+                              style={{ height: "45px" }}
+                              value={attribute.attributeValue}
+                              onChange={(e) => {
+                                const newMore = [...more];
+                                newMore[index].attributeValue = e.target.value;
+                                setMore(newMore);
+                              }}
+                            >
+                              <option value="">Select value</option>
+                              {selectedAttr?.options.map((opt, i) => (
+                                <option
+                                  key={i}
+                                  value={opt.title}
+                                  disabled={
+                                    selectedValuesMap[
+                                      attribute.attributeId
+                                    ]?.includes(opt.title) &&
+                                    attribute.attributeValue !== opt.title
+                                  }
+                                >
+                                  {opt.title}
+                                </option>
+                              ))}
+                            </select>
+
+                            <div className="attribute-remove">
+                              <FontAwesomeIcon
+                                icon={faTrashCan}
+                                className="bg-danger px-2 py-2 rounded text-light"
+                                onClick={() => deleteItem(index)}
+                                style={{ cursor: "pointer" }}
+                              />
                             </div>
                           </div>
-                        ))}
-
-                        <button
-                          className="btn btn-transparent border mb-2 d-flex py-4 ms-2 mt-2 bg-body mb-3"
-                          style={{ maxWidth: "200px" }}
-                          onClick={moreAttribute}
-                        >
-                          Add more attribute
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-
-                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3">
-                  <div className="d-flex w-100">
-                    <label
-                      htmlFor=""
-                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-                    >
-                      Product options
-                    </label>
-                  </div>
-                  <hr className="custom-hr mt-0" />
-                  {options.map((option, index) => (
-                    <div
-                      key={option.id}
-                      className="border bg-light option-product mb-2 d-flex rounded flex-wrap"
-                    >
-                      <div className="d-flex flex-column py-2 ms-2 mt-1 pb-3 ms-3 w-auto product-opts w-auto">
-                        <label htmlFor=""> #{index + 1} Option</label>
-                        <input
-                          type="text"
-                          className="form-control py-4 mt-2"
-                          placeholder="name"
-                          value={option.name}
-                          onChange={(e) =>
-                            handleInputChanges(
-                              option.id,
-                              "name",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </div>
-
-                      <div className="d-flex flex-column py-2 ms-3 mt-0 mt-lg-2">
-                        <label htmlFor="">Type</label>
-                        <select
-                          className="form-select py-4 mt-2 mt-lg-1 product-opt1"
-                          value={option.type}
-                          onChange={(e) =>
-                            handleInputChanges(
-                              option.id,
-                              "type",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value="">Please select option</option>
-                          <option value="Text" className="fw-bold">
-                            Text
-                          </option>
-                          <option value="Field">Field</option>
-                          <option value="Select" className="fw-bold">
-                            Select
-                          </option>
-                          <option value="Dropdown">Dropdown</option>
-                          <option value="Checkbox">Checkbox</option>
-                          <option value="RadioButton">RadioButton</option>
-                        </select>
-                      </div>
-
-                      <div className="d-flex flex-row mt-md-5 mt-sm-5 mt-lg-0">
-                        <div className="d-flex flex-row py-2 ms-3 gap-2 mt-0 mt-lg-5 ms-lg-2">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            checked={option.required}
-                            onChange={(e) =>
-                              handleInputChanges(
-                                option.id,
-                                "required",
-                                e.target.checked
-                              )
-                            }
-                          />
-                          <label htmlFor="">Is required?</label>
                         </div>
-
-                        <div className="d-flex flex-row ms-lg-5 py-2 ms-2 mt-0 gap-2 mt-0 mt-lg-5 ms-0 ps-2">
-                          <button
-                            className="btn btn-danger d-flex p-2"
-                            onClick={() => deleteOptions(option.id)}
-                          >
-                            <FontAwesomeIcon icon={faTrashCan} />
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="w-100 ms-3 me-3 mt-2">
-                        <table className="table table-striped table-bordered table-lable1">
-                          <thead className="bg-body">
-                            <tr>
-                              <th className="fw-light text-dark ps-3 py-2">
-                                #
-                              </th>
-                              <th className="fw-light text-dark ps-2">LABEL</th>
-                              <th className="fw-light text-dark ps-2">PRICE</th>
-                              <th className="fw-light text-dark">PRICE TYPE</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {rows.map((row) => (
-                              <tr key={row.id}>
-                                <td>
-                                  <FontAwesomeIcon icon={faArrowUp} />
-                                  <FontAwesomeIcon icon={faArrowDown} />
-                                </td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="form-control py-4"
-                                    placeholder="Please fill label"
-                                    value={row.label}
-                                    onChange={(e) =>
-                                      handleChanges(
-                                        row.id,
-                                        "label",
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                </td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    className="form-control py-4"
-                                    placeholder="Please fill affect price"
-                                    value={row.price}
-                                    onChange={(e) =>
-                                      handleChanges(
-                                        row.id,
-                                        "price",
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                </td>
-                                <td>
-                                  <select
-                                    className="form-select"
-                                    style={{
-                                      cursor: "pointer",
-                                      zIndex: 1000,
-                                      position: "relative",
-                                    }}
-                                    value={row.priceType}
-                                    onChange={(e) =>
-                                      handleChanges(
-                                        row.id,
-                                        "priceType",
-                                        e.target.value
-                                      )
-                                    }
-                                  >
-                                    <option value="fixed">Fixed</option>
-                                    <option value="percent">Percent</option>
-                                  </select>
-                                </td>
-
-                                <td>
-                                  <button
-                                    className="btn bg-body border px-2 py-3 d-flex p-2"
-                                    style={{
-                                      cursor: "pointer",
-                                      zIndex: 1000,
-                                      position: "relative",
-                                    }}
-                                    onClick={() => handleDelete(row.id)}
-                                  >
-                                    <FontAwesomeIcon icon={faTrashCan} />
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                        <button
-                          className="btn bg-body border d-flex mb-2 py-4"
-                          onClick={handleAddRow}
-                        >
-                          Add new row
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-
-                  <button
-                    className="btn bg-body border py-4 d-flex add-option ms-3"
-                    onClick={addOptions}
-                  >
-                    Add new option
-                  </button>
-
-                  <div className="d-flex flex-row flex-md-row align-items-start mb-2 ms-md-2 global-select">
-                    <select
-                      className="form-select px-4 globally-add1"
-                      style={{ zIndex: "100" }}
-                    >
-                      <option value="">Select Global Option</option>
-                      <option value="">Warranty</option>
-                      <option value="">RAM</option>
-                      <option value="">CPU</option>
-                      <option value="">HDD</option>
-                    </select>
+                      );
+                    })}
 
                     <button
-                      className="btn bg-body border py-4 ms-md-2 d-flex globally-add"
-                      style={{ whiteSpace: "nowrap", zIndex: "100" }}
+                      className="btn btn-transparent border mb-2 d-flex py-4 ms-2 mt-0 bg-body mb-3"
+                      style={{ maxWidth: "200px" }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (more.length < create.length) {
+                          setMore([
+                            ...more,
+                            { attributeId: "", attributeValue: "" },
+                          ]);
+                        }
+                      }}
                     >
-                      Add Global Option
+                      Add more attribute
                     </button>
                   </div>
                 </div>
 
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body text-start attribute-product d-flex flex-column mb-3">
+                  <div className="d-flex w-100">
+                    <label className="fw-medium cart-cart ms-3 mt-3 mb-3 flex-grow-1">
+                      Product options
+                    </label>
+                  </div>
+                  <div className="border w-100 mt-0 mb-1" />
+
+                  {options.map((option, index) => (
+                    <div
+                      className="index-clicked mb-1 pb-3 ms-1 border bg-light p-2 rounded"
+                      key={option.id}
+                    >
+                      <span className="fw-bold">#{index + 1}</span>
+
+                      <div className="row gx-2 gy-0 align-items-center mt-2 d-flex flex-row flex-lg-nowrap flex-md-nowrap flex-wrap">
+                        <div className="col-12 col-lg-3 text-start index-clicked1">
+                          <label
+                            htmlFor={`idx-name-${option.id}`}
+                            className="form-label"
+                          >
+                            Name
+                          </label>
+                          <input
+                            id={`idx-name-${option.id}`}
+                            type="text"
+                            className="form-control py-4"
+                            placeholder="Name"
+                            value={option.name}
+                            onChange={(e) =>
+                              handleInputChanges(
+                                option.id,
+                                "name",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+
+                        <div className="col-12 col-lg-3 text-start index-clicked1">
+                          <label
+                            htmlFor={`idx-type-${option.id}`}
+                            className="form-label"
+                          >
+                            Type
+                          </label>
+                          <select
+                            id={`idx-type-${option.id}`}
+                            className="form-select w-100"
+                            style={{ height: "49px" }}
+                            value={option.type}
+                            onChange={(e) =>
+                              handleInputChanges(
+                                option.id,
+                                "type",
+                                e.target.value
+                              )
+                            }
+                          >
+                            <option value="">Please select option</option>
+                            <option value="Text" disabled>
+                              Text
+                            </option>
+                            <option value="Field">Field</option>
+                            <option value="Select" disabled>
+                              Select
+                            </option>
+                            <option value="Dropdown">Dropdown</option>
+                            <option value="Checkbox">Checkbox</option>
+                            <option value="RadioButton">RadioButton</option>
+                          </select>
+                        </div>
+
+                        <div className="row d-flex flex-row flex-nowrap justify-content-start align-items-start">
+                          <div className="col-6 col-lg-3 d-flex mt-lg-4 mt-0">
+                            <div className="form-check">
+                              <input
+                                id={`idx-required-${option.id}`}
+                                type="checkbox"
+                                className="form-check-input"
+                                checked={option.required}
+                                onChange={(e) =>
+                                  handleInputChanges(
+                                    option.id,
+                                    "required",
+                                    e.target.checked
+                                  )
+                                }
+                              />
+                              <label
+                                htmlFor={`idx-required-${option.id}`}
+                                className="form-check-label ms-1"
+                              >
+                                Is required?
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="col-6 col-lg-3 d-flex justify-content-lg-start mt-lg-4 px-0 gap-0 justify-content-start ms-lg-0 trash-can">
+                            <button
+                              className="btn btn-danger trash-delete"
+                              onClick={() => deleteOptions(option.id)}
+                            >
+                              <FontAwesomeIcon icon={faTrashCan} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="w-100 me-3 mt-2">
+                        {extendedTypes.includes(option.type) ? (
+                          <>
+                            <table className="table table-striped table-bordered table-lable1">
+                              <thead className="bg-body">
+                                <tr>
+                                  <th className="fw-light text-dark ps-3 py-2">
+                                    #
+                                  </th>
+                                  <th className="fw-light text-dark ps-2">
+                                    LABEL
+                                  </th>
+                                  <th className="fw-light text-dark ps-2">
+                                    PRICE
+                                  </th>
+                                  <th className="fw-light text-dark">
+                                    PRICE TYPE
+                                  </th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {option.rows.map((row) => (
+                                  <tr key={row.id}>
+                                    <td className="d-flex gap-1 py-4">
+                                      <FontAwesomeIcon icon={faArrowUp} />
+                                      <FontAwesomeIcon icon={faArrowDown} />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        className="form-control py-4"
+                                        placeholder="Please fill label"
+                                        value={row.label}
+                                        onChange={(e) =>
+                                          handleChanges(
+                                            option.id,
+                                            row.id,
+                                            "label",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </td>
+                                    <td>
+                                      <input
+                                        type="number"
+                                        className="form-control py-4"
+                                        placeholder="Please fill affect price"
+                                        value={row.price}
+                                        onChange={(e) =>
+                                          handleChanges(
+                                            option.id,
+                                            row.id,
+                                            "price",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </td>
+                                    <td>
+                                      <select
+                                        className="form-select"
+                                        style={{
+                                          height: "47px",
+                                          cursor: "pointer",
+                                          zIndex: 1000,
+                                          position: "relative",
+                                        }}
+                                        value={row.priceType}
+                                        onChange={(e) =>
+                                          handleChanges(
+                                            option.id,
+                                            row.id,
+                                            "priceType",
+                                            e.target.value
+                                          )
+                                        }
+                                      >
+                                        <option value="fixed">Fixed</option>
+                                        <option value="percent">Percent</option>
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <button
+                                        className="btn bg-body border px-2 py-3 d-flex p-2"
+                                        style={{
+                                          cursor: "pointer",
+                                          zIndex: 1000,
+                                          position: "relative",
+                                        }}
+                                        onClick={() =>
+                                          handleDeleteRow(option.id, row.id)
+                                        }
+                                      >
+                                        <FontAwesomeIcon icon={faTrashCan} />
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            <button
+                              className="mb-3 ms-1 mt-3 py-3 btn btn-secondary d-flex"
+                              onClick={(e) => handleAddRow(option.id, e)}
+                            >
+                              Add new row
+                            </button>
+                          </>
+                        ) : option.type === "Field" ||
+                          option.type === "Text" ? (
+                          <>
+                            <table className="table table-striped table-bordered table-lable1 w-100">
+                              <thead className="bg-body">
+                                <tr>
+                                  <th className="fw-light text-dark ps-2">
+                                    PRICE
+                                  </th>
+                                  <th className="fw-light text-dark">
+                                    PRICE TYPE
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {option.priceRows.map((row) => (
+                                  <tr key={row.id}>
+                                    <td>
+                                      <input
+                                        type="text"
+                                        className="form-control py-4 cart-cart"
+                                        placeholder="Please fill affect price"
+                                        value={row.price}
+                                        onChange={(e) =>
+                                          handlePriceChange(
+                                            option.id,
+                                            row.id,
+                                            "price",
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+                                    </td>
+                                    <td>
+                                      <select
+                                        className="form-select"
+                                        style={{
+                                          height: "50px",
+                                          cursor: "pointer",
+                                          zIndex: 1000,
+                                          position: "relative",
+                                        }}
+                                        value={row.priceType}
+                                        onChange={(e) =>
+                                          handlePriceChange(
+                                            option.id,
+                                            row.id,
+                                            "priceType",
+                                            e.target.value
+                                          )
+                                        }
+                                      >
+                                        <option value="fixed">Fixed</option>
+                                        <option value="percent">Percent</option>
+                                      </select>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                            <button
+                              className="mb-3 ms-1 mt-3 py-3 btn btn-secondary d-flex cart-cart"
+                              onClick={(e) => handleAddPrice(option.id, e)}
+                            >
+                              Add new row
+                            </button>
+                          </>
+                        ) : (
+                          <p className="ms-3 text-start"></p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {click && globalSelectedData && (
+                    <div className="index-clicked mb-1 pb-3 ms-1 border bg-light p-2 rounded">
+                      <span className="fw-bold">
+                        #{globalSelectedData.name}
+                      </span>
+
+                      <div className="row gx-2 align-items-center mt-2 d-flex flex-row flex-lg-nowrap flex-md-nowrap">
+                        <div className="col-12 col-lg-3 index-clicked1 text-start">
+                          <label htmlFor="idx-name" className="form-label">
+                            Name
+                          </label>
+                          <input
+                            id="idx-name"
+                            type="text"
+                            className="form-control py-4"
+                            defaultValue={globalSelectedData.name}
+                          />
+                        </div>
+
+                        <div className="col-12 col-lg-3 mt-3 mt-lg-0 index-clicked1 text-start">
+                          <label htmlFor="idx-type" className="form-label">
+                            Type
+                          </label>
+                          <select
+                            id="idx-type"
+                            className="form-select w-100"
+                            style={{ height: "49px" }}
+                            defaultValue={globalSelectedData.status}
+                            onChange={(e) =>
+                              setGlobalSelectedData({
+                                ...globalSelectedData,
+                                status: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="">Please select option</option>
+                            <option value="Text" disabled>
+                              Text
+                            </option>
+                            <option value="Field">Field</option>
+                            <option value="Select" disabled>
+                              Select
+                            </option>
+                            <option value="Dropdown">Dropdown</option>
+                            <option value="Checkbox">Checkbox</option>
+                            <option value="RadioButton">RadioButton</option>
+                          </select>
+                        </div>
+
+                        <div className="row d-flex flex-row flex-nowrap">
+                          <div className="col-6 col-lg-3 d-flex mt-lg-4 mt-0">
+                            <div className="form-check">
+                              <input
+                                id="idx-required"
+                                type="checkbox"
+                                className="form-check-input"
+                              />
+                              <label
+                                htmlFor="idx-required"
+                                className="form-check-label ms-1"
+                              >
+                                Is required?
+                              </label>
+                            </div>
+                          </div>
+
+                          <div className="col-6 col-lg-3 d-flex justify-content-lg-start mt-lg-4 px-0 gap-0 justify-content-start ms-2 ms-lg-0 trash-can">
+                            <button
+                              className="btn btn-danger trash-delete"
+                              onClick={trashDelete}
+                            >
+                              <FontAwesomeIcon icon={faTrashCan} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {["Dropdown", "Checkbox", "RadioButton"].includes(
+                        globalSelectedData.status
+                      ) && (
+                        <>
+                          <table className="table table-striped table-bordered table-lable1 mt-3">
+                            <thead className="bg-body">
+                              <tr>
+                                <th className="fw-light text-dark ps-3 py-2">
+                                  #
+                                </th>
+                                <th className="fw-light text-dark ps-2">
+                                  LABEL
+                                </th>
+                                <th className="fw-light text-dark ps-2">
+                                  PRICE
+                                </th>
+                                <th className="fw-light text-dark">
+                                  PRICE TYPE
+                                </th>
+                                <th></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {globalSelectedData.options.map((opt, index) => (
+                                <tr key={opt.id}>
+                                  <td className="d-flex gap-1 py-4">
+                                    <FontAwesomeIcon icon={faArrowUp} />
+                                    <FontAwesomeIcon icon={faArrowDown} />
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="text"
+                                      className="form-control py-4"
+                                      defaultValue={opt.label}
+                                    />
+                                  </td>
+                                  <td>
+                                    <input
+                                      type="number"
+                                      className="form-control py-4"
+                                      value={opt.price}
+                                      onChange={(e) =>
+                                        handlePriceChange(e, index)
+                                      }
+                                    />
+                                  </td>
+                                  <td>
+                                    <select
+                                      className="form-select"
+                                      style={{
+                                        height: "47px",
+                                        cursor: "pointer",
+                                        zIndex: 1000,
+                                        position: "relative",
+                                      }}
+                                      value={opt.priceType}
+                                      onChange={(e) =>
+                                        handlePriceTypeChange(e, index)
+                                      }
+                                    >
+                                      <option value="fixed">Fixed</option>
+                                      <option value="percent">Percent</option>
+                                    </select>
+                                  </td>
+                                  <td>
+                                    <button
+                                      className="btn bg-body border px-2 py-3 d-flex p-2"
+                                      onClick={() => deleteRow(opt.id)}
+                                      style={{
+                                        cursor: "pointer",
+                                        zIndex: 1000,
+                                        position: "relative",
+                                      }}
+                                    >
+                                      <FontAwesomeIcon icon={faTrashCan} />
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+
+                          <button
+                            className="btn btn-success d-flex"
+                            onClick={addNewRow}
+                          >
+                            Add new row
+                          </button>
+                        </>
+                      )}
+
+                      {globalSelectedData.status === "Field" && (
+                        <>
+                          <table className="table table-striped table-bordered table-lable1 w-100 mt-3">
+                            <thead className="bg-body">
+                              <tr>
+                                <th className="fw-light text-dark ps-2">
+                                  PRICE
+                                </th>
+                                <th className="fw-light text-dark">
+                                  PRICE TYPE
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {globalSelectedData.options.map((opt, index) => (
+                                <tr key={opt.id}>
+                                  <td>
+                                    <input
+                                      type="number"
+                                      className="form-control py-4 cart-cart"
+                                      placeholder="Please fill affect price"
+                                    />
+                                  </td>
+                                  <td>
+                                    <select
+                                      className="form-select"
+                                      style={{
+                                        height: "47px",
+                                        cursor: "pointer",
+                                        zIndex: 1000,
+                                        position: "relative",
+                                      }}
+                                    >
+                                      <option value="fixed">Fixed</option>
+                                      <option value="percent">Percent</option>
+                                    </select>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                          <button
+                            className="btn btn-success d-flex cart-cart"
+                            onClick={addNewRowClicked}
+                          >
+                            Add New Row
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="d-flex flex-row gap-2 justify-content-start align-items-start w-100 flex-wrap">
+                    <button
+                      className="btn bg-body border py-4 d-flex add-optionx ms-2 ms-lg-2 ms-md-3"
+                      onClick={addOptions}
+                    >
+                      Add new option
+                    </button>
+
+                    <div className="d-flex flex-row flex-md-row align-items-start mb-2 ms-2 ms-md-2">
+                      <select
+                        className="form-select globally-add1x"
+                        style={{
+                          zIndex: "100",
+                          height: "50px",
+                          width: "210px",
+                        }}
+                        onChange={(e) => setSelectedOption(e.target.value)}
+                      >
+                        <option value="">Select Global Option</option>
+                        {Array.isArray(global) &&
+                          global.map((globalItem) => (
+                            <option key={globalItem.id} value={globalItem.name}>
+                              {globalItem.name}
+                            </option>
+                          ))}
+                      </select>
+
+                      <button
+                        className="btn bg-body border py-4 ms-md-2 ms-2 d-flex globally-addx"
+                        style={{ whiteSpace: "nowrap", zIndex: "100" }}
+                        onClick={globalOptionsClicked}
+                      >
+                        Add Global Option
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3">
                   <div className="d-flex w-100">
                     <label
                       htmlFor=""
-                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                      className="fw-medium cart-cart ms-2 mt-3 mb-3 flex-grow-1 text-start"
                     >
                       Related Products
                     </label>
                   </div>
-                  <hr className="custom-hr mt-0" />
+                  <div className="border w-100 mt-1 mb-2"></div>
                   <input
                     type="text"
-                    className="form-control mb-3 py-4 me-auto ms-3 search-create"
+                    className="form-control mb-0 py-4 me-3 ms-3 mt-2 search-create"
                     placeholder="Search products"
                     name="search"
                     value={search}
@@ -3679,7 +4725,7 @@ function ProductsEdit() {
 
                   <div className="product-list">
                     {products.length > 0 ? (
-                      products.map((product) => {
+                      products.slice(0, 5).map((product) => {
                         const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
                         return (
                           <div
@@ -3699,10 +4745,10 @@ function ProductsEdit() {
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
-                              <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
+                              <h5 className="product-name text-start d-flex flex-row mt-0 ms-2 pt-2">
                                 {product.name}
                               </h5>
-                              <p className="product-price mt-4 ms-2 pt-2">
+                              <p className="product-price mt-4 ms-2 pt-2 sales-font text-end me-2">
                                 {product.price}
                               </p>
                             </div>
@@ -3715,19 +4761,19 @@ function ProductsEdit() {
                   </div>
                 </div>
 
-                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3">
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column mb-3 text-start">
                   <div className="d-flex w-100">
                     <label
                       htmlFor=""
-                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
+                      className="fw-medium cart-cart ms-2 mt-3 mb-3 flex-grow-1"
                     >
                       Cross-selling products
                     </label>
                   </div>
-                  <hr className="custom-hr mt-0" />
+                  <div className="border w-100 mt-0 mb-3"></div>
                   <input
                     type="text"
-                    className="form-control mb-3 py-4 me-auto ms-3 search-create"
+                    className="form-control mb-0 py-4 me-3 ms-3 search-create"
                     placeholder="Search products"
                     name="search1"
                     value={search1}
@@ -3738,7 +4784,7 @@ function ProductsEdit() {
 
                   <div className="product-list">
                     {products1.length > 0 ? (
-                      products1.map((product2) => {
+                      products1.slice(0, 5).map((product2) => {
                         const imageUrl = `http://89.116.170.231:1600/src/image/${product2.image}`;
                         return (
                           <div
@@ -3758,10 +4804,10 @@ function ProductsEdit() {
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
-                              <h5 className="product-name d-flex flex-row mt-4 ms-2 pt-2">
+                              <h5 className="product-name text-start d-flex flex-row mt-1 ms-2 pt-2">
                                 {product2.name}
                               </h5>
-                              <p className="product-price mt-4 ms-2 pt-2">
+                              <p className="product-price mt-4 ms-2 pt-2 text-end me-2 sales-font">
                                 {product2.price}
                               </p>
                             </div>
@@ -3784,7 +4830,7 @@ function ProductsEdit() {
                   </span>
                 </div>
 
-                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column  mb-3">
+                <div className="border ms-1 rounded mt-3 cart-cart bg-body attribute-product d-flex flex-column  mb-3 text-start">
                   <div className="d-flex w-100">
                     <label
                       htmlFor=""
@@ -3793,7 +4839,7 @@ function ProductsEdit() {
                       Product FAQs
                     </label>
                   </div>
-                  <hr className="custom-hr mt-0" />
+                  <div className="border w-100 mt-0 mb-3"></div>
 
                   {addproducts.map((product, index) => (
                     <div
@@ -3833,16 +4879,65 @@ function ProductsEdit() {
                   ))}
 
                   <button
-                    className="me-auto ms-4 mb-3 btn bg-light border d-flex py-4 px-3 z-3"
+                    className="me-auto ms-4 mb-3 btn bg-light border d-flex py-3 px-3 z-3"
                     onClick={addProduct}
                   >
                     Add new
                   </button>
+
+                  <div className="d-flex w-100 flex-column">
+                    <span className="ms-4">
+                      or{" "}
+                      <span
+                        className="text-success select-faqs"
+                        onClick={faqsClicked}
+                      >
+                        Select from existing FAQs
+                      </span>
+                    </span>
+                    <div
+                      ref={containerRef}
+                      className="ms-4 mt-2 mb-3 position-relative w-100"
+                    >
+                      <div
+                        className="form-select form-faqs1 overflow-y-hidde h-auto"
+                        style={{ cursor: "pointer", padding: "8px" }}
+                        onClick={() => setIsOpens((open) => !open)}
+                      >
+                        {headerText}
+                      </div>
+
+                      {isOpens && (
+                        <div
+                          className="border bg-white p-2 position-absolute form-faqs1"
+                          style={{
+                            maxHeight: 200,
+                            overflowY: "auto",
+                            zIndex: 1000,
+                          }}
+                        >
+                          {pages.map((p) => (
+                            <label key={p.id} className="d-block mb-1">
+                              <input
+                                type="checkbox"
+                                name="faqs"
+                                value={p.id}
+                                checked={selectedIds.includes(p.id)}
+                                onChange={() => toggle(p.id)}
+                                className="me-2 form-check-input"
+                              />
+                              {p.question}
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="card mt-3 ms- create-tags1 create-display">
+                <div className="card mt-3 seo-metas1 text-start">
                   <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-                    <div>
+                    <div className="text-start">
                       <h5 className="card-title1">Search Engine Optimize</h5>
                       <Link
                         to="#"
@@ -3852,18 +4947,19 @@ function ProductsEdit() {
                       >
                         Edit SEO meta
                       </Link>
-                      <hr />
+                      <div className="border w-100 mb-2"></div>
                       <p className="card-text text-dark">
                         Setup meta title & description to make your site easy to
                         discovered on search engines such as Google
-                        <hr />
+                        <div className="border w-100 mt-2"></div>
                         {seo && (
                           <>
-                            <div>
+                            <div className="mt-3">
                               <label htmlFor="">SEO Title</label>
                               <input
                                 type="text"
                                 className="form-control mt-2 py-4 seo-edit"
+                                placeholder="SEO Title"
                               />
                             </div>
 
@@ -3873,7 +4969,7 @@ function ProductsEdit() {
                               </label>
                               <textarea
                                 id="seo-description"
-                                className="form-control mt-2 py-4 seo-edit"
+                                className="form-control mt-2 seo-edit"
                                 placeholder="SEO Description"
                                 style={{
                                   height: "100px",
@@ -3890,38 +4986,66 @@ function ProductsEdit() {
                               </label>
                               <div className="image-card border-0 ps-1">
                                 <div
-                                  className="image-placeholder"
-                                  onClick={() =>
-                                    document.getElementById("fileInput").click()
-                                  }
+                                  className="image-placeholder position-relative"
+                                  onClick={() => {
+                                    if (!seoImageUrl) {
+                                      document
+                                        .getElementById("fileInputSeo")
+                                        .click();
+                                    }
+                                  }}
                                 >
-                                  {imageUrl ? (
+                                  {seoImageUrl ? (
                                     <img
                                       alt="Uploaded preview"
-                                      src={imageUrl}
+                                      src={seoImageUrl}
                                       width="100"
                                       height="100"
+                                      onClick={() =>
+                                        document
+                                          .getElementById("fileInputSeo")
+                                          .click()
+                                      }
                                     />
                                   ) : (
                                     <img
                                       src={Cutting}
                                       alt="RxLYTE"
                                       className="w-75 h-75 img-fluid"
+                                      onClick={() =>
+                                        document
+                                          .getElementById("fileInputSeo")
+                                          .click()
+                                      }
+                                    />
+                                  )}
+                                  {seoImageUrl && (
+                                    <FontAwesomeIcon
+                                      icon={faXmark}
+                                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        console.log("Close icon clicked");
+                                        handleSeoCloseClick(e);
+                                      }}
                                     />
                                   )}
                                 </div>
+
                                 <input
-                                  id="fileInput"
+                                  id="fileInputSeo"
                                   type="file"
-                                  name="file"
+                                  name="seoFile"
                                   style={{ display: "none" }}
-                                  onChange={handleFileChange}
+                                  onChange={handleSeoFileChange}
                                 />
                                 <Link
-                                  className="ms-5"
+                                  className="ms-5 text-decoration-none choose-url"
                                   to="#"
                                   onClick={() =>
-                                    document.getElementById("fileInput").click()
+                                    document
+                                      .getElementById("fileInputSeo")
+                                      .click()
                                   }
                                 >
                                   Choose image <br />
@@ -3942,9 +5066,9 @@ function ProductsEdit() {
                                 className="form-check-input"
                                 type="radio"
                                 name="check"
-                                checked
+                                id="Index"
                               />
-                              <label htmlFor="" className="ms-2">
+                              <label htmlFor="Index" className="ms-2">
                                 Index
                               </label>
 
@@ -3953,8 +5077,9 @@ function ProductsEdit() {
                                 type="radio"
                                 value="index"
                                 name="check"
+                                id="No index"
                               />
-                              <label htmlFor="" className="ms-2">
+                              <label htmlFor="No index" className="ms-2">
                                 No index
                               </label>
                             </div>
@@ -3967,10 +5092,10 @@ function ProductsEdit() {
               </form>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
-              <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 text-start">
+              <div className="border rounded p-3 customer-page1">
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border w-100 mt-2 mb-3"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -3980,15 +5105,21 @@ function ProductsEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/products"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
+
                 <select
                   className="w-100 rounded-1 py-2 border"
                   name="status"
@@ -4004,13 +5135,13 @@ function ProductsEdit() {
 
               <div className="border rounded p-3 customer-page1">
                 <h5 className="card-title fw-lighter text-start">Store</h5>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
+
                 <select
                   className="w-100 rounded-1 py-2 border"
                   name="store"
                   value={store}
                   onChange={onInputChange}
-                  required
                 >
                   <option value="">Select a store</option>
                   <option value="GoPro">GoPro</option>
@@ -4025,22 +5156,121 @@ function ProductsEdit() {
 
               <div className="border rounded p-3 customer-page1">
                 <h5 className="card-title fw-lighter">Is featured?</h5>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
+
                 <div className="form-check form-switch mb-3">
                   <input
                     className="form-check-input"
                     type="checkbox"
                     id="has-action"
-                    name="feature"
-                    checked={user.feature}
+                    name="featured"
+                    checked={user.featured}
                     onChange={onInputChange}
                   />
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
+                <h5 className="card-title fw-lighter">Categories</h5>
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                <input
+                  type="search"
+                  className="border cart-cart1 form-control py-4"
+                  placeholder="Search"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                />
+                <div className="d-flex flex-column text-start category-arrive mt-2">
+                  {filteredCategories.map((mega) => (
+                    <div key={mega.name} className="mb-3">
+                      <div className="d-flex flex-row align-items-center gap-2">
+                        <input
+                          id={`checkbox-${mega.name}`}
+                          type="checkbox"
+                          className="form-check-input"
+                          ref={(el) => {
+                            if (el)
+                              el.indeterminate = getIndeterminateState(
+                                mega.name
+                              );
+                          }}
+                          checked={!!checkedItems[mega.name]}
+                          onChange={() => toggleMega(mega)}
+                        />
+                        <label
+                          htmlFor={`checkbox-${mega.name}`}
+                          style={{ cursor: "pointer" }}
+                        >
+                          {mega.name}
+                        </label>
+                      </div>
+
+                      <div className="ms-3">
+                        {mega.children?.map((mini) => (
+                          <div key={mini.name}>
+                            <div className="d-flex flex-row align-items-center gap-2 mt-2">
+                              <input
+                                id={`checkbox-${mega.name}-${mini.name}`}
+                                type="checkbox"
+                                className="form-check-input"
+                                ref={(el) => {
+                                  if (el)
+                                    el.indeterminate = getIndeterminateState(
+                                      `${mega.name} > ${mini.name}`
+                                    );
+                                }}
+                                checked={
+                                  !!checkedItems[`${mega.name} > ${mini.name}`]
+                                }
+                                onChange={() => toggleMini(mega, mini)}
+                              />
+                              <label
+                                htmlFor={`checkbox-${mega.name}-${mini.name}`}
+                                style={{ cursor: "pointer" }}
+                              >
+                                {mini.name}
+                              </label>
+                            </div>
+
+                            <div className="ms-4">
+                              {mini.children?.map((child) => {
+                                const childKey = `${mega.name} > ${mini.name} > ${child}`;
+                                return (
+                                  <div
+                                    key={child}
+                                    className="d-flex flex-row align-items-center gap-2 mt-1"
+                                  >
+                                    <input
+                                      id={`checkbox-${childKey}`}
+                                      type="checkbox"
+                                      className="form-check-input"
+                                      checked={!!checkedItems[childKey]}
+                                      onChange={() =>
+                                        toggleChild(mega, mini, child)
+                                      }
+                                    />
+                                    <label
+                                      htmlFor={`checkbox-${childKey}`}
+                                      style={{ cursor: "pointer" }}
+                                    >
+                                      {child}
+                                    </label>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border rounded p-3 customer-page1">
                 <h5 className="card-title fw-lighter">Brand</h5>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
                 <select
                   className="w-100 rounded-1 py-2 border"
                   name="brand"
@@ -4049,32 +5279,53 @@ function ProductsEdit() {
                   required
                 >
                   <option value="">Select a brand</option>
-                  <option value="FoodPound">FoodPound</option>
-                  <option value="iTea JSC">iTea JSC</option>
-                  <option value="Soda Brand">Soda Brand</option>
-                  <option value="Shofy">Shofy</option>
-                  <option value="Soda Brand">Soda Brand</option>
+                  {Array.isArray(brands) &&
+                    brands.length > 0 &&
+                    brands.map((brandItem) => (
+                      <option key={brandItem.id} value={brandItem.name}>
+                        {brandItem.name}
+                      </option>
+                    ))}
                 </select>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h5>Featured image </h5>
-                <hr />
-                <div
-                  className="image-placeholder"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                <div className="image-placeholder mt-2 position-relative">
                   {imageUrl ? (
                     <img
                       alt="Uploaded preview"
                       src={imageUrl}
                       width="100"
                       height="100"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                     />
                   ) : (
-                    <img src={Cutting} className="w-75 h-100" />
+                    <img
+                      src={`http://89.116.170.231:1600/src/image/${user.image}`}
+                      alt="Background"
+                      className="w-100 h-100 rounded"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                    />
+                  )}
+                  {imageUrl && (
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseClick();
+                      }}
+                    />
                   )}
                 </div>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -4083,112 +5334,116 @@ function ProductsEdit() {
                   onChange={handleFileChange}
                 />
                 <Link
+                  className="ms-2 text-decoration-none choose-url"
                   to="#"
                   onClick={() => document.getElementById("fileInput").click()}
                 >
                   Choose image
                 </Link>
-                <span className="ms-2 me-2">or</span>
-                <Link to="#" onClick={handleAddFromUrl}>
+                <span className="ms-3 me-2">or</span>
+                <Link
+                  to="#"
+                  onClick={handleAddFromUrl}
+                  className="text-decoration-none choose-url"
+                >
                   Add from URL
                 </Link>
               </div>
 
               <div className="border rounded p-3 customer-page1">
-                <h5>Product collections</h5>
-                <hr />
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() =>
-                      handleCheckboxChange1("Weekly Gadget Spotlight")
-                    }
-                  />
-                  <label htmlFor="">Weekly Gadget Spotlight</label>
-                </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() =>
-                      handleCheckboxChange1("Electronic Trendsetters")
-                    }
-                  />
-                  <label htmlFor="">Electronic Trendsetters</label>
-                </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() =>
-                      handleCheckboxChange1("Digital Workspace Gear")
-                    }
-                  />
-                  <label htmlFor="">Digital Workspace Gear</label>
-                </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() => handleCheckboxChange1("Cutting Edge Tech")}
-                  />
-                  <label htmlFor="">Cutting Edge Tech</label>
-                </div>
+                <h5>Product Collections</h5>
+                <div className="border w-100 mt-2 mb-2"></div>
+
+                {Array.isArray(collections) && collections.length > 0 ? (
+                  collections.map((collection) => {
+                    const checkboxId = `collection-${collection.id}`;
+                    return (
+                      <div
+                        key={collection.id}
+                        className="d-flex flex-row gap-2 mb-1 align-items-center"
+                      >
+                        <input
+                          type="checkbox"
+                          id={checkboxId}
+                          className="form-check-input"
+                          checked={selectedCollections.includes(
+                            collection.name
+                          )}
+                          onChange={() =>
+                            handleCheckboxChangeCollections(collection.name)
+                          }
+                        />
+                        <label htmlFor={checkboxId}>{collection.name}</label>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-start">No collections available</p>
+                )}
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h5>Labels</h5>
-                <hr />
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() => handleCheckboxChange("Hot")}
-                  />
-                  <label htmlFor="">Hot</label>
-                </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() => handleCheckboxChange("New")}
-                  />
-                  <label htmlFor="">New</label>
-                </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={() => handleCheckboxChange("Sale")}
-                  />
-                  <label htmlFor="">Sale</label>
-                </div>
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                {Array.isArray(labels) && labels.length > 0 ? (
+                  labels.map((label) => (
+                    <div
+                      key={label.id}
+                      className="d-flex flex-row gap-2 mb-1 align-items-center"
+                    >
+                      <input
+                        id={`label-${label.id}`}
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={selectedLabels.includes(label.name)}
+                        onChange={() => handleCheckboxChange(label.name)}
+                      />
+                      <label htmlFor={`label-${label.id}`}>{label.name}</label>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-start">No labels available</p>
+                )}
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h5>Taxes</h5>
-                <hr />
-                <div className="d-flex gap-2 mb-1">
-                  <input type="checkbox" className="form-check-input" />
-                  <label htmlFor="">None (0%)</label>
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                <div className="d-flex d-flex flex-row gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="None (0%)"
+                  />
+                  <label htmlFor="None (0%)">None (0%)</label>
                 </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input type="checkbox" className="form-check-input" />
-                  <label htmlFor="">VAT (10%)</label>
+                <div className="d-flex d-flex flex-row gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="VAT (10%)"
+                  />
+                  <label htmlFor="VAT (10%)">VAT (10%)</label>
                 </div>
-                <div className="d-flex gap-2 mb-1">
-                  <input type="checkbox" className="form-check-input" />
-                  <label htmlFor="">Import Tax (15%)</label>
+                <div className="d-flex d-flex flex-row gap-2 mb-1">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="Import Tax (15%)"
+                  />
+                  <label htmlFor="Import Tax (15%)">Import Tax (15%)</label>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h6>Minimum order quantity</h6>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
+
                 <input
                   type="number"
-                  className="form-control py-4"
+                  className="form-control py-4 cart-cart"
                   placeholder="Maximum quantity"
                   name="minimumorder"
                   value={minimumorder}
@@ -4196,17 +5451,74 @@ function ProductsEdit() {
                 />
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-3 customer-page1 mb-0">
                 <h6>Maximum order quantity</h6>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
+
                 <input
                   type="number"
-                  className="form-control py-4"
+                  className="form-control py-4 cart-cart"
                   placeholder="Minimum quantity"
                   name="maximumorder"
                   value={maximumorder}
                   onChange={onInputChange}
                 />
+              </div>
+
+              <div className="border rounded p-3 customer-page1 mb-4">
+                <h6>Tags</h6>
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                <input
+                  type="search"
+                  className="form-control py-4 cart-cart border"
+                  placeholder="Write some tags"
+                  name="tags"
+                  value={tags}
+                  onChange={handleInputChange1}
+                  onKeyDown={handleKeyDown}
+                />
+
+                <div className="mb-0 mt-1 d-flex flex-wrap gap-2">
+                  {selectedTags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="badge-tags bg-success text-light cart-cart1 px-2 py-1 rounded-pill position-relative"
+                      style={{ paddingRight: "22px" }}
+                    >
+                      {tag}
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="position-absolute top-0 end-0 me-1 mt-0"
+                        style={{
+                          fontSize: "0.75rem",
+                          cursor: "pointer",
+                          background: "#fff",
+                          color: "#dc3545",
+                          borderRadius: "50%",
+                          padding: "2px",
+                          transform: "translate(50%, -50%)",
+                        }}
+                        onClick={() => handleRemoveTag(tag)}
+                      />
+                    </span>
+                  ))}
+                </div>
+
+                {tags1.length > 0 && filteredSuggestions.length > 0 && (
+                  <ul className="list-group mt-0">
+                    {filteredSuggestions.map((tag, idx) => (
+                      <li
+                        key={idx}
+                        className="list-group-item list-group-item-action"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleAddTag(tag.name)}
+                      >
+                        {tag.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>

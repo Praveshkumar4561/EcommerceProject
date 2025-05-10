@@ -3,6 +3,7 @@ import "./BlogPostEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import Cutting from "../../assets/Cutting.webp";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -11,8 +12,8 @@ import {
   faImage,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -21,6 +22,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function BlogPostEdit() {
   let navigate = useNavigate();
@@ -35,14 +37,12 @@ function BlogPostEdit() {
     setSpecifcation(!Specification);
   };
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -55,7 +55,7 @@ function BlogPostEdit() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -69,7 +69,6 @@ function BlogPostEdit() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
@@ -78,7 +77,7 @@ function BlogPostEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -133,7 +132,9 @@ function BlogPostEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -205,8 +206,9 @@ function BlogPostEdit() {
     content: "",
     feature: false,
     status: "",
-    categories: "",
+    categories: [],
     date: "",
+    tags: "",
     file: null,
   });
 
@@ -220,21 +222,23 @@ function BlogPostEdit() {
     status,
     categories,
     date,
+    tags,
     file,
   } = user;
 
   let handleSubmit = async () => {
     let formData = new FormData();
+    const cleanContent = stripHtml(user.content || "");
     formData.append("name", name);
     formData.append("author_name", author_name);
     formData.append("permalink", permalink);
     formData.append("description", description);
-    const cleanContent = stripHTML(user.content);
     formData.append("content", cleanContent);
     formData.append("feature", feature ? "Yes" : "No");
     formData.append("status", status);
-    formData.append("categories", categories);
+    formData.append("categories", user.categories.join(","));
     formData.append("date", date);
+    formData.append("tags", selectedTags.join(","));
     formData.append("file", file);
     try {
       const response = await axios.put(
@@ -258,15 +262,108 @@ function BlogPostEdit() {
     }));
   };
 
+  // useEffect(() => {
+  //   const blogpostsdata = async () => {
+  //     try {
+  //       let response = await axios.get(`http://89.116.170.231:1600/blogsomedata/${id}`);
+  //       const userData = response.data[0];
+  //       setUser(userData);
+  //       setEditorData2(userData.content || "");
+  //       if (userData.tags) {
+  //         const tagsArray = userData.tags
+  //           .split(",")
+  //           .map((tag) => tag.trim())
+  //           .filter((tag) => tag.length > 0);
+  //         setSelectedTags(tagsArray);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  //   blogpostsdata();
+  // }, [id]);
+
   useEffect(() => {
+    const blogpostsdata = async () => {
+      try {
+        const response = await axios.get(
+          `http://89.116.170.231:1600/blogsomedata/${id}`
+        );
+        const userData = response.data[0];
+        const categoriesArray = userData.categories
+          ? userData.categories.split(",").map((cat) => cat.trim())
+          : [];
+        setUser({
+          ...userData,
+          categories: categoriesArray,
+        });
+        setEditorData2(userData.content || "");
+        if (userData.tags) {
+          const tagsArray = userData.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0);
+          setSelectedTags(tagsArray);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
     blogpostsdata();
+  }, [id]);
+
+  const [tag1, setTag1] = useState([]);
+  const [tags1, setTags1] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+
+  useEffect(() => {
+    const tagsdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/blogalldata");
+      setTag1(response.data);
+    };
+    tagsdata();
   }, []);
 
-  let blogpostsdata = async () => {
-    let response = await axios.get(
-      `http://89.116.170.231:1600/blogsomedata/${id}`
+  const handleInputChange1 = (e) => {
+    const value = e.target.value;
+    setTags1(value);
+
+    const filtered = tag1.filter((tag) =>
+      tag.name.toLowerCase().includes(value.toLowerCase())
     );
-    setUser(response.data[0]);
+    setFilteredSuggestions(filtered);
+  };
+
+  const handleAddTag = (tagName) => {
+    if (!selectedTags.includes(tagName)) {
+      setSelectedTags([...selectedTags, tagName]);
+    }
+    setTags1("");
+    setFilteredSuggestions([]);
+  };
+
+  const handleRemoveTag = (tagName) => {
+    setSelectedTags((prev) => prev.filter((tag) => tag !== tagName));
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && tags1.trim() !== "") {
+      e.preventDefault();
+      const match = tag1.find(
+        (tag) => tag.name.toLowerCase() === tags1.trim().toLowerCase()
+      );
+
+      if (match) {
+        handleAddTag(match.name);
+      }
+    }
+  };
+
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
   };
 
   const [editorData2, setEditorData2] = useState(content);
@@ -275,17 +372,11 @@ function BlogPostEdit() {
 
   const handleEditorChange2 = (event, editor) => {
     const data = editor.getData();
-    const cleanText = stripHTML(data);
-    setEditorData2(cleanText);
+    setEditorData2(data);
     setUser((prevState) => ({
       ...prevState,
-      content: cleanText,
+      content: data,
     }));
-  };
-
-  const stripHTML = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    return doc.body.textContent || "";
   };
 
   const handleTextAreaChange2 = (e) => {
@@ -352,8 +443,55 @@ function BlogPostEdit() {
     }
   };
 
+  let [cates, setCates] = useState([]);
+
+  useEffect(() => {
+    let categorydata = async () => {
+      let response = await axios.get(
+        "http://89.116.170.231:1600/allcategorydata"
+      );
+      setCates(response.data);
+    };
+    categorydata();
+  }, []);
+
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Posts "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -435,7 +573,9 @@ function BlogPostEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1640,7 +1780,7 @@ function BlogPostEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2286,7 +2426,7 @@ function BlogPostEdit() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">BLOG</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/blog/posts">POSTS</Link>
           </li>
 
@@ -2299,7 +2439,7 @@ function BlogPostEdit() {
       <div className="container-fluid">
         <div className="container">
           <div className="row">
-            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 ">
+            <div className="col-12 col-md-12 col-lg-12 border rounded py-3 testimonial-page name-truck1 text-start me-3 me-md-0 me-lg-0 cart-cart">
               <svg
                 className="icon alert-icon svg-icon-ti-ti-info-circle me-2 editor-page"
                 xmlns="http://www.w3.org/2000/svg"
@@ -2327,14 +2467,14 @@ function BlogPostEdit() {
       <div className="container-fluid">
         <div className="container">
           <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
-            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
+            <div className="col-12 col-lg-8 border rounded customer-page customer-page2 cart-cart">
               <form>
                 <div className="d-flex flex-column gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-1 mt-3 w-100">
                     <label htmlFor="">Name</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2 py-4 cart-cart"
                       placeholder="Name"
                       name="name"
                       value={name}
@@ -2346,7 +2486,7 @@ function BlogPostEdit() {
                     <label htmlFor="">Author Name</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2 py-4 cart-cart"
                       placeholder="Author name"
                       name="author_name"
                       value={author_name}
@@ -2358,8 +2498,7 @@ function BlogPostEdit() {
                     <label htmlFor="">Permalink</label>
                     <input
                       type="text"
-                      className="form-control mt-2 py-4"
-                      placeholder="https://shofy.botble.com/blog/"
+                      className="form-control mt-2 py-4 cart-cart"
                       name="permalink"
                       value={permalink}
                       onChange={onInputChange}
@@ -2370,13 +2509,13 @@ function BlogPostEdit() {
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2"
+                      className="form-control mt-2 cart-cart"
+                      placeholder="Short description"
                       name="description"
                       value={description}
                       onChange={onInputChange}
                       style={{
                         height: "100px",
-                        cursor: "pointer",
                         zIndex: "1000",
                         position: "relative",
                       }}
@@ -2423,14 +2562,8 @@ function BlogPostEdit() {
                       <div className="mb-3">
                         <CKEditor
                           editor={ClassicEditor}
-                          data={user.content || ""}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setUser((prevState) => ({
-                              ...prevState,
-                              content: data,
-                            }));
-                          }}
+                          data={editorData2}
+                          onChange={handleEditorChange2}
                           config={{
                             toolbar: [
                               "heading",
@@ -2515,13 +2648,10 @@ function BlogPostEdit() {
                           id="content2"
                           className="form-control"
                           placeholder="Short description"
-                          value={user.content || ""}
-                          onChange={(e) =>
-                            setUser((prevState) => ({
-                              ...prevState,
-                              description: e.target.value,
-                            }))
-                          }
+                          name="content"
+                          value={stripHtml(content)}
+                          onChange={handleTextAreaChange2}
+                          style={{ height: "58px" }}
                         />
                       </div>
                     )}
@@ -2537,19 +2667,162 @@ function BlogPostEdit() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
                   </div>
                 </div>
               </form>
+              <div className="card mt-3 seo-metas1 text-start">
+                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                  <div className="w-100">
+                    <h5 className="card-title1">Search Engine Optimize</h5>
+                    <Link
+                      to="#"
+                      className="link-primary1 primary2 meta float-end"
+                      onClick={seodatablog}
+                      style={{ zIndex: "100" }}
+                    >
+                      Edit SEO meta
+                    </Link>
+                    <div className="border seo-names mt-3"></div>
+                    <div className="lh-base d-flex flex-column mt-2">
+                      <h5 className="seo-name">{user.name}</h5>
+                      <span className="seo-name1">{user.permalink}</span>
+                      <span>
+                        <span className="text-secondary">
+                          {new Date(user.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "2-digit",
+                            year: "numeric",
+                          })}
+                          :
+                        </span>
+                        <span className="card-text text-dark ms-2">
+                          {user.description}
+                          <div className="border seo-names mt-3"></div>
+                          {seo && (
+                            <>
+                              <div className="mt-3">
+                                <label htmlFor="">SEO Title</label>
+                                <input
+                                  type="text"
+                                  className="form-control mt-2 py-4 seo-edit"
+                                  placeholder="SEO Title"
+                                />
+                              </div>
+
+                              <div className="mt-3">
+                                <label htmlFor="seo-description">
+                                  SEO Description
+                                </label>
+                                <textarea
+                                  id="seo-description"
+                                  className="form-control mt-2 seo-edit"
+                                  placeholder="SEO Description"
+                                  style={{
+                                    height: "100px",
+                                    overflow: "auto",
+                                    resize: "vertical",
+                                    minHeight: "100px",
+                                  }}
+                                />
+                              </div>
+
+                              <div>
+                                <label className="mt-3 pt-2 ms-2">
+                                  SEO image
+                                </label>
+                                <div className="image-card border-0 ps-1">
+                                  <div
+                                    className="image-placeholder"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInput")
+                                        .click()
+                                    }
+                                  >
+                                    {imageUrl ? (
+                                      <img
+                                        alt="Uploaded preview"
+                                        src={imageUrl}
+                                        width="100"
+                                        height="100"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={Cutting}
+                                        alt="RxLYTE"
+                                        className="w-75 h-75 img-fluid"
+                                      />
+                                    )}
+                                  </div>
+                                  <input
+                                    id="fileInput"
+                                    type="file"
+                                    name="file"
+                                    style={{ display: "none" }}
+                                    onChange={handleFileChange}
+                                  />
+                                  <Link
+                                    className="ms-5"
+                                    to="#"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInput")
+                                        .click()
+                                    }
+                                  >
+                                    Choose image <br />
+                                  </Link>
+                                  <span className="ms-2 me-2 ms-5">or</span>
+                                  <Link to="#" onClick={handleAddFromUrl}>
+                                    Add from URL
+                                  </Link>
+                                </div>
+                              </div>
+
+                              <div className="d-flex gap-2 ms-2">
+                                <label htmlFor="">Index</label>
+                              </div>
+
+                              <div className="ms-2 mt-2 pb-2">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="check"
+                                  id="Index"
+                                />
+                                <label htmlFor="Index" className="ms-2">
+                                  Index
+                                </label>
+
+                                <input
+                                  className="form-check-input ms-2"
+                                  type="radio"
+                                  value="index"
+                                  name="check"
+                                  id="No index"
+                                />
+                                <label htmlFor="No index" className="ms-2">
+                                  No index
+                                </label>
+                              </div>
+                            </>
+                          )}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1 text-start cart-cart">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border w-100 mt-2 mb-3"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2559,17 +2832,22 @@ function BlogPostEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/blog/posts"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
                 <select
-                  className="form-select w-100"
+                  className="form-select w-100 mb-2"
                   style={{ height: "45px" }}
                   name="status"
                   value={status}
@@ -2582,24 +2860,51 @@ function BlogPostEdit() {
                 </select>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Categories</h4>
-                <hr />
-                <select
-                  className="form-select w-100"
-                  style={{ height: "45px" }}
-                  name="categories"
-                  value={categories}
-                  onChange={onInputChange}
-                >
-                  <option value="">Select an option</option>
-                  <option value="Crisp Bread & Cake">Crisp Bread & Cake</option>
-                  <option value="Fashion">Fashion</option>
-                  <option value="Electronic">Electronic</option>
-                  <option value="Commercial">Commercial</option>
-                  <option value="Organic Fruits">Organic Fruits</option>
-                  <option value="Ecological">Ecological</option>
-                </select>
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                {Array.isArray(cates) && cates.length > 0 ? (
+                  cates
+                    .filter(
+                      (cat) =>
+                        cat.status === "Published" || cat.status === "Draft"
+                    )
+                    .map((cat) => {
+                      const inputId = `cat-${cat.id || cat.name}`;
+                      return (
+                        <div key={inputId} className="form-check lh-lg">
+                          <input
+                            className="form-check-input mt-2"
+                            type="checkbox"
+                            id={inputId}
+                            name="categories"
+                            value={cat.name}
+                            checked={user.categories?.includes(cat.name)}
+                            onChange={(e) => {
+                              const { value, checked } = e.target;
+                              setUser((prevUser) => {
+                                const updatedCategories = checked
+                                  ? [...(prevUser.categories || []), value]
+                                  : (prevUser.categories || []).filter(
+                                      (catName) => catName !== value
+                                    );
+                                return {
+                                  ...prevUser,
+                                  categories: updatedCategories,
+                                };
+                              });
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor={inputId}>
+                            {cat.name}
+                          </label>
+                        </div>
+                      );
+                    })
+                ) : (
+                  <p className="text-start">No categories available</p>
+                )}
               </div>
 
               <div className="border rounded p-3 customer-page1">
@@ -2642,142 +2947,61 @@ function BlogPostEdit() {
                   Add from URL
                 </Link>
               </div>
-            </div>
-          </div>
 
-          <div className="card mt-3 seo-metas">
-            <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-              <div className="w-100">
-                <h5 className="card-title1">Search Engine Optimize</h5>
-                <Link
-                  to="#"
-                  className="link-primary1 primary2 meta float-end"
-                  onClick={seodatablog}
-                  style={{ zIndex: "100" }}
-                >
-                  Edit SEO meta
-                </Link>
-                <div className="border seo-names mt-3"></div>
-                <div className="lh-base d-flex flex-column mt-2">
-                  <h5 className="seo-name">{user.name}</h5>
-                  <span className="seo-name1">{user.permalink}</span>
-                  <span>
-                    <span className="text-secondary">
-                      {new Date(user.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}
-                      :
+              <div className="border rounded p-2 customer-page1 mb-4 text-start">
+                <h4>Tags</h4>
+                <div className="border w-100 mt-2 mb-3"></div>
+
+                <input
+                  type="search"
+                  className="form-control py-4 cart-cart border mb-2"
+                  placeholder="Write some tags"
+                  name="tags"
+                  value={tags1}
+                  onChange={handleInputChange1}
+                  onKeyDown={handleKeyDown}
+                />
+
+                <div className="mb-0 mt-1 d-flex flex-wrap gap-2">
+                  {selectedTags.map((tag, index) => (
+                    <span
+                      key={index}
+                      className="badge-tags bg-success text-light cart-cart1 px-2 py-1 rounded-pill position-relative"
+                      style={{ paddingRight: "22px" }}
+                    >
+                      {tag}
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="position-absolute top-0 end-0 me-1 mt-0"
+                        style={{
+                          fontSize: "0.75rem",
+                          cursor: "pointer",
+                          background: "#fff",
+                          color: "#dc3545",
+                          borderRadius: "50%",
+                          padding: "2px",
+                          transform: "translate(50%, -50%)",
+                        }}
+                        onClick={() => handleRemoveTag(tag)}
+                      />
                     </span>
-                    <span className="card-text text-dark ms-2">
-                      {user.description}
-                      <div className="border seo-names mt-3"></div>
-                      {seo && (
-                        <>
-                          <div className="mt-3">
-                            <label htmlFor="">SEO Title</label>
-                            <input
-                              type="text"
-                              className="form-control mt-2 py-4 seo-edit"
-                              placeholder="SEO Title"
-                            />
-                          </div>
-
-                          <div className="mt-3">
-                            <label htmlFor="seo-description">
-                              SEO Description
-                            </label>
-                            <textarea
-                              id="seo-description"
-                              className="form-control mt-2 seo-edit"
-                              placeholder="SEO Description"
-                              style={{
-                                height: "100px",
-                                overflow: "auto",
-                                resize: "vertical",
-                                minHeight: "100px",
-                              }}
-                            />
-                          </div>
-
-                          <div>
-                            <label className="mt-3 pt-2 ms-2">SEO image</label>
-                            <div className="image-card border-0 ps-1">
-                              <div
-                                className="image-placeholder"
-                                onClick={() =>
-                                  document.getElementById("fileInput").click()
-                                }
-                              >
-                                {imageUrl ? (
-                                  <img
-                                    alt="Uploaded preview"
-                                    src={imageUrl}
-                                    width="100"
-                                    height="100"
-                                  />
-                                ) : (
-                                  <img
-                                    src={Cutting}
-                                    alt="RxLYTE"
-                                    className="w-75 h-75 img-fluid"
-                                  />
-                                )}
-                              </div>
-                              <input
-                                id="fileInput"
-                                type="file"
-                                name="file"
-                                style={{ display: "none" }}
-                                onChange={handleFileChange}
-                              />
-                              <Link
-                                className="ms-5"
-                                to="#"
-                                onClick={() =>
-                                  document.getElementById("fileInput").click()
-                                }
-                              >
-                                Choose image <br />
-                              </Link>
-                              <span className="ms-2 me-2 ms-5">or</span>
-                              <Link to="#" onClick={handleAddFromUrl}>
-                                Add from URL
-                              </Link>
-                            </div>
-                          </div>
-
-                          <div className="d-flex gap-2 ms-2">
-                            <label htmlFor="">Index</label>
-                          </div>
-
-                          <div className="ms-2 mt-2 pb-2">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="check"
-                              checked
-                            />
-                            <label htmlFor="" className="ms-2">
-                              Index
-                            </label>
-
-                            <input
-                              className="form-check-input ms-2"
-                              type="radio"
-                              value="index"
-                              name="check"
-                            />
-                            <label htmlFor="" className="ms-2">
-                              No index
-                            </label>
-                          </div>
-                        </>
-                      )}
-                    </span>
-                  </span>
+                  ))}
                 </div>
+
+                {tags1.length > 0 && filteredSuggestions.length > 0 && (
+                  <ul className="list-group mt-0">
+                    {filteredSuggestions.map((tag, idx) => (
+                      <li
+                        key={idx}
+                        className="list-group-item list-group-item-action"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleAddTag(tag.name)}
+                      >
+                        {tag.name}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
           </div>

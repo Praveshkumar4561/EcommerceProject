@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ProductOptionsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -13,30 +14,18 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function ProductOptionsCreate() {
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  });
-  let navigate = useNavigate();
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
-  const [showTable, setShowTable] = useState(false);
   let [appear, setAppear] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -96,7 +85,9 @@ function ProductOptionsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -110,6 +101,14 @@ function ProductOptionsCreate() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
   }, []);
 
   const handleChange = (event) => {
@@ -157,34 +156,6 @@ function ProductOptionsCreate() {
   const toggleblog = () => {
     setBlog(!blog);
   };
-  let [user, setUser] = useState({
-    name: "",
-    date: "",
-    status: "",
-    featured: "No",
-  });
-  let { name, date, status, featured } = user;
-
-  let handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/productoptions",
-        user
-      );
-      if (response.status === 200) {
-        navigate("/admin/ecommerce/options");
-      }
-    } catch (error) {
-      console.error("error", error);
-    }
-  };
-
-  const onInputChange = (e) => {
-    const { name, type, checked, value } = e.target;
-    const newValue = type === "checkbox" ? (checked ? "Yes" : "No") : value;
-    setUser({ ...user, [name]: newValue });
-    const { values } = e.target;
-  };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
@@ -204,40 +175,133 @@ function ProductOptionsCreate() {
     }
   };
 
-  let [status1, setStatus1] = useState("");
+  const navigate = useNavigate();
+
+  const [status1, setStatus1] = useState("");
+
   const [rows, setRows] = useState([
-    {
-      id: 1,
-      label: "",
-      price: "",
-      priceType: "fixed",
-    },
+    { id: Date.now(), label: "", price: "", priceType: "fixed" },
   ]);
 
-  const handleAddRow = () => {
-    const newRow = {
-      id: Date.now(),
-      label: "",
-      price: "",
-      priceType: "fixed",
-    };
-    setRows((prevRows) => [...prevRows, newRow]);
+  const [errors, setErrors] = useState({});
+
+  const [user, setUser] = useState({
+    name: "",
+    date: "",
+    options: "",
+    featured: "No",
+  });
+  const { name, date, featured } = user;
+
+  const shouldShowTable = ["Dropdown", "Checkbox", "RadioButton"].includes(
+    status1
+  );
+
+  const onInputChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    const val = type === "checkbox" ? (checked ? "Yes" : "No") : value;
+    if (name === "status1") {
+      setStatus1(val);
+    } else {
+      setUser((u) => ({ ...u, [name]: val }));
+    }
   };
 
-  const handleChanges = (id, field, value) => {
-    setRows((prevRows) =>
-      prevRows.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+  const handleAddRow = (e) => {
+    e.preventDefault();
+    setRows((r) => [
+      ...r,
+      { id: Date.now(), label: "", price: "", priceType: "fixed" },
+    ]);
+  };
+
+  const handleChanges = (rid, field, val) =>
+    setRows((r) =>
+      r.map((row) => (row.id === rid ? { ...row, [field]: val } : row))
     );
+
+  const handleDelete = (rid) => {
+    if (rows.length > 1) setRows((r) => r.filter((row) => row.id !== rid));
   };
 
-  const handleDelete = (id) => {
-    if (rows.length > 1) {
-      setRows((prevRows) => prevRows.filter((row) => row.id !== id));
+  const validateForm = () => {
+    let newErr = {};
+    if (!name.trim()) newErr.name = "Name is required";
+    if (!date.trim()) newErr.date = "Start date is required";
+    if (!featured) newErr.featured = "Featured status is required";
+    setErrors(newErr);
+    return !Object.keys(newErr).length;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const filledRows = rows.filter(
+      (r) => r.label.trim() !== "" && r.price.toString().trim() !== ""
+    );
+
+    if (filledRows.length > 0 && !status1) {
+      setErrors((e) => ({ ...e, status1: "Option type is required" }));
+      return;
+    }
+
+    const payload = {
+      name,
+      date,
+      status: status1 || null,
+      featured,
+      options: filledRows.length ? JSON.stringify(filledRows) : null,
+    };
+
+    try {
+      const resp = await axios.post(
+        "http://89.116.170.231:1600/productoptions",
+        payload
+      );
+      if (resp.status === 200) navigate("/admin/ecommerce/options");
+    } catch (err) {
+      console.error("Submit error:", err);
     }
   };
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New options | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="New options | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -319,7 +383,9 @@ function ProductOptionsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -355,7 +421,7 @@ function ProductOptionsCreate() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1523,7 +1589,7 @@ function ProductOptionsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2166,7 +2232,7 @@ function ProductOptionsCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/options">PRODUCT OPTIONS</Link>
           </li>
 
@@ -2211,7 +2277,7 @@ function ProductOptionsCreate() {
               <form>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-3 w-100">
-                    <label htmlFor="">Name</label>
+                    <label>Name</label>
                     <input
                       type="text"
                       className="form-control mt-2 py-4"
@@ -2220,12 +2286,17 @@ function ProductOptionsCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
-                    <label htmlFor=""> Start date</label>
+                    <label>Start date</label>
                     <input
                       type="date"
                       className="form-control mt-2 py-4"
@@ -2233,124 +2304,137 @@ function ProductOptionsCreate() {
                       value={date}
                       onChange={onInputChange}
                     />
+                    {errors.date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.date}
+                      </small>
+                    )}
                   </div>
                 </div>
 
                 <div className="border ms-1 rounded mt-3 mb-3 cart-cart bg-body attribute-product d-flex flex-column">
                   <div className="d-flex w-100">
-                    <label
-                      htmlFor=""
-                      className="fw-medium cart-cart ms-4 mt-3 mb-3 flex-grow-1"
-                    >
+                    <label className="fw-medium cart-cart ms-2 mt-3 mb-3 flex-grow-1">
                       Options Value
                     </label>
                   </div>
-                  <hr className="custom-hr mt-0" />
+                  <div className="border w-100 mb-3"></div>
 
-                  <div className="border bg-light option-product mb-2 d-flex rounded flex-wrap">
-                    <div className="w-100 ms-3 me-3 mt-2">
-                      <table className="table table-striped table-bordered table-lable1">
-                        <thead className="bg-body">
-                          <tr>
-                            <th className="fw-light text-dark ps-3 py-2">#</th>
-                            <th className="fw-light text-dark ps-2">LABEL</th>
-                            <th className="fw-light text-dark ps-2">PRICE</th>
-                            <th className="fw-light text-dark">PRICE TYPE</th>
-                            <th></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {rows.map((row) => (
-                            <tr key={row.id}>
-                              <td className="d-flex flex-row">
-                                <FontAwesomeIcon icon={faArrowUp} />
-                                <FontAwesomeIcon icon={faArrowDown} />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className="form-control py-4"
-                                  placeholder="Please fill label"
-                                  value={row.label}
-                                  onChange={(e) =>
-                                    handleChanges(
-                                      row.id,
-                                      "label",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <input
-                                  type="text"
-                                  className="form-control py-4"
-                                  placeholder="Please fill affect price"
-                                  value={row.price}
-                                  onChange={(e) =>
-                                    handleChanges(
-                                      row.id,
-                                      "price",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                              </td>
-                              <td>
-                                <select
-                                  className="form-select"
-                                  style={{
-                                    cursor: "pointer",
-                                    zIndex: 1000,
-                                    position: "relative",
-                                  }}
-                                  value={row.priceType}
-                                  onChange={(e) =>
-                                    handleChanges(
-                                      row.id,
-                                      "priceType",
-                                      e.target.value
-                                    )
-                                  }
-                                >
-                                  <option value="fixed">Fixed</option>
-                                  <option value="percent">Percent</option>
-                                </select>
-                              </td>
-                              <td>
-                                <button
-                                  className="btn bg-body border px-2 py-3 d-flex p-2"
-                                  style={{
-                                    cursor: "pointer",
-                                    zIndex: 1000,
-                                    position: "relative",
-                                  }}
-                                  onClick={() => handleDelete(row.id)}
-                                  disabled={rows.length === 1}
-                                >
-                                  <FontAwesomeIcon icon={faTrashCan} />
-                                </button>
-                              </td>
+                  {(status1 === "" || status1 === "Field") && (
+                    <span className="text-dark mt-0 mb-3 d-block">
+                      Please choose option type!
+                    </span>
+                  )}
+
+                  {shouldShowTable && (
+                    <div className="border bg-light option-product mb-2 d-flex rounded flex-wrap">
+                      <div className="w-100 ms-3 me-3 mt-2">
+                        <table className="table table-striped table-bordered table-lable1">
+                          <thead className="bg-body">
+                            <tr>
+                              <th className="fw-light text-dark ps-3 py-2">
+                                #
+                              </th>
+                              <th className="fw-light text-dark ps-2">LABEL</th>
+                              <th className="fw-light text-dark ps-2">PRICE</th>
+                              <th className="fw-light text-dark">PRICE TYPE</th>
+                              <th></th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                      <button
-                        className="btn bg-body border d-flex mb-2 py-4"
-                        onClick={handleAddRow}
-                      >
-                        Add new row
-                      </button>
+                          </thead>
+                          <tbody>
+                            {rows.map((row) => (
+                              <tr key={row.id}>
+                                <td className="d-flex flex-row py-4">
+                                  <FontAwesomeIcon icon={faArrowUp} />
+                                  <FontAwesomeIcon icon={faArrowDown} />
+                                </td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    className="form-control py-4"
+                                    placeholder="Please fill label"
+                                    value={row.label}
+                                    onChange={(e) =>
+                                      handleChanges(
+                                        row.id,
+                                        "label",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    type="number"
+                                    className="form-control py-4"
+                                    placeholder="Please fill affect price"
+                                    value={row.price}
+                                    onChange={(e) =>
+                                      handleChanges(
+                                        row.id,
+                                        "price",
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>
+                                  <select
+                                    className="form-select"
+                                    style={{
+                                      height: "47px",
+                                      cursor: "pointer",
+                                      zIndex: 1000,
+                                      position: "relative",
+                                    }}
+                                    value={row.priceType}
+                                    onChange={(e) =>
+                                      handleChanges(
+                                        row.id,
+                                        "priceType",
+                                        e.target.value
+                                      )
+                                    }
+                                  >
+                                    <option value="fixed">Fixed</option>
+                                    <option value="percent">Percent</option>
+                                  </select>
+                                </td>
+                                <td>
+                                  <button
+                                    className="btn bg-body border px-2 py-3 d-flex p-2"
+                                    style={{
+                                      cursor: "pointer",
+                                      zIndex: 1000,
+                                      position: "relative",
+                                    }}
+                                    onClick={() => handleDelete(row.id)}
+                                    disabled={rows.length === 1}
+                                  >
+                                    <FontAwesomeIcon icon={faTrashCan} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <button
+                          className="btn bg-body border d-flex mb-2 py-4"
+                          onClick={handleAddRow}
+                        >
+                          Add new row
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </form>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border w-100 mb-3 mt-3"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2360,17 +2444,22 @@ function ProductOptionsCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/options"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
-                <h5 className="card-title fw-lighter">
+                <h5 className="card-title fw-lighter text-start">
                   Type <span className="text-danger">*</span>
                 </h5>
-                <hr />
+                <div className="border w-100 mb-3 mt-3"></div>
                 <select
                   className="w-100 rounded-1 py-2 border"
                   name="status1"
@@ -2378,28 +2467,27 @@ function ProductOptionsCreate() {
                   onChange={onInputChange}
                 >
                   <option value="">Please select option</option>
-                  <option value="Text" className="fw-bold">
+                  <option value="Text" className="fw-bold" disabled>
                     Text
                   </option>
                   <option value="Field">Field</option>
-                  <option value="Select" className="fw-bold ms-4">
+                  <option value="Select" className="fw-bold" disabled>
                     Select
                   </option>
-                  <option value="Dropdown" className="ms-4">
-                    Dropdown
-                  </option>
-                  <option value="Checkbox" className="ms-4">
-                    Checkbox
-                  </option>
-                  <option value="RadioButton" className="ms-4">
-                    RadioButton
-                  </option>
+                  <option value="Dropdown">Dropdown</option>
+                  <option value="Checkbox">Checkbox</option>
+                  <option value="RadioButton">RadioButton</option>
                 </select>
+                {errors.status1 && (
+                  <small className="text-danger">{errors.status1}</small>
+                )}
               </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h5 className="card-title fw-lighter">Is required?</h5>
-                <hr />
+              <div className="border rounded p-3 customer-page1 mb-4">
+                <h5 className="card-title fw-lighter text-start">
+                  Is featured?
+                </h5>
+                <div className="border w-100 mt-3 mb-3"></div>
                 <div className="form-check form-switch mb-3">
                   <input
                     className="form-check-input"

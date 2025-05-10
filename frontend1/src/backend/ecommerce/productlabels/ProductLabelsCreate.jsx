@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ProductLabelsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,19 +11,16 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ProductLabelsCreate() {
   let navigate = useNavigate();
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +79,9 @@ function ProductLabelsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -123,32 +123,6 @@ function ProductLabelsCreate() {
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented.",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        }
-      );
-    } catch (error) {}
-  };
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -175,16 +149,39 @@ function ProductLabelsCreate() {
     setBlog(!blog);
   };
 
-  let [user, setUser] = useState({
+  const [user, setUser] = useState({
     name: "",
-    color: "",
+    color: "#000000",
     status: "",
     date: "",
   });
 
-  let { name, color, status, date } = user;
+  const { name, color, status, date } = user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { name, color, status, date };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       const response = await axios.post(
         "http://89.116.170.231:1600/productlabels",
@@ -198,8 +195,26 @@ function ProductLabelsCreate() {
     }
   };
 
-  let onInputChange = async (e) => {
+  const onInputChange = async (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  const colorRefs = {
+    color: useRef(null),
+  };
+
+  const colorLabels = {
+    color: "Background Color",
+  };
+
+  const handleColorChange = (key, event) => {
+    setUser((prev) => ({ ...prev, [key]: event.target.value }));
+  };
+
+  const handleColorClick = (key) => {
+    if (colorRefs[key].current) {
+      colorRefs[key].current.click();
+    }
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -228,10 +243,46 @@ function ProductLabelsCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New product labels | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="New product labels | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -313,7 +364,9 @@ function ProductLabelsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1515,7 +1568,7 @@ function ProductLabelsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2158,7 +2211,7 @@ function ProductLabelsCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">ECOMMERCE</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/ecommerce/product-labels">PRODUCT LABELS</Link>
           </li>
 
@@ -2203,7 +2256,7 @@ function ProductLabelsCreate() {
               <form>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-3 w-100">
-                    <label htmlFor="">Name</label>
+                    <label htmlFor="name">Name</label>
                     <input
                       type="text"
                       className="form-control mt-2 py-4"
@@ -2212,25 +2265,65 @@ function ProductLabelsCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
 
-                <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
-                  <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
-                    <label htmlFor="">Color</label>
-                    <input
-                      type="color"
-                      className="form-control mt-2 py-4"
-                      name="color"
-                      value={color}
-                      onChange={onInputChange}
-                    />
+                {Object.keys(colorRefs).map((key) => (
+                  <div className="mt-0 mb-3 d-flex flex-column" key={key}>
+                    <label className="form-label">{colorLabels[key]}</label>
+
+                    <div
+                      className="color-picker-container d-flex flex-row flex-nowrap"
+                      style={{ position: "relative", display: "inline-block" }}
+                    >
+                      <input
+                        type="color"
+                        ref={colorRefs[key]}
+                        name="color"
+                        value={user[key]}
+                        style={{
+                          opacity: 0,
+                          position: "absolute",
+                          width: "30px",
+                          height: "30px",
+                        }}
+                        onChange={(e) => handleColorChange(key, e)}
+                      />
+                      <div
+                        className="color-preview"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          backgroundColor: user[key],
+                          border: "1px solid #ccc",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleColorClick(key)}
+                      ></div>
+                      <span
+                        className="color-dropdown"
+                        style={{ cursor: "pointer", marginLeft: "10px" }}
+                        onClick={() => handleColorClick(key)}
+                      >
+                        ▼
+                      </span>
+                    </div>
+                    {errors.color && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.color}
+                      </small>
+                    )}
                   </div>
-                </div>
+                ))}
 
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
-                    <label htmlFor=""> Start date</label>
+                    <label htmlFor="date">Start Date</label>
                     <input
                       type="date"
                       className="form-control mt-2 py-4"
@@ -2239,10 +2332,15 @@ function ProductLabelsCreate() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
+                    {errors.date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.date}
+                      </small>
+                    )}
                   </div>
                 </div>
               </form>
@@ -2250,8 +2348,8 @@ function ProductLabelsCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border w-100 mt-2 mb-3"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2261,26 +2359,37 @@ function ProductLabelsCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/product-labels"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
-              <div className="border rounded p-3 customer-page1">
+              <div className="border rounded p-2 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border w-100 mt-2 mb-3"></div>
                 <select
-                  className="w-100 rounded-1 py-2 border"
+                  className="w-100 rounded-1 py-2 border mb-2"
                   name="status"
                   value={status}
                   onChange={onInputChange}
+                  style={{ height: "45px" }}
                 >
                   <option value="">Select an option</option>
                   <option value="Published">Published</option>
                   <option value="Draft">Draft</option>
                   <option value="Pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
             </div>
           </div>

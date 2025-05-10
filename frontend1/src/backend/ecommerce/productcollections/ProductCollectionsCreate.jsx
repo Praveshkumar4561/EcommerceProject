@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./ProductCollectionsCreate.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -9,8 +10,8 @@ import {
   faMoon,
   faSave,
   faSignOut,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import Cutting from "../../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,10 +19,9 @@ import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function ProductCollectionsCreate() {
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +71,7 @@ function ProductCollectionsCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -113,6 +114,9 @@ function ProductCollectionsCreate() {
     }
   };
 
+  const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -130,15 +134,20 @@ function ProductCollectionsCreate() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          progress: true,
           closeOnClick: true,
           draggable: true,
-          progress: undefined,
         }
       );
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  const handleCloseClick = () => {
+    setImageUrl(null);
+    setImage(null);
+  };
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
@@ -187,7 +196,38 @@ function ProductCollectionsCreate() {
 
   let { name, slug, description, status, feature, date, file } = user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = {
+      name,
+      slug,
+      description,
+      status,
+      feature,
+      date,
+      file,
+    };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     let formData = new FormData();
     formData.append("name", name);
     formData.append("slug", slug);
@@ -244,10 +284,46 @@ function ProductCollectionsCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New product collections | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="New product collections | RxLYTE" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -329,7 +405,9 @@ function ProductCollectionsCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1530,7 +1608,7 @@ function ProductCollectionsCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2229,6 +2307,11 @@ function ProductCollectionsCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2242,6 +2325,11 @@ function ProductCollectionsCreate() {
                       value={slug}
                       onChange={onInputChange}
                     />
+                    {errors.slug && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.slug}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2250,17 +2338,21 @@ function ProductCollectionsCreate() {
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       name="description"
                       value={description}
                       onChange={onInputChange}
                       style={{
                         height: "74px",
-                        cursor: "pointer",
                         zIndex: "1000",
                         position: "relative",
                       }}
                     />
+                    {errors.description && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.description}
+                      </small>
+                    )}
                   </div>
                 </div>
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
@@ -2274,10 +2366,15 @@ function ProductCollectionsCreate() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
+                    {errors.date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.date}
+                      </small>
+                    )}
                   </div>
                 </div>
               </form>
@@ -2285,7 +2382,7 @@ function ProductCollectionsCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2296,8 +2393,13 @@ function ProductCollectionsCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/ecommerce/product-collections"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
@@ -2316,6 +2418,11 @@ function ProductCollectionsCreate() {
                   <option value="Draft">Draft</option>
                   <option value="Pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
 
               <div className="border rounded p-3 customer-page1">
@@ -2334,27 +2441,41 @@ function ProductCollectionsCreate() {
               </div>
 
               <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Image</h4>
+                <h5>Image </h5>
                 <hr />
-                <div
-                  className="image-placeholder"
-                  onClick={() => document.getElementById("fileInput").click()}
-                >
+                <div className="image-placeholder mt-2 position-relative">
                   {imageUrl ? (
                     <img
                       alt="Uploaded preview"
                       src={imageUrl}
                       width="100"
                       height="100"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                     />
                   ) : (
                     <img
                       src={Cutting}
-                      alt="RxLYTE"
-                      className="w-75 h-75 img-fluid rounded"
+                      alt="Background"
+                      className="w-100 h-100 rounded"
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                    />
+                  )}
+                  {imageUrl && (
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCloseClick();
+                      }}
                     />
                   )}
                 </div>
+
                 <input
                   id="fileInput"
                   type="file"
@@ -2363,13 +2484,18 @@ function ProductCollectionsCreate() {
                   onChange={handleFileChange}
                 />
                 <Link
+                  className="ms-2 text-decoration-none choose-url"
                   to="#"
                   onClick={() => document.getElementById("fileInput").click()}
                 >
                   Choose image
                 </Link>
-                <span className="ms-2 me-2">or</span>
-                <Link to="#" onClick={handleAddFromUrl}>
+                <span className="ms-3 me-2">or</span>
+                <Link
+                  to="#"
+                  onClick={handleAddFromUrl}
+                  className="text-decoration-none choose-url"
+                >
                   Add from URL
                 </Link>
               </div>

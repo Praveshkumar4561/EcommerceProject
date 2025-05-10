@@ -3,6 +3,7 @@ import "./TestimonialCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "font-awesome/css/font-awesome.min.css";
 import {
   faBell,
   faEnvelope,
@@ -14,18 +15,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function TestimonialEdit() {
   let navigate = useNavigate();
   let { id } = useParams();
 
-  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
@@ -90,6 +90,7 @@ function TestimonialEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -156,7 +157,6 @@ function TestimonialEdit() {
     const file = event.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
       setUser({ ...user, file: file });
     }
@@ -169,7 +169,7 @@ function TestimonialEdit() {
         {
           position: "bottom-right",
           autoClose: 1000,
-          hideProgressBar: false,
+          ProgressBar: true,
           closeOnClick: true,
           draggable: true,
           progress: undefined,
@@ -204,7 +204,7 @@ function TestimonialEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -233,7 +233,6 @@ function TestimonialEdit() {
 
   const { name, company, status, date, content, file } = user;
   const [editorData2, setEditorData2] = useState(content);
-  const [textAreaData2, setTextAreaData2] = useState(content);
   const [showEdit2, setShowEdit2] = useState(true);
 
   const handleEditorChange2 = (event, editor) => {
@@ -247,7 +246,6 @@ function TestimonialEdit() {
 
   const handleTextAreaChange2 = (e) => {
     const data = e.target.value;
-    setTextAreaData2(data);
     setUser((prevState) => ({
       ...prevState,
       content: data,
@@ -293,7 +291,7 @@ function TestimonialEdit() {
 
   const handleSubmit = async () => {
     const formData = new FormData();
-    const cleanContent = stripHTML(user.content || "");
+    const cleanContent = stripHtml(user.content || "");
     formData.append("name", user.name);
     formData.append("company", user.company);
     formData.append("status", user.status);
@@ -308,7 +306,7 @@ function TestimonialEdit() {
       toast.success("Data successfully updated", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -318,7 +316,7 @@ function TestimonialEdit() {
       toast.error("Data is not updated", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -326,9 +324,10 @@ function TestimonialEdit() {
     }
   };
 
-  const stripHTML = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    return doc.body.textContent || "";
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
   };
 
   const onInputChange = (e) => {
@@ -337,6 +336,41 @@ function TestimonialEdit() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -418,7 +452,9 @@ function TestimonialEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1620,7 +1656,7 @@ function TestimonialEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2442,7 +2478,8 @@ function TestimonialEdit() {
                         id="content2"
                         className="form-control"
                         placeholder="Short description"
-                        value={textAreaData2}
+                        name="content"
+                        value={content}
                         onChange={handleTextAreaChange2}
                         style={{ height: "58px" }}
                       />
@@ -2461,7 +2498,7 @@ function TestimonialEdit() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
@@ -2472,7 +2509,7 @@ function TestimonialEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2483,8 +2520,13 @@ function TestimonialEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/testimonials"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>

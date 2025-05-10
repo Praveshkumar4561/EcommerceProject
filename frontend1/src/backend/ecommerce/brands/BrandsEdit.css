@@ -159,3 +159,11 @@ input[type="search"] {
     height: 55rem;
   }
 }
+
+@media (min-width: 1200px) {
+  .seo-metas1 {
+    width: 100%;
+    max-width: 100%;
+    left: 0;
+  }
+}

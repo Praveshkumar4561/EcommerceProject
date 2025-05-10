@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./FaqCategoryEdit.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,11 +11,11 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function FaqCategoryEdit() {
   let { id } = useParams();
@@ -25,9 +26,6 @@ function FaqCategoryEdit() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-  let [days, setDays] = useState(false);
-  let [days1, setDays1] = useState(false);
-  let [referrar, setReferrar] = useState(false);
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
 
@@ -53,18 +51,6 @@ function FaqCategoryEdit() {
 
   const toggleblog = () => {
     setBlog(!blog);
-  };
-
-  let daysClicked = () => {
-    setDays(!days);
-  };
-
-  let daysClicked1 = () => {
-    setDays1(!days1);
-  };
-
-  let referrarClicked = () => {
-    setReferrar(!referrar);
   };
 
   const toggleFAQ = () => {
@@ -136,7 +122,7 @@ function FaqCategoryEdit() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -186,7 +172,9 @@ function FaqCategoryEdit() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -230,6 +218,41 @@ function FaqCategoryEdit() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Edit "{user.name}" | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -311,7 +334,9 @@ function FaqCategoryEdit() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1519,7 +1544,7 @@ function FaqCategoryEdit() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2167,7 +2192,7 @@ function FaqCategoryEdit() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">FAQS</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/faq-categories">CATEGORIES</Link>
           </li>
 
@@ -2227,14 +2252,13 @@ function FaqCategoryEdit() {
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="short description"
                       name="description"
                       value={description}
                       onChange={onInputChange}
                       style={{
                         zIndex: "1000",
-                        cursor: "pointer",
                         position: "relative",
                         height: "78px",
                       }}
@@ -2273,8 +2297,8 @@ function FaqCategoryEdit() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2284,15 +2308,20 @@ function FaqCategoryEdit() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/faq-categories"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border mb-3 mt-2"></div>
                 <select
                   className="w-100 rounded-1 py-2 border"
                   name="status"
@@ -2302,8 +2331,8 @@ function FaqCategoryEdit() {
                 >
                   <option value="">Select an option</option>
                   <option value="Published">Published</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
                 </select>
               </div>
             </div>

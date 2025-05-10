@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 html,
 body {
   width: 100vw;
@@ -12,166 +13,6 @@ body {
   overflow-x: hidden;
   font-family: "SanDiego";
   position: relative;
-}
-
-#container-custom {
-  width: 100vw;
-  height: 190px;
-  background-color: #f2f5f7;
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  box-sizing: border-box;
-}
-.container-custom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  margin-top: 3.4rem;
-}
-@media (max-width: 992px) {
-  #container-custom {
-    height: auto;
-    min-height: 340px;
-    width: 100%;
-  }
-  .container-custom {
-    position: relative;
-    bottom: 5rem;
-  }
-}
-
-.container-custom1 {
-  width: 72rem;
-  max-width: 100%;
-  position: relative;
-  top: 2.4rem;
-  margin: 0 auto;
-}
-
-@media (max-width: 992px) {
-  .container-custom1 {
-    width: 100%;
-    margin: 0;
-  }
-  .container-custom1 {
-    width: 100%;
-    margin-left: -1.9rem;
-    margin-right: 0;
-    padding: 0;
-  }
-}
-
-.custom-dropdown {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0.2rem;
-  width: 303px;
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1050;
-  border-radius: 10px;
-}
-
-.custom-dropdown ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.custom-dropdown .nav-item {
-  margin: 0;
-}
-
-.custom-dropdown .nav-link {
-  display: block;
-  padding: 8px 12px;
-  text-decoration: none;
-}
-
-.custom-dropdown .nav-link:hover {
-  background-color: #f0f0f0;
-}
-
-.navbar-toggler {
-  position: relative;
-  z-index: 1050;
-  border: none;
-}
-
-@media (max-width: 992px) {
-  .custom-dropdown {
-    display: block;
-  }
-
-  .navbar-brand.d-lg-none {
-    display: block;
-  }
-
-  .navbar-toggler {
-    display: block;
-  }
-
-  .navbar-collapse {
-    display: none;
-  }
-  .hamburger-image {
-    position: relative;
-    bottom: 0.9rem;
-    right: -2rem;
-  }
-  .navbar-icons {
-    position: absolute;
-    top: 1.4rem;
-    right: 5rem;
-  }
-  .addcarts {
-    margin-top: -1.2rem;
-  }
-}
-
-.profiles {
-  width: 25px;
-  height: 25px;
-}
-.profiles1 {
-  width: 25px;
-  height: 25px;
-}
-
-.addcarts {
-  position: absolute;
-  top: 0.6rem;
-  font-family: Verdana, Tahoma, sans-serif;
-}
-
-@media (max-width: 450px) {
-  .navbar-icons {
-    display: flex;
-    flex-wrap: nowrap;
-  }
-}
-
-@media (min-width: 993px) {
-  .custom-dropdown {
-    display: none;
-  }
-
-  .navbar-collapse {
-    display: flex;
-  }
-
-  .navbar-brand.d-lg-none {
-    display: none;
-  }
-}
-
-.navbar-toggler:focus {
-  outline: none;
-  box-shadow: none;
 }
 
 .container-contact-check {
@@ -252,11 +93,6 @@ body {
   .breadcrumb-check {
     flex-direction: row;
   }
-}
-
-@font-face {
-  font-family: "SanDiego";
-  src: url("../../../src/assets/fonts/SanDiego.ttf") format("truetype");
 }
 
 .demo-shipping {
@@ -354,6 +190,11 @@ body {
   word-spacing: 2px;
 }
 
+.border-place1-check1 {
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+
 .border-place1-check:focus {
   background-color: #f2f5f7;
   color: black;
@@ -384,7 +225,7 @@ body {
 
 .process {
   width: 23.2rem;
-  height: 12.5rem;
+  height: 17rem;
   background-color: #f2f5f7;
   position: relative;
   top: auto;
@@ -392,11 +233,13 @@ body {
   letter-spacing: 1px;
   word-spacing: 2px;
 }
+
 .increment-plus {
   position: relative;
   left: 80%;
   top: -4rem;
 }
+
 .pills {
   font-size: 22px;
 }
@@ -405,17 +248,20 @@ body {
   .process {
     position: relative;
     left: 0;
-    height: 14rem;
+    height: auto !important;
     width: 100%;
     max-width: 100%;
-    top: 1rem;
+    top: 0rem;
   }
+
   .lorem-border {
     margin-left: -7%;
   }
+
   .increment-plus {
     position: relative;
-    left: 47%;
+    left: 20%;
+    margin-top: 1rem !important;
   }
   .number-item {
     position: absolute;
@@ -423,8 +269,8 @@ body {
   }
   .dollar-price {
     position: relative;
-    left: 19rem;
-    bottom: 41%;
+    left: 16rem;
+    bottom: 51%;
   }
 }
 
@@ -564,7 +410,7 @@ body {
 @media (max-width: 576px) {
   .payment-methods {
     width: 100%;
-    max-width: 99%;
+    max-width: 96%;
   }
   .payment-span {
     font-size: 22px;
@@ -599,4 +445,98 @@ body {
     width: 100%;
     max-width: 99%;
   }
+}
+
+.form-floating label {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.channel-checkout {
+  position: relative;
+  z-index: 1;
+  background-color: #f2f5f7 !important;
+}
+
+.custom-datepicker-popper {
+  z-index: 9999 !important;
+}
+
+.react-datepicker {
+  z-index: 9999 !important;
+}
+
+.remind-follow .react-datepicker-wrapper,
+.remind-follow .react-datepicker__input-container input {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.lorem-lyte-checkout {
+  margin-left: 0%;
+  width: 100%;
+  max-width: 100%;
+}
+
+.process-checkout {
+  width: 21.5rem;
+  background-color: #f2f5f7;
+  position: relative;
+  top: auto;
+  left: 3.8rem;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+}
+@media (max-width: 576px) {
+  .process-checkout {
+    position: relative;
+    left: 0;
+    height: auto !important;
+    top: 0.7rem;
+    width: 21.5rem !important;
+  }
+  .code-check {
+    width: 27.2rem !important;
+  }
+}
+@media (min-width: 576px) and (max-width: 768px) {
+  .process-checkout {
+    position: relative;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+@media (min-width: 768px) and (max-width: 992px) {
+  .process-checkout {
+    position: relative;
+    left: 0%;
+    width: 100%;
+    max-width: 100% !important;
+  }
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+  .process-checkout {
+    position: relative;
+    left: 0%;
+    width: 100%;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .process-checkout {
+    position: relative;
+    left: 0%;
+    width: 100%;
+    max-width: 34% !important;
+  }
+}
+
+.remind-height {
+  height: 56.7px;
+}
+
+.contact-phone1 {
+  font-size: 16px;
 }

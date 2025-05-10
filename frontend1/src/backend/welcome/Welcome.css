@@ -70,7 +70,7 @@ input[type="search"] {
 }
 
 .sidebar-back4 {
-  height: 170rem;
+  height: 180rem;
 }
 
 .sidebar-back4 .list-unstyled {
@@ -195,6 +195,11 @@ input[type="search"] {
   max-width: 99%;
 }
 
+.analytics-box .chart .ag-charts {
+  width: 100%;
+  max-width: 100%;
+}
+
 @media (max-width: 576px) {
   .guest-alert {
     width: 100%;
@@ -258,9 +263,11 @@ input[type="search"] {
 .info-box.products {
   background-color: #0096ff;
 }
+
 .info-box.customers {
   background-color: #87ceeb;
 }
+
 .info-box.reviews {
   background-color: #0060b4;
 }
@@ -269,9 +276,11 @@ input[type="search"] {
   padding: 1rem;
   margin-bottom: 1rem;
 }
+
 .analytics-box h5 {
   margin-bottom: 1rem;
 }
+
 .analytics-box .chart {
   height: 200px;
   width: 100%;
@@ -279,15 +288,18 @@ input[type="search"] {
   background-color: #e9ecef;
   margin-bottom: 1rem;
 }
+
 .analytics-box .map {
   height: 200px;
   background-color: #e9ecef;
   border-radius: 10px;
 }
+
 .analytics-box .stats {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 }
+
 .analytics-box .stats .stat {
   display: flex;
   align-items: center;
@@ -298,6 +310,7 @@ input[type="search"] {
   width: 100%;
   max-width: 23%;
 }
+
 .analytics-box .stats .stat i {
   font-size: 1.5rem;
   margin-right: 0.5rem;
@@ -603,8 +616,151 @@ input[type="search"] {
 .box-admin2 {
   height: 36.3rem;
 }
+
 .box-admin3 {
-  height: 40.8rem;
+  height: 41.8rem;
 }
 
+.browser-visit {
+  margin-left: 20rem;
+}
 
+.browser-top {
+  width: 100%;
+  max-width: 42.3%;
+  position: relative;
+  right: 14%;
+}
+
+.browser-top1 {
+  width: 100%;
+  max-width: 50%;
+}
+
+@media (max-width: 576px) {
+  .browser-visit {
+    margin-left: 1rem;
+  }
+  .browser-top {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    left: 0%;
+  }
+
+  .browser-top1 {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .browser-visit {
+    margin-left: 0rem;
+  }
+
+  .browser-top1 {
+    width: 100%;
+    max-width: 98%;
+  }
+
+  .browser-top {
+    width: 100%;
+    max-width: 97%;
+    position: relative;
+    left: 0%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  .browser-visit {
+    margin-left: 0.9rem;
+  }
+
+  .browser-top1 {
+    width: 100%;
+    max-width: 100% !important;
+  }
+
+  .browser-top {
+    width: 100%;
+    max-width: 100% !important;
+    position: relative;
+    left: 0%;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  .browser-visit {
+    margin-left: 9.6rem;
+  }
+
+  .browser-top1 {
+    width: 100%;
+    max-width: 48% !important;
+  }
+
+  .browser-top {
+    width: 100%;
+    max-width: 48% !important;
+    position: relative;
+    margin-left: 1%;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .browser-visit {
+    margin-left: 9.6rem;
+  }
+
+  .browser-top1 {
+    width: 100%;
+    max-width: 52% !important;
+  }
+
+  .browser-top {
+    width: 100%;
+    max-width: 60% !important;
+    position: relative;
+    right: 11%;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+  .browser-visit {
+    margin-left: 9.6rem;
+  }
+
+  .browser-top1 {
+    width: 100%;
+    max-width: 53% !important;
+  }
+
+  .browser-top {
+    width: 100%;
+    max-width: 69% !important;
+    position: relative;
+    right: 10%;
+  }
+}
+
+.site-chart {
+  width: 100%;
+  max-width: 60% !important;
+}
+
+.site-chart1 {
+  width: 100%;
+  max-width: 40% !important;
+}
+
+@media (max-width: 768px) {
+  .site-chart {
+    width: 100%;
+    max-width: 100% !important;
+  }
+  .site-chart1 {
+    width: 100%;
+    max-width: 100% !important;
+  }
+}

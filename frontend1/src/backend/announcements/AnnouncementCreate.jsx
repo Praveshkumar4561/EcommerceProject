@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./AnnouncementCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBell,
   faEnvelope,
@@ -10,7 +11,6 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
@@ -19,6 +19,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function AnnouncementCreate() {
   let navigate = useNavigate();
@@ -33,19 +34,6 @@ function AnnouncementCreate() {
   const resultsRef = useRef(null);
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
-
-  const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-      setUser({ ...user, file: file });
-    }
-  };
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -98,7 +86,9 @@ function AnnouncementCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -160,30 +150,41 @@ function AnnouncementCreate() {
     setBlog(!blog);
   };
 
-  const handleEditorChange = (event, editor) => {
-    const data = editor.getData();
-    const plainText = stripHtmlTags(data);
-    setUser((prevState) => ({
-      ...prevState,
-      content: plainText,
-    }));
-  };
-
-  const stripHtmlTags = (html) => {
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent || "";
-  };
+  const [editorContent, setEditorContent] = useState("");
 
   let [user, setUser] = useState({
     name: "",
     content: "",
     start_date: "",
     end_date: "",
-    active: "",
+    active: "no",
   });
   let { name, content, start_date, end_date, active } = user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { name, content, start_date, end_date, active };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       const response = await axios.post(
         "http://89.116.170.231:1600/announce",
@@ -192,7 +193,7 @@ function AnnouncementCreate() {
       toast.success("New announcement successfully created", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -202,7 +203,7 @@ function AnnouncementCreate() {
       toast.error("New announcement is not created", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -210,11 +211,30 @@ function AnnouncementCreate() {
     }
   };
 
-  let onInputChange = async (e) => {
+  let onInputChange = (e) => {
+    const { name, type, checked, value } = e.target;
     setUser({
       ...user,
-      [e.target.name]: e.target.value,
+      [name]: type === "checkbox" ? (checked ? "yes" : "no") : value,
     });
+  };
+
+  const handleEditorChange = (event, editor) => {
+    const data = editor.getData();
+    setEditorContent(data);
+  };
+
+  const handleEditorBlur = () => {
+    const plainText = stripHtmlTags(editorContent);
+    setUser((prevState) => ({
+      ...prevState,
+      content: plainText,
+    }));
+  };
+
+  const stripHtmlTags = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -243,10 +263,46 @@ function AnnouncementCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create new announcement | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="Create new announcement | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -328,7 +384,9 @@ function AnnouncementCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -364,7 +422,7 @@ function AnnouncementCreate() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1">
+        <div className="sidebar-back mt-1 h-auto">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -1530,7 +1588,7 @@ function AnnouncementCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2226,6 +2284,11 @@ function AnnouncementCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2235,9 +2298,9 @@ function AnnouncementCreate() {
                   </label>
                   <CKEditor
                     editor={ClassicEditor}
-                    name="content"
-                    data={content}
+                    data={editorContent}
                     onChange={handleEditorChange}
+                    onBlur={handleEditorBlur}
                     config={{
                       toolbar: [
                         "heading",
@@ -2329,12 +2392,18 @@ function AnnouncementCreate() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
+                    {errors.start_date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
                 </div>
+
                 <div className="d-flex flex-row gap-2 name-form text-start flex-wrap flex-lg-nowrap flex-md-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-3 mt-lg-1 w-100">
                     <label htmlFor=""> End date</label>
@@ -2346,10 +2415,15 @@ function AnnouncementCreate() {
                       onChange={onInputChange}
                       style={{
                         cursor: "pointer",
-                        zIndex: "1000",
+                        zIndex: "1",
                         position: "relative",
                       }}
                     />
+                    {errors.end_date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.end_date}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2371,7 +2445,7 @@ function AnnouncementCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
+                <h5 className="mt-0 text-start">Publish</h5>
                 <hr />
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
@@ -2382,8 +2456,13 @@ function AnnouncementCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/announcements"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
@@ -2397,7 +2476,7 @@ function AnnouncementCreate() {
                     type="checkbox"
                     id="isActiveSwitch"
                     name="active"
-                    value={active}
+                    checked={active === "yes"}
                     onChange={onInputChange}
                   />
                 </div>

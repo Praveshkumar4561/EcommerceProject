@@ -31,7 +31,7 @@ function CustomerVendor() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  },[]);
 
   const [user, setUser] = useState({
     shop_name: "",
@@ -82,7 +82,7 @@ function CustomerVendor() {
       toast.success("Shop registered successfully!", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -91,7 +91,7 @@ function CustomerVendor() {
       toast.error("Shop is not registered", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -266,14 +266,22 @@ function CustomerVendor() {
             <div className="d-flex flex-column flex-md-row align-items-center mb-3 mb-md-0 ">
               <div className="dropdown d-inline-block">
                 <button
-                  className="btn btn-success d-flex align-items-center me-3 py-4 rounded-0 cart-cart"
+                  type="button"
+                  className="btn btn-success-accesses d-flex align-items-center me-3 py-4 rounded-0 cart-cart"
                   id="categoryDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-label="Browse Categories"
                 >
-                  <FontAwesomeIcon icon={faBars} className="me-2" />
-                  BROWSE CATEGORIES
-                  <FontAwesomeIcon icon={faAngleDown} className="ms-2" />
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    className="me-2"
+                    aria-hidden="true"
+                  />
+                  <span className="cart-cart1">Browse Categories</span>
+                  <FontAwesomeIcon
+                    icon={faAngleDown}
+                    className="ms-2"
+                    aria-hidden="true"
+                  />
                 </button>
 
                 <ul
@@ -390,54 +398,54 @@ function CustomerVendor() {
 
       <div className="container-fluid ">
         <div className="container">
-          <div className="row gap-1 d-flex flex-wrap justify-content-start justify-content-lg-start ms-lg-0 mt-3">
+          <div className="row gap-1 d-flex flex-wrap justify-content-start justify-content-lg-start ms-lg-0 mt-3 me-1 me-lg-0 me-md-0">
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 customer-dashboard text-start bg-body shadow-lg rounded-0 ms-0">
               <ul className="px-3 py-3 list-lyte position-relative overflow-hidden">
                 <li>
                   <Link to={`/${url.userDashboard}`} className="text-dark">
-                    <img src={Over} alt="RxLYTE" className="me-2" />
+                     <img src={Over} alt="Over" className="me-2" />
                     Overview
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userOrders}`} className="text-dark">
-                    <img src={Cart_user} alt="RxLYTE" className="me-2" />
+                   <img src={Cart_user} alt="Cart_user" className="me-2" />
                     Orders
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userProductReviews}`} className="text-dark">
-                    <img src={Cart_reviews} alt="RxLYTE" className="me-2" />
+                     <img src={Cart_reviews} alt="Cart_reviews" className="me-2" />
                     Reviews
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userDownloads}`} className="text-dark">
-                    <img src={Cart_download} alt="RxLYTE" className="me-2" />
+                   <img src={Cart_download} alt="Cart_download" className="me-2" />
                     Downloads
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userOrderReturns}`} className="text-dark">
-                    <img src={Cart_order} alt="RxLYTE" className="me-2" />
+                    <img src={Cart_order} alt="Cart_order" className="me-2" />
                     Order Returns Requets
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userAddress}`} className="text-dark">
-                    <img src={Address} alt="RxLYTE" className="me-2" />
+                     <img src={Address} alt="Address" className="me-2" />
                     Addresses
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userEditAccount}`} className="text-dark">
-                    <img src={Cart_setting} alt="RxLYTE" className="me-2" />
+                    <img src={Cart_setting} alt="Cart_setting" className="me-2" />
                     Account Settings
                   </Link>
                 </li>

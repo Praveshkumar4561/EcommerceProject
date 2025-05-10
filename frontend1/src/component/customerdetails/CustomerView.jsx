@@ -9,6 +9,7 @@ import {
   faArrowLeft,
   faArrowRight,
   faX,
+  faGreaterThan,
 } from "@fortawesome/free-solid-svg-icons";
 import Tonic from "../../assets/Tonic.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,55 +23,71 @@ import Cart_logout from "../../assets/Cart_logout.webp";
 import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
 import { jsPDF } from "jspdf";
-import UserContext from "../../context/UserContext";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Close from "../../assets/Close.webp";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
-
 import Hamburger from "../../assets/hamburger.svg";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
+import UserContext from "../../context/UserContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CustomerView() {
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
 
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
-
   const [user, setUser] = useState([]);
+  const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const alldata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/getannounce");
-      setUser(response.data);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/getannounce"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      }
     };
-    alldata();
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    const now = new Date();
+    const filtered = user.filter((user) => {
+      return user.active === "yes" && new Date(user.end_date) >= now;
+    });
+    setFilteredAnnouncements(filtered);
+    if (filtered.length > 0) {
+      setCurrentIndex(0);
+    }
+  }, [user]);
 
   const leftData = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : user.length - 1
+      prevIndex > 0 ? prevIndex - 1 : filteredAnnouncements.length - 1
     );
   };
 
   const rightData = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex < user.length - 1 ? prevIndex + 1 : 0
+      prevIndex < filteredAnnouncements.length - 1 ? prevIndex + 1 : 0
     );
   };
 
@@ -104,40 +121,31 @@ function CustomerView() {
   };
 
   const handleUpload = () => {
+    if (!file) {
+      toast.error("Please upload a file", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
     try {
       toast.success("File uploaded successfully", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
       });
     } catch (error) {
-      toast.error("", {});
-    }
-  };
-
-  let [view, setView] = useState([]);
-  let [cart, setCart] = useState([]);
-  let [customer, setCustomer] = useState([]);
-
-  let cancelOrder = async () => {
-    try {
-      await axios.delete(`http://89.116.170.231:1600/deleteorder`);
-      toast.success("All products deleted successfully", {
+      toast.error("Error uploading file", {
         position: "bottom-right",
         autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
-      toast.error("Data is not submitted", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
+        ProgressBar: true,
         closeOnClick: true,
         draggable: true,
         progress: undefined,
@@ -145,32 +153,70 @@ function CustomerView() {
     }
   };
 
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [reason, setReason] = useState("");
+  const [description, setDescription] = useState("");
+  const [reasonError, setReasonError] = useState("");
+  const [descriptionError, setDescriptionError] = useState("");
 
-  const showPopup = () => setIsPopupVisible(true);
-  const closePopup = () => setIsPopupVisible(false);
+  const showPopup = () => {
+    setIsPopupVisible(true);
+  };
+
+  const closePopup = () => {
+    setIsPopupVisible(false);
+    setReason("");
+    setDescription("");
+    setReasonError("");
+    setDescriptionError("");
+  };
+
+  const cancelOrder = async (id) => {
+    setReasonError("");
+    setDescriptionError("");
+    let valid = true;
+    if (!reason) {
+      setReasonError("Please fill this field");
+      valid = false;
+    }
+    if (!description) {
+      setDescriptionError("Please fill this field");
+      valid = false;
+    }
+    if (!valid) return;
+
+    try {
+      await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
+      toast.success("Order cancelled successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+      localStorage.removeItem("cart");
+      closePopup();
+    } catch (error) {
+      toast.error("Data is not deleted", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const cartdata = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/checkoutdata"
-        );
-        const flattenedData = response.data.flatMap((checkout) =>
-          checkout.cartItems.map((item) => ({
-            ...item,
-            checkoutId: checkout.id,
-            total: item.price * item.quantity,
-          }))
-        );
-        setCart(flattenedData);
-        setView(flattenedData);
-        setCustomer(response.data);
-      } catch (error) {
-        console.error("Error fetching cart data:", error);
-      }
-    };
-    cartdata();
+    const storedOrders = localStorage.getItem("cart");
+    if (storedOrders) {
+      setOrders(JSON.parse(storedOrders));
+    }
   }, []);
 
   const printInvoice = () => {
@@ -256,39 +302,58 @@ function CustomerView() {
     }
   };
 
-  const downloadInvoice = () => {
+  const getBase64ImageFromUrl = async (imageUrl) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.setAttribute("crossOrigin", "anonymous");
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL("image/jpeg");
+        resolve(dataURL);
+      };
+      img.onerror = (error) => {
+        reject(error);
+      };
+      img.src = imageUrl;
+    });
+  };
+
+  const downloadInvoice = async () => {
     const doc = new jsPDF();
-    if (!Array.isArray(view) || view.length === 0) {
-      console.error("View data is missing or empty");
+    if (!Array.isArray(orders) || orders.length === 0) {
+      console.error("Orders data is missing or empty");
       return;
     }
-    if (!Array.isArray(customer) || customer.length === 0) {
-      console.error("Customer data is missing or empty");
+
+    const orderDetails = orders[0];
+    if (!orderDetails) {
+      console.error("Order details are missing!");
       return;
     }
-    let yOffset = 22;
-    const customerData = customer[0];
-    if (!customerData) {
-      console.error("Customer data is missing!");
-      return;
-    }
-    const orderNumber = customerData.order_number || "N/A";
-    const date = customerData.date || "N/A";
+
+    const orderNumber = orderDetails.order_number || "N/A";
+    const date = orderDetails.date || "N/A";
     const orderStatus = "N/A";
     const paymentMethod = "N/A";
     const paymentStatus = "N/A";
-    const fullName = `${customerData.first_name || "N/A"} ${
-      customerData.last_name || "N/A"
+    const fullName = `${orderDetails.first_name || "N/A"} ${
+      orderDetails.last_name || "N/A"
     }`;
-    const phone = customerData.phone_number || "N/A";
-    const address = customerData.address || "N/A";
-    const issueDate = customerData.date
-      ? new Date(customerData.date).toLocaleDateString("en-GB", {
+    const phone = orderDetails.phone_number || "N/A";
+    const address = orderDetails.address || "N/A";
+    const issueDate = orderDetails.date
+      ? new Date(orderDetails.date).toLocaleDateString("en-GB", {
           day: "numeric",
           month: "long",
           year: "numeric",
         })
       : "N/A";
+
+    let yOffset = 22;
     doc.setFontSize(16);
     doc.text(`Order Number: ${orderNumber}`, 14, yOffset);
     yOffset += 8;
@@ -312,48 +377,64 @@ function CustomerView() {
     doc.text("Products", 14, yOffset);
     yOffset += 8;
     doc.setFontSize(10);
-    doc.text("ID", 14, yOffset);
+    doc.text("#", 14, yOffset);
     doc.text("Image", 24, yOffset);
     doc.text("Product", 50, yOffset);
     doc.text("Amount", 90, yOffset);
     doc.text("Quantity", 120, yOffset);
     doc.text("Total", 150, yOffset);
     yOffset += 8;
-    if (view.length > 0) {
-      view.forEach((item) => {
-        console.log("Checking product data:", item);
-        const itemName = item.name || "N/A";
-        const itemImage = item.image
-          ? `http://89.116.170.231:1600/src/image/${item.image}`
-          : "http://example.com/default.jpg";
-        const itemAmount = parseFloat(item.price.replace("$", "")) || 0;
-        const itemQuantity = parseInt(item.quantity, 10) || 0;
-        const itemTotal = (itemAmount * itemQuantity).toFixed(2);
-        doc.text(item.checkoutId.toString(), 14, yOffset);
-        doc.addImage(itemImage, "JPEG", 24, yOffset - 4, 12, 12);
-        doc.text(itemName, 50, yOffset);
-        doc.text(`$${itemAmount.toFixed(2)}`, 90, yOffset);
-        doc.text(itemQuantity.toString(), 120, yOffset);
-        doc.text(`$${itemTotal}`, 150, yOffset);
-        yOffset += 8;
-        if (yOffset > 250) {
-          doc.addPage();
-          yOffset = 22;
+
+    for (let index = 0; index < orders.length; index++) {
+      const item = orders[index];
+      const itemName = item.name || "N/A";
+      const maxLength = 20;
+      const truncatedItemName =
+        itemName.length > maxLength
+          ? itemName.substring(0, maxLength) + "..."
+          : itemName;
+
+      const imageUrl = item.image
+        ? `http://89.116.170.231:1600/src/image/${item.image}`
+        : null;
+      const itemAmount = parseFloat(item.price.replace("$", "")) || 0;
+      const itemQuantity = parseInt(item.quantity, 10) || 0;
+      const itemTotal = (itemAmount * itemQuantity).toFixed(2);
+
+      doc.text(String(index + 1), 14, yOffset);
+
+      if (imageUrl) {
+        try {
+          const base64Img = await getBase64ImageFromUrl(imageUrl);
+          doc.addImage(base64Img, "JPEG", 24, yOffset - 4, 12, 12);
+        } catch (err) {
+          console.error("Error converting image for product:", itemName, err);
         }
-      });
-    } else {
-      console.error("No products in view data or invalid format.");
+      }
+
+      doc.text(truncatedItemName, 50, yOffset);
+      doc.text(`$${itemAmount.toFixed(2)}`, 90, yOffset);
+      doc.text(itemQuantity.toString(), 120, yOffset);
+      doc.text(`$${itemTotal}`, 150, yOffset);
+      yOffset += 8;
+
+      if (yOffset > 250) {
+        doc.addPage();
+        yOffset = 22;
+      }
     }
-    const tax = parseFloat(customerData.tax) || 0;
-    const totalAmount = parseFloat(customerData.total) || 0;
-    const grandTotal = parseFloat(customerData.total) || 0;
+
+    const tax = parseFloat(orderDetails.tax) || 0;
+    const totalAmount = parseFloat(orderDetails.total) || 0;
+    const grandTotal = totalAmount;
     yOffset += 8;
     doc.text(`Tax: $${tax.toFixed(2)}`, 14, yOffset);
     yOffset += 8;
     doc.text(`Total Amount: $${totalAmount.toFixed(2)}`, 14, yOffset);
     yOffset += 8;
     doc.text(`Grand Total: $${grandTotal.toFixed(2)}`, 14, yOffset);
-    doc.save(`Invoice ${view[0].invoice_number || ""}.pdf`);
+
+    doc.save(`Invoice ${orderNumber}.pdf`);
   };
 
   const [auth, setAuth] = useState(true);
@@ -370,6 +451,7 @@ function CustomerView() {
           localStorage.removeItem("userDetails");
           localStorage.removeItem("user");
           localStorage.removeItem("auth");
+          localStorage.removeItem("cart");
           setAuth(false);
           setMessage("Logged out successfully!");
           navigate(`/${url.login}`);
@@ -457,22 +539,21 @@ function CustomerView() {
       .catch((error) => console.error("Error fetching logo:", error));
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
-
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
-    }
-  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -497,6 +578,116 @@ function CustomerView() {
     setIsDropdownOpen((prev) => !prev);
   };
 
+  let [letter, setLetter] = useState({
+    email: "",
+  });
+  let { email } = letter;
+
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { email };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let newsSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      toast.success("Newsletter subscribed successfully", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Newsletter is not subscribed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  let onInputChange = (e) => {
+    setLetter({ ...letter, [e.target.name]: e.target.value });
+  };
+
+  const [product, setProduct] = useState([]);
+  let [search, setSearch] = useState("");
+  let [search1, setSearch1] = useState("");
+  const searchContainerRef = useRef(null);
+
+  useEffect(() => {
+    if (search) {
+      searchbar();
+    } else {
+      homedata();
+    }
+  }, [search]);
+
+  let searchbar = async () => {
+    let response = await axios.get(
+      `http://89.116.170.231:1600/productsearch/${search}`
+    );
+    setSearch1(response.data);
+  };
+
+  const homedata = async () => {
+    try {
+      let response = await axios.get(
+        "http://89.116.170.231:1600/productpagedata"
+      );
+      const filteredData = response.data.filter(
+        (product) =>
+          product.status === "Published" || product.status === "Draft"
+      );
+      setProduct(filteredData);
+    } catch (error) {
+      console.error("Error fetching blog data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
+        setSearch("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleSearchClick = () => {
+    navigate("/product-categories");
+  };
+
   return (
     <>
       <Helmet>
@@ -506,7 +697,10 @@ function CustomerView() {
           content="View detailed information about your order, including shipping status, payment details, and product summary. Track your purchase securely on Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/user/view" />
+        <link
+          rel="canonical"
+          href="http://srv724100.hstgr.cloud/user/orders/view"
+        />
       </Helmet>
 
       <div
@@ -526,30 +720,45 @@ function CustomerView() {
             : "190px",
         }}
       >
-        {user.length > 0 && (
+        {filteredAnnouncements.length > 0 ? (
           <div className="d-block d-lg-block text-start pt-2 pb-2">
             <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
               <FontAwesomeIcon
                 icon={faArrowLeft}
                 className="me-2 text-success fs-6 d-block d-lg-block mt-1"
-                style={{ cursor: "pointer", position: "relative", zIndex: "1" }}
+                style={{
+                  cursor: "pointer",
+                  position: "relative",
+                  zIndex: "1000",
+                }}
                 onClick={leftData}
               />
               <FontAwesomeIcon
                 icon={faArrowRight}
                 className="me-2 text-success fs-6 d-block d-lg-block mt-1"
-                style={{ cursor: "pointer", position: "relative", zIndex: "1" }}
+                style={{
+                  cursor: "pointer",
+                  position: "relative",
+                  zIndex: "1000",
+                }}
                 onClick={rightData}
               />
               <div className="ms-0">
-                {user[currentIndex].content.split(" ").slice(0, 6).join(" ")}
+                {filteredAnnouncements[currentIndex]?.content
+                  ? filteredAnnouncements[currentIndex].content
+                      .split(" ")
+                      .slice(0, 6)
+                      .join(" ")
+                  : ""}
               </div>
             </p>
           </div>
+        ) : (
+          <p className="text-start">No announcements available.</p>
         )}
 
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
-          <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
+          <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1 me-4">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
@@ -609,16 +818,18 @@ function CustomerView() {
                   </ul>
                 </div>
 
-                <div className="navbar-icons1 d-sm-flex mt-1 mt-md-0 gap-0 navbar-mobile">
+                <div className="navbar-icons1 d-sm-flex mt-0 mt-md-0 gap-0 navbar-mobile">
                   <Link
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{count6}</span>
+                    <span className="count-badge mt-2 pt-sm-2 pt-0 pt-md-0 mt-md-2">
+                      {count6}
+                    </span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-1"
+                      className="cart-image profiles1 mt-2 mt-lg-1 mt-md-"
                     />
                   </Link>
 
@@ -641,9 +852,9 @@ function CustomerView() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-1 "
+                      className="img-fluid profiles1 mt-1 pt-1 pt-md-0"
                     />
-                    <div className="addcarts ms-1 ps-1 pt-lg-1 count-badge1">
+                    <div className="addcarts ms-1 ps-1 pt-sm-1 pt-lg-1 pt-0 pt-md-0 count-badge1">
                       {count}
                     </div>
                   </Link>
@@ -693,30 +904,42 @@ function CustomerView() {
 
       <div className="container-fluid">
         <div className="row align-items-start justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
-          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-start ps-lg-2 ps-0 mt-2 mt-lg-3 lorem-home d-lg-block d-none">
-            {user.length > 0 && (
-              <div className="d-block d-lg-block text-start pt-0">
-                <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping d-flex flex-row ms-2 ms-lg-0">
+          <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-start ps-lg-2 ps-0 mt-2 mt-lg-1 lorem-home d-lg-block d-none">
+            {filteredAnnouncements.length > 0 ? (
+              <div className="d-block d-lg-block text-start pt-2 pb-2">
+                <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
                     className="me-2 text-success fs-6 d-block d-lg-block mt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
+                    }}
                     onClick={leftData}
                   />
                   <FontAwesomeIcon
                     icon={faArrowRight}
                     className="me-2 text-success fs-6 d-block d-lg-block mt-1"
-                    style={{ cursor: "pointer" }}
+                    style={{
+                      cursor: "pointer",
+                      position: "relative",
+                      zIndex: "1000",
+                    }}
                     onClick={rightData}
                   />
                   <div className="ms-0">
-                    {user[currentIndex].content
-                      .split(" ")
-                      .slice(0, 7)
-                      .join(" ")}
+                    {filteredAnnouncements[currentIndex]?.content
+                      ? filteredAnnouncements[currentIndex].content
+                          .split(" ")
+                          .slice(0, 6)
+                          .join(" ")
+                      : ""}
                   </div>
                 </p>
               </div>
+            ) : (
+              <p className="text-start">No announcements available.</p>
             )}
           </div>
 
@@ -753,7 +976,7 @@ function CustomerView() {
                         </span>
                       </div>
 
-                      <div className="d-flex flex-row gap-2">
+                      <div className="d-flex flex-row gap-2 mt-1">
                         <div className="d-flex flex-row gap-2">
                           <Link
                             to={`/${url.wishlist}`}
@@ -788,7 +1011,7 @@ function CustomerView() {
                               alt="Cart"
                               className="img-fluid cart-image mt-1 pt-1 mt-lg-2 pt-md-0"
                             />
-                            <div className="addcarts ms-1 ps-1 count-badge1 count-cart">
+                            <div className="addcarts ms-1 mt-1 ps-1 count-badge1 count-cart">
                               {count}
                             </div>
                           </Link>
@@ -848,80 +1071,131 @@ function CustomerView() {
                   src={logoUrl || Tonic}
                   alt="Tonic Logo"
                   className="img-fluid me-3 me-md-0 mt-0"
-                  style={{ height: `${logoHeight}px`, width: "200px" }}
+                  style={{ height: `${logoHeight}px`, width: "280px" }}
                 />
               </Link>
 
-              <div className="input-welcome1-home position-relative start-501 d-flex flex-row align-items-center mt-1">
-                <input
-                  type="search"
-                  className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none border-end-0 me- pe-2"
-                  placeholder="Search For Product"
-                  name="search"
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-
-                <div className="d-lg-block d-none w-75">
-                  <select
-                    className="form-select rounded-0 border-0 mt-3 border-start-0"
-                    style={{ height: "49px" }}
-                  >
-                    <option value="All Categories">All Categories</option>
-                    <option value="New Arrivals">New Arrivals</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Featured">Featured</option>
-                    <option value="Best Sellers">Best Sellers</option>
-                    <option value="Mobile Phone">Mobile Phone</option>
-                    <option value="Computers & Laptops">
-                      Computers & Laptops
-                    </option>
-                    <option value="Top Brands">Top Brands</option>
-                    <option value="Weekly Best Selling">
-                      Weekly Best Selling
-                    </option>
-                    <option value="CPU Heat Pipes">CPU Heat Pipes</option>
-                    <option value="CPU Coolers">CPU Coolers</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Headphones">Headphones</option>
-                    <option value="Wireless Headphones">
-                      Wireless Headphones
-                    </option>
-                    <option value="TWS Headphones">TWS Headphones</option>
-                    <option value="Smart Watch">Smart Watch</option>
-                    <option value="Gaming Console">Gaming Console</option>
-                    <option value="Playstation">Playstation</option>
-                    <option value="Gifts">Gifts</option>
-                    <option value="Computers">Computers</option>
-                    <option value="Desktop">Desktop</option>
-                    <option value="Laptop">Laptop</option>
-                    <option value="Tablet">Tablet</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="SmartPhones & Tablets">
-                      SmartPhones & Tablets
-                    </option>
-                    <option value="TV Video & Music">TV Video & Music</option>
-                    <option value="Cameras">Cameras</option>
-                    <option value="Cooking">Cooking</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="With Bluetooth">With Bluetooth</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Electronics Gadgets">
-                      Electronics Gadgets
-                    </option>
-                    <option value="Microscope">Microscope</option>
-                    <option value="Remote Control">Remote Control</option>
-                    <option value="Monitor">Monitor</option>
-                    <option value="Thermometer">Thermometer</option>
-                    <option value="Backpack">Backpack</option>
-                    <option value="Headphones">Headphones</option>
-                  </select>
+              <div
+                ref={searchContainerRef}
+                className="search-container cart-cart position-relative"
+              >
+                <div className="input-welcome1-home search-container position-relative d-flex flex-row align-items-center mt-1">
+                  <input
+                    type="search"
+                    className="form-control p-2 border-1 mt-sm-3 border py-4 input-home rounded-0 d-lg-block d-none border-end-0 me- pe-2 cart-cart"
+                    placeholder="Search For Product"
+                    name="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <div className="d-lg-block d-none w-75">
+                    <select
+                      id="categorySelect"
+                      className="form-select rounded-0 mt-3"
+                      style={{ height: "49px" }}
+                      aria-label="Category selection"
+                    >
+                      {[
+                        "All Categories",
+                        "New Arrivals",
+                        "Electronics",
+                        "Featured",
+                        "Best Sellers",
+                        "Mobile Phone",
+                        "Computers & Laptops",
+                        "Top Brands",
+                        "Weekly Best Selling",
+                        "CPU Heat Pipes",
+                        "CPU Coolers",
+                        "Accessories",
+                        "Headphones",
+                        "Wireless Headphones",
+                        "TWS Headphones",
+                        "Smart Watch",
+                        "Gaming Console",
+                        "Playstation",
+                        "Gifts",
+                        "Desktop",
+                        "Laptop",
+                        "Tablet",
+                        "SmartPhones & Tablets",
+                        "TV Video & Music",
+                        "Cameras",
+                        "Cooking",
+                        "With Bluetooth",
+                        "Sports",
+                        "Electronics Gadgets",
+                        "Microscope",
+                        "Remote Control",
+                        "Monitor",
+                        "Thermometer",
+                        "Backpack",
+                      ].map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="d-flex d-lg-block d-none">
+                    <button
+                      className="ms-0 btn btn-success-accesses d-flex mt-3 py-4 px-3 rounded-0 justify-content-center align-items-center"
+                      onClick={handleSearchClick}
+                      aria-label="Search"
+                    >
+                      <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </button>
+                  </div>
                 </div>
 
-                <div className="d-flex d-lg-block d-none">
-                  <button className="ms-0 btn btn-success d-flex mt-3 py-4 px-3 rounded-0 justify-content-center align-items-center">
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
-                  </button>
-                </div>
+                {search && Array.isArray(search1) && (
+                  <div className="search-results-search d-flex flex-column justify-content-center">
+                    {search1.length > 0 ? (
+                      <>
+                        {search1.slice(0, 4).map((product, idx) => (
+                          <Link
+                            key={idx}
+                            to="/product-categories"
+                            className="text-dark text-decoration-none"
+                          >
+                            <div className="search-result-item d-flex align-items-center p-2 border-bottom">
+                              <img
+                                src={`http://89.116.170.231:1600/src/image/${product.image}`}
+                                alt={product.name}
+                                className="ms-2 img-thumbnail"
+                                style={{
+                                  width: "60px",
+                                  height: "60px",
+                                  objectFit: "cover",
+                                }}
+                              />
+                              <div className="search-result-details text-start ms-0">
+                                <h6 className="mb-1">{product.name}</h6>
+                                <div className="d-flex flex-row gap-3 sales-font">
+                                  <p className="price fw-bold mb-0">
+                                    {product.price}
+                                  </p>
+                                  {product.price_sale && (
+                                    <p className="price-sale text-danger fw-bold mb-0">
+                                      {product.price_sale}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                        <div className="border w-100 pb-4 pt-3 all-result text-center">
+                          <Link to="/product-categories">View all results</Link>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-center text-dark py-3">
+                        No result found!
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -930,16 +1204,24 @@ function CustomerView() {
         <div className="container lorem-home d-none d-lg-block bg-light pb-3">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
             <div className="d-flex flex-column flex-md-row align-items-center mb-3 mb-md-0 ">
-              <div className="dropdown d-inline-block">
+              <div className="dropdown d-inline-block position-relative">
                 <button
-                  className="btn btn-success d-flex align-items-center me-3 py-4 rounded-0 cart-cart"
+                  type="button"
+                  className="btn btn-success-accesses d-flex align-items-center me-3 py-4 rounded-0 cart-cart"
                   id="categoryDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  aria-label="Browse Categories"
                 >
-                  <FontAwesomeIcon icon={faBars} className="me-2" />
-                  BROWSE CATEGORIES
-                  <FontAwesomeIcon icon={faAngleDown} className="ms-2" />
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    className="me-2"
+                    aria-hidden="true"
+                  />
+                  <span className="cart-cart1">Browse Categories</span>
+                  <FontAwesomeIcon
+                    icon={faAngleDown}
+                    className="ms-2"
+                    aria-hidden="true"
+                  />
                 </button>
 
                 <ul
@@ -947,63 +1229,204 @@ function CustomerView() {
                   aria-labelledby="categoryDropdown"
                 >
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       New Arrivals
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Electronics
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Gifts
                     </Link>
                   </li>
+
+                  <li className="dropdown-submenus position-relative">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
+                      Computers{" "}
+                      <FontAwesomeIcon
+                        icon={faGreaterThan}
+                        className="float-end pt-2 computer-font"
+                      />
+                    </Link>
+                    <ul className="dropdown-menus submenus rounded-0 lh-lg">
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?desktop"
+                        >
+                          Desktop
+                        </Link>
+                      </li>
+
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?laptop"
+                        >
+                          Laptop
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?tablet"
+                        >
+                          Tablet
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?accessories"
+                        >
+                          Accessories
+                        </Link>
+                      </li>
+                    </ul>
+                  </li>
+
                   <li>
                     <Link
-                      className="dropdown-item"
-                      to="#"
-                      aria-labelledby="categoryDropdown"
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
                     >
-                      Computers
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="#">
                       SmartPhones & Tablets
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
-                      Tv,Vido & Music
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
+                      Tv, Video & Music
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Cameras
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Cooking
                     </Link>
                   </li>
-                  <li>
-                    <Link className="dropdown-item" to="#">
+
+                  <li className="dropdown-submenus position-relative">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Accessories
+                      <FontAwesomeIcon
+                        icon={faGreaterThan}
+                        className="float-end pt-2 computer-font"
+                      />
                     </Link>
+                    <ul className="dropdown-menus submenus rounded-0 lh-lg">
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?with-bluetooth"
+                        >
+                          With Bluetooth
+                        </Link>
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Sports
                     </Link>
                   </li>
-                  <li>
-                    <Link className="dropdown-item" to="#">
+
+                  <li className="dropdown-submenus position-relative">
+                    <Link
+                      className="dropdown-item text-dark"
+                      to="/product-categories"
+                    >
                       Electronics Gadgets
+                      <FontAwesomeIcon
+                        icon={faGreaterThan}
+                        className="float-end pt-2 computer-font"
+                      />
                     </Link>
+                    <ul className="dropdown-menus submenus rounded-0 lh-lg">
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?microscope"
+                        >
+                          Microscope
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?remote-control"
+                        >
+                          Remote Control
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?monitor"
+                        >
+                          Monitor
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?thermometer"
+                        >
+                          Thermometer
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?backpack"
+                        >
+                          Backpack
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          className="dropdown-item text-dark"
+                          to="/product-categories?headphones"
+                        >
+                          Headphones
+                        </Link>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </div>
@@ -1044,7 +1467,7 @@ function CustomerView() {
               </nav>
             </div>
 
-            <div className="d-none d-md-flex align-items-center mt-3 mt-md-0 d-lg-none d-xl-block d-xxl-block d-lg-block d-none">
+            <div className="d-none d-md-flex align-items-center mt-3 mt-md-0 d-lg-none d-xl-block d-xxl-block d-lg-block d-none me-3">
               <span className="d-flex">
                 <FontAwesomeIcon
                   icon={faPhoneVolume}
@@ -1064,60 +1487,72 @@ function CustomerView() {
 
       <div className="container-fluid">
         <div className="container">
-          <div className="row gap-1 d-flex flex-wrap justify-content-start justify-content-lg-start ms-lg-0 mt-3">
+          <div className="row gap-1 d-flex flex-wrap justify-content-start justify-content-lg-start me-sm-1 ms-lg-0 mt-3 me-1 me-md-0">
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 customer-dashboard text-start bg-body shadow-lg rounded-0 ms-0">
               <ul className="px-3 py-3 list-lyte">
                 <li>
                   <Link to={`/${url.userDashboard}`} className="text-dark">
-                    <img src={Over} alt="RxLYTE" className="me-2" />
+                    <img src={Over} alt="Over" className="me-2" />
                     Overview
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userOrders}`} className="text-dark">
-                    <img src={Cart_user} alt="RxLYTE" className="me-2" />
+                    <img src={Cart_user} alt="Cart_user" className="me-2" />
                     Orders
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userProductReviews}`} className="text-dark">
-                    <img src={Cart_reviews} alt="RxLYTE" className="me-2" />
+                    <img
+                      src={Cart_reviews}
+                      alt="Cart_reviews"
+                      className="me-2"
+                    />
                     Reviews
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userDownloads}`} className="text-dark">
-                    <img src={Cart_download} alt="RxLYTE" className="me-2" />
+                    <img
+                      src={Cart_download}
+                      alt="Cart_download"
+                      className="me-2"
+                    />
                     Downloads
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userOrderReturns}`} className="text-dark">
-                    <img src={Cart_order} alt="RxLYTE" className="me-2" />
+                    <img src={Cart_order} alt="Cart_order" className="me-2" />
                     Order Returns Requets
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userAddress}`} className="text-dark">
-                    <img src={Address} alt="RxLYTE" className="me-2" />
+                    <img src={Address} alt="Address" className="me-2" />
                     Addresses
                   </Link>
                 </li>
 
                 <li>
                   <Link to={`/${url.userEditAccount}`} className="text-dark">
-                    <img src={Cart_setting} alt="RxLYTE" className="me-2" />
+                    <img
+                      src={Cart_setting}
+                      alt="Cart_setting"
+                      className="me-2"
+                    />
                     Account Settings
                   </Link>
                 </li>
 
                 <li onClick={handleDelete} style={{ cursor: "pointer" }}>
-                  <img src={Cart_logout} alt="Logout" className="me-2" />
+                  <img src={Cart_logout} alt="Cart_logout" className="me-2" />
                   Logout
                 </li>
               </ul>
@@ -1128,8 +1563,8 @@ function CustomerView() {
               id="invoice-content"
             >
               <div className="d-flex w-100 justify-content-between">
-                {Array.isArray(customer) &&
-                  customer.slice(0, 1).map((data, key) => (
+                {Array.isArray(orders) &&
+                  orders.slice(0, 1).map((data, key) => (
                     <div
                       className="d-flex flex-column lh-lg cart-cart"
                       key={key}
@@ -1142,12 +1577,7 @@ function CustomerView() {
                         <span>
                           Time:{" "}
                           <span className="cart-cart1">
-                            {new Date(data.date).toISOString().split("T")[0]}{" "}
-                            {new Date(data.date).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })}
+                            {new Date(data.date).toLocaleDateString("en-CA")}
                           </span>
                         </span>
                       </div>
@@ -1160,13 +1590,18 @@ function CustomerView() {
                         <span>Payment method:</span>
                       </div>
                       <div className="d-flex flex-row">
-                        <span>Payment status:</span>
+                        <span>
+                          Payment status:{" "}
+                          <span className="badge badge-success fw-light cart-cart1 py-2">
+                            Pending
+                          </span>
+                        </span>
                       </div>
                     </div>
                   ))}
 
-                {Array.isArray(customer) &&
-                  customer.slice(0, 1).map((data, key) => (
+                {Array.isArray(orders) &&
+                  orders.slice(0, 1).map((data, key) => (
                     <div
                       className="d-flex flex-column lh-lg cart-cart me-0"
                       key={key}
@@ -1190,7 +1625,10 @@ function CustomerView() {
                       <div className="d-flex flex-row">
                         <span>
                           Address:
-                          <span className="ms-1 fw-bold">{data.address}</span>
+                          <span className="ms-1 fw-bold">
+                            {data.address} {data.apartment} {data.country}{" "}
+                            {data.pincode}
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -1198,11 +1636,11 @@ function CustomerView() {
               </div>
 
               <h4 className="mt-3 cart-cart mb-3 mb-lg-0">Products</h4>
-              <div className="w-100 cart-cart text-center table-container-content">
-                <table className="table table-borderless table-striped border mt-lg-3 mt-0">
+              <div className="cart-cart text-center table-view">
+                <table className="table table-borderless table-view table-striped border mt-lg-3 mt-0">
                   <thead className="bg-light border">
                     <tr>
-                      <th className="fw-light ps-3 py-2 text-start">#</th>
+                      <th className="fw-light ps-3 py-2 text-start">id</th>
                       <th className="fw-light text-start">Image</th>
                       <th className="fw-light text-start">Product</th>
                       <th className="fw-light text-start">Amount</th>
@@ -1211,23 +1649,23 @@ function CustomerView() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Array.isArray(view) &&
-                      view.map((data, key) => (
+                    {Array.isArray(orders) &&
+                      orders.map((data, key) => (
                         <tr key={key}>
-                          <td className="text-start">{data.checkoutId}</td>
+                          <td className="text-start">{data.id}</td>
                           <td className="text-start">
                             <img
                               src={`http://89.116.170.231:1600/src/image/${data.image}`}
                               alt="RxLYTE"
-                              className="img-thumbnail"
+                              className="img-thumbnail view-orders"
                             />
                           </td>
                           <td className="text-start d-flex flex-column">
                             {data.name}
                           </td>
 
-                          {Array.isArray(customer) &&
-                            customer.slice(0, 1).map((data) => (
+                          {Array.isArray(orders) &&
+                            orders.slice(0, 1).map((data) => (
                               <>
                                 <td
                                   style={{ fontFamily: "verdana" }}
@@ -1245,32 +1683,38 @@ function CustomerView() {
                       ))}
                   </tbody>
 
-                  <div className="d-flex flex-column mt-0 lh-lg total-amount">
-                    {Array.isArray(view) &&
-                      view.length > 0 &&
-                      Array.isArray(customer) && (
-                        <>
-                          {customer.map((data) => (
-                            <>
-                              <span className="text-start ms-4">
-                                Tax:
-                                <span style={{ fontFamily: "verdana" }}>
-                                  ${data.tax}
-                                </span>
+                  <div className="d-flex flex-column mt-1 lh-lg total-amount">
+                    {Array.isArray(orders) &&
+                      orders.length > 0 &&
+                      (() => {
+                        const totalTax = orders.reduce(
+                          (acc, order) => acc + Number(order.tax || 0),
+                          0
+                        );
+                        const totalAmount = orders.reduce(
+                          (acc, order) => acc + Number(order.total || 0),
+                          0
+                        );
+                        return (
+                          <>
+                            <span className="text-start ms-2">
+                              Tax:{" "}
+                              <span style={{ fontFamily: "verdana" }}>
+                                ${totalTax.toFixed(2)}
                               </span>
-                              <span
-                                className="text-start ms-4 mb-3"
-                                style={{ whiteSpace: "nowrap" }}
-                              >
-                                Total Amount:
-                                <span style={{ fontFamily: "verdana" }}>
-                                  ${data.total}
-                                </span>
+                            </span>
+                            <span
+                              className="text-start ms-2 mb-3"
+                              style={{ whiteSpace: "nowrap" }}
+                            >
+                              Total Amount:{" "}
+                              <span style={{ fontFamily: "verdana" }}>
+                                ${totalAmount.toFixed(2)}
                               </span>
-                            </>
-                          ))}
-                        </>
-                      )}
+                            </span>
+                          </>
+                        );
+                      })()}
                   </div>
                 </table>
               </div>
@@ -1282,13 +1726,13 @@ function CustomerView() {
                   <div className="border rounded-0 file-choose bg-body">
                     <input
                       type="file"
-                      className="mt-2 mb-2 ms-2"
+                      className="mt-2 mb-2 ms-2 cart-cart"
                       accept=".jpg,.jpeg,.png,.pdf"
                       onChange={handleFileChange}
                     />
                   </div>
                   <button
-                    className="btn btn-success d-flex rounded-0 cart-cart py-4 upload-btn mt-1 ms-2"
+                    className="btn btn-success d-flex rounded-0 cart-cart1 py-4 upload-btn mt-1 ms-2"
                     onClick={handleUpload}
                   >
                     Upload
@@ -1308,15 +1752,20 @@ function CustomerView() {
                 >
                   Print Invoice
                 </button>
+
                 <button
                   className="btn btn-success d-flex rounded-0 py-4 cart-cart"
                   onClick={downloadInvoice}
                 >
                   Download Invoice
                 </button>
+
                 <button
                   className="btn btn-danger d-flex rounded-0 py-4 cart-cart"
-                  onClick={showPopup}
+                  onClick={() => {
+                    setSelectedOrderId(orders[0].id);
+                    showPopup();
+                  }}
                 >
                   Cancel order
                 </button>
@@ -1339,18 +1788,18 @@ function CustomerView() {
                     </span>
                     <hr />
                     <div>
-                      <label htmlFor="">
+                      <label htmlFor="reason">
                         Choose a Reason for Order Cancellation{" "}
                         <span className="text-danger fw-bold">*</span>
                       </label>
-
                       <select
+                        id="reason"
                         className="form-select mt-2 order-invoice rounded-0"
                         style={{ height: "50px" }}
+                        value={reason}
+                        onChange={(e) => setReason(e.target.value)}
                       >
-                        <option value="" selected="">
-                          Choose a reason...
-                        </option>
+                        <option value="">Choose a reason...</option>
                         <option value="change-mind">
                           Changed mind or no longer needed the product
                         </option>
@@ -1381,27 +1830,47 @@ function CustomerView() {
                         </option>
                         <option value="other">Other</option>
                       </select>
+                      {reasonError && (
+                        <div
+                          className="text-danger cart-cart1 ms-1 mt-1"
+                          style={{ fontSize: "0.9em" }}
+                        >
+                          {reasonError}
+                        </div>
+                      )}
                     </div>
 
-                    <div className="mt-3 ms-2">
-                      <label htmlFor="">Description</label>
+                    <div className="mt-2 pb-0 ms-2">
+                      <label htmlFor="description">Description</label>
                       <textarea
+                        id="description"
                         className="form-control mt-2 mb-3 order-invoice rounded-0"
                         style={{ height: "76px" }}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                       ></textarea>
+                      {descriptionError && (
+                        <div
+                          className="text-danger cart-cart1 ms-1"
+                          style={{ fontSize: "0.9em" }}
+                        >
+                          {descriptionError}
+                        </div>
+                      )}
                     </div>
                     <hr />
 
                     <div className="d-flex gap-2 justify-content-end flex-row w-100">
                       <button
-                        className="btn btn-secondary d-flex rounded-0 py-4 cart-cart"
+                        className="btn btn-secondary d-flex rounded-0 py-4 cart-cart1"
                         onClick={closePopup}
                       >
                         Close
                       </button>
                       <button
-                        className="btn btn-success d-flex rounded-0 py-4 cart-cart"
-                        onClick={cancelOrder}
+                        type="button"
+                        className="btn btn-success d-flex rounded-0 py-4 cart-cart1"
+                        onClick={() => cancelOrder(selectedOrderId)}
                       >
                         Submit
                       </button>
@@ -1412,9 +1881,10 @@ function CustomerView() {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <footer className="footer pt-4 pb-4 cart-cart mt-4 details-user">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -1424,23 +1894,23 @@ function CustomerView() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -1472,14 +1942,14 @@ function CustomerView() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
                         to="/faqs"
                         className="text-white text-decoration-none"
                       >
-                        FAQ
+                        FAQ's
                       </Link>
                     </li>
                     <li>
@@ -1504,20 +1974,30 @@ function CustomerView() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
-                  aria-label="Email address"
-                />
+                <div className="d-flex flex-column justify-content-start">
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    className="form-control me-2 py-4 cart-cart1"
+                    aria-label="Email address"
+                    name="email"
+                    value={email}
+                    onChange={onInputChange}
+                  />
+                  {errors.email && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.email}
+                    </small>
+                  )}
+                </div>
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-product d-flex cart-cart1 py-4 me-0 ms-1"
                   type="submit"
-                  onClick={(e) => e.preventDefault()}
+                  onClick={newsSubmit}
                 >
                   Subscribe
                 </button>
@@ -1530,7 +2010,7 @@ function CustomerView() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
               </p>
             </div>
           </div>

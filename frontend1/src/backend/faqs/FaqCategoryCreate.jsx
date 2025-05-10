@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./FaqCategoryCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
@@ -10,23 +11,19 @@ import {
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
+import { Helmet } from "react-helmet-async";
 
 function FaqCategoryCreate() {
   let navigate = useNavigate();
-
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-  let [days, setDays] = useState(false);
-  let [days1, setDays1] = useState(false);
-  let [referrar, setReferrar] = useState(false);
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
 
@@ -58,18 +55,6 @@ function FaqCategoryCreate() {
     setBlog(!blog);
   };
 
-  let daysClicked = () => {
-    setDays(!days);
-  };
-
-  let daysClicked1 = () => {
-    setDays1(!days1);
-  };
-
-  let referrarClicked = () => {
-    setReferrar(!referrar);
-  };
-
   let [user, setUser] = useState({
     name: "",
     description: "",
@@ -80,7 +65,30 @@ function FaqCategoryCreate() {
 
   let { name, description, orders, date, status } = user;
 
-  let handleSubmit = async () => {
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    let newErrors = {};
+    const requiredFields = { name, description, orders, date, status };
+
+    for (const field in requiredFields) {
+      if (
+        !requiredFields[field] ||
+        requiredFields[field].toString().trim() === ""
+      ) {
+        let fieldName = field.charAt(0).toUpperCase() + field.slice(1);
+        newErrors[field] = `${fieldName} is required`;
+      }
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       const response = await axios.post(
         "http://89.116.170.231:1600/faqcategory",
@@ -124,7 +132,7 @@ function FaqCategoryCreate() {
       setCount5(response.data.length);
     };
     orderdata();
-  });
+  }, []);
 
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -174,6 +182,7 @@ function FaqCategoryCreate() {
     "/admin/payments/transactions": "# Payments > Transactions",
     "/admin/payments/logs": "# Payments > Payment Logs",
     "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -218,6 +227,42 @@ function FaqCategoryCreate() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>New Category | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+
+        <meta property="og:title" content="New Category | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -299,7 +344,9 @@ function FaqCategoryCreate() {
                 <path d="M11.5 3a17 17 0 0 0 0 18" />
                 <path d="M12.5 3a17 17 0 0 1 0 18" />
               </svg>
-              <span className="text-light ps-1 fs-6">View website</span>
+              <span className="text-light ps-1 fs-6 cart-cart">
+                View website
+              </span>
             </Link>
           </div>
 
@@ -1507,7 +1554,7 @@ function FaqCategoryCreate() {
                   </Link>
 
                   <Link
-                    to="/admin/ads"
+                    to="/admin/settings/ads"
                     className="text-light text-decoration-none"
                   >
                     <li>
@@ -2155,7 +2202,7 @@ function FaqCategoryCreate() {
           </li>
           <li className="breadcrumb-item fw-normal text-dark">FAQS</li>
 
-          <li className="breadcrumb-item fw-medium ms-2">
+          <li className="breadcrumb-item fw-medium ms-0">
             <Link to="/admin/faq-categories">CATEGORIES</Link>
           </li>
 
@@ -2209,24 +2256,33 @@ function FaqCategoryCreate() {
                       value={name}
                       onChange={onInputChange}
                     />
+                    {errors.name && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.name}
+                      </small>
+                    )}
                   </div>
 
                   <div className="d-flex flex-column mb-3 mt-0 w-100">
                     <label htmlFor="">Description</label>
                     <textarea
                       type="text"
-                      className="form-control mt-2 py-4"
+                      className="form-control mt-2"
                       placeholder="short description"
                       name="description"
                       value={description}
                       onChange={onInputChange}
                       style={{
                         zIndex: "1000",
-                        cursor: "pointer",
                         position: "relative",
                         height: "78px",
                       }}
                     />
+                    {errors.description && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.description}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2241,6 +2297,11 @@ function FaqCategoryCreate() {
                       value={orders}
                       onChange={onInputChange}
                     />
+                    {errors.orders && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.orders}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2254,6 +2315,11 @@ function FaqCategoryCreate() {
                       value={date}
                       onChange={onInputChange}
                     />
+                    {errors.date && (
+                      <small className="text-danger text-start cart-cart mt-1">
+                        {errors.date}
+                      </small>
+                    )}
                   </div>
                 </div>
               </form>
@@ -2261,8 +2327,8 @@ function FaqCategoryCreate() {
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
               <div className="border rounded p-2 customer-page1">
-                <h4 className="mt-0 text-start">Publish</h4>
-                <hr />
+                <h5 className="mt-0 text-start">Publish</h5>
+                <div className="border mb-3 mt-2"></div>
                 <div className="d-flex flex-row gap-3 mb-3">
                   <button
                     type="button"
@@ -2272,27 +2338,36 @@ function FaqCategoryCreate() {
                     <FontAwesomeIcon icon={faSave} className="me-2" /> Save
                   </button>
                   <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                    Save & Exit
+                    <Link
+                      to="/admin/faq-categories"
+                      className="text-decoration-none text-dark"
+                    >
+                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                      Save & Exit
+                    </Link>
                   </button>
                 </div>
               </div>
 
               <div className="border rounded p-3 customer-page1">
                 <h4 className="mt-0 text-start">Status</h4>
-                <hr />
+                <div className="border mb-3 mt-2"></div>
                 <select
                   className="w-100 rounded-1 py-2 border"
                   name="status"
                   value={status}
                   onChange={onInputChange}
-                  required
                 >
                   <option value="">Select an option</option>
                   <option value="Published">Published</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
                 </select>
+                {errors.status && (
+                  <small className="text-danger text-start cart-cart mt-1">
+                    {errors.status}
+                  </small>
+                )}
               </div>
             </div>
           </div>

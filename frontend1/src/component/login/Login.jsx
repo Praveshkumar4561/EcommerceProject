@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import Tonic from "../../assets/Tonic.svg";
 import Hamburger from "../../assets/hamburger.svg";
 import Close from "../../assets/Close.webp";
@@ -14,26 +13,25 @@ import "react-toastify/dist/ReactToastify.css";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 function Login() {
   const navigate = useNavigate();
   let { count, setCount } = useContext(UserContext);
 
   useEffect(() => {
+    const cartdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/allcartdata"
+        );
+        setCount(response.data.length);
+      } catch (error) {
+        console.error("Error fetching cart data:", error);
+      }
+    };
     cartdata();
   }, []);
-
-  const cartdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/allcartdata"
-      );
-      setCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart data:", error);
-    }
-  };
 
   const [registerErrors, setRegisterErrors] = useState({});
 
@@ -52,8 +50,6 @@ function Login() {
   const { email, password } = user;
 
   const [loginErrors, setLoginErrors] = useState({});
-  const [auth, setAuth] = useState(false);
-  const [message, setMessage] = useState("");
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -75,6 +71,9 @@ function Login() {
         { withCredentials: true }
       );
       if (response?.data?.Status === "Success" && response?.data?.user) {
+        localStorage.removeItem("cart");
+        localStorage.removeItem("registerUser");
+        localStorage.removeItem("user");
         const userData = response.data.user;
         const tokenExpirationTime = response.data.tokenExpiration;
         const userWithExpiration = {
@@ -83,8 +82,6 @@ function Login() {
         };
         localStorage.setItem("user", JSON.stringify(userWithExpiration));
         localStorage.setItem("auth", "true");
-        setAuth(true);
-        setMessage("Login successful!");
         navigate("/");
       } else {
         console.warn("Login Failed:", response.data);
@@ -101,18 +98,64 @@ function Login() {
     }
   };
 
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setRegisterErrors({});
+    const errors = {};
+    const strongPasswordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+    if (!registerUser.first_name) errors.first_name = "First name is required";
+    if (!registerUser.last_name) errors.last_name = "Last name is required";
+    if (!registerUser.phone_number)
+      errors.phone_number = "Phone number is required";
+    if (!registerUser.email) errors.email = "Email is required";
+    if (!registerUser.password) {
+      errors.password = "Password is required";
+    } else if (!strongPasswordRegex.test(registerUser.password)) {
+      errors.password =
+        "Password must be at least 6 characters and include letters, numbers, and special characters";
+    }
+    if (Object.keys(errors).length > 0) {
+      setRegisterErrors(errors);
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://89.116.170.231:1600/submit",
+        registerUser
+      );
+      localStorage.removeItem("cart");
+      localStorage.removeItem("user");
+      localStorage.removeItem("registerUser");
+      localStorage.setItem("registeredUser", JSON.stringify(registerUser));
+      toast.success("Registered successfully! You can now login", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } catch (error) {
+      toast.error("Registration failed! Please try again", {
+        position: "bottom-right",
+        autoClose: 1000,
+        ProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
   useEffect(() => {
     const checkTokenExpiration = () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (storedUser && storedUser.tokenExpiration) {
         if (Date.now() > storedUser.tokenExpiration) {
           console.log("Token expired. Logging out...");
-
           localStorage.removeItem("user");
           localStorage.removeItem("auth");
-
           toast.error("Session expired. Please log in again.");
-
           navigate("/login");
         }
       } else {
@@ -125,48 +168,6 @@ function Login() {
     }, 10000);
     return () => clearTimeout(timeoutid);
   }, [navigate]);
-
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
-    setRegisterErrors({});
-    const errors = {};
-    if (!registerUser.first_name) errors.first_name = "First name is required";
-    if (!registerUser.last_name) errors.last_name = "Last name is required";
-    if (!registerUser.phone_number)
-      errors.phone_number = "Phone number is required";
-    if (!registerUser.email) errors.email = "Email is required";
-    if (!registerUser.password) errors.password = "Password is required";
-    else if (registerUser.password.length < 6)
-      errors.password = "Password must be at least 6 characters";
-    if (Object.keys(errors).length > 0) {
-      setRegisterErrors(errors);
-      return;
-    }
-    try {
-      const response = await axios.post(
-        "http://89.116.170.231:1600/submit",
-        registerUser
-      );
-      localStorage.setItem("registeredUser", JSON.stringify(registerUser));
-      toast.success("Registered successfully! you can login", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
-      toast.error("Registered failed! you can try again", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  };
 
   const handleLoginChange = (e) => {
     setUser({
@@ -231,6 +232,7 @@ function Login() {
     userEditAccount: "user/edit-account",
     userOrders: "user/orders",
   };
+
   const [url, setUrl] = useState(
     JSON.parse(localStorage.getItem("urlState")) || defaultUrlState
   );
@@ -275,21 +277,48 @@ function Login() {
     fetchBreadcrumbData();
   }, []);
 
-  let [count6, setCount6] = useState("");
+  let [count6, setCount6] = useState(0);
 
   useEffect(() => {
+    const wishlistdata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/wishlistdata"
+        );
+        setCount6(response.data.length);
+      } catch (error) {
+        console.error("Error fetching wishlist data:", error);
+      }
+    };
     wishlistdata();
   }, []);
 
-  const wishlistdata = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/wishlistdata"
-      );
-      setCount6(response.data.length);
-    } catch (error) {
-      console.error("Error fetching wishlist data:", error);
+  let [cookie, setCookie] = useState([]);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookieConsent");
+    if (consent) {
+      return;
     }
+
+    const cookiedata = async () => {
+      try {
+        const response = await axios.get(
+          "http://89.116.170.231:1600/cookiesalldata"
+        );
+        setCookie([response.data]);
+      } catch (error) {
+        console.error("error", error);
+      }
+    };
+    cookiedata();
+  }, []);
+
+  const handleCookieAccept = (data) => {
+    localStorage.setItem("cookieConsent", JSON.stringify(data));
+    setCookie((prevCookie) =>
+      prevCookie.filter((item) => item.cookie !== "yes")
+    );
   };
 
   return (
@@ -321,7 +350,7 @@ function Login() {
             : "190px",
         }}
       >
-        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto">
+        <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
           <header className="d-flex flex-wrap justify-content-between py-2 mb-5 border-bottom bg-body rounded-2 container-custom1">
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
@@ -387,7 +416,7 @@ function Login() {
                     to={`/${url.wishlist}`}
                     className="position-relative text-decoration-none me-3 mt-0 wishlist-home"
                   >
-                    <span className="count-badge mt-1">{count6}</span>
+                    <span className="count-badge mt-2 mt-lg-1">{count6}</span>
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
@@ -489,7 +518,7 @@ function Login() {
                   >
                     <ol className="breadcrumb d-flex flex-wrap gap-0">
                       <li className="breadcrumb-item navbar-item fw-medium">
-                        <Link target="_blank" to="/" className="text-dark">
+                        <Link to="/" className="text-dark">
                           Home
                         </Link>
                       </li>
@@ -510,10 +539,10 @@ function Login() {
           <div className="row d-flex justify-content-start flex-md-nowrap flex-row gap-0 ">
             <div className="col-12 col-md-6 col-lg-6 mb-4 mb-lg-0 login-alignment1">
               <div className="card w-100">
-                <div className="card-body border rounded-1 cart-cart1">
-                  <h3 className="fw-lighter login cart-cart1 text-center">
+                <div className="card-body border rounded-1 cart-cart">
+                  <h2 className="fw-lighter login cart-cart text-center about-trend1">
                     Login
-                  </h3>
+                  </h2>
                   <p className="text-center mb-3 account text-dark">
                     Please login using your account details below.
                   </p>
@@ -524,7 +553,7 @@ function Login() {
                       </label>
                       <input
                         type="email"
-                        className="form-control py-4 cart-cart1 address-register"
+                        className="form-control py-4 cart-cart address-register"
                         id="loginEmail"
                         placeholder="Email Address"
                         name="email"
@@ -544,7 +573,7 @@ function Login() {
                       </label>
                       <input
                         type={shows ? "text" : "password"}
-                        className="form-control py-4 address-register cart-cart1"
+                        className="form-control py-4 address-register cart-cart"
                         id="loginPassword"
                         placeholder="Password"
                         name="password"
@@ -577,7 +606,7 @@ function Login() {
                     >
                       <button
                         type="submit"
-                        className="btn btn-success button-account d-flex py-4 cart-cart1 w-100"
+                        className="btn btn-success-product button-account d-flex py-4 cart-cart w-100"
                       >
                         Sign In
                       </button>
@@ -608,7 +637,9 @@ function Login() {
             <div className="col-12 col-md-6 col-lg-6">
               <div className="card shadow-sm w-100 register mt-0 mt-lg-3 mt-md-3">
                 <div className="card-header text-center border rounded-2">
-                  <h3 className="fw-lighter login cart-cart1">Register</h3>
+                  <h2 className="fw-lighter login cart-cart about-trend1">
+                    Register
+                  </h2>
                   <p className="account fw-medium text-dark">
                     Don't have an account?{" "}
                     <Link
@@ -619,7 +650,7 @@ function Login() {
                     </Link>
                   </p>
                 </div>
-                <div className="card-body cart-cart1">
+                <div className="card-body cart-cart">
                   <form onSubmit={handleRegisterSubmit}>
                     <div className="mb-3 text-start">
                       <label htmlFor="registerEmail" className="form-label">
@@ -627,7 +658,7 @@ function Login() {
                       </label>
                       <input
                         type="email"
-                        className="form-control py-4 address-register cart-cart1"
+                        className="form-control py-4 address-register cart-cart"
                         id="registerEmail"
                         placeholder="Email Address"
                         name="email"
@@ -647,7 +678,7 @@ function Login() {
                       </label>
                       <input
                         type={show ? "text" : "password"}
-                        className="form-control py-4 address-register cart-cart1"
+                        className="form-control py-4 address-register cart-cart"
                         id="registerPassword"
                         placeholder="Create Password"
                         name="password"
@@ -661,7 +692,7 @@ function Login() {
                         style={{ cursor: "pointer", marginTop: "-23px" }}
                       />
                       {registerErrors.password && (
-                        <small className="text-danger d-flex flex-column">
+                        <small className="text-danger d-flex flex-column text-start mt-1">
                           {registerErrors.password}
                         </small>
                       )}
@@ -676,7 +707,7 @@ function Login() {
                       </label>
                       <input
                         type="text"
-                        className="form-control py-4 address-register cart-cart1"
+                        className="form-control py-4 address-register cart-cart"
                         id="firstName"
                         placeholder="First Name"
                         name="first_name"
@@ -695,7 +726,7 @@ function Login() {
                       </label>
                       <input
                         type="text"
-                        className="form-control py-4 address-register cart-cart1"
+                        className="form-control py-4 address-register cart-cart"
                         id="lastName"
                         placeholder="Last Name"
                         name="last_name"
@@ -714,7 +745,7 @@ function Login() {
                       </label>
                       <input
                         type="number"
-                        className="form-control py-4 address-register cart-cart1"
+                        className="form-control py-4 address-register cart-cart"
                         id="phoneNumber"
                         placeholder="Phone Number"
                         name="phone_number"
@@ -727,7 +758,7 @@ function Login() {
                         </small>
                       )}
                     </div>
-                    <div className="mb-3 form-check text-start cart-cart1">
+                    <div className="mb-3 form-check text-start cart-cart">
                       <input
                         type="checkbox"
                         className="form-check-input"
@@ -744,7 +775,7 @@ function Login() {
                     >
                       <button
                         type="submit"
-                        className="btn btn-success w-100 button-account d-flex py-4 cart-cart1"
+                        className="btn btn-success-product w-100 button-account d-flex py-4 cart-cart"
                       >
                         Create Account
                       </button>
@@ -758,7 +789,58 @@ function Login() {
         <ToastContainer />
       </div>
 
-      <footer className="bg-dark text-white pt-4 pb-4 cart-cart mt-4">
+      <div className="container-fluid">
+        <div className="container">
+          <div className="row theme-allow cart-cart">
+            {Array.isArray(cookie) && cookie.length > 0
+              ? cookie.map((data, key) => {
+                  if (data.cookie !== "yes") return null;
+                  const cardStyle = {
+                    backgroundColor: data.backgroundColor,
+                    color: data.textColor,
+                    ...(data.style === "Minimal" && {
+                      width: "388px",
+                      height: "135px",
+                      marginLeft: "2px",
+                    }),
+                  };
+
+                  return (
+                    <div
+                      className="col-12 col-lg-12 col-md-12 border d-flex justify-content-center gap-5 align-items-center"
+                      key={key}
+                      style={cardStyle}
+                    >
+                      <div className="d-flex align-items-center justify-content-between w-100">
+                        <span
+                          className={
+                            data.style === "Full Width"
+                              ? "message-cookie ms-1"
+                              : ""
+                          }
+                        >
+                          {data.message}.
+                        </span>
+                        <button
+                          className={`btn btn-dark d-flex cart-cart allow-site mt-1 button-cook mb-2 mt-2 btn-outline-light ${
+                            data.style === "Full Width"
+                              ? "button-cook-position"
+                              : ""
+                          }`}
+                          onClick={() => handleCookieAccept(data)}
+                        >
+                          {data.button_text}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              : null}
+          </div>
+        </div>
+      </div>
+
+      <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
@@ -768,23 +850,23 @@ function Login() {
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
               />
-              <h4 className="mb-2">About Us</h4>
-              <p className="text-start lh-lg footer-list">
+              <h2 className="mb-2 about-blog">About Us</h2>
+              <ul className="text-start lh-lg footer-list ps-0">
                 <li>
                   We assert that our online pharmacy, RxTonic.com, complies with
                   all local legal requirements while delivering healthcare
                   services over the internet platform. To provide our consumers
-                  the finest pharmaceutical care possible,all pharmaceutical
+                  the finest pharmaceutical care possible, all pharmaceutical
                   firms and drug manufacturers have accredited facilities and
                   trained pharmacists on staff.
                 </li>
-              </p>
+              </ul>
             </div>
 
             <div className="col-12 col-md-6 col-lg-4 mt-md-5 pt-md-2 mt-lg-0 pt-lg-0">
               <div className="d-flex flex-row flex-lg-nowrap w-100 gap-2 mt-lg-5 pt-lg-4">
                 <div className="text-start">
-                  <h5 className="mb-2 pb-0">Company</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Company</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
@@ -816,14 +898,14 @@ function Login() {
                 </div>
 
                 <div className="text-start ms-5 ps-5 ps-lg-0">
-                  <h5 className="mb-2 pb-0">Help?</h5>
+                  <h2 className="mb-2 pb-0 about-blog">Help?</h2>
                   <ul className="lh-lg footer-list p-0">
                     <li>
                       <Link
                         to="/faqs"
                         className="text-white text-decoration-none"
                       >
-                        FAQ
+                        FAQ's
                       </Link>
                     </li>
                     <li>
@@ -848,18 +930,18 @@ function Login() {
             </div>
 
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-2 mt-0 ms-lg-5 mt-lg-5 pt-lg-4 pt-1 ms-0 footer-list">
-              <h5 className="mb-lg-3 mb-3 text-start">
+              <h2 className="mb-lg-3 mb-3 text-start about-blog">
                 Sign Up for Newsletter
-              </h5>
+              </h2>
               <form className="d-flex flex-row flex-nowrap">
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="form-control me-2 py-4 cart-cart1"
+                  className="form-control me-2 py-4 cart-cart"
                   aria-label="Email address"
                 />
                 <button
-                  className="btn btn-success d-flex cart-cart1 py-4 me-0"
+                  className="btn btn-success-product d-flex cart-cart py-4 me-0"
                   type="submit"
                   onClick={(e) => e.preventDefault()}
                 >
@@ -874,7 +956,7 @@ function Login() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxTonic. All rights reserved.
+                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
               </p>
             </div>
           </div>
