@@ -27,7 +27,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "set NODE_OPTIONS=--max-old-space-size=4096 && vite build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=32768 vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -84,6 +84,7 @@
     "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.21",
     "connect-history-api-fallback": "^2.0.0",
+    "cross-env": "^10.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
