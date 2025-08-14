@@ -217,10 +217,10 @@ input[type="search"] {
 
 .content-orders1 {
   width: 100%;
-  max-width: 100%;
+  max-width: 95%;
   display: flex;
   flex-wrap: nowrap;
-  margin-left: 74px;
+  margin-left: 174px;
 }
 .content-order-table {
   width: 100%;
@@ -272,24 +272,30 @@ input[type="search"] {
 
 @media (min-width: 992px) and (max-width: 1200px) {
   .content-orders1 {
-    margin-left: 28%;
+    margin-left: 30%;
     width: 100%;
-    max-width: 71%;
+    max-width: 69%;
   }
 }
 @media (min-width: 1200px) and (max-width: 1400px) {
   .content-orders1 {
-    margin-left: 21%;
+    margin-left: 25%;
     width: 100%;
-    max-width: 82%;
+    max-width: 72%;
   }
 }
 @media (min-width: 1400px) and (max-width: 1600px) {
   .content-orders1 {
-    margin-left: 14%;
+    margin-left: 19%;
     width: 100%;
-    max-width: 96%;
+    max-width: 87%;
   }
+}
+
+.button-print {
+  position: absolute;
+  right: 9% !important;
+  top: 12% !important;
 }
 
 @media (max-width: 768px) {
@@ -297,6 +303,7 @@ input[type="search"] {
     width: 100%;
     overflow-x: auto;
   }
+
   .button-print {
     position: absolute;
     right: 2% !important;

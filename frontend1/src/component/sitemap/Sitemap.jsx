@@ -23,7 +23,7 @@ function Sitemap() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -90,11 +90,11 @@ function Sitemap() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -108,7 +108,7 @@ function Sitemap() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -124,7 +124,7 @@ function Sitemap() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setAbout(response.data);
       } catch (error) {
@@ -140,7 +140,7 @@ function Sitemap() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -162,7 +162,7 @@ function Sitemap() {
   const fetchProductData = async () => {
     try {
       const response = await axios.get(
-        "http://89.116.170.231:1600/productpagedata"
+        "http://147.93.45.171:1600/productpagedata"
       );
       setDetail(response.data);
     } catch (error) {
@@ -211,7 +211,7 @@ function Sitemap() {
 
   const alldata = async () => {
     try {
-      let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
+      let response = await axios.get("http://147.93.45.171:1600/blogpostdata");
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching blog data:", error);
@@ -278,7 +278,7 @@ function Sitemap() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -350,7 +350,7 @@ function Sitemap() {
             about?.background_color ||
             (about?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: about?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${about.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${about.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -700,9 +700,12 @@ function Sitemap() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -822,7 +825,8 @@ function Sitemap() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </p>
             </div>
           </div>

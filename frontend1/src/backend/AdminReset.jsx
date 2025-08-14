@@ -30,7 +30,7 @@ function AdminReset() {
     }
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/forgot-password",
+        "http://147.93.45.171:1600/forgot-password",
         {
           email: email,
         }

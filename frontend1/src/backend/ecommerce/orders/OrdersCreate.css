@@ -214,6 +214,18 @@ input[type="search"] {
   }
 }
 
+.order-admin{
+  width: 100%;
+  max-width: 70% !important;
+}
+
+@media (max-width:992px) {
+  .order-admin{
+  width: 100%;
+  max-width: 100% !important;
+}
+}
+
 .content-orders {
   width: 100%;
   max-width: 100%;

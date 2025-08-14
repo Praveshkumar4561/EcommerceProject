@@ -215,11 +215,11 @@ input[type="search"] {
 }
 
 .container-create1 {
-  margin-left: 3.9rem;
+  margin-left: 13%;
   margin-top: 20px !important;
   padding: 1rem;
   width: 100%;
-  max-width: 100% !important;
+  max-width: 88% !important;
 }
 
 .review-text {
@@ -237,6 +237,7 @@ input[type="search"] {
     width: 100%;
     max-width: 82%;
   }
+
   .button-review {
     width: 100%;
     max-width: 20%;
@@ -244,13 +245,25 @@ input[type="search"] {
     justify-content: center;
     align-items: center;
   }
+
+  .container-create1 {
+    width: 100% !important;
+    max-width: 98% !important;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .container-create1 {
+    width: 100% !important;
+    max-width: 98% !important;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 992px) {
   .container-create1 {
     margin-left: 27%;
     width: 100%;
-    max-width: 100%;
+    max-width: 100% !important;
   }
   .accord {
     margin-left: 12rem;
@@ -276,17 +289,12 @@ input[type="search"] {
   .container-create1 {
     margin-left: 19%;
     width: 100%;
-    max-width: 100%;
+    max-width: 80% !important;
   }
 }
 
 .editor-page {
   color: #4299e1;
-}
-
-#role-announce {
-  width: 100%;
-  display: flex;
 }
 
 .card-container {
@@ -300,20 +308,12 @@ input[type="search"] {
     margin-left: 0;
     width: 100%;
   }
-
-  .editor-toolbar {
-    width: 100%;
-  }
 }
 
 @media (max-width: 768px) {
   .container-create1 {
     margin-left: 0;
     padding: 0.5rem;
-    width: 100%;
-  }
-
-  .editor-toolbar {
     width: 100%;
   }
 }
@@ -333,32 +333,6 @@ input[type="search"] {
 
 .link-primary1:hover {
   text-decoration: underline;
-}
-
-@media (max-width: 576px) {
-  .create-tag1 {
-    width: 97%;
-    margin-left: -0.1rem;
-  }
-}
-
-.flash-product {
-  width: 75.5%;
-}
-.text-search {
-  width: 100%;
-  max-width: 96%;
-  margin-right: 1.3rem;
-}
-
-@media (max-width: 576px) {
-  .flash-product {
-    width: 103%;
-  }
-  .text-search {
-    position: relative;
-    left: 0.5rem;
-  }
 }
 
 .reviews-page {
@@ -413,20 +387,7 @@ input[type="search"] {
   left: 37rem;
   bottom: 0.2rem;
 }
-.username-span {
-  position: relative;
-  top: 1.5rem;
-  right: 15rem;
-  white-space: nowrap;
-}
-.accordion {
-  position: relative;
-  left: 18rem;
-}
-.accordion1 {
-  position: relative;
-  left: 18rem;
-}
+
 .create-tags1 {
   width: 73%;
 }
@@ -446,17 +407,5 @@ input[type="search"] {
   .awasome-star {
     width: 100%;
     display: inline;
-  }
-  .username-span {
-    margin-left: 29.3rem;
-  }
-  .accordion2 {
-    display: flex;
-    margin-left: 3.5rem;
-  }
-  .accordion1 {
-    position: absolute;
-    bottom: 1.5rem;
-    left: 23.5rem;
   }
 }

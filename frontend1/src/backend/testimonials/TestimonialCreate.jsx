@@ -3,7 +3,6 @@ import "./TestimonialCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "font-awesome/css/font-awesome.min.css";
 import {
   faBell,
   faEnvelope,
@@ -59,11 +58,6 @@ function TestimonialCreate() {
   const [editorData2, setEditorData2] = useState("");
   const [textAreaData2, setTextAreaData2] = useState("");
   const [showEdit2, setShowEdit2] = useState(true);
-
-  const stripHTML = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    return doc.body.textContent || "";
-  };
 
   const handleEditorChange2 = (event, editor) => {
     const data = editor.getData();
@@ -145,16 +139,15 @@ function TestimonialCreate() {
       return;
     }
     const formData = new FormData();
-    const cleanContent = stripHTML(user.content);
     formData.append("name", user.name);
     formData.append("company", user.company);
     formData.append("status", user.status);
     formData.append("date", user.date);
-    formData.append("content", cleanContent);
+    formData.append("content", user.content);
     formData.append("file", user.file);
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/testimonials",
+        "http://147.93.45.171:1600/testimonials",
         formData
       );
       toast.success("Data successfully submitted and file uploaded", {
@@ -292,7 +285,7 @@ function TestimonialCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -474,11 +467,11 @@ function TestimonialCreate() {
           </div>
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1072,7 +1065,7 @@ function TestimonialCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1886,46 +1879,7 @@ function TestimonialCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2563,7 +2517,7 @@ function TestimonialCreate() {
                 <h4 className="mt-0 text-start">Status</h4>
                 <hr />
                 <select
-                  className="form-select mb-3 customer-page1"
+                  className="form-select mb-3"
                   style={{ height: "46px" }}
                   name="status"
                   value={status}

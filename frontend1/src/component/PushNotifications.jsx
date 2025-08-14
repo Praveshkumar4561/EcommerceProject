@@ -48,7 +48,7 @@ const PushNotifications = () => {
           userVisibleOnly: true,
           applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
         });
-        await axios.post("http://89.116.170.231:1600/subscribe", subscription, {
+        await axios.post("http://147.93.45.171:1600/subscribe", subscription, {
           headers: { "Content-Type": "application/json" },
         });
       }

@@ -15,7 +15,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import Cutting from "../../assets/Cutting.webp";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -137,7 +136,7 @@ function GalleryCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -243,8 +242,7 @@ function GalleryCreate() {
     let formData = new FormData();
     formData.append("name", name);
     formData.append("permalink", permalink);
-    const cleanContent = stripHTML(user.description);
-    formData.append("description", cleanContent);
+    formData.append("description", description);
     formData.append("orders", orders);
     formData.append("date", date);
     formData.append("feature", feature ? "Yes" : "No");
@@ -252,7 +250,7 @@ function GalleryCreate() {
     formData.append("file", file);
 
     const response = await axios.post(
-      "http://89.116.170.231:1600/gallerypost",
+      "http://147.93.45.171:1600/gallerypost",
       formData
     );
     if (response.status === 200) {
@@ -293,15 +291,6 @@ function GalleryCreate() {
   const [editorData2, setEditorData2] = useState(user.description || "");
   const [textAreaData2, setTextAreaData2] = useState(description);
   const [showEdit2, setShowEdit2] = useState(true);
-
-  const handleEditorChange2 = (event, editor) => {
-    const data = editor.getData();
-    setEditorData2(data);
-    setUser((prevState) => ({
-      ...prevState,
-      description: data,
-    }));
-  };
 
   const handleTextAreaChange2 = (e) => {
     const data = e.target.value;
@@ -347,11 +336,6 @@ function GalleryCreate() {
         }
       }
     });
-  };
-
-  const stripHTML = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    return doc.body.textContent || "";
   };
 
   useEffect(() => {
@@ -509,11 +493,11 @@ function GalleryCreate() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1107,7 +1091,7 @@ function GalleryCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1921,46 +1905,7 @@ function GalleryCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg

@@ -11,7 +11,6 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
   position: relative;
 }
 
@@ -207,12 +206,18 @@ body {
   .feature-watch {
     width: 100%;
     max-width: 48.3%;
-    height: 33rem;
+    height: 31rem;
   }
 
   .shop-icon img {
     width: 100%;
     max-width: 15%;
+  }
+  .price-name {
+    font-size: 1.05rem !important;
+  }
+  .price-row {
+    font-size: 1.05rem !important;
   }
 }
 
@@ -289,19 +294,6 @@ body {
   background-color: #0c55aa;
 }
 
-.cart-wishlist {
-  width: 25px;
-  height: 38px;
-}
-.cart-wishlist1 {
-  width: 25px;
-  height: 38px;
-}
-.cart-wishlist2 {
-  width: 25px;
-  height: 31px;
-}
-
 .ad-card {
   position: relative;
   right: 20px;
@@ -317,19 +309,6 @@ body {
   max-width: 500px;
   padding: 0 15px;
   margin-top: 10px;
-}
-
-.full-width-card {
-  width: 1140px;
-  height: 500px;
-  margin: 0 auto;
-}
-
-@media (max-width: 1140px) {
-  .full-width-card {
-    width: 100%;
-    height: auto;
-  }
 }
 
 .ad-img {

@@ -10,7 +10,7 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
 }
 
@@ -30,11 +30,7 @@ body {
   .navbar-collapse {
     display: none;
   }
-  .hamburger-image {
-    position: relative;
-    bottom: 0.9rem;
-    right: -2rem;
-  }
+
   .navbar-icons1 {
     position: absolute;
     top: 1.1rem;
@@ -43,18 +39,6 @@ body {
   .addcarts {
     margin-top: 1.2rem;
   }
-}
-
-.addcartsx {
-  position: absolute;
-  top: 0.7rem;
-  font-family: Verdana, Tahoma, sans-serif;
-}
-
-.cart-user {
-  width: 40px;
-  height: 30px;
-  margin-top: 5%;
 }
 
 @media (max-width: 576px) {

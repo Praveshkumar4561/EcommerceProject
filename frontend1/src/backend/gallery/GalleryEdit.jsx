@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -140,7 +140,7 @@ function GalleryEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -210,15 +210,14 @@ function GalleryEdit() {
     formData.append("name", name);
     formData.append("permalink", permalink);
     formData.append("orders", orders);
-    const cleanContent = stripHTML(user.description || "");
-    formData.append("description", cleanContent);
+    formData.append("description", user.description);
     formData.append("date", date);
     formData.append("feature", feature ? "Yes" : "No");
     formData.append("status", status);
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://89.116.170.231:1600/galleryupdates/${id}`,
+        `http://147.93.45.171:1600/galleryupdates/${id}`,
         formData
       );
       toast.success("data sucessfully deleted", {
@@ -301,11 +300,6 @@ function GalleryEdit() {
     });
   };
 
-  const stripHTML = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    return doc.body.textContent || "";
-  };
-
   useEffect(() => {
     setEditorData2(user.description || "");
   }, [user.description]);
@@ -316,7 +310,7 @@ function GalleryEdit() {
 
   let gallerydata = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/gallerytests/${id}`
+      `http://147.93.45.171:1600/gallerytests/${id}`
     );
     setUser(response.data[0]);
   };
@@ -473,11 +467,11 @@ function GalleryEdit() {
           </div>
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1071,7 +1065,7 @@ function GalleryEdit() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1886,46 +1880,7 @@ function GalleryEdit() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2576,9 +2531,9 @@ function GalleryEdit() {
                   onChange={onInputChange}
                 >
                   <option value="">Select an option</option>
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
+                  <option value="Pending">Pending</option>
                 </select>
               </div>
 
@@ -2598,7 +2553,7 @@ function GalleryEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://89.116.170.231:1600/src/image/${user.image}`}
+                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

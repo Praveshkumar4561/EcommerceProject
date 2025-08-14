@@ -11,7 +11,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -158,6 +157,10 @@ function DiscountsCreate() {
   });
 
   const [neverExpired, setNeverExpired] = useState(false);
+  const [errors, setErrors] = useState({
+    discounttype: "",
+    couponcode: "",
+  });
 
   const {
     discounttype,
@@ -170,10 +173,45 @@ function DiscountsCreate() {
     display,
   } = user;
 
+  const validateForm = () => {
+    let isValid = true;
+    let newErrors = {
+      discounttype: "",
+      couponcode: "",
+      start_date: "",
+      end_date: "",
+    };
+
+    if (!discounttype.trim()) {
+      newErrors.discounttype = "This field is required";
+      isValid = false;
+    }
+
+    if (!couponcode.trim()) {
+      newErrors.couponcode = "This field is required";
+      isValid = false;
+    }
+
+    if (!start_date.trim()) {
+      newErrors.start_date = "This field is required";
+      isValid = false;
+    }
+
+    if (!end_date.trim()) {
+      newErrors.end_date = "This field is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) return;
+
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/discountsubmit",
+        "http://147.93.45.171:1600/discountsubmit",
         user
       );
       if (response.status === 200) {
@@ -187,6 +225,7 @@ function DiscountsCreate() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
+    setErrors({ ...errors, [name]: "" });
   };
 
   const handleCheckboxChange = (e) => {
@@ -234,7 +273,7 @@ function DiscountsCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -378,11 +417,11 @@ function DiscountsCreate() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -976,7 +1015,7 @@ function DiscountsCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1789,46 +1828,7 @@ function DiscountsCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2246,6 +2246,11 @@ function DiscountsCreate() {
                       <option value="Coupon code">Coupon code</option>
                       <option value="Promotion">Promotion</option>
                     </select>
+                    {errors.discounttype && (
+                      <small style={{ color: "red" }}>
+                        {errors.discounttype}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2263,10 +2268,18 @@ function DiscountsCreate() {
                       type="button"
                       id="generate-coupon"
                       className="generate-button position-absolute mt-3 ms-5 ps-5 end-0 cart-cart"
-                      onClick={generateCouponCode}
+                      onClick={() => {
+                        generateCouponCode();
+                        setErrors((prev) => ({ ...prev, couponcode: "" }));
+                      }}
                     >
                       Generate Coupon Code
                     </button>
+                    {errors.couponcode && (
+                      <small style={{ color: "red", marginTop: "4px" }}>
+                        {errors.couponcode}
+                      </small>
+                    )}
                   </div>
                 </div>
 
@@ -2542,6 +2555,9 @@ function DiscountsCreate() {
                     value={start_date}
                     onChange={handleInputChange}
                   />
+                  {errors.start_date && (
+                    <small style={{ color: "red" }}>{errors.start_date}</small>
+                  )}
                   <label htmlFor="">End date</label>
                   <input
                     type="datetime-local"
@@ -2551,6 +2567,9 @@ function DiscountsCreate() {
                     onChange={handleInputChange}
                     disabled={neverExpired}
                   />
+                  {errors.end_date && (
+                    <small style={{ color: "red" }}>{errors.end_date}</small>
+                  )}
                   <div className="d-flex flex-row gap-2 ms-1">
                     <input
                       type="checkbox"

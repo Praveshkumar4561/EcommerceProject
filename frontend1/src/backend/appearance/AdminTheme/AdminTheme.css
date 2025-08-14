@@ -6,7 +6,6 @@ body {
   width: 100vw;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
 }
 
 .navbar-back {
@@ -215,11 +214,16 @@ input[type="search"] {
   }
 }
 
+.theme-admin {
+  margin-left: 13.6% !important;
+}
+
 .theme-image {
   height: 23rem;
   width: 100%;
   max-width: 33%;
 }
+
 .theme-image button {
   letter-spacing: 1px;
   word-spacing: 2px;
@@ -251,6 +255,9 @@ input[type="search"] {
     max-width: 100%;
     margin-left: -3%;
   }
+  .theme-admin {
+    margin-left: 0% !important;
+  }
 }
 
 @media (min-width: 576px) and (max-width: 768px) {
@@ -258,33 +265,43 @@ input[type="search"] {
     width: 100%;
     max-width: 48%;
   }
+  .theme-admin {
+    margin-left: 0% !important;
+  }
 }
+
 @media (min-width: 768px) and (max-width: 992px) {
   .theme-image {
     width: 100%;
     max-width: 49.7%;
   }
+  .theme-admin {
+    margin-left: 0% !important;
+  }
 }
+
 @media (min-width: 992px) and (max-width: 1200px) {
   .theme-image {
     width: 100%;
-    max-width: 25%;
+    max-width: 23%;
     position: relative;
-    left: 22%;
+    left: 16%;
   }
 }
+
 @media (min-width: 1200px) and (max-width: 1400px) {
   .theme-image {
     width: 100%;
-    max-width: 26.6%;
+    max-width: 24%;
     position: relative;
     left: 18%;
   }
 }
+
 @media (min-width: 1400px) and (max-width: 1600px) {
   .theme-image {
     width: 100%;
-    max-width: 32%;
+    max-width: 28%;
     position: relative;
     left: 10%;
   }

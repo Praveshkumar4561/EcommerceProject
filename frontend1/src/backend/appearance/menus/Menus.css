@@ -7,7 +7,7 @@ body {
   width: 100vw;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
 }
 
@@ -260,7 +260,6 @@ input[type="search"] {
 
   .form-control {
     width: 100%;
-    font-family: "SanDiego";
   }
 
   button.button-btn {

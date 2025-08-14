@@ -11,7 +11,7 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
 }
 
@@ -41,11 +41,6 @@ body {
     left: 60%;
   }
 
-  .navbar-icons {
-    position: absolute;
-    top: 1.4rem;
-    right: 5rem;
-  }
   .addcarts {
     margin-top: -1.2rem;
   }
@@ -95,7 +90,6 @@ body {
   font-size: 20rem;
   line-height: 1.2;
   color: #dde1e4;
-  font-family: "SanDiego";
 }
 
 .opps {
@@ -110,7 +104,6 @@ body {
   line-height: 1.5;
   color: #5c727d;
   margin-top: 0.1rem;
-  font-family: "SanDiego";
 }
 
 @media (max-width: 576px) {

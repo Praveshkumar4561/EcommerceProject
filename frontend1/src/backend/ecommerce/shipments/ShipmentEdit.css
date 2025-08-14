@@ -213,6 +213,7 @@ input[type="search"] {
 .shipment-info {
   width: 100%;
   max-width: 95%;
+  margin-left: 9%;
 }
 
 .name-truck {
@@ -225,14 +226,36 @@ input[type="search"] {
   margin-right: 10px;
 }
 
-.shipment-info {
-}
-
 @media (max-width: 576px) {
   .shipment-info {
     width: 100%;
     max-width: 97%;
-    margin-right: 5%;
+    margin-left: 0;
+  }
+
+  .shipment-page {
+    width: 100%;
+    max-width: 100% !important;
+    margin-left: 1% !important;
+  }
+}
+
+.shipment-page {
+  width: 100%;
+  max-width: 66%;
+  margin-left: 9.3%;
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .shipment-info {
+    width: 100%;
+    max-width: 97%;
+    margin-left: 0;
+  }
+  .shipment-page {
+    width: 100%;
+    max-width: 99%;
+    margin-left: 2%;
   }
 }
 
@@ -240,12 +263,15 @@ input[type="search"] {
   .shipment-info {
     width: 100%;
     max-width: 97%;
+    margin-left: 1%;
   }
   .shipment-page {
     width: 100%;
-    max-width: 100%;
+    max-width: 99%;
+    margin-left: 1%;
   }
 }
+
 @media (min-width: 992px) and (max-width: 1200px) {
   .shipment-info {
     width: 100%;

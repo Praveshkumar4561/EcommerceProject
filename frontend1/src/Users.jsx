@@ -12,7 +12,7 @@ function Users() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-custom-code"
+          "http://147.93.45.171:1600/get-custom-code"
         );
         setCustomCSS(response.data.custom_css || "");
       } catch (error) {

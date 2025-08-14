@@ -20,7 +20,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { ToastContainer, toast } from "react-toastify";
@@ -219,6 +219,7 @@ function ProductsCreate() {
     name: "",
     permalink: "",
     description: "",
+    content: "",
     sku: "",
     price: "",
     price_sale: "",
@@ -248,6 +249,7 @@ function ProductsCreate() {
     name,
     permalink,
     description,
+    content,
     sku,
     price,
     price_sale,
@@ -277,6 +279,7 @@ function ProductsCreate() {
       name,
       permalink,
       description,
+      content,
       sku,
       price,
       price_sale,
@@ -336,6 +339,7 @@ function ProductsCreate() {
     formData.append("name", name);
     formData.append("permalink", permalink);
     formData.append("description", description);
+    formData.append("content", content);
     formData.append("sku", sku);
     formData.append("price", price);
     formData.append("price_sale", price_sale);
@@ -362,7 +366,7 @@ function ProductsCreate() {
     formData.append("categories", selectedCategories.join(","));
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/productpage",
+        "http://147.93.45.171:1600/productpage",
         formData
       );
       if (response.status === 200) {
@@ -385,13 +389,94 @@ function ProductsCreate() {
     }
   };
 
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  const [showEdit2, setShowEdit2] = useState(true);
+  const [editorData2, setEditorData2] = useState("");
+  const [textAreaData2, setTextAreaData2] = useState("");
+  const [editorData1, setEditorData1] = useState(user.content || "");
+  const [showEdit1, setShowEdit1] = useState(true);
+
+  const showEditorClicked1 = (e) => {
+    e.preventDefault();
+    setShowEdit1(!showEdit1);
+  };
+
+  const handleEditorChange1 = (event, editor) => {
+    const data = editor.getData();
+    setEditorData1(data);
+    setUser((prev) => ({ ...prev, content: data }));
+    setErrors((prev) => ({ ...prev, content: undefined }));
+  };
+
+  const handleTextAreaChange1 = (e) => {
+    setEditorData1(e.target.value);
+    setUser({ ...user, description: e.target.value });
+    if (errors.description) {
+      setErrors({ ...errors, description: "" });
+    }
+  };
+
+  const handleEditorChange2 = (event, editor) => {
+    const data = editor.getData();
+    setEditorData2(data);
+    setTextAreaData2(data);
+    setUser((prev) => ({ ...prev, description: data }));
+  };
+
+  const handleTextAreaChange2 = (e) => {
+    setEditorData2(e.target.value);
+    setUser({ ...user, description: e.target.value });
+    if (errors.description) {
+      setErrors({ ...errors, description: "" });
+    }
+  };
+
+  const showEditorClicked2 = (e) => {
+    e.preventDefault();
+    setShowEdit2(!showEdit2);
+  };
+
+  const mediaUpload = async (e) => {
+    e.preventDefault();
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+        try {
+          const response = await fetch("/upload", {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) {
+            throw new Error("Image upload failed");
+          }
+          const data = await response.json();
+          console.log("Image uploaded successfully", data);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
+      }
+    });
+  };
+
   let [create, setCreate] = useState([]);
 
   useEffect(() => {
     const attributedata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/attributesdata"
+          "http://147.93.45.171:1600/attributesdata"
         );
         setCreate(response.data);
       } catch (error) {
@@ -608,7 +693,7 @@ function ProductsCreate() {
   useEffect(() => {
     const tagsdata = async () => {
       let response = await axios.get(
-        "http://89.116.170.231:1600/producttagdata"
+        "http://147.93.45.171:1600/producttagdata"
       );
       setTag1(response.data);
     };
@@ -650,12 +735,6 @@ function ProductsCreate() {
     }
   };
 
-  const stripHtml = (html) => {
-    const tmp = document.createElement("DIV");
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
-  };
-
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
@@ -678,7 +757,7 @@ function ProductsCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -826,7 +905,7 @@ function ProductsCreate() {
   useEffect(() => {
     const globaldata = async () => {
       const response = await axios.get(
-        "http://89.116.170.231:1600/productoptiondata"
+        "http://147.93.45.171:1600/productoptiondata"
       );
       setGlobal(response.data);
     };
@@ -909,7 +988,7 @@ function ProductsCreate() {
     const load = async () => {
       try {
         const { data } = await axios.get(
-          "http://89.116.170.231:1600/pagesdatafaqs"
+          "http://147.93.45.171:1600/pagesdatafaqs"
         );
         setPages(
           data.filter((p) => p.status === "published" || p.status === "default")
@@ -943,87 +1022,6 @@ function ProductsCreate() {
         .join(", ")
     : "Select FAQs";
 
-  const [showEdit2, setShowEdit2] = useState(true);
-  const [editorData2, setEditorData2] = useState("");
-  const [textAreaData2, setTextAreaData2] = useState("");
-  const [editorData1, setEditorData1] = useState(user.content || "");
-  const [showEdit1, setShowEdit1] = useState(true);
-
-  const showEditorClicked1 = (e) => {
-    e.preventDefault();
-    setShowEdit1(!showEdit1);
-  };
-
-  const handleEditorChange1 = (event, editor) => {
-    const data = editor.getData();
-    setEditorData1(data);
-    setUser({ ...user, description: data });
-    if (errors.description) {
-      setErrors({ ...errors, description: "" });
-    }
-  };
-
-  const handleTextAreaChange1 = (e) => {
-    setEditorData1(e.target.value);
-    setUser({ ...user, description: e.target.value });
-    if (errors.description) {
-      setErrors({ ...errors, description: "" });
-    }
-  };
-
-  const handleEditorChange2 = (event, editor) => {
-    const data = editor.getData();
-    const plainText = stripHtml(data);
-    setEditorData2(data);
-    setUser((prevState) => ({
-      ...prevState,
-      description: plainText,
-    }));
-    setTextAreaData2(plainText);
-  };
-
-  const handleTextAreaChange2 = (e) => {
-    setEditorData2(e.target.value);
-    setUser({ ...user, description: e.target.value });
-    if (errors.description) {
-      setErrors({ ...errors, description: "" });
-    }
-  };
-
-  const showEditorClicked2 = (e) => {
-    e.preventDefault();
-    setShowEdit2(!showEdit2);
-  };
-
-  const mediaUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
-          const data = await response.json();
-          console.log("Image uploaded successfully", data);
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      }
-    });
-  };
-
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -1039,7 +1037,7 @@ function ProductsCreate() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://89.116.170.231:1600/productpagedata?search=${search}`
+          `http://147.93.45.171:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -1068,7 +1066,7 @@ function ProductsCreate() {
       try {
         setLoading1(true);
         const response = await axios.get(
-          `http://89.116.170.231:1600/productpagedata?search=${search}`
+          `http://147.93.45.171:1600/productpagedata?search=${search}`
         );
         setProducts1(response.data);
       } catch (error) {
@@ -1088,7 +1086,7 @@ function ProductsCreate() {
     const fetchCollections = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/collectionsdata"
+          "http://147.93.45.171:1600/collectionsdata"
         );
         setCollections(response.data);
       } catch (error) {
@@ -1119,7 +1117,7 @@ function ProductsCreate() {
     const labelsdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/productlabelsdata"
+          "http://147.93.45.171:1600/productlabelsdata"
         );
         setLabels(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -1144,7 +1142,7 @@ function ProductsCreate() {
   useEffect(() => {
     let brandsdata = async () => {
       try {
-        let response = await axios.get("http://89.116.170.231:1600/brandsdata");
+        let response = await axios.get("http://147.93.45.171:1600/brandsdata");
         setBrands(response.data);
       } catch (error) {
         console.error("error", error);
@@ -1279,11 +1277,11 @@ function ProductsCreate() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1877,7 +1875,7 @@ function ProductsCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -2691,46 +2689,6 @@ function ProductsCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -3443,7 +3401,7 @@ function ProductsCreate() {
                           id="contentEditor"
                           className="form-control"
                           placeholder="Short description"
-                          value={stripHtml(editorData1)}
+                          value={editorData1}
                           onChange={handleTextAreaChange1}
                           style={{
                             height: "58px",
@@ -4707,7 +4665,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.slice(0, 5).map((product) => {
-                        const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
+                        const imageUrl = `http://147.93.45.171:1600/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -4722,7 +4680,7 @@ function ProductsCreate() {
                                 alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
+                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -4766,7 +4724,7 @@ function ProductsCreate() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.slice(0, 5).map((product2) => {
-                        const imageUrl = `http://89.116.170.231:1600/src/image/${product2.image}`;
+                        const imageUrl = `http://147.93.45.171:1600/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}
@@ -4781,7 +4739,7 @@ function ProductsCreate() {
                                 alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
+                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
