@@ -54,7 +54,7 @@ function AdminLogin() {
 
     try {
       const { data } = await axios.post(
-        "http://89.116.170.231:1600/adminlogin",
+        "http://147.93.45.171:1600/adminlogin",
         {
           username,
           password,
@@ -95,7 +95,7 @@ function AdminLogin() {
   };
 
   const location = useLocation();
-  const baseUrl = "http://srv724100.hstgr.cloud";
+  const baseUrl = "http://srv689968.hstgr.cloud";
 
   return (
     <>
@@ -206,7 +206,11 @@ function AdminLogin() {
                         checked={isChecked}
                         onChange={handleCheckBoxChange}
                       />
-                      <label className="ms-2 text-light" htmlFor="Remember me">
+                      <label
+                        className="ms-2 text-light"
+                        htmlFor="Remember me"
+                        style={{ cursor: "pointer" }}
+                      >
                         Remember me?
                       </label>
                     </div>

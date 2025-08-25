@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import axios from "axios";
 import { Line } from "react-chartjs-2";
 import {
@@ -86,7 +86,7 @@ function Reports() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/customerget/${search}`
+      `http://147.93.45.171:1600/customerget/${search}`
     );
     setReport(response.data);
   };
@@ -143,7 +143,7 @@ function Reports() {
   const customerdata = async () => {
     try {
       const response = await axios.get(
-        "http://89.116.170.231:1600/checkoutdata"
+        "http://147.93.45.171:1600/checkoutdata"
       );
       const fetchedData = response.data || [];
       setReport(fetchedData);
@@ -332,7 +332,7 @@ function Reports() {
     let orderdata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/checkoutdata"
+          "http://147.93.45.171:1600/checkoutdata"
         );
         setCount5(response.data.length);
       } catch (error) {
@@ -408,7 +408,7 @@ function Reports() {
   useEffect(() => {
     let fetchCustomerData = async () => {
       try {
-        const response = await axios.get("http://89.116.170.231:1600/alldata");
+        const response = await axios.get("http://147.93.45.171:1600/alldata");
         setCount1(response.data.length);
         const rawData = response.data;
         const data = rawData.map((item) => item.customers);
@@ -435,9 +435,7 @@ function Reports() {
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get(
-      "http://89.116.170.231:1600/productpagedata"
-    );
+    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
     setCount2(response.data.length);
   };
   showdata();
@@ -488,7 +486,7 @@ function Reports() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/checkoutdata1"
+          "http://147.93.45.171:1600/checkoutdata1"
         );
         const fetchedOrders = response.data;
 
@@ -527,7 +525,7 @@ function Reports() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/checkoutdata1"
+          "http://147.93.45.171:1600/checkoutdata1"
         );
         const fetchedOrders = response.data;
         setChartData((prevData) => {
@@ -580,12 +578,12 @@ function Reports() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -598,10 +596,10 @@ function Reports() {
         />
         <meta property="og:title" content="Report | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -693,11 +691,11 @@ function Reports() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1291,7 +1289,7 @@ function Reports() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -2105,46 +2103,7 @@ function Reports() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2537,7 +2496,7 @@ function Reports() {
       </nav>
 
       <div className="container-fluid">
-        <div className="container cart-cart">
+        <div className="container cart-cart ms-lg-4 ms-0">
           <div className="row content-reports gap-2 gap-sm-2 gap-md-2">
             <div className="col-12 col-sm-12 col-md-3 col-lg-3 border content-reports1 rounded d-flex flex-row flex-wrap flex-sm-nowrap py-3 me-3 me-lg-0 h-auto">
               <svg
@@ -2656,7 +2615,7 @@ function Reports() {
       </div>
 
       <div className="container-fluid">
-        <div className="container cart-cart">
+        <div className="container cart-cart ms-lg-4 ms-0">
           <div className="row content-reports gap-2 gap-sm-2 gap-md-2 d-flex flex-md-row">
             <div className="col-12 col-sm-12 col-md-12 col-lg-6 border content-reports1 content-customer rounded d-flex flex-column py-3 me-3 me-lg-0 text-start">
               <h4>Customers</h4>
@@ -2678,7 +2637,7 @@ function Reports() {
       </div>
 
       <div className="container-fluid">
-        <div className="container cart-cart">
+        <div className="container cart-cart ms-lg-4 ms-0">
           <div className="row">
             <div className="col-12 col-sm-12 col-md-12 col-lg-12 border content-reports2 d-flex flex-wrap rounded me-3 mb-4 mb-lg-0">
               <div className="content-reports3 mt-3 text-start">
@@ -2733,7 +2692,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       ID
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2742,7 +2700,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Customer
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2751,7 +2708,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Amount
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2760,7 +2716,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Payment Method
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2769,7 +2724,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Payment Status
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
                     <th
                       scope="col"
@@ -2777,7 +2731,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Status
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2786,7 +2739,6 @@ function Reports() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Created At
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-normal">

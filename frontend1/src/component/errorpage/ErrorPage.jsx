@@ -22,7 +22,7 @@ function ErrorPage() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -100,11 +100,11 @@ function ErrorPage() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -118,7 +118,7 @@ function ErrorPage() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -134,7 +134,7 @@ function ErrorPage() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setAbout(response.data);
       } catch (error) {
@@ -150,7 +150,7 @@ function ErrorPage() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -207,7 +207,7 @@ function ErrorPage() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -242,7 +242,7 @@ function ErrorPage() {
           content="The page you are looking for does not exist or may have been moved. Return to the homepage or explore more on Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/error" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/error" />
       </Helmet>
 
       <div
@@ -253,7 +253,7 @@ function ErrorPage() {
             about?.background_color ||
             (about?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: about?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${about.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${about.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -586,7 +586,8 @@ function ErrorPage() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <div className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </div>
             </div>
           </div>

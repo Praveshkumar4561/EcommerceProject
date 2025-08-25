@@ -13,31 +13,189 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Helmet } from "react-helmet-async";
 
 function OrdersCreate() {
+  // const [search, setSearch] = useState("");
+  // const [loading, setLoading] = useState(false);
+  // const [selectedProducts, setSelectedProducts] = useState([]);
+  // const [products, setProducts] = useState([]);
+  // const [subAmount, setSubAmount] = useState(0);
+  // const [taxAmount, setTaxAmount] = useState(0);
+  // const [totalAmount, setTotalAmount] = useState(0);
+  // const [selectedCustomers, setSelectedCustomers] = useState([]);
+  // const [paymentMethod, setPaymentMethod] = useState("");
+  // const [payment_status, setPayment_status] = useState("");
+  // const TAX_PERCENTAGE = 10;
+  // let [count5, setCount5] = useState(0);
+
+  // useEffect(() => {
+  //   let orderdata = async () => {
+  //     let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+  //     setCount5(response.data.length);
+  //   };
+  //   orderdata();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (search.trim() === "") {
+  //     setProducts([]);
+  //     return;
+  //   }
+
+  //   const fetchProducts = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await axios.get(
+  //         `http://147.93.45.171:1600/productpagedata?search=${search}`
+  //       );
+  //       setProducts(response.data);
+  //     } catch (error) {}
+  //   };
+  //   fetchProducts();
+  // }, [search]);
+
+  // const addProduct = (product) => {
+  //   if (!selectedProducts.some((p) => p.id === product.id)) {
+  //     const newSelectedProducts = [...selectedProducts, product];
+  //     setSelectedProducts(newSelectedProducts);
+  //     updateAmounts(newSelectedProducts);
+  //   }
+  // };
+
+  // const removeProduct = (productId) => {
+  //   const newSelectedProducts = selectedProducts.filter(
+  //     (p) => p.id !== productId
+  //   );
+  //   setSelectedProducts(newSelectedProducts);
+  //   updateAmounts(newSelectedProducts);
+  // };
+
+  // const updateAmounts = (products) => {
+  //   const subTotal = products.reduce((acc, product) => {
+  //     const price = parseFloat(product.price.replace(/[^0-9.]/g, "")) || 0;
+  //     return acc + price;
+  //   }, 0);
+
+  //   const tax = (subTotal * TAX_PERCENTAGE) / 100;
+  //   const total = subTotal + tax - discount;
+
+  //   setSubAmount(subTotal.toFixed(2));
+  //   setTaxAmount(tax.toFixed(2));
+  //   setTotalAmount(total.toFixed(2));
+  // };
+
+  // const addDiscount = (e) => {
+  //   e.preventDefault();
+  // };
+
+  // const handleCreateOrder = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     if (!selectedCustomers.length || !selectedProducts.length) {
+  //       toast.error("Please select a customer and at least one product.", {
+  //         position: "bottom-right",
+  //         autoClose: 1000,
+  //         ProgressBar: true,
+  //         closeOnClick: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //       });
+  //       return;
+  //     }
+  //   } catch (error) {
+  //     toast.error("An error occurred while creating the order.", {
+  //       position: "bottom-right",
+  //       autoClose: 1000,
+  //       ProgressBar: true,
+  //       closeOnClick: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   }
+  //   const customer = selectedCustomers[0];
+  //   const orderData = {
+  //     email: customer.email,
+  //     phone_number: customer.phone_number,
+  //     first_name: customer.first_name,
+  //     last_name: customer.last_name || "",
+  //     address: "",
+  //     apartment: "",
+  //     country: "",
+  //     pincode: "",
+  //     payment: paymentMethod,
+  //     payment_status: payment_status,
+  //     date: new Date().toISOString().split("T")[0],
+  //     cart: selectedProducts.map((product) => ({
+  //       image: product.image,
+  //       name: product.name,
+  //       quantity: product.quantity || 1,
+  //       price: String(product.price).replace(/[^0-9.]/g, ""),
+  //       subtotal:
+  //         parseFloat(String(product.price).replace(/[^0-9.]/g, "")) *
+  //         (product.quantity || 1),
+  //       tax: taxAmount,
+  //       store: product.store,
+  //     })),
+  //     subtotal: subAmount,
+  //     tax: taxAmount,
+  //     shippingFee: 5.0,
+  //     total: totalAmount,
+  //   };
+  //   try {
+  //     await axios.post("http://147.93.45.171:1600/checkout", orderData, {
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //     setCount5((prevCount) => prevCount + 1);
+  //     toast.success("Order created successfully", {
+  //       position: "bottom-right",
+  //       autoClose: 1000,
+  //       ProgressBar: true,
+  //       closeOnClick: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   } catch (error) {
+  //     toast.error("Failed to create order. Please try again", {
+  //       position: "bottom-right",
+  //       autoClose: 1000,
+  //       ProgressBar: true,
+  //       closeOnClick: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //     });
+  //   }
+  // };
+
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState([]);
   const [products, setProducts] = useState([]);
+  const [selectedProducts, setSelectedProducts] = useState([]);
   const [subAmount, setSubAmount] = useState(0);
   const [taxAmount, setTaxAmount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [payment_status, setPayment_status] = useState("");
+  const [count5, setCount5] = useState(0);
+
   const TAX_PERCENTAGE = 10;
-  let [count5, setCount5] = useState(0);
+  const SHIPPING_FEE = 5.0;
 
   useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
+    (async () => {
+      try {
+        const response = await axios.get(
+          "http://147.93.45.171:1600/checkoutdata"
+        );
+        setCount5(response.data.length);
+      } catch (err) {
+        console.error("Failed to load checkout data:", err);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -45,76 +203,65 @@ function OrdersCreate() {
       setProducts([]);
       return;
     }
-
     const fetchProducts = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
         const response = await axios.get(
-          `http://89.116.170.231:1600/productpagedata?search=${search}`
+          `http://147.93.45.171:1600/productpagedata?search=${encodeURIComponent(
+            search
+          )}`
         );
         setProducts(response.data);
-      } catch (error) {}
+      } catch (err) {
+        console.error("Product search failed:", err);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchProducts();
   }, [search]);
-
-  const addProduct = (product) => {
-    if (!selectedProducts.some((p) => p.id === product.id)) {
-      const newSelectedProducts = [...selectedProducts, product];
-      setSelectedProducts(newSelectedProducts);
-      updateAmounts(newSelectedProducts);
-    }
-  };
-
-  const removeProduct = (productId) => {
-    const newSelectedProducts = selectedProducts.filter(
-      (p) => p.id !== productId
-    );
-    setSelectedProducts(newSelectedProducts);
-    updateAmounts(newSelectedProducts);
-  };
-
-  const updateAmounts = (products) => {
-    const subTotal = products.reduce((acc, product) => {
-      const price = parseFloat(product.price.replace(/[^0-9.]/g, "")) || 0;
-      return acc + price;
-    }, 0);
-
-    const tax = (subTotal * TAX_PERCENTAGE) / 100;
-    const total = subTotal + tax - discount;
-
-    setSubAmount(subTotal.toFixed(2));
-    setTaxAmount(tax.toFixed(2));
-    setTotalAmount(total.toFixed(2));
-  };
 
   const addDiscount = (e) => {
     e.preventDefault();
   };
 
+  const addProduct = (product) => {
+    if (!selectedProducts.some((p) => p.id === product.id)) {
+      const updated = [...selectedProducts, { ...product, quantity: 1 }];
+      setSelectedProducts(updated);
+      updateAmounts(updated);
+    }
+  };
+
+  const removeProduct = (productId) => {
+    const updated = selectedProducts.filter((p) => p.id !== productId);
+    setSelectedProducts(updated);
+    updateAmounts(updated);
+  };
+
+  const updateAmounts = (items) => {
+    const subtotal = items.reduce((acc, p) => {
+      const price = parseFloat(p.price.replace(/[^0-9.]/g, "")) || 0;
+      return acc + price * (p.quantity || 1);
+    }, 0);
+    const tax = (subtotal * TAX_PERCENTAGE) / 100;
+    const total = subtotal + tax + SHIPPING_FEE;
+    setSubAmount(subtotal.toFixed(2));
+    setTaxAmount(tax.toFixed(2));
+    setTotalAmount(total.toFixed(2));
+  };
+
   const handleCreateOrder = async (e) => {
     e.preventDefault();
-    try {
-      if (!selectedCustomers.length || !selectedProducts.length) {
-        toast.error("Please select a customer and at least one product.", {
-          position: "bottom-right",
-          autoClose: 1000,
-          ProgressBar: true,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-        });
-        return;
-      }
-    } catch (error) {
-      toast.error("An error occurred while creating the order.", {
+    if (!selectedCustomers.length) {
+      toast.error("Please select a customer.", { position: "bottom-right" });
+      return;
+    }
+    if (!selectedProducts.length) {
+      toast.error("Please add at least one product.", {
         position: "bottom-right",
-        autoClose: 1000,
-        ProgressBar: true,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
       });
+      return;
     }
     const customer = selectedCustomers[0];
     const orderData = {
@@ -127,45 +274,33 @@ function OrdersCreate() {
       country: "",
       pincode: "",
       payment: paymentMethod,
-      payment_status: payment_status,
+      payment_status,
       date: new Date().toISOString().split("T")[0],
-      cart: selectedProducts.map((product) => ({
-        image: product.image,
-        name: product.name,
-        quantity: product.quantity || 1,
-        price: String(product.price).replace(/[^0-9.]/g, ""),
-        subtotal:
-          parseFloat(String(product.price).replace(/[^0-9.]/g, "")) *
-          (product.quantity || 1),
+      cart: selectedProducts.map((p) => ({
+        image: p.image,
+        name: p.name,
+        quantity: p.quantity || 1,
+        price: p.price.replace(/[^0-9.]/g, ""),
+        subtotal: (
+          parseFloat(p.price.replace(/[^0-9.]/g, "")) * (p.quantity || 1)
+        ).toFixed(2),
         tax: taxAmount,
-        store: product.store,
+        store: p.store || "",
       })),
       subtotal: subAmount,
       tax: taxAmount,
-      shippingFee: 5.0,
+      shippingFee: SHIPPING_FEE,
       total: totalAmount,
     };
     try {
-      await axios.post("http://89.116.170.231:1600/checkout", orderData, {
-        headers: { "Content-Type": "application/json" },
-      });
-      setCount5((prevCount) => prevCount + 1);
-      toast.success("Order created successfully", {
-        position: "bottom-right",
-        autoClose: 1000,
-        ProgressBar: true,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch (error) {
+      await axios.post("http://147.93.45.171:1600/checkout", orderData);
+      setCount5((c) => c + 1);
+      toast.success("Order created successfully", { position: "bottom-right" });
+      setSelectedProducts([]);
+      updateAmounts([]);
+    } catch (err) {
       toast.error("Failed to create order. Please try again", {
         position: "bottom-right",
-        autoClose: 1000,
-        ProgressBar: true,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
       });
     }
   };
@@ -326,7 +461,7 @@ function OrdersCreate() {
 
   const customerData = async () => {
     try {
-      const response = await axios.get("http://89.116.170.231:1600/alldata");
+      const response = await axios.get("http://147.93.45.171:1600/alldata");
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customer data:", error);
@@ -364,6 +499,41 @@ function OrdersCreate() {
 
   return (
     <>
+      <Helmet>
+        <meta charSet="UTF-8" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+        />
+
+        <title>Create an order | RxLYTE</title>
+
+        <link
+          rel="shortcut icon"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
+          type="image/svg+xml"
+        />
+        <meta
+          property="og:image"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
+        />
+
+        <meta
+          name="description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta
+          property="og:description"
+          content="Copyright 2025 © RxLYTE. All rights reserved."
+        />
+        <meta property="og:title" content="Orders | RxLYTE" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
+
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
+      </Helmet>
+
       <div
         className={`container-fluid navbar-back ${
           isNavbarExpanded && isMobile ? "expanded" : ""
@@ -453,11 +623,11 @@ function OrdersCreate() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1020,7 +1190,7 @@ function OrdersCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1834,46 +2004,6 @@ function OrdersCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2275,11 +2405,12 @@ function OrdersCreate() {
       <div className="container-fluid">
         <div className="container cart-cart">
           <div className="row content-orders gap-2 gap-sm-2 gap-md-2 d-flex flex-lg-column flex-xxl-row flex-xl-row flex-md-column">
-            <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start order-search ">
+            {/* <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 me-0 me-lg-0 text-start order-search order-admin">
               Order information
               <div className="border w-100 mb-3 mt-3"></div>
               <form>
-                <div className="customer-email">
+
+                <div className="customer-email me-3">
                   <input
                     type="text"
                     placeholder="Search or create a new product"
@@ -2297,7 +2428,7 @@ function OrdersCreate() {
                           className="border rounded p-2 d-flex align-items-lg-center flex-row mt-2 position-relative"
                         >
                           <img
-                            src={`http://89.116.170.231:1600/src/image/${product.image}`}
+                            src={`http://147.93.45.171:1600/src/image/${product.image}`}
                             alt={product.name}
                             className="product-image rounded img-thumbnail me-2"
                             style={{ width: "50px", height: "50px" }}
@@ -2336,7 +2467,7 @@ function OrdersCreate() {
                   <div className="product-list mt-3">
                     {!loading && products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
+                        const imageUrl = `http://147.93.45.171:1600/src/image/${product.image}`;
 
                         return (
                           <div
@@ -2350,7 +2481,7 @@ function OrdersCreate() {
                                 alt={product.name}
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
+                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -2373,13 +2504,37 @@ function OrdersCreate() {
                   </div>
                 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="d-flex flex-lg-column flex-xxl-row flex-sm-column">
                   <div className="mt-3 d-flex flex-column">
                     <label htmlFor="">Note</label>
                     <textarea
                       className="form-control mt-2 form-order1 cart-cart"
                       placeholder="Note for order..."
-                      style={{ height: "120px", width: "391px" }}
+                      style={{ height: "120px", width: "370px" }}
                     ></textarea>
                   </div>
 
@@ -2508,6 +2663,211 @@ function OrdersCreate() {
                   </button>
                 </div>
               </form>
+            </div> */}
+
+            <div className="col-12 col-sm-12 col-md-6 col-lg-8 border rounded d-flex flex-column py-3 text-start order-search order-admin">
+              Order information
+              <div className="border w-100 mb-3 mt-3" />
+              <form onSubmit={handleCreateOrder}>
+                <div className="customer-email me-3">
+                  <input
+                    type="text"
+                    placeholder="Search or create a new product"
+                    className="form-control py-4 form-order cart-cart"
+                    name="search"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+
+                  {selectedProducts.length > 0 && (
+                    <div className="selected-products border rounded p-2 mt-3 w-100">
+                      {selectedProducts.map((product) => (
+                        <div
+                          key={product.id}
+                          className="border rounded p-2 d-flex align-items-lg-center flex-row mt-2 position-relative"
+                        >
+                          <img
+                            src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                            alt={product.name}
+                            className="product-image rounded img-thumbnail me-2"
+                            style={{ width: 50, height: 50 }}
+                          />
+                          <div>
+                            <p className="mb-1">
+                              <strong className="fw-light">
+                                {product.name}
+                              </strong>
+                            </p>
+                            <p
+                              className="mb-0"
+                              style={{ fontFamily: "verdana" }}
+                            >
+                              Price: {product.price}
+                            </p>
+                          </div>
+                          <FontAwesomeIcon
+                            icon={faClose}
+                            className="ms-auto text-danger"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => removeProduct(product.id)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="product-list mt-3">
+                    {loading ? (
+                      <p className="mt-2 ms-2">Loading…</p>
+                    ) : products.length > 0 ? (
+                      products.map((product) => (
+                        <div
+                          key={product.id}
+                          className="product-card border w-auto h-auto mt-2 rounded"
+                          onClick={() => addProduct(product)}
+                        >
+                          <div className="d-flex flex-row">
+                            <img
+                              src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                              alt={product.name}
+                              onError={(e) =>
+                                (e.target.src =
+                                  "http://147.93.45.171:1600/path/to/fallback-image.jpg")
+                              }
+                              className="product-image img-thumbnail mt-2 ms-2 mb-2"
+                            />
+                            <h6 className="product-name d-flex flex-row mt-2 ms-2 pt-2 cart-cart">
+                              {product.name}
+                            </h6>
+                            <p
+                              className="product-price mt-3 text-end me-2 ms-2 pt-2"
+                              style={{ fontFamily: "verdana" }}
+                            >
+                              {product.price}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="mt-2 ms-2"></p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="d-flex flex-lg-column flex-xxl-row flex-sm-column mt-4">
+                  <div className="mt-3 d-flex flex-column">
+                    <label>Note</label>
+                    <textarea
+                      className="form-control mt-2 form-order1 cart-cart"
+                      placeholder="Note for order..."
+                      style={{ height: "120px", width: "370px" }}
+                    />
+                  </div>
+
+                  <div className="d-flex flex-xxl-column flex-sm-column flex-md-column align-items-sm-end ms-5">
+                    <div className="d-flex flex-row gap-5 mt-4 ms-5">
+                      <label>Sub amount</label>
+                      <span style={{ fontFamily: "verdana" }}>
+                        ${subAmount}
+                      </span>
+                    </div>
+                    <div className="d-flex mt-4 gap-5 ms-5 flex-row">
+                      <label>Tax amount</label>
+                      <span style={{ fontFamily: "verdana" }}>
+                        ${taxAmount}
+                      </span>
+                    </div>
+                    <div className="d-flex flex-row mt-4 gap-4">
+                      <label>Promotion amount</label>
+                      <span style={{ fontFamily: "verdana" }}>$0.00</span>
+                    </div>
+                    <div className="d-flex mt-4 gap-4 ms-0 ms-md-0 flex-row">
+                      <button
+                        className="btn py-3 border d-flex btn-outline-success cart-cart"
+                        style={{ whiteSpace: "nowrap", height: "45px" }}
+                        onClick={addDiscount}
+                      >
+                        Add discount
+                      </button>
+                      <span
+                        className="ms-5 ms-lg-0"
+                        style={{ fontFamily: "verdana" }}
+                      >
+                        $0.00
+                      </span>
+                    </div>
+                    <div className="d-flex mt-4 gap-5 flex-row">
+                      <label>Total amount</label>
+                      <span style={{ fontFamily: "verdana" }}>
+                        ${totalAmount}
+                      </span>
+                    </div>
+
+                    <div className="d-flex flex-column mt-3">
+                      <label className="text-end">Payment Method</label>
+                      <select
+                        className="form-select mt-2"
+                        style={{ width: 333, height: 45, zIndex: 1000 }}
+                        name="paymentMethod"
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                      >
+                        <option value="">Select Payment Method</option>
+                        <option value="COD">Cash on Delivery (COD)</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                        <option value="Stripe">Stripe</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="RazorPay">RazorPay</option>
+                        <option value="PayStack">PayStack</option>
+                        <option value="Mollie">Mollie</option>
+                        <option value="SslCommerz">SslCommerz</option>
+                      </select>
+                    </div>
+
+                    <div className="d-flex flex-column mt-4">
+                      <label className="text-end">Payment Status</label>
+                      <select
+                        className="form-select mt-2"
+                        style={{ width: 333, height: 45, zIndex: 1000 }}
+                        name="payment_status"
+                        value={payment_status}
+                        onChange={(e) => setPayment_status(e.target.value)}
+                      >
+                        <option value="">Select an option</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Refunding">Refunding</option>
+                        <option value="Refunded">Refunded</option>
+                        <option value="Failed">Failed</option>
+                      </select>
+                    </div>
+
+                    <div className="d-flex flex-column mt-4">
+                      <label className="text-end">Transaction ID</label>
+                      <input
+                        type="text"
+                        className="form-control mt-2 py-4"
+                        placeholder="Enter transaction ID"
+                      />
+                      <span className="ms-lg-2 mt-2 me-5">
+                        Leave empty if COD or Bank transfer
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border w-100 mb-3 mt-3" />
+
+                <div className="d-flex justify-content-between align-items-end">
+                  <div className="d-flex gap-2">
+                    <FontAwesomeIcon icon={faCreditCard} className="mt-1" />
+                    <p>Confirm payment and create order</p>
+                  </div>
+                  <button className="btn d-flex btn-outline-success py-4 cart-cart1 rounded-5">
+                    Create order
+                  </button>
+                </div>
+              </form>
             </div>
 
             <div className="col-12 col-sm-12 col-md-6 col-lg-4 border rounded d-flex flex-column py-3 me-3 me-lg-0 text-start customer-new mb-3 mb-lg-0 pb-lg-0">
@@ -2529,7 +2889,7 @@ function OrdersCreate() {
                       className="border rounded p-2 d-flex flex-row align-items-lg-center mt-2"
                     >
                       <img
-                        src={`http://89.116.170.231:1600/src/image/${customer.image}`}
+                        src={`http://147.93.45.171:1600/src/image/${customer.image}`}
                         alt="RxLYTE"
                         className="customer-image rounded img-thumbnail me-2"
                         style={{ width: "50px", height: "50px" }}
@@ -2563,7 +2923,7 @@ function OrdersCreate() {
               <div className="customer-list mt-3 ">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
-                    const imageUrl1 = `http://89.116.170.231:1600/src/image/${customer.image}`;
+                    const imageUrl1 = `http://147.93.45.171:1600/src/image/${customer.image}`;
 
                     return (
                       <div

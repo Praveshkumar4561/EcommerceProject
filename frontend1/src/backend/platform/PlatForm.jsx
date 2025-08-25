@@ -164,7 +164,7 @@ function PlatForm() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -183,12 +183,12 @@ function PlatForm() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -202,10 +202,10 @@ function PlatForm() {
 
         <meta property="og:title" content="System | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -297,11 +297,11 @@ function PlatForm() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -894,7 +894,7 @@ function PlatForm() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1708,46 +1708,7 @@ function PlatForm() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2180,7 +2141,24 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2 mt-sm-2">
-                  <i className="fas fa-user-shield icon me-3 platform-backend text-black"></i>
+                  <svg
+                    className="icon svg-icon-ti-ti-user platform-backend text-dark me-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Roles And Permissions
@@ -2194,7 +2172,22 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2 mt-sm-1">
-                  <i className="fas fa-file-alt icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-note me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M13 20l7 -7"></path>
+                    <path d="M13 20v-6a1 1 0 0 1 1 -1h6v-7a2 2 0 0 0 -2 -2h-12a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Request Logs
@@ -2208,7 +2201,22 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2">
-                  <i className="fas fa-clipboard-list icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-note fa-clipboard-list icon me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M13 20l7 -7"></path>
+                    <path d="M13 20v-6a1 1 0 0 1 1 -1h6v-7a2 2 0 0 0 -2 -2h-12a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Activities Logs
@@ -2222,7 +2230,26 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2 mb-sm-4">
-                  <i className="fas fa-database icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-database-share me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 6c0 1.657 3.582 3 8 3s8 -1.343 8 -3s-3.582 -3 -8 -3s-8 1.343 -8 3"></path>
+                    <path d="M4 6v6c0 1.657 3.582 3 8 3c.361 0 .716 -.009 1.065 -.026"></path>
+                    <path d="M20 13v-7"></path>
+                    <path d="M4 12v6c0 1.657 3.582 3 8 3"></path>
+                    <path d="M16 22l5 -5"></path>
+                    <path d="M21 21.5v-4.5h-4.5"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Backup
@@ -2236,7 +2263,25 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2 mt-sm-4 mt-lg-0">
-                  <i className="fas fa-calendar-alt icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-calendar-event me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+                    <path d="M16 3l0 4"></path>
+                    <path d="M8 3l0 4"></path>
+                    <path d="M4 11l16 0"></path>
+                    <path d="M8 15h2v2h-2z"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Cronjob
@@ -2251,7 +2296,24 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2">
-                  <i className="fas fa-cube icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-box me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5"></path>
+                    <path d="M12 12l8 -4.5"></path>
+                    <path d="M12 12l0 9"></path>
+                    <path d="M12 12l-8 -4.5"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Cache Management
@@ -2265,7 +2327,26 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2">
-                  <i className="fas fa-recycle icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-recycle me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 17l-2 2l2 2"></path>
+                    <path d="M10 19h9a2 2 0 0 0 1.75 -2.75l-.55 -1"></path>
+                    <path d="M8.536 11l-.732 -2.732l-2.732 .732"></path>
+                    <path d="M7.804 8.268l-4.5 7.794a2 2 0 0 0 1.506 2.89l1.141 .024"></path>
+                    <path d="M15.464 11l2.732 .732l.732 -2.732"></path>
+                    <path d="M18.196 11.732l-4.5 -7.794a2 2 0 0 0 -3.256 -.14l-.591 .976"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       Cleanup System
@@ -2279,7 +2360,23 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2 mt-sm-4 mt-lg-0">
-                  <i className="fas fa-info-circle icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-info-circle me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+                    <path d="M12 9h.01"></path>
+                    <path d="M11 12h1v4h1"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       System Information
@@ -2293,7 +2390,22 @@ function PlatForm() {
 
               <div className="col-12 col-md-4 mb-0 mb-lg-3">
                 <div className="d-flex align-items-start platform2">
-                  <i className="fas fa-sync-alt icon me-3 platform-backend text-dark"></i>
+                  <svg
+                    className="icon  svg-icon-ti-ti-refresh me-3 platform-backend text-dark"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"></path>
+                    <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"></path>
+                  </svg>
                   <div>
                     <Link to="#" className="fw-medium">
                       System Updater

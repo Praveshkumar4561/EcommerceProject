@@ -17,7 +17,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { ToastContainer, toast } from "react-toastify";
@@ -38,13 +37,13 @@ function Orders() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/customerget/${search}`
+      `http://147.93.45.171:1600/customerget/${search}`
     );
     setCustomer(response.data);
   };
 
   let customerdata = async () => {
-    const response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+    const response = await axios.get("http://147.93.45.171:1600/checkoutdata");
     setCustomer(response.data);
     setCount5(response.data.length);
   };
@@ -59,7 +58,7 @@ function Orders() {
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
+      await axios.delete(`http://147.93.45.171:1600/deleteorder1/${id}`);
       const updatedData = customer.filter((item) => item.id !== id);
       const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
       if (currentPage > newTotalPages && newTotalPages > 0) {
@@ -108,18 +107,18 @@ function Orders() {
     }
   };
 
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const resultsRef = useRef(null);
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
   let [ads, setAds] = useState(false);
   let [commerce, setCommerce] = useState(false);
   let [appear, setAppear] = useState(false);
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const resultsRef = useRef(null);
-  const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  const navigate = useNavigate();
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -238,7 +237,7 @@ function Orders() {
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://89.116.170.231:1600/order-export",
+        "http://147.93.45.171:1600/order-export",
         {
           responseType: "blob",
         }
@@ -279,12 +278,12 @@ function Orders() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -297,10 +296,10 @@ function Orders() {
         />
         <meta property="og:title" content="Orders | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -392,11 +391,11 @@ function Orders() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -990,7 +989,7 @@ function Orders() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1805,46 +1804,6 @@ function Orders() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2297,6 +2256,7 @@ function Orders() {
                   <button
                     className="btn btn-reload border mt-sm-0 mt-md-0 d-flex flex-row align-items-center cart-cart"
                     type="button"
+                    onClick={() => window.location.reload()}
                   >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
@@ -2319,7 +2279,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       ID
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2328,7 +2287,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Email
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2337,7 +2295,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Amount
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2346,7 +2303,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Payment Method
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2355,7 +2311,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Payment Status
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2364,7 +2319,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Status
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2373,7 +2327,6 @@ function Orders() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Tax Amount
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-normal">

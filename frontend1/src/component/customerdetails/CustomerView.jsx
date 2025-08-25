@@ -22,7 +22,7 @@ import Cart_setting from "../../assets/Cart_setting.webp";
 import Cart_logout from "../../assets/Cart_logout.webp";
 import Cart_user from "../../assets/Cart_user.webp";
 import axios from "axios";
-import { jsPDF } from "jspdf";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import Close from "../../assets/Close.webp";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
@@ -40,7 +40,7 @@ function CustomerView() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -58,7 +58,7 @@ function CustomerView() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/getannounce"
+          "http://147.93.45.171:1600/getannounce"
         );
         setUser(response.data);
       } catch (error) {
@@ -187,7 +187,7 @@ function CustomerView() {
     if (!valid) return;
 
     try {
-      await axios.delete(`http://89.116.170.231:1600/deleteorder1/${id}`);
+      await axios.delete(`http://147.93.45.171:1600/deleteorder1/${id}`);
       toast.success("Order cancelled successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -210,241 +210,12 @@ function CustomerView() {
     }
   };
 
-  const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    const storedOrders = localStorage.getItem("cart");
-    if (storedOrders) {
-      setOrders(JSON.parse(storedOrders));
-    }
-  }, []);
-
-  const printInvoice = () => {
-    const printableContent = document.getElementById("invoice-content");
-    if (printableContent) {
-      const clonedContent = printableContent.cloneNode(true);
-      const printWindow = window.open("", "", "height=800,width=1000");
-      printWindow.document.write("<html><head><title>Invoice</title>");
-      printWindow.document.write(`
-        <style>
-          .order-border, 
-          .btn-success, 
-          .btn-danger {
-            display: none !important;
-          }
-  
-          .invoice-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 10px;
-          }
-  
-          .order-column, 
-          .customer-column {
-            display: flex;
-            flex-direction: column;
-          }
-  
-          .order-column span, 
-          .customer-column span {
-            font-weight: bold;
-            margin-bottom: 8px;
-          }
-  
-          .total-amount {
-            display: flex;
-            flex-direction: column;
-            margin-top: 20px;
-          }
-  
-          @media print {
-            .invoice-details {
-              grid-template-columns: 1fr 1fr;
-            }
-  
-            .order-column span, .customer-column span {
-              font-size: 14px;
-            }
-  
-            .total-amount {
-              font-size: 14px;
-              margin-top: 20px;
-            }
-            .order-border,
-            .btn-success,
-            .btn-danger {
-              display: none !important;
-            }
-  
-            .invoice-row {
-              margin-bottom: 10px;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-            
-            th, td {
-              border: 1px solid #ddd;
-              padding: 8px;
-              text-align: left;
-            }
-          }
-        </style>
-      `);
-      printWindow.document.write("</head><body>");
-      printWindow.document.write(clonedContent.innerHTML);
-      printWindow.document.close();
-      printWindow.print();
-    } else {
-      console.error("Invoice content not found!");
-    }
-  };
-
-  const getBase64ImageFromUrl = async (imageUrl) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.setAttribute("crossOrigin", "anonymous");
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL("image/jpeg");
-        resolve(dataURL);
-      };
-      img.onerror = (error) => {
-        reject(error);
-      };
-      img.src = imageUrl;
-    });
-  };
-
-  const downloadInvoice = async () => {
-    const doc = new jsPDF();
-    if (!Array.isArray(orders) || orders.length === 0) {
-      console.error("Orders data is missing or empty");
-      return;
-    }
-
-    const orderDetails = orders[0];
-    if (!orderDetails) {
-      console.error("Order details are missing!");
-      return;
-    }
-
-    const orderNumber = orderDetails.order_number || "N/A";
-    const date = orderDetails.date || "N/A";
-    const orderStatus = "N/A";
-    const paymentMethod = "N/A";
-    const paymentStatus = "N/A";
-    const fullName = `${orderDetails.first_name || "N/A"} ${
-      orderDetails.last_name || "N/A"
-    }`;
-    const phone = orderDetails.phone_number || "N/A";
-    const address = orderDetails.address || "N/A";
-    const issueDate = orderDetails.date
-      ? new Date(orderDetails.date).toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-      : "N/A";
-
-    let yOffset = 22;
-    doc.setFontSize(16);
-    doc.text(`Order Number: ${orderNumber}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Time: ${date}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Order Status: ${orderStatus}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Payment Method: ${paymentMethod}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Payment Status: ${paymentStatus}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Full Name: ${fullName}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Phone: ${phone}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Address: ${address}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Issue Date: ${issueDate}`, 14, yOffset);
-    yOffset += 12;
-    doc.setFontSize(12);
-    doc.text("Products", 14, yOffset);
-    yOffset += 8;
-    doc.setFontSize(10);
-    doc.text("#", 14, yOffset);
-    doc.text("Image", 24, yOffset);
-    doc.text("Product", 50, yOffset);
-    doc.text("Amount", 90, yOffset);
-    doc.text("Quantity", 120, yOffset);
-    doc.text("Total", 150, yOffset);
-    yOffset += 8;
-
-    for (let index = 0; index < orders.length; index++) {
-      const item = orders[index];
-      const itemName = item.name || "N/A";
-      const maxLength = 20;
-      const truncatedItemName =
-        itemName.length > maxLength
-          ? itemName.substring(0, maxLength) + "..."
-          : itemName;
-
-      const imageUrl = item.image
-        ? `http://89.116.170.231:1600/src/image/${item.image}`
-        : null;
-      const itemAmount = parseFloat(item.price.replace("$", "")) || 0;
-      const itemQuantity = parseInt(item.quantity, 10) || 0;
-      const itemTotal = (itemAmount * itemQuantity).toFixed(2);
-
-      doc.text(String(index + 1), 14, yOffset);
-
-      if (imageUrl) {
-        try {
-          const base64Img = await getBase64ImageFromUrl(imageUrl);
-          doc.addImage(base64Img, "JPEG", 24, yOffset - 4, 12, 12);
-        } catch (err) {
-          console.error("Error converting image for product:", itemName, err);
-        }
-      }
-
-      doc.text(truncatedItemName, 50, yOffset);
-      doc.text(`$${itemAmount.toFixed(2)}`, 90, yOffset);
-      doc.text(itemQuantity.toString(), 120, yOffset);
-      doc.text(`$${itemTotal}`, 150, yOffset);
-      yOffset += 8;
-
-      if (yOffset > 250) {
-        doc.addPage();
-        yOffset = 22;
-      }
-    }
-
-    const tax = parseFloat(orderDetails.tax) || 0;
-    const totalAmount = parseFloat(orderDetails.total) || 0;
-    const grandTotal = totalAmount;
-    yOffset += 8;
-    doc.text(`Tax: $${tax.toFixed(2)}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Total Amount: $${totalAmount.toFixed(2)}`, 14, yOffset);
-    yOffset += 8;
-    doc.text(`Grand Total: $${grandTotal.toFixed(2)}`, 14, yOffset);
-
-    doc.save(`Invoice ${orderNumber}.pdf`);
-  };
-
-  const [auth, setAuth] = useState(true);
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://89.116.170.231:1600/logout")
+      .get("http://147.93.45.171:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           localStorage.removeItem("token");
@@ -452,16 +223,12 @@ function CustomerView() {
           localStorage.removeItem("user");
           localStorage.removeItem("auth");
           localStorage.removeItem("cart");
-          setAuth(false);
-          setMessage("Logged out successfully!");
           navigate(`/${url.login}`);
         } else {
-          setMessage(res.data.Error);
         }
       })
       .catch((err) => {
         console.log("Error during logout:", err);
-        setMessage("Logout failed, please try again.");
       });
   };
 
@@ -475,14 +242,12 @@ function CustomerView() {
         navigate("/login");
       } else if (storedUser && storedUser.tokenExpiration) {
         if (Date.now() > storedUser.tokenExpiration) {
-          console.log("Token expired. Logging out...");
           localStorage.removeItem("user");
           localStorage.removeItem("auth");
           toast.error("Session expired. Please log in again.");
           navigate("/login");
         } else {
           setDetail(storedUser);
-          setAuth(true);
         }
       } else {
         console.log("No tokenExpiration found in localStorage.");
@@ -527,11 +292,11 @@ function CustomerView() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -545,7 +310,7 @@ function CustomerView() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -608,7 +373,7 @@ function CustomerView() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -648,7 +413,7 @@ function CustomerView() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/productsearch/${search}`
+      `http://147.93.45.171:1600/productsearch/${search}`
     );
     setSearch1(response.data);
   };
@@ -656,7 +421,7 @@ function CustomerView() {
   const homedata = async () => {
     try {
       let response = await axios.get(
-        "http://89.116.170.231:1600/productpagedata"
+        "http://147.93.45.171:1600/productpagedata"
       );
       const filteredData = response.data.filter(
         (product) =>
@@ -688,6 +453,211 @@ function CustomerView() {
     navigate("/product-categories");
   };
 
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const storedOrders = localStorage.getItem("cart");
+    if (storedOrders) {
+      setOrders(JSON.parse(storedOrders));
+    }
+  }, []);
+
+  const fetchImageAsBase64 = async (url) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Image load failed"));
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const sanitizePrice = (price) => {
+    if (!price) return 0;
+    return parseFloat(price.replace(/[^0-9.]/g, ""));
+  };
+
+  const buildPdfBytes = async (invoiceData) => {
+    if (!Array.isArray(invoiceData) || invoiceData.length === 0) {
+      console.warn("No invoice data available");
+      return null;
+    }
+
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    for (let i = 0; i < invoiceData.length; i++) {
+      const data = invoiceData[i];
+      let page = pdfDoc.addPage([595, 842]);
+      const { width, height } = page.getSize();
+      let y = height - 40;
+
+      const addNewPageIfNeeded = () => {
+        if (y < 80) {
+          page = pdfDoc.addPage([595, 842]);
+          y = height - 40;
+        }
+      };
+
+      page.drawText(`Invoice Code: #${data.id || "NA"}`, {
+        x: 14,
+        y,
+        font: fontBold,
+        size: 16,
+      });
+
+      page.drawText(`Order Number: ${data.order_number || "NA"}`, {
+        x: width - 200,
+        y,
+        font: fontBold,
+        size: 16,
+      });
+
+      y -= 30;
+
+      const customerLines = [
+        `Customer: ${data.first_name || ""} ${data.last_name || ""}`,
+        `Phone: ${data.phone_number || ""}`,
+        `Email: ${data.email || ""}`,
+        `Address: ${data.address || ""} ${data.apartment || ""} ${
+          data.country || ""
+        } ${data.pincode || ""}`,
+        `Issue Date: ${
+          data.date
+            ? new Date(data.date).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })
+            : "NA"
+        }`,
+        `Store: ${data.store || "Unknown Store"}`,
+      ];
+
+      if (data.name) customerLines.push(`Product Name: ${data.name}`);
+      if (data.quantity !== undefined)
+        customerLines.push(`Quantity: ${data.quantity}`);
+
+      customerLines.forEach((line) => {
+        addNewPageIfNeeded();
+        page.drawText(line, { x: 14, y, font, size: 12 });
+        y -= 18;
+      });
+
+      y -= 16;
+
+      for (let j = 0; j < (data.cart?.length || 0); j++) {
+        const item = data.cart[j];
+        addNewPageIfNeeded();
+
+        const imageUrl = item.image?.startsWith("http")
+          ? item.image
+          : `/uploads/${item.image}`;
+        const productName =
+          item.name || item.product_name || item.title || "Unnamed Product";
+        const price = sanitizePrice(item.price_sale || item.price);
+        const total = item.quantity * price;
+
+        page.drawText(String(j + 1), { x: 14, y, font, size: 11 });
+
+        if (item.image) {
+          try {
+            const base64Image = await fetchImageAsBase64(imageUrl);
+            const imageBytes = Uint8Array.from(atob(base64Image), (c) =>
+              c.charCodeAt(0)
+            );
+            const embeddedImage = await pdfDoc.embedJpg(imageBytes);
+            page.drawImage(embeddedImage, {
+              x: 40,
+              y: y - 10,
+              width: 40,
+              height: 40,
+            });
+          } catch (err) {
+            page.drawText("Image Err", { x: 40, y, font, size: 9 });
+          }
+        }
+
+        page.drawText(productName, { x: 120, y, font, size: 11 });
+        page.drawText(`$${price.toFixed(2)}`, {
+          x: 300,
+          y,
+          font,
+          size: 11,
+        });
+        page.drawText(String(item.quantity), { x: 360, y, font, size: 11 });
+        page.drawText(`$${total.toFixed(2)}`, {
+          x: 420,
+          y,
+          font,
+          size: 11,
+        });
+
+        y -= 50;
+      }
+
+      y -= 10;
+
+      page.drawText(`Tax: $${sanitizePrice(data.tax).toFixed(2)}`, {
+        x: 14,
+        y,
+        font,
+        size: 12,
+      });
+
+      y -= 18;
+
+      page.drawText(`Total Amount: $${sanitizePrice(data.total).toFixed(2)}`, {
+        x: 14,
+        y,
+        font: fontBold,
+        size: 12,
+      });
+
+      y -= 18;
+
+      page.drawText(`Grand Total: $${sanitizePrice(data.total).toFixed(2)}`, {
+        x: 14,
+        y,
+        font: fontBold,
+        size: 12,
+      });
+    }
+
+    return await pdfDoc.save();
+  };
+
+  const downloadInvoice = async () => {
+    const bytes = await buildPdfBytes(orders);
+    if (!bytes) return;
+    const blob = new Blob([bytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Invoice-${orders[0]?.order_number || "download"}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const printInvoice = async () => {
+    const bytes = await buildPdfBytes(orders);
+    if (!bytes) return;
+    const blobUrl = URL.createObjectURL(
+      new Blob([bytes], { type: "application/pdf" })
+    );
+    const win = window.open(blobUrl, "_blank");
+    if (win) {
+      win.onload = () => {
+        win.focus();
+        win.print();
+      };
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -699,7 +669,7 @@ function CustomerView() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv724100.hstgr.cloud/user/orders/view"
+          href="http://srv689968.hstgr.cloud/user/orders/view"
         />
       </Helmet>
 
@@ -711,7 +681,7 @@ function CustomerView() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -722,7 +692,7 @@ function CustomerView() {
       >
         {filteredAnnouncements.length > 0 ? (
           <div className="d-block d-lg-block text-start pt-2 pb-2">
-            <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
+            <div className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
               <FontAwesomeIcon
                 icon={faArrowLeft}
                 className="me-2 text-success fs-6 d-block d-lg-block mt-1"
@@ -751,10 +721,10 @@ function CustomerView() {
                       .join(" ")
                   : ""}
               </div>
-            </p>
+            </div>
           </div>
         ) : (
-          <p className="text-start">No announcements available.</p>
+          <div className="text-start">No announcements available.</div>
         )}
 
         <div className="container-custom ms-2 pt-lg-4 mt-lg-0 mt-5 pt-5 mb-auto mt-auto me-lg-0 me-2">
@@ -900,14 +870,13 @@ function CustomerView() {
           </header>
         </div>
       </div>
-      <div></div>
 
       <div className="container-fluid">
         <div className="row align-items-start justify-content-between text-center mt-lg-0 mt-0 pt-0 pt-lg-0 bg-light ms-0 me-0">
           <div className="col-12 col-md-6 d-flex flex-column flex-md-row justify-content-md-start align-items-start ps-lg-2 ps-0 mt-2 mt-lg-1 lorem-home d-lg-block d-none">
             {filteredAnnouncements.length > 0 ? (
               <div className="d-block d-lg-block text-start pt-2 pb-2">
-                <p className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
+                <div className="mb-0 mt-0 mt-lg-0 me-md-3 free-shipping cart-cart d-flex flex-row ms-0 ms-lg-0">
                   <FontAwesomeIcon
                     icon={faArrowLeft}
                     className="me-2 text-success fs-6 d-block d-lg-block mt-1"
@@ -936,10 +905,10 @@ function CustomerView() {
                           .join(" ")
                       : ""}
                   </div>
-                </p>
+                </div>
               </div>
             ) : (
-              <p className="text-start">No announcements available.</p>
+              <div className="text-start">No announcements available.</div>
             )}
           </div>
 
@@ -1160,7 +1129,7 @@ function CustomerView() {
                           >
                             <div className="search-result-item d-flex align-items-center p-2 border-bottom">
                               <img
-                                src={`http://89.116.170.231:1600/src/image/${product.image}`}
+                                src={`http://147.93.45.171:1600/src/image/${product.image}`}
                                 alt={product.name}
                                 className="ms-2 img-thumbnail"
                                 style={{
@@ -1172,13 +1141,13 @@ function CustomerView() {
                               <div className="search-result-details text-start ms-0">
                                 <h6 className="mb-1">{product.name}</h6>
                                 <div className="d-flex flex-row gap-3 sales-font">
-                                  <p className="price fw-bold mb-0">
+                                  <div className="price fw-bold mb-0">
                                     {product.price}
-                                  </p>
+                                  </div>
                                   {product.price_sale && (
-                                    <p className="price-sale text-danger fw-bold mb-0">
+                                    <div className="price-sale text-danger fw-bold mb-0">
                                       {product.price_sale}
-                                    </p>
+                                    </div>
                                   )}
                                 </div>
                               </div>
@@ -1655,7 +1624,7 @@ function CustomerView() {
                           <td className="text-start">{data.id}</td>
                           <td className="text-start">
                             <img
-                              src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                              src={`http://147.93.45.171:1600/src/image/${data.image}`}
                               alt="RxLYTE"
                               className="img-thumbnail view-orders"
                             />
@@ -1732,7 +1701,7 @@ function CustomerView() {
                     />
                   </div>
                   <button
-                    className="btn btn-success d-flex rounded-0 cart-cart1 py-4 upload-btn mt-1 ms-2"
+                    className="btn btn-success-product d-flex rounded-0 cart-cart1 py-4 upload-btn mt-1 ms-2"
                     onClick={handleUpload}
                   >
                     Upload
@@ -1747,14 +1716,14 @@ function CustomerView() {
 
               <div className="d-flex flex-row gap-2 mt-4 ms-1">
                 <button
-                  className="btn btn-success d-flex rounded-0 py-4 cart-cart"
+                  className="btn btn-success-product d-flex rounded-0 py-4 cart-cart"
                   onClick={printInvoice}
                 >
                   Print Invoice
                 </button>
 
                 <button
-                  className="btn btn-success d-flex rounded-0 py-4 cart-cart"
+                  className="btn btn-success-product d-flex rounded-0 py-4 cart-cart"
                   onClick={downloadInvoice}
                 >
                   Download Invoice
@@ -1869,7 +1838,7 @@ function CustomerView() {
                       </button>
                       <button
                         type="button"
-                        className="btn btn-success d-flex rounded-0 py-4 cart-cart1"
+                        className="btn btn-success-product d-flex rounded-0 py-4 cart-cart1"
                         onClick={() => cancelOrder(selectedOrderId)}
                       >
                         Submit
@@ -1890,9 +1859,12 @@ function CustomerView() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -2010,7 +1982,8 @@ function CustomerView() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </p>
             </div>
           </div>

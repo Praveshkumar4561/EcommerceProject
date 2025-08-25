@@ -7,7 +7,6 @@ body {
   width: 100vw;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
 }
 
 .navbar-back {
@@ -216,51 +215,6 @@ input[type="search"] {
   }
 }
 
-.custom-code {
-  width: 100%;
-  max-width: 53%;
-}
-@media (max-width: 576px) {
-  .custom-code {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-@media (max-width: 768px) {
-  .custom-code {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-@media (max-width: 992px) {
-  .custom-code {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-@media (max-width: 1200px) {
-  .custom-code {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-.published-box {
-  width: 100%;
-  max-width: 15%;
-  position: absolute;
-  right: 8rem;
-  top: 9.6rem;
-}
-@media (max-width: 576px) {
-  .published-box {
-    width: 100%;
-    max-width: 100%;
-    position: relative;
-    top: 0rem;
-    left: 0rem;
-  }
-}
 @media (max-width: 992px) {
   .published-box {
     width: 100%;
@@ -268,11 +222,5 @@ input[type="search"] {
     position: relative;
     top: 0rem;
     left: 0rem;
-  }
-}
-@media (min-width: 992px) {
-  .published-box {
-    width: 100%;
-    max-width: 15%;
   }
 }

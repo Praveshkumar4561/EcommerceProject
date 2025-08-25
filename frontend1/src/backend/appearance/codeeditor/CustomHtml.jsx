@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import { ToastContainer, toast } from "react-toastify";
@@ -171,7 +171,7 @@ function CustomHtml() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -201,7 +201,7 @@ function CustomHtml() {
     };
     try {
       await axios.post(
-        "http://89.116.170.231:1600/save-custom-code",
+        "http://147.93.45.171:1600/save-custom-code",
         customHTMLData
       );
       toast.success("Custom HTML applied successfully", {
@@ -224,7 +224,7 @@ function CustomHtml() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-custom-code"
+          "http://147.93.45.171:1600/get-custom-code"
         );
         if (response.data.header_html) {
           setHeaderHtml(response.data.header_html);
@@ -257,12 +257,12 @@ function CustomHtml() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -276,10 +276,10 @@ function CustomHtml() {
 
         <meta property="og:title" content="Custom HTML | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -371,11 +371,11 @@ function CustomHtml() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -969,7 +969,7 @@ function CustomHtml() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1783,46 +1783,6 @@ function CustomHtml() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2217,12 +2177,12 @@ function CustomHtml() {
       </nav>
 
       <div className="container">
-        <div className="row d-flex justify-content-md-center ps-1 cart-cart">
-          <div className="d-flex flex-column align-items-center mt-1 col-12 col-lg-6 w-100">
-            <div className="position-relative border rounded-1 custom-code me-3">
+        <div className="row d-flex justify-content-md-center ps-1 cart-car">
+          <div className="d-flex flex-column align-items-center mt-1 col-12 ms-lg-5 ps-lg-5 col-lg-6 w-100">
+            <div className="position-relative border rounded-1 custom-code me-0">
               <p className="ms-4 mt-3 text-start">Header HTML</p>
               <CodeMirror
-                className="border rounded ms-3 me-3 mb-3"
+                className="border rounded text-start ms-3 me-3 mb-3"
                 value={headerHtml}
                 options={{
                   lineNumbers: true,
@@ -2245,7 +2205,7 @@ function CustomHtml() {
               <p className="ms-4 mt-3 text-start">Body HTML</p>
 
               <CodeMirror
-                className="border rounded ms-3 me-3 mb-3"
+                className="border rounded text-start ms-3 me-3 mb-3"
                 value={bodyHtml}
                 options={{
                   lineNumbers: true,
@@ -2266,7 +2226,7 @@ function CustomHtml() {
               <p className="ms-4 mt-3 text-start">Footer HTML</p>
 
               <CodeMirror
-                className="border rounded ms-3 me-3 mb-3"
+                className="border rounded text-start ms-3 me-3 mb-3"
                 value={footerHtml}
                 options={{
                   lineNumbers: true,
@@ -2286,7 +2246,7 @@ function CustomHtml() {
               </p>
             </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-6 col-xxl-6 border rounded ms-2 mt-md-3 mt-md-0 published-box mt-2 me-4 mb-4">
+            <div className="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-6 col-xxl-6 border rounded ms-0 mt-md-3 mt-md-0 published-box mt-2 me-0 mb-4">
               <p className="ms-4 mt-3 mb-3 text-start">Publish</p>
               <hr />
               <button

@@ -214,33 +214,6 @@ input[type="search"] {
   color: #4299e1;
 }
 
-#role-announce {
-  width: 100%;
-  display: flex;
-}
-
-@media (max-width: 992px) {
-  .editor-toolbar {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .container-create {
-    margin-left: 0;
-    padding: 0.5rem;
-    width: 100%;
-  }
-
-  .editor-toolbar {
-    width: 100%;
-  }
-}
-
-.image-card a:hover {
-  text-decoration: underline;
-}
-
 .name-truck1 {
   color: #206bc4;
 }
@@ -255,7 +228,7 @@ input[type="search"] {
   .testimonial-page {
     width: 100%;
     max-width: 95%;
-    margin-left: 0%;
+    margin-left: 3%;
   }
 }
 @media (min-width: 576px) and (max-width: 768px) {
@@ -301,10 +274,17 @@ input[type="search"] {
   .testimonial-page {
     width: 100%;
     max-width: 95%;
-    margin-left: 9%;
+    margin-left: 14%;
   }
 }
 
 .ck-editor__editable {
   min-height: 200px !important;
+}
+
+.ck-content img {
+  width: 180px !important;
+  height: 65px !important;
+  display: block;
+  margin: 1rem 0;
 }

@@ -15,7 +15,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import Cutting from "../../assets/Cutting.webp";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -137,7 +136,7 @@ function PagesCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -161,59 +160,6 @@ function PagesCreate() {
 
   const toggleblog = () => {
     setBlog(!blog);
-  };
-
-  const [mainImageUrl, setMainImageUrl] = useState(null);
-
-  const handleMainFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setMainImageUrl(url);
-    }
-  };
-
-  const handleMainCloseClick = (e) => {
-    e.stopPropagation();
-    setMainImageUrl(null);
-  };
-
-  const [seoImageUrl, setSeoImageUrl] = useState(null);
-
-  const handleSeoFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setSeoImageUrl(url);
-    }
-  };
-
-  const handleSeoCloseClick = (e) => {
-    e.stopPropagation();
-    setSeoImageUrl(null);
-  };
-
-  const handleAddFromUrl = () => {
-    try {
-      toast.success(
-        "Functionality to add image from URL needs to be implemented.",
-        {
-          position: "bottom-right",
-          autoClose: 1000,
-          progress: true,
-          closeOnClick: true,
-          draggable: true,
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  let [seo, setSeo] = useState(false);
-
-  let seodatapage = () => {
-    setSeo(!seo);
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -271,7 +217,6 @@ function PagesCreate() {
       breadcrumb,
       date,
       content,
-      file,
     };
 
     for (const field in requiredFields) {
@@ -293,19 +238,19 @@ function PagesCreate() {
       return;
     }
     const formData = new FormData();
-    const cleanContent = stripHTML(user.content);
-    formData.append("name", user.name);
-    formData.append("permalink", user.permalink);
-    formData.append("description", user.description);
-    formData.append("status", user.status);
-    formData.append("template", user.template);
-    formData.append("breadcrumb", user.breadcrumb);
-    formData.append("date", user.date);
-    formData.append("content", cleanContent);
-    formData.append("file", user.file);
+    // const cleanContent = stripHTML(user.content);
+    formData.append("name", name);
+    formData.append("permalink", permalink);
+    formData.append("description", description);
+    formData.append("status", status);
+    formData.append("template", template);
+    formData.append("breadcrumb", breadcrumb);
+    formData.append("date", date);
+    formData.append("content", content);
+    formData.append("file", file);
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/pagespost",
+        "http://147.93.45.171:1600/pagespost",
         formData
       );
       toast.success("Data successfully submitted and file uploaded", {
@@ -336,11 +281,7 @@ function PagesCreate() {
   const [editorData2, setEditorData2] = useState("");
   const [textAreaData2, setTextAreaData2] = useState("");
   const [showEdit2, setShowEdit2] = useState(true);
-
-  const stripHTML = (htmlContent) => {
-    const doc = new DOMParser().parseFromString(htmlContent, "text/html");
-    return doc.body.textContent || "";
-  };
+  const editorRef = useRef(null);
 
   const handleEditorChange2 = (event, editor) => {
     const data = editor.getData();
@@ -360,41 +301,182 @@ function PagesCreate() {
     }));
   };
 
+  const handleEditorReady = (editor) => {
+    editorRef.current = editor;
+  };
+
   const showEditorClicked2 = (e) => {
     e.preventDefault();
     setShowEdit2(!showEdit2);
   };
 
   const mediaUpload = async (e) => {
-    e.preventDefault();
+    e && e.preventDefault();
+    const toastOptions = {
+      position: "bottom-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeButton: true,
+      draggable: true,
+      progress: undefined,
+    };
+
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
-    fileInput.click();
 
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
+    fileInput.addEventListener(
+      "change",
+      async (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) {
+          fileInput.remove();
+          return;
+        }
+
+        const MAX_MB = 3;
+        if (file.size > MAX_MB * 1024 * 1024) {
+          toast.error(`Image too large. Max ${MAX_MB} MB.`, toastOptions);
+          fileInput.remove();
+          return;
+        }
 
         try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result;
+            const editor = editorRef.current;
+            if (editor) {
+              try {
+                editor.model.change((writer) => {
+                  let imageEl = null;
+                  try {
+                    imageEl = writer.createElement("imageBlock", {
+                      src: dataUrl,
+                      alt: file.name,
+                    });
+                  } catch (err) {
+                    try {
+                      imageEl = writer.createElement("image", {
+                        src: dataUrl,
+                        alt: file.name,
+                      });
+                    } catch (e) {
+                      imageEl = null;
+                    }
+                  }
 
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
+                  if (imageEl) {
+                    editor.model.insertContent(
+                      imageEl,
+                      editor.model.document.selection
+                    );
+                  } else {
+                    const html = `<figure class="image"><img src="${dataUrl}" alt="${file.name}"></figure>`;
+                    const viewFragment = editor.data.processor.toView(html);
+                    const modelFragment = editor.data.toModel(viewFragment);
+                    editor.model.insertContent(
+                      modelFragment,
+                      editor.model.document.selection
+                    );
+                  }
+                });
 
-          const data = await response.json();
-          console.log("Image uploaded successfully", data);
-        } catch (error) {
-          console.error("Error uploading image:", error);
+                const newData = editor.getData();
+                setEditorData2(newData);
+                setUser((p) => ({ ...p, content: newData }));
+                toast.success("Image inserted successfully)", toastOptions);
+              } catch (insertErr) {
+                console.error("Insert failed:", insertErr);
+                toast.error("Could not insert image into editor", toastOptions);
+              }
+            } else {
+              setTextAreaData2((prev) =>
+                prev ? prev + `\n${dataUrl}` : dataUrl
+              );
+              setUser((p) => ({ ...p, content: dataUrl }));
+              toast.info(
+                "Editor not ready — image data appended as text",
+                toastOptions
+              );
+            }
+          };
+
+          reader.onerror = (err) => {
+            console.error("FileReader error", err);
+            toast.error("Failed to read file", toastOptions);
+          };
+
+          reader.readAsDataURL(file);
+        } finally {
+          fileInput.remove();
         }
-      }
-    });
+      },
+      { once: true }
+    );
+
+    fileInput.click();
+  };
+
+  const [mainImageUrl, setMainImageUrl] = useState(null);
+
+  const handleMainFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setMainImageUrl(url);
+      setUser((prev) => ({
+        ...prev,
+        file,
+      }));
+      setErrors((errs) => ({
+        ...errs,
+        file: undefined,
+      }));
+    }
+  };
+
+  const handleMainCloseClick = (e) => {
+    e.stopPropagation();
+    setMainImageUrl(null);
+  };
+
+  const [seoImageUrl, setSeoImageUrl] = useState(null);
+
+  const handleSeoFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setSeoImageUrl(url);
+    }
+  };
+
+  const handleSeoCloseClick = (e) => {
+    e.stopPropagation();
+    setSeoImageUrl(null);
+  };
+
+  const handleAddFromUrl = () => {
+    try {
+      toast.success(
+        "Functionality to add image from URL needs to be implemented.",
+        {
+          position: "bottom-right",
+          autoClose: 1000,
+          progress: true,
+          closeOnClick: true,
+          draggable: true,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  let [seo, setSeo] = useState(false);
+
+  let seodatapage = () => {
+    setSeo(!seo);
   };
 
   return (
@@ -410,12 +492,12 @@ function PagesCreate() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -429,10 +511,10 @@ function PagesCreate() {
         <meta property="og:title" content="Create new page | RxLYTE" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -524,11 +606,11 @@ function PagesCreate() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1122,7 +1204,7 @@ function PagesCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1936,46 +2018,7 @@ function PagesCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2399,9 +2442,9 @@ function PagesCreate() {
 
       <div className="container-fluid">
         <div className="container">
-          <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
-            <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
-              <form>
+          <form onSubmit={handleSubmit}>
+            <div className="row d-flex flex-row flex-xxl-nowrap flex-xl-nowrap gap-3 w-100 ms-md-1">
+              <div className="col-12 col-lg-8 border rounded customer-page customer-page2">
                 <div className="d-flex flex-column gap-2 name-form text-start flex-wrap flex-md-nowrap flex-lg-nowrap flex-sm-nowrap">
                   <div className="d-flex flex-column mb-1 mt-3 w-100">
                     <label htmlFor="">Name</label>
@@ -2484,6 +2527,7 @@ function PagesCreate() {
                       <CKEditor
                         editor={ClassicEditor}
                         data={editorData2}
+                        onReady={handleEditorReady}
                         onChange={handleEditorChange2}
                         config={{
                           toolbar: [
@@ -2602,303 +2646,304 @@ function PagesCreate() {
                     </small>
                   )}
                 </div>
-              </form>
 
-              <div className="card mt-3 seo-metas1">
-                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-                  <div className="text-start">
-                    <h5 className="card-title1">Search Engine Optimize</h5>
-                    <Link
-                      to="#"
-                      className="link-primary1 primary2 meta float-end"
-                      onClick={seodatapage}
-                      style={{ zIndex: "100" }}
-                    >
-                      Edit SEO meta
-                    </Link>
-                    <div className="border w-100 mb-2"></div>
-                    <p className="card-text text-dark">
-                      Setup meta title & description to make your site easy to
-                      discovered on search engines such as Google
-                      <div className="border w-100 mt-2"></div>
-                      {seo && (
-                        <>
-                          <div className="mt-3">
-                            <label htmlFor="">SEO Title</label>
-                            <input
-                              type="text"
-                              className="form-control mt-2 py-4 seo-edit"
-                              placeholder="SEO Title"
-                            />
-                          </div>
+                <div className="card mt-3 seo-metas1">
+                  <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                    <div className="text-start">
+                      <h5 className="card-title1">Search Engine Optimize</h5>
+                      <Link
+                        to="#"
+                        className="link-primary1 primary2 meta float-end"
+                        onClick={seodatapage}
+                        style={{ zIndex: "100" }}
+                      >
+                        Edit SEO meta
+                      </Link>
+                      <div className="border w-100 mb-2"></div>
+                      <p className="card-text text-dark">
+                        Setup meta title & description to make your site easy to
+                        discovered on search engines such as Google
+                        <div className="border w-100 mt-2"></div>
+                        {seo && (
+                          <>
+                            <div className="mt-3">
+                              <label htmlFor="">SEO Title</label>
+                              <input
+                                type="text"
+                                className="form-control mt-2 py-4 seo-edit"
+                                placeholder="SEO Title"
+                              />
+                            </div>
 
-                          <div className="mt-3">
-                            <label htmlFor="seo-description">
-                              SEO Description
-                            </label>
-                            <textarea
-                              id="seo-description"
-                              className="form-control mt-2 seo-edit"
-                              placeholder="SEO Description"
-                              style={{
-                                height: "100px",
-                                overflow: "auto",
-                                resize: "vertical",
-                                minHeight: "100px",
-                              }}
-                            />
-                          </div>
+                            <div className="mt-3">
+                              <label htmlFor="seo-description">
+                                SEO Description
+                              </label>
+                              <textarea
+                                id="seo-description"
+                                className="form-control mt-2 seo-edit"
+                                placeholder="SEO Description"
+                                style={{
+                                  height: "100px",
+                                  overflow: "auto",
+                                  resize: "vertical",
+                                  minHeight: "100px",
+                                }}
+                              />
+                            </div>
 
-                          <div>
-                            <label className="mt-3 pt-2 ms-2">SEO image</label>
-                            <div className="image-card border-0 ps-1">
-                              <div
-                                className="image-placeholder position-relative"
-                                onClick={() => {
-                                  if (!seoImageUrl) {
+                            <div>
+                              <label className="mt-3 pt-2 ms-2">
+                                SEO image
+                              </label>
+                              <div className="image-card border-0 ps-1">
+                                <div
+                                  className="image-placeholder position-relative"
+                                  onClick={() => {
+                                    if (!seoImageUrl) {
+                                      document
+                                        .getElementById("fileInputSeo")
+                                        .click();
+                                    }
+                                  }}
+                                >
+                                  {seoImageUrl ? (
+                                    <img
+                                      alt="Uploaded preview"
+                                      src={seoImageUrl}
+                                      width="100"
+                                      height="100"
+                                      onClick={() =>
+                                        document
+                                          .getElementById("fileInputSeo")
+                                          .click()
+                                      }
+                                    />
+                                  ) : (
+                                    <img
+                                      src={Cutting}
+                                      alt="RxLYTE"
+                                      className="w-75 h-75 img-fluid"
+                                      onClick={() =>
+                                        document
+                                          .getElementById("fileInputSeo")
+                                          .click()
+                                      }
+                                    />
+                                  )}
+                                  {seoImageUrl && (
+                                    <FontAwesomeIcon
+                                      icon={faXmark}
+                                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        console.log("Close icon clicked");
+                                        handleSeoCloseClick(e);
+                                      }}
+                                    />
+                                  )}
+                                </div>
+
+                                <input
+                                  id="fileInputSeo"
+                                  type="file"
+                                  name="seoFile"
+                                  style={{ display: "none" }}
+                                  onChange={handleSeoFileChange}
+                                />
+                                <Link
+                                  className="ms-5 text-decoration-none choose-url"
+                                  to="#"
+                                  onClick={() =>
                                     document
                                       .getElementById("fileInputSeo")
-                                      .click();
+                                      .click()
                                   }
-                                }}
-                              >
-                                {seoImageUrl ? (
-                                  <img
-                                    alt="Uploaded preview"
-                                    src={seoImageUrl}
-                                    width="100"
-                                    height="100"
-                                    onClick={() =>
-                                      document
-                                        .getElementById("fileInputSeo")
-                                        .click()
-                                    }
-                                  />
-                                ) : (
-                                  <img
-                                    src={Cutting}
-                                    alt="RxLYTE"
-                                    className="w-75 h-75 img-fluid"
-                                    onClick={() =>
-                                      document
-                                        .getElementById("fileInputSeo")
-                                        .click()
-                                    }
-                                  />
-                                )}
-                                {seoImageUrl && (
-                                  <FontAwesomeIcon
-                                    icon={faXmark}
-                                    className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      console.log("Close icon clicked");
-                                      handleSeoCloseClick(e);
-                                    }}
-                                  />
-                                )}
+                                >
+                                  Choose image <br />
+                                </Link>
+                                <span className="ms-2 me-2 ms-5">or</span>
+                                <Link to="#" onClick={handleAddFromUrl}>
+                                  Add from URL
+                                </Link>
                               </div>
+                            </div>
+
+                            <div className="d-flex gap-2 ms-2">
+                              <label htmlFor="">Index</label>
+                            </div>
+
+                            <div className="ms-2 mt-2 pb-2">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="check"
+                                id="Index"
+                              />
+                              <label htmlFor="Index" className="ms-2">
+                                Index
+                              </label>
 
                               <input
-                                id="fileInputSeo"
-                                type="file"
-                                name="seoFile"
-                                style={{ display: "none" }}
-                                onChange={handleSeoFileChange}
+                                className="form-check-input ms-2"
+                                type="radio"
+                                value="index"
+                                name="check"
+                                id="No index"
                               />
-                              <Link
-                                className="ms-5 text-decoration-none choose-url"
-                                to="#"
-                                onClick={() =>
-                                  document
-                                    .getElementById("fileInputSeo")
-                                    .click()
-                                }
-                              >
-                                Choose image <br />
-                              </Link>
-                              <span className="ms-2 me-2 ms-5">or</span>
-                              <Link to="#" onClick={handleAddFromUrl}>
-                                Add from URL
-                              </Link>
+                              <label htmlFor="No index" className="ms-2">
+                                No index
+                              </label>
                             </div>
-                          </div>
-
-                          <div className="d-flex gap-2 ms-2">
-                            <label htmlFor="">Index</label>
-                          </div>
-
-                          <div className="ms-2 mt-2 pb-2">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="check"
-                              id="Index"
-                            />
-                            <label htmlFor="Index" className="ms-2">
-                              Index
-                            </label>
-
-                            <input
-                              className="form-check-input ms-2"
-                              type="radio"
-                              value="index"
-                              name="check"
-                              id="No index"
-                            />
-                            <label htmlFor="No index" className="ms-2">
-                              No index
-                            </label>
-                          </div>
-                        </>
-                      )}
-                    </p>
+                          </>
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
-              <div className="border rounded p-2 customer-page1">
-                <h5 className="mt-0 text-start">Publish</h5>
-                <hr />
-                <div className="d-flex flex-row gap-3 mb-3">
-                  <button
-                    type="button"
-                    className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
-                    onClick={handleSubmit}
-                  >
-                    <FontAwesomeIcon icon={faSave} className="me-2" /> Save
-                  </button>
-                  <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
-                    <Link
-                      to="/admin/pages"
-                      className="text-decoration-none text-dark"
+              <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
+                <div className="border rounded p-2 customer-page1">
+                  <h5 className="mt-0 text-start">Publish</h5>
+                  <hr />
+                  <div className="d-flex flex-row gap-3 mb-3">
+                    <button
+                      type="submit"
+                      className="btn btn-success rounded py-4 px-3 d-flex flex-row align-items-center"
                     >
-                      <FontAwesomeIcon icon={faSignOut} className="me-2" />
-                      Save & Exit
-                    </Link>
-                  </button>
+                      <FontAwesomeIcon icon={faSave} className="me-2" /> Save
+                    </button>
+                    <button className="btn btn-body border rounded py-4 px-3 d-flex flex-row align-items-center">
+                      <Link
+                        to="/admin/pages"
+                        className="text-decoration-none text-dark"
+                      >
+                        <FontAwesomeIcon icon={faSignOut} className="me-2" />
+                        Save & Exit
+                      </Link>
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Status</h4>
-                <hr />
-                <select
-                  className="form-select w-100"
-                  style={{ height: "45px" }}
-                  name="status"
-                  value={status}
-                  onChange={onInputChange}
-                >
-                  <option value="">Select an option</option>
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
-                  <option value="pending">Pending</option>
-                </select>
-                {errors.status && (
-                  <small className="text-danger text-start cart-cart mt-1">
-                    {errors.status}
-                  </small>
-                )}
-              </div>
-
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Template</h4>
-                <hr />
-                <select
-                  className="form-select w-100"
-                  style={{ height: "45px" }}
-                  name="template"
-                  value={template}
-                  onChange={onInputChange}
-                >
-                  <option value="">Select an option</option>
-                  <option value="default">Default</option>
-                  <option value="full-width">Full width</option>
-                  <option value="without layout">Without layout</option>
-                </select>
-              </div>
-
-              <div className="border rounded p-3 customer-page1">
-                <h4 className="mt-0 text-start">Image</h4>
-                <hr />
-                <div className="image-placeholder mt-2 position-relative">
-                  {mainImageUrl ? (
-                    <img
-                      alt="Uploaded preview"
-                      src={mainImageUrl}
-                      width="100"
-                      height="100"
-                      onClick={() =>
-                        document.getElementById("fileInputMain").click()
-                      }
-                    />
-                  ) : (
-                    <img
-                      src={Cutting}
-                      alt="Background"
-                      className="w-100 h-100 rounded"
-                      onClick={() =>
-                        document.getElementById("fileInputMain").click()
-                      }
-                    />
-                  )}
-                  {mainImageUrl && (
-                    <FontAwesomeIcon
-                      icon={faXmark}
-                      className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
-                      onClick={handleMainCloseClick}
-                    />
+                <div className="border rounded p-3 customer-page1">
+                  <h4 className="mt-0 text-start">Status</h4>
+                  <hr />
+                  <select
+                    className="form-select w-100"
+                    style={{ height: "45px" }}
+                    name="status"
+                    value={status}
+                    onChange={onInputChange}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending">Pending</option>
+                  </select>
+                  {errors.status && (
+                    <small className="text-danger text-start cart-cart mt-1">
+                      {errors.status}
+                    </small>
                   )}
                 </div>
 
-                <input
-                  id="fileInputMain"
-                  type="file"
-                  name="mainFile"
-                  style={{ display: "none" }}
-                  onChange={handleMainFileChange}
-                />
-                <Link
-                  className="ms-2 text-decoration-none choose-url"
-                  to="#"
-                  onClick={() =>
-                    document.getElementById("fileInputMain").click()
-                  }
-                >
-                  Choose image
-                </Link>
-                <span className="ms-3 me-2">or</span>
-                <Link
-                  to="#"
-                  onClick={handleAddFromUrl}
-                  className="text-decoration-none choose-url"
-                >
-                  Add from URL
-                </Link>
-              </div>
+                <div className="border rounded p-3 customer-page1">
+                  <h4 className="mt-0 text-start">Template</h4>
+                  <hr />
+                  <select
+                    className="form-select w-100"
+                    style={{ height: "45px" }}
+                    name="template"
+                    value={template}
+                    onChange={onInputChange}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="default">Default</option>
+                    <option value="full-width">Full width</option>
+                    <option value="without layout">Without layout</option>
+                  </select>
+                </div>
 
-              <div className="border rounded p-2 customer-page1 mb-3">
-                <h4 className="mt-0 text-start">Breadcrumb Style</h4>
-                <hr />
-                <select
-                  className="form-select w-100"
-                  style={{ height: "45px" }}
-                  name="breadcrumb"
-                  value={breadcrumb}
-                  onChange={onInputChange}
-                >
-                  <option value="">Select an option</option>
-                  <option value="Align start">Align start</option>
-                  <option value="Align center">Align center</option>
-                  <option value="Without title">Without title</option>
-                  <option value="None">None</option>
-                </select>
+                <div className="border rounded p-3 customer-page1">
+                  <h4 className="mt-0 text-start">Image</h4>
+                  <hr />
+                  <div className="image-placeholder mt-2 position-relative">
+                    {mainImageUrl ? (
+                      <img
+                        alt="Uploaded preview"
+                        src={mainImageUrl}
+                        width="100"
+                        height="100"
+                        onClick={() =>
+                          document.getElementById("fileInputMain").click()
+                        }
+                      />
+                    ) : (
+                      <img
+                        src={Cutting}
+                        alt="Background"
+                        className="w-100 h-100 rounded"
+                        onClick={() =>
+                          document.getElementById("fileInputMain").click()
+                        }
+                      />
+                    )}
+                    {mainImageUrl && (
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        className="position-absolute top-0 end-0 p-1 cursor-pointer bg-light border me-1 mt-1 rounded-5 text-dark"
+                        onClick={handleMainCloseClick}
+                      />
+                    )}
+                  </div>
+
+                  <input
+                    id="fileInputMain"
+                    type="file"
+                    name="mainFile"
+                    style={{ display: "none" }}
+                    onChange={handleMainFileChange}
+                  />
+                  <Link
+                    className="ms-2 text-decoration-none choose-url"
+                    to="#"
+                    onClick={() =>
+                      document.getElementById("fileInputMain").click()
+                    }
+                  >
+                    Choose image
+                  </Link>
+                  <span className="ms-3 me-2">or</span>
+                  <Link
+                    to="#"
+                    onClick={handleAddFromUrl}
+                    className="text-decoration-none choose-url"
+                  >
+                    Add from URL
+                  </Link>
+                </div>
+
+                <div className="border rounded p-2 customer-page1 mb-3">
+                  <h4 className="mt-0 text-start">Breadcrumb Style</h4>
+                  <hr />
+                  <select
+                    className="form-select w-100"
+                    style={{ height: "45px" }}
+                    name="breadcrumb"
+                    value={breadcrumb}
+                    onChange={onInputChange}
+                  >
+                    <option value="">Select an option</option>
+                    <option value="Align start">Align start</option>
+                    <option value="Align center">Align center</option>
+                    <option value="Without title">Without title</option>
+                    <option value="None">None</option>
+                  </select>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
         <ToastContainer />
       </div>

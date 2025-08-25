@@ -11,88 +11,8 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
-}
-
-.container-contact-check {
-  text-align: center;
-  margin-bottom: 2rem;
-  position: relative;
-  bottom: 42%;
-}
-
-#container-contact1-check {
-  font-family: "SanDiego";
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-  bottom: 100%;
-  left: 21%;
-}
-
-.breadcrumb-check {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-}
-
-.breadcrumb-item-check {
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-@media (max-width: 767px) {
-  .container-contact-check {
-    font-size: 1.5rem;
-  }
-
-  #container-contact1-check {
-    text-align: center;
-    margin-top: 1rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb-check {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .container-contact-check {
-    font-size: 1.75rem;
-  }
-
-  #container-contact1-check {
-    text-align: start;
-    margin-top: 1.5rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb-check {
-    flex-direction: row;
-  }
-}
-
-@media (min-width: 992px) {
-  .container-contact-check {
-    font-size: 2rem;
-  }
-
-  #container-contact1-check {
-    text-align: left;
-    margin-top: 2rem;
-    white-space: nowrap;
-  }
-
-  .breadcrumb-check {
-    flex-direction: row;
-  }
 }
 
 .demo-shipping {

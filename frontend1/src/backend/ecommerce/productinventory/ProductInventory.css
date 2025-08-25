@@ -7,7 +7,6 @@ body {
   width: 100vw;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
 }
 
 .navbar-back {
@@ -161,4 +160,3 @@ input[type="search"] {
     height: 55rem;
   }
 }
-

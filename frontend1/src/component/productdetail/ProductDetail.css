@@ -11,7 +11,7 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
 }
 
@@ -121,24 +121,10 @@ body {
   .navbar-collapse {
     display: none;
   }
-  .hamburger-image {
-    position: relative;
-    bottom: 0.9rem;
-    right: -2rem;
-  }
-  .navbar-icons {
-    position: absolute;
-    top: 1.4rem;
-    right: 5rem;
-  }
+
   .addcarts {
     margin-top: -1.2rem;
   }
-}
-
-.profiles {
-  width: 25px;
-  height: 25px;
 }
 
 .profiles1 {
@@ -146,17 +132,17 @@ body {
   height: 25px;
 }
 
+@media (max-width: 576px) {
+  .profiles1 {
+    width: 25px !important;
+    height: 26px !important;
+  }
+}
+
 .addcarts {
   position: absolute;
   top: 0.6rem;
   font-family: Verdana, Tahoma, sans-serif;
-}
-
-@media (max-width: 450px) {
-  .navbar-icons {
-    display: flex;
-    flex-wrap: nowrap;
-  }
 }
 
 @media (min-width: 993px) {
@@ -174,7 +160,6 @@ body {
 }
 
 #container-contact1 {
-  font-family: "SanDiego";
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -260,14 +245,12 @@ body {
 .container-single {
   position: relative;
   top: 7%;
-  font-family: "SanDiego";
 }
 
 .container-list {
   position: relative;
   bottom: 59%;
   left: 21%;
-  font-family: "SanDiego";
 }
 
 .container-custom1 {
@@ -686,6 +669,10 @@ body {
   .home-detail {
     font-size: 20px;
   }
+}
+
+.home-detail {
+  font-size: 28px;
 }
 
 .feature-box {

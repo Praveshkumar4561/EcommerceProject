@@ -15,7 +15,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,17 +28,7 @@ function BlogPost() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   let [count5, setCount5] = useState(0);
-
-  useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
-    };
-    orderdata();
-  }, []);
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +36,14 @@ function BlogPost() {
   const navigate = useNavigate();
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+
+  useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
+    orderdata();
+  }, []);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -101,6 +98,7 @@ function BlogPost() {
     "/admin/payments/methods": "# Payments > Payment Methods",
     "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -181,7 +179,7 @@ function BlogPost() {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 15;
 
   const paginatedData = user.slice(
     (currentPage - 1) * itemsPerPage,
@@ -198,18 +196,18 @@ function BlogPost() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/blogpostsearch/${search}`
+      `http://147.93.45.171:1600/blogpostsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
+    let response = await axios.get("http://147.93.45.171:1600/blogpostdata");
     setUser(response.data);
   };
 
   let deletedata = async (id) => {
-    await axios.delete(`http://89.116.170.231:1600/deleteblogpost/${id}`, user);
+    await axios.delete(`http://147.93.45.171:1600/deleteblogpost/${id}`, user);
     try {
       toast.success("Data sucessfully deleted ", {
         position: "bottom-right",
@@ -236,12 +234,12 @@ function BlogPost() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -255,10 +253,10 @@ function BlogPost() {
         <meta property="og:title" content="Posts | RxLYTE" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -950,7 +948,7 @@ function BlogPost() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1764,46 +1762,6 @@ function BlogPost() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2246,7 +2204,7 @@ function BlogPost() {
                   <button
                     className="btn btn-reload border cart-cart"
                     type="button"
-                    onClick={alldata}
+                    onClick={() => window.location.reload()}
                   >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
@@ -2298,7 +2256,7 @@ function BlogPost() {
                         <td>{data.id}</td>
                         <td>
                           <img
-                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
                             alt="RxLYTE"
                             className="rounded-2 img-fluid"
                             style={{ width: "100px" }}

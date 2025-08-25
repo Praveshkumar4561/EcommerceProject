@@ -7,7 +7,6 @@ body {
   width: 100vw;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
 }
 
 .search-box1 {
@@ -66,7 +65,6 @@ body {
 
   .form-control {
     width: 100%;
-    font-family: "SanDiego";
   }
 
   button.button-btn {

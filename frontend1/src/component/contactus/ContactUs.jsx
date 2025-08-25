@@ -28,7 +28,7 @@ function ContactUs() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -107,7 +107,7 @@ function ContactUs() {
     }
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/contact",
+        "http://147.93.45.171:1600/contact",
         user
       );
       if (response.status === 200) {
@@ -204,11 +204,11 @@ function ContactUs() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -222,7 +222,7 @@ function ContactUs() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -238,7 +238,7 @@ function ContactUs() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -254,14 +254,14 @@ function ContactUs() {
       {
         "@type": "ContactPage",
         name: "RxLyte",
-        url: "http://srv724100.hstgr.cloud/about",
+        url: "http://srv689968.hstgr.cloud/about",
         description:
           "RxLyte is a modern ecommerce platform offering premium healthcare products.",
         mainEntity: {
           "@type": "Organization",
           name: "RxLyte",
-          url: "http://srv724100.hstgr.cloud/",
-          logo: "http://srv724100.hstgr.cloud/Tonic.svg",
+          url: "http://srv689968.hstgr.cloud/",
+          logo: "http://srv689968.hstgr.cloud/Tonic.svg",
           description:
             "RxLyte is a trusted ecommerce store providing high-quality healthcare products.",
           contactPoint: {
@@ -281,13 +281,13 @@ function ContactUs() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv724100.hstgr.cloud/",
+            item: "http://srv689968.hstgr.cloud/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Contact Us",
-            item: "http://srv724100.hstgr.cloud/contact-us",
+            item: "http://srv689968.hstgr.cloud/contact-us",
           },
         ],
       },
@@ -305,7 +305,7 @@ function ContactUs() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/cookiesalldata"
+          "http://147.93.45.171:1600/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -333,7 +333,7 @@ function ContactUs() {
           content="Have questions or need assistance? Contact Rxlyte's support team for quick responses. We’re here to help with orders, inquiries, and more."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/contact-us" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/contact-us" />
       </Helmet>
 
       <div
@@ -344,7 +344,7 @@ function ContactUs() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${cart.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -580,7 +580,7 @@ function ContactUs() {
                   <div className="rounded-border bg-success text-center text-white fs-3 d-flex align-items-center justify-content-center">
                     <FontAwesomeIcon icon={faLocationDot} />
                   </div>
-                  <div className="ms-3">
+                  <div className="ms-3 d-flex position-relative flex-column">
                     <h2 className="fw-normal mb-1 text-lg-start mt-1 text-start contact-phone">
                       Office Address
                     </h2>
@@ -595,7 +595,7 @@ function ContactUs() {
             <div className="col-12 col-md-6 query query2 bg-light mb-3 d-flex justify-content-center align-items-lg-center h-auto">
               <form onSubmit={handleSubmit} className="lorem-contact w-100">
                 <div className="row mb-3">
-                  <div className="col-12 col-md-6 d-flex flex-column align-items-lg-center contact-name">
+                  <div className="col-12 col-md-6 d-flex flex-column align-items-center align-items-lg-center contact-name">
                     <div className="form-group text-start">
                       <label htmlFor="firstName" className="name1">
                         Name
@@ -614,7 +614,7 @@ function ContactUs() {
                       )}
                     </div>
                   </div>
-                  <div className="col-12 col-md-6 d-flex flex-column align-items-start align-items-md-start contact-name">
+                  <div className="col-12 col-md-6 d-flex flex-column align-items-center  align-items-md-start contact-name">
                     <div className="form-group w-100 mt-sm-3 blackitalic text-start mt-3 mt-lg-3">
                       <label htmlFor="lastName">Email</label>
                       <input
@@ -633,8 +633,8 @@ function ContactUs() {
                   </div>
                 </div>
 
-                <div className="row mb-1 mt-0 d-flex align-items-md-start contact-name5">
-                  <div className="col-12 col-md-6 d-flex flex-column align-items-start ">
+                <div className="row mb-1 mt-0 d-flex align-items-md-start  contact-name5">
+                  <div className="col-12 col-md-6 d-flex flex-column align-items-center ">
                     <div className="form-group blackitalic text-start">
                       <label htmlFor="email">Address</label>
                       <input
@@ -653,7 +653,7 @@ function ContactUs() {
                       )}
                     </div>
                   </div>
-                  <div className="col-12 col-md-6 d-flex flex-column align-items-start">
+                  <div className="col-12 col-md-6 d-flex flex-column align-items-center">
                     <div className="form-group blackitalic text-start contact-name">
                       <label htmlFor="phoneNumber" className="mt-3 mt-lg-0">
                         Phone
@@ -673,7 +673,8 @@ function ContactUs() {
                     </div>
                   </div>
                 </div>
-                <div className="mb-3 d-flex flex-column align-items-cente lorem-contact1">
+
+                <div className="mb-3 d-flex flex-column align-items-center lorem-contact1">
                   <div className="form-group blackitalic text-start mt-3">
                     <label htmlFor="product">Subject</label>
                     <input
@@ -691,57 +692,66 @@ function ContactUs() {
                   </div>
                 </div>
 
-                <div className="form-group mt-sm-0 blackitalic ms-0 ms-md-0 ms-lg-0 text-start">
-                  <label htmlFor="message">Content</label>
-                  <textarea
-                    className="form-control fw-normal mt-2 lorem-contact1 custom-message"
-                    id="message"
-                    placeholder="Enter message"
-                    name="content"
-                    value={content}
-                    onChange={handleChange}
-                  >
-                    {errors.content && (
-                      <p className="error-text text-danger">{errors.content}</p>
-                    )}
-                  </textarea>
+                <div className="mb-3 d-flex flex-column align-items-center lorem-contact1">
+                  <div className="form-group mt-sm-0 blackitalic ms-0 ms-md-0 ms-lg-0 text-start">
+                    <label htmlFor="message">Content</label>
+                    <textarea
+                      className="form-control fw-normal mt-2 lorem-contact1 custom-message"
+                      id="message"
+                      placeholder="Enter message"
+                      name="content"
+                      value={content}
+                      onChange={handleChange}
+                    >
+                      {errors.content && (
+                        <p className="error-text text-danger">
+                          {errors.content}
+                        </p>
+                      )}
+                    </textarea>
 
-                  <div className="captcha-container mt-4">
-                    <p className="captcha-header ms-1 mt-2 fw-light">
-                      Solve this: {num1} + {num2} = ?
-                    </p>
-                    <div className="d-flex flex-row">
-                      <input
-                        type="text"
-                        className="form-control captcha-input ms-1 mb-3 py-4"
-                        value={userAnswer}
-                        onChange={(e) => setUserAnswer(e.target.value)}
-                        placeholder="Your answer"
-                      />
-                      <button
-                        type="button"
-                        className="captcha-button d-flex ms-1 mb-2 border bg-none border-0 bg-transparent"
-                        onClick={regenerateCaptcha}
-                      >
-                        🔄
-                      </button>
+                    <div className="captcha-container mt-4">
+                      <p className="captcha-header ms-1 mt-2 fw-light">
+                        Solve this: {num1} + {num2} = ?
+                      </p>
+                      <div className="d-flex flex-row">
+                        <input
+                          type="text"
+                          className="form-control captcha-input ms-1 mb-3 py-4"
+                          value={userAnswer}
+                          onChange={(e) => setUserAnswer(e.target.value)}
+                          placeholder="Your answer"
+                        />
+                        <button
+                          type="button"
+                          className="captcha-button d-flex ms-1 mb-2 border bg-none border-0 bg-transparent"
+                          onClick={regenerateCaptcha}
+                        >
+                          🔄
+                        </button>
+                      </div>
+                      {errors.captcha && (
+                        <p className="error-text text-danger">
+                          {errors.captcha}
+                        </p>
+                      )}
                     </div>
-                    {errors.captcha && (
-                      <p className="error-text text-danger">{errors.captcha}</p>
-                    )}
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  className="btn btn-success-product d-flex flex-row align-items-center button-btn py-4 px-2 mt-4 ms-4 ms-lg-2 mb-4 blackitalic lorem-contact"
-                  onClick={handleCaptchaChange}
-                >
-                  Submit Request
-                  <FontAwesomeIcon
-                    icon={faArrowRightLong}
-                    className="ms-2 mt-1"
-                  />
-                </button>
+
+                <div className="col-12 col-md-6 d-flex flex-colu">
+                  <button
+                    type="submit"
+                    className="btn btn-success-product d-flex flex-row align-items-center button-btn py-4 px-2 mt-4 ms-4 ms-lg-2 mb-4 blackitalic lorem-contact"
+                    onClick={handleCaptchaChange}
+                  >
+                    Submit Request
+                    <FontAwesomeIcon
+                      icon={faArrowRightLong}
+                      className="ms-2 mt-1"
+                    />
+                  </button>
+                </div>
               </form>
             </div>
           </div>
@@ -806,9 +816,12 @@ function ContactUs() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -916,7 +929,8 @@ function ContactUs() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </p>
             </div>
           </div>

@@ -10,7 +10,7 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
 }
 
@@ -51,19 +51,6 @@ body {
     display: block;
   }
 
-  .navbar-collapse1 {
-    display: none;
-  }
-  .hamburger-image {
-    position: relative;
-    bottom: 0.9rem;
-    right: -2rem;
-  }
-  .navbar-icons {
-    position: absolute;
-    top: 1.4rem;
-    right: 5rem;
-  }
   .addcarts {
     margin-top: -1.2rem;
   }
@@ -77,33 +64,6 @@ body {
   color: #071c1f;
   font-weight: 595;
   font-size: 30px;
-}
-
-@media (max-width: 1200px) {
-  .tonic-font {
-    font-size: 1.2rem;
-    line-height: 1.5rem;
-  }
-}
-
-@media (max-width: 992px) {
-  .tonic-font {
-    font-size: 1.1rem;
-    line-height: 1.9rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .tonic-font {
-    font-size: 0.8rem;
-    padding: 0 0.5rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .tonic-font {
-    font-size: 0.7rem;
-  }
 }
 
 .para-class {
@@ -172,9 +132,6 @@ body {
     position: relative;
     left: 0;
     margin-right: 0;
-  }
-  .load-rubb {
-    font-size: 0.8rem;
   }
 }
 
@@ -316,13 +273,6 @@ body {
     height: 100%;
     position: relative;
   }
-
-  .green1 {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 5px;
-  }
 }
 
 @media (min-width: 576px) and (max-width: 768px) {
@@ -332,18 +282,6 @@ body {
   }
 }
 
-@media (min-width: 768px) and (max-width: 992px) {
-  .green1 {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 3px;
-  }
-}
-
-.load-rubb {
-  word-spacing: 2px;
-}
 .load-rubb1 {
   word-spacing: 2px;
   letter-spacing: 1px;
@@ -354,17 +292,6 @@ body {
   height: 1rem;
   border-radius: 50%;
   background-color: green;
-}
-
-.green1 {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  position: absolute;
-  bottom: 1.3rem;
-  left: 50%;
-  transform: translateX(-50%);
-  cursor: pointer;
 }
 
 .about-image {

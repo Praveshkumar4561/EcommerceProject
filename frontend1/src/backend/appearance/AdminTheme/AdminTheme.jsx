@@ -1,46 +1,69 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./AdminTheme.css";
+import "./theme-management.css";
 import Hamburger from "../../../assets/hamburger.svg";
 import Logo from "../../../assets/Tonic.svg";
-import Appath from "../../../assets/appath.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
   faBell,
-  faCheck,
   faEnvelope,
   faMoon,
-  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
-import axios from "axios";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 function AdminTheme() {
-  let [isVisible, setIsVisible] = useState(false);
-  let [blog, setBlog] = useState(false);
-  let [ads, setAds] = useState(false);
-  let [commerce, setCommerce] = useState(false);
-  let [appear, setAppear] = useState(false);
-  let [count5, setCount5] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const [blog, setBlog] = useState(false);
+  const [ads, setAds] = useState(false);
+  const [commerce, setCommerce] = useState(false);
+  const [appear, setAppear] = useState(false);
+  const [count5, setCount5] = useState(0);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const resultsRef = useRef(null);
-  let [Specification, setSpecifcation] = useState(false);
-  let [payment, setPayment] = useState(false);
+  const [Specification, setSpecifcation] = useState(false);
+  const [payment, setPayment] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-      setCount5(response.data.length);
+    const fetchThemes = async () => {
+      try {
+        const response = await axios.get("http://147.93.45.171:1600/themes");
+        if (response.data.themes) {
+          const processedThemes = response.data.themes.map((theme) => ({
+            ...theme,
+            is_active: parseInt(theme.is_active) || 0,
+          }));
+          setThemes(processedThemes);
+        }
+      } catch (error) {
+        console.error("Error fetching themes:", error);
+        toast.error(
+          "Failed to load themes: " +
+            (error.response?.data?.message || error.message)
+        );
+      }
     };
-    orderdata();
+    fetchThemes();
+
+    const orderData = async () => {
+      try {
+        const response = await axios.get(
+          "http://147.93.45.171:1600/checkoutdata"
+        );
+        setCount5(response.data.length);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+    orderData();
   }, []);
 
   let paymentgateway = () => {
@@ -176,6 +199,190 @@ function AdminTheme() {
     }
   };
 
+  const [themeName, setThemeName] = useState("");
+  const [themeFile, setThemeFile] = useState(null);
+  const [themes, setThemes] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const fetchThemes = useCallback(async () => {
+    try {
+      const res = await axios.get("http://147.93.45.171:1600/themes");
+      if (res.data?.success) {
+        setThemes(
+          res.data.themes.map((t) => ({
+            ...t,
+            is_active: parseInt(t.is_active, 10) || 0,
+          }))
+        );
+      } else {
+        toast.error("Failed to load themes: Invalid data format");
+        setThemes([]);
+      }
+    } catch (err) {
+      toast.error("Failed to load themes: " + (err.message || err));
+      setThemes([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchThemes();
+  }, [fetchThemes]);
+
+  const handleThemeSubmit = async (e) => {
+    e.preventDefault();
+    if (!themeName || !themeFile) {
+      return toast.error("Please provide both theme name and file");
+    }
+    if (!themeFile.name.toLowerCase().endsWith(".zip")) {
+      return toast.error("Please upload a ZIP file");
+    }
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("name", themeName);
+    formData.append("theme", themeFile);
+    try {
+      const { data } = await axios.post(
+        "http://147.93.45.171:1600/themes/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      if (data.success) {
+        toast.success("Theme uploaded successfully");
+        setThemeName("");
+        setThemeFile(null);
+        await fetchThemes();
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to upload theme");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDeactivateTheme = async (themeId) => {
+    const theme = themes.find((t) => t.id === themeId);
+    if (!theme) return toast.error("Theme not found");
+
+    const key = (theme.folder_name || theme.name || "").toLowerCase().trim();
+    console.log("Theme Key:", key);
+
+    if (["pesco theme", "radious theme"].includes(key)) {
+      return toast.error("You cannot do it in demo mode!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+      });
+    }
+
+    setThemes((prev) =>
+      prev.map((t) => ({
+        ...t,
+        is_active: t.id === themeId ? 0 : t.is_active,
+      }))
+    );
+
+    try {
+      const { data } = await axios.put(
+        `http://147.93.45.171:1600/themes/deactivate/${themeId}`
+      );
+
+      if (data.success) {
+        if (localStorage.getItem("active_theme") === data.theme?.folder_name) {
+          localStorage.removeItem("active_theme");
+        }
+
+        window.dispatchEvent(
+          new CustomEvent("themeDeactivated", {
+            detail: {
+              themeId,
+              timestamp: Date.now(),
+            },
+            bubbles: true,
+          })
+        );
+
+        toast.success("Theme deactivated successfully", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+        });
+      } else {
+        throw new Error(data.error || "Deactivation failed");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to deactivate theme", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+      });
+
+      fetchThemes();
+    }
+  };
+
+  const handleActivateTheme = async (themeId) => {
+    const theme = themes.find((t) => t.id === themeId);
+    if (!theme) return toast.error("Theme not found");
+
+    const key = (theme.folder_name || theme.name || "").toLowerCase().trim();
+    console.log("Theme Key:", key);
+
+    if (["pesco theme", "radious theme"].includes(key)) {
+      return toast.error("You cannot do it in demo mode!", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+      });
+    }
+
+    setThemes((prev) =>
+      prev.map((t) => ({
+        ...t,
+        is_active: t.id === themeId ? 1 : 0,
+      }))
+    );
+
+    try {
+      const { data } = await axios.put(
+        `http://147.93.45.171:1600/themes/activate/${themeId}`
+      );
+      if (data.success) {
+        localStorage.setItem("active_theme", data.theme.folder_name);
+
+        window.dispatchEvent(
+          new CustomEvent("themeActivated", {
+            detail: {
+              themeId,
+              themeName: data.theme.name,
+              themeFolder: data.theme.folder_name,
+              timestamp: Date.now(),
+            },
+            bubbles: true,
+          })
+        );
+
+        toast.success("Theme activated successfully", {
+          position: "bottom-right",
+          autoClose: 1500,
+          hideProgressBar: false,
+        });
+      } else {
+        throw new Error(data.error || "Activation failed");
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to activate theme", {
+        position: "bottom-right",
+        autoClose: 1500,
+        hideProgressBar: false,
+      });
+      fetchThemes();
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -189,12 +396,12 @@ function AdminTheme() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -208,10 +415,10 @@ function AdminTheme() {
 
         <meta property="og:title" content="Themes | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -303,11 +510,11 @@ function AdminTheme() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -901,7 +1108,7 @@ function AdminTheme() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1716,46 +1923,6 @@ function AdminTheme() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -1810,7 +1977,10 @@ function AdminTheme() {
                           d="M0 0h24v24H0z"
                           fill="none"
                         ></path>
-                        <path d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25"></path>
+                        <path
+                          d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 
+                        3.75a1.3 1.3 0 0 1 -1 2.25"
+                        ></path>
                         <path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
                         <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
                         <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
@@ -2151,56 +2321,92 @@ function AdminTheme() {
 
       <div className="container-fluid">
         <div className="container ms-lg-4 theme-admin">
-          <div className="row d-flex flex-row gap-1 ms-lg-5 ms-1 ms-sm-0 mb-3">
-            <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
-              <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
-              <div className="d-flex flex-row justify-content-center gap-2 mb-2 mt-2 active-button">
-                <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 px-3 active-btn text-light">
-                  <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
-                  Active
-                </button>
-
-                <button className="btn d-flex flex-row align-items-center rounded py-4 remove-btn border text-dark">
-                  <FontAwesomeIcon
-                    icon={faTrashCan}
-                    className="me-2 text-success"
-                  />
-                  Remove
-                </button>
+          <div className="row d-flex flex-row flex-wrap flex-lg-wrap gap-1 ms-1 ms-sm-0 mb-3">
+            <div className="theme-management">
+              <div className="theme-upload mb-4">
+                <h3 className="mb-3">Upload New Theme</h3>
+                <form
+                  onSubmit={handleThemeSubmit}
+                  className="theme-upload-form"
+                >
+                  <div className="mb-3">
+                    <input
+                      type="text"
+                      className="form-control py-4"
+                      placeholder="Theme Name"
+                      value={themeName}
+                      onChange={(e) => setThemeName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept=".zip"
+                      onChange={(e) => setThemeFile(e.target.files[0])}
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary d-flex cart-cart"
+                    disabled={isUploading}
+                  >
+                    {isUploading ? "Uploading..." : "Upload Theme"}
+                  </button>
+                </form>
               </div>
-            </div>
 
-            <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
-              <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
-              <div className="d-flex flex-row justify-content-center gap-2 mb-2 mt-2 active-button">
-                <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 active-btn">
-                  <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
-                  Active
-                </button>
-                <button className="btn d-flex flex-row align-items-center rounded py-4 remove-btn border text-dark">
-                  <FontAwesomeIcon
-                    icon={faTrashCan}
-                    className="me-2 text-success"
-                  />
-                  Remove
-                </button>
-              </div>
-            </div>
-
-            <div className="col-12 col-md-4 col-lg-4 border text-start theme-image d-flex flex-column">
-              <img src={Appath} alt="RxLYTE" className="img-fluid w-100" />
-              <div className="d-flex flex-row justify-content-center gap-2 mb-2 mt-2 active-button">
-                <button className="btn btn-success d-flex flex-row align-items-center rounded py-4 active-btn">
-                  <FontAwesomeIcon icon={faCheck} className="text-light me-2" />
-                  Active
-                </button>
-                <button className="btn d-flex flex-row align-items-center rounded py-4 remove-btn border text-dark">
-                  <FontAwesomeIcon
-                    icon={faTrashCan}
-                    className="me-2 text-success"
-                  />
-                  Remove
-                </button>
+              <div className="themes-list">
+                <h3 className="mb-0">Available Themes</h3>
+                <div className="row">
+                  {themes.length === 0 ? (
+                    <div className="col-12">
+                      <div className="alert alert-info">
+                        No themes available. Upload a theme to get started.
+                      </div>
+                    </div>
+                  ) : (
+                    themes.map((theme) => (
+                      <div key={theme.id} className="col-12 col-md-6 col-lg-4">
+                        <div
+                          className={`theme-card ${
+                            theme.is_active ? "border-success" : ""
+                          }`}
+                        >
+                          <div className="theme-preview mb-3">
+                            <img
+                              src="https://t4.ftcdn.net/jpg/07/09/69/97/360_F_709699721_P1CiJzI3vla68nFcvefyFrSgP5BEywuD.jpg"
+                              alt={theme.name}
+                              className="img-fluid w-100"
+                              style={{ height: "200px", objectFit: "cover" }}
+                            />
+                          </div>
+                          <div className="theme-info p-3">
+                            <h4 className="mb-3">{theme.name}</h4>
+                            <div className="d-flex gap-2">
+                              <button
+                                onClick={() => handleDeactivateTheme(theme.id)}
+                                className="btn btn-danger d-flex cart-cart"
+                                disabled={!theme.is_active}
+                              >
+                                Deactivate
+                              </button>
+                              <button
+                                onClick={() => handleActivateTheme(theme.id)}
+                                className="btn btn-success d-flex cart-cart"
+                                disabled={theme.is_active}
+                              >
+                                Activate
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
           </div>

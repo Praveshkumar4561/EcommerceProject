@@ -3,7 +3,6 @@ import "./ThemeStyles.css";
 import Hamburger from "../../../../assets/hamburger.svg";
 import Logo from "../../../../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "font-awesome/css/font-awesome.min.css";
 import {
   faAngleDown,
   faBell,
@@ -168,13 +167,12 @@ function ThemeStyles() {
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
+    let orderdata = async () => {
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      setCount5(response.data.length);
+    };
     orderdata();
   }, []);
-
-  let orderdata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
-    setCount5(response.data.length);
-  };
 
   const [user, setUser] = useState({
     stickyHeader: "no",
@@ -271,7 +269,7 @@ function ThemeStyles() {
     formData.append("headerStyle", headerStyle);
 
     try {
-      await axios.post("http://89.116.170.231:1600/updateSettings", user, {
+      await axios.post("http://147.93.45.171:1600/updateSettings", user, {
         headers: { "Content-Type": "application/json" },
       });
       toast.success("styles successfully updated", {
@@ -287,15 +285,14 @@ function ThemeStyles() {
   };
 
   useEffect(() => {
+    let themedata = async () => {
+      const response = await axios.get(
+        "http://147.93.45.171:1600/themestylesdata"
+      );
+      setUser(response.data);
+    };
     themedata();
   }, []);
-
-  let themedata = async () => {
-    const response = await axios.get(
-      "http://89.116.170.231:1600/themestylesdata"
-    );
-    setUser(response.data);
-  };
 
   return (
     <>
@@ -310,12 +307,12 @@ function ThemeStyles() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -329,10 +326,10 @@ function ThemeStyles() {
 
         <meta property="og:title" content="Theme Options - Styles | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -348,6 +345,7 @@ function ThemeStyles() {
             <img
               src={Hamburger}
               alt="Hamburger Menu"
+              loading="lazy"
               className="hamburger-back pt-2 pe-1"
               onClick={toggleNavbar}
             />
@@ -355,6 +353,7 @@ function ThemeStyles() {
               <img
                 src={Logo}
                 alt="RxLYTE"
+                loading="lazy"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
               />
             </Link>
@@ -424,11 +423,11 @@ function ThemeStyles() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -442,6 +441,7 @@ function ThemeStyles() {
               <img
                 src={Shopping}
                 alt="Shopping"
+                loading="lazy"
                 className="search-box search-box1"
               />
             </Link>
@@ -1022,7 +1022,7 @@ function ThemeStyles() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1834,46 +1834,6 @@ function ThemeStyles() {
                 </svg>
                 Newsletters
               </Link>
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
             </li>
 
             <div>
@@ -2748,6 +2708,7 @@ function ThemeStyles() {
                     <img
                       src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-1.png"
                       alt="Style 1"
+                      loading="lazy"
                       className="img-fluid"
                     />
                   </div>
@@ -2767,6 +2728,7 @@ function ThemeStyles() {
                     <img
                       src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-1.png"
                       alt="Style 2"
+                      loading="lazy"
                       className="img-fluid"
                     />
                   </div>
@@ -2786,6 +2748,7 @@ function ThemeStyles() {
                     <img
                       src="https://shofy.botble.com/themes/shofy/images/section-title-shape/style-3.png"
                       alt="Style 3"
+                      loading="lazy"
                       className="img-fluid mt-3"
                     />
                   </div>
@@ -2805,6 +2768,7 @@ function ThemeStyles() {
                     <img
                       src="https://shofy.botble.com/themes/shofy/images/section-title-shape/none.png"
                       alt="Style 4"
+                      loading="lazy"
                       className="img-fluid"
                     />
                   </div>
@@ -2891,6 +2855,7 @@ function ThemeStyles() {
                     <img
                       src={Appath}
                       alt="Header 1"
+                      loading="lazy"
                       className="img-fluid w-100 h-100 rounded"
                       style={{ cursor: "pointer" }}
                     />
@@ -2918,6 +2883,7 @@ function ThemeStyles() {
                     <img
                       src={Appath}
                       alt="Header 2"
+                      loading="lazy"
                       className="img-fluid w-100 h-100 rounded"
                       style={{ cursor: "pointer" }}
                     />
@@ -2947,6 +2913,7 @@ function ThemeStyles() {
                       alt="Header 3"
                       className="img-fluid w-100 h-100 rounded"
                       style={{ cursor: "pointer" }}
+                      loading="lazy"
                     />
                   </label>
                 </div>
