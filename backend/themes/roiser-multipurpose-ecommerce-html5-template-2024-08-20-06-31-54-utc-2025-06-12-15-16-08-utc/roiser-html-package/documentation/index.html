@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head lang="en">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>Roiser || Template Documentation</title>
+    <!-- Framework CSS -->
+    <link rel="stylesheet" href="assets/blueprint-css/screen.css" />
+    <link
+      rel="stylesheet"
+      href="assets/blueprint-css/print.css"
+      media="print"
+    />
+    <!--[if lt IE 8]><link href="assets/blueprint-css/ie.css" type="text/css"<![endif]-->
+    <link
+      rel="stylesheet"
+      href="assets/blueprint-css/plugins/fancy-type/screen.css"
+    />
+    <style>
+      p,
+      table,
+      hr,
+      .box {
+        margin-bottom: 25px;
+      }
+
+      .box p {
+        margin-bottom: 10px;
+      }
+
+      .added1 {
+        background-color: #336600;
+        color: #ffffff;
+      }
+    </style>
+
+    <!-- Syntax Highlighter -->
+    <link
+      rel="stylesheet"
+      href="syntax-highlighter/styles/shCore.css"
+      media="all"
+    />
+    <link
+      rel="stylesheet"
+      href="syntax-highlighter/styles/shThemeDefault.css"
+      media="all"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h3 class="center alt">
+        &ldquo;Roiser&rdquo; Documentation by &ldquo;RRDevs&rdquo; v1.0
+      </h3>
+
+      <hr />
+
+      <h1 class="center">&ldquo;Roiser&rdquo;</h1>
+
+      <div class="borderTop">
+        <div class="span-6 colborder info prepend-1">
+          <p class="prepend-top">
+            <strong>
+              Created:13/05/2024<br />
+              By:
+              <a href="https://themeforest.net/user/rrdevs" target="_blank"
+                >RRDevs</a
+              ><br />
+              <br /> </strong
+            ><strong><br /> </strong>
+          </p>
+        </div>
+        <!-- end div .span-6 -->
+
+        <div class="span-12 last">
+          <p class="prepend-top append-0">
+            Thank you for purchasing our template. If you have any questions
+            that are beyond the scope of this help file, please contact our
+            support. Thanks so much!
+          </p>
+        </div>
+      </div>
+      <!-- end div .borderTop -->
+
+      <hr />
+
+      <h2 id="toc" class="alt">Table of Contents</h2>
+      <ol class="alpha">
+        <li><a href="#htmlStructure">HTML Structure</a></li>
+        <li><a href="#temp-components">Template Components</a></li>
+        <li><a href="#cssFiles">CSS Files and Structure</a></li>
+        <li><a href="#javascript">JavaScript</a></li>
+        <li><a href="#credits">Sources and Credits</a></li>
+
+        <li>
+          <a href="#php">PHP Code Explanation</a>
+          <em class="quiet small">(If your template uses PHP)</em>
+        </li>
+        <li>
+          <a href="#">Flash</a>
+          <em class="quiet small">(If your template uses Flash)</em>
+        </li>
+        <li>
+          <a href="#">API Usage</a>
+          <em class="quiet small">(If your template uses an API)</em>
+        </li>
+        <li>
+          <a href="#">Any additional unique features that need an overview</a>
+        </li>
+      </ol>
+
+      <hr />
+
+      <h3 id="htmlStructure">
+        <strong>A) HTML Structure</strong> - <a href="#toc">top</a>
+      </h3>
+      <p>Below is the general HTML structure of the landing page.<br /></p>
+
+      <h4 id="front-html-structures">
+        <strong>1) index.html File Structure</strong> - <a href="#toc">top</a>
+      </h4>
+
+      <p>
+        The template page's layout consist of top that show the logo and main
+        menu, hero section that show background image, before content that show
+        some amaizing content, about section contain about your some info &
+        feature, service section contained all services, portfolio with awesome
+        animation, skills section here you can add some skills, team section is
+        for your team members, testimonial section here you can published your
+        customer reviews, call to action this for call to action content,
+        contact section here you can put your contact information & footer that
+        show copyright information.
+      </p>
+
+      <pre class="brush: html;" id="front-html-structure-pre">
+&lt;!DOCTYPE html>
+&lt;html class="no-js" lang="en">
+    &lt;head>
+        &lt;meta charset="utf-8">
+        &lt;meta http-equiv="x-ua-compatible" content="ie=edge">
+        &lt;meta name="viewport" content="width=device-width, initial-scale=1">
+        &lt;meta name="description" content="">
+
+        &lt;!-- Site Title -->
+        &lt;title>Roiser – Multipurpose eCommerce HTML5 Template&lt;/title>
+
+        &lt;!-- Place favicon.ico in the root directory -->
+        &lt;link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+        &lt;!-- CSS here -->
+        &lt;link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        &lt;link rel="stylesheet" href="assets/css/fontawesome.min.css">
+        &lt;link rel="stylesheet" href="assets/css/venobox.min.css">
+        &lt;link rel="stylesheet" href="assets/css/animate.min.css">
+        &lt;link rel="stylesheet" href="assets/css/keyframe-animation.css">
+        &lt;link rel="stylesheet" href="assets/css/odometer.min.css">
+        &lt;link rel="stylesheet" href="assets/css/nice-select.css">
+        &lt;link rel="stylesheet" href="assets/css/swiper.min.css">
+        &lt;link rel="stylesheet" href="assets/css/main.css">
+    &lt;/head>
+    
+    &lt;body>
+    &lt;!--[if lt IE 8]>
+        &lt;p class="browserupgrade">You are using an &lt;strong>outdated&lt;/strong> browser. Please &lt;a href="http://browsehappy.com/">upgrade your browser&lt;/a> to improve your experience.&lt;/p>
+    &lt;![endif]-->
+    
+	&lt;div id="preloader">
+    &lt;div class="preloader-close">&lt;i class="fa-regular fa-xmark">&lt;/i>&lt;/div>
+        &lt;div class="sk-three-bounce">
+            &lt;div class="sk-child sk-bounce1">&lt;/div>
+            &lt;div class="sk-child sk-bounce2">&lt;/div>
+            &lt;div class="sk-child sk-bounce3">&lt;/div>
+        &lt;/div>
+    &lt;/div>
+    &lt;!-- ./ preloader -->
+        
+        &lt;header class="header">
+            
+        &lt;/header>&lt;!-- /.Main Header -->
+
+        &lt;div id="popup-search-box">
+            
+        &lt;/div>&lt;!-- /#popup-search-box -->
+
+		&lt;section class="hero-section">
+            
+        &lt;/section>&lt;!-- ./ hero-section -->
+        
+        &lt;section class="category-section">
+            
+        &lt;/section>&lt;!-- ./ category-section -->
+        
+        &lt;section class="discount-section">
+    
+        &lt;/section>&lt;!-- ./ discount-section -->
+        
+        &lt;section class="discount-section">
+            
+        &lt;/section>&lt;!-- ./ discount-section -->
+        
+        &lt;section class="collect-section">
+            
+        &lt;/section>&lt;!-- ./ collect-section -->
+        
+        &lt;section class="cta-section">
+            
+        &lt;/section>&lt;!-- ./cta-section -->
+        
+        &lt;section class="sponsor-section">
+            
+        &lt;/section>&lt;!-- ./sponsor-section -->
+
+        &lt;section class="deal-section">
+            
+        &lt;/section>&lt;!-- ./deal-section -->
+        
+        &lt;section class="blog-section">
+            
+        &lt;/section>&lt;!-- ./blog-section -->
+        
+        &lt;section class="footer-section">
+            
+        &lt;/section>&lt;!-- ./footer-section -->
+       
+        &lt;div id="scroll-percentage">&lt;span id="scroll-percentage-value">&lt;/span>&lt;/div>
+        &lt;!--scrollup-->
+
+        &lt;!-- JS here -->
+        &lt;script src="assets/js/vendor/jquary-3.6.0.min.js">&lt;/script>
+        &lt;script src="assets/js/vendor/bootstrap-bundle.js">&lt;/script>
+        &lt;script src="assets/js/vendor/imagesloaded-pkgd.js">&lt;/script>
+        &lt;script src="assets/js/vendor/waypoints.min.js">&lt;/script>
+        &lt;script src="assets/js/vendor/venobox.min.js">&lt;/script>
+        &lt;script src="assets/js/vendor/odometer.min.js">&lt;/script>
+        &lt;script src="assets/js/vendor/meanmenu.js">&lt;/script>
+        &lt;script src="assets/js/vendor/smooth-scroll.js">&lt;/script>
+        &lt;script src="assets/js/vendor/jquery.isotope.js">&lt;/script>
+        &lt;script src="assets/js/vendor/countdown.js">&lt;/script>
+        &lt;script src="assets/js/vendor/wow.min.js">&lt;/script>
+        &lt;script src="assets/js/vendor/swiper.min.js">&lt;/script>
+        &lt;script src="assets/js/vendor/nice-select.js">&lt;/script>
+        &lt;script src="assets/js/ajax-form.js">&lt;/script>
+        &lt;script src="assets/js/contact.js">&lt;/script>
+        &lt;script src="assets/js/main.js">&lt;/script>
+    &lt;/body>
+&lt;/html>
+        </pre
+      >
+      <hr />
+
+      <h3 id="temp-components">
+        <strong>B) Template Components</strong> - <a href="#toc">top</a>
+      </h3>
+      <p>
+        The site is made of many sections like header, slider, testimonials,
+        services and more...
+      </p>
+
+      <h4 id="header">
+        <strong>1) Header Section</strong> - <a href="#toc">top</a>
+      </h4>
+
+      <pre class="brush: html;">
+        &lt;header class="header sticky-active">
+        &lt;div class="top-bar">
+            &lt;div class="container">
+                &lt;div class="top-bar-inner">
+                    &lt;div class="top-bar-left">
+                        &lt;ul class="top-left-list">
+                            &lt;li>&lt;a href="about.html">About&lt;/a>&lt;/li>
+                        &lt;/ul>
+                    &lt;/div>
+                    &lt;div class="top-bar-middle">
+                        &lt;span>Free shipping for all orders of 150$&lt;/span>
+                    &lt;/div>
+                    &lt;div class="top-bar-right">
+                        &lt;ul class="top-right-list">
+                            &lt;li>&lt;a href="contact.html">Store Location&lt;/a>&lt;/li>
+                            &lt;li>
+                                &lt;div class="nice-select select-control country" tabindex="0">
+                                    &lt;span class="current">Language&lt;/span>
+                                    &lt;ul class="list">
+                                        &lt;li data-value="" class="option selected focus">Language&lt;/li>
+                                        &lt;li data-value="vdt" class="option">English&lt;/li>
+                                    &lt;/ul>
+                                &lt;/div>
+                            &lt;/li>
+                        &lt;/ul>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+        &lt;div class="header-middle">
+            &lt;div class="container">
+                &lt;div class="header-middle-inner">
+                    &lt;div class="header-middle-left">
+                        &lt;div class="header-logo d-lg-block">
+                            &lt;a href="index.html">
+                                &lt;img src="assets/img/logo/logo-1.png" alt="Logo">
+                            &lt;/a>
+                        &lt;/div>
+                        &lt;div class="category-form-wrap">
+                            &lt;div class="nice-select select-control country" tabindex="0">
+                                &lt;span class="current">ALL Categories&lt;/span>
+                                &lt;ul class="list">
+                                    &lt;li data-value="" class="option selected focus">ALL Categories&lt;/li>
+                                    &lt;li data-value="vdt" class="option">Fashion&lt;/li>
+                                &lt;/ul>
+                            &lt;/div>
+                            &lt;form class="header-form" action="#">
+                                &lt;input class="form-control" type="text" name="search" placeholder="Search here...">
+                                &lt;button class="submit rr-primary-btn">Search here&lt;/button>
+                            &lt;/form>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div class="header-middle-right">
+                        &lt;ul class="contact-item-list">
+                            &lt;li>
+                                &lt;div class="content">
+                                    &lt;span>Call Us Now:&lt;/span>
+                                    &lt;a class="number" href="tel:+25821592159">+(258) 2159-2159&lt;/a>
+                                &lt;/div>
+                                &lt;a href="#" class="icon">
+                                    &lt;i class="fa-regular fa-phone">&lt;/i>
+                                &lt;/a>
+                            &lt;/li>
+                        &lt;/ul>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+        &lt;div class="primary-header">
+            &lt;div class="container">
+                &lt;div class="primary-header-inner">
+                    &lt;div class="header-logo mobile-logo">
+                        &lt;a href="index.html">
+                            &lt;img src="assets/img/logo/logo-1.png" alt="Logo">
+                        &lt;/a>
+                    &lt;/div>
+                    &lt;div class="header-menu-wrap">
+                        &lt;div class="mobile-menu-items">
+                            &lt;ul>
+                                &lt;li class="menu-item-has-children active">
+                                    &lt;a href="index.html">Home&lt;/a>
+                                    &lt;ul>
+                                        &lt;li>&lt;a href="index.html">Fashion Home&lt;/a>&lt;/li>
+                                    &lt;/ul>
+                                &lt;/li>
+                            &lt;/ul>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;!-- /.header-menu-wrap -->
+                    &lt;div class="header-right-wrap">
+                        &lt;div class="header-right">
+                            &lt;span>Get 30% Discount Now &lt;span>Sale&lt;/span>&lt;/span>
+                            &lt;div class="header-right-item">
+                                &lt;a href="javascript:void(0)" class="mobile-side-menu-toggle"
+                                    >&lt;i class="fa-sharp fa-solid fa-bars">&lt;/i
+                                >&lt;/a>
+                            &lt;/div>
+                        &lt;/div>
+                        &lt;!-- /.header-right -->
+                    &lt;/div>
+                &lt;/div>
+                &lt;!-- /.primary-header-inner -->
+            &lt;/div>
+        &lt;/div>
+    &lt;/header>
+    &lt;!-- /.Main Header -->
+</pre
+      >
+
+      <hr />
+      <h4 id="slider">
+        <strong>2) Hero Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;section class="hero-section">
+            &lt;div class="overlay">&lt;/div>
+            &lt;div class="hero-images">
+                &lt;div class="hero-people">&lt;img src="assets/img/images/hero-peoples.png" alt="img">&lt;/div>
+            &lt;/div>
+            &lt;div class="container">
+                &lt;div class="row">
+                    &lt;div class="col-xl-8">&lt;/div>
+                    &lt;div class="col-xl-4 col-lg-12">
+                        &lt;div class="hero-content">
+                            &lt;h4 class="sub-title">ummer 22 women’s collection&lt;/h4>
+                            &lt;h2 class="title">Super COLLECTION &lt;br>FOR WOMEN&lt;/h2>
+                            &lt;h5 class="price">&lt;span>From&lt;/span>$320.00&lt;/h5>
+                            &lt;a href="shop.html" class="rr-primary-btn">View Collections&lt;/a>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ hero-section -->
+	
+</pre
+      >
+
+      <hr />
+
+      <h4 id="services">
+        <strong>3) Category Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;section class="category-section pt-100 pb-100">
+            &lt;div class="container">
+                &lt;div class="category-top heading-space space-border">
+                    &lt;div class="section-heading mb-0">
+                        &lt;h2 class="section-title">Best for your categories&lt;/h2>
+                        &lt;p>29 categories belonging to a total 15,892 products&lt;/p>
+                    &lt;/div>
+                    &lt;!-- Carousel Arrows -->
+                    &lt;div class="swiper-arrow">
+                        &lt;div class="swiper-nav swiper-next">&lt;i class="fa-regular fa-arrow-left">&lt;/i>&lt;/div>
+                    &lt;/div>
+                &lt;/div>
+                &lt;div class="category-carousel swiper">
+                    &lt;div class="swiper-wrapper">
+                        &lt;div class="swiper-slide">
+                            &lt;div class="category-item">
+                                &lt;div class="category-img">
+                                    &lt;img src="assets/img/images/cate-1.png" alt="category">
+                                &lt;/div>
+                                &lt;h3 class="title">&lt;a href="shop.html">Women Wear&lt;/a>&lt;/h3>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ category-section -->
+</pre
+      >
+
+      <br />
+
+      <hr />
+
+      <h4 id="about">
+        <strong>4) About Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+            section class="discount-section overflow-hidden pb-100">
+            &lt;div class="row gy-lg-0 gy-4">
+                &lt;div class="col-lg-4 col-md-6">
+                    &lt;div class="discount-item item-1">
+                        &lt;div class="product-overlay">&lt;/div>
+                        &lt;div class="shape">&lt;img src="assets/img/shapes/dis-shpe.png" alt="shape">&lt;/div>
+                        &lt;div class="content">
+                            &lt;span>Special 50% Disocunt&lt;/span>
+                            &lt;h3 class="title">The Latest Men’s Trends &lt;br> This Season&lt;/h3>
+                            &lt;a href="shop.html">&lt;i class="fa-regular fa-plus">&lt;/i>View Collections&lt;/a>
+                        &lt;/div>
+                        &lt;div class="men">&lt;img src="assets/img/images/discount-men-1.png" alt="img">&lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ discount-section -->
+</pre
+      >
+
+      <br />
+
+      <hr />
+
+      <h4 id="case-study">
+        <strong>5) Discount Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        section class="discount-section overflow-hidden pb-100">
+            &lt;div class="row gy-lg-0 gy-4">
+                &lt;div class="col-lg-4 col-md-6">
+                    &lt;div class="discount-item item-1">
+                        &lt;div class="product-overlay">&lt;/div>
+                        &lt;div class="shape">&lt;img src="assets/img/shapes/dis-shpe.png" alt="shape">&lt;/div>
+                        &lt;div class="content">
+                            &lt;span>Special 50% Disocunt&lt;/span>
+                            &lt;h3 class="title">The Latest Men’s Trends &lt;br> This Season&lt;/h3>
+                            &lt;a href="shop.html">&lt;i class="fa-regular fa-plus">&lt;/i>View Collections&lt;/a>
+                        &lt;/div>
+                        &lt;div class="men">&lt;img src="assets/img/images/discount-men-1.png" alt="img">&lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ discount-section -->
+</pre
+      >
+
+      <br />
+
+      <hr />
+
+      <h4 id="consult">
+        <strong>6) Fashion Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;section class="fashion-section pb-100">
+            &lt;div class="container">
+                &lt;div class="category-top heading-space space-border">
+                    &lt;div class="section-heading mb-0">
+                        &lt;h2 class="section-title">GET YOUR FASHION STYLE&lt;/h2>
+                        &lt;p>29 categories belonging to a total 15,892 products&lt;/p>
+                    &lt;/div>
+                    &lt;!-- Carousel Arrows -->
+                    &lt;div class="swiper-arrow">
+                        &lt;div class="swiper-nav swiper-next">&lt;i class="fa-regular fa-arrow-left">&lt;/i>&lt;/div>
+                    &lt;/div>
+                &lt;/div>
+                &lt;div class="shop-carousel swiper">
+                    &lt;div class="swiper-wrapper">
+                        &lt;div class="swiper-slide">
+                            &lt;div class="shop-item">
+                                &lt;div class="shop-thumb">
+                                    &lt;div class="overlay">&lt;/div>
+                                    &lt;img src="assets/img/shop/shop-1.png" alt="shop">
+                                    &lt;span class="sale">New&lt;/span>
+                                    &lt;ul class="shop-list">
+                                        &lt;li>&lt;a href="cart.html">&lt;i class="fa-regular fa-cart-shopping">&lt;/i>&lt;/a>&lt;/li>
+                                    &lt;/ul>
+                                &lt;/div>
+                                &lt;div class="shop-content">
+                                    &lt;span class="category">Levi’s Cotton&lt;/span>
+                                    &lt;h3 class="title">&lt;a href="shop-details.html">Monica Diara Party Dress&lt;/a>&lt;/h3>
+                                    &lt;div class="review-wrap">
+                                        &lt;ul class="review">
+                                            &lt;li>&lt;i class="fa-solid fa-star">&lt;/i>&lt;/li>
+                                        &lt;/ul>
+                                        &lt;span>(15 Reviews)&lt;/span>
+                                    &lt;/div>
+                                    &lt;span class="price"> &lt;span class="offer">$250.00&lt;/span>$157.00&lt;/span>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ fashion-section -->
+</pre
+      >
+
+      <br />
+
+      <hr />
+
+      <h4 id="testimonial">
+        <strong>7) Collection Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;section class="collect-section pb-100">
+            &lt;div class="container">
+                &lt;div class="row gy-lg-0 gy-4">
+                    &lt;div class="col-lg-6">
+                        &lt;div class="collect-item">
+                            &lt;span>1500+ Products&lt;/span>
+                            &lt;h3 class="title">Women Collections&lt;/h3>
+                            &lt;p>This is genuinely the first theme i bought for which i did not had &lt;br> to write one line of code.&lt;/p>
+                            &lt;ul class="collect-list">
+                                &lt;li>&lt;a href="shop.html">Blazer&lt;/a>&lt;/li>
+                            &lt;/ul>
+                            &lt;div class="men">&lt;img src="assets/img/images/discount-1.png" alt="discount">&lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ collect-section -->
+        
+</pre
+      >
+
+      <br />
+
+      <hr />
+
+      <h4 id="blog">
+        <strong>8) Cta Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;section class="cta-section pt-100 pb-100" data-background="assets/img/bg-img/cta-bg.jpg">
+            &lt;div class="overlay">&lt;/div>
+            &lt;div class="container">
+                &lt;div class="cta-wrap text-center">
+                    &lt;span>Spring summer 22 women’s collection&lt;/span>
+                    &lt;h2 class="title">-15% Off Discount &lt;br>All Here&lt;/h2>
+                    &lt;a href="shop.html" class="rr-primary-btn cta-btn">View Collections&lt;/a>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ cta-section -->
+</pre
+      >
+
+      <hr />
+
+      <h4 id="sponsor">
+        <strong>10) Sponsor Section </strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;div class="sponsor-section pt-100">
+            &lt;div class="container">
+                &lt;div class="row sponsor-wrap">
+                    &lt;div class="sponsor-item bd-right bd-bottom">
+                        &lt;a href="#">&lt;img src="assets/img/sponsor/sponsor-1.png" alt="img">&lt;/a>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+        &lt;!-- ./ sponsor-section -->
+</pre
+      >
+
+      <hr />
+
+      <h4 id="widget">
+        <strong>11) Deal Section </strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+        &lt;section class="deal-section pt-100 pb-100">
+            &lt;div class="container">
+                &lt;div class="row deal-wrap align-items-center">
+                    &lt;div class="shape">&lt;img src="assets/img/shapes/deal-shape.png" alt="shape">&lt;/div>
+                    &lt;div class="col-xl-5 col-lg-12">
+                        &lt;div class="deal-content">
+                            &lt;div class="section-heading mb-0">
+                                &lt;h2 class="section-title">Deal Of the days&lt;/h2>
+                                &lt;p>Elegant pink origami design three type of dimensional view and &lt;br>decoration co Great for adding a decorative...&lt;/p>
+                            &lt;/div>
+                            &lt;div class="deal-info">
+                                &lt;div class="icon">
+                                    &lt;img src="assets/img/icon/deal-icon.png" alt="icon">
+                                &lt;/div>
+                                &lt;div class="content">
+                                    &lt;p>Limited Time offer. THe Deal will expire &lt;br> one august 18, 2024 &lt;/p>
+                                &lt;/div>
+                            &lt;/div>
+                            &lt;a href="shop.html" class="rr-primary-btn deal-btn">View All Collections&lt;/a>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div class="col-xl-7 col-lg-12">
+                        &lt;div class="row gy-md-0 gy-4">
+                            &lt;div class="col-md-6">
+                                &lt;div class="shop-item deal-shop">
+                                    &lt;div class="shop-thumb">
+                                        &lt;div class="overlay">&lt;/div>
+                                        &lt;img src="assets/img/shop/shop-5.jpg" alt="shop">
+                                        &lt;span class="sale">New&lt;/span>
+                                        &lt;ul class="shop-list">
+                                            &lt;li>&lt;a href="#">&lt;i class="fa-regular fa-cart-shopping">&lt;/i>&lt;/a>&lt;/li>
+                                    &lt;/div>
+                                    &lt;div class="shop-content">
+                                        &lt;span class="category">Levi’s Cotton&lt;/span>
+                                        &lt;h3 class="title">&lt;a href="shop-details.html">Monica Diara Party Dress&lt;/a>&lt;/h3>
+                                        &lt;div class="review-wrap">
+                                            &lt;ul class="review">
+                                                &lt;li>&lt;i class="fa-solid fa-star">&lt;/i>&lt;/li>
+                                            &lt;/ul>
+                                            &lt;span>(15 Reviews)&lt;/span>
+                                        &lt;/div>
+                                        &lt;span class="price"> &lt;span class="offer">$250.00&lt;/span>$157.00&lt;/span>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/section>
+        &lt;!-- ./ deal-section -->
+</pre
+      >
+
+      <hr />
+
+      <h4 id="widget">
+        <strong>13) Blog Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+			&lt;section class="blog-section pb-100">
+                &lt;div class="container">
+                    &lt;div class="section-heading text-center">
+                        &lt;h2 class="section-title mb-0">Our Latest News Insight&lt;/h2>
+                    &lt;/div>
+                    &lt;div class="row gy-lg-0 gy-4 justify-content-center">
+                        &lt;div class="col-lg-4 col-md-6">
+                            &lt;div class="post-card">
+                                &lt;div class="post-thumb">
+                                    &lt;img src="assets/img/blog/post-1.jpg" alt="post">
+                                &lt;/div>
+                                &lt;div class="post-content-wrap">
+                                    &lt;div class="post-content">
+                                        &lt;ul class="post-meta">
+                                            &lt;li>&lt;i class="fa-sharp fa-solid fa-calendar-days">&lt;/i>3 Comment&lt;/li>
+                                        &lt;/ul>
+                                        &lt;h3 class="title">&lt;a href="blog-details.html">Fashion Around the: Exploring Cultural Influences&lt;/a>&lt;/h3>
+                                    &lt;/div>
+                                    &lt;div class="post-bottom">
+                                        &lt;a href="blog-details.html" class="read-more">Read More&lt;i class="fa-regular fa-arrow-right">&lt;/i>&lt;/a>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/section>
+            &lt;!-- ./ blog-section -->
+</pre
+      >
+
+      <hr />
+
+      <h4 id="widget">
+        <strong>15) Footer Section</strong> - <a href="#toc">top</a>
+      </h4>
+      <br />
+      <pre class="brush: html;">
+            &lt;footer class="footer-section bg-grey pt-60">
+            &lt;div class="container">
+                &lt;div class="footer-items">
+                    &lt;div class="footer-item">
+                        &lt;div class="icon">
+                            &lt;img src="assets/img/icon/footer-1.png" alt="icon">
+                        &lt;/div>
+                        &lt;div class="content">
+                            &lt;h4 class="title">Free Shipping&lt;/h4>
+                            &lt;span>Free shipping on orders over $65.00&lt;/span>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;div class="row footer-widget-wrap pb-60">
+                    &lt;div class="col-lg-3 col-md-6">
+                        &lt;div class="footer-widget">
+                            &lt;div class="widget-header">
+                                &lt;h3 class="widget-title">About Store&lt;/h3>
+                            &lt;/div>
+                            &lt;div class="footer-contact">
+                                &lt;div class="icon">&lt;i class="fa-sharp fa-solid fa-phone-rotary">&lt;/i>&lt;/div>
+                                &lt;div class="content">
+                                    &lt;span>Have Question? Call Us 24/7&lt;/span>
+                                    &lt;a href="tel:+25836922569">+258 3692 2569&lt;/a>
+                                &lt;/div>
+                            &lt;/div>
+                            &lt;ul class="schedule-list">
+                                &lt;li>&lt;span>Monday - Friday:&lt;/span>8:00am - 6:00pm&lt;/li>
+                            &lt;/ul>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div class="col-lg-2 col-md-6">
+                        &lt;div class="footer-widget">
+                            &lt;div class="widget-header">
+                                &lt;h3 class="widget-title">Our Stores&lt;/h3>
+                            &lt;/div>
+                            &lt;ul class="footer-list">
+                                &lt;li>&lt;a href="contact.html">New York&lt;/a>&lt;/li>
+                            &lt;/ul>
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div class="col-lg-3 col-md-6">
+                        &lt;div class="footer-widget">
+                            &lt;div class="widget-header">
+                                &lt;h3 class="widget-title">Our Newsletter&lt;/h3>
+                            &lt;/div>
+                            &lt;div class="news-form-wrap">
+                                &lt;p class="mb-20">Subscribe to the mailing list to receive updates one the new arrivals and other discounts&lt;/p>
+                                &lt;div class="footer-form mb-20">
+                                    &lt;form action="#" class="rr-subscribe-form">
+                                        &lt;input class="form-control" type="email" name="email" placeholder="Email address">
+                                        &lt;input type="hidden" name="action" value="mailchimpsubscribe">
+                                        &lt;button class="submit">Subscribe&lt;/button>
+                                        &lt;div class="clearfix">&lt;/div>
+                                    &lt;/form>
+                                &lt;/div>
+                                &lt;p class="mb-0">I would like to receive news and special offer&lt;/p>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+            &lt;div class="copyright-area">
+                &lt;div class="container">
+                    &lt;div class="row copyright-content">
+                        &lt;div class="col-lg-6">
+                            &lt;div class="footer-img-wrap">
+                                &lt;span>Payment System:&lt;/span>
+                                &lt;div class="footer-img">&lt;a href="#">&lt;img src="assets/img/images/footer-img-1.png" alt="img">&lt;/a>&lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                        &lt;div class="col-lg-6">
+                            &lt;p>Copyright & Design 2024 &lt;span>©Roiser&lt;/span>. All Right Reserved&lt;/p>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/footer>
+        &lt;!-- ./ footer-section -->
+</pre
+      >
+
+      <br />
+
+      <p>&nbsp;</p>
+
+      <hr />
+      <h3 id="cssFiles">
+        <strong>C) CSS Files and Structure</strong> - <a href="#toc">top</a>
+      </h3>
+      <p>These are the css files:</p>
+      <ol>
+        <li>bootstrap.min.css</li>
+        <li>fontawesome.min.css</li>
+        <li>odometer.min.css</li>
+        <li>swiper.min.css</li>
+        <li>nice-select.css</li>
+        <li>venobox.min.css</li>
+        <li>main.css</li>
+      </ol>
+
+      <p>&nbsp;</p>
+      <hr />
+
+      <h3 id="javascript">
+        <strong>D) JavaScript</strong> - <a href="#toc">top</a>
+      </h3>
+
+      <p>This template use these Javascript files:</p>
+
+      <ol>
+        <li>
+          jQuery<br />
+          jQuery is a Javascript library that greatly reduces the amount of code
+          that you must write. jQuery use these javascript files:
+          <pre>
+    jquary-3.6.0.min.js
+    bootstrap-bundle.js
+    imagesloaded-pkgd.js
+    waypoints.min.js
+    venobox.min.js
+    odometer.min.js
+    meanmenu.js
+    smooth-scroll.js
+    swiper.min.js
+    nice-select.js
+    ajax-form.js
+    main.js
+            </pre
+          >
+          You can edit the contact.js files. for setting contact form
+          <br />
+          <br />
+        </li>
+      </ol>
+
+      <hr />
+
+      <h3 id="credits">
+        <strong>F) Sources and Credits</strong> - <a href="#toc">top</a>
+      </h3>
+      <ol>
+        <li><a href="http://getbootstrap.com">Bootstrap v5.0.2</a></li>
+        <li>
+          <a href="https://kenwheeler.github.io/swiper/" target="_blank"
+            >Swiper Carousel</a
+          >
+        </li>
+        <li><a href="http://veno.es/venobox/" target="_blank">VenoBox</a></li>
+        <li>
+          <a href="https://github.com/cferdinandi/smooth-scroll" target="_blank"
+            >Smooth Scroll</a
+          >
+        </li>
+        <li><a href="https://gsap.com/docs/v3/" target="_blank">Gsap</a></li>
+        <li>
+          <a href="http://plugins.jquery.com/ajaxchimp/" target="_blank"
+            >AjaxChimp</a
+          >
+        </li>
+      </ol>
+      <p></p>
+
+      <hr />
+      <h3 id="php">
+        <strong>G) PHP Code Explanation </strong> - <a href="#toc">top</a>
+      </h3>
+      <p>
+        There are only one php code for contact page which is mail.php, open
+        this file and change the email and subject on line 24 and line 27. No
+        need to edit other code unless you really want to.
+      </p>
+
+      <hr />
+      <p>
+        Once again, thank you so much for purchasing this template. As I said at
+        the beginning, I'd be glad to help you if you have any questions
+        relating to this template. No guarantees, but I'll do my best to assist.
+      </p>
+
+      <p class="append-bottom alt large"><strong>Roiser</strong></p>
+      <p><a href="#toc">Go To Table of Contents</a></p>
+
+      <hr class="space" />
+    </div>
+    <!-- end div .container -->
+    <script src="syntax-highlighter/scripts/shCore.js"></script>
+    <script src="syntax-highlighter/scripts/shBrushXml.js"></script>
+    <script src="syntax-highlighter/scripts/shBrushCss.js"></script>
+    <script src="syntax-highlighter/scripts/shBrushJScript.js"></script>
+    <script src="syntax-highlighter/scripts/shBrushPhp.js"></script>
+    <script>
+      SyntaxHighlighter.all();
+    </script>
+  </body>
+</html>

@@ -1,13 +1,13 @@
 require("dotenv").config();
 const express = require("express");
-const prerender = require("prerender-node");
+const path = require("path");
+const compression = require("compression");
 const { SitemapStream, streamToPromise } = require("sitemap");
-const mysql = require("mysql2");
+const db = require("./db");
 const geoip = require("geoip-lite");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
-const path = require("path");
 const ExcelJS = require("exceljs");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
@@ -15,35 +15,137 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const { ppid } = require("process");
 const webpush = require("web-push");
-const PDFDocument = require("pdfkit");
-const app = express();
+const themeRoutes = require("./routes/themeRoutes");
+const { initThemesTable } = require("./controllers/themeController");
 const salt = 10;
 const saltRounds = 10;
+const app = express();
 
 app.use(
   cors({
-    origin: "",
+    origin: "http://srv689968.hstgr.cloud",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
   })
 );
 
-// prerender.set("prerenderToken", "LNOpIKN4lFVCHLfv1lca");
-// app.use(prerender);
-// app.use(express.static(path.join(__dirname, "../frontend1/dist")));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "../frontend1/dist", "index.html"));
-// });
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// app.use("/api/themes", themeRoutes);
+app.set("view engine", "ejs");
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.set(
+  "views",
+  path.join(
+    __dirname,
+    "themes/roiser-multipurpose-ecommerce-html5-template-2024-08-20-06-31-54-utc-2025-06-12-15-16-08-utc/roiser-html-package/roiser"
+  )
+);
+
+app.use(
+  "/themes",
+  express.static(path.join(__dirname, "themes"), {
+    extensions: ["html"],
+  })
+);
+
+app.get("/", async (req, res) => {
+  try {
+    const [[active]] = await db.query(
+      "SELECT folder_name FROM themes WHERE is_active = 1 LIMIT 1"
+    );
+    if (active) {
+      res.redirect(`/api/themes/${active.folder_name}/index.html`);
+    } else {
+      res.sendFile(path.join(__dirname, "../frontend1/index.html"));
+    }
+  } catch (err) {
+    console.error("Error redirecting to active theme:", err);
+    res.sendFile(path.join(__dirname, "../frontend1/index.html"));
+  }
+});
+
+app.use("/themes", themeRoutes);
+
+// app.set("view engine", "ejs");
+// app.set("views", path.join(__dirname, "themes"));
+// app.set("views", path.join(__dirname, "themes/roiser-html-package/roiser"));
+
+app.use(
+  "/themes/static",
+  (req, res, next) => {
+    try {
+      const requestedPath = req.url.split("?")[0];
+      const basePath = path.join(__dirname, "themes");
+      let fullPath = path.join(basePath, requestedPath);
+
+      fullPath = path.normalize(fullPath);
+
+      if (!fullPath.startsWith(path.normalize(basePath + path.sep))) {
+        return res.status(403).send("Access denied");
+      }
+
+      if (fs.existsSync(fullPath)) {
+        if (fs.statSync(fullPath).isDirectory()) {
+          const indexPath = path.join(fullPath, "index.ejs");
+          if (fs.existsSync(indexPath)) {
+            return res.render(indexPath.replace(/\\/g, "/"));
+          }
+          const indexPathHtml = path.join(fullPath, "index.html");
+          if (fs.existsSync(indexPathHtml)) {
+            return res.sendFile(indexPathHtml);
+          }
+          return next();
+        }
+
+        if (fullPath.endsWith(".ejs")) {
+          return res.render(fullPath.replace(/\\/g, "/"));
+        }
+
+        return next();
+      }
+
+      const pathWithoutExt = fullPath.replace(/\.(html|ejs)$/, "");
+
+      const ejsPath = `${pathWithoutExt}.ejs`;
+      if (fs.existsSync(ejsPath)) {
+        return res.render(ejsPath.replace(/\\/g, "/"));
+      }
+
+      const htmlPath = `${pathWithoutExt}.html`;
+      if (fs.existsSync(htmlPath)) {
+        return res.sendFile(htmlPath);
+      }
+
+      next();
+    } catch (err) {
+      console.error("Error serving static file:", err);
+      next(err);
+    }
+  },
+  express.static(path.join(__dirname, "themes"))
+);
+
+initThemesTable();
+const themesDir = path.join(__dirname, "themes");
+if (!fs.existsSync(themesDir)) {
+  fs.mkdirSync(themesDir, { recursive: true });
+}
+
+app.use(express.urlencoded({ extended: true }));
+app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use("/src/image", express.static(path.join(__dirname, "src/image")));
 app.set("trust proxy", true);
+
+// app.set("views", path.join(__dirname, "themes"));
 
 app.post("/update-robots", (req, res) => {
   const { content } = req.body;
@@ -65,7 +167,13 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + "-" + file.originalname);
   },
 });
+
 const upload = multer({ storage: storage });
+
+// custom upload zip code
+
+// const upload = multer({ dest: 'uploads/' });
+
 const uploadDir = path.join(__dirname, "src/image");
 const publicFolder = path.join(__dirname, "../frontend1/public");
 
@@ -88,6 +196,15 @@ const adsStorage = multer.diskStorage({
 const adsUpload = multer({ storage: adsStorage });
 
 app.use("/uploads", express.static(uploadDir));
+
+app.post("/upload", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  const fileUrl = `/images/${req.file.filename}`;
+  res.json({ url: fileUrl });
+});
+app.use("/images", express.static(uploadDir));
 
 app.get("/get-homepage", (req, res) => {
   res.status(200).json({ homepageSettings });
@@ -125,23 +242,44 @@ webpush.setVapidDetails(
   privateVapidKey
 );
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT || 3306,
+app.get("/sw.js", (req, res) => {
+  res.set("Content-Type", "application/javascript");
+  res.sendFile(path.join(__dirname, "..", "frontend1", "public", "sw.js"));
 });
 
-db.connect((err) => {
-  if (err) {
-    throw err;
-  } else {
-    console.log("database connected");
-  }
+app.get("/themes/:themeName/:page", (req, res) => {
+  const { themeName, page } = req.params;
+
+  const htmlFilePath = path.join(
+    __dirname,
+    "themes",
+    themeName,
+    `${page}.html`
+  );
+
+  res.sendFile(htmlFilePath, (err) => {
+    if (err) {
+      res.status(404).send("Page not found");
+    }
+  });
 });
 
 const getCurrentLastMod = () => new Date().toISOString();
+
+function authenticateUser(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) return res.redirect("/login");
+
+  jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+    if (err) return res.redirect("/login");
+    req.user = decoded;
+    next();
+  });
+}
+
+app.get("/", authenticateUser, (req, res) => {
+  res.render("/", { user: req.user });
+});
 
 const links = [
   { url: "/", lastmodISO: getCurrentLastMod(), priority: 1.0 },
@@ -168,7 +306,7 @@ app.get("/sitemap.xml", async (req, res, next) => {
   try {
     res.header("Content-Type", "application/xml");
     const smStream = new SitemapStream({
-      hostname: "http://srv724100.hstgr.cloud",
+      hostname: "http://srv689968.hstgr.cloud",
     });
     links.forEach((link) => smStream.write(link));
     smStream.end();
@@ -224,36 +362,58 @@ app.get("/", verifyUser, (req, res) => {
 });
 
 app.post("/submit", (req, res) => {
-  const { first_name, last_name, phone_number, email, password } = req.body;
+  let { first_name, last_name, phone_number, email, password } = req.body;
+
+  last_name = last_name || null;
+  phone_number = phone_number || null;
+
+  if (!first_name || !email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, Error: "Missing required fields" });
+  }
+
   bcrypt.hash(password.toString(), saltRounds, (err, hash) => {
     if (err) {
       console.error("Password hashing error:", err);
-      return res.status(500).json({ Error: "Password hashing error" });
+      return res
+        .status(500)
+        .json({ success: false, Error: "Password hashing error" });
     }
-    const value = [[first_name, last_name, phone_number, email, hash]];
+
     const sql =
-      "INSERT INTO user(first_name, last_name, phone_number, email, password) VALUES ?";
-    db.query(sql, [value], (err, result) => {
+      "INSERT INTO user(first_name, last_name, phone_number, email, password) VALUES (?, ?, ?, ?, ?)";
+    const values = [first_name, last_name, phone_number, email, hash];
+
+    db.query(sql, values, (err, result) => {
       if (err) {
         console.error("Database error:", err);
-        return res.json({ Error: "Error while inserting data" });
+        return res
+          .status(500)
+          .json({ success: false, Error: "Error while inserting data" });
       }
-      let token = jwt.sign({ email }, "jwt-secret-key", { expiresIn: "1d" });
+
+      const newUserId = result.insertId;
+
+      const token = jwt.sign({ email }, "jwt-secret-key", { expiresIn: "1d" });
+
       res.clearCookie("token");
       res.cookie("token", token, {
         httpOnly: true,
         secure: false,
-        sameSite: "None",
+        sameSite: "Lax",
         maxAge: 86400000,
         path: "/",
       });
-      res.json({ Status: "Success", message: "User signed up successfully!" });
+
+      return res.status(200).json({
+        success: true,
+        message: "Registration successful",
+        user_id: newUserId,
+      });
     });
   });
 });
-
-// const secret = crypto.randomBytes(64).toString('hex');
-// console.log(secret);
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
@@ -296,8 +456,9 @@ app.post("/login", (req, res) => {
           });
 
           return res.status(200).json({
-            Status: "Success",
+            success: true,
             message: "Login successful",
+            user_id: user.id,
             user: user,
             tokenExpiration: tokenExpirationTime,
           });
@@ -332,16 +493,14 @@ app.get("/alldata", (req, res) => {
   });
 });
 
-app.get("/allreviewdata", async (req, res) => {
-  try {
-    const [rows] = await db
-      .promise()
-      .execute("SELECT * FROM user ORDER BY id ASC LIMIT 4");
-    res.json(rows);
-  } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({ message: "Error fetching reviews" });
-  }
+app.get("/allreviewdata", (req, res) => {
+  const sql = "select *from user order by id asc limit 4";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
 });
 
 app.put("/passwordupdate", async (req, res) => {
@@ -424,82 +583,105 @@ app.post("/checkout", (req, res) => {
     payment,
     payment_status,
     status,
+    company,
+    town,
+    state,
+    notes,
   } = req.body;
-  if (!cart || cart.length === 0) {
+
+  if (!cart || !Array.isArray(cart) || cart.length === 0) {
+    return res.status(400).json({ error: "Cart is empty" });
   }
+
   const getLatestInvoiceSql = `SELECT invoice_number FROM checkout ORDER BY id DESC LIMIT 1`;
   db.query(getLatestInvoiceSql, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Error retrieving invoice number" });
     }
+
     let newInvoiceNumber = "INV-1031";
     if (result.length > 0) {
       const lastInvoiceNumber = result[0].invoice_number;
-      const lastInvoiceNumberParts = lastInvoiceNumber.split("-");
-      const lastInvoiceNumberInt = parseInt(lastInvoiceNumberParts[1], 10);
-      newInvoiceNumber = `INV-${lastInvoiceNumberInt + 1}`;
+      const lastNumber = parseInt(lastInvoiceNumber.split("-")[1], 10);
+      newInvoiceNumber = `INV-${lastNumber + 1}`;
     }
-    const orderStatus = status || "pending";
+
+    const mysqlDate = new Date(date || Date.now())
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
 
     const checkoutSql = `
       INSERT INTO checkout (
         email, phone_number, first_name, last_name, address, apartment, 
-        country, pincode, date, subtotal, tax, shippingFee, total, invoice_number,payment,payment_status
+        country, pincode, date, subtotal, tax, shippingFee, total, 
+        invoice_number, payment, payment_status, company, town, state, notes
       ) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
+
     const checkoutValues = [
       email || null,
       phone_number || null,
       first_name || null,
-      last_name && last_name !== "" ? last_name : null,
+      last_name || null,
       address || null,
       apartment || null,
       country || null,
-      pincode ? pincode : null,
-      date || null,
+      pincode || null,
+      mysqlDate,
       subtotal || null,
-      tax || null,
-      shippingFee || null,
+      tax || "0",
+      shippingFee || "0",
       total || null,
-      newInvoiceNumber || null,
+      newInvoiceNumber,
       payment || null,
-      payment_status || null,
-      status || null,
+      payment_status || "unpaid",
+      company || null,
+      town || null,
+      state || null,
+      notes || null,
     ];
 
     db.query(checkoutSql, checkoutValues, (err, result) => {
       if (err) {
-        console.error("Error inserting checkout data:", err);
+        console.error("❌ Error inserting checkout data:", err);
         return res.status(500).json({ error: "Error submitting order" });
       }
+
       const checkoutId = result.insertId;
       const orderNumber = `#${checkoutId + 1000}`;
+
       const updateOrderNumberSql = `UPDATE checkout SET order_number = ? WHERE id = ?`;
       db.query(updateOrderNumberSql, [orderNumber, checkoutId], (err) => {
         if (err) {
           return res.status(500).json({ error: "Error updating order number" });
         }
+
         const cartSql = `
           INSERT INTO cart_items (checkout_id, image, name, quantity, price, subtotal, tax, store) 
           VALUES ?
         `;
+
         const cartValues = cart.map((item) => [
           checkoutId,
-          item.image,
-          item.name,
-          item.quantity,
-          item.price,
-          item.subtotal,
-          item.tax,
-          item.store,
+          item.image || null,
+          item.name || null,
+          item.quantity || "1",
+          item.price || "0",
+          item.subtotal || "0",
+          item.tax || "0",
+          item.store || "",
         ]);
+
         db.query(cartSql, [cartValues], (err) => {
           if (err) {
+            console.error("❌ Error inserting cart data:", err);
             return res
               .status(500)
               .json({ error: "Error submitting cart data" });
           }
+
           res.json({
             message: "Order created successfully",
             orderNumber: orderNumber,
@@ -605,37 +787,56 @@ app.get("/customerget/:value", (req, res) => {
 });
 
 app.delete("/deleteorder1/:id", (req, res) => {
-  let id = req.params.id;
+  const id = req.params.id;
+
   const sqlDeleteCartItems = "DELETE FROM cart_items WHERE checkout_id = ?";
   const sqlDeleteCheckout = "DELETE FROM checkout WHERE id = ?";
-  db.beginTransaction((err) => {
+
+  db.getConnection((err, connection) => {
     if (err) {
-      console.error("Transaction failed to start:", err);
-      return res.status(500).json({ error: "Transaction failed to start" });
+      console.error("Error getting DB connection:", err);
+      return res.status(500).json({ error: "Database connection failed" });
     }
-    db.query(sqlDeleteCartItems, [id], (err, result) => {
+
+    connection.beginTransaction((err) => {
       if (err) {
-        console.error("Error deleting cart items:", err);
-        return db.rollback(() => {
-          res.status(500).json({ error: "Failed to delete cart items" });
-        });
+        console.error("Transaction failed to start:", err);
+        connection.release();
+        return res.status(500).json({ error: "Transaction failed to start" });
       }
 
-      db.query(sqlDeleteCheckout, [id], (err, result) => {
+      connection.query(sqlDeleteCartItems, [id], (err) => {
         if (err) {
-          console.error("Error deleting checkout record:", err);
-          return db.rollback(() => {
-            res.status(500).json({ error: "Failed to delete checkout record" });
+          console.error("Error deleting cart items:", err);
+          return connection.rollback(() => {
+            connection.release();
+            res.status(500).json({ error: "Failed to delete cart items" });
           });
         }
-        db.commit((err) => {
+
+        connection.query(sqlDeleteCheckout, [id], (err) => {
           if (err) {
-            console.error("Transaction commit failed:", err);
-            return db.rollback(() => {
-              res.status(500).json({ error: "Transaction commit failed" });
+            console.error("Error deleting checkout record:", err);
+            return connection.rollback(() => {
+              connection.release();
+              res
+                .status(500)
+                .json({ error: "Failed to delete checkout record" });
             });
           }
-          res.send("Order and associated cart items deleted successfully.");
+
+          connection.commit((err) => {
+            if (err) {
+              console.error("Transaction commit failed:", err);
+              return connection.rollback(() => {
+                connection.release();
+                res.status(500).json({ error: "Transaction commit failed" });
+              });
+            }
+
+            connection.release();
+            res.send("Order and associated cart items deleted successfully.");
+          });
         });
       });
     });
@@ -656,35 +857,59 @@ app.get("/searchorder/:value", (req, res) => {
 });
 
 app.post("/faqs", (req, res) => {
-  const name = req.body.name;
-  const subject = req.body.subject;
-  const message = req.body.message;
-  let value = [[name, subject, message]];
-  let sql = "insert into faqs(name,subject,message)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.json(result);
+  const {
+    name = null,
+    email = null,
+    subject = null,
+    message = null,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO faqs
+      (name, email, subject, message)
+    VALUES
+      (?,    ?,     ?,       ?)
+  `;
+
+  db.query(sql, [name, email, subject, message], (err, result) => {
+    if (err) {
+      console.error("DB insert error:", err);
+      return res
+        .status(500)
+        .json({ error: "An error occurred saving your FAQ entry." });
     }
   });
 });
 
 app.post("/contact", (req, res) => {
-  const name = req.body.name;
-  let email = req.body.email;
-  let address = req.body.address;
-  let phone = req.body.phone;
-  let subject = req.body.subject;
-  let content = req.body.content;
-  let value = [[name, email, address, phone, subject, content]];
-  let sql =
-    "insert into contact(name, email, address, phone, subject, content)values ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data submitted");
+  const {
+    name,
+    email,
+    subject,
+    content,
+    address = null,
+    phone = null,
+    link = null,
+  } = req.body;
+
+  const sql = `
+    INSERT INTO contact
+      (name, email, address, phone, subject, content, link)
+    VALUES
+      (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    sql,
+    [name, email, address, phone, subject, content, link],
+    (err, result) => {
+      if (err) {
+        console.error("DB insert error:", err);
+        return res.status(500).send("Error saving contact");
+      }
+      res.send("Data submitted");
     }
-  });
+  );
 });
 
 app.get("/contactreqdata", (req, res) => {
@@ -755,12 +980,21 @@ app.delete("/deleteannoune/:id", (req, res) => {
 app.put("/updateannnounce/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
-  const sql = "update announce set ? where id=?";
-  db.query(sql, [data, id], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data updated");
+
+  const fields = Object.keys(data);
+  const values = Object.values(data);
+
+  const setClause = fields.map((field) => `${field} = ?`).join(", ");
+  const sql = `UPDATE announce SET ${setClause} WHERE id = ?`;
+
+  values.push(id);
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error("Update error:", err);
+      return res.status(500).send("Failed to update data.");
     }
+    res.send("Data updated successfully.");
   });
 });
 
@@ -792,16 +1026,18 @@ app.post("/testimonials", upload.single("file"), (req, res) => {
   const status = req.body.status;
   const date = req.body.date;
   const content = req.body.content;
-  const image = req.file.filename;
-  const value = [[name, company, status, date, content, image]];
+  const image = req.file?.filename || null;
+
   const sql =
-    "insert into testimonial (name, company, status, date,content,image) VALUES ?";
-  db.query(sql, [value], (err, result) => {
+    "INSERT INTO testimonial (name, company, status, date, content, image) VALUES (?, ?, ?, ?, ?, ?)";
+  const values = [name, company, status, date, content, image];
+
+  db.query(sql, values, (err, result) => {
     if (err) {
-      throw err;
-    } else {
-      res.send("Data submitted successfully.");
+      console.error("Insert error:", err);
+      return res.status(500).send("Failed to submit testimonial.");
     }
+    res.send("Data submitted successfully.");
   });
 });
 
@@ -1375,10 +1611,13 @@ app.post("/faqsubmit", (req, res) => {
 });
 
 app.get("/pagesdatafaqs", (req, res) => {
-  const sql = "SELECT * FROM faqback";
+  const sql =
+    "SELECT * FROM faqback WHERE status = 'published' OR status = 'default'";
   db.query(sql, (err, result) => {
-    if (err) throw err;
-    else {
+    if (err) {
+      console.error("Error fetching FAQs:", err);
+      res.status(500).send("Server error");
+    } else {
       res.json(result);
     }
   });
@@ -1642,6 +1881,54 @@ app.get("/blogpostdata/:id", (req, res) => {
   });
 });
 
+app.get("/latestblogdata", (req, res) => {
+  const sql = "select *from blogpost";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    else {
+      res.json(result);
+    }
+  });
+});
+
+app.post("/commentpost/:id", (req, res) => {
+  const blogId = req.params.id;
+  const names = req.body.names ?? null;
+  const email = req.body.email ?? null;
+  const message = req.body.message ?? null;
+  const phone_number = req.body.phone_number ?? null;
+  const link = req.body.link ?? null;
+  const star = req.body.star ?? null;
+  const sql = `
+    INSERT INTO blog_comments
+      (blog_id, names, email, message, phone_number, link, star)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(
+    sql,
+    [blogId, names, email, message, phone_number, link, star],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting comment:", err);
+        return res.status(500).send("Database error");
+      }
+      res.send("Comment successfully posted");
+    }
+  );
+});
+
+app.get("/commentsdatagets/:id", (req, res) => {
+  const blogId = req.params.id;
+  const sql = "SELECT * FROM blog_comments WHERE blog_id = ?";
+  db.query(sql, [blogId], (err, results) => {
+    if (err) {
+      console.error("Error fetching comments:", err);
+      return res.status(500).send("Database error");
+    }
+    res.json(results);
+  });
+});
+
 app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
   const {
     name,
@@ -1717,8 +2004,6 @@ app.get("/blogpostsearch/:value", (req, res) => {
     }
   });
 });
-
-// blog category
 
 app.post("/blogcategorypost", (req, res) => {
   const { name, permalink, parent, description, is_featured, status } =
@@ -2589,38 +2874,44 @@ app.post("/flashsales", (req, res) => {
     INSERT INTO flashsales (name, start_date, status, end_date)
     VALUES (?, ?, ?, ?)
   `;
-
   db.query(saleSql, [name, start_date, status, end_date], (err, result) => {
     if (err) {
       console.error("Error inserting flashsale:", err);
       return res.status(500).json({ error: err.message });
     }
-
     const flashsaleId = result.insertId;
-
     if (Array.isArray(products) && products.length) {
-      const values = products.map((p) => [
-        flashsaleId,
-        p.id,
-        p.name,
-        p.price,
-        p.quantity,
-        p.image,
-      ]);
+      const placeholders = products
+        .map(() => "(?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        .join(", ");
+      const values = [];
+      products.forEach((p) => {
+        values.push(
+          flashsaleId,
+          p.id,
+          p.name,
+          p.price,
+          p.quantity,
+          p.image,
+          p.brand,
+          p.price_sale,
+          p.label
+        );
+      });
 
       const prodSql = `
         INSERT INTO flashsale_products 
-          (flashsale_id, product_id, product_name, price, quantity, image)
-        VALUES ?
+          (flashsale_id, product_id, product_name, price, quantity, image, brand, price_sale,label)
+        VALUES ${placeholders}
       `;
 
-      db.query(prodSql, [values], (err2) => {
+      db.query(prodSql, values, (err2) => {
         if (err2) {
           console.error("Error inserting flashsale_products:", err2);
           return res.status(500).json({ error: err2.message });
         }
         return res.json({
-          message: "Flash sale and products saved with names.",
+          message: "Flash sale and products saved successfully.",
         });
       });
     } else {
@@ -2642,46 +2933,84 @@ app.get("/flashsalesdata", (req, res) => {
 
 app.delete("/flashsaledelete/:id", (req, res) => {
   const flashsaleId = req.params.id;
-  db.beginTransaction((err) => {
+
+  db.getConnection((err, connection) => {
     if (err) {
-      console.error("Transaction error:", err);
+      console.error("Error getting DB connection:", err);
       return res.status(500).json({ error: err.message });
     }
 
-    const deleteProductsSql = `
-      DELETE FROM flashsale_products
-      WHERE flashsale_id = ?
-    `;
-    db.query(deleteProductsSql, [flashsaleId], (err) => {
+    connection.beginTransaction((err) => {
       if (err) {
-        return db.rollback(() => {
-          console.error("Error deleting products:", err);
-          res.status(500).json({ error: err.message });
-        });
+        connection.release();
+        console.error("Transaction error:", err);
+        return res.status(500).json({ error: err.message });
       }
 
-      const deleteSaleSql = `
-        DELETE FROM flashsales
-        WHERE id = ?
+      const deleteProductsSql = `
+        DELETE FROM flashsale_products
+        WHERE flashsale_id = ?
       `;
-      db.query(deleteSaleSql, [flashsaleId], (err2) => {
-        if (err2) {
-          return db.rollback(() => {
-            console.error("Error deleting flashsale:", err2);
-            res.status(500).json({ error: err2.message });
+
+      connection.query(deleteProductsSql, [flashsaleId], (err) => {
+        if (err) {
+          return connection.rollback(() => {
+            connection.release();
+            console.error("Error deleting products:", err);
+            res.status(500).json({ error: err.message });
           });
         }
-        db.commit((err3) => {
-          if (err3) {
-            return db.rollback(() => {
-              console.error("Commit error:", err3);
-              res.status(500).json({ error: err3.message });
+
+        const deleteSaleSql = `
+          DELETE FROM flashsales
+          WHERE id = ?
+        `;
+
+        connection.query(deleteSaleSql, [flashsaleId], (err2) => {
+          if (err2) {
+            return connection.rollback(() => {
+              connection.release();
+              console.error("Error deleting flashsale:", err2);
+              res.status(500).json({ error: err2.message });
             });
           }
-          res.json({ message: "Flash sale and associated products deleted." });
+
+          connection.commit((err3) => {
+            if (err3) {
+              return connection.rollback(() => {
+                connection.release();
+                console.error("Commit error:", err3);
+                res.status(500).json({ error: err3.message });
+              });
+            }
+
+            connection.release();
+            res.json({
+              message: "Flash sale and associated products deleted.",
+            });
+          });
         });
       });
     });
+  });
+});
+
+app.get("/flashsalesmaindata", (req, res) => {
+  const sql = `
+    SELECT 
+      f.*, 
+      p.* 
+    FROM 
+      flashsales f 
+    JOIN 
+      flashsale_products p 
+    ON 
+      f.id = p.flashsale_id
+  `;
+
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    res.json(result);
   });
 });
 
@@ -2705,7 +3034,7 @@ app.put("/updateflashsales/:id", (req, res) => {
   const deleteProductsSql =
     "DELETE FROM flashsale_products WHERE flashsale_id = ?";
   const insertProductSql = `
-    INSERT INTO flashsale_products (flashsale_id, product_id, product_name, image, price, quantity)
+    INSERT INTO flashsale_products (flashsale_id, product_id, product_name, image, price, quantity,brand,price_sale,label)
     VALUES ?
   `;
 
@@ -2735,6 +3064,9 @@ app.put("/updateflashsales/:id", (req, res) => {
           p.image,
           p.price,
           p.quantity,
+          p.brand,
+          p.price_sale,
+          p.label,
         ]);
 
         db.query(insertProductSql, [values], (err3) => {
@@ -2754,7 +3086,7 @@ app.get("/flashsalessome/:id", (req, res) => {
   const id = req.params.id;
   const flashSaleSql = "SELECT * FROM flashsales WHERE id = ?";
   const productsSql =
-    "SELECT product_id AS id, product_name AS name, image, price, quantity FROM flashsale_products WHERE flashsale_id = ?";
+    "SELECT product_id AS id, product_name AS name, image, price, quantity, brand, price_sale, label FROM flashsale_products WHERE flashsale_id = ?";
 
   db.query(flashSaleSql, [id], (err, flashSaleResult) => {
     if (err) {
@@ -3079,47 +3411,55 @@ app.get("/customerpopupdata", (req, res) => {
 
 app.post("/reviewdatasubmit", (req, res) => {
   const contentType = req.headers["content-type"] || "";
-  if (contentType.includes("multipart/form-data")) {
-    upload.any()(req, res, (err) => {
-      if (err instanceof multer.MulterError) {
-        return res.status(400).send("File upload error");
-      } else if (err) {
+  if (!contentType.includes("multipart/form-data")) {
+    return res.status(400).send("Invalid content-type");
+  }
+
+  upload.any()(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).send("File upload error");
+    } else if (err) {
+      return res.status(500).send("Server error");
+    }
+
+    const {
+      product_name = "",
+      user_name = "",
+      email = "",
+      star = 0,
+      comment = "",
+      product_image = "",
+    } = req.body;
+
+    let imageString = product_image;
+    if (req.files && req.files.length > 0) {
+      imageString = req.files.map((f) => f.filename).join(",");
+    }
+
+    const sql = `
+      INSERT INTO reviews
+        (product_name, user_name, email, star, comment, image)
+      VALUES
+        (?, ?, ?, ?, ?, ?)
+    `;
+
+    const values = [
+      product_name,
+      user_name,
+      email,
+      Number(star),
+      comment,
+      imageString,
+    ];
+
+    db.query(sql, values, (err, result) => {
+      if (err) {
+        console.error("Error inserting into database:", err);
         return res.status(500).send("Server error");
       }
-
-      const { product_name, user_name, email, star, comment } = req.body;
-
-      if (!user_name || !email || !star || !comment) {
-        return res.status(400).send("Please fill all required fields.");
-      }
-
-      let imageString = "";
-      if (req.files && req.files.length > 0) {
-        const imageNames = req.files.map((file) => file.filename);
-        imageString = imageNames.join(",");
-      }
-
-      const sql = `INSERT INTO reviews(product_name, user_name, email, star, comment, image) VALUES (?)`;
-      const values = [
-        product_name || "",
-        user_name,
-        email,
-        star,
-        comment || "",
-        imageString,
-      ];
-
-      db.query(sql, [values], (err, result) => {
-        if (err) {
-          console.error("Error inserting into database:", err);
-          return res.status(500).send("Server error");
-        }
-        res.status(200).send("Review submitted");
-      });
+      res.status(200).send("Review submitted");
     });
-  } else {
-    res.status(400).send("Invalid content-type");
-  }
+  });
 });
 
 app.get("/reviewdata", (req, res) => {
@@ -3269,6 +3609,7 @@ app.post("/productpage", upload.single("file"), (req, res) => {
     name,
     permalink,
     description,
+    content,
     sku,
     price,
     price_sale,
@@ -3299,6 +3640,7 @@ app.post("/productpage", upload.single("file"), (req, res) => {
       name,
       permalink,
       description,
+      content,
       sku,
       price,
       price_sale,
@@ -3327,7 +3669,7 @@ app.post("/productpage", upload.single("file"), (req, res) => {
   ];
 
   const sql = `INSERT INTO products 
-    (name, permalink, description, sku, price, price_sale, cost, barcode, stockstatus, weight, length, wide, height, status, store, featured, brand, minimumorder, maximumorder, date, image, label, label1, tags, categories,attribute,faqs)
+    (name, permalink, description,content, sku, price, price_sale, cost, barcode, stockstatus, weight, length, wide, height, status, store, featured, brand, minimumorder, maximumorder, date, image, label, label1, tags, categories,attribute,faqs)
     VALUES ?`;
 
   db.query(sql, [value], (err, result) => {
@@ -3488,6 +3830,7 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
     name,
     permalink,
     description,
+    content,
     sku,
     price,
     price_sale,
@@ -3518,7 +3861,7 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
 
   let sql = `
     UPDATE products SET
-      name=?, permalink=?, description=?, sku=?, price=?, price_sale=?, cost=?,
+      name=?, permalink=?, description=?,content=?, sku=?, price=?, price_sale=?, cost=?,
       barcode=?, stockstatus=?, weight=?, length=?, wide=?, height=?, status=?, store=?,
       featured=?, brand=?, minimumorder=?, maximumorder=?, date=?, label=?, label1=?, tags=?, categories=?,attribute=?,faqs=?
   `;
@@ -3526,6 +3869,7 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
     name,
     permalink,
     description,
+    content,
     sku,
     price,
     price_sale,
@@ -3596,37 +3940,48 @@ app.put("/productpriceupdate/:id", (req, res) => {
   });
 });
 
-// product categories
+app.post("/product-category", upload.single("file"), async (req, res) => {
+  try {
+    const payload = {};
+    const fields = [
+      "name",
+      "permalink",
+      "parent",
+      "description",
+      "status",
+      "is_featured",
+    ];
 
-app.post("/product-category", upload.single("file"), (req, res) => {
-  const payload = {};
-  [
-    "name",
-    "permalink",
-    "parent",
-    "description",
-    "status",
-    "is_featured",
-  ].forEach((field) => {
-    const val = req.body[field];
-    if (val !== undefined && val !== "") {
-      payload[field] = val;
+    fields.forEach((field) => {
+      const val = req.body[field];
+      payload[field] = val !== undefined && val !== "" ? val : null;
+    });
+
+    if (req.file) {
+      payload.image = req.file.filename;
     }
-  });
-  if (req.file) {
-    payload.image = req.file.filename;
-  }
-  if (Object.keys(payload).length === 0) {
-    return res.status(400).send("No data provided");
-  }
-  const sql = "INSERT INTO product_category SET ?";
-  db.query(sql, payload, (err, result) => {
-    if (err) {
-      console.error("Error inserting product category:", err);
-      return res.status(500).send("Server error");
+
+    if (!payload.name) {
+      return res.status(400).json({
+        success: false,
+        message: "Category name is required",
+      });
     }
-    res.status(201).send("Data submitted");
-  });
+
+    const sql = "INSERT INTO product_category SET ?";
+    await db.query(sql, [payload]);
+
+    res.status(200).json({
+      success: true,
+      message: "Category created successfully",
+    });
+  } catch (err) {
+    console.error("Error inserting product category:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error while creating category",
+    });
+  }
 });
 
 app.get("/productcatdata", (req, res) => {
@@ -3997,23 +4352,89 @@ app.get("/vendordata", (req, res) => {
   });
 });
 
-app.post("/addcart", upload.single("file"), (req, res) => {
-  const { name, store, price, price_sale } = req.body;
-  const image = req.body.image || req.file?.filename;
+app.post("/addcart", (req, res) => {
+  let { user_id, name, store, price, price_sale, image, quantity } = req.body;
 
-  if (!name || !store || !price || !price_sale || !image) {
-    return res.status(400).send("Missing required fields.");
+  const qty = Math.max(1, parseInt(quantity, 10) || 1);
+
+  function normalizePrice(p) {
+    if (typeof p !== "string" && typeof p !== "number") return null;
+    const cleaned = String(p).replace(/[^0-9.]/g, "");
+    const num = parseFloat(cleaned);
+    return isNaN(num) ? null : num.toFixed(2);
   }
 
-  const value = [[name, store, price, price_sale, image]];
-  const sql =
-    "INSERT INTO cart (name, store, price, price_sale, image) VALUES ?";
-  db.query(sql, [value], (err, result) => {
+  const cleanPriceSale = normalizePrice(price_sale);
+  const cleanPrice = normalizePrice(price);
+
+  if (
+    !user_id ||
+    isNaN(parseInt(user_id, 10)) ||
+    !name ||
+    !store ||
+    cleanPrice === null ||
+    cleanPriceSale === null ||
+    !image
+  ) {
+    return res
+      .status(400)
+      .send(
+        "Invalid or missing fields. Make sure user_id is a number and price(s) are valid."
+      );
+  }
+
+  user_id = parseInt(user_id, 10);
+
+  const checkSql = `
+    SELECT quantity 
+    FROM cart 
+    WHERE user_id = ? AND name = ? AND store = ?
+  `;
+  db.query(checkSql, [user_id, name, store], (err, results) => {
     if (err) {
-      console.error("Database error:", err);
-      return res.status(500).send("Error while inserting data.");
+      console.error("DB Error:", err);
+      return res.status(500).send("Error checking cart.");
     }
-    res.send("Data submitted successfully");
+
+    if (results.length > 0) {
+      const existingQty = results[0].quantity;
+      const newQty = existingQty + qty;
+
+      const updateSql = `
+        UPDATE cart 
+        SET quantity = ?
+        WHERE user_id = ? AND name = ? AND store = ?
+      `;
+      db.query(updateSql, [newQty, user_id, name, store], (err2) => {
+        if (err2) {
+          console.error("DB Error:", err2);
+          return res.status(500).send("Error updating cart.");
+        }
+        return res.send("Cart item quantity updated successfully");
+      });
+    } else {
+      const insertSql = `
+        INSERT INTO cart 
+          (user_id, name, store, price, price_sale, image, quantity)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+      const params = [
+        user_id,
+        name,
+        store,
+        cleanPrice,
+        cleanPriceSale,
+        image,
+        qty,
+      ];
+      db.query(insertSql, params, (err3) => {
+        if (err3) {
+          console.error("DB Error:", err3);
+          return res.status(500).send("Error inserting to cart.");
+        }
+        return res.send("Cart item added successfully");
+      });
+    }
   });
 });
 
@@ -4040,11 +4461,21 @@ app.get("/dashboardsome/:id", (req, res) => {
 
 app.delete("/deletecart/:id", (req, res) => {
   const id = req.params.id;
-  const sql = "delete from cart where id=?";
+  const sql = "DELETE FROM cart WHERE id=?";
   db.query(sql, [id], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("data deleted");
+    if (err) {
+      console.error(err);
+      return res
+        .status(500)
+        .json({ success: false, message: "Database error" });
+    }
+
+    if (result.affectedRows > 0) {
+      return res.json({ success: true, message: "data deleted" });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found" });
     }
   });
 });
@@ -4289,19 +4720,53 @@ app.get("/specificationattributesearch/:value", (req, res) => {
   });
 });
 
-app.post("/wishlistpost", upload.single("file"), (req, res) => {
-  const { product_name, image, store, price, price_sale, sku } = req.body;
-  if (!product_name || !image || !store || !price || !price_sale || !sku) {
+app.post("/wishlistpost", (req, res) => {
+  const {
+    product_name,
+    image,
+    store,
+    price,
+    price_sale,
+    sku,
+    stockstatus,
+    user_id,
+  } = req.body;
+
+  if (
+    !product_name ||
+    !image ||
+    !store ||
+    !price ||
+    !price_sale ||
+    !sku ||
+    !stockstatus ||
+    !user_id
+  ) {
     return res.status(400).send("Missing required fields");
   }
-  const value = [[product_name, image, store, price, price_sale, sku]];
-  const sql =
-    "INSERT INTO wishlist(product_name, image,store,price,price_sale,sku) VALUES ?";
-  db.query(sql, [value], (err, result) => {
-    if (err) throw err;
-    else {
-      res.send("Product added to wishlist successfully");
+
+  const sql = `
+    INSERT INTO wishlist
+      (user_id, product_name, image, store, price, price_sale, sku, stockstatus)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  const params = [
+    user_id,
+    product_name,
+    image,
+    store,
+    price,
+    price_sale,
+    sku,
+    stockstatus,
+  ];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      console.error("DB Error:", err);
+      return res.status(500).send("Database error");
     }
+    res.send("Product added to wishlist successfully");
   });
 });
 
@@ -4325,80 +4790,6 @@ app.delete("/wishlistdelete/:id", (req, res) => {
     }
   });
 });
-
-// app.post("/adminlogin", (req, res) => {
-//   const { first_name,last_name,email,role,username, password } = req.body;
-//   if (!username || !password) {
-//     return res.status(400).send("Both username and password are required");
-//   }
-//   const sql = "SELECT * FROM adminlogin WHERE username = ?";
-//   db.query(sql, [username], (err, result) => {
-//     if (err) {
-//       return res.status(500).send("Internal server error");
-//     }
-//     if (result.length === 0) {
-//       return res.status(400).send("Invalid username or password.");
-//     }
-//     const hashedPassword = result[0].password;
-//     const role = result[0].role;
-//     const lastLogin = result[0].last_login;
-//     bcrypt.compare(password, hashedPassword, (err, isMatch) => {
-//       if (err) {
-//         return res.status(500).send("Error comparing passwords");
-//       }
-//       if (isMatch) {
-//         let expiresIn;
-//         let maxAge;
-//         const currentTime = new Date().getTime();
-//         let lastLoginTime = lastLogin
-//           ? new Date(lastLogin).getTime()
-//           : currentTime;
-//         if (role === "superadmin") {
-//           expiresIn = "365d";
-//           maxAge = 365 * 24 * 60 * 60 * 1000;
-//         } else if (role === "admin") {
-//           const sevenDaysInMilliseconds = 7 * 24 * 60 * 60 * 1000;
-//           const timeElapsed = currentTime - lastLoginTime;
-//           if (timeElapsed < sevenDaysInMilliseconds) {
-//             expiresIn = (sevenDaysInMilliseconds - timeElapsed) / 1000;
-//             maxAge = expiresIn * 1000;
-//           } else {
-//             expiresIn = 7 * 24 * 60 * 60;
-//             maxAge = sevenDaysInMilliseconds;
-//           }
-//         }
-//         const sql = "UPDATE adminlogin SET last_login = ? WHERE username = ?";
-//         db.query(sql, [new Date(), username], (updateErr) => {
-//           if (updateErr) {
-//             return res.status(500).send("Error updating last login time");
-//           }
-//           const token = jwt.sign(
-//             { userId: result[0].id, username, role },
-//             process.env.JWT_SECRET,
-//             { expiresIn: "7d" }
-//           );
-//           res.cookie("auth_token", token, {
-//             httpOnly: true,
-//             secure: process.env.NODE_ENV === "production",
-//             maxAge: maxAge,
-//             sameSite: "Strict",
-//           });
-//           return res.send({
-//             message:
-//               role === "superadmin"
-//                 ? "Successfully logged in as Super Admin!"
-//                 : "Successfully logged in as Admin!",
-//             user: result[0],
-//             token: token,
-//             expiresIn: expiresIn,
-//           });
-//         });
-//       } else {
-//         return res.status(400).send("Invalid username or password.");
-//       }
-//     });
-//   });
-// });
 
 app.post("/adminlogin", (req, res) => {
   const { username, password } = req.body;
@@ -4980,6 +5371,44 @@ app.post("/subscribe", (req, res) => {
 function sendPushNotification(message) {
   return new Promise((resolve, reject) => {
     db.query("SELECT * FROM subscriptions", (err, subscriptions) => {
+      if (err) return reject(err);
+
+      const notifications = subscriptions.map((sub) => {
+        const pushSubscription = {
+          endpoint: sub.endpoint,
+          keys: { p256dh: sub.p256dh, auth: sub.auth },
+        };
+        return webpush
+          .sendNotification(pushSubscription, JSON.stringify(message))
+          .catch((error) => {
+            if (error.statusCode === 410) {
+              db.query("DELETE FROM subscriptions WHERE endpoint = ?", [
+                sub.endpoint,
+              ]);
+            } else {
+              console.error("Push error:", error);
+            }
+          });
+      });
+
+      Promise.all(notifications)
+        .then(() => resolve())
+        .catch(reject);
+    });
+  });
+}
+
+app.get("/vapidPublicKey", (req, res) => {
+  res.set({
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": "no-store",
+  });
+  res.send(publicVapidKey);
+});
+
+function sendPushNotification(message) {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM subscriptions", (err, subscriptions) => {
       if (err) {
         return reject(err);
       }
@@ -5530,6 +5959,51 @@ app.get("/country-visits", (req, res) => {
     });
 
     res.json(data);
+  });
+});
+
+async function fetchTranslation(original, lang) {
+  const sql = `
+    SELECT translated_text FROM translations WHERE original_text = ? AND lang = ? LIMIT 1
+  `;
+  const [rows] = await db.execute(sql, [original, lang]);
+  return (rows[0] && rows[0].translated_text) || original;
+}
+
+app.post("/translate", async (req, res) => {
+  try {
+    const { texts, lang } = req.body;
+
+    console.log("API hit - lang:", lang);
+    console.log("Received texts:", texts);
+
+    const uniqueTexts = [...new Set(texts)];
+    const map = {};
+
+    await Promise.all(
+      uniqueTexts.map(async (txt) => {
+        const translation = await fetchTranslation(txt, lang);
+        console.log(`Translating: "${txt}" -> "${translation}"`);
+        map[txt] = translation;
+      })
+    );
+
+    const translations = texts.map((txt) => map[txt]);
+    return res.json({ translations });
+  } catch (err) {
+    console.error("Translate API error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/allthemesdata", (req, res) => {
+  const sql = "select *from themes";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ error: "DB error" });
+    }
+    res.json(results);
   });
 });
 

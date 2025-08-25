@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Keep track of your favorite products in your wishlist at Roiser. Save items for later and shop when you're ready. Fast checkout & best deals!"
+    />
+    <title>Your Wishlist - Save Your Favorite Products | Roiser</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="assets/img/favicon.png"
+    />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
+    <!-- <link rel="stylesheet" href="assets/css/venobox.min.css" /> -->
+    <!-- <link rel="stylesheet" href="assets/css/odometer.min.css" /> -->
+    <link rel="stylesheet" href="assets/css/nice-select.css" />
+    <!-- <link rel="stylesheet" href="assets/css/swiper.min.css" /> -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud/");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud/${page}`);
+            }
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud/";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <header class="header sticky-active">
+      <div class="top-bar">
+        <div class="container">
+          <div class="top-bar-inner">
+            <div class="top-bar-left">
+              <ul class="top-left-list">
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">My Account</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+                <li><a href="checkout.html">Checkout</a></li>
+              </ul>
+            </div>
+            <div class="top-bar-middle">
+              <span
+                id="announcement-text"
+                style="
+                  display: inline-block;
+                  transition: transform 0.5s ease;
+                  white-space: nowrap;
+                "
+              ></span>
+            </div>
+            <div class="top-bar-right">
+              <ul class="top-right-list">
+                <li><a href="contact.html">Store Location</a></li>
+                <li>
+                  <div class="nice-select select-control country1" tabindex="0">
+                    <span class="current">Language</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Language
+                      </li>
+                      <li data-value="vdt" class="option">English</li>
+                      <li data-value="can" class="option">Bangla</li>
+                      <li data-value="uk" class="option">Arabic</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div
+                    class="nice-select select-control select-2 country"
+                    tabindex="0"
+                  >
+                    <span class="current">Currency</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Currency
+                      </li>
+                      <li data-value="vdt" class="option">Doller</li>
+                      <li data-value="can" class="option">Rupee</li>
+                      <li data-value="uk" class="option">Taka</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-middle">
+        <div class="container">
+          <div class="header-middle-inner">
+            <div class="header-middle-left">
+              <div class="header-logo d-lg-block">
+                <a href="index.html">
+                  <img
+                    src="assets/img/logo/logo-1.png"
+                    alt="Logo"
+                    id="site-logo"
+                  />
+                </a>
+              </div>
+              <div class="category-form-wrap">
+                <div class="nice-select select-control country" tabindex="0">
+                  <span class="current">ALL Categories</span>
+                  <ul class="list">
+                    <li data-value="" class="option selected focus">
+                      ALL Categories
+                    </li>
+                    <li data-value="vdt" class="option">Fashion</li>
+                    <li data-value="can" class="option">Organic</li>
+                    <li data-value="uk" class="option">Furniture</li>
+                  </ul>
+                </div>
+
+                <form class="header-form">
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="search"
+                    placeholder="Search here..."
+                    required
+                  />
+                  <button class="submit rr-primary-btn" type="submit">
+                    Search here
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="header-middle-right">
+              <ul class="contact-item-list">
+                <li>
+                  <div class="content">
+                    <span>Call Us Now:</span>
+                    <a class="number" href="tel:+25821592159"
+                      >+(258) 2159-2159</a
+                    >
+                  </div>
+                  <a href="tel:+25821592159" class="icon">
+                    <i class="fa-regular fa-phone"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="wishlist.html" class="icon">
+                    <i class="fa-sharp fa-regular fa-heart"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="cart.html" class="icon">
+                    <i class="fa-light fa-bag-shopping"></i>
+                    <span>0</span>
+                  </a>
+                  <div class="content">
+                    <span>Your cart,</span>
+                    <h5 class="number">$0.00</h5>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="primary-header">
+        <div class="container">
+          <div class="primary-header-inner">
+            <div class="header-logo mobile-logo">
+              <a href="index.html">
+                <img src="assets/img/logo/logo-1.png" alt="Logo" />
+              </a>
+            </div>
+            <div class="header-menu-wrap">
+              <div class="mobile-menu-items">
+                <ul>
+                  <li class="menu-item-has-children active">
+                    <a href="index.html">Home</a>
+                    <ul>
+                      <li><a href="index.html">Fashion Home</a></li>
+                      <li><a href="index-2.html">Grocery Home</a></li>
+                      <li><a href="index-3.html">Furniture</a></li>
+                    </ul>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="shop.html">Shop</a>
+                    <ul>
+                      <li><a href="shop.html">Shop</a></li>
+                      <li><a href="shop-grid.html">Shop Grid</a></li>
+                      <li><a href="shop-details.html">Shop Details</a></li>
+                      <li><a href="cart.html">Cart</a></li>
+                      <li><a href="wishlist.html">Wishlist</a></li>
+                      <li><a href="checkout.html">Checkout</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">Women</a>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">men</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#">Pages</a>
+                    <ul>
+                      <li><a href="about.html">About</a></li>
+                      <li><a href="login.html">Login</a></li>
+                      <li><a href="register.html">Register</a></li>
+                      <li><a href="faq.html">Faq</a></li>
+                      <li><a href="error.html">404 Error</a></li>
+                    </ul>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="blog-grid.html">Blog</a>
+                    <ul>
+                      <li><a href="blog-grid.html">Blog Grid</a></li>
+                      <li><a href="blog-list.html">Blog list</a></li>
+                      <li><a href="blog-details.html">Blog Details</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="contact.html">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="header-right-wrap">
+              <div class="header-right">
+                <span>Get 30% Discount Now <span>Sale</span></span>
+                <div class="header-right-item">
+                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
+                    ><i class="fa-sharp fa-solid fa-bars"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div id="popup-search-box">
+      <div class="box-inner-wrap d-flex align-items-center">
+        <form id="form" action="#" method="get" role="search">
+          <input
+            id="popup-search"
+            type="text"
+            name="search"
+            placeholder="Type keywords here..."
+          />
+        </form>
+        <div class="search-close">
+          <i class="fa-sharp fa-regular fa-xmark"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-side-menu">
+      <div class="side-menu-content">
+        <div class="side-menu-head">
+          <a href="index.html"
+            ><img src="assets/img/logo/logo-1.png" alt="logo"
+          /></a>
+          <button class="mobile-side-menu-close">
+            <i class="fa-regular fa-xmark"></i>
+          </button>
+        </div>
+        <div class="side-menu-wrap"></div>
+        <ul class="side-menu-list">
+          <li>
+            <i class="fa-light fa-location-dot"></i>Address :
+            <span>Amsterdam, 109-74</span>
+          </li>
+          <li>
+            <i class="fa-light fa-phone"></i>Phone :
+            <a href="tel:+01569896654">+01 569 896 654</a>
+          </li>
+          <li>
+            <i class="fa-light fa-envelope"></i>Email :
+            <a href="mailto:info@example.com">info@example.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="preloader">
+      <div class="preloader-close">X</div>
+      <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
+      </div>
+    </div>
+
+    <section class="page-header">
+      <div class="shape">
+        <img src="assets/img/shapes/page-header-shape.png" alt="shape" />
+      </div>
+      <div class="container">
+        <div class="page-header-content">
+          <h1 class="title">Wishlist</h1>
+          <h4 class="sub-title">
+            <span class="home">
+              <a href="index.html">
+                <span>Home</span>
+              </a>
+            </span>
+            <span class="icon"><i class="fa-solid fa-angle-right"></i></span>
+            <span class="inner">
+              <span>Wishlist</span>
+            </span>
+          </h4>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const res = await fetch("/get-theme-breadcrumb");
+          const config = await res.json();
+
+          const section = document.querySelector(".page-header");
+          const content = section.querySelector(".page-header-content");
+          const titleEl = content.querySelector(".title");
+          const crumbEl = content.querySelector(".sub-title");
+          const imgEl = section.querySelector(".shape img");
+
+          if (config.enable_breadcrumb === "no") {
+            titleEl.style.display = "none";
+            crumbEl.style.display = "none";
+          } else {
+            titleEl.style.display = "";
+            crumbEl.style.display = "";
+          }
+
+          if (config.breadcrumb_height) {
+            section.style.height = config.breadcrumb_height + "px";
+          }
+
+          if (config.background_color) {
+            section.style.backgroundColor = config.background_color;
+          }
+
+          if (config.background_image && config.background_image.trim()) {
+            const bg = config.background_image.trim();
+            imgEl.src = bg.startsWith("http") ? bg : `/uploads/${bg}`;
+          }
+
+          if (
+            config.enable_breadcrumb === "yes" &&
+            config.hide_title === "yes"
+          ) {
+            titleEl.style.display = "none";
+          }
+
+          if (config.enable_breadcrumb === "yes") {
+            switch (config.breadcrumb_style) {
+              case "none":
+                crumbEl.style.display = "none";
+                break;
+              case "align center":
+                content.style.textAlign = "center";
+                break;
+              default:
+                content.style.textAlign = "start";
+            }
+          }
+        } catch (e) {
+          console.error("Breadcrumb config failed to load:", e);
+        }
+      });
+    </script>
+
+    <section class="cart-section pt-130 pb-130">
+      <div class="container">
+        <div class="table-content cart-table table-2">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th class="product-remove"></th>
+                <th class="cart-product-name text-center">Product name</th>
+                <th class="product-price">Price</th>
+                <th class="product-quantity">Stock Status</th>
+                <th class="product-subtotal"></th>
+              </tr>
+            </thead>
+            <tbody id="wishlist-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const tbody = document.querySelector("#wishlist-body");
+        const user_id = localStorage.getItem("user_id");
+
+        function showBanner(msg, type = "success") {
+          const b = document.createElement("div");
+          b.className = `banner ${type}`;
+          b.textContent = msg;
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            background: type === "success" ? "#4caf50" : "#f44336",
+            color: "#fff",
+            borderRadius: "4px",
+            zIndex: 9999,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          });
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+
+        if (!user_id) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center">Please log in to view your wishlist.</td></tr>`;
+          return;
+        }
+
+        fetch(`/wishlistdata?user_id=${user_id}`)
+          .then((res) => res.json())
+          .then((items) => {
+            const uniqueItems = items.filter(
+              (item, index, all) =>
+                index ===
+                all.findIndex(
+                  (other) => other.product_name === item.product_name
+                )
+            );
+
+            if (!uniqueItems.length) {
+              tbody.innerHTML = `<tr><td colspan="5" class="text-center">Your wishlist is empty.</td></tr>`;
+              return;
+            }
+
+            tbody.innerHTML = "";
+
+            uniqueItems.forEach((item) => {
+              const tr = document.createElement("tr");
+              tr.dataset.id = item.id;
+              tr.innerHTML = `
+                <td class="product-remove">
+                  <button class="remove-wl" data-id="${item.id}">
+                    <i class="fa-sharp fa-regular fa-xmark"></i>
+                  </button>
+                </td>
+                <td class="product-thumbnail">
+                  <a href="/shop-details/${item.id}">
+                    <img src="/uploads/${item.image}" alt="${item.product_name}" />
+                  </a>
+                  <div class="product-thumbnail">
+                    <span class="category">${item.store}</span>
+                    <h4 class="title">${item.product_name}</h4>
+                  </div>
+                </td>
+                <td class="product-price">
+                  <span class="amount">$${item.price}</span>
+                </td>
+                <td class="product-quantity">
+                  <span>${item.stockstatus}</span>
+                </td>
+                <td class="product-subtotal">
+                  <button class="rr-primary-btn add-from-wl"
+                    data-name="${item.product_name}"
+                    data-price="${item.price}"
+                    data-price_sale="${item.price_sale}"
+                    data-image="${item.image}">
+                    Add to cart
+                  </button>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+
+            tbody.querySelectorAll(".remove-wl").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const id = btn.dataset.id;
+                fetch(`/wishlistdelete/${id}`, { method: "DELETE" })
+                  .then((res) => {
+                    if (!res.ok) throw new Error("Delete failed");
+                    btn.closest("tr").remove();
+                    showBanner("Removed from wishlist", "success");
+                  })
+                  .catch((err) => {
+                    console.error("Remove wishlist error:", err);
+                    showBanner("Failed to remove from wishlist", "error");
+                  });
+              });
+            });
+
+            tbody.querySelectorAll(".add-from-wl").forEach((btn) => {
+              btn.addEventListener("click", () => {
+                fetch("/addcart", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    name: btn.dataset.name,
+                    price: btn.dataset.price,
+                    price_sale: btn.dataset.price_sale,
+                    image: btn.dataset.image,
+                    user_id,
+                    store: "default",
+                  }),
+                })
+                  .then((res) => {
+                    if (!res.ok) throw new Error("Add to cart failed");
+                    return res.text();
+                  })
+                  .then(() => {
+                    showBanner("Product added to cart!", "success");
+                  })
+                  .catch((err) => {
+                    console.error("Cart error:", err);
+                    showBanner("Failed to add to cart", "error");
+                  });
+              });
+            });
+          })
+          .catch((err) => {
+            console.error("Wishlist load error:", err);
+            tbody.innerHTML = `<tr><td colspan="5">Failed to load wishlist.</td></tr>`;
+          });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const userId = localStorage.getItem("user_id");
+
+        function updateCartIcon() {
+          if (!userId) return;
+
+          fetch(`/allcartdata?user_id=${userId}`)
+            .then((res) => res.json())
+            .then((data) => {
+              let totalItems = 0;
+              let totalAmount = 0;
+              const seen = new Set();
+
+              if (Array.isArray(data) && data.length > 0) {
+                data.forEach((item) => {
+                  const name = item.name;
+                  if (seen.has(name)) {
+                    return;
+                  }
+                  seen.add(name);
+
+                  const quantity = parseInt(item.quantity || 1, 10);
+                  const price = parseFloat(
+                    (item.price || "").replace("$", "") || 0
+                  );
+
+                  totalItems += quantity;
+                  totalAmount += quantity * price;
+                });
+              }
+
+              document.querySelector(".icon span").innerText = totalItems;
+              document.querySelector(
+                ".content h5.number"
+              ).innerText = `$${totalAmount.toFixed(2)}`;
+            })
+            .catch((err) => {
+              console.error("Error updating cart info:", err);
+            });
+        }
+
+        function stripTags(html) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = html;
+          return tmp.textContent || tmp.innerText || "";
+        }
+
+        function updateAnnouncements() {
+          fetch("/getannounce")
+            .then((res) => res.json())
+            .then((data) => {
+              if (!data || !data.length) return;
+
+              const today = new Date();
+              const validAnnouncements = data.filter(
+                (item) =>
+                  item.active === "yes" && new Date(item.end_date) >= today
+              );
+              if (!validAnnouncements.length) return;
+
+              const limitWords = (text, limit = 6) => {
+                const words = text.trim().split(/\s+/);
+                return (
+                  words.slice(0, limit).join(" ") +
+                  (words.length > limit ? "..." : "")
+                );
+              };
+
+              const messages = validAnnouncements.map((item) =>
+                limitWords(stripTags(item.content))
+              );
+
+              const announcer = document.getElementById("announcement-text");
+              let index = 0;
+
+              const rotate = () => {
+                announcer.style.transform = "translateY(-100%)";
+                setTimeout(() => {
+                  announcer.textContent = messages[index];
+                  announcer.style.transform = "translateY(0)";
+                  index = (index + 1) % messages.length;
+                }, 300);
+              };
+
+              announcer.textContent = messages[index];
+              index++;
+              setInterval(rotate, 3000);
+            })
+            .catch((err) => {
+              console.error("Error fetching announcement:", err);
+            });
+        }
+
+        updateCartIcon();
+        setInterval(updateCartIcon, 1000);
+        updateAnnouncements();
+      });
+
+      function getUserId() {
+        return localStorage.getItem("user_id") || null;
+      }
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let selectedCurrency = localStorage.getItem("currency") || "vdt";
+
+        const currencyRates = {
+          vdt: { symbol: "$", rate: 1 },
+          can: { symbol: "₹", rate: 83 },
+          uk: { symbol: "৳", rate: 108 },
+        };
+
+        const currentCurrency = currencyRates[selectedCurrency];
+        if (currentCurrency) {
+          const selectedOption = document.querySelector(
+            `.nice-select.country .option[data-value="${selectedCurrency}"]`
+          );
+          if (selectedOption) {
+            document.querySelector(
+              ".nice-select.country .current"
+            ).textContent = selectedOption.textContent;
+          }
+        }
+
+        document
+          .querySelectorAll(".nice-select.country .option")
+          .forEach((opt) => {
+            opt.addEventListener("click", () => {
+              const code = opt.dataset.value;
+              if (currencyRates[code]) {
+                selectedCurrency = code;
+                localStorage.setItem("currency", selectedCurrency);
+                document.querySelector(
+                  ".nice-select.country .current"
+                ).textContent = opt.textContent;
+              }
+            });
+          });
+
+        function formatPrice(raw) {
+          const n = parseFloat(raw.replace(/[^0-9.]/g, "")) || 0;
+          const { symbol, rate } = currencyRates[selectedCurrency];
+          return symbol + (n * rate).toFixed(2);
+        }
+
+        const wrapper = document.querySelector(".category-form-wrap");
+        wrapper.style.position = "relative";
+
+        const resultBox = document.createElement("div");
+        resultBox.classList.add("search-result-dropdown");
+        Object.assign(resultBox.style, {
+          position: "absolute",
+          top: "100%",
+          left: "0%",
+          width: "100%",
+          background: "#fff",
+          border: "1px solid #ddd",
+          zIndex: "1000",
+          maxHeight: "300px",
+          overflowY: "auto",
+          display: "none",
+        });
+        wrapper.appendChild(resultBox);
+
+        const searchInput = wrapper.querySelector('input[name="search"]');
+        let timeout;
+
+        searchInput.addEventListener("input", () => {
+          const q = searchInput.value.trim();
+          clearTimeout(timeout);
+
+          if (q.length < 2) {
+            resultBox.style.display = "none";
+            resultBox.innerHTML = "";
+            return;
+          }
+
+          timeout = setTimeout(() => {
+            fetch("/productpagedata")
+              .then((r) => r.json())
+              .then((products) => {
+                const matches = products
+                  .filter((p) => p.name.toLowerCase().includes(q.toLowerCase()))
+                  .slice(0, 5);
+
+                if (!matches.length) {
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                } else {
+                  resultBox.innerHTML =
+                    matches
+                      .map((p) => {
+                        const img = (p.image || "").split(",")[0].trim();
+                        const mainPrice = formatPrice(p.price);
+                        const salePrice = p.price_sale
+                          ? `<strong class="text-dark me-2">${formatPrice(
+                              p.price_sale
+                            )}</strong>
+                          <s class="fw-bold text-danger">${formatPrice(
+                            p.price
+                          )}</s>`
+                          : `<strong class="fw-bold text-dark">${formatPrice(
+                              p.price
+                            )}</strong>`;
+
+                        return `
+                    <div
+                      onclick="window.location.href='shop.html?search=${encodeURIComponent(
+                        q
+                      )}'"
+                      style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
+                    >
+                      <img src="/uploads/${img}" alt="${p.name}"
+                          style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                      <div>
+                        <div class="fw-bold text-dark">${p.name}</div>
+                        <div style="font-size:0.85em;color:#999;">
+                          ${salePrice}
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                      })
+                      .join("") +
+                    `
+                  <div
+                    onclick="window.location.href='shop.html?search=${encodeURIComponent(
+                      q
+                    )}'"
+                    style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
+                  >
+                    Show all results
+                  </div>
+                `;
+                }
+
+                resultBox.style.display = "block";
+              })
+              .catch((err) => {
+                console.error("Error fetching products:", err);
+                resultBox.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                resultBox.style.display = "block";
+              });
+          }, 300);
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!wrapper.contains(e.target)) {
+            resultBox.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <footer class="footer-section bg-grey pt-60">
+      <div class="container">
+        <div class="footer-items">
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-1.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Shipping</h4>
+              <span>Free shipping on orders over $65.00</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-2.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Returns</h4>
+              <span>30-days free return policy</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-3.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Secured Payments</h4>
+              <span>We accept all major credit card</span>
+            </div>
+          </div>
+          <div class="footer-item item-2">
+            <div class="icon">
+              <img src="assets/img/icon/footer-4.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Customer Service</h4>
+              <span>Top notch customer service</span>
+            </div>
+          </div>
+        </div>
+        <div class="row footer-widget-wrap pb-60">
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">About Store</h3>
+              </div>
+              <div class="footer-contact">
+                <div class="icon">
+                  <i class="fa-sharp fa-solid fa-phone-rotary"></i>
+                </div>
+                <div class="content">
+                  <span>Have Question? Call Us 24/7</span>
+                  <a href="tel:+25836922569">+258 3692 2569</a>
+                </div>
+              </div>
+              <ul class="schedule-list">
+                <li><span>Monday - Friday:</span>8:00am - 6:00pm</li>
+                <li><span>Saturday:</span>8:00am - 6:00pm</li>
+                <li><span>Sunday</span> Service Close</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Stores</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">New York</a></li>
+                <li><a href="contact.html">London SF</a></li>
+                <li><a href="contact.html">Los Angele</a></li>
+                <li><a href="contact.html">Chicago</a></li>
+                <li><a href="contact.html">Las Vegas</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Shop Categories</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">New Arrivals</a></li>
+                <li><a href="contact.html">Best Selling</a></li>
+                <li><a href="contact.html">Vegetables</a></li>
+                <li><a href="contact.html">Fresh Meat</a></li>
+                <li><a href="contact.html">Fresh Seafood</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Useful Links</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">Privacy Policy</a></li>
+                <li><a href="contact.html">Terms & Conditions</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="contact.html">Latest News</a></li>
+                <li><a href="contact.html">Our Sitemaps</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Newsletter</h3>
+              </div>
+              <div class="news-form-wrap">
+                <p class="mb-20">
+                  Subscribe to the mailing list to receive updates one the new
+                  arrivals and other discounts
+                </p>
+                <div class="footer-form mb-20">
+                  <form action="#" class="rr-subscribe-form">
+                    <input
+                      class="form-control"
+                      type="email"
+                      name="email"
+                      placeholder="Email address"
+                      required
+                    />
+                    <input
+                      type="hidden"
+                      name="action"
+                      value="mailchimpsubscribe"
+                    />
+                    <button class="submit" type="submit">Subscribe</button>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+                <p class="mb-0">
+                  I would like to receive news and special offer
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              const form = document.querySelector(".rr-subscribe-form");
+              if (!form) return;
+
+              function showBanner(msg, type = "success") {
+                const b = document.createElement("div");
+                b.className = `banner ${type}`;
+                b.textContent = msg;
+                Object.assign(b.style, {
+                  position: "fixed",
+                  top: "10px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  padding: "10px 20px",
+                  background: type === "success" ? "#4caf50" : "#f44336",
+                  color: "#fff",
+                  borderRadius: "4px",
+                  zIndex: 9999,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                });
+                document.body.appendChild(b);
+                setTimeout(() => b.remove(), 3000);
+              }
+
+              form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const input = form.querySelector('input[name="email"]');
+                const email = input.value.trim();
+                if (!email) {
+                  showBanner("Please enter a valid email.", "error");
+                  return;
+                }
+
+                try {
+                  const res = await fetch("/newsletterpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                  });
+                  const text = await res.text();
+
+                  if (res.ok) {
+                    showBanner("Subscribed successfully!", "success");
+                    form.reset();
+                  } else {
+                    showBanner(text || "Subscription failed.", "error");
+                  }
+                } catch (err) {
+                  console.error("Newsletter error:", err);
+                  showBanner("Network error, please try again.", "error");
+                }
+              });
+            });
+          </script>
+        </div>
+      </div>
+      <div class="copyright-area">
+        <div class="container">
+          <div class="row copyright-content">
+            <div class="col-lg-6">
+              <div class="footer-img-wrap">
+                <span>Payment System:</span>
+                <div class="footer-img">
+                  <a href="#"
+                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  /></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <p>
+                Copyright & Design <span id="designYear">2024</span>
+                <span>©Roiser</span>. All Right Reserved
+              </p>
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                const yearSpan = document.getElementById("designYear");
+                if (yearSpan) {
+                  yearSpan.textContent = new Date().getFullYear();
+                }
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/get-font-settings")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network error");
+            return res.json();
+          })
+          .then((cfg) => {
+            const s = document.createElement("style");
+            s.type = "text/css";
+
+            s.textContent = `
+                            body {
+                font-family: ${cfg.font_family}, sans-serif !important;
+                font-size: ${cfg.body_font_size}px !important;
+              }
+              h1 { font-size: ${cfg.h1_font_size}px !important; }
+              h2 { font-size: ${cfg.h2_font_size}px !important; }
+              h3 { font-size: ${cfg.h3_font_size}px !important; }
+              h4 { font-size: ${cfg.h4_font_size}px !important; }
+              h5 { font-size: ${cfg.h5_font_size}px !important; }
+              h6 { font-size: ${cfg.h6_font_size}px !important; }
+            `;
+            document.head.appendChild(s);
+          })
+          .catch((err) => {
+            console.error("Could not load font settings:", err);
+          });
+      });
+    </script>
+
+    <div id="scroll-percentage"><span id="scroll-percentage-value"></span></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/get-theme-logo")
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to load logo data");
+            return res.json();
+          })
+          .then((cfg) => {
+            const img = document.getElementById("site-logo");
+            if (!img) return;
+            if (cfg.logo_url) {
+              img.src = `/uploads/${cfg.logo_url}`;
+            }
+            if (cfg.logo_height) {
+              img.height = cfg.logo_height;
+            }
+          })
+          .catch((err) => {
+            console.error("Could not load theme logo:", err);
+          });
+
+        fetch("/themestylesdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network error");
+            return res.json();
+          })
+          .then((cfg) => {
+            const topBg = cfg.headerBackgroundColor || "#ffffff";
+            const topBar = document.querySelector(".top-bar");
+            if (topBar) {
+              topBar.style.setProperty("background-color", topBg, "important");
+              topBar.querySelectorAll(
+                "a, span, li, .nice-select .current, .nice-select .option"
+              );
+            }
+
+            const midBg = cfg.headerMainColor || "#ffffff";
+            const midTxt = cfg.headerMainTextColor || "#000000";
+            const headerMid = document.querySelector(".header-middle");
+            if (headerMid) {
+              headerMid.style.setProperty(
+                "background-color",
+                midBg,
+                "important"
+              );
+              headerMid
+                .querySelectorAll(
+                  "a, span, li, .contact-item-list .content span, " +
+                    ".contact-item-list .content a, .contact-item-list .number, " +
+                    ".rr-primary-btn, .nice-select .current, .nice-select .option"
+                )
+                .forEach((el) => {
+                  el.style.setProperty("color", midTxt, "important");
+                });
+            }
+
+            const scrollPercentage =
+              document.getElementById("scroll-percentage");
+            if (scrollPercentage) {
+              if (cfg.backToTopButton === "no") {
+                scrollPercentage.style.display = "none";
+              } else {
+                scrollPercentage.style.display = "block";
+              }
+            }
+          })
+          .catch((err) => {
+            console.error("Could not load theme styles:", err);
+          });
+      });
+    </script>
+
+    <script src="assets/js/vendor/jquary-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/imagesloaded-pkgd.js"></script>
+    <script src="assets/js/vendor/waypoints.min.js"></script>
+    <script src="assets/js/vendor/venobox.min.js"></script>
+    <script src="assets/js/vendor/meanmenu.js"></script>
+    <script src="assets/js/vendor/swiper.min.js"></script>
+    <script src="assets/js/vendor/nice-select.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
