@@ -270,7 +270,7 @@ function AdminTheme() {
     const key = (theme.folder_name || theme.name || "").toLowerCase().trim();
     console.log("Theme Key:", key);
 
-    if (["pesco theme", "radious theme"].includes(key)) {
+    if (["Pesco theme", "radious theme"].includes(key)) {
       return toast.error("You cannot do it in demo mode!", {
         position: "bottom-right",
         autoClose: 1500,
@@ -331,7 +331,7 @@ function AdminTheme() {
     const key = (theme.folder_name || theme.name || "").toLowerCase().trim();
     console.log("Theme Key:", key);
 
-    if (["pesco theme", "radious theme"].includes(key)) {
+    if (["Pesco theme", "radious theme"].includes(key)) {
       return toast.error("You cannot do it in demo mode!", {
         position: "bottom-right",
         autoClose: 1500,
@@ -540,7 +540,7 @@ function AdminTheme() {
           isNavbarExpanded && isMobile ? "expanded" : ""
         }`}
       >
-        <div className="sidebar-back mt-1 h-auto">
+        <div className="sidebar-theme mt-1">
           <ul className="list-unstyled d-flex flex-column text-white ms-4">
             <li>
               <Link to="/admin/welcome" className="text-light">
@@ -2321,7 +2321,7 @@ function AdminTheme() {
 
       <div className="container-fluid">
         <div className="container ms-lg-4 theme-admin">
-          <div className="row d-flex flex-row flex-wrap flex-lg-wrap gap-1 ms-1 ms-sm-0 mb-3">
+          <div className="row d-flex flex-row flex-wrap flex-lg-wrap gap-1 ms-0 me-2 ms-sm-0 mb-3">
             <div className="theme-management">
               <div className="theme-upload mb-4">
                 <h3 className="mb-3">Upload New Theme</h3>
@@ -2384,7 +2384,7 @@ function AdminTheme() {
                             />
                           </div>
                           <div className="theme-info p-3">
-                            <h4 className="mb-3">{theme.name}</h4>
+                            <h4 className="mb-3 text-start">{theme.name}</h4>
                             <div className="d-flex gap-2">
                               <button
                                 onClick={() => handleDeactivateTheme(theme.id)}

@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ThemeInjector from "../component/ThemeInjector";
 import { ThemeIntegration } from "../backend/appearance/AdminTheme/ThemeIntegration";
-
 const LOADING_INDICATOR_DELAY = 300;
+const FADE_MS = 220;
 
 const FrontendThemeLoader = ({ children }) => {
   const [activeTheme, setActiveTheme] = useState(null);
@@ -14,100 +15,225 @@ const FrontendThemeLoader = ({ children }) => {
   const [isClient, setIsClient] = useState(false);
   const [error, setError] = useState(null);
   const [pageName, setPageName] = useState("index");
+  const [iframes, setIframes] = useState([]);
+  const [activeId, setActiveId] = useState(null);
+  const [injectorPageUrl, setInjectorPageUrl] = useState(null);
+  const [injectorThemeBase, setInjectorThemeBase] = useState(null);
   const loadingTimer = useRef(null);
+  const mountedRef = useRef(true);
+  const pollIntervalRef = useRef(null);
   const navigate = useNavigate();
   const { themePath } = useParams();
   const location = useLocation();
 
   useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      clearTimeout(loadingTimer.current);
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const applyTheme = useCallback(async (themeData) => {
-    const folderName = themeData.folder_name || themeData.themePath;
-    if (!folderName) throw new Error("Theme folder name not found");
-
-    let actualThemePath = folderName;
-    if (
-      folderName.toLowerCase().includes("roiser") &&
-      !folderName.includes("2025-06-12")
-    ) {
-      actualThemePath = `${folderName}-2025-06-12-15-16-08-utc`;
+  const derivePageNameFromPath = (pathname, activeSlug) => {
+    try {
+      const clean = (pathname || "/").replace(/\/+$/, "");
+      if (!clean || clean === "/") return "index";
+      const parts = clean.split("/");
+      const idx = activeSlug ? parts.findIndex((p) => p === activeSlug) : -1;
+      const afterSlug = idx >= 0 ? parts.slice(idx + 1) : parts;
+      const last = afterSlug.pop() || "index";
+      return last.replace(/\.html$/i, "") || "index";
+    } catch {
+      return "index";
     }
+  };
 
-    await ThemeIntegration.applyThemeFromObject(themeData);
-    setActiveTheme({
-      ...themeData,
-      themePath: actualThemePath,
-      isActive: true,
-    });
-    setError(null);
+  useEffect(() => {
+    if (!mountedRef.current) return;
+    const slug = activeTheme?.folder_name
+      ? activeTheme.folder_name.split("/")[0]
+      : null;
+    const newName = derivePageNameFromPath(location.pathname, slug);
+    setPageName(newName);
+  }, [location.pathname, activeTheme]);
+
+  const normalizeNoSlash = (s = "") =>
+    s.replace(/^\/+/, "").replace(/\/+$/, "");
+
+  const computeActualThemePath = useCallback((themeData) => {
+    let folderName = (themeData?.folder_name || "").trim();
+    folderName = folderName.replace(/^\/+|\/+$/g, "");
+
+    return folderName + "/";
   }, []);
 
+  const resolveThemeBaseForSpecials = (folderClean) => {
+    const lc = folderClean.toLowerCase();
+    if (lc.includes("roiser"))
+      return `${folderClean}/roiser-html-package/roiser`;
+    if (lc.includes("pesco")) {
+      return "pesco-ecommerce-html-rtl-template-2025-03-20-04-13-07-utc-2025-06-12-15-13-00-utc/Main_File/Template";
+    }
+    if (lc.includes("radios")) {
+      return folderClean + "/radios-html-package/Radios/";
+    }
+    return null;
+  };
+
+  const handleLoad = (id) => {
+    if (!mountedRef.current) return;
+    setIframes((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, loaded: true } : f))
+    );
+  };
+
   const loadActiveTheme = useCallback(async () => {
-    loadingTimer.current = setTimeout(() => {
-      setShowLoadingIndicator(true);
-    }, LOADING_INDICATOR_DELAY);
+    clearTimeout(loadingTimer.current);
+    loadingTimer.current = setTimeout(
+      () => setShowLoadingIndicator(true),
+      LOADING_INDICATOR_DELAY
+    );
 
     try {
+      ThemeIntegration.clearThemeAssets();
+
       const { data } = await axios.get(
         "http://147.93.45.171:1600/themes/active"
       );
       if (!data?.theme) throw new Error("No active theme configured");
+      const themeData = data.theme;
 
+      // admin preview path: don't attempt to apply assets
       if (location.pathname.includes("/admin")) {
-        setActiveTheme(data.theme);
+        setActiveTheme(themeData);
+        setError(null);
+        return;
+      }
+
+      // compute paths
+      const actualThemePath = computeActualThemePath(themeData);
+      const folderClean = normalizeNoSlash(actualThemePath);
+
+      // support special folder mapping (pesco, radios, etc.) but don't remove or alter roiser
+      const resolvedFolder = resolveThemeBaseForSpecials(folderClean);
+      const prefix = "http://147.93.45.171:1600/themes/static/";
+      const folderForBase = resolvedFolder ?? folderClean;
+      const themeBase = `${prefix}${normalizeNoSlash(folderForBase)}/`;
+
+      // determine page file name (try to keep compatibility with previous logic)
+      const page = pageName?.endsWith(".html")
+        ? pageName.replace(/^\//, "")
+        : `${pageName.replace(/^\//, "").replace(/\.html$/, "")}.html`;
+
+      const themeUrl = `${themeBase}${page.replace(/^\/+/, "")}`;
+
+      const useInjector = /^(index(\.html)?)$/i.test(pageName || "");
+
+      if (useInjector) {
+        setInjectorPageUrl(themeUrl);
+        setInjectorThemeBase(themeBase);
+        setIframes([]);
+        setActiveId(null);
       } else {
-        await applyTheme(data.theme);
+        const id = `theme-${Date.now()}`;
+        setIframes([{ id, src: themeUrl, loaded: false }]);
+        setActiveId(id);
+
+        setInjectorPageUrl(null);
+        setInjectorThemeBase(null);
       }
+
+      // only apply theme assets client-side for non-injector previews
+      if (!useInjector) {
+        ThemeIntegration.applyThemeFromObject(themeData).catch((err) => {
+          console.warn("ThemeIntegration.applyThemeFromObject failed:", err);
+        });
+      }
+
+      setActiveTheme({
+        ...themeData,
+        themePath: normalizeNoSlash(resolvedFolder),
+        isActive: true,
+      });
+      setError(null);
     } catch (err) {
-      setError(err.message);
-      if (themePath) {
-        setTimeout(() => navigate("/"), 3000);
-      }
+      console.error(err);
+      setError(err?.message || String(err));
+      toast.error("Failed to load theme.");
     } finally {
       clearTimeout(loadingTimer.current);
       setLoading(false);
       setShowLoadingIndicator(false);
     }
-  }, [applyTheme, navigate, themePath, location.pathname]);
+  }, [computeActualThemePath, pageName, location.pathname]);
 
   useEffect(() => {
+    // initial load only (polling removed to stop automatic reloads)
     loadActiveTheme();
-    const interval = setInterval(loadActiveTheme, 10000);
 
-    const handleIframeNavigation = (event) => {
-      if (event.data?.type === "direct-navigation") {
-        const page = event.data.page || "index";
-        setPageName(page);
-        navigate(themePath ? `/theme/${themePath}/${page}` : `/${page}`);
+    // cleanup hook ensures any leftover interval is cleared defensively
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
       }
     };
+  }, [loadActiveTheme]);
 
-    window.addEventListener("message", handleIframeNavigation);
-    return () => {
-      clearInterval(interval);
-      clearTimeout(loadingTimer.current);
-      window.removeEventListener("message", handleIframeNavigation);
+  // iframe-to-parent navigation handler
+  useEffect(() => {
+    const handleIframeNavigation = (event) => {
+      if (event.data?.type === "navigate") {
+        const path = event.data.path;
+        const page = path === "/" ? "index" : path.replace(/^\//, "");
+        setPageName(page);
+        navigate(path, { replace: false });
+      } else if (event.data?.type === "direct-navigation") {
+        const page = event.data.page || "index";
+        setPageName(page);
+        const isIndex = /^(index(\.html)?)$/i.test(page);
+        const dest = isIndex ? "/" : `/${page}`;
+        navigate(themePath ? `/theme/${themePath}/${page}` : dest, {
+          replace: isIndex,
+        });
+      }
     };
-  }, [loadActiveTheme, navigate, themePath]);
+    window.addEventListener("message", handleIframeNavigation);
+    return () => window.removeEventListener("message", handleIframeNavigation);
+  }, [navigate, themePath]);
 
+  // theme activation / deactivation events (from your older file)
   useEffect(() => {
     const onActivate = async () => {
       setLoading(true);
       await new Promise((r) => setTimeout(r, 500));
       await loadActiveTheme();
+
+      // after activation, navigate to the theme path if available
       if (!location.pathname.includes("/admin")) {
-        const { data } = await axios.get(
-          "http://147.93.45.171:1600/themes/active"
-        );
-        navigate(`/theme/${data.theme.folder_name}`, { replace: true });
+        try {
+          const { data } = await axios.get(
+            "http://147.93.45.171:1600/themes/active"
+          );
+          if (data?.theme?.folder_name) {
+            navigate(`/theme/${data.theme.folder_name}`, { replace: true });
+          }
+        } catch (e) {
+          // swallow - we already reloaded
+        }
       }
+
       toast.success("Theme activated successfully!");
       setLoading(false);
     };
+
     const onDeactivate = () => {
-      ThemeIntegration.clearAssets();
+      ThemeIntegration.clearThemeAssets();
       setActiveTheme(null);
       navigate("/");
       toast.info("Theme has been deactivated");
@@ -121,6 +247,7 @@ const FrontendThemeLoader = ({ children }) => {
     };
   }, [loadActiveTheme, navigate, location.pathname]);
 
+  // loading overlay
   if (isClient && loading && showLoadingIndicator) {
     return (
       <div
@@ -146,67 +273,81 @@ const FrontendThemeLoader = ({ children }) => {
     );
   }
 
+  if (injectorPageUrl && injectorThemeBase) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          overflow: "hidden",
+          background: "#fff",
+          position: "relative",
+        }}
+      >
+        <ThemeInjector
+          pageUrl={injectorPageUrl}
+          themeBaseUrl={injectorThemeBase}
+          onNavigate={(p, opts) => {
+            const replace = !!(opts && opts.replace);
+            if (p === "/") navigate("/", { replace });
+            else navigate(p, { replace });
+          }}
+          fullReload={false}
+        />
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="container mt-5">
-        <div
-          className="alert alert-danger d-flex align-items-center"
-          role="alert"
-        >
-          <i className="bi bi-exclamation-triangle-fill me-2" />
-          <div>
-            <h4 className="alert-heading">Theme Error</h4>
-            <p>{error}</p>
-            <hr />
-            <p className="mb-0">Please contact support if this persists.</p>
-          </div>
+        <div className="alert alert-danger" role="alert">
+          <h4 className="alert-heading">Theme Error</h4>
+          <p>{error}</p>
         </div>
       </div>
     );
   }
 
-  if (!activeTheme) return children;
-
-  const usesEjs = activeTheme.themePath.toLowerCase().includes("roiser");
-  const ext = usesEjs ? ".ejs" : ".html";
-  let page = pageName?.endsWith(ext)
-    ? pageName
-    : `${pageName.replace(/\.(html|ejs)$/, "")}${ext}`;
-
-  if (!page.endsWith(ext)) page = `${page.replace(/\.(html|ejs)$/, "")}${ext}`;
-
-  let themeFolder = activeTheme.themePath;
-  if (themeFolder.toLowerCase().includes("roiser")) {
-    themeFolder += "/roiser-html-package/roiser";
-  } else if (themeFolder.toLowerCase().includes("pesco")) {
-    themeFolder = `pesco-ecommerce-html-rtl-template-2025-03-20-04-13-07-utc-2025-06-12-15-13-00-utc/Main_File/Template`;
-  } else if (themeFolder.toLowerCase().includes("radios")) {
-    themeFolder += "/radios-html-package/Radios";
-  }
-
-  const themeUrl = `http://147.93.45.171:1600/themes/static/${themeFolder}/${page}`;
+  if (!activeTheme && iframes.length === 0) return children;
 
   return (
     <div
-      className="theme-container"
       style={{
-        width: "100vw",
-        height: "100vh",
-        border: "none",
+        width: "100%",
+        height: "100%",
         overflow: "hidden",
+        background: "#fff",
+        position: "relative",
       }}
     >
-      <iframe
-        key={themeUrl}
-        src={themeUrl}
-        style={{ width: "100%", height: "100%", border: "none" }}
-        title="Theme Preview"
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"
-        onLoad={(e) => {
-          setLoading(false);
-        }}
-        onError={() => setError("Failed to load theme content.")}
-      />
+      {iframes.map((f) => {
+        return (
+          <iframe
+            key={f.id}
+            src={f.src}
+            title={`ThemePreview-${f.id}`}
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"
+            onLoad={() => handleLoad(f.id)}
+            onError={() => {
+              console.warn("iframe failed to load:", f.src);
+              setIframes((prev) => prev.filter((p) => p.id !== f.id));
+            }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              border: "none",
+              transition: `opacity ${FADE_MS}ms ease`,
+              opacity: f.loaded ? 1 : 0,
+              zIndex: f.id === activeId ? 2 : 1,
+              pointerEvents: f.id === activeId ? "auto" : "none",
+              background: "#fff",
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

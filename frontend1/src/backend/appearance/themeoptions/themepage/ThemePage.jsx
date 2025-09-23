@@ -2653,7 +2653,6 @@ function ThemePage() {
             <div className="mb-4">
               <div className="mt-0 pt-0 position-relative">
                 <h6 className="mb-3 mt-2 mt-lg-0">404 page image</h6>
-
                 <div
                   className="image-placeholder image-admin position-relative"
                   onClick={() => document.getElementById("fileInput").click()}

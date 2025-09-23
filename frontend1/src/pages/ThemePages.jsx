@@ -60,9 +60,7 @@ export default function ThemePages() {
       <head>
         <meta charset="utf-8" />
         <title>Theme Preview: ${themeFolder}</title>
-        <!-- Link exactly the theme’s CSS so nothing else seeps in -->
         <link rel="stylesheet" href="/themes/${themeFolder}/style.css" />
-        <!-- If the theme needs more CSS (e.g. /themes/${themeFolder}/css/bootstrap.min.css), add those here -->
       </head>
       <body style="margin:0; padding:0;">
         ${rawHtml}

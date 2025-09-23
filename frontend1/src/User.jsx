@@ -5,7 +5,9 @@ import { Outlet } from "react-router-dom";
 function User() {
   return (
     <UserContextProvider>
-      <Outlet />
+      <div style={{ width: "100%", minHeight: "100vh", height: "100%" }}>
+        <Outlet />
+      </div>
     </UserContextProvider>
   );
 }

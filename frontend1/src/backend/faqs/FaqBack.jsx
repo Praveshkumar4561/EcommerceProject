@@ -2168,15 +2168,15 @@ function FaqBack() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex  justify-content-center align-items-center cart-cart">
-        <div className="card mt-3 testimonial table-price ms-2 ms-lg-0">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
+        <div className="card mt-3 testimonial">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">
-              <div className="d-flex flex-row">
+              <div className="d-flex flex-row w-100">
                 <div className="btn-group me-2">
                   <button
                     aria-expanded="false"
-                    className="btn btn-secondary dropdown-toggle d-flex flex-row align-items-center py-4 btn-announ bulk"
+                    className="btn btn-secondary dropdown-toggle d-flex py-4 btn-announ mt-2 mt-md-2 mt-lg-0 cart-cart"
                     data-bs-toggle="dropdown"
                     type="button"
                   >
@@ -2190,7 +2190,7 @@ function FaqBack() {
                   Filters
                 </button>
                 <input
-                  className="form-control py-4 rounded-2 bulk mt-0 mt-lg-0 ms-0 border"
+                  className="form-control py-4 mt-2 mt-lg-0 rounded-2 ms-0 border cart-cart w-25"
                   placeholder="Search..."
                   type="search"
                   name="search"

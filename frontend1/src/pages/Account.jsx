@@ -1,10 +1,12 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import ThemeInjector from "../component/ThemeInjector";
 
 export default function Account() {
   const location = useLocation();
-  let themeFolder;
+  const navigate = useNavigate();
 
+  let themeFolder;
   if (location.pathname.startsWith("/roiser")) {
     themeFolder =
       "roiser-multipurpose-ecommerce-html5-template-2024-08-20-06-31-54-utc-2025-06-12-15-16-08-utc/roiser-html-package/roiser";
@@ -16,25 +18,20 @@ export default function Account() {
       "radios-electronics-ecommerce-html-template-2023-11-27-05-16-52-utc--1--2025-06-28-16-22-26-utc/radios-html-package/Radios";
   }
 
-  const fileUrl = `http://147.93.45.171:1600/themes/static/${themeFolder}/account.html`;
+  const pageUrl = `http://147.93.45.171:1600/themes/static/${themeFolder}/account.html`;
+  const themeBaseUrl = `http://147.93.45.171:1600/themes/static/${themeFolder}/`;
+
+  const onNavigate = (path) => {
+    if (path === "/") navigate("/", { replace: false });
+    else navigate(path, { replace: false });
+  };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-      }}
-    >
-      <iframe
-        src={fileUrl}
-        style={{
-          width: "100%",
-          height: "100%",
-          border: "none",
-        }}
-        title="Account"
+    <div style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+      <ThemeInjector
+        pageUrl={pageUrl}
+        themeBaseUrl={themeBaseUrl}
+        onNavigate={onNavigate}
       />
     </div>
   );

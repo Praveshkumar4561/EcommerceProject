@@ -218,6 +218,7 @@ input[type="search"] {
 .customer-page {
   margin-left: 13% !important;
 }
+
 .note-private {
   width: 100%;
   max-width: 100%;
@@ -277,6 +278,7 @@ input[type="search"] {
     max-width: 85.2%;
   }
 }
+
 @media (min-width: 1200px) and (max-width: 1400px) {
   .customer-page {
     margin-left: 24% !important;
@@ -284,13 +286,15 @@ input[type="search"] {
     max-width: 49%;
   }
 }
+
 @media (min-width: 1400px) and (max-width: 1600px) {
   .customer-page {
-    margin-left: 14%;
+    margin-left: 14% !important;
     width: 100%;
     max-width: 66%;
   }
 }
+
 @media (min-width: 1600px) and (max-width: 1800px) {
   .customer-page {
     margin-left: 8%;

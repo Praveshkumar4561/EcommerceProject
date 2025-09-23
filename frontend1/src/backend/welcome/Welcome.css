@@ -4,10 +4,6 @@
   box-sizing: border-box;
 }
 
-body {
-  font-size: 15px !important;
-}
-
 .navbar-back {
   width: 100%;
   max-width: 100%;
@@ -526,8 +522,8 @@ input[type="search"] {
 .search-results-container {
   position: absolute;
   top: 73px;
-  left: 57%;
-  width: 19%;
+  left: 58%;
+  width: 18.5%;
   max-height: 25rem;
   height: auto;
   overflow-y: auto;
@@ -629,7 +625,7 @@ input[type="search"] {
 }
 
 .browser-visit {
-  margin-left: 20rem;
+  margin-left: 17.5rem;
 }
 
 .browser-top {
@@ -641,7 +637,7 @@ input[type="search"] {
 
 .browser-top1 {
   width: 100%;
-  max-width: 50%;
+  max-width: 51%;
 }
 
 @media (max-width: 576px) {

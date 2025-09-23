@@ -219,3 +219,10 @@ input[type="search"] {
     max-width: 75%;
   }
 }
+
+.ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable,
+.ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  height: 200px !important;
+}

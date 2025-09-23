@@ -9,12 +9,16 @@
   --h6-font-size: 16px;
 }
 
+body {
+  font-size: 14.5px !important;
+}
+
 /* body {
   font-family: var(--font-family);
   font-size: var(--body-font-size);
-} */
+}
 
-/* body a {
+ body a {
   text-decoration: none;
 }
 

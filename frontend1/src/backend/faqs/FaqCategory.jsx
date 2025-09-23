@@ -15,7 +15,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -102,7 +101,7 @@ function FaqCategory() {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 7;
 
   const paginatedData = user.slice(
     (currentPage - 1) * itemsPerPage,
@@ -2185,7 +2184,7 @@ function FaqCategory() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex    justify-content-center align-items-center cart-cart">
+      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3">

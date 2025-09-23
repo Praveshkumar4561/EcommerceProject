@@ -27,26 +27,22 @@ const ThemeLoader = () => {
   useEffect(() => {
     if (!theme?.folder_name) return;
 
-    // Load CSS
     const cssLink = document.createElement("link");
     cssLink.rel = "stylesheet";
     cssLink.href = `/themes/${theme.folder_name}/style.css`;
     document.head.appendChild(cssLink);
 
-    // Load JS
     const jsScript = document.createElement("script");
     jsScript.src = `/themes/${theme.folder_name}/main.js`;
     jsScript.async = true;
     document.body.appendChild(jsScript);
 
-    // Cleanup function
     return () => {
       document.head.removeChild(cssLink);
       document.body.removeChild(jsScript);
     };
   }, [theme]);
 
-  // No need to render anything, this is just for side effects
   return null;
 };
 

@@ -322,8 +322,8 @@ input[type="search"] {
     position: relative;
   }
   .content-customer {
-  height: 260px;
-}
+    height: 260px;
+  }
 }
 @media (min-width: 576px) and (max-width: 768px) {
   .content-reports {

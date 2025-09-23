@@ -2596,10 +2596,10 @@ function Typography() {
                   </option>
 
                   <option
-                    value="SanDiego"
+                    value="system-ui"
                     data-select2-id="select2-data-17-6k1s"
                   >
-                    SanDiego
+                    system-ui
                   </option>
 
                   <option
@@ -2625,6 +2625,67 @@ function Typography() {
                     data-select2-id="select2-data-19-fspm"
                   >
                     Courier
+                  </option>
+
+                  <option
+                    value="cursive"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    cursive
+                  </option>
+
+                  <option
+                    value="Gill Sans"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    Gill Sans
+                  </option>
+
+                  <option
+                    value="monospace"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    monospace
+                  </option>
+
+                  <option
+                    value="Calibri"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    Calibri
+                  </option>
+
+                  <option value="Geneva" data-select2-id="select2-data-19-fspm">
+                    Geneva
+                  </option>
+
+                  <option value="Monaco" data-select2-id="select2-data-19-fspm">
+                    Monaco
+                  </option>
+
+                  <option
+                    value="Helvetica"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    Helvetica
+                  </option>
+
+                  <option value="Tahoma" data-select2-id="select2-data-19-fspm">
+                    Tahoma
+                  </option>
+
+                  <option
+                    value="Cambria"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    Cambria
+                  </option>
+
+                  <option
+                    value="Comic Sans"
+                    data-select2-id="select2-data-19-fspm"
+                  >
+                    Comic Sans
                   </option>
                 </select>
 

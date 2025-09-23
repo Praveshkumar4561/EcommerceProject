@@ -8,7 +8,7 @@ export default function ThemePageViewer() {
   const [error, setError] = useState(null);
 
   const themeName =
-    "roiser-multipurpose-ecommerce-html5-template-2024-08-20-06-31-54-utc";
+    "roiser-multipurpose-ecommerce-html5-template-2024-08-20-06-31-54-utc-2025-06-12-15-16-08-utc";
 
   useEffect(() => {
     fetch(

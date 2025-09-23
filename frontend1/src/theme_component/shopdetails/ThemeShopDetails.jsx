@@ -754,7 +754,7 @@ function ThemeShopDetails() {
                 <div className="desciprion-div1 rounded">
                   <img
                     src={`http://147.93.45.171:1600/src/image/${user[currentIndex].image}`}
-                    alt=""
+                    alt="Image"
                     className="w-100 rounded border"
                   />
                 </div>
