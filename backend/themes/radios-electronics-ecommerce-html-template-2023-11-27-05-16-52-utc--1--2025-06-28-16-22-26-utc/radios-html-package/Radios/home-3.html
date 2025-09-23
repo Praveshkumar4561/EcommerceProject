@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="assets/css/slick.css" />
     <link rel="stylesheet" href="assets/css/magnific-popup.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -48,11 +48,11 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/themeoptionsdata")
+        fetch("http://147.93.45.171:1600/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -148,6 +148,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      height: 248px !important;
     }
 
     .news__content p {
@@ -180,31 +181,34 @@
           <div class="container mxw_1360">
             <div class="header__top-info ul_li_between mt-none-10">
               <ul class="header__top-left ul_li mt-10">
-                <li><a href="#!">Call us</a> free 24/7 : (555) 172-244-7888</li>
+                <li><a href="#">Call us</a> free 24/7 : (555) 172-244-7888</li>
                 <li><i class="fas fa-envelope"></i> adminpath@gmail.com</li>
               </ul>
               <ul class="header__top-right ul_li mt-10">
                 <li><i class="fas fa-clouds"></i>30 degree</li>
                 <li><i class="far fa-city"></i>New York</li>
                 <li>
-                  <a href="#!"><i class="fas fa-star"></i>My Wishlist</a>
+                  <a href="cart.html"><i class="fas fa-star"></i>My Wishlist</a>
                 </li>
                 <li>
-                  <a href="#!"><i class="far fa-check-circle"></i>Checkout</a>
+                  <a href="checkout.html"
+                    ><i class="far fa-check-circle"></i>Checkout</a
+                  >
                 </li>
                 <li>
                   <div class="header__language currency">
                     <ul>
                       <li>
-                        <a href="#!" class="lang-btn"
-                          ><img src="assets/img/icon/usd_icon.svg" alt="" />USD
-                          <i class="far fa-chevron-down"></i
+                        <a href="javascript:void(0)" class="lang-btn"
+                          ><img
+                            src="assets/img/icon/usd_icon.svg"
+                            alt="Image" />USD <i class="far fa-chevron-down"></i
                         ></a>
 
                         <ul class="lang_sub_list">
-                          <li><a href="#">USD</a></li>
-                          <li><a href="#">BDT</a></li>
-                          <li><a href="#">EUR</a></li>
+                          <li><a href="javascript:void(0)">USD</a></li>
+                          <li><a href="javascript:void(0)">BDT</a></li>
+                          <li><a href="javascript:void(0)">EUR</a></li>
                         </ul>
                       </li>
                     </ul>
@@ -219,7 +223,7 @@
           <div class="header__middle ul_li_between">
             <div class="header__logo">
               <a href="index.html">
-                <img src="assets/img/logo/logo.svg" alt="" />
+                <img src="assets/img/logo/logo.svg" alt="Image" />
               </a>
             </div>
 
@@ -266,8 +270,8 @@
             </script>
 
             <div class="add">
-              <a href="#!">
-                <img src="assets/img/add/img_02.jpg" alt="" />
+              <a href="#">
+                <img src="assets/img/add/img_02.jpg" alt="Image" />
               </a>
             </div>
 
@@ -276,15 +280,15 @@
                 <div class="header__language style-2 mr-25">
                   <ul>
                     <li>
-                      <a href="#!" class="lang-btn"
-                        ><img src="assets/img/icon/usd_flag.png" alt="" />
+                      <a href="javascript:void(0)" class="lang-btn"
+                        ><img src="assets/img/icon/usd_flag.png" alt="Image" />
                         English <i class="far fa-chevron-down"></i
                       ></a>
 
                       <ul class="lang_sub_list">
-                        <li><a href="#">English</a></li>
-                        <li><a href="#">Arabic</a></li>
-                        <li><a href="#">Bangla</a></li>
+                        <li><a href="javascript:void(0)">English</a></li>
+                        <li><a href="javascript:void(0)">Arabic</a></li>
+                        <li><a href="javascript:void(0)">Bangla</a></li>
                       </ul>
                     </li>
                   </ul>
@@ -317,19 +321,21 @@
             <div class="header__main ul_li">
               <div class="header__logo">
                 <a href="index.html">
-                  <img src="assets/img/logo/logo.svg" alt="" />
+                  <img src="assets/img/logo/logo.svg" alt="Image" />
                 </a>
               </div>
               <div class="header__category">
-                <a class="header__category-nav" href="#!"
+                <a class="header__category-nav" href="#"
                   ><img
                     class="bar"
                     src="assets/img/icon/bar.svg"
-                    alt="" />Browse Categories<i class="fas fa-chevron-down"></i
+                    alt="Image" />Browse Categories<i
+                    class="fas fa-chevron-down"
+                  ></i
                 ></a>
               </div>
               <div class="hamburger_menu d-lg-none">
-                <a href="javascript:void(0);" class="active">
+                <a href="javascript:void(0)" class="active">
                   <div class="icon bar">
                     <span><i class="fal fa-bars"></i></span>
                   </div>
@@ -349,7 +355,7 @@
                                   <a href="index.html">
                                     <img
                                       src="assets/img/demo/demo-1.jpg"
-                                      alt=""
+                                      alt="Image"
                                     />
                                   </a>
                                 </div>
@@ -360,7 +366,7 @@
                                   <a href="home-2.html">
                                     <img
                                       src="assets/img/demo/demo-2.jpg"
-                                      alt=""
+                                      alt="Image"
                                     />
                                   </a>
                                 </div>
@@ -371,7 +377,7 @@
                                   <a href="home-3.html">
                                     <img
                                       src="assets/img/demo/demo-3.jpg"
-                                      alt=""
+                                      alt="Image"
                                     />
                                   </a>
                                 </div>
@@ -390,7 +396,7 @@
                     </li>
 
                     <li class="menu-item-has-children">
-                      <a href="#!">Shop</a>
+                      <a href="/shop">Shop</a>
                       <ul class="submenu">
                         <li><a href="shop.html">Shop Default</a></li>
                         <li>
@@ -403,10 +409,10 @@
                       </ul>
                     </li>
 
-                    <li><a href="shop.html">Accesories</a></li>
+                    <li><a href="/news">Accesories</a></li>
 
                     <li class="menu-item-has-children">
-                      <a href="#!">Blog</a>
+                      <a href="/news">Blog</a>
                       <ul class="submenu">
                         <li><a href="news.html">Blog</a></li>
                         <li><a href="news-single.html">Blog Details</a></li>
@@ -414,7 +420,7 @@
                     </li>
 
                     <li class="menu-item-has-children">
-                      <a href="#!">Pages</a>
+                      <a href="/news">Pages</a>
                       <ul class="submenu">
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="account.html">Account</a></li>
@@ -431,12 +437,12 @@
                 <div class="header__icons ul_li mr-15">
                   <div class="icon">
                     <a href="account.html"
-                      ><img src="assets/img/icon/user.svg" alt=""
+                      ><img src="assets/img/icon/user.svg" alt="Image"
                     /></a>
                   </div>
 
                   <div class="icon wishlist-icon">
-                    <a href="#!">
+                    <a href="cart.html">
                       <img src="assets/img/icon/heart.svg" alt="Wishlist" />
                       <span id="wishlist-data" class="count">0</span>
                     </a>
@@ -444,7 +450,7 @@
 
                   <div class="icon cart-icon">
                     <a href="cart.html">
-                      <img src="assets/img/icon/bookmark.svg" alt="" />
+                      <img src="assets/img/icon/bookmark.svg" alt="Image" />
                       <span id="cart-data" class="count">0</span>
                     </a>
                   </div>
@@ -481,7 +487,7 @@
 
           async function loadWishlist() {
             try {
-              const res = await fetch("/wishlistdata");
+              const res = await fetch("http://147.93.45.171:1600/wishlistdata");
               const data = await res.json();
               if (!Array.isArray(data)) return;
 
@@ -497,7 +503,7 @@
 
           async function loadCart() {
             try {
-              const res = await fetch("/allcartdata");
+              const res = await fetch("http://147.93.45.171:1600/allcartdata");
               const data = await res.json();
               if (!Array.isArray(data)) return;
 
@@ -551,9 +557,12 @@
             const id = itemEl.dataset.id;
 
             try {
-              const res = await fetch(`/deletecart/${id}`, {
-                method: "DELETE",
-              });
+              const res = await fetch(
+                `http://147.93.45.171:1600/deletecart/${id}`,
+                {
+                  method: "DELETE",
+                }
+              );
               const json = await res.json();
               if (res.ok && json.success) {
                 loadCart();
@@ -574,7 +583,7 @@
 
       <aside class="slide-bar">
         <div class="close-mobile-menu">
-          <a href="javascript:void(0);"><i class="fal fa-times"></i></a>
+          <a href="javascript:void(0)"><i class="fal fa-times"></i></a>
         </div>
 
         <div class="cart_sidebar">
@@ -629,7 +638,7 @@
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#">Shop</a>
+              <a href="/shop">Shop</a>
               <ul class="sub-menu">
                 <li><a href="shop.html">Shop Default</a></li>
                 <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
@@ -641,14 +650,14 @@
             </li>
             <li><a href="shop.html">Accesories</a></li>
             <li class="dropdown">
-              <a href="#!">Blog</a>
+              <a href="/news">Blog</a>
               <ul class="sub-menu">
                 <li><a href="news.html">Blog</a></li>
                 <li><a href="news-single.html">Blog Details</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#!">Pages</a>
+              <a href="/about">Pages</a>
               <ul class="submenu">
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="account.html">Account</a></li>
@@ -669,81 +678,97 @@
               <div class="category-nav">
                 <ul class="category-nav__list list-unstyled">
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_01.svg" alt="" />Bluetooth
-                      speaker</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_01.svg"
+                        alt="Image"
+                      />Bluetooth speaker</a
                     >
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_02.svg" alt="" />Digital
-                      camera</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_02.svg"
+                        alt="Image"
+                      />Digital camera</a
                     >
                     <ul>
-                      <li><a href="#">Electric razor</a></li>
-                      <li><a href="#">Digital camera</a></li>
-                      <li><a href="#">Electric frying pan</a></li>
-                      <li><a href="#">external hard drive</a></li>
+                      <li><a href="/shop">Electric razor</a></li>
+                      <li><a href="/shop">Digital camera</a></li>
+                      <li><a href="/shop">Electric frying pan</a></li>
+                      <li><a href="/shop">external hard drive</a></li>
                     </ul>
                   </li>
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_03.svg" alt="" />Laser
+                    <a href="/shop"
+                      ><img src="assets/img/icon/cat_03.svg" alt="Image" />Laser
                       printer</a
                     >
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_04.svg" alt="" />Electric
-                      frying pan</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_04.svg"
+                        alt="Image"
+                      />Electric frying pan</a
                     >
                     <ul>
-                      <li><a href="#">Electric razor</a></li>
-                      <li><a href="#">Digital camera</a></li>
-                      <li><a href="#">Electric frying pan</a></li>
-                      <li><a href="#">external hard drive</a></li>
+                      <li><a href="/shop">Electric razor</a></li>
+                      <li><a href="/shop">Digital camera</a></li>
+                      <li><a href="/shop">Electric frying pan</a></li>
+                      <li><a href="/shop">external hard drive</a></li>
                     </ul>
                   </li>
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_05.svg" alt="" />Robotics
-                      vacuum</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_05.svg"
+                        alt="Image"
+                      />Robotics vacuum</a
                     >
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_06.svg" alt="" />external
-                      hard drive</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_06.svg"
+                        alt="Image"
+                      />external hard drive</a
                     >
                     <ul>
-                      <li><a href="#">Electric razor</a></li>
-                      <li><a href="#">Digital camera</a></li>
-                      <li><a href="#">Electric frying pan</a></li>
-                      <li><a href="#">external hard drive</a></li>
+                      <li><a href="/shop">Electric razor</a></li>
+                      <li><a href="/shop">Digital camera</a></li>
+                      <li><a href="/shop">Electric frying pan</a></li>
+                      <li><a href="/shop">external hard drive</a></li>
                     </ul>
                   </li>
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_07.svg" alt="" />Electric
-                      razor</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_07.svg"
+                        alt="Image"
+                      />Electric razor</a
                     >
                   </li>
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_08.svg" alt="" />Washing
-                      machine</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_08.svg"
+                        alt="Image"
+                      />Washing machine</a
                     >
                   </li>
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_09.svg" alt="" />Rice
+                    <a href="/shop"
+                      ><img src="assets/img/icon/cat_09.svg" alt="Image" />Rice
                       cooker</a
                     >
                   </li>
                   <li>
-                    <a href="#"
-                      ><img src="assets/img/icon/cat_10.svg" alt="" />Telivsion
-                      & Monitor</a
+                    <a href="/shop"
+                      ><img
+                        src="assets/img/icon/cat_10.svg"
+                        alt="Image"
+                      />Telivsion & Monitor</a
                     >
                   </li>
                 </ul>
@@ -773,10 +798,10 @@
                   </div>
                 </div>
                 <div class="banner__img">
-                  <img src="assets/img/product/img_121.png" alt="" />
+                  <img src="assets/img/product/img_121.png" alt="Image" />
                 </div>
                 <div class="banner__ofer-box">
-                  <img src="assets/img/icon/offer_bg.png" alt="" />
+                  <img src="assets/img/icon/offer_bg.png" alt="Image" />
                   <span class="offer-text"
                     ><span class="discount">30<span>%</span></span> <br />
                     <span>OFF</span></span
@@ -790,57 +815,57 @@
         <div class="category pt-35 pb-60">
           <div class="container mxw_1360">
             <div class="category__slide">
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_01.svg" alt="" />
+                  <img src="assets/img/icon/c_01.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Best Deals</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_02.svg" alt="" />
+                  <img src="assets/img/icon/c_02.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Milk & Juices</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_03.svg" alt="" />
+                  <img src="assets/img/icon/c_03.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Herbal Medicine</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_04.svg" alt="" />
+                  <img src="assets/img/icon/c_04.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Frozen Foods</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_05.svg" alt="" />
+                  <img src="assets/img/icon/c_05.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Dried Food</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_06.svg" alt="" />
+                  <img src="assets/img/icon/c_06.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Breakfast & Dairy</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_07.svg" alt="" />
+                  <img src="assets/img/icon/c_07.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Cocolate Box</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_08.svg" alt="" />
+                  <img src="assets/img/icon/c_08.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Vegetables</h3>
               </a>
-              <a class="category__item" href="#!">
+              <a class="category__item" href="/shop">
                 <div class="category__icon">
-                  <img src="assets/img/icon/c_03.svg" alt="" />
+                  <img src="assets/img/icon/c_03.svg" alt="Image" />
                 </div>
                 <h3 class="category__title">Herbal Medicine</h3>
               </a>
@@ -854,7 +879,7 @@
               <div class="banner-slide__single">
                 <div class="banner-slide__item ul_li bg_img">
                   <div class="banner-slide__img">
-                    <img src="assets/img/product/img_122.png" alt="" />
+                    <img src="assets/img/product/img_122.png" alt="Image" />
                   </div>
                   <div class="banner-slide__content">
                     <span class="offer">Get 30% off</span>
@@ -871,7 +896,7 @@
                   data-background="assets/img/bg/bg_20.jpg"
                 >
                   <div class="banner-slide__img">
-                    <img src="assets/img/product/img_123.png" alt="" />
+                    <img src="assets/img/product/img_123.png" alt="Image" />
                   </div>
                   <div class="banner-slide__content">
                     <span class="offer">Get 30% off</span>
@@ -885,7 +910,7 @@
               <div class="banner-slide__single">
                 <div class="banner-slide__item ul_li bg_img">
                   <div class="banner-slide__img">
-                    <img src="assets/img/product/img_124.png" alt="" />
+                    <img src="assets/img/product/img_124.png" alt="Image" />
                   </div>
                   <div class="banner-slide__content">
                     <span class="offer">Get 30% off</span>
@@ -902,7 +927,7 @@
                   data-background="assets/img/bg/bg_20.jpg"
                 >
                   <div class="banner-slide__img">
-                    <img src="assets/img/product/img_123.png" alt="" />
+                    <img src="assets/img/product/img_123.png" alt="Image" />
                   </div>
                   <div class="banner-slide__content">
                     <span class="offer">Get 30% off</span>
@@ -1045,7 +1070,9 @@
                   let lbIdx = 0;
 
                   try {
-                    const res = await fetch("/productpagedata");
+                    const res = await fetch(
+                      "http://147.93.45.171:1600/productpagedata"
+                    );
                     if (!res.ok) throw new Error("Failed to fetch products");
                     allProducts = await res.json();
                     if (!Array.isArray(allProducts))
@@ -1053,6 +1080,30 @@
                   } catch (err) {
                     console.error(err);
                     return;
+                  }
+
+                  function toSeoUrl(str) {
+                    return (str || "")
+                      .toString()
+                      .trim()
+                      .toLowerCase()
+                      .replace(/[\s_]+/g, "-")
+                      .replace(/[^a-z0-9\-]+/g, "")
+                      .replace(/\-+/g, "-")
+                      .replace(/^\-+|\-+$/g, "");
+                  }
+
+                  function getSlugForProduct(p) {
+                    if (
+                      p &&
+                      typeof p.slug === "string" &&
+                      p.slug.trim() !== ""
+                    ) {
+                      return encodeURIComponent(p.slug.trim());
+                    }
+                    return encodeURIComponent(
+                      toSeoUrl(p.name || "product-" + p.id)
+                    );
                   }
 
                   const attrMap = {
@@ -1078,91 +1129,88 @@
 
                     if (matched.length === 0) {
                       container.innerHTML = `
-                        <div class="col-12 text-center py-5">
-                          <h5 class="text-muted">No "${attribute}" items available.</h5>
-                        </div>`;
+                      <div class="col-12 text-center py-5">
+                        <h5 class="text-muted">No "${attribute}" items available.</h5>
+                      </div>`;
                       return;
                     }
 
                     matched.forEach((p, index) => {
+                      const slug = getSlugForProduct(p);
+                      const productUrl = `/shop-single/${slug}`;
+
                       const html = `
-                        <div class="col-lg-3 col-md-6">
-                          <div class="product__item style-2">
-                            <div class="product__img text-center pos-rel">
-                              <a href="shop-single.html?id=${p.id}">
-                                <img src="/uploads/${p.image}" alt="${
-                        p.name
-                      }" />
-                              </a>
-                              <ul class="product__action style-2 ul_li">
-                                <li>
-                                  <a href="#" class="img-popup icon-btn" data-index="${index}">
-                                    <i class="far fa-compress-alt"></i>
-                                  </a>
-                                </li>
-                                <li>
-                                  <a href="#" class="add-to-cart icon-btn"
-                                    data-id="${p.id}"
-                                    data-name="${p.name}"
-                                    data-store="${p.store}"
-                                    data-price="${p.price.replace(
-                                      /[^0-9.]/g,
-                                      ""
-                                    )}"
-                                    data-price_sale="${p.price_sale.replace(
-                                      /[^0-9.]/g,
-                                      ""
-                                    )}"
-                                    data-image="${p.image}">
-                                    <i class="far fa-shopping-basket"></i>
-                                  </a>
-                                </li>
-                                <li>
-                                  <a href="#" class="add-to-wishlist icon-btn"
-                                    data-id="${p.id}"
-                                    data-name="${p.name}"
-                                    data-store="${p.store}"
-                                    data-price="${p.price.replace(
-                                      /[^0-9.]/g,
-                                      ""
-                                    )}"
-                                    data-price_sale="${p.price_sale.replace(
-                                      /[^0-9.]/g,
-                                      ""
-                                    )}"
-                                    data-image="${p.image}"
-                                    data-sku="${p.sku}"
-                                    data-stockstatus="${p.stockstatus}">
-                                    <i class="far fa-heart"></i>
-                                  </a>
-                                </li>
-                              </ul>
-                            </div>
-                            <div class="product__content">
-                              <div class="product__review ul_li">
-                                <ul class="rating-star ul_li mr-10">
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="far fa-star"></i></li>
-                                  <li><i class="far fa-star"></i></li>
-                                </ul>
-                                <span>(${Math.floor(
-                                  Math.random() * 100
-                                )})</span>
-                              </div>
-                              <h2 class="product__title">
-                                <a href="shop-single.html?id=${p.id}">${
-                        p.name
-                      }</a>
-                              </h2>
-                              <h4 class="product__price">
-                                <span class="new">${p.price_sale}</span>
-                                <span class="old">${p.price}</span>
-                              </h4>
-                            </div>
+                      <div class="col-lg-3 col-md-6">
+                        <div class="product__item style-2">
+                          <div class="product__img text-center pos-rel">
+                            <a href="${productUrl}">
+                              <img src="/uploads/${p.image}" alt="${p.name}" />
+                            </a>
+                            <ul class="product__action style-2 ul_li">
+                              <li>
+                                <a href="#" class="img-popup icon-btn" data-index="${index}">
+                                  <i class="far fa-compress-alt"></i>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="javascript:void(0)" class="add-to-cart icon-btn"
+                                  data-id="${p.id}"
+                                  data-name="${p.name}"
+                                  data-store="${p.store}"
+                                  data-price="${p.price.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-price_sale="${p.price_sale.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-image="${p.image}">
+                                  <i class="far fa-shopping-basket"></i>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="javascript:void(0)" class="add-to-wishlist icon-btn"
+                                  data-id="${p.id}"
+                                  data-name="${p.name}"
+                                  data-store="${p.store}"
+                                  data-price="${p.price.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-price_sale="${p.price_sale.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-image="${p.image}"
+                                  data-sku="${p.sku}"
+                                  data-stockstatus="${p.stockstatus}">
+                                  <i class="far fa-heart"></i>
+                                </a>
+                              </li>
+                            </ul>
                           </div>
-                        </div>`;
+                          <div class="product__content">
+                            <div class="product__review ul_li">
+                              <ul class="rating-star ul_li mr-10">
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="far fa-star"></i></li>
+                                <li><i class="far fa-star"></i></li>
+                              </ul>
+                              <span>(${Math.floor(Math.random() * 100)})</span>
+                            </div>
+                            <h2 class="product__title">
+                              <a href="${productUrl}">${p.name}</a>
+                            </h2>
+                            <h4 class="product__price">
+                              <span class="new">${p.price_sale}</span>
+                              <span class="old">${p.price}</span>
+                            </h4>
+                          </div>
+                        </div>
+                      </div>`;
                       container.insertAdjacentHTML("beforeend", html);
                     });
                   }
@@ -1337,7 +1385,7 @@
 
               <div class="col-lg-3">
                 <div class="tx-sidebar">
-                  <a href="#!">
+                  <a href="#">
                     <div
                       class="add-banner add-banner__3 br-5 add-banner__h407 p-30"
                       data-bg-color="#EFEFEF"
@@ -1357,7 +1405,7 @@
                         </div>
                       </div>
                       <div class="add-banner__img">
-                        <img src="assets/img/product/img_130.png" alt="" />
+                        <img src="assets/img/product/img_130.png" alt="Image" />
                       </div>
                     </div>
                   </a>
@@ -1389,10 +1437,13 @@
                               >
                               <span class="offer-no">70 <span>%</span></span>
                             </div>
-                            <a class="add-banner__btn" href="#!">Buy Now</a>
+                            <a class="add-banner__btn" href="#">Buy Now</a>
                           </div>
                           <div class="add-banner-img">
-                            <img src="assets/img/product/img_131.png" alt="" />
+                            <img
+                              src="assets/img/product/img_131.png"
+                              alt="Image"
+                            />
                           </div>
                         </div>
                       </div>
@@ -1446,11 +1497,12 @@
                     document.getElementById("lightbox-close");
                   const lightboxPrev = document.getElementById("lightbox-prev");
                   const lightboxNext = document.getElementById("lightbox-next");
-
                   let flashData = [];
 
                   try {
-                    const res = await fetch("/flashsalesmaindata");
+                    const res = await fetch(
+                      "http://147.93.45.171:1600/flashsalesmaindata"
+                    );
                     if (!res.ok) throw new Error("Network error");
                     flashData = await res.json();
                   } catch (err) {
@@ -1467,6 +1519,29 @@
                       f.status === "Published"
                   );
 
+                  function toSeoUrl(str) {
+                    return (str || "")
+                      .toString()
+                      .trim()
+                      .toLowerCase()
+                      .replace(/[\s_]+/g, "-")
+                      .replace(/[^a-z0-9\-]+/g, "")
+                      .replace(/\-+/g, "-")
+                      .replace(/^\-+|\-+$/g, "");
+                  }
+                  function getSlugForProduct(p) {
+                    if (!p) return "";
+                    if (typeof p.slug === "string" && p.slug.trim() !== "")
+                      return encodeURIComponent(p.slug.trim());
+                    return encodeURIComponent(
+                      toSeoUrl(
+                        p.product_name ||
+                          p.name ||
+                          "product-" + (p.product_id || p.id)
+                      )
+                    );
+                  }
+
                   if (countdownEl) {
                     countdownEl.classList.add("countdown-styled");
                     const end = new Date(sale.end_date).getTime();
@@ -1480,31 +1555,23 @@
                       const seconds = Math.floor((diff % 60000) / 1000);
 
                       countdownEl.innerHTML = `
-                                <div class="cd-box"><span class="cd-num">${String(
-                                  days
-                                ).padStart(
-                                  2,
-                                  "0"
-                                )}</span><span class="cd-label">DAYS</span></div>
-                                <div class="cd-box"><span class="cd-num">${String(
-                                  hours
-                                ).padStart(
-                                  2,
-                                  "0"
-                                )}</span><span class="cd-label">HOURS</span></div>
-                                <div class="cd-box"><span class="cd-num">${String(
-                                  minutes
-                                ).padStart(
-                                  2,
-                                  "0"
-                                )}</span><span class="cd-label">MINS</span></div>
-                                <div class="cd-box"><span class="cd-num">${String(
-                                  seconds
-                                ).padStart(
-                                  2,
-                                  "0"
-                                )}</span><span class="cd-label">SEC</span></div>
-                              `;
+        <div class="cd-box"><span class="cd-num">${String(days).padStart(
+          2,
+          "0"
+        )}</span><span class="cd-label">DAYS</span></div>
+        <div class="cd-box"><span class="cd-num">${String(hours).padStart(
+          2,
+          "0"
+        )}</span><span class="cd-label">HOURS</span></div>
+        <div class="cd-box"><span class="cd-num">${String(minutes).padStart(
+          2,
+          "0"
+        )}</span><span class="cd-label">MINS</span></div>
+        <div class="cd-box"><span class="cd-num">${String(seconds).padStart(
+          2,
+          "0"
+        )}</span><span class="cd-label">SEC</span></div>
+      `;
                       if (diff <= 0) clearInterval(timerId);
                     }
                     updateCountdown();
@@ -1514,92 +1581,83 @@
                   if (productsRow) {
                     productsRow.innerHTML = "";
                     products.slice(0, 3).forEach((p, idx) => {
+                      const slug = getSlugForProduct(p);
+                      const productUrl = `/shop-single/${slug}`;
+
                       const col = document.createElement("div");
                       col.className = "col-lg-4 col-md-6";
                       col.innerHTML = `
-                                <div class="product__item style-2 h-100">
-                                  <div class="product__img text-center pos-rel">
-                                    <a href="shop-single.html?id=${
-                                      p.product_id
-                                    }">
-                                      <img src="/uploads/${p.image}" alt="${
-                        p.product_name
+        <div class="product__item style-2 h-100">
+          <div class="product__img text-center pos-rel">
+            <a href="${productUrl}">
+              <img src="/uploads/${p.image}" alt="${
+                        (p.product_name || p.product_name) == null
+                          ? ""
+                          : p.product_name || p.name
                       }" />
-                                    </a>
-                                    <ul class="product__action style-2 ul_li">
-                                      <li>
-                                        <a href="/uploads/${
-                                          p.image
-                                        }" class="img-popup" data-index="${idx}">
-                                          <i class="far fa-compress-alt"></i>
-                                        </a>
-                                      </li>
-                                      <li>
-                                        <a href="#" class="add-to-cart"
-                                          data-id="${p.product_id}"
-                                          data-name="${p.product_name}"
-                                          data-price="${p.price.replace(
-                                            /[^0-9.]/g,
-                                            ""
-                                          )}"
-                                          data-price_sale="${p.price_sale.replace(
-                                            /[^0-9.]/g,
-                                            ""
-                                          )}"
-                                          data-image="${p.image}"
-                                          data-store="${
-                                            p.brand || "Default Store"
-                                          }"
-                                          data-sku="${p.product_id}-${idx}"
-                                          data-stockstatus="In Stock">
-                                          <i class="far fa-shopping-basket"></i>
-                                        </a>
-                                      </li>
-                                      <li>
-                                        <a href="#" class="add-to-wishlist"
-                                          data-id="${p.product_id}"
-                                          data-name="${p.product_name}"
-                                          data-price="${p.price.replace(
-                                            /[^0-9.]/g,
-                                            ""
-                                          )}"
-                                          data-price_sale="${p.price_sale.replace(
-                                            /[^0-9.]/g,
-                                            ""
-                                          )}"
-                                          data-image="${p.image}"
-                                          data-store="${
-                                            p.brand || "Default Store"
-                                          }"
-                                          data-sku="${p.product_id}-${idx}"
-                                          data-stockstatus="In Stock">
-                                          <i class="far fa-heart"></i>
-                                        </a>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                  <div class="product__content">
-                                    <div class="product__review ul_li">
-                                      <ul class="rating-star ul_li mr-10">
-                                        <li><i class="fas fa-star"></i></li>
-                                        <li><i class="fas fa-star"></i></li>
-                                        <li><i class="fas fa-star"></i></li>
-                                        <li><i class="far fa-star"></i></li>
-                                        <li><i class="far fa-star"></i></li>
-                                      </ul>
-                                      <span>(${p.quantity})</span>
-                                    </div>
-                                    <h2 class="product__title">
-                                      <a href="shop-single.html?id=${
-                                        p.product_id
-                                      }">${p.product_name}</a>
-                                    </h2>
-                                    <h4 class="product__price">
-                                      <span class="new">${p.price}</span>
-                                      <span class="old">${p.price_sale}</span>
-                                    </h4>
-                                  </div>
-                                </div>`;
+            </a>
+            <ul class="product__action style-2 ul_li">
+              <li>
+                <a href="/uploads/${
+                  p.image
+                }" class="img-popup" data-index="${idx}">
+                  <i class="far fa-compress-alt"></i>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="add-to-cart"
+                  data-id="${p.product_id}"
+                  data-name="${p.product_name || p.name || ""}"
+                  data-price="${String(p.price || "").replace(/[^0-9.]/g, "")}"
+                  data-price_sale="${String(p.price_sale || "").replace(
+                    /[^0-9.]/g,
+                    ""
+                  )}"
+                  data-image="${p.image}"
+                  data-store="${p.brand || "Default Store"}"
+                  data-sku="${p.product_id}-${idx}"
+                  data-stockstatus="In Stock">
+                  <i class="far fa-shopping-basket"></i>
+                </a>
+              </li>
+              <li>
+                <a href="javascript:void(0)" class="add-to-wishlist"
+                  data-id="${p.product_id}"
+                  data-name="${p.product_name || p.name || ""}"
+                  data-price="${String(p.price || "").replace(/[^0-9.]/g, "")}"
+                  data-price_sale="${String(p.price_sale || "").replace(
+                    /[^0-9.]/g,
+                    ""
+                  )}"
+                  data-image="${p.image}"
+                  data-store="${p.brand || "Default Store"}"
+                  data-sku="${p.product_id}-${idx}"
+                  data-stockstatus="In Stock">
+                  <i class="far fa-heart"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="product__content">
+            <div class="product__review ul_li">
+              <ul class="rating-star ul_li mr-10">
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="far fa-star"></i></li>
+                <li><i class="far fa-star"></i></li>
+              </ul>
+              <span>(${p.quantity || 0})</span>
+            </div>
+            <h2 class="product__title">
+              <a href="${productUrl}">${p.product_name || p.name || ""}</a>
+            </h2>
+            <h4 class="product__price">
+              <span class="new">${p.price}</span>
+              <span class="old">${p.price_sale}</span>
+            </h4>
+          </div>
+        </div>`;
                       productsRow.appendChild(col);
                     });
 
@@ -1619,16 +1677,24 @@
                     imageLinks.forEach((link) => {
                       link.addEventListener("click", (e) => {
                         e.preventDefault();
-                        showLightbox(+link.dataset.index);
+                        const idx = Number(link.dataset.index) || 0;
+                        showLightbox(idx);
                       });
                     });
 
-                    lightboxClose.onclick = () =>
-                      (lightbox.style.display = "none");
-                    lightboxPrev.onclick = () => showLightbox(currentIndex - 1);
-                    lightboxNext.onclick = () => showLightbox(currentIndex + 1);
+                    if (lightboxClose)
+                      lightboxClose.onclick = () =>
+                        (lightbox.style.display = "none");
+                    if (lightboxPrev)
+                      lightboxPrev.onclick = () =>
+                        showLightbox(currentIndex - 1);
+                    if (lightboxNext)
+                      lightboxNext.onclick = () =>
+                        showLightbox(currentIndex + 1);
+
                     window.addEventListener("keydown", (e) => {
-                      if (lightbox.style.display !== "flex") return;
+                      if (!lightbox || lightbox.style.display !== "flex")
+                        return;
                       if (e.key === "Escape") lightbox.style.display = "none";
                       if (e.key === "ArrowLeft") showLightbox(currentIndex - 1);
                       if (e.key === "ArrowRight")
@@ -1650,19 +1716,22 @@
 
                     if (cartBtn) {
                       try {
-                        const res = await fetch("/addcart", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({
-                            user_id: +userId,
-                            name: cartBtn.dataset.name,
-                            store: cartBtn.dataset.store,
-                            price: cartBtn.dataset.price,
-                            price_sale: cartBtn.dataset.price_sale,
-                            image: cartBtn.dataset.image,
-                            quantity: 1,
-                          }),
-                        });
+                        const res = await fetch(
+                          "http://147.93.45.171:1600/addcart",
+                          {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              user_id: +userId,
+                              name: cartBtn.dataset.name,
+                              store: cartBtn.dataset.store,
+                              price: cartBtn.dataset.price,
+                              price_sale: cartBtn.dataset.price_sale,
+                              image: cartBtn.dataset.image,
+                              quantity: 1,
+                            }),
+                          }
+                        );
                         alert(res.ok ? "Added to cart!" : "Add to cart failed");
                       } catch {
                         alert("Cart error");
@@ -1671,20 +1740,23 @@
 
                     if (wishBtn) {
                       try {
-                        const res = await fetch("/wishlistpost", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({
-                            user_id: +userId,
-                            product_name: wishBtn.dataset.name,
-                            store: wishBtn.dataset.store,
-                            price: wishBtn.dataset.price,
-                            price_sale: wishBtn.dataset.price_sale,
-                            image: wishBtn.dataset.image,
-                            sku: wishBtn.dataset.sku,
-                            stockstatus: wishBtn.dataset.stockstatus,
-                          }),
-                        });
+                        const res = await fetch(
+                          "http://147.93.45.171:1600/wishlistpost",
+                          {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              user_id: +userId,
+                              product_name: wishBtn.dataset.name,
+                              store: wishBtn.dataset.store,
+                              price: wishBtn.dataset.price,
+                              price_sale: wishBtn.dataset.price_sale,
+                              image: wishBtn.dataset.image,
+                              sku: wishBtn.dataset.sku,
+                              stockstatus: wishBtn.dataset.stockstatus,
+                            }),
+                          }
+                        );
                         alert(
                           res.ok
                             ? "Added to wishlist!"
@@ -1709,7 +1781,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_135.png" alt=""
+                              ><img
+                                src="assets/img/product/img_135.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1727,7 +1801,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_136.png" alt=""
+                              ><img
+                                src="assets/img/product/img_136.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1745,7 +1821,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_137.png" alt=""
+                              ><img
+                                src="assets/img/product/img_137.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1763,7 +1841,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_138.png" alt=""
+                              ><img
+                                src="assets/img/product/img_138.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1781,7 +1861,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_135.png" alt=""
+                              ><img
+                                src="assets/img/product/img_135.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1801,7 +1883,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_135.png" alt=""
+                              ><img
+                                src="assets/img/product/img_135.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1819,7 +1903,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_136.png" alt=""
+                              ><img
+                                src="assets/img/product/img_136.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1837,7 +1923,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_137.png" alt=""
+                              ><img
+                                src="assets/img/product/img_137.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1855,7 +1943,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_138.png" alt=""
+                              ><img
+                                src="assets/img/product/img_138.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1873,7 +1963,9 @@
                         <div class="tx-widget__product-item tx-product ul_li">
                           <div class="thumb">
                             <a href="shop-single.html"
-                              ><img src="assets/img/product/img_135.png" alt=""
+                              ><img
+                                src="assets/img/product/img_135.png"
+                                alt="Image"
                             /></a>
                           </div>
                           <div class="content">
@@ -1897,7 +1989,9 @@
               <script>
                 document.addEventListener("DOMContentLoaded", async () => {
                   try {
-                    const res = await fetch("/productpagedata");
+                    const res = await fetch(
+                      "http://147.93.45.171:1600/productpagedata"
+                    );
                     if (!res.ok) throw new Error("Failed to fetch data");
 
                     const data = await res.json();
@@ -1916,6 +2010,30 @@
                       (container) => (container.innerHTML = "")
                     );
 
+                    function toSeoUrl(str) {
+                      return (str || "")
+                        .toString()
+                        .trim()
+                        .toLowerCase()
+                        .replace(/[\s_]+/g, "-")
+                        .replace(/[^a-z0-9\-]+/g, "")
+                        .replace(/\-+/g, "-")
+                        .replace(/^\-+|\-+$/g, "");
+                    }
+
+                    function getSlugForProduct(p) {
+                      if (
+                        p &&
+                        typeof p.slug === "string" &&
+                        p.slug.trim() !== ""
+                      ) {
+                        return encodeURIComponent(p.slug.trim());
+                      }
+                      return encodeURIComponent(
+                        toSeoUrl(p.name || "product-" + p.id)
+                      );
+                    }
+
                     const chunkSize = 5;
                     for (let i = 0; i < latestItems.length; i += chunkSize) {
                       const group = latestItems.slice(i, i + chunkSize);
@@ -1923,28 +2041,31 @@
                       block.className = "tx-widget__product-single";
 
                       group.forEach((p) => {
+                        const slug = getSlugForProduct(p);
+                        const productUrl = `/shop-single/${slug}`;
                         block.innerHTML += `
-                          <div class="tx-widget__product-item tx-product ul_li mb-3">
-                            <div class="thumb">
-                              <a href="shop-single.html?id=${p.id}">
-                                <img src="/uploads/${p.image}" alt="${p.name}" class="border"/>
-                              </a>
-                            </div>
-                            <div class="content">
-                              <h3>
-                                <a href="shop-single.html?id=${p.id}">${p.name}</a>
-                              </h3>
-                              <h4 class="product__price">
-                                <span class="new">${p.price}</span>
-                                <span class="old">${p.price_sale}</span>
-                              </h4>
-                            </div>
-                          </div>`;
+          <div class="tx-widget__product-item tx-product ul_li mb-3">
+            <div class="thumb">
+              <a href="${productUrl}">
+                <img src="/uploads/${p.image}" alt="${p.name}" class="border"/>
+              </a>
+            </div>
+            <div class="content">
+              <h3>
+                <a href="${productUrl}">${p.name}</a>
+              </h3>
+              <h4 class="product__price">
+                <span class="new">${p.price}</span>
+                <span class="old">${p.price_sale}</span>
+              </h4>
+            </div>
+          </div>`;
                       });
 
-                      document
-                        .querySelector(".tx-widget__product-slide")
-                        .appendChild(block);
+                      const slideContainer = document.querySelector(
+                        ".tx-widget__product-slide"
+                      );
+                      if (slideContainer) slideContainer.appendChild(block);
                     }
                   } catch (err) {
                     console.error("Error loading latest items:", err);
@@ -1964,7 +2085,7 @@
                   <div class="side-product__slide-item">
                     <a
                       class="side-product__item ul_li bg_img"
-                      href="#!"
+                      href="#"
                       data-background="assets/img/bg/bg_22.jpg"
                     >
                       <div class="side-product__content">
@@ -1982,7 +2103,7 @@
                         </h3>
                       </div>
                       <div class="side-product__img">
-                        <img src="assets/img/product/img_143.png" alt="" />
+                        <img src="assets/img/product/img_143.png" alt="Image" />
                       </div>
                       <div class="side-product__offer">
                         25% <br />
@@ -1991,7 +2112,7 @@
                     </a>
                     <a
                       class="side-product__item ul_li bg_img"
-                      href="#!"
+                      href="#"
                       data-background="assets/img/bg/bg_23.jpg"
                     >
                       <div class="side-product__content">
@@ -2009,7 +2130,7 @@
                         </h3>
                       </div>
                       <div class="side-product__img">
-                        <img src="assets/img/product/img_144.png" alt="" />
+                        <img src="assets/img/product/img_144.png" alt="Image" />
                       </div>
                       <div class="side-product__offer">
                         25% <br />
@@ -2018,7 +2139,7 @@
                     </a>
                     <a
                       class="side-product__item ul_li bg_img"
-                      href="#!"
+                      href="#"
                       data-background="assets/img/bg/bg_24.jpg"
                     >
                       <div class="side-product__content">
@@ -2036,7 +2157,7 @@
                         </h3>
                       </div>
                       <div class="side-product__img">
-                        <img src="assets/img/product/img_145.png" alt="" />
+                        <img src="assets/img/product/img_145.png" alt="Image" />
                       </div>
                       <div class="side-product__offer">
                         25% <br />
@@ -2047,7 +2168,7 @@
                   <div class="side-product__slide-item">
                     <a
                       class="side-product__item ul_li bg_img"
-                      href="#!"
+                      href="#"
                       data-background="assets/img/bg/bg_22.jpg"
                     >
                       <div class="side-product__content">
@@ -2065,7 +2186,7 @@
                         </h3>
                       </div>
                       <div class="side-product__img">
-                        <img src="assets/img/product/img_143.png" alt="" />
+                        <img src="assets/img/product/img_143.png" alt="Image" />
                       </div>
                       <div class="side-product__offer">
                         25% <br />
@@ -2074,7 +2195,7 @@
                     </a>
                     <a
                       class="side-product__item ul_li bg_img"
-                      href="#!"
+                      href="#"
                       data-background="assets/img/bg/bg_23.jpg"
                     >
                       <div class="side-product__content">
@@ -2092,7 +2213,7 @@
                         </h3>
                       </div>
                       <div class="side-product__img">
-                        <img src="assets/img/product/img_144.png" alt="" />
+                        <img src="assets/img/product/img_144.png" alt="Image" />
                       </div>
                       <div class="side-product__offer">
                         25% <br />
@@ -2101,7 +2222,7 @@
                     </a>
                     <a
                       class="side-product__item ul_li bg_img"
-                      href="#!"
+                      href="#"
                       data-background="assets/img/bg/bg_24.jpg"
                     >
                       <div class="side-product__content">
@@ -2119,7 +2240,7 @@
                         </h3>
                       </div>
                       <div class="side-product__img">
-                        <img src="assets/img/product/img_145.png" alt="" />
+                        <img src="assets/img/product/img_145.png" alt="Image" />
                       </div>
                       <div class="side-product__offer">
                         25% <br />
@@ -2257,8 +2378,8 @@
                 </div>
 
                 <div class="add mt-25">
-                  <a href="#!"
-                    ><img src="assets/img/add/img_03.jpg" alt=""
+                  <a href="#"
+                    ><img src="assets/img/add/img_03.jpg" alt="Image"
                   /></a>
                 </div>
               </div>
@@ -2282,12 +2403,15 @@
 
                 let allProducts = [];
 
-                fetch("/productpagedata")
+                fetch("http://147.93.45.171:1600/productpagedata")
                   .then((res) => res.json())
                   .then((data) => {
                     allProducts = data;
                     renderProducts("New Arrival", "#settings");
                     bindLightbox("#settings");
+                  })
+                  .catch((err) => {
+                    console.error("Failed to load products", err);
                   });
 
                 tabButtons.forEach((btn) => {
@@ -2297,7 +2421,7 @@
                     if (!paneSelector) return;
 
                     const keyword = mapTabToKeyword(tabText);
-                    renderProducts(keyword, paneSelector);
+                    renderProducts(keyword, paneSelector, tabText);
                     bindLightbox(paneSelector);
                   });
                 });
@@ -2319,13 +2443,37 @@
                   }
                 }
 
+                function toSeoUrl(str) {
+                  return (str || "")
+                    .toString()
+                    .trim()
+                    .toLowerCase()
+                    .replace(/[\s_]+/g, "-")
+                    .replace(/[^a-z0-9\-]+/g, "")
+                    .replace(/\-+/g, "-")
+                    .replace(/^\-+|\-+$/g, "");
+                }
+
+                function getSlugForProduct(prod) {
+                  if (
+                    prod &&
+                    typeof prod.slug === "string" &&
+                    prod.slug.trim() !== ""
+                  ) {
+                    return encodeURIComponent(prod.slug.trim());
+                  }
+                  return encodeURIComponent(
+                    toSeoUrl(prod.name || "product-" + prod.id)
+                  );
+                }
+
                 function renderProducts(keyword, paneSelector, tabName) {
                   const container = document.querySelector(
                     `${paneSelector} .row`
                   );
                   if (!container) return;
 
-                  const filtered = allProducts
+                  const filtered = (allProducts || [])
                     .filter((prod) => {
                       const label = (prod.label || "").toLowerCase();
                       const cats = (prod.categories || "").toLowerCase();
@@ -2342,100 +2490,97 @@
                         100,
                         Math.max(0, parseInt(prod.minimumorder) || 0)
                       );
+                      const slug = getSlugForProduct(prod);
+                      const productUrl = `/shop-single/${slug}`;
+
                       return `
-                      <div class="col-lg-3 col-md-6">
-                        <div class="product__item style-2 h-100">
-                          <div class="product__img text-center pos-rel">
-                            <a href="#">
-                              <img src="/uploads/${prod.image}" alt="${
-                        prod.name
-                      }" />
-                            </a>
-                            <ul class="product__action style-2 ul_li">
-                              <li>
-                                <a href="/uploads/${
-                                  prod.image
-                                }" class="img-popup icon-btn">
-                                  <i class="far fa-compress-alt"></i>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#" class="add-to-cart icon-btn"
-                                  data-id="${prod.id}"
-                                  data-name="${prod.name}"
-                                  data-store="${prod.store}"
-                                  data-price="${prod.price.replace(
-                                    /[^0-9.]/g,
-                                    ""
-                                  )}"
-                                  data-price_sale="${prod.price_sale.replace(
-                                    /[^0-9.]/g,
-                                    ""
-                                  )}"
-                                  data-image="${prod.image}">
-                                  <i class="far fa-shopping-basket"></i>
-                                </a>
-                              </li>
-                              <li>
-                                <a href="#" class="add-to-wishlist icon-btn"
-                                  data-id="${prod.id}"
-                                  data-name="${prod.name}"
-                                  data-store="${prod.store}"
-                                  data-price="${prod.price.replace(
-                                    /[^0-9.]/g,
-                                    ""
-                                  )}"
-                                  data-price_sale="${prod.price_sale.replace(
-                                    /[^0-9.]/g,
-                                    ""
-                                  )}"
-                                  data-image="${prod.image}"
-                                  data-sku="${prod.sku}"
-                                  data-stockstatus="${prod.stockstatus}">
-                                  <i class="far fa-heart"></i>
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                          <div class="product__content">
-                            <div class="product__review ul_li">
-                              <ul class="rating-star ul_li mr-10">
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="fas fa-star"></i></li>
-                                <li><i class="far fa-star"></i></li>
-                                <li><i class="far fa-star"></i></li>
-                              </ul>
-                              <span>(${Math.floor(Math.random() * 100)})</span>
-                            </div>
-                            <h2 class="product__title">
-                              <a href="shop-single.html?id=${prod.id}">${
-                        prod.name
-                      }</a>
-                            </h2>
-                            <span class="product__available">Available: <span>${
-                              prod.minimumorder
-                            }</span></span>
-                            <div class="product__progress progress mt-2">
-                              <div class="progress-bar" role="progressbar" style="width:${pct}%"
-                                aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <h4 class="product__price">
-                              <span class="new">${prod.price}</span>
-                              <span class="old">${prod.price_sale}</span>
-                            </h4>
-                          </div>
-                          <span class="product__badge"><span>${
-                            prod.label
-                          }</span></span>
-                        </div>
-                      </div>
-                    `;
+            <div class="col-lg-3 col-md-6">
+              <div class="product__item style-2 h-100">
+                <div class="product__img text-center pos-rel">
+                  <a href="${productUrl}">
+                    <img src="/uploads/${prod.image}" alt="${prod.name}" />
+                  </a>
+                  <ul class="product__action style-2 ul_li">
+                    <li>
+                      <a href="/uploads/${
+                        prod.image
+                      }" class="img-popup icon-btn">
+                        <i class="far fa-compress-alt"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="add-to-cart icon-btn"
+                        data-id="${prod.id}"
+                        data-name="${prod.name}"
+                        data-store="${prod.store}"
+                        data-price="${String(prod.price || "").replace(
+                          /[^0-9.]/g,
+                          ""
+                        )}"
+                        data-price_sale="${String(
+                          prod.price_sale || ""
+                        ).replace(/[^0-9.]/g, "")}"
+                        data-image="${prod.image}">
+                        <i class="far fa-shopping-basket"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="add-to-wishlist icon-btn"
+                        data-id="${prod.id}"
+                        data-name="${prod.name}"
+                        data-store="${prod.store}"
+                        data-price="${String(prod.price || "").replace(
+                          /[^0-9.]/g,
+                          ""
+                        )}"
+                        data-price_sale="${String(
+                          prod.price_sale || ""
+                        ).replace(/[^0-9.]/g, "")}"
+                        data-image="${prod.image}"
+                        data-sku="${prod.sku}"
+                        data-stockstatus="${prod.stockstatus}">
+                        <i class="far fa-heart"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="product__content">
+                  <div class="product__review ul_li">
+                    <ul class="rating-star ul_li mr-10">
+                      <li><i class="fas fa-star"></i></li>
+                      <li><i class="fas fa-star"></i></li>
+                      <li><i class="fas fa-star"></i></li>
+                      <li><i class="far fa-star"></i></li>
+                      <li><i class="far fa-star"></i></li>
+                    </ul>
+                    <span>(${Math.floor(Math.random() * 100)})</span>
+                  </div>
+                  <h2 class="product__title">
+                    <a href="${productUrl}">${prod.name}</a>
+                  </h2>
+                  <span class="product__available">Available: <span>${
+                    prod.minimumorder
+                  }</span></span>
+                  <div class="product__progress progress mt-2">
+                    <div class="progress-bar" role="progressbar" style="width:${pct}%"
+                      aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
+                  <h4 class="product__price">
+                    <span class="new">${prod.price}</span>
+                    <span class="old">${prod.price_sale}</span>
+                  </h4>
+                </div>
+                <span class="product__badge"><span>${prod.label}</span></span>
+              </div>
+            </div>
+          `;
                     })
                     .join("");
 
                   if (filtered.length === 0) {
-                    container.innerHTML = `<div class="col-12 text-center">No <strong>${tabName}</strong> products available</div>`;
+                    container.innerHTML = `<div class="col-12 text-center">No <strong>${
+                      tabName || ""
+                    }</strong> products available</div>`;
                   }
                 }
 
@@ -2460,6 +2605,7 @@
                   });
 
                   function showLightbox(i) {
+                    if (!urls.length) return;
                     idx = (i + urls.length) % urls.length;
                     lightboxImg.src = urls[idx];
                     counterEl.textContent = `${idx + 1} of ${urls.length}`;
@@ -2469,17 +2615,20 @@
                   ["lightbox-prev", "lightbox-next", "lightbox-close"].forEach(
                     (id) => {
                       const old = document.getElementById(id);
+                      if (!old) return;
                       const clone = old.cloneNode(true);
                       old.parentNode.replaceChild(clone, old);
                     }
                   );
 
-                  document.getElementById("lightbox-prev").onclick = () =>
-                    showLightbox(idx - 1);
-                  document.getElementById("lightbox-next").onclick = () =>
-                    showLightbox(idx + 1);
-                  document.getElementById("lightbox-close").onclick = () =>
-                    (lightbox.style.display = "none");
+                  const prev = document.getElementById("lightbox-prev");
+                  const next = document.getElementById("lightbox-next");
+                  const close = document.getElementById("lightbox-close");
+
+                  if (prev) prev.onclick = () => showLightbox(idx - 1);
+                  if (next) next.onclick = () => showLightbox(idx + 1);
+                  if (close)
+                    close.onclick = () => (lightbox.style.display = "none");
 
                   window.onkeydown = (e) => {
                     if (lightbox.style.display !== "flex") return;
@@ -2505,7 +2654,9 @@
               <script>
                 document.addEventListener("DOMContentLoaded", async () => {
                   try {
-                    const res = await fetch("/productcatdata");
+                    const res = await fetch(
+                      "http://147.93.45.171:1600/productcatdata"
+                    );
                     if (!res.ok) throw new Error("Failed to fetch categories");
 
                     const categories = await res.json();
@@ -2521,7 +2672,7 @@
                       const li = document.createElement("li");
                       li.className = "cat-item-has-children category-item";
                       if (index >= visibleCount) li.style.display = "none";
-                      li.innerHTML = `<a href="#!">${cat.name}</a>`;
+                      li.innerHTML = `<a href="#">${cat.name}</a>`;
                       container.appendChild(li);
                     });
 
@@ -2715,11 +2866,37 @@
             async function fetchProducts() {
               if (productsData.length) return;
               try {
-                const res = await fetch("/productpagedata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/productpagedata"
+                );
                 productsData = await res.json();
               } catch (err) {
                 console.error("Failed to fetch products:", err);
               }
+            }
+
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+
+            function getSlugForProduct(prod) {
+              if (
+                prod &&
+                typeof prod.slug === "string" &&
+                prod.slug.trim() !== ""
+              ) {
+                return encodeURIComponent(prod.slug.trim());
+              }
+              return encodeURIComponent(
+                toSeoUrl(prod.name || "product-" + prod.id)
+              );
             }
 
             function renderProducts(products, containerId, type) {
@@ -2734,86 +2911,94 @@
 
               products.forEach((p) => {
                 const pct = Math.min(100, Math.max(0, p.minimumorder || 0));
+                const slug = getSlugForProduct(p);
+                const productUrl = `/shop-single/${slug}`;
+
                 container.innerHTML += `
-                  <div class="col-lg-3 col-md-6">
-                    <div class="product__item style-2 h-100">
-                      <div class="product__img text-center pos-rel">
-                        <a href="shop-single.html">
-                          <img src="/uploads/${p.image}" alt="" />
-                        </a>
-                      </div>
-                      <div class="product__content">
-                        <div class="product__review ul_li">
-                          <ul class="rating-star ul_li mr-10">
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="far fa-star"></i></li>
-                            <li><i class="far fa-star"></i></li>
-                          </ul>
-                          <span>(${Math.floor(Math.random() * 100)})</span>
-                        </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="product__item style-2 h-100">
+              <div class="product__img text-center pos-rel">
+                <a href="${productUrl}">
+                  <img src="/uploads/${p.image}" alt="${p.name || "Product"}" />
+                </a>
+              </div>
+              <div class="product__content">
+                <div class="product__review ul_li">
+                  <ul class="rating-star ul_li mr-10">
+                    <li><i class="fas fa-star"></i></li>
+                    <li><i class="fas fa-star"></i></li>
+                    <li><i class="fas fa-star"></i></li>
+                    <li><i class="far fa-star"></i></li>
+                    <li><i class="far fa-star"></i></li>
+                  </ul>
+                  <span>(${Math.floor(Math.random() * 100)})</span>
+                </div>
 
-                        <h2 class="product__title">
-                          <a href="shop-single.html?id=${p.id}">${p.name}</a>
-                        </h2>
+                <h2 class="product__title">
+                  <a href="${productUrl}">${p.name}</a>
+                </h2>
 
-                        <span class="product__available">Available: <span>${
-                          p.minimumorder
-                        }</span></span>
-                        <div class="product__progress progress mt-2 color-primary">
-                          <div class="progress-bar" role="progressbar" style="width:${pct}%"
-                               aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <h4 class="product__price">
-                          <span class="new">${p.price}</span>
-                          <span class="old">${p.price_sale}</span>
-                        </h4>
-                      </div>
-                      <div class="product__action-wrap">
-                        <span class="plus-icon"><i class="fal fa-plus"></i></span>
-                        <ul class="product__action2">
-                          <li>
-                            <a href="/uploads/${
-                              p.image
-                            }" class="img-popup icon-btn">
-                              <i class="far fa-compress-alt"></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#" class="add-to-cart icon-btn"
-                               data-id="${p.id}"
-                               data-name="${p.name}"
-                               data-store="${p.store}"
-                               data-price="${p.price.replace(/[^0-9.]/g, "")}"
-                               data-price_sale="${p.price_sale.replace(
-                                 /[^0-9.]/g,
-                                 ""
-                               )}"
-                               data-image="${p.image}">
-                              <i class="far fa-shopping-basket"></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#" class="add-to-wishlist icon-btn"
-                               data-id="${p.id}"
-                               data-name="${p.name}"
-                               data-store="${p.store}"
-                               data-price="${p.price.replace(/[^0-9.]/g, "")}"
-                               data-price_sale="${p.price_sale.replace(
-                                 /[^0-9.]/g,
-                                 ""
-                               )}"
-                               data-image="${p.image}"
-                               data-sku="${p.sku}"
-                               data-stockstatus="${p.stockstatus}">
-                              <i class="far fa-heart"></i>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>`;
+                <span class="product__available">Available: <span>${
+                  p.minimumorder
+                }</span></span>
+                <div class="product__progress progress mt-2 color-primary">
+                  <div class="progress-bar" role="progressbar" style="width:${pct}%"
+                       aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <h4 class="product__price">
+                  <span class="new">${p.price}</span>
+                  <span class="old">${p.price_sale}</span>
+                </h4>
+              </div>
+              <div class="product__action-wrap">
+                <span class="plus-icon"><i class="fal fa-plus"></i></span>
+                <ul class="product__action2">
+                  <li>
+                    <!-- lightbox still opens the raw upload image -->
+                    <a href="/uploads/${p.image}" class="img-popup icon-btn">
+                      <i class="far fa-compress-alt"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="javascript:void(0)" class="add-to-cart icon-btn"
+                       data-id="${p.id}"
+                       data-name="${p.name}"
+                       data-store="${p.store}"
+                       data-price="${String(p.price || "").replace(
+                         /[^0-9.]/g,
+                         ""
+                       )}"
+                       data-price_sale="${String(p.price_sale || "").replace(
+                         /[^0-9.]/g,
+                         ""
+                       )}"
+                       data-image="${p.image}">
+                      <i class="far fa-shopping-basket"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="javascript:void(0)" class="add-to-wishlist icon-btn"
+                       data-id="${p.id}"
+                       data-name="${p.name}"
+                       data-store="${p.store}"
+                       data-price="${String(p.price || "").replace(
+                         /[^0-9.]/g,
+                         ""
+                       )}"
+                       data-price_sale="${String(p.price_sale || "").replace(
+                         /[^0-9.]/g,
+                         ""
+                       )}"
+                       data-image="${p.image}"
+                       data-sku="${p.sku}"
+                       data-stockstatus="${p.stockstatus}">
+                      <i class="far fa-heart"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>`;
               });
             }
 
@@ -2846,17 +3031,20 @@
               ["lightbox-prev", "lightbox-next", "lightbox-close"].forEach(
                 (id) => {
                   const old = document.getElementById(id);
+                  if (!old) return;
                   const clone = old.cloneNode(true);
                   old.parentNode.replaceChild(clone, old);
                 }
               );
 
-              document.getElementById("lightbox-prev").onclick = () =>
-                showLightbox(idx - 1);
-              document.getElementById("lightbox-next").onclick = () =>
-                showLightbox(idx + 1);
-              document.getElementById("lightbox-close").onclick = () =>
-                (lightbox.style.display = "none");
+              const prev = document.getElementById("lightbox-prev");
+              const next = document.getElementById("lightbox-next");
+              const close = document.getElementById("lightbox-close");
+
+              if (prev) prev.onclick = () => showLightbox(idx - 1);
+              if (next) next.onclick = () => showLightbox(idx + 1);
+              if (close)
+                close.onclick = () => (lightbox.style.display = "none");
               window.onkeydown = (e) => {
                 if (lightbox.style.display !== "flex") return;
                 if (e.key === "Escape") lightbox.style.display = "none";
@@ -3102,7 +3290,7 @@
                   <div class="vdx-banner">
                     <div class="row mt-none-30">
                       <div class="col-lg-5 col-md-6 mt-30">
-                        <a href="#!">
+                        <a href="#">
                           <div
                             class="vdx-banner__single vdx-banner__single-one ul_li_between"
                             data-background="assets/img/bg/bg_25.jpg"
@@ -3117,7 +3305,7 @@
                             <div class="vdx-banner__img">
                               <img
                                 src="assets/img/product/img_154.png"
-                                alt=""
+                                alt="Image"
                               />
                             </div>
                           </div>
@@ -3125,7 +3313,7 @@
                       </div>
 
                       <div class="col-lg-7 col-md-6 mt-30">
-                        <a href="#!">
+                        <a href="#">
                           <div
                             class="vdx-banner__single vdx-banner__single-two ul_li_between"
                             data-background="assets/img/bg/bg_26.jpg"
@@ -3143,7 +3331,7 @@
                             <div class="vdx-banner__img">
                               <img
                                 src="assets/img/product/img_155.png"
-                                alt=""
+                                alt="Image"
                               />
                             </div>
                           </div>
@@ -3164,7 +3352,7 @@
                               <a href="shop-single.html"
                                 ><img
                                   src="assets/img/product/img_156.png"
-                                  alt=""
+                                  alt="Image"
                               /></a>
                               <div class="offer">
                                 25% <br />
@@ -3215,7 +3403,7 @@
                               <a href="shop-single.html"
                                 ><img
                                   src="assets/img/product/img_156.png"
-                                  alt=""
+                                  alt="Image"
                               /></a>
                               <div class="offer">
                                 25% <br />
@@ -3271,12 +3459,38 @@
                         async () => {
                           let products = [];
                           try {
-                            const res = await fetch("/productpagedata");
+                            const res = await fetch(
+                              "http://147.93.45.171:1600/productpagedata"
+                            );
                             if (!res.ok) throw new Error(`HTTP ${res.status}`);
                             products = await res.json();
                           } catch (err) {
                             console.error("Failed to load products:", err);
                             return;
+                          }
+
+                          function toSeoUrl(str) {
+                            return (str || "")
+                              .toString()
+                              .trim()
+                              .toLowerCase()
+                              .replace(/[\s_]+/g, "-")
+                              .replace(/[^a-z0-9\-]+/g, "")
+                              .replace(/\-+/g, "-")
+                              .replace(/^\-+|\-+$/g, "");
+                          }
+
+                          function getSlugForProduct(p) {
+                            if (
+                              p &&
+                              typeof p.slug === "string" &&
+                              p.slug.trim() !== ""
+                            ) {
+                              return encodeURIComponent(p.slug.trim());
+                            }
+                            return encodeURIComponent(
+                              toSeoUrl(p.name || "product-" + p.id)
+                            );
                           }
 
                           const newItems = products
@@ -3296,11 +3510,15 @@
                           const slidesHtml = newItems
                             .map((p) => {
                               const rawPrice =
-                                parseFloat(p.price.replace(/[^0-9.]/g, "")) ||
-                                0;
+                                parseFloat(
+                                  String(p.price || "").replace(/[^0-9.]/g, "")
+                                ) || 0;
                               const rawSale =
                                 parseFloat(
-                                  p.price_sale.replace(/[^0-9.]/g, "")
+                                  String(p.price_sale || "").replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )
                                 ) || rawPrice;
                               const discountPct = rawPrice
                                 ? Math.round(
@@ -3314,43 +3532,46 @@
                                 Math.max(0, available)
                               );
 
+                              const slug = getSlugForProduct(p);
+                              const productUrl = `/shop-single/${slug}`;
+
                               return `
-                            <div class="product__slider-item">
-                              <div class="product__slider-img">
-                                <a href="shop-single.html?id=${p.id}">
-                                  <img src="/uploads/${p.image}" alt="${p.name}" />
-                                </a>
-                                <div class="offer">
-                                  ${discountPct}%<br /><span>off</span>
-                                </div>
-                              </div>
-                              <div class="product__slider-content text-center">
-                                <ul class="rating-star ul_li_center mr-10">
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="fas fa-star"></i></li>
-                                  <li><i class="far fa-star"></i></li>
-                                </ul>
-                                <h3><a href="shop-single.html?id=${p.id}">${p.name}</a></h3>
-                                <h4 class="product__price">
-                                  <span class="new">${p.price_sale}</span>
-                                  <span class="old">${p.price}</span>
-                                </h4>
-                                <div class="product__progress color-primary progress mt-15">
-                                  <div class="progress-bar"
-                                       role="progressbar"
-                                       style="width: ${progressPct}%"
-                                       aria-valuenow="${progressPct}"
-                                       aria-valuemin="0"
-                                       aria-valuemax="100"></div>
-                                </div>
-                                <div class="ul_li_between">
-                                  <span class="fs-13">Available: <span class="color-black">${available}</span></span>
-                                  <span class="fs-13">Stock: <span class="color-black">${stock}</span></span>
-                                </div>
-                              </div>
-                            </div>`;
+          <div class="product__slider-item">
+            <div class="product__slider-img">
+              <a href="${productUrl}">
+                <img src="/uploads/${p.image}" alt="${p.name}" />
+              </a>
+              <div class="offer">
+                ${discountPct}%<br /><span>off</span>
+              </div>
+            </div>
+            <div class="product__slider-content text-center">
+              <ul class="rating-star ul_li_center mr-10">
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="fas fa-star"></i></li>
+                <li><i class="far fa-star"></i></li>
+              </ul>
+              <h3><a href="${productUrl}">${p.name}</a></h3>
+              <h4 class="product__price">
+                <span class="new">${p.price_sale}</span>
+                <span class="old">${p.price}</span>
+              </h4>
+              <div class="product__progress color-primary progress mt-15">
+                <div class="progress-bar"
+                     role="progressbar"
+                     style="width: ${progressPct}%"
+                     aria-valuenow="${progressPct}"
+                     aria-valuemin="0"
+                     aria-valuemax="100"></div>
+              </div>
+              <div class="ul_li_between">
+                <span class="fs-13">Available: <span class="color-black">${available}</span></span>
+                <span class="fs-13">Stock: <span class="color-black">${stock}</span></span>
+              </div>
+            </div>
+          </div>`;
                             })
                             .join("");
 
@@ -3460,7 +3681,9 @@
                             let allProducts = [];
 
                             try {
-                              const res = await fetch("/productpagedata");
+                              const res = await fetch(
+                                "http://147.93.45.171:1600/productpagedata"
+                              );
                               allProducts = await res.json();
                             } catch (error) {
                               console.error(
@@ -3468,6 +3691,30 @@
                                 error
                               );
                               return;
+                            }
+
+                            function toSeoUrl(str) {
+                              return (str || "")
+                                .toString()
+                                .trim()
+                                .toLowerCase()
+                                .replace(/[\s_]+/g, "-")
+                                .replace(/[^a-z0-9\-]+/g, "")
+                                .replace(/\-+/g, "-")
+                                .replace(/^\-+|\-+$/g, "");
+                            }
+
+                            function getSlugForProduct(p) {
+                              if (
+                                p &&
+                                typeof p.slug === "string" &&
+                                p.slug.trim() !== ""
+                              ) {
+                                return encodeURIComponent(p.slug.trim());
+                              }
+                              return encodeURIComponent(
+                                toSeoUrl(p.name || "product-" + p.id)
+                              );
                             }
 
                             function renderProducts(tabId, keyword) {
@@ -3486,11 +3733,11 @@
 
                               if (filtered.length === 0) {
                                 container.innerHTML = `
-                                  <div class="col-12">
-                                    <div class="text-center">
-                                      <h6 class="mt-4 text-danger fw-bold">No "${keyword}" products available.</h6>
-                                    </div>
-                                  </div>`;
+          <div class="col-12">
+            <div class="text-center">
+              <h6 class="mt-4 text-danger fw-bold">No "${keyword}" products available.</h6>
+            </div>
+          </div>`;
                                 return;
                               }
 
@@ -3504,8 +3751,8 @@
                               const right = products.slice(3, 5);
 
                               let html = `<div class="col-lg-4 col-md-6">
-                                ${left.map(renderSingleProduct).join("")}
-                              </div>`;
+        ${left.map(renderSingleProduct).join("")}
+      </div>`;
 
                               if (center) {
                                 const centerPct = Math.min(
@@ -3515,106 +3762,92 @@
                                     parseInt(center.minimumorder) || 0
                                   )
                                 );
+                                const centerSlug = getSlugForProduct(center);
+                                const centerUrl = `/shop-single/${centerSlug}`;
+
                                 html += `
-                                <div class="col-lg-4 col-md-6">
-                                  <div class="feature-product__single2 mt-15 tx-product">
-                                    <div class="image text-center pos-rel">
-                                      <a href="shop-single.html?product_id=${
-                                        center.id
-                                      }">
-                                        <img src="/uploads/${
-                                          center.image
-                                        }" alt="${center.name}" />
-                                      </a>
-                                      <ul class="product__action style-2 br-5 ul_li">
-                                        <li><a href="/uploads/${
-                                          center.image
-                                        }" class="img-popup"><i class="far fa-compress-alt"></i></a></li>
-                                        <li><a href="#" class="add-to-cart" data-id="${
-                                          center.id
-                                        }" data-name="${center.name}"
-                                              data-price="${center.price.replace(
-                                                /[^0-9.]/g,
-                                                ""
-                                              )}"
-                                              data-price_sale="${center.price_sale.replace(
-                                                /[^0-9.]/g,
-                                                ""
-                                              )}"
-                                              data-image="${
-                                                center.image
-                                              }" data-store="${
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-product__single2 mt-15 tx-product">
+            <div class="image text-center pos-rel">
+              <a href="${centerUrl}">
+                <img src="/uploads/${center.image}" alt="${center.name}" />
+              </a>
+              <ul class="product__action style-2 br-5 ul_li">
+                <li><a href="/uploads/${
+                  center.image
+                }" class="img-popup"><i class="far fa-compress-alt"></i></a></li>
+                <li><a href="javascript:void(0)" class="add-to-cart" data-id="${
+                  center.id
+                }" data-name="${center.name}"
+                      data-price="${String(center.price || "").replace(
+                        /[^0-9.]/g,
+                        ""
+                      )}"
+                      data-price_sale="${String(
+                        center.price_sale || ""
+                      ).replace(/[^0-9.]/g, "")}"
+                      data-image="${center.image}" data-store="${
                                   center.brand || "Default Store"
                                 }"
-                                              data-sku="${
-                                                center.id
-                                              }-center" data-stockstatus="In Stock">
-                                              <i class="far fa-shopping-basket"></i></a></li>
-                                        <li><a href="#" class="add-to-wishlist" data-id="${
-                                          center.id
-                                        }" data-name="${center.name}"
-                                              data-price="${center.price.replace(
-                                                /[^0-9.]/g,
-                                                ""
-                                              )}"
-                                              data-price_sale="${center.price_sale.replace(
-                                                /[^0-9.]/g,
-                                                ""
-                                              )}"
-                                              data-image="${
-                                                center.image
-                                              }" data-store="${
+                      data-sku="${
+                        center.id
+                      }-center" data-stockstatus="In Stock">
+                      <i class="far fa-shopping-basket"></i></a></li>
+                <li><a href="javascript:void(0)" class="add-to-wishlist" data-id="${
+                  center.id
+                }" data-name="${center.name}"
+                      data-price="${String(center.price || "").replace(
+                        /[^0-9.]/g,
+                        ""
+                      )}"
+                      data-price_sale="${String(
+                        center.price_sale || ""
+                      ).replace(/[^0-9.]/g, "")}"
+                      data-image="${center.image}" data-store="${
                                   center.brand || "Default Store"
                                 }"
-                                              data-sku="${
-                                                center.id
-                                              }-center" data-stockstatus="In Stock">
-                                              <i class="far fa-heart"></i></a></li>
-                                      </ul>
-                                    </div>
-                                    <div class="product__content text-center">
-                                      <div class="product__review ul_li_center">
-                                        <ul class="rating-star ul_li mr-10">
-                                          ${[...Array(5)]
-                                            .map(
-                                              (_, i) =>
-                                                `<li><i class="${
-                                                  i < 3 ? "fas" : "far"
-                                                } fa-star"></i></li>`
-                                            )
-                                            .join("")}
-                                        </ul>
-                                      </div>
-                                      <h2 class="title">
-                                        <a href="shop-single.html?product_id=${
-                                          center.id
-                                        }">${center.name}</a>
-                                      </h2>
-                                      <h4 class="product__price mb-10">
-                                        <span class="new">${center.price}</span>
-                                        <span class="old">${
-                                          center.price_sale
-                                        }</span>
-                                      </h4>
-                                      <p class="fs-13">${center.description.slice(
-                                        0,
-                                        80
-                                      )}...</p>
-                                      <span class="product__available">Available: <span>${
-                                        center.minimumorder
-                                      }</span></span>
-                                      <div class="product__progress progress mt-2 color-primary">
-                                        <div class="progress-bar" role="progressbar" style="width:${centerPct}%"
-                                            aria-valuenow="${centerPct}" aria-valuemin="0" aria-valuemax="100"></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>`;
+                      data-sku="${
+                        center.id
+                      }-center" data-stockstatus="In Stock">
+                      <i class="far fa-heart"></i></a></li>
+              </ul>
+            </div>
+            <div class="product__content text-center">
+              <div class="product__review ul_li_center">
+                <ul class="rating-star ul_li mr-10">
+                  ${[...Array(5)]
+                    .map(
+                      (_, i) =>
+                        `<li><i class="${
+                          i < 3 ? "fas" : "far"
+                        } fa-star"></i></li>`
+                    )
+                    .join("")}
+                </ul>
+              </div>
+              <h2 class="title">
+                <a href="${centerUrl}">${center.name}</a>
+              </h2>
+              <h4 class="product__price mb-10">
+                <span class="new">${center.price}</span>
+                <span class="old">${center.price_sale}</span>
+              </h4>
+              <p class="fs-13">${(center.description || "").slice(0, 80)}...</p>
+              <span class="product__available">Available: <span>${
+                center.minimumorder
+              }</span></span>
+              <div class="product__progress progress mt-2 color-primary">
+                <div class="progress-bar" role="progressbar" style="width:${centerPct}%"
+                    aria-valuenow="${centerPct}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
                               }
 
                               html += `<div class="col-lg-4 col-md-6">
-                                ${right.map(renderSingleProduct).join("")}
-                              </div>`;
+        ${right.map(renderSingleProduct).join("")}
+      </div>`;
 
                               container.innerHTML = html;
                               bindLightbox(`${tabId} .row`);
@@ -3625,52 +3858,45 @@
                                 100,
                                 Math.max(0, parseInt(product.minimumorder) || 0)
                               );
+                              const slug = getSlugForProduct(product);
+                              const productUrl = `/shop-single/${slug}`;
+
                               return `
-                                <div class="feature-product__single mt-15">
-                                  <div class="feature-product__product ul_li">
-                                    <div class="image">
-                                      <a href="shop-single.html?product_id=${
-                                        product.id
-                                      }">
-                                        <img src="/uploads/${
-                                          product.image
-                                        }" alt="${product.name}" />
-                                      </a>
-                                    </div>
-                                    <div class="content">
-                                      <ul class="rating-star ul_li">
-                                        ${[...Array(5)]
-                                          .map(
-                                            (_, i) =>
-                                              `<li><i class="${
-                                                i < 4 ? "fas" : "far"
-                                              } fa-star"></i></li>`
-                                          )
-                                          .join("")}
-                                      </ul>
-                                      <h3 class="title">
-                                        <a href="shop-single.html?product_id=${
-                                          product.id
-                                        }">${product.name}</a>
-                                      </h3>
-                                      <h4 class="product__price">
-                                        <span class="new">${
-                                          product.price
-                                        }</span>
-                                        <span class="old">${
-                                          product.price_sale
-                                        }</span>
-                                      </h4>
-                                      <span class="product__available">Available: <span>${
-                                        product.minimumorder
-                                      }</span></span>
-                                      <div class="product__progress progress mt-2 color-primary">
-                                        <div class="progress-bar" role="progressbar" style="width:${pct}%"
-                                            aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>`;
+        <div class="feature-product__single mt-15">
+          <div class="feature-product__product ul_li">
+            <div class="image">
+              <a href="${productUrl}">
+                <img src="/uploads/${product.image}" alt="${product.name}" />
+              </a>
+            </div>
+            <div class="content">
+              <ul class="rating-star ul_li">
+                ${[...Array(5)]
+                  .map(
+                    (_, i) =>
+                      `<li><i class="${
+                        i < 4 ? "fas" : "far"
+                      } fa-star"></i></li>`
+                  )
+                  .join("")}
+              </ul>
+              <h3 class="title">
+                <a href="${productUrl}">${product.name}</a>
+              </h3>
+              <h4 class="product__price">
+                <span class="new">${product.price}</span>
+                <span class="old">${product.price_sale}</span>
+              </h4>
+              <span class="product__available">Available: <span>${
+                product.minimumorder
+              }</span></span>
+              <div class="product__progress progress mt-2 color-primary">
+                <div class="progress-bar" role="progressbar" style="width:${pct}%"
+                    aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
                             }
 
                             function bindLightbox(containerSelector) {
@@ -3704,6 +3930,7 @@
                               });
 
                               function showLightbox() {
+                                if (!images.length) return;
                                 lightboxImg.src = images[currentIndex];
                                 counterEl.textContent = `${
                                   currentIndex + 1
@@ -3715,24 +3942,35 @@
                                 lightbox.style.display = "none";
                               }
 
-                              lightboxPrev.onclick = () => {
-                                currentIndex =
-                                  (currentIndex - 1 + images.length) %
-                                  images.length;
-                                showLightbox();
-                              };
-                              lightboxNext.onclick = () => {
-                                currentIndex =
-                                  (currentIndex + 1) % images.length;
-                                showLightbox();
-                              };
-                              lightboxClose.onclick = closeLightbox;
+                              if (lightboxPrev)
+                                lightboxPrev.onclick = () => {
+                                  currentIndex =
+                                    (currentIndex - 1 + images.length) %
+                                    images.length;
+                                  showLightbox();
+                                };
+                              if (lightboxNext)
+                                lightboxNext.onclick = () => {
+                                  currentIndex =
+                                    (currentIndex + 1) % images.length;
+                                  showLightbox();
+                                };
+                              if (lightboxClose)
+                                lightboxClose.onclick = closeLightbox;
+
                               window.addEventListener("keydown", (e) => {
-                                if (lightbox.style.display !== "flex") return;
+                                if (
+                                  !lightbox ||
+                                  lightbox.style.display !== "flex"
+                                )
+                                  return;
                                 if (e.key === "Escape") closeLightbox();
-                                if (e.key === "ArrowLeft") lightboxPrev.click();
-                                if (e.key === "ArrowRight")
-                                  lightboxNext.click();
+                                if (e.key === "ArrowLeft") {
+                                  if (lightboxPrev) lightboxPrev.click();
+                                }
+                                if (e.key === "ArrowRight") {
+                                  if (lightboxNext) lightboxNext.click();
+                                }
                               });
                             }
 
@@ -3755,33 +3993,33 @@
 
                       <div class="brand__slide mt-30">
                         <div class="brand__item">
-                          <a href="#!"
-                            ><img src="assets/img/brand/b_01.png" alt=""
+                          <a href="#"
+                            ><img src="assets/img/brand/b_01.png" alt="Image"
                           /></a>
                         </div>
                         <div class="brand__item">
-                          <a href="#!"
-                            ><img src="assets/img/brand/b_02.png" alt=""
+                          <a href="#"
+                            ><img src="assets/img/brand/b_02.png" alt="Image"
                           /></a>
                         </div>
                         <div class="brand__item">
-                          <a href="#!"
-                            ><img src="assets/img/brand/b_03.png" alt=""
+                          <a href="#"
+                            ><img src="assets/img/brand/b_03.png" alt="Image"
                           /></a>
                         </div>
                         <div class="brand__item">
-                          <a href="#!"
-                            ><img src="assets/img/brand/b_04.png" alt=""
+                          <a href="#"
+                            ><img src="assets/img/brand/b_04.png" alt="Image"
                           /></a>
                         </div>
                         <div class="brand__item">
-                          <a href="#!"
-                            ><img src="assets/img/brand/b_05.png" alt=""
+                          <a href="#"
+                            ><img src="assets/img/brand/b_05.png" alt="Image"
                           /></a>
                         </div>
                         <div class="brand__item">
-                          <a href="#!"
-                            ><img src="assets/img/brand/b_02.png" alt=""
+                          <a href="#"
+                            ><img src="assets/img/brand/b_02.png" alt="Image"
                           /></a>
                         </div>
                       </div>
@@ -3796,13 +4034,16 @@
                     <div class="news__slide mt-20 tx-arrow">
                       <div class="news__item">
                         <div class="news__thumb">
-                          <a href="#!"><img src="#" alt="" /></a>
+                          <a href="#"><img src="#" alt="Image" /></a>
                         </div>
                         <div class="news__content">
                           <div class="news__meta ul_li">
                             <div class="news__meta-author ul_li">
                               <div class="avatar">
-                                <img src="assets/img/news/avatar.jpg" alt="" />
+                                <img
+                                  src="assets/img/news/avatar.jpg"
+                                  alt="Image"
+                                />
                               </div>
                               <span></span>
                             </div>
@@ -3823,15 +4064,18 @@
 
                       <div class="news__item">
                         <div class="news__thumb">
-                          <a href="#!"
-                            ><img src="assets/img/news/img_02.jpg" alt=""
+                          <a href="#"
+                            ><img src="assets/img/news/img_02.jpg" alt="Image"
                           /></a>
                         </div>
                         <div class="news__content">
                           <div class="news__meta ul_li">
                             <div class="news__meta-author ul_li">
                               <div class="avatar">
-                                <img src="assets/img/news/avatar.jpg" alt="" />
+                                <img
+                                  src="assets/img/news/avatar.jpg"
+                                  alt="Image"
+                                />
                               </div>
                               <span>nawab</span>
                             </div>
@@ -3855,15 +4099,18 @@
 
                       <div class="news__item">
                         <div class="news__thumb">
-                          <a href="#!"
-                            ><img src="assets/img/news/img_03.jpg" alt=""
+                          <a href="#"
+                            ><img src="assets/img/news/img_03.jpg" alt="Image"
                           /></a>
                         </div>
                         <div class="news__content">
                           <div class="news__meta ul_li">
                             <div class="news__meta-author ul_li">
                               <div class="avatar">
-                                <img src="assets/img/news/avatar.jpg" alt="" />
+                                <img
+                                  src="assets/img/news/avatar.jpg"
+                                  alt="Image"
+                                />
                               </div>
                               <span></span>
                             </div>
@@ -3881,8 +4128,8 @@
 
                       <div class="news__item">
                         <div class="news__thumb">
-                          <a href="#!"
-                            ><img src="assets/img/news/img_01.jpg" alt=""
+                          <a href="#"
+                            ><img src="assets/img/news/img_01.jpg" alt="Image"
                           /></a>
                         </div>
 
@@ -3890,7 +4137,10 @@
                           <div class="news__meta ul_li">
                             <div class="news__meta-author ul_li">
                               <div class="avatar">
-                                <img src="assets/img/news/avatar.jpg" alt="" />
+                                <img
+                                  src="assets/img/news/avatar.jpg"
+                                  alt="Image"
+                                />
                               </div>
                               <span></span>
                             </div>
@@ -3933,7 +4183,7 @@
                       </a>
                     </div>
                     <div class="add-banner__img mb-20">
-                      <img src="assets/img/product/img_164.png" alt="" />
+                      <img src="assets/img/product/img_164.png" alt="Image" />
                     </div>
                   </div>
 
@@ -3998,16 +4248,16 @@
 
                       <div class="feedback__nav">
                         <div class="feedback__img">
-                          <img src="assets/img/avatar/img_01.jpg" alt="" />
+                          <img src="assets/img/avatar/img_01.jpg" alt="Image" />
                         </div>
                         <div class="feedback__img">
-                          <img src="assets/img/avatar/img_03.jpg" alt="" />
+                          <img src="assets/img/avatar/img_03.jpg" alt="Image" />
                         </div>
                         <div class="feedback__img">
-                          <img src="assets/img/avatar/img_04.jpg" alt="" />
+                          <img src="assets/img/avatar/img_04.jpg" alt="Image" />
                         </div>
                         <div class="feedback__img">
-                          <img src="assets/img/avatar/img_01.jpg" alt="" />
+                          <img src="assets/img/avatar/img_01.jpg" alt="Image" />
                         </div>
                       </div>
                     </div>
@@ -4028,7 +4278,7 @@
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
             try {
-              const res = await fetch("/blogpostdata");
+              const res = await fetch("http://147.93.45.171:1600/blogpostdata");
               if (!res.ok) throw new Error("Failed to fetch blog data");
 
               const blogs = await res.json();
@@ -4046,12 +4296,24 @@
                 ".news__slide .news__item"
               );
 
+              function generateSlug(post) {
+                if (post.slug && post.slug.trim() !== "") return post.slug;
+                return post.name
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
+                  .replace(/[^\w-]+/g, "")
+                  .replace(/--+/g, "-")
+                  .replace(/^-+|-+$/g, "");
+              }
+
               newsItems.forEach((item, idx) => {
                 const blog = filtered[idx];
                 if (!blog) {
                   item.style.display = "none";
                   return;
                 }
+
+                const slug = generateSlug(blog);
 
                 const img = item.querySelector(".news__thumb img");
                 if (img) {
@@ -4061,7 +4323,7 @@
 
                 const link = item.querySelector(".news__thumb a");
                 if (link) {
-                  link.href = `news-single.html?id=${blog.id}`;
+                  link.href = `/news-single/${slug}`;
                 }
 
                 const authorSpan = item.querySelector(
@@ -4085,7 +4347,7 @@
                 const title = item.querySelector(".news__title a");
                 if (title) {
                   title.textContent = blog.name;
-                  title.href = `news-single.html?id=${blog.id}`;
+                  title.href = `/news-single/${slug}`;
                 }
 
                 const desc = item.querySelector("p");
@@ -4096,7 +4358,7 @@
                 }
 
                 const readMore = item.querySelector(".news__btn");
-                if (readMore) readMore.href = `news-single.html?id=${blog.id}`;
+                if (readMore) readMore.href = `/news-single/${slug}`;
 
                 const cat = item.querySelector(".news__cat");
                 if (cat) cat.textContent = `#${blog.tags || "News"}`;
@@ -4110,7 +4372,9 @@
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
             try {
-              const res = await fetch("/producttagdata");
+              const res = await fetch(
+                "http://147.93.45.171:1600/producttagdata"
+              );
               if (!res.ok) throw new Error("Failed to load tags");
               const tags = await res.json();
               if (!Array.isArray(tags)) throw new Error("Invalid tags data");
@@ -4156,7 +4420,11 @@
                     ></a>
                   </div>
                   <div class="thumb">
-                    <img src="assets/img/product/img_162.png" alt="" />
+                    <img
+                      src="https://avatars.mds.yandex.net/i?id=7f37b7f2fc7d2524a0bfc9b911a97044e8801245-4591219-images-thumbs&n=13"
+                      alt="Image"
+                      style="width: 281px; height: 272px"
+                    />
                   </div>
                 </div>
               </div>
@@ -4177,7 +4445,11 @@
                     ></a>
                   </div>
                   <div class="thumb">
-                    <img src="assets/img/product/img_163.png" alt="" />
+                    <img
+                      src="https://avatars.mds.yandex.net/i?id=55843da46ee046450d919a68734a3bb34699880a-12714503-images-thumbs&n=13"
+                      alt="Image"
+                      style="width: 253px; height: 242px"
+                    />
                   </div>
                 </div>
               </div>
@@ -4212,7 +4484,7 @@
               <div class="footer__widget col-lg-3 col-md-6 mt-40">
                 <div class="footer__logo mb-20">
                   <a href="index.html"
-                    ><img src="assets/img/logo/logo-2.svg" alt=""
+                    ><img src="assets/img/logo/logo-2.svg" alt="Image"
                   /></a>
                 </div>
                 <p>
@@ -4222,13 +4494,13 @@
                 </p>
                 <div class="apps-img mt-15 ul_li">
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/google_play.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/google_play.png" alt="Image"
                     /></a>
                   </div>
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/app_store.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/app_store.png" alt="Image"
                     /></a>
                   </div>
                 </div>
@@ -4264,8 +4536,8 @@
                 <ul class="footer__post">
                   <li class="footer__post-item tx-post ul_li">
                     <div class="post-thumb">
-                      <a href="#!"
-                        ><img src="assets/img/news/img_04.jpg" alt=""
+                      <a href="#"
+                        ><img src="assets/img/news/img_04.jpg" alt="Image"
                       /></a>
                       <span class="post-number">01</span>
                     </div>
@@ -4280,8 +4552,8 @@
                   </li>
                   <li class="footer__post-item tx-post ul_li">
                     <div class="post-thumb">
-                      <a href="#!"
-                        ><img src="assets/img/news/img_05.jpg" alt=""
+                      <a href="#"
+                        ><img src="assets/img/news/img_05.jpg" alt="Image"
                       /></a>
                       <span class="post-number">02</span>
                     </div>
@@ -4296,8 +4568,8 @@
                   </li>
                   <li class="footer__post-item tx-post ul_li">
                     <div class="post-thumb">
-                      <a href="#!"
-                        ><img src="assets/img/news/img_06.jpg" alt=""
+                      <a href="#"
+                        ><img src="assets/img/news/img_06.jpg" alt="Image"
                       /></a>
                       <span class="post-number">03</span>
                     </div>
@@ -4318,7 +4590,8 @@
           <div class="footer__bottom ul_li_center">
             <div class="footer__copyright mt-15">
               &copy; <span id="currentYear" class="text-light"></span>
-              <a href="index.html">Themexriver</a> . All Rights Reserved.
+              <a href="index.html">Themexriver</a>
+              <span class="text-light">. All Rights Reserved.</span>
             </div>
 
             <script>
@@ -4347,7 +4620,7 @@
             </div>
 
             <div class="payment_method mt-15">
-              <img src="assets/img/bg/payment_method.png" alt="" />
+              <img src="assets/img/bg/payment_method.png" alt="Image" />
             </div>
           </div>
         </div>
@@ -4356,7 +4629,7 @@
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           try {
-            const res = await fetch("/blogpostdata");
+            const res = await fetch("http://147.93.45.171:1600/blogpostdata");
             if (!res.ok) {
               console.error("Failed to fetch blog posts");
               return;
@@ -4369,12 +4642,31 @@
             }
 
             posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
             const latest = posts.slice(0, 3);
 
             const container = document.querySelector(".footer__post");
             if (!container) return;
             container.innerHTML = "";
+
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+            function getSlugForPost(post) {
+              if (!post) return "";
+              if (typeof post.slug === "string" && post.slug.trim() !== "") {
+                return encodeURIComponent(post.slug.trim());
+              }
+              return encodeURIComponent(
+                toSeoUrl(post.name || "post-" + (post.id || ""))
+              );
+            }
 
             latest.forEach((post, idx) => {
               const d = new Date(post.date);
@@ -4384,35 +4676,35 @@
                 year: "numeric",
               });
 
+              const slug = getSlugForPost(post);
+              const postUrl = `/news-single/${slug}`;
+
+              const words = String(post.name || "").split(/\s+/);
+              const shortTitle =
+                words.slice(0, 6).join(" ") + (words.length > 6 ? "…" : "");
+
               const li = document.createElement("li");
               li.className = "footer__post-item tx-post ul_li";
               li.innerHTML = `
-                <div class="post-thumb">
-                  <a href="#">
-                    <img src="/uploads/${post.image}" alt="${post.name}" />
-                  </a>
-                  <span class="post-number">${String(idx + 1).padStart(
-                    2,
-                    "0"
-                  )}</span>
-                </div>
-                <div class="post-content">
-                  <span class="post-date">
-                    <i class="far fa-calendar-alt"></i>${formattedDate}
-                  </span>
-                 <h3 class="post-title border-effect-2">
-                  <a href="news-single.html?id=${post.id}">
-                    ${(() => {
-                      const w = post.name.split(/\s+/);
-                      return (
-                        w.slice(0, 6).join(" ") + (w.length > 6 ? "…" : "")
-                      );
-                    })()}
-                  </a>
-                </h3>
-
-                </div>
-              `;
+          <div class="post-thumb">
+            <a href="${postUrl}">
+              <img src="/uploads/${post.image}" alt="${(
+                post.name || ""
+              ).replace(/"/g, "&quot;")}" />
+            </a>
+            <span class="post-number">${String(idx + 1).padStart(2, "0")}</span>
+          </div>
+          <div class="post-content">
+            <span class="post-date">
+              <i class="far fa-calendar-alt"></i>${formattedDate}
+            </span>
+            <h3 class="post-title border-effect-2">
+              <a href="${postUrl}">
+                ${shortTitle}
+              </a>
+            </h3>
+          </div>
+        `;
               container.appendChild(li);
             });
           } catch (err) {
@@ -4455,11 +4747,14 @@
             }
 
             try {
-              const res = await fetch("/newsletterpost", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-              });
+              const res = await fetch(
+                "http://147.93.45.171:1600/newsletterpost",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email }),
+                }
+              );
               const text = await res.text();
               if (res.ok) {
                 showBanner("Subscribed successfully!", "success");

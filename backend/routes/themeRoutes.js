@@ -57,8 +57,39 @@ router.use((err, req, res, next) => {
   });
 });
 
+router.use("/static", (req, res, next) => {
+  if (req.path.endsWith('.html')) {
+    const filePath = path.join(__dirname, "../themes", req.path);
+    if (fs.existsSync(filePath)) {
+      let content = fs.readFileSync(filePath, 'utf8');
+      // Replace window.parent.location.href with postMessage
+      content = content.replace(
+        /window\.parent\.location\.href\s*=\s*`http:\/\/localhost:5173\/\$\{page\}`/g,
+        'window.parent.postMessage({ type: "navigate", path: `/${page}` }, "*")'
+      );
+      content = content.replace(
+        /window\.parent\.location\.href\s*=\s*"http:\/\/localhost:5173\/"/g,
+        'window.parent.postMessage({ type: "navigate", path: "/" }, "*")'
+      );
+      // Replace href attributes
+      content = content.replace(
+        /a\.setAttribute\("href", `http:\/\/localhost:5173\/\$\{page\}`\)/g,
+        'a.setAttribute("href", "#")'
+      );
+      content = content.replace(
+        /a\.setAttribute\("href", "http:\/\/localhost:5173\/"\)/g,
+        'a.setAttribute("href", "#")'
+      );
+      res.setHeader('Content-Type', 'text/html');
+      res.send(content);
+      return;
+    }
+  }
+  next();
+});
+
 router.use(
-  "/static/:theme",
+  "/static",
   express.static(path.join(__dirname, "../themes"), {
     index: false,
     redirect: false,

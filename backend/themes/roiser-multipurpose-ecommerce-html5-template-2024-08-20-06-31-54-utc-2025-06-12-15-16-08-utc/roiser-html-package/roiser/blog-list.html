@@ -16,9 +16,6 @@
     />
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
-    <!-- <link rel="stylesheet" href="assets/css/venobox.min.css" /> -->
-    <!-- <link rel="stylesheet" href="assets/css/odometer.min.css" /> -->
-    <!-- <link rel="stylesheet" href="assets/css/swiper.min.css" /> -->
     <link rel="stylesheet" href="assets/css/nice-select.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
 
@@ -48,6 +45,146 @@
         });
       });
     </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function makeAbsolute(u) {
+          if (!u) return "";
+          if (/^https?:\/\//i.test(u)) return u;
+          if (/^\/?uploads\//i.test(u)) {
+            return window.location.origin + "/" + u.replace(/^\/+/, "");
+          }
+          if (u.startsWith("/")) return window.location.origin + u;
+          return window.location.origin + "/" + u;
+        }
+
+        function stripHtml(s) {
+          if (!s) return "";
+          try {
+            return s.replace(/<[^>]*>/g, "").trim();
+          } catch (e) {
+            return String(s);
+          }
+        }
+
+        function slugify(text) {
+          if (!text) return "";
+          return text
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/&/g, "and")
+            .replace(/[\s\W_]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+        }
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
+          .then(function (res) {
+            if (!res.ok)
+              throw new Error("Failed to fetch blog data: " + res.status);
+            return res.json();
+          })
+          .then(function (raw) {
+            const blogs = Array.isArray(raw) ? raw : raw.items || [];
+
+            const featured = blogs.slice(0, 50);
+
+            const itemList = featured.map(function (b, idx) {
+              const rawSlug = (
+                b.permalink ||
+                b.slug ||
+                b.name ||
+                b.title ||
+                b.id ||
+                ""
+              )
+                .toString()
+                .trim();
+              const safeSlug = slugify(rawSlug) || String(b.id || idx);
+              const url = makeAbsolute("/blog-details/" + safeSlug);
+              return {
+                "@type": "ListItem",
+                position: idx + 1,
+                url: url,
+              };
+            });
+
+            const blogNodes = featured.map(function (b) {
+              const rawSlug = (
+                b.permalink ||
+                b.slug ||
+                b.name ||
+                b.title ||
+                b.id ||
+                ""
+              )
+                .toString()
+                .trim();
+              const safeSlug = slugify(rawSlug) || String(b.id || "");
+              const url = makeAbsolute("/blog-details/" + safeSlug);
+
+              let img = b.image || b.featured_image || "";
+              if (img && !/^https?:\/\//i.test(img)) {
+                if (!/^\/?uploads\//i.test(img))
+                  img = "/uploads/" + img.replace(/^\/+/, "");
+              }
+              img = img ? makeAbsolute(img) : undefined;
+
+              const authorName = b.author_name || b.author || null;
+              const datePublished =
+                b.date || b.datePublished || b.published_at || undefined;
+              const description = stripHtml(
+                b.description || b.excerpt || b.content || ""
+              );
+
+              const node = {
+                "@type": "BlogPosting",
+                headline: b.name || b.title || "",
+                url: url,
+              };
+
+              if (img) node.image = img;
+              if (description) node.description = description;
+              if (datePublished) node.datePublished = datePublished;
+              if (authorName)
+                node.author = { "@type": "Person", name: authorName };
+
+              return node;
+            });
+
+            const schemaData = {
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "CollectionPage",
+                  name: document.title || "Blog",
+                  url: window.location.href,
+                  description: "Blog listing - latest posts.",
+                  mainEntity: {
+                    "@type": "ItemList",
+                    itemListElement: itemList,
+                  },
+                },
+                ...blogNodes,
+              ].filter(Boolean),
+            };
+
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            try {
+              script.appendChild(
+                document.createTextNode(JSON.stringify(schemaData))
+              );
+            } catch (e) {
+              script.text = JSON.stringify(schemaData);
+            }
+            document.head.appendChild(script);
+          })
+          .catch(function (err) {
+            console.warn("blog-grid schema error:", err);
+          });
+      });
+    </script>
   </head>
 
   <style>
@@ -73,6 +210,10 @@
     .read-more {
       margin-top: auto;
       display: inline-block;
+    }
+
+    .post-car1 {
+      height: 500px !important;
     }
   </style>
 
@@ -185,17 +326,21 @@
                       >+(258) 2159-2159</a
                     >
                   </div>
-                  <a href="tel:+25821592159" class="icon">
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
                     <i class="fa-regular fa-phone"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="wishlist.html" class="icon">
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
                     <i class="fa-sharp fa-regular fa-heart"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="cart.html" class="icon">
+                  <a href="cart.html" class="icon" aria-label="View cart">
                     <i class="fa-light fa-bag-shopping"></i>
                     <span>0</span>
                   </a>
@@ -246,7 +391,7 @@
                     <a href="shop-grid.html">men</a>
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#">Pages</a>
+                    <a href="/about">Pages</a>
                     <ul>
                       <li><a href="about.html">About</a></li>
                       <li><a href="login.html">Login</a></li>
@@ -271,9 +416,13 @@
               <div class="header-right">
                 <span>Get 30% Discount Now <span>Sale</span></span>
                 <div class="header-right-item">
-                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
-                    ><i class="fa-sharp fa-solid fa-bars"></i
-                  ></a>
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -342,17 +491,15 @@
       <div class="container">
         <div class="page-header-content">
           <h1 class="title">Blog List</h1>
-          <h4 class="sub-title">
+          <h2 class="sub-title">
             <span class="home">
-              <a href="index.html">
-                <span>Home</span>
-              </a>
+              <a href="#"><span>Home</span></a>
             </span>
-            <span class="icon"><i class="fa-solid fa-angle-right"></i></span>
-            <span class="inner">
-              <span>Blog List</span>
+            <span class="icon">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
             </span>
-          </h4>
+            <span class="inner"><span>Blog List</span></span>
+          </h2>
         </div>
       </div>
     </section>
@@ -360,7 +507,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -428,7 +577,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -470,7 +619,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -601,7 +750,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -609,7 +758,7 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   resultBox.innerHTML =
                     matches
@@ -618,20 +767,18 @@
                         const mainPrice = formatPrice(p.price);
                         const salePrice = p.price_sale
                           ? `<strong class="text-dark me-2">${formatPrice(
-                              p.price_sale
+                              p.price
                             )}</strong>
-                          <s class="fw-bold text-danger">${formatPrice(
-                            p.price
-                          )}</s>`
+                              <s class="fw-bold text-danger">${formatPrice(
+                                p.price_sale
+                              )}</s>`
                           : `<strong class="fw-bold text-dark">${formatPrice(
                               p.price
                             )}</strong>`;
 
                         return `
                     <div
-                      onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                        q
-                      )}'"
+                      onclick="window.location.href='/shop'"
                       style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                     >
                       <img src="/uploads/${img}" alt="${p.name}"
@@ -648,9 +795,7 @@
                       .join("") +
                     `
                   <div
-                    onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                      q
-                    )}'"
+                    onclick="window.location.href='/shop'"
                     style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
                   >
                     Show all results
@@ -677,58 +822,105 @@
     </script>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        fetch("/blogpostdata")
+      function slugify(text) {
+        return (text || "")
+          .toString()
+          .trim()
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-");
+      }
+
+      function loadBlogPosts() {
+        const container = document.getElementById("blog-post-container");
+        if (!container) return;
+
+        if (container.dataset.loaded === "true") return;
+        container.dataset.loaded = "true";
+
+        container.addEventListener("click", function (e) {
+          const a = e.target.closest && e.target.closest("a[data-post-id]");
+          if (!a) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+
+          const id = a.dataset.postId;
+          const slug = a.dataset.postSlug;
+
+          try {
+            sessionStorage.setItem("selectedPostId", String(id));
+          } catch (err) {}
+
+          window.location.href = "/blog-details/" + encodeURIComponent(slug);
+        });
+
+        container.innerHTML = "Loading blogs...";
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
           .then((res) => res.json())
           .then((posts) => {
-            const container = document.getElementById("blog-post-container");
+            container.innerHTML = "";
             posts.slice(0, 9).forEach((post) => {
+              const slug = slugify(
+                post.permalink || post.slug || post.name || post.id
+              );
+
               const postCard = document.createElement("div");
               postCard.className = "col-lg-4 col-md-6";
-
               postCard.innerHTML = `
-                      <div class="post-card">
-                        <div class="post-thumb">
-                          <a href="blog-details.html?id=${post.id}">
-                              <img
-                                src="/uploads/${post.image}"
-                                alt="post"
-                                style="width:100%;height:auto;"
-                              />
-                            </a>
-                        </div>
-                        <div class="post-content-wrap">
-                          <div class="post-content">
-                            <ul class="post-meta">
-                              <li><i class="fa-sharp fa-solid fa-calendar-days"></i> ${new Date(
-                                post.date
-                              ).toLocaleDateString()}</li>
-                              <li><i class="fa-regular fa-tag"></i> ${
-                                post.tags
-                              }</li>
-                            </ul>
-                            <h3 class="title">
-                             <a href="blog-details.html?id=${post.id}">${
-                post.name
-              }</a>
-                            </h3>
-                          </div>
-                          <div class="post-bottom">
-                            <a href="blog-details.html?id=${
-                              post.id
-                            }" class="read-more">Read More<i class="fa-regular fa-arrow-right"></i></a>
-                          </div>
-                        </div>
+                  <div class="post-card post-car1">
+                    <div class="post-thumb">
+                      <a href="/blog-details/${slug}" data-post-id="${
+                post.id
+              }" data-post-slug="${slug}">
+                        <img src="/uploads/${post.image}" 
+                            alt="Image for blog post titled ${post.name}" 
+                            style="width:100%;height:auto;" />
+                      </a>
+                    </div>
+                    <div class="post-content-wrap">
+                      <div class="post-content">
+                        <ul class="post-meta">
+                          <li><i class="fa-sharp fa-solid fa-calendar-days"></i> 
+                            ${new Date(post.date).toLocaleDateString()}
+                          </li>
+                          <li><i class="fa-regular fa-tag"></i> ${
+                            post.tags
+                          }</li>
+                        </ul>
+                        <h3 class="title">
+                          <a href="/blog-details/${slug}" data-post-id="${
+                post.id
+              }" data-post-slug="${slug}">
+                            ${post.name}
+                          </a>
+                        </h3>
                       </div>
-                    `;
-
+                      <div class="post-bottom">
+                        <a href="/blog-details/${slug}" class="read-more" data-post-id="${
+                post.id
+              }" data-post-slug="${slug}">
+                          Read More
+                          <span class="sr-only"> about ${post.name}</span>
+                          <i class="fa-regular fa-arrow-right" aria-hidden="true"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                `;
               container.appendChild(postCard);
             });
           })
           .catch((err) => {
             console.error("Failed to load blog posts:", err);
+            container.innerHTML =
+              "<p>Failed to load blog posts. Please try again later.</p>";
           });
-      });
+      }
+
+      document.addEventListener("DOMContentLoaded", loadBlogPosts);
+      window.loadBlogPosts = loadBlogPosts;
     </script>
 
     <footer class="footer-section bg-grey pt-60">
@@ -848,7 +1040,7 @@
                 <div class="footer-form mb-20">
                   <form action="#" class="rr-subscribe-form">
                     <input
-                      class="form-control"
+                      class="form-control py-4"
                       type="email"
                       name="email"
                       placeholder="Email address"
@@ -906,11 +1098,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -935,15 +1130,19 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="#"
-                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  <a href="javascript:void(0)"
+                    ><img
+                      src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
+                      alt="img"
+                      loading="lazy"
+                      style="width: 264px; height: 24px"
                   /></a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6">
               <p>
-                Copyright & Design <span id="designYear">2024</span>
+                Copyright & Design <span id="designYear">2025</span>
                 <span>©Roiser</span>. All Right Reserved
               </p>
             </div>
@@ -963,7 +1162,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -973,7 +1172,7 @@
             s.type = "text/css";
 
             s.textContent = `
-                            body {
+             body {
                 font-family: ${cfg.font_family}, sans-serif !important;
                 font-size: ${cfg.body_font_size}px !important;
               }
@@ -996,7 +1195,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1015,7 +1214,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1074,5 +1273,6 @@
     <script src="assets/js/vendor/swiper.min.js"></script>
     <script src="assets/js/vendor/nice-select.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   </body>
 </html>

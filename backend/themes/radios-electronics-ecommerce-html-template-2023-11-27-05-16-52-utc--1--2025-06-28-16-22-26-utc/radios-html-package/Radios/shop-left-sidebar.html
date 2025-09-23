@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="assets/css/slick.css" />
     <link rel="stylesheet" href="assets/css/magnific-popup.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -51,7 +51,7 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
   </head>
 
   <style>
@@ -198,7 +198,7 @@
           <div class="header__middle ul_li_between justify-content-xs-center">
             <div class="header__logo">
               <a href="index.html">
-                <img src="assets/img/logo/logo.svg" alt="" />
+                <img src="assets/img/logo/logo.svg" alt="Image" />
               </a>
             </div>
 
@@ -224,16 +224,18 @@
                 const searchForm = document.querySelector(
                   ".header__search-box"
                 );
+                if (!searchForm) return;
                 const searchInput =
                   searchForm.querySelector('input[type="text"]');
+                if (!searchInput) return;
 
                 const dropdown = document.createElement("div");
                 dropdown.className = "header-search-autocomplete";
                 Object.assign(dropdown.style, {
                   position: "absolute",
                   top: "100%",
-                  left: 0,
-                  right: 0,
+                  left: "0",
+                  right: "0",
                   background: "#fff",
                   border: "1px solid #ddd",
                   zIndex: 1000,
@@ -241,124 +243,174 @@
                   overflowY: "auto",
                   display: "none",
                 });
-                searchForm.style.position = "relative";
+                const prevPos = getComputedStyle(searchForm).position;
+                if (prevPos === "static")
+                  searchForm.style.position = "relative";
                 searchForm.appendChild(dropdown);
 
                 const catsMap = {};
                 try {
-                  const res = await fetch("/productcatdata");
-                  if (!res.ok) throw new Error(res.status);
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/productcatdata"
+                  );
+                  if (!res.ok) throw new Error("failed to load categories");
                   const cats = await res.json();
-                  cats
+                  (Array.isArray(cats) ? cats : [])
                     .filter(
-                      (c) => c.status === "Published" || c.status === "Draft"
+                      (c) =>
+                        c && (c.status === "Published" || c.status === "Draft")
                     )
                     .sort((a, b) => new Date(b.date) - new Date(a.date))
                     .forEach((c) => {
                       catsMap[c.id] = c.name;
-                      const opt = document.createElement("option");
-                      opt.value = c.id;
-                      opt.textContent = c.name;
-                      select.appendChild(opt);
+                      if (select) {
+                        const opt = document.createElement("option");
+                        opt.value = c.id;
+                        opt.textContent = c.name;
+                        select.appendChild(opt);
+                      }
                     });
-                } catch {
-                  const errOpt = document.createElement("option");
-                  errOpt.value = "";
-                  errOpt.text = "Unable to load categories";
-                  select.appendChild(errOpt);
+                } catch (e) {
+                  if (select) {
+                    const errOpt = document.createElement("option");
+                    errOpt.value = "";
+                    errOpt.text = "Unable to load categories";
+                    select.appendChild(errOpt);
+                  }
                 }
 
-                let timer;
+                const navigateToShop = (searchParams) => {
+                  let qs = "";
+                  if (typeof searchParams === "string") qs = searchParams;
+                  else if (searchParams instanceof URLSearchParams)
+                    qs = searchParams.toString();
+                  else if (searchParams && typeof searchParams === "object")
+                    qs = new URLSearchParams(searchParams).toString();
+
+                  const stateObj = { search: "", category: "" };
+                  if (qs) {
+                    const parsed = new URLSearchParams(qs);
+                    stateObj.search = parsed.get("search") || "";
+                    stateObj.category = parsed.get("category") || "";
+                  }
+
+                  try {
+                    history.pushState(stateObj, document.title || "", "/shop");
+
+                    if (
+                      window.__themeRoute &&
+                      typeof window.__themeRoute === "function"
+                    ) {
+                      try {
+                        window.__themeRoute("/shop", { replace: false });
+                        window.dispatchEvent(new PopStateEvent("popstate"));
+                        return;
+                      } catch (e) {}
+                    }
+
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+
+                    if (!window.__themeRoute) {
+                      window.location.href = "/shop";
+                    }
+                  } catch (err) {
+                    const fallback = "/shop" + (qs ? "?" + qs : "");
+                    window.location.href = fallback;
+                  }
+                };
+
+                let timer = null;
                 searchInput.addEventListener("input", () => {
                   clearTimeout(timer);
-                  const q = searchInput.value.trim();
-                  const catId = select.value;
+                  const q = (searchInput.value || "").trim();
+                  const catId = (select && select.value) || "";
                   if (q.length < 2) {
                     dropdown.style.display = "none";
                     return;
                   }
-                  timer = setTimeout(() => {
-                    fetch("/productpagedata")
-                      .then((r) => r.json())
-                      .then((products) => {
-                        let list = products;
 
-                        if (catId) {
-                          const catName = catsMap[catId];
-                          list = list.filter(
-                            (p) =>
-                              p.categories &&
-                              p.categories
-                                .split(",")
-                                .map((s) => s.trim())
-                                .includes(catName)
-                          );
-                        }
+                  timer = setTimeout(async () => {
+                    try {
+                      const r = await fetch(
+                        "http://147.93.45.171:1600/productpagedata"
+                      );
+                      if (!r.ok) throw new Error("failed to load products");
+                      const products = await r.json();
+                      let list = Array.isArray(products) ? products : [];
 
-                        const matches = list
-                          .filter((p) =>
-                            p.name.toLowerCase().includes(q.toLowerCase())
-                          )
-                          .slice(0, 5);
+                      if (catId) {
+                        const catName = catsMap[catId];
+                        list = list.filter(
+                          (p) =>
+                            p.categories &&
+                            p.categories
+                              .split(",")
+                              .map((s) => s.trim())
+                              .includes(catName)
+                        );
+                      }
 
-                        if (!matches.length) {
-                          dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
-                        } else {
-                          dropdown.innerHTML =
-                            matches
-                              .map((p) => {
-                                const priceHTML = p.price_sale
-                                  ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999">${p.price}</del>`
-                                  : `<strong style="color:#000">${p.price}</strong>`;
-                                return `
-                              <div class="autocomplete-item" 
-                                   style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee"
-                                   data-name="${encodeURIComponent(p.name)}">
-                                <img src="/uploads/${p.image}" 
-                                     alt="${p.name}" 
-                                     style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                      const matches = list
+                        .filter((p) =>
+                          (p.name || "").toLowerCase().includes(q.toLowerCase())
+                        )
+                        .slice(0, 5);
+
+                      if (!matches.length) {
+                        dropdown.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
+                      } else {
+                        dropdown.innerHTML =
+                          matches
+                            .map((p) => {
+                              const priceHTML = p.price_sale
+                                ? `<strong style="color:#000">${p.price}</strong> <del style="color:#999">${p.price_sale}</del>`
+                                : `<strong style="color:#000">${p.price}</strong>`;
+                              return `
+                              <div class="autocomplete-item"
+                                  style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee"
+                                  data-name="${encodeURIComponent(
+                                    p.name || ""
+                                  )}">
+                                <img src="/uploads/${p.image || ""}"
+                                    alt="${(p.name || "").replace(/"/g, "")}"
+                                    style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                                 <div>
                                   <div style="font-weight:600;color:#333">${
-                                    p.name
+                                    p.name || ""
                                   }</div>
                                   <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
                                 </div>
                               </div>`;
-                              })
-                              .join("") +
-                            `
-                            <div class="autocomplete-show-all" 
-                                 style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
-                              Show all results
-                            </div>`;
-                        }
+                            })
+                            .join("") +
+                          `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">Show all results</div>`;
+                      }
 
-                        dropdown.style.display = "block";
-                      })
-                      .catch(() => {
-                        dropdown.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
-                        dropdown.style.display = "block";
-                      });
+                      dropdown.style.display = "block";
+                    } catch (err) {
+                      dropdown.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                      dropdown.style.display = "block";
+                    }
                   }, 300);
                 });
 
                 dropdown.addEventListener("click", (e) => {
                   const item = e.target.closest(".autocomplete-item");
                   if (item) {
-                    const name = decodeURIComponent(item.dataset.name);
+                    const name = decodeURIComponent(item.dataset.name || "");
                     const params = new URLSearchParams({
                       search: name,
-                      category: select.value,
+                      category: select ? select.value : "",
                     });
-                    window.location.href = `shop.html?${params}`;
+                    navigateToShop(params);
                     return;
                   }
                   if (e.target.closest(".autocomplete-show-all")) {
                     const params = new URLSearchParams({
                       search: searchInput.value.trim(),
-                      category: select.value,
+                      category: select ? select.value : "",
                     });
-                    window.location.href = `shop.html?${params}`;
+                    navigateToShop(params);
                   }
                 });
 
@@ -371,9 +423,9 @@
                   e.preventDefault();
                   const params = new URLSearchParams({
                     search: searchInput.value.trim(),
-                    category: select.value,
+                    category: select ? select.value : "",
                   });
-                  window.location.href = `shop.html?${params}`;
+                  navigateToShop(params);
                 });
               });
             </script>
@@ -382,28 +434,30 @@
               <div class="header__language mr-15">
                 <ul>
                   <li>
-                    <a href="#!" class="lang-btn"
+                    <a href="shop.html" class="lang-btn"
                       >USD <i class="far fa-chevron-down"></i
                     ></a>
                     <ul class="lang_sub_list">
-                      <li><a href="#">USD</a></li>
-                      <li><a href="#">BDT</a></li>
-                      <li><a href="#">EUR</a></li>
+                      <li><a href="javascript:void(0)">USD</a></li>
+                      <li><a href="javascript:void(0)">BDT</a></li>
+                      <li><a href="javascript:void(0)">EUR</a></li>
                     </ul>
                   </li>
                 </ul>
               </div>
+
               <div class="header__language">
                 <ul>
                   <li>
-                    <a href="#!" class="lang-btn"
-                      ><img src="assets/img/icon/usd_flag.png" alt="" />English
-                      <i class="far fa-chevron-down"></i
+                    <a href="shop.html" class="lang-btn"
+                      ><img
+                        src="assets/img/icon/usd_flag.png"
+                        alt="Image" />English <i class="far fa-chevron-down"></i
                     ></a>
                     <ul class="lang_sub_list">
-                      <li><a href="#">English</a></li>
-                      <li><a href="#">Arabic</a></li>
-                      <li><a href="#">Bangla</a></li>
+                      <li><a href="javascript:void(0)">English</a></li>
+                      <li><a href="javascript:void(0)">Arabic</a></li>
+                      <li><a href="javascript:void(0)">Bangla</a></li>
                     </ul>
                   </li>
                 </ul>
@@ -412,17 +466,17 @@
             <div class="header__icons ul_li">
               <div class="icon">
                 <a href="account.html"
-                  ><img src="assets/img/icon/user.svg" alt=""
+                  ><img src="assets/img/icon/user.svg" alt="Image"
                 /></a>
               </div>
               <div class="icon wishlist-icon">
-                <a href="#!">
-                  <img src="assets/img/icon/heart.svg" alt="" />
+                <a href="cart.html">
+                  <img src="assets/img/icon/heart.svg" alt="Image" />
                   <span class="count" id="wishlist-data">0</span>
                 </a>
               </div>
               <div class="cart_btn icon">
-                <img src="assets/img/icon/shopping_bag.svg" alt="" />
+                <img src="assets/img/icon/shopping_bag.svg" alt="Image" />
                 <span class="count" id="cart-data">0</span>
               </div>
             </div>
@@ -436,7 +490,7 @@
             <div class="header__wrap ul_li_between">
               <div class="header__cat ul_li">
                 <div class="hamburger_menu">
-                  <a href="javascript:void(0);" class="active">
+                  <a href="javascript:void(0)" class="active">
                     <div class="icon bar">
                       <span><i class="fal fa-bars"></i></span>
                     </div>
@@ -446,42 +500,54 @@
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_01.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_01.svg"
+                          alt="Image" /></span
                       >Laptops & Computers</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_02.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_02.svg"
+                          alt="Image" /></span
                       >CC Tv & Camera</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_03.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_03.svg"
+                          alt="Image" /></span
                       >Home Equipment</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_04.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_04.svg"
+                          alt="Image" /></span
                       >Tv & Audios</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_05.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_05.svg"
+                          alt="Image" /></span
                       >Printers & Ink</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_06.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_06.svg"
+                          alt="Image" /></span
                       >Gaming & Fun</a
                     >
                   </li>
@@ -502,7 +568,7 @@
 
       <aside class="slide-bar">
         <div class="close-mobile-menu">
-          <a href="javascript:void(0);"><i class="fal fa-times"></i></a>
+          <a href="javascript:void(0)"><i class="fal fa-times"></i></a>
         </div>
 
         <div class="cart_sidebar">
@@ -558,7 +624,9 @@
 
             async function loadWishlist() {
               try {
-                const res = await fetch("/wishlistdata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/wishlistdata"
+                );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
 
@@ -574,7 +642,9 @@
 
             async function loadCart() {
               try {
-                const res = await fetch("/allcartdata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/allcartdata"
+                );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
 
@@ -628,9 +698,12 @@
               const id = itemEl.dataset.id;
 
               try {
-                const res = await fetch(`/deletecart/${id}`, {
-                  method: "DELETE",
-                });
+                const res = await fetch(
+                  `http://147.93.45.171:1600/deletecart/${id}`,
+                  {
+                    method: "DELETE",
+                  }
+                );
                 const json = await res.json();
                 if (res.ok && json.success) {
                   loadCart();
@@ -697,7 +770,7 @@
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#">Shop</a>
+              <a href="/shop">Shop</a>
               <ul class="sub-menu">
                 <li><a href="shop.html">Shop Default</a></li>
                 <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
@@ -709,14 +782,14 @@
             </li>
             <li><a href="shop.html">Accesories</a></li>
             <li class="dropdown">
-              <a href="#!">Blog</a>
+              <a href="/news">Blog</a>
               <ul class="sub-menu">
                 <li><a href="news.html">Blog</a></li>
                 <li><a href="news-single.html">Blog Details</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#!">Pages</a>
+              <a href="/about">Pages</a>
               <ul class="submenu">
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="account.html">Account</a></li>
@@ -755,7 +828,7 @@
                       <p class="woocommerce-result-count"></p>
 
                       <div class="products-sizes">
-                        <a href="#!" class="grid-4">
+                        <a href="javascript:void(0)" class="grid-4">
                           <div class="grid-draw">
                             <span></span>
                             <span></span>
@@ -776,7 +849,7 @@
                           </div>
                         </a>
 
-                        <a href="#!" class="grid-3 active">
+                        <a href="javascript:void(0)" class="grid-3 active">
                           <div class="grid-draw">
                             <span></span>
                             <span></span>
@@ -794,7 +867,7 @@
                           </div>
                         </a>
 
-                        <a href="#!" class="list-view">
+                        <a href="javascript:void(0)" class="list-view">
                           <div class="grid-draw-line">
                             <span></span>
                             <span></span>
@@ -834,7 +907,9 @@
                       >
                         <li class="product">
                           <div class="product-holder">
-                            <a href="shop-single.html"><img src="" alt="" /></a>
+                            <a href="shop-single.html"
+                              ><img src="" alt="Image"
+                            /></a>
                             <ul class="product__action"></ul>
                           </div>
                         </li>
@@ -844,15 +919,15 @@
                     <div class="pagination_wrap pt-20">
                       <ul>
                         <li>
-                          <a href="#!"
+                          <a href="#"
                             ><i class="far fa-angle-double-left"></i
                           ></a>
                         </li>
-                        <li><a class="current_page" href="#!">1</a></li>
-                        <li><a href="#!">2</a></li>
-                        <li><a href="#!">3</a></li>
+                        <li><a class="current_page" href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
                         <li>
-                          <a href="#!"
+                          <a href="#"
                             ><i class="far fa-angle-double-right"></i
                           ></a>
                         </li>
@@ -919,23 +994,25 @@
                             2021 <span>Laptop</span> <br />
                             Collection
                           </h3>
-                          <a class="thm-btn no-icon" href="#!">
+                          <a class="thm-btn no-icon" href="/shop-left-sidebar">
                             <span class="btn-wrap">
                               <span>Buy Now</span>
                               <span>Buy Now</span>
                             </span>
                           </a>
                         </div>
-                        <div class="image">
+                        <div class="image ms-0">
                           <img
                             class="add_img"
-                            src="assets/img/product/img_177.png"
-                            alt=""
+                            src="https://avatars.mds.yandex.net/i?id=516172841623653261c62c25e774d493dfa971b0-4580368-images-thumbs&n=13"
+                            alt="Image"
+                            style="width: 170px; height: 181px"
                           />
                           <img
-                            class="add_shape"
-                            src="assets/img/shape/add_shape.png"
-                            alt=""
+                            class="add_img"
+                            src="https://avatars.mds.yandex.net/i?id=516172841623653261c62c25e774d493dfa971b0-4580368-images-thumbs&n=13"
+                            alt="Image"
+                            style="width: 170px; height: 181px"
                           />
                         </div>
                       </div>
@@ -1002,11 +1079,14 @@
 
           fetchProducts = async (filters = {}) => {
             try {
-              const res = await fetch("/combinedfilter", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(filters),
-              });
+              const res = await fetch(
+                "http://147.93.45.171:1600/combinedfilter",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(filters),
+                }
+              );
               if (!res.ok) throw new Error(`HTTP ${res.status}`);
               const products = await res.json();
 
@@ -1026,89 +1106,97 @@
 
           const isListViewActive = () => listEl.classList.contains("list-view");
 
+          const generateSlug = (p) => {
+            if (p.slug && p.slug.trim() !== "") return p.slug;
+            return p.name
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[^\w-]+/g, "")
+              .replace(/--+/g, "-")
+              .replace(/^-+|-+$/g, "");
+          };
+
           const renderProduct = (p) => {
             const percent = Math.min(100, Math.round(p.minimumorder));
             const showDesc = isListViewActive();
+            const slug = generateSlug(p);
+
             return `
-              <li class="product${showDesc ? " list-view-item" : ""}">
-                <div class="product-holder">
-                  <a href="shop-single.html?id=${p.id}">
-                    <img src="/uploads/${p.image}" alt="${
+      <li class="product${showDesc ? " list-view-item" : ""}">
+        <div class="product-holder">
+          <!-- Updated link to shop-single/slug -->
+          <a href="/shop-single/${slug}">
+            <img src="/uploads/${p.image}" alt="${p.name}" class="img-uploads"/>
+          </a>
+          <ul class="product__action">
+            <li>
+              <a href="/uploads/${p.image}" class="img-popup icon-btn">
+                <i class="far fa-compress-alt"></i>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" class="cart-btn add-to-cart"
+                data-id="${p.id}" data-name="${p.name}" data-store="${p.store}"
+                data-image="${p.image}" data-price="${p.price}"
+                data-price_sale="${p.price_sale}">
+                <i class="far fa-shopping-basket"></i>
+              </a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" class="icon-btn add-to-wishlist"
+                data-id="${p.id}" data-name="${p.name}" data-store="${p.store}"
+                data-image="${p.image}"
+                data-price="${parseFloat(p.price.replace(/[^0-9.]/g, ""))}"
+                data-price_sale="${parseFloat(
+                  p.price_sale.replace(/[^0-9.]/g, "")
+                )}"
+                data-sku="${p.sku}" data-stockstatus="${p.stockstatus}">
+                <i class="far fa-heart"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="product-info">
+          <div class="product__review ul_li mb-2">
+            <ul class="rating-star ul_li mr-10">
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="far fa-star"></i></li>
+              <li><i class="far fa-star"></i></li>
+            </ul>
+            <span>(${p.reviewCount}) Review</span>
+          </div>
+          
+          <!-- Updated link for product name -->
+          <h2 class="product__title"><a href="/shop-single/${slug}">${
               p.name
-            }" class="img-uploads"/>
-                  </a>
-                  <ul class="product__action">
-                    <li>
-                      <a href="/uploads/${p.image}" class="img-popup icon-btn">
-                        <i class="far fa-compress-alt"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" class="cart-btn add-to-cart"
-                        data-id="${p.id}" data-name="${p.name}" data-store="${
-              p.store
-            }"
-                        data-image="${p.image}" data-price="${p.price}"
-                        data-price_sale="${p.price_sale}">
-                        <i class="far fa-shopping-basket"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" class="icon-btn add-to-wishlist"
-                        data-id="${p.id}" data-name="${p.name}" data-store="${
-              p.store
-            }"
-                        data-image="${p.image}"
-                        data-price="${parseFloat(
-                          p.price.replace(/[^0-9.]/g, "")
-                        )}"
-                        data-price_sale="${parseFloat(
-                          p.price_sale.replace(/[^0-9.]/g, "")
-                        )}"
-                        data-sku="${p.sku}" data-stockstatus="${p.stockstatus}">
-                        <i class="far fa-heart"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-      
-                <div class="product-info">
-                  <div class="product__review ul_li mb-2">
-                    <ul class="rating-star ul_li mr-10">
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="far fa-star"></i></li>
-                      <li><i class="far fa-star"></i></li>
-                    </ul>
-                    <span>(${p.reviewCount}) Review</span>
-                  </div>
-                  
-                  <h2 class="product__title"><a href="#">${p.name}</a></h2>
-                  <span class="product__available">Available: <span>${
-                    p.minimumorder
-                  }</span></span>
-                  <div class="product__progress progress color-primary">
-                    <div class="progress-bar" style="width:${percent}%"></div>
-                  </div>
-                  <h4 class="product__price">
-                    <span class="new">${p.price}</span>
-                    <span class="old">${p.price_sale}</span>
-                    ${
-                      showDesc
-                        ? `<span class="text-dark lh-lg d-block mt-2 desc-cells">${
-                            p.description || ""
-                          }</span>`
-                        : ""
-                    }
-                  </h4>
-                </div>
-                ${
-                  p.label
-                    ? `<span class="product__badge color-2"><span>${p.label}</span></span>`
-                    : ""
-                }
-              </li>`;
+            }</a></h2>
+          <span class="product__available">Available: <span>${
+            p.minimumorder
+          }</span></span>
+          <div class="product__progress progress color-primary">
+            <div class="progress-bar" style="width:${percent}%"></div>
+          </div>
+          <h4 class="product__price">
+            <span class="new">${p.price}</span>
+            <span class="old">${p.price_sale}</span>
+            ${
+              showDesc
+                ? `<span class="text-dark lh-lg d-block mt-2 desc-cells">${
+                    p.description || ""
+                  }</span>`
+                : ""
+            }
+          </h4>
+        </div>
+        ${
+          p.label
+            ? `<span class="product__badge color-2"><span>${p.label}</span></span>`
+            : ""
+        }
+      </li>`;
           };
 
           const renderPage = (page, list = filteredProducts) => {
@@ -1190,17 +1278,27 @@
 
           searchForm.addEventListener("submit", (e) => {
             e.preventDefault();
-            const kw = searchInput.value.trim().toLowerCase();
-            filteredProducts = kw
-              ? allProducts.filter((p) => p.name.toLowerCase().includes(kw))
-              : [...allProducts];
+            const keyword = searchInput.value.trim().toLowerCase();
+
+            if (!keyword) {
+              filteredProducts = [...allProducts];
+            } else {
+              filteredProducts = allProducts.filter((p) =>
+                p.name.toLowerCase().includes(keyword)
+              );
+            }
+
             renderPage(1);
           });
+
           searchInput.addEventListener("input", () => {
-            if (!searchInput.value.trim()) {
-              filteredProducts = [...allProducts];
-              renderPage(1);
-            }
+            const keyword = searchInput.value.trim().toLowerCase();
+            filteredProducts = keyword
+              ? allProducts.filter((p) =>
+                  p.name.toLowerCase().includes(keyword)
+                )
+              : [...allProducts];
+            renderPage(1);
           });
 
           priceForm.addEventListener("submit", (e) => {
@@ -1223,7 +1321,7 @@
                 return showBanner("Please log in to add to cart.", "error");
 
               try {
-                const res = await fetch("/addcart", {
+                const res = await fetch("http://147.93.45.171:1600/addcart", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -1257,20 +1355,23 @@
                 return showBanner("Please log in to add to wishlist.", "error");
 
               try {
-                const res = await fetch("/wishlistpost", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    user_id: +userId,
-                    product_name: wishBtn.dataset.name,
-                    store: wishBtn.dataset.store,
-                    price: wishBtn.dataset.price,
-                    price_sale: wishBtn.dataset.price_sale,
-                    image: wishBtn.dataset.image,
-                    sku: wishBtn.dataset.sku,
-                    stockstatus: wishBtn.dataset.stockstatus,
-                  }),
-                });
+                const res = await fetch(
+                  "http://147.93.45.171:1600/wishlistpost",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_id: +userId,
+                      product_name: wishBtn.dataset.name,
+                      store: wishBtn.dataset.store,
+                      price: wishBtn.dataset.price,
+                      price_sale: wishBtn.dataset.price_sale,
+                      image: wishBtn.dataset.image,
+                      sku: wishBtn.dataset.sku,
+                      stockstatus: wishBtn.dataset.stockstatus,
+                    }),
+                  }
+                );
                 if (res.status >= 200 && res.status < 300) {
                   showBanner("Product added to wishlist!", "success");
                   if (typeof updateCounts === "function") updateCounts();
@@ -1474,7 +1575,7 @@
           const container = document.querySelector(".attributes-container");
 
           try {
-            const res = await fetch("/attributesdata");
+            const res = await fetch("http://147.93.45.171:1600/attributesdata");
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const attrs = await res.json();
 
@@ -1537,7 +1638,7 @@
           const list = document.querySelector(".widget__category");
 
           try {
-            const res = await fetch("/productcatdata");
+            const res = await fetch("http://147.93.45.171:1600/productcatdata");
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const cats = await res.json();
 
@@ -1550,7 +1651,7 @@
             items.forEach((cat) => {
               const li = document.createElement("li");
               const a = document.createElement("a");
-              a.href = "#!";
+              a.href = "/shop";
               a.dataset.category = cat.name;
               a.innerHTML = `${cat.name} <i class="far fa-chevron-right"></i>`;
 
@@ -1582,7 +1683,7 @@
           const container = document.querySelector(".widget .checkbox");
 
           try {
-            const res = await fetch("/brandsdata");
+            const res = await fetch("http://147.93.45.171:1600/brandsdata");
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const brands = await res.json();
             container.innerHTML = "";
@@ -1633,7 +1734,7 @@
           const container = document.querySelector(".tagcloud");
 
           try {
-            const res = await fetch("/producttagdata");
+            const res = await fetch("http://147.93.45.171:1600/producttagdata");
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const tags = await res.json();
             container.innerHTML = "";
@@ -1645,8 +1746,10 @@
               .forEach((tag) => {
                 const a = document.createElement("a");
                 a.textContent = tag.name;
-                a.href = "#!";
                 a.dataset.tag = tag.name;
+
+                a.setAttribute("role", "button");
+                a.setAttribute("tabindex", "0");
 
                 a.addEventListener("click", (e) => {
                   e.preventDefault();
@@ -1661,11 +1764,18 @@
                   }
                 });
 
+                a.addEventListener("keydown", (e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    a.click();
+                  }
+                });
+
                 container.appendChild(a);
               });
           } catch (err) {
             console.error("Failed to load tags:", err);
-            container.innerHTML = "<p>Unable to load tags.</p>";
+            if (container) container.innerHTML = "<p>Unable to load tags.</p>";
           }
         });
       </script>
@@ -1696,7 +1806,7 @@
               <div class="footer__widget col-lg-3 col-md-6 mt-40">
                 <div class="footer__logo mb-20">
                   <a href="index.html"
-                    ><img src="assets/img/logo/logo.svg" alt=""
+                    ><img src="assets/img/logo/logo.svg" alt="Image"
                   /></a>
                 </div>
                 <p>
@@ -1712,13 +1822,13 @@
                 </ul>
                 <div class="apps-img mt-15 ul_li">
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/google_play.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/google_play.png" alt="Image"
                     /></a>
                   </div>
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/app_store.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/app_store.png" alt="Image"
                     /></a>
                   </div>
                 </div>
@@ -1765,7 +1875,8 @@
           <div class="footer__bottom ul_li_center">
             <div class="footer__copyright mt-15">
               &copy; <span id="currentYear" class="text-dark"></span>
-              <a href="index.html">Themexriver</a> . All Rights Reserved.
+              <a href="index.html">Themexriver</a>
+              <span class="text-dark">. All Rights Reserved.</span>
             </div>
 
             <script>
@@ -1775,24 +1886,24 @@
               })();
             </script>
             <div class="footer__social mt-15">
-              <a href="https://www.facebook.com/"
+              <a href="https://www.facebook.com/" target="_blank"
                 ><i class="fab fa-facebook-f"></i
               ></a>
-              <a href="https://www.twitter.com/"
+              <a href="https://www.twitter.com/" target="_blank"
                 ><i class="fab fa-twitter"></i
               ></a>
-              <a href="https://www.instagram.com/"
+              <a href="https://www.instagram.com/" target="_blank"
                 ><i class="fab fa-instagram"></i
               ></a>
-              <a href="https://www.youtube.com/"
+              <a href="https://www.youtube.com/" target="_blank"
                 ><i class="fab fa-youtube"></i
               ></a>
-              <a href="https://www.pinterest.com/"
+              <a href="https://www.pinterest.com/" target="_blank"
                 ><i class="fab fa-pinterest"></i
               ></a>
             </div>
             <div class="payment_method mt-15">
-              <img src="assets/img/bg/payment_method.png" alt="" />
+              <img src="assets/img/bg/payment_method.png" alt="Image" />
             </div>
           </div>
         </div>
@@ -1832,11 +1943,14 @@
             }
 
             try {
-              const res = await fetch("/newsletterpost", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-              });
+              const res = await fetch(
+                "http://147.93.45.171:1600/newsletterpost",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email }),
+                }
+              );
               const text = await res.text();
               if (res.ok) {
                 showBanner("Subscribed successfully!", "success");

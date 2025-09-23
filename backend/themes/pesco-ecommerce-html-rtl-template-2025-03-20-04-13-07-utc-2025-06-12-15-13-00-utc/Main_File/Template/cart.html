@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="assets/vendor/aos/aos.css" />
     <link rel="stylesheet" href="assets/css/default.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -65,7 +65,7 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
   </head>
 
   <style>
@@ -121,7 +121,10 @@
               </div>
             </div>
             <div class="cart-button-box">
-              <a href="checkout.html" class="theme-btn style-one"
+              <a
+                href="checkout.html"
+                id="checkout-btn"
+                class="theme-btn style-one"
                 >Proceed to checkout</a
               >
             </div>
@@ -184,7 +187,7 @@
             </div>
             <div class="nav-inner-menu">
               <div class="main-categories-wrap d-none d-lg-block">
-                <a class="categories-btn-active" href="#">
+                <a class="categories-btn-active" href="/shops">
                   <span class="fas fa-list"></span
                   ><span class="text"
                     >Products Category<i class="fas fa-angle-down"></i
@@ -297,14 +300,14 @@
                         <nav class="main-menu">
                           <ul>
                             <li class="menu-item has-children">
-                              <a href="#">Home</a>
+                              <a href="index.html">Home</a>
                               <ul class="sub-menu">
                                 <li><a href="index.html">Home 01</a></li>
                                 <li><a href="index-2.html">Home 02</a></li>
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Shop</a>
+                              <a href="/shops-grid">Shop</a>
                               <ul class="sub-menu">
                                 <li><a href="shops-grid.html">Shop Grid</a></li>
                                 <li>
@@ -326,7 +329,7 @@
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Blog</a>
+                              <a href="/blogs">Blog</a>
                               <ul class="sub-menu">
                                 <li><a href="blogs.html">Our Blog</a></li>
                                 <li>
@@ -335,7 +338,7 @@
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Pages</a>
+                              <a href="/about-us">Pages</a>
                               <ul class="sub-menu">
                                 <li><a href="about-us.html">About Us</a></li>
                                 <li><a href="faq.html">Faqs</a></li>
@@ -407,14 +410,14 @@
                   <nav class="main-menu d-none d-lg-block">
                     <ul>
                       <li class="menu-item has-children">
-                        <a href="#">Home</a>
+                        <a href="index.html">Home</a>
                         <ul class="sub-menu">
                           <li><a href="index.html">Home 01</a></li>
                           <li><a href="index-2.html">Home 02</a></li>
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Shop</a>
+                        <a href="/shops-grid">Shop</a>
                         <ul class="sub-menu">
                           <li><a href="shops-grid.html">Shop Grid</a></li>
                           <li><a href="shops.html">Shop left Sidebar</a></li>
@@ -432,14 +435,14 @@
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Blog</a>
+                        <a href="/blogs">Blog</a>
                         <ul class="sub-menu">
                           <li><a href="blogs.html">Our Blog</a></li>
                           <li><a href="blog-details.html">Blog Details</a></li>
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Pages</a>
+                        <a href="/about-us">Pages</a>
                         <ul class="sub-menu">
                           <li><a href="about-us.html">About Us</a></li>
                           <li><a href="faq.html">Faqs</a></li>
@@ -508,7 +511,11 @@
             />
           </svg>
           <div class="page-image">
-            <img src="assets/images/bg/page-img-1.png" alt="image" />
+            <img
+              src="https://avatars.mds.yandex.net/i?id=16f402bb7e9cf3d0f5f16f1f113af8143794eec8-9618143-images-thumbs&n=13"
+              alt="image"
+              style="width: 675px; height: 408px"
+            />
           </div>
           <svg class="page-svg" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -520,11 +527,11 @@
           <div class="shape shape-two"><span></span></div>
           <div class="shape shape-three">
             <span
-              ><img src="assets/images/shape/curved-arrow.png" alt=""
+              ><img src="assets/images/shape/curved-arrow.png" alt="Image"
             /></span>
           </div>
           <div class="shape shape-four">
-            <span><img src="assets/images/shape/stars.png" alt="" /></span>
+            <span><img src="assets/images/shape/stars.png" alt="Image" /></span>
           </div>
           <div class="container">
             <div class="row">
@@ -654,15 +661,11 @@
                     <h5>Total <span class="price">$990.00</span></h5>
                   </div>
 
-                  <!-- <div class="proceed-checks">
-                    <li class="menu-item proceced-checkout">
-                      <a href="checkout.html">Proceed to checkout</a>
+                  <div class="proceed-checks">
+                    <li class="menu-item proceced-checkout" id="checkout-btn">
+                      <a href="/checkout">Proceed to checkout</a>
                     </li>
-                  </div> -->
-
-                  <a id="checkout-btn" href="checkout.html"
-                    >Proceed to checkout</a
-                  >
+                  </div>
                 </div>
               </div>
             </div>
@@ -719,9 +722,9 @@
           }
 
           async function fetchUniqueCart() {
-            const items = await fetch(`/allcartdata?user_id=${userId}`).then(
-              (r) => r.json()
-            );
+            const items = await fetch(
+              `http://147.93.45.171:1600/allcartdata?user_id=${userId}`
+            ).then((r) => r.json());
             const map = {};
             items.forEach((i) => {
               if (!map[i.name]) {
@@ -803,7 +806,7 @@
                   const qty = item.quantity;
                   return `
                   <li class="sidebar-cart-item" data-id="${item.id}" data-price="${item.price}" data-qty="${qty}" data-image="${item.image}">
-                    <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+                    <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
                     <a href="#"><img src="/uploads/${item.image}" alt="${item.name}" /> ${item.name}</a>
                     <span class="quantity">${qty} × <span><span class="currency">$</span>${pr}</span></span>
                   </li>
@@ -836,7 +839,12 @@
           }
 
           async function deleteItem(id) {
-            const res = await fetch(`/deletecart/${id}`, { method: "DELETE" });
+            const res = await fetch(
+              `http://147.93.45.171:1600/deletecart/${id}`,
+              {
+                method: "DELETE",
+              }
+            );
             const json = await res.json();
             if (!res.ok || !json.success)
               throw new Error(json.message || "Delete failed");
@@ -893,9 +901,9 @@
             if (!code)
               return showBanner("Please enter a coupon code.", "error");
             try {
-              const discounts = await fetch("/discountdata").then((r) =>
-                r.json()
-              );
+              const discounts = await fetch(
+                "http://147.93.45.171:1600/discountdata"
+              ).then((r) => r.json());
               const now = new Date();
               const disc = discounts.find(
                 (d) => d.couponcode === code && d.display === "yes"
@@ -917,9 +925,9 @@
 
           async function updateWishlistBadge() {
             try {
-              const items = await fetch(`/wishlistdata?user_id=${userId}`).then(
-                (r) => r.json()
-              );
+              const items = await fetch(
+                `http://147.93.45.171:1600/wishlistdata?user_id=${userId}`
+              ).then((r) => r.json());
               const uniq = [...new Set(items.map((i) => i.product_name))];
               wishBadge.textContent = String(uniq.length).padStart(2, "0");
             } catch {
@@ -1111,11 +1119,14 @@
           }
 
           try {
-            const res = await fetch("/newsletterpost", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email }),
-            });
+            const res = await fetch(
+              "http://147.93.45.171:1600/newsletterpost",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+              }
+            );
             const text = await res.text();
             if (res.ok) {
               showBanner("Subscribed successfully!", "success");
@@ -1360,6 +1371,11 @@
         searchForm.style.position = "relative";
         searchForm.appendChild(dropdown);
 
+        searchForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          window.location.href = "/shops-grid";
+        });
+
         let timer;
         searchInput.addEventListener("input", () => {
           clearTimeout(timer);
@@ -1369,7 +1385,7 @@
             return;
           }
           timer = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1377,31 +1393,38 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   dropdown.innerHTML =
                     matches
                       .map((p) => {
                         const priceHTML = p.price_sale
-                          ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price}</del>`
+                          ? `<strong style="color:#000">${p.price}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price_sale}</del>`
                           : `<strong class="text-secondary fw-bold" style="color:#000">${p.price}</strong>`;
 
                         return `
-                          <div class="autocomplete-item" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                            <img src="/uploads/${p.image}" 
-                                alt="${p.name}" 
-                                style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
-                            <div>
-                              <div style="font-weight:600;color:#333" class="text-dark fw-bold">${p.name}</div>
-                              <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
-                            </div>
-                          </div>
-                        `;
+                <div class="autocomplete-item" data-name="${(
+                  p.name || ""
+                ).replace(
+                  /"/g,
+                  "&quot;"
+                )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
+                  <img src="/uploads/${p.image}" 
+                      alt="${(p.name || "").replace(/"/g, "&quot;")}" 
+                      style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                  <div>
+                    <div style="font-weight:600;color:#333" class="text-dark fw-bold">${
+                      p.name
+                    }</div>
+                    <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
+                  </div>
+                </div>
+              `;
                       })
                       .join("") +
                     `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
-                        Show all results
-                      </div>`;
+                  Show all results
+                </div>`;
                 }
                 dropdown.style.display = "block";
               })
@@ -1415,17 +1438,11 @@
         dropdown.addEventListener("click", (e) => {
           const item = e.target.closest(".autocomplete-item");
           if (item) {
-            const name = item.querySelector("div > div").textContent;
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              name
-            )}`;
+            window.location.href = "/shops-grid";
             return;
           }
           if (e.target.closest(".autocomplete-show-all")) {
-            const q = searchInput.value.trim();
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              q
-            )}`;
+            window.location.href = "/shops-grid";
           }
         });
 
@@ -1439,53 +1456,107 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        fetch("/blogpostdata")
+        function formatDate(dateStr) {
+          const date = new Date(dateStr);
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+
+        function slugify(str) {
+          return String(str || "")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-");
+        }
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
           .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch blog data.");
-            }
+            if (!response.ok) throw new Error("Failed to fetch blog data.");
             return response.json();
           })
           .then((data) => {
-            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sorted = [...data].sort(
+              (a, b) => new Date(b.date) - new Date(a.date)
+            );
 
-            const topPosts = data.slice(0, 3);
-
+            const topPosts = sorted.slice(0, 3);
             const container = document.getElementById("recent-posts-container");
+            if (!container) return;
 
+            container.innerHTML = "";
             topPosts.forEach((post) => {
-              const postHTML = `
-                        <div class="recent-post-item">
-                                              <div class="thumb">
-                      <a href="blog-details.html?id=${
-                        post.id
-                      }" class="w-100 h-100">
-                      <img src="/uploads/${post.image}" alt="post thumb" />
-                      </a>
-                    </div>
-                          <div class="content">
-                            <h4>
-                             <a href="blog-details.html?id=${post.id}">${
+              const slug = post.slug ? post.slug : slugify(post.name);
+
+              const html = `
+            <div class="recent-post-item">
+              <div class="thumb">
+                <a href="/blog-details/${encodeURIComponent(
+                  slug
+                )}" class="w-100 h-100">
+                  <img src="/uploads/${post.image}" alt="${post.name}" />
+                </a>
+              </div>
+              <div class="content">
+                <h4>
+                  <a href="/blog-details/${encodeURIComponent(slug)}">${
                 post.name
               }</a>
-                            </h4>
-                            <span><a href="blog-details.html?id=${
-                              post.id
-                            }">${formatDate(post.date)}</a></span>
-                          </div>
-                        </div>
-                      `;
-              container.insertAdjacentHTML("beforeend", postHTML);
+                </h4>
+                <span>
+                  <a href="/blog-details/${encodeURIComponent(slug)}">
+                    ${formatDate(post.date)}
+                  </a>
+                </span>
+              </div>
+            </div>
+          `;
+              container.insertAdjacentHTML("beforeend", html);
             });
           })
           .catch((error) => {
             console.error("Error loading blog posts:", error);
           });
+      });
+    </script>
 
-        function formatDate(dateStr) {
-          const date = new Date(dateStr);
-          const options = { year: "numeric", month: "long", day: "numeric" };
-          return date.toLocaleDateString("en-US", options);
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const res = await fetch("http://147.93.45.171:1600/get-theme-logo");
+          if (!res.ok) throw new Error("Failed to fetch logo data");
+
+          const data = await res.json();
+          const logoUrl = data.logo_url;
+          if (!logoUrl) throw new Error("Logo URL not found in API response");
+
+          const uploadPath = `/uploads/${logoUrl}`;
+
+          const logoImgs = [
+            ...document.querySelectorAll(".brand-logo img"),
+            ...document.querySelectorAll(".site-branding .brand-logo img"),
+            ...document.querySelectorAll(
+              ".site-branding.d-lg-none .brand-logo img"
+            ),
+            ...document.querySelectorAll(".footer-logo img"),
+          ];
+
+          logoImgs.forEach((img) => {
+            img.src = uploadPath;
+            img.width = 144;
+            img.height = 44;
+            img.alt = data.alt_text || "Logo";
+
+            img.addEventListener("error", () => {
+              console.warn("Logo image failed to load:", uploadPath);
+              img.src = "assets/images/logo/logo-main.png";
+            });
+          });
+        } catch (error) {
+          console.error("Logo load error:", error);
         }
       });
     </script>

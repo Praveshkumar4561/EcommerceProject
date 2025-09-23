@@ -183,9 +183,9 @@
       slidesToShow: 1,
       slidesToScroll: 1,
       prevArrow:
-        '<div class="prev"><i class="flaticon-arrow-left"></i><img src="assets/images/hero/arrow-bg.png" alt=""></div>',
+        '<div class="prev"><i class="flaticon-arrow-left"></i><img src="assets/images/hero/arrow-bg.png" alt="Image"></div>',
       nextArrow:
-        '<div class="next"><img src="assets/images/hero/arrow-bg.png" alt=""><i class="flaticon-arrow-right"></i></div>',
+        '<div class="next"><img src="assets/images/hero/arrow-bg.png" alt="Image"><i class="flaticon-arrow-right"></i></div>',
       responsive: [
         {
           breakpoint: 1200,

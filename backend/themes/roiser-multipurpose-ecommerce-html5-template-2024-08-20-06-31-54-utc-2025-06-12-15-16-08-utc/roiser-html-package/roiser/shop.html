@@ -18,6 +18,72 @@
     <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
     <link rel="stylesheet" href="assets/css/nice-select.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function makeAbsolute(u) {
+          if (!u) return u;
+          if (/^https?:\/\//i.test(u)) return u;
+          return window.location.origin + (u.startsWith("/") ? u : "/" + u);
+        }
+
+        fetch("http://147.93.45.171:1600/productpagedata")
+          .then((r) => r.json())
+          .then((products) => {
+            products = Array.isArray(products)
+              ? products
+              : products.items || [];
+
+            const productSchema = products.map((p) => ({
+              "@type": "Product",
+              name: p.name || "",
+              image: makeAbsolute("/uploads/" + (p.image || "")),
+              description: p.description
+                ? p.description.replace(/<[^>]+>/g, "")
+                : "",
+              sku: p.sku || p.id || "",
+              brand: { "@type": "Brand", name: p.brand || "" },
+              offers: {
+                "@type": "Offer",
+                url: makeAbsolute(
+                  p.permalink
+                    ? "/shop-details/" + p.permalink
+                    : `/shop-details/${p.id || ""}`
+                ),
+                priceCurrency: "USD",
+                price: p.price_sale
+                  ? p.price_sale.replace(/[^0-9.]/g, "")
+                  : p.price
+                  ? p.price.replace(/[^0-9.]/g, "")
+                  : undefined,
+                availability:
+                  p.stockstatus && /in stock/i.test(p.stockstatus)
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+              },
+            }));
+
+            const schemaData = {
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "CollectionPage",
+                  name: "Shop - ROISER",
+                  description:
+                    "Browse our latest collection of premium electronics, wellness, and healthcare products.",
+                  url: window.location.href,
+                },
+                ...productSchema,
+              ].filter(Boolean),
+            };
+
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.text = JSON.stringify(schemaData);
+            document.head.appendChild(script);
+          })
+          .catch((err) => console.error("Schema error", err));
+      });
+    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -50,6 +116,8 @@
   <style>
     .roiser-theme-shop {
       display: flex;
+      height: 500px !important;
+      font-family: sans-serif;
     }
 
     .shop-item {
@@ -108,7 +176,6 @@
             <div class="top-bar-right">
               <ul class="top-right-list">
                 <li><a href="contact.html">Store Location</a></li>
-
                 <li>
                   <div class="nice-select select-control country1" tabindex="0">
                     <span class="current">Language</span>
@@ -122,7 +189,6 @@
                     </ul>
                   </div>
                 </li>
-
                 <li>
                   <div
                     class="nice-select select-control select-2 country"
@@ -133,7 +199,7 @@
                       <li data-value="" class="option selected focus">
                         Currency
                       </li>
-                      <li data-value="vdt" class="option">Dollar</li>
+                      <li data-value="vdt" class="option">Doller</li>
                       <li data-value="can" class="option">Rupee</li>
                       <li data-value="uk" class="option">Taka</li>
                     </ul>
@@ -194,23 +260,26 @@
                       >+(258) 2159-2159</a
                     >
                   </div>
-                  <a href="tel:+25821592159" class="icon">
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
                     <i class="fa-regular fa-phone"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="wishlist.html" class="icon">
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
                     <i class="fa-sharp fa-regular fa-heart"></i>
                   </a>
                 </li>
-
                 <li>
-                  <a href="cart.html" class="icon">
+                  <a href="cart.html" class="icon" aria-label="View cart">
                     <i class="fa-light fa-bag-shopping"></i>
                     <span>0</span>
                   </a>
                   <div class="content">
-                    <span>Your cart</span>
+                    <span>Your cart,</span>
                     <h5 class="number">$0.00</h5>
                   </div>
                 </li>
@@ -257,7 +326,7 @@
                     <a href="shop-grid.html">men</a>
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#">Pages</a>
+                    <a href="/about">Pages</a>
                     <ul>
                       <li><a href="about.html">About</a></li>
                       <li><a href="login.html">Login</a></li>
@@ -278,13 +347,18 @@
                 </ul>
               </div>
             </div>
+
             <div class="header-right-wrap">
               <div class="header-right">
                 <span>Get 30% Discount Now <span>Sale</span></span>
                 <div class="header-right-item">
-                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
-                    ><i class="fa-sharp fa-solid fa-bars"></i
-                  ></a>
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -353,13 +427,15 @@
       <div class="container">
         <div class="page-header-content">
           <h1 class="title">Shop</h1>
-          <h4 class="sub-title">
-            <span class="home"
-              ><a href="#"><span>Home</span></a></span
-            >
-            <span class="icon"><i class="fa-solid fa-angle-right"></i></span>
+          <h2 class="sub-title">
+            <span class="home">
+              <a href="#"><span>Home</span></a>
+            </span>
+            <span class="icon">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+            </span>
             <span class="inner"><span>Shop</span></span>
-          </h4>
+          </h2>
         </div>
       </div>
     </section>
@@ -367,7 +443,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -439,7 +517,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -481,7 +559,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -612,7 +690,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -620,7 +698,7 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   resultBox.innerHTML =
                     matches
@@ -629,20 +707,18 @@
                         const mainPrice = formatPrice(p.price);
                         const salePrice = p.price_sale
                           ? `<strong class="text-dark me-2">${formatPrice(
-                              p.price_sale
+                              p.price
                             )}</strong>
-                                  <s class="fw-bold text-danger">${formatPrice(
-                                    p.price
-                                  )}</s>`
+                              <s class="fw-bold text-danger">${formatPrice(
+                                p.price_sale
+                              )}</s>`
                           : `<strong class="fw-bold text-dark">${formatPrice(
                               p.price
                             )}</strong>`;
 
                         return `
                             <div
-                              onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                                q
-                              )}'"
+                              onclick="window.location.href='/shop'"
                               style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                             >
                               <img src="/uploads/${img}" alt="${p.name}"
@@ -659,9 +735,7 @@
                       .join("") +
                     `
                           <div
-                            onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                              q
-                            )}'"
+                           onclick="window.location.href='/shop'"
                             style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
                           >
                             Show all results
@@ -802,7 +876,52 @@
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
+      (function () {
+        const API = "http://147.93.45.171:1600/productpagedata";
+        const CONTAINER_ID = "product-container";
+        const PAGINATION_ID = "product-pagination";
+        const PER_PAGE = 8;
+        const RETRY_MS = 1000;
+        const MAX_RETRIES = 2;
+
+        function slugify(str) {
+          return String(str || "")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-z0-9\-]/g, "")
+            .replace(/\-+/g, "-");
+        }
+
+        function makeUploadsUrl(path) {
+          if (!path) return "";
+          if (/^https?:\/\//i.test(path)) return path;
+          path = path.toString().trim();
+          if (!/^\/?uploads\//i.test(path))
+            path = "/uploads/" + path.replace(/^\/+/, "");
+          return window.location.origin + path;
+        }
+
+        function safeText(html) {
+          if (html == null) return "";
+          try {
+            return String(html)
+              .replace(/<[^>]*>/g, "")
+              .trim();
+          } catch {
+            return String(html);
+          }
+        }
+
+        function formatPriceWithCurrency(raw, rates, selectedCurrency) {
+          const n = parseFloat(String(raw || "").replace(/[^0-9.]/g, "")) || 0;
+          const r = rates[selectedCurrency] || rates.vdt;
+          return r.symbol + (n * r.rate).toFixed(2);
+        }
+
+        let allProducts = [];
+        let currentPage = 1;
+        let productMainImages = [];
         let selectedCurrency = "vdt";
         const currencyRates = {
           vdt: { symbol: "$", rate: 1 },
@@ -810,252 +929,387 @@
           uk: { symbol: "৳", rate: 108 },
         };
 
-        document
-          .querySelectorAll(".nice-select.country .option")
-          .forEach((opt) => {
-            opt.addEventListener("click", () => {
-              const code = opt.dataset.value;
-              if (currencyRates[code]) {
-                selectedCurrency = code;
-                document.querySelector(
-                  ".nice-select.country .current"
-                ).textContent = opt.textContent;
-                showPage(currentPage);
-              }
-            });
-          });
-
-        const imageLightbox = document.getElementById("image-lightbox");
-        const lightboxImg = document.getElementById("lightbox-image");
-        const counterEl = document.getElementById("lightbox-counter");
-        const btnPrev = document.getElementById("lightbox-prev");
-        const btnNext = document.getElementById("lightbox-next");
-        const btnClose = document.getElementById("lightbox-close");
-        const container = document.getElementById("product-container");
-        const pagination = document.getElementById("product-pagination");
-        const PER_PAGE = 8;
-
-        let allProducts = [];
-        let productMainImages = [];
-        let currentImages = [];
-        let currentIndex = 0;
-        let currentPage = 1;
-
-        const cleanPrice = (str = "") => str.replace(/[^0-9.]/g, "");
-
-        function formatPrice(raw) {
-          const n = parseFloat(raw.replace(/[^0-9.]/g, "")) || 0;
-          const { symbol, rate } = currencyRates[selectedCurrency];
-          return symbol + (n * rate).toFixed(2);
+        function getEl(id) {
+          return document.getElementById(id);
+        }
+        function q(sel) {
+          try {
+            return document.querySelector(sel);
+          } catch {
+            return null;
+          }
         }
 
-        fetch("/productpagedata")
-          .then((res) => res.json())
-          .then((data) => {
-            allProducts = data.sort(
-              (a, b) => new Date(b.date) - new Date(a.date)
-            );
-
-            productMainImages = allProducts.map((prod) => {
-              const imgs = (prod.image || "")
-                .split(",")
-                .map((i) => i.trim())
-                .filter(Boolean);
-              return imgs[0] || "";
+        function renderPagination(paginationEl) {
+          if (!paginationEl) return;
+          paginationEl.innerHTML = "";
+          const totalPages = Math.max(
+            1,
+            Math.ceil(allProducts.length / PER_PAGE)
+          );
+          for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = "#";
+            a.textContent = String(i);
+            if (i === currentPage) a.classList.add("active");
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              currentPage = i;
+              renderPage(getEl(CONTAINER_ID), paginationEl);
+              try {
+                getEl(CONTAINER_ID).scrollIntoView({ behavior: "smooth" });
+              } catch {}
             });
+            li.appendChild(a);
+            paginationEl.appendChild(li);
+          }
+        }
 
-            buildPagination();
-            showPage(1);
-          })
-          .catch((err) => console.error("Product load error:", err));
-
-        function showPage(page) {
-          currentPage = page;
-          container.innerHTML = "";
-          const start = (page - 1) * PER_PAGE;
+        function renderPage(containerEl, paginationEl) {
+          if (!containerEl) return;
+          containerEl.innerHTML = "";
+          const start = (currentPage - 1) * PER_PAGE;
           const slice = allProducts.slice(start, start + PER_PAGE);
+          if (!slice.length) {
+            containerEl.innerHTML = "<p>No products available.</p>";
+            return;
+          }
 
           slice.forEach((prod, idx) => {
             const imgs = (prod.image || "")
+              .toString()
               .split(",")
               .map((i) => i.trim())
               .filter(Boolean);
+            const img0 = imgs[0] || "";
             const shortName =
-              prod.name.split(/\s+/).slice(0, 4).join(" ") +
-              (prod.name.split(/\s+/).length > 4 ? "…" : "");
-            const absoluteIndex = start + idx;
-
-            const priceText = formatPrice(prod.price);
+              (prod.name || "").split(/\s+/).slice(0, 6).join(" ") +
+              ((prod.name || "").split(/\s+/).length > 6 ? "…" : "");
+            const priceText = formatPriceWithCurrency(
+              prod.price,
+              currencyRates,
+              selectedCurrency
+            );
             const priceSaleText = prod.price_sale
-              ? formatPrice(prod.price_sale)
+              ? formatPriceWithCurrency(
+                  prod.price_sale,
+                  currencyRates,
+                  selectedCurrency
+                )
               : "";
-
+            const productSlug = slugify(
+              prod.permalink || prod.name || prod.id || ""
+            );
+            const productHref =
+              "/shop-details/" +
+              encodeURIComponent(productSlug || String(prod.id || ""));
             const col = document.createElement("div");
             col.className = "col-xl-3 col-lg-4 col-md-6 roiser-theme-shop";
             col.innerHTML = `
               <div class="shop-item border">
                 <div class="shop-thumb">
                   <div class="overlay"></div>
-                  <a href="shop-details.html?id=${prod.id}">
-                    <img src="/uploads/${imgs[0]}" alt="${
+                  <a href="${productHref}" class="shop-link" data-id="${safeText(
+              prod.id
+            )}" data-slug="${safeText(productSlug)}">
+                    <img src="${makeUploadsUrl(img0)}" alt="${safeText(
               prod.name
-            }" class="img-fluid"/>
-                      </a>
-                  ${prod.label ? `<span class="sale">${prod.label}</span>` : ""}
+            )}" class="img-fluid" />
+                  </a>
+                  ${
+                    prod.label
+                      ? `<span class="sale">${safeText(prod.label)}</span>`
+                      : ""
+                  }
                   <ul class="shop-list">
                     <li>
-                      <a href="#" class="add-to-cart"
-                         data-name="${prod.name}"
-                         data-price="${prod.price}"
-                         data-price_sale="${prod.price_sale}"
-                         data-image="${imgs[0]}"
-                         data-store="${prod.store || "default"}">
+                      <a href="javascript:void(0)" class="add-to-cart"
+                        data-name="${safeText(prod.name)}"
+                        data-price="${safeText(prod.price)}"
+                        data-price_sale="${safeText(prod.price_sale)}"
+                        data-image="${safeText(img0)}"
+                        data-store="${safeText(prod.store || "default")}">
                         <i class="fa-regular fa-cart-shopping"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#" class="add-to-wishlist"
-                         data-name="${prod.name}"
-                         data-image="${imgs[0]}"
-                         data-store="${prod.store || "default"}"
-                         data-price="${prod.price}"
-                         data-price_sale="${prod.price_sale}"
-                         data-sku="${prod.sku || ""}"
-                         data-stockstatus="${prod.stockstatus || "In Stock"}">
+                      <a href="javascript:void(0)" class="add-to-wishlist"
+                        data-name="${safeText(prod.name)}"
+                        data-image="${safeText(img0)}"
+                        data-store="${safeText(prod.store || "default")}"
+                        data-price="${safeText(prod.price)}"
+                        data-price_sale="${safeText(prod.price_sale)}"
+                        data-sku="${safeText(prod.sku || "")}"
+                        data-stockstatus="${safeText(
+                          prod.stockstatus || "In Stock"
+                        )}">
                         <i class="fa-light fa-heart"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#" class="view-lightbox" data-index="${absoluteIndex}">
+                      <a href="javascript:void(0)" class="view-lightbox" data-index="${
+                        start + idx
+                      }">
                         <i class="fa-light fa-eye"></i>
                       </a>
                     </li>
                   </ul>
                 </div>
                 <div class="shop-content mt-0 pt-0">
-                  <span class="category fw-bold mb-1">${
+                  <span class="category fw-bold mb-1">${safeText(
                     (prod.brand || "").split(",")[0]
-                  }</span>
+                  )}</span>
                   <h3 class="title">
-                    <a href="shop-details.html?id=${prod.id}">${shortName}</a>
+                    <a href="${productHref}" class="shop-link" data-id="${safeText(
+              prod.id
+            )}" data-slug="${safeText(productSlug)}">${safeText(shortName)}</a>
                   </h3>
                   <div class="review-wrap">
                     <ul class="review">${renderStars(5)}</ul>
-                    <span>(${prod.id * 3} Reviews)</span>
+                    <span>(${(prod.id || 0) * 3} Reviews)</span>
                   </div>
                   <div class="d-flex flex-row flex-nowrap">
-                    <span class="price">${priceText}</span>
+                    <span class="price">${safeText(priceText)}</span>
                     ${
                       priceSaleText
-                        ? `<span class="price text-secondary text-decoration-line-through ms-2">${priceSaleText}</span>`
+                        ? `<span class="price text-secondary text-decoration-line-through ms-2">${safeText(
+                            priceSaleText
+                          )}</span>`
                         : ""
                     }
                   </div>
                 </div>
-              </div>`;
+              </div>
+            `;
 
-            container.appendChild(col);
+            containerEl.appendChild(col);
 
-            col
-              .querySelector(".add-to-cart")
-              .addEventListener("click", cartHandler);
-            col
-              .querySelector(".add-to-wishlist")
-              .addEventListener("click", wishlistHandler);
-            col
-              .querySelector(".view-lightbox")
-              .addEventListener("click", (e) => {
+            const cartEl = col.querySelector(".add-to-cart");
+            const wishEl = col.querySelector(".add-to-wishlist");
+            const viewEl = col.querySelector(".view-lightbox");
+            if (cartEl) cartEl.addEventListener("click", cartHandler);
+            if (wishEl) wishEl.addEventListener("click", wishlistHandler);
+            if (viewEl)
+              viewEl.addEventListener("click", (e) => {
                 e.preventDefault();
                 currentImages = productMainImages;
-                currentIndex = parseInt(e.currentTarget.dataset.index, 10);
+                currentIndex = parseInt(viewEl.dataset.index || "0", 10);
                 updateLightbox();
-                imageLightbox.style.display = "flex";
+                showLightbox();
               });
           });
-        }
 
-        function buildPagination() {
-          pagination.innerHTML = "";
-          const totalPages = Math.ceil(allProducts.length / PER_PAGE);
-
-          for (let i = 1; i <= totalPages; i++) {
-            const li = document.createElement("li");
-            li.innerHTML = `<a href="#" class="${
-              i === currentPage ? "active" : ""
-            }">${i}</a>`;
-            li.addEventListener("click", (e) => {
-              e.preventDefault();
-              pagination
-                .querySelectorAll("a")
-                .forEach((a) => a.classList.remove("active"));
-              li.querySelector("a").classList.add("active");
-              showPage(i);
-            });
-            pagination.appendChild(li);
+          if (!containerEl._shopBound) {
+            containerEl.addEventListener("click", containerClickHandler);
+            containerEl._shopBound = true;
           }
 
-          const nxt = document.createElement("li");
-          nxt.innerHTML = `<a href="#"><i class="fa-regular fa-chevrons-right"></i></a>`;
-          nxt.addEventListener("click", (e) => {
-            e.preventDefault();
-            const active =
-              pagination.querySelector("a.active").parentElement
-                .nextElementSibling;
-            if (active) active.querySelector("a").click();
+          renderPagination(paginationEl);
+        }
+
+        function containerClickHandler(e) {
+          const a =
+            e.target.closest && e.target.closest("a.shop-link, a[data-id]");
+          if (!a) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+
+          const id = a.dataset.id;
+          const slug = a.dataset.slug || "";
+          try {
+            localStorage.setItem("selectedProductId", String(id || ""));
+          } catch (err) {}
+
+          const href =
+            a.getAttribute("href") ||
+            "/shop-details/" + encodeURIComponent(slug || id || "");
+          try {
+            history.pushState({}, "", href);
+            window.dispatchEvent(new PopStateEvent("popstate"));
+          } catch (err) {
+            window.location.href = href;
+          }
+        }
+
+        async function fetchProducts(retries = 0) {
+          if (
+            window._cachedProducts &&
+            Array.isArray(window._cachedProducts) &&
+            window._cachedProducts.length
+          ) {
+            return window._cachedProducts;
+          }
+          try {
+            const res = await fetch(API, { cache: "no-cache" });
+            if (!res.ok) throw new Error("status:" + res.status);
+            const data = await res.json();
+            const arr = Array.isArray(data) ? data : data.items || [];
+            arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+            window._cachedProducts = arr;
+            try {
+              localStorage.setItem("_cachedProductsV1", JSON.stringify(arr));
+            } catch (e) {}
+            return arr;
+          } catch (err) {
+            if (retries < MAX_RETRIES) {
+              await new Promise((r) => setTimeout(r, RETRY_MS));
+              return fetchProducts(retries + 1);
+            }
+            try {
+              const raw = localStorage.getItem("_cachedProductsV1");
+              if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length) {
+                  window._cachedProducts = parsed;
+                  return parsed;
+                }
+              }
+            } catch (e) {}
+            throw err;
+          }
+        }
+
+        async function loadProducts() {
+          const containerEl = getEl(CONTAINER_ID);
+          const paginationEl = getEl(PAGINATION_ID);
+          if (!containerEl) return;
+          containerEl.innerHTML = "<p>Loading products…</p>";
+
+          try {
+            const data = await fetchProducts(0);
+            allProducts = Array.isArray(data) ? data : [];
+            productMainImages = allProducts.map(
+              (p) =>
+                (p.image || "")
+                  .toString()
+                  .split(",")
+                  .map((s) => s.trim())
+                  .filter(Boolean)[0] || ""
+            );
+            currentPage = 1;
+            renderPage(containerEl, paginationEl);
+          } catch (err) {
+            console.error("Product load error:", err);
+            containerEl.innerHTML =
+              "<p>Could not load products. Trying again shortly</p>";
+            setTimeout(loadProducts, 1200);
+          }
+        }
+
+        try {
+          window.loadShopProducts = loadProducts;
+        } catch (e) {}
+
+        function initCurrencySwitcher() {
+          const opts = document.querySelectorAll(
+            ".nice-select.country .option"
+          );
+          if (!opts || !opts.length) return;
+          opts.forEach((opt) => {
+            opt.addEventListener("click", () => {
+              const code = opt.dataset.value;
+              if (currencyRates[code]) {
+                selectedCurrency = code;
+                const cur = document.querySelector(
+                  ".nice-select.country .current"
+                );
+                if (cur) cur.textContent = opt.textContent;
+                renderPage(getEl(CONTAINER_ID), getEl(PAGINATION_ID));
+              }
+            });
           });
-          pagination.appendChild(nxt);
         }
 
-        function renderStars(n) {
-          return Array(n)
-            .fill(`<li><i class="fa-solid fa-star me-1"></i></li>`)
-            .join("");
+        let currentImages = [];
+        let currentIndex = 0;
+        function showLightbox() {
+          const lightbox = getEl("image-lightbox");
+          if (!lightbox) return;
+          lightbox.style.display = "flex";
         }
-
+        function hideLightbox() {
+          const lightbox = getEl("image-lightbox");
+          if (!lightbox) return;
+          lightbox.style.display = "none";
+        }
         function updateLightbox() {
-          if (!currentImages.length) return;
-          lightboxImg.src = `/uploads/${currentImages[currentIndex]}`;
-          counterEl.textContent = `${currentIndex + 1} of ${
-            currentImages.length
-          }`;
+          const lightboxImg = getEl("lightbox-image");
+          const counterEl = getEl("lightbox-counter");
+          if (!lightboxImg) return;
+          if (!currentImages || !currentImages.length) return;
+          currentIndex =
+            ((currentIndex % currentImages.length) + currentImages.length) %
+            currentImages.length;
+          lightboxImg.src = makeUploadsUrl(currentImages[currentIndex]);
+          if (counterEl)
+            counterEl.textContent = `${currentIndex + 1} of ${
+              currentImages.length
+            }`;
+        }
+        function initLightboxControls() {
+          const btnPrev = getEl("lightbox-prev");
+          const btnNext = getEl("lightbox-next");
+          const btnClose = getEl("lightbox-close");
+          const imageLightbox = getEl("image-lightbox");
+          if (btnPrev)
+            btnPrev.addEventListener("click", () => {
+              currentIndex =
+                (currentIndex - 1 + currentImages.length) %
+                currentImages.length;
+              updateLightbox();
+            });
+          if (btnNext)
+            btnNext.addEventListener("click", () => {
+              currentIndex = (currentIndex + 1) % currentImages.length;
+              updateLightbox();
+            });
+          if (btnClose)
+            btnClose.addEventListener("click", () => {
+              hideLightbox();
+              currentImages = [];
+              currentIndex = 0;
+            });
+          if (imageLightbox) {
+            imageLightbox.addEventListener("click", (e) => {
+              if (e.target === imageLightbox) hideLightbox();
+            });
+          }
         }
 
-        btnPrev.addEventListener("click", () => {
-          if (!currentImages.length) return;
-          currentIndex =
-            (currentIndex - 1 + currentImages.length) % currentImages.length;
-          updateLightbox();
-        });
-
-        btnNext.addEventListener("click", () => {
-          if (!currentImages.length) return;
-          currentIndex = (currentIndex + 1) % currentImages.length;
-          updateLightbox();
-        });
-
-        btnClose.addEventListener("click", () => {
-          imageLightbox.style.display = "none";
-          currentImages = [];
-          currentIndex = 0;
-        });
+        function cleanPriceStr(str = "") {
+          return String(str || "").replace(/[^0-9.]/g, "");
+        }
 
         function cartHandler(e) {
           e.preventDefault();
           const t = e.currentTarget;
           const user_id = localStorage.getItem("user_id");
           if (!user_id) return showBanner("Please log in first", "error");
-
-          fetch("/addcart", {
+          const payload = {
+            name: t.dataset.name,
+            price: cleanPriceStr(
+              formatPriceWithCurrency(
+                t.dataset.price,
+                currencyRates,
+                selectedCurrency
+              )
+            ),
+            price_sale: cleanPriceStr(
+              formatPriceWithCurrency(
+                t.dataset.price_sale,
+                currencyRates,
+                selectedCurrency
+              )
+            ),
+            image: t.dataset.image,
+            user_id,
+            store: t.dataset.store || "default",
+          };
+          fetch("http://147.93.45.171:1600/addcart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              name: t.dataset.name,
-              price: cleanPrice(formatPrice(t.dataset.price)),
-              price_sale: cleanPrice(formatPrice(t.dataset.price_sale)),
-              image: t.dataset.image,
-              user_id,
-              store: t.dataset.store || "default",
-            }),
+            body: JSON.stringify(payload),
           })
             .then((r) => {
               if (!r.ok) throw new Error("Network error");
@@ -1073,20 +1327,32 @@
           const t = e.currentTarget;
           const user_id = localStorage.getItem("user_id");
           if (!user_id) return showBanner("Please log in first", "error");
-
-          fetch("/wishlistpost", {
+          const payload = {
+            user_id,
+            product_name: t.dataset.name,
+            image: t.dataset.image,
+            store: t.dataset.store || "default",
+            price: cleanPriceStr(
+              formatPriceWithCurrency(
+                t.dataset.price,
+                currencyRates,
+                selectedCurrency
+              )
+            ),
+            price_sale: cleanPriceStr(
+              formatPriceWithCurrency(
+                t.dataset.price_sale,
+                currencyRates,
+                selectedCurrency
+              )
+            ),
+            sku: t.dataset.sku,
+            stockstatus: t.dataset.stockstatus,
+          };
+          fetch("http://147.93.45.171:1600/wishlistpost", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id,
-              product_name: t.dataset.name,
-              image: t.dataset.image,
-              store: t.dataset.store || "default",
-              price: cleanPrice(formatPrice(t.dataset.price)),
-              price_sale: cleanPrice(formatPrice(t.dataset.price_sale)),
-              sku: t.dataset.sku,
-              stockstatus: t.dataset.stockstatus,
-            }),
+            body: JSON.stringify(payload),
           })
             .then((r) => {
               if (!r.ok) throw new Error("Network error");
@@ -1099,6 +1365,11 @@
             .catch(() => showBanner("Failed to add to wishlist", "error"));
         }
 
+        function renderStars(n) {
+          return Array.from({ length: n })
+            .map(() => `<li><i class="fa-solid fa-star me-1"></i></li>`)
+            .join("");
+        }
         function showBanner(msg, type = "success") {
           const b = document.createElement("div");
           b.className = `banner ${type}`;
@@ -1116,9 +1387,50 @@
             boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
           });
           document.body.appendChild(b);
-          setTimeout(() => b.remove(), 3000);
+          setTimeout(() => {
+            try {
+              b.remove();
+            } catch {}
+          }, 3000);
         }
-      });
+
+        function boot() {
+          if (window._shopPageBooted) return;
+          window._shopPageBooted = true;
+
+          initCurrencySwitcher();
+          initLightboxControls();
+          loadProducts();
+
+          window.addEventListener("pageshow", loadProducts);
+          window.addEventListener("theme:contentloaded", loadProducts);
+          window.addEventListener("popstate", () => {
+            const p = (location.pathname || "").replace(/\/+$/, "");
+            const shopPaths = ["/shop", "/shop.html"].concat([
+              `/${CONTAINER_ID}`,
+              `/${PAGINATION_ID}`,
+            ]);
+            if (
+              p === "/shop" ||
+              p === "/shop.html" ||
+              p.endsWith("/shop") ||
+              p.endsWith("/shop.html")
+            ) {
+              loadProducts();
+            }
+          });
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", boot, { once: true });
+        } else {
+          boot();
+        }
+
+        try {
+          window.reloadShopProducts = loadProducts;
+        } catch (e) {}
+      })();
     </script>
 
     <footer class="footer-section bg-grey pt-60">
@@ -1238,7 +1550,7 @@
                 <div class="footer-form mb-20">
                   <form action="#" class="rr-subscribe-form">
                     <input
-                      class="form-control"
+                      class="form-control py-4"
                       type="email"
                       name="email"
                       placeholder="Email address"
@@ -1296,11 +1608,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1318,6 +1633,7 @@
           </script>
         </div>
       </div>
+
       <div class="copyright-area">
         <div class="container">
           <div class="row copyright-content">
@@ -1325,15 +1641,19 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="#"
-                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  <a href="javascript:void(0)"
+                    ><img
+                      src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
+                      alt="img"
+                      loading="lazy"
+                      style="width: 264px; height: 24px"
                   /></a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6">
               <p>
-                Copyright & Design <span id="designYear">2024</span>
+                Copyright & Design <span id="designYear">2025</span>
                 <span>©Roiser</span>. All Right Reserved
               </p>
             </div>
@@ -1353,7 +1673,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1386,7 +1706,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1405,7 +1725,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1464,5 +1784,6 @@
     <script src="assets/js/vendor/swiper.min.js"></script>
     <script src="assets/js/vendor/nice-select.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   </body>
 </html>

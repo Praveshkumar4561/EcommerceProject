@@ -24,7 +24,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://srv689968.hstgr.cloud",
+    origin: ["http://srv689968.hstgr.cloud", "http://localhost:1600"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -34,7 +34,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use("/api/themes", themeRoutes);
+app.use("/api/themes", themeRoutes);
 app.set("view engine", "ejs");
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -72,63 +72,56 @@ app.get("/", async (req, res) => {
 
 app.use("/themes", themeRoutes);
 
-// app.set("view engine", "ejs");
-// app.set("views", path.join(__dirname, "themes"));
-// app.set("views", path.join(__dirname, "themes/roiser-html-package/roiser"));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "themes"));
+app.set("views", path.join(__dirname, "themes/roiser-html-package/roiser"));
 
 app.use(
   "/themes/static",
   (req, res, next) => {
     try {
-      const requestedPath = req.url.split("?")[0];
-      const basePath = path.join(__dirname, "themes");
-      let fullPath = path.join(basePath, requestedPath);
+      let requestedPath = (req.path || req.url || "").split("?")[0];
+      requestedPath = decodeURIComponent(requestedPath).replace(/^\/+/, "");
 
-      fullPath = path.normalize(fullPath);
+      const basePath = path.join(__dirname, "themes");
+      const fullPath = path.normalize(path.join(basePath, requestedPath));
 
       if (!fullPath.startsWith(path.normalize(basePath + path.sep))) {
         return res.status(403).send("Access denied");
       }
 
-      if (fs.existsSync(fullPath)) {
-        if (fs.statSync(fullPath).isDirectory()) {
-          const indexPath = path.join(fullPath, "index.ejs");
-          if (fs.existsSync(indexPath)) {
-            return res.render(indexPath.replace(/\\/g, "/"));
-          }
-          const indexPathHtml = path.join(fullPath, "index.html");
-          if (fs.existsSync(indexPathHtml)) {
-            return res.sendFile(indexPathHtml);
-          }
-          return next();
-        }
-
-        if (fullPath.endsWith(".ejs")) {
-          return res.render(fullPath.replace(/\\/g, "/"));
-        }
-
-        return next();
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isDirectory()) {
+        const indexHtml = path.join(fullPath, "index.html");
+        if (fs.existsSync(indexHtml)) return res.sendFile(indexHtml);
       }
 
-      const pathWithoutExt = fullPath.replace(/\.(html|ejs)$/, "");
-
-      const ejsPath = `${pathWithoutExt}.ejs`;
-      if (fs.existsSync(ejsPath)) {
-        return res.render(ejsPath.replace(/\\/g, "/"));
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+        return res.sendFile(fullPath);
       }
 
-      const htmlPath = `${pathWithoutExt}.html`;
-      if (fs.existsSync(htmlPath)) {
-        return res.sendFile(htmlPath);
+      const maybeHtml = fullPath.endsWith(".html")
+        ? fullPath
+        : `${fullPath}.html`;
+      if (fs.existsSync(maybeHtml) && fs.statSync(maybeHtml).isFile()) {
+        return res.sendFile(maybeHtml);
       }
 
-      next();
+      return next();
     } catch (err) {
-      console.error("Error serving static file:", err);
-      next(err);
+      console.error("Error serving static file (themes/static):", err);
+      return next(err);
     }
   },
-  express.static(path.join(__dirname, "themes"))
+  express.static(path.join(__dirname, "themes"), { index: false })
+);
+
+app.use(
+  "/api/themes/static",
+  (req, res, next) => {
+    req.url = req.url.replace(/^\/+/, "");
+    next();
+  },
+  express.static(path.join(__dirname, "themes"), { index: false })
 );
 
 initThemesTable();
@@ -4073,12 +4066,20 @@ app.get("/exportexcel-productdata", async (req, res) => {
         res.status(500).send("Error querying the database.");
         return;
       }
+
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sheet1");
 
       if (results.length > 0) {
         const filteredResults = results.map(
-          ({ password, confirmpassword, ...rest }) => rest
+          ({ password, confirmpassword, ...rest }) => {
+            Object.keys(rest).forEach((key) => {
+              if (typeof rest[key] === "string") {
+                rest[key] = rest[key].replace(/<[^>]*>/g, "");
+              }
+            });
+            return rest;
+          }
         );
 
         worksheet.columns = Object.keys(filteredResults[0]).map((key) => ({

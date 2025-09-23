@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="assets/vendor/aos/aos.css" />
     <link rel="stylesheet" href="assets/css/default.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -65,7 +65,7 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
   </head>
   <body>
     <div class="preloader">
@@ -153,7 +153,7 @@
             </div>
             <div class="nav-inner-menu">
               <div class="main-categories-wrap d-none d-lg-block">
-                <a class="categories-btn-active" href="#">
+                <a class="categories-btn-active" href="/shops">
                   <span class="fas fa-list"></span
                   ><span class="text"
                     >Products Category<i class="fas fa-angle-down"></i
@@ -266,14 +266,14 @@
                         <nav class="main-menu">
                           <ul>
                             <li class="menu-item has-children">
-                              <a href="#">Home</a>
+                              <a href="index.html">Home</a>
                               <ul class="sub-menu">
                                 <li><a href="index.html">Home 01</a></li>
                                 <li><a href="index-2.html">Home 02</a></li>
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Shop</a>
+                              <a href="/shops-grid">Shop</a>
                               <ul class="sub-menu">
                                 <li><a href="shops-grid.html">Shop Grid</a></li>
                                 <li>
@@ -295,7 +295,7 @@
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Blog</a>
+                              <a href="/blogs">Blog</a>
                               <ul class="sub-menu">
                                 <li><a href="blogs.html">Our Blog</a></li>
                                 <li>
@@ -304,7 +304,7 @@
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Pages</a>
+                              <a href="/about-us">Pages</a>
                               <ul class="sub-menu">
                                 <li><a href="about-us.html">About Us</a></li>
                                 <li><a href="faq.html">Faqs</a></li>
@@ -376,14 +376,14 @@
                   <nav class="main-menu d-none d-lg-block">
                     <ul>
                       <li class="menu-item has-children">
-                        <a href="#">Home</a>
+                        <a href="index.html">Home</a>
                         <ul class="sub-menu">
                           <li><a href="index.html">Home 01</a></li>
                           <li><a href="index-2.html">Home 02</a></li>
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Shop</a>
+                        <a href="/shops-grid">Shop</a>
                         <ul class="sub-menu">
                           <li><a href="shops-grid.html">Shop Grid</a></li>
                           <li><a href="shops.html">Shop left Sidebar</a></li>
@@ -401,14 +401,14 @@
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Blog</a>
+                        <a href="/blogs">Blog</a>
                         <ul class="sub-menu">
                           <li><a href="blogs.html">Our Blog</a></li>
                           <li><a href="blog-details.html">Blog Details</a></li>
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Pages</a>
+                        <a href="/about-us">Pages</a>
                         <ul class="sub-menu">
                           <li><a href="about-us.html">About Us</a></li>
                           <li><a href="faq.html">Faqs</a></li>
@@ -490,11 +490,11 @@
           <div class="shape shape-two"><span></span></div>
           <div class="shape shape-three">
             <span
-              ><img src="assets/images/shape/curved-arrow.png" alt=""
+              ><img src="assets/images/shape/curved-arrow.png" alt="Image"
             /></span>
           </div>
           <div class="shape shape-four">
-            <span><img src="assets/images/shape/stars.png" alt="" /></span>
+            <span><img src="assets/images/shape/stars.png" alt="Image" /></span>
           </div>
           <div class="container">
             <div class="row">
@@ -573,7 +573,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          const apiUrl = "/pagesdatafaqs";
+          const apiUrl = "http://147.93.45.171:1600/pagesdatafaqs";
           const accordionContainer = document.getElementById("accordionOne");
           const searchForm = document.querySelector(".faqs-search form");
           const searchInput = searchForm.querySelector('input[type="search"]');
@@ -807,9 +807,10 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const listEl = document.querySelector(".pesco-mini-cart-list");
-        const badgeEl = document.querySelector("#pro-counts");
-        const wishlistEl = document.querySelector("#pro-counts1");
+        const badgeEl = document.getElementById("pro-counts");
+        const wishlistEl = document.getElementById("pro-counts1");
         const subtotalEl = document.querySelector(".cart-mini-total .amount");
+        const sideCheckout = document.querySelector(".cart-button-box a");
 
         function showBanner(msg, type = "success") {
           const b = document.createElement("div");
@@ -832,7 +833,7 @@
         }
 
         function loadSidebarCart() {
-          fetch(`/allcartdata`)
+          fetch(`http://147.93.45.171:1600/allcartdata`)
             .then((res) => res.json())
             .then((items) => {
               const seen = new Set();
@@ -842,74 +843,58 @@
                 return true;
               });
 
-              listEl.innerHTML = "";
-              if (!unique.length) {
-                listEl.innerHTML = `
-                  <li class="sidebar-cart-item sidebar-cart-empty">
-                    Your cart is empty.
-                  </li>`;
-                subtotalEl.textContent = "$0.00";
-                return;
-              }
+              listEl.innerHTML = unique.length
+                ? ""
+                : `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
 
               let total = 0;
               unique.forEach((item) => {
-                const price = parseFloat(item.price_sale);
-                const qty = parseInt(item.quantity, 10);
+                const price = parseFloat(item.price_sale) || 0;
+                const qty = parseInt(item.quantity, 10) || 0;
                 total += price * qty;
 
                 listEl.insertAdjacentHTML(
                   "beforeend",
                   `
-                  <li class="sidebar-cart-item" data-id="${
-                    item.id
-                  }" data-price="${price}" data-qty="${qty}">
-                    <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-                    <a href="#">
-                      <img src="/uploads/${item.image}" alt="${item.name}"/>
-                      ${item.name}
-                    </a>
-                    <span class="quantity">
-                      ${qty} × <span><span class="currency">$</span>${price.toFixed(
-                    2
-                  )}</span>
-                    </span>
-                  </li>
-                `
+            <li class="sidebar-cart-item"
+                data-id="${item.id}"
+                data-name="${item.name}"
+                data-image="${item.image}"
+                data-price="${price}"
+                data-qty="${qty}">
+              <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+              <a href="#"><img src="/uploads/${item.image}" alt="${
+                    item.name
+                  }"/> ${item.name}</a>
+              <span class="quantity">${qty} × $${price.toFixed(2)}</span>
+            </li>
+          `
                 );
               });
 
               subtotalEl.textContent = `$${total.toFixed(2)}`;
             })
-            .catch((err) => console.error("Sidebar load error:", err));
+            .catch((err) => {
+              console.error("Sidebar load error:", err);
+            });
         }
 
         function updateCounts() {
-          fetch(`/allcartdata`)
+          fetch(`http://147.93.45.171:1600/allcartdata`)
             .then((res) => res.json())
             .then((items) => {
-              const seen = new Set();
-              const unique = items.filter((i) => {
-                if (seen.has(i.name)) return false;
-                seen.add(i.name);
-                return true;
-              });
-              badgeEl.textContent = String(unique.length).padStart(2, "0");
+              const names = new Set(items.map((i) => i.name.trim()));
+              badgeEl.textContent = String(names.size).padStart(2, "0");
             })
             .catch(() => {
               badgeEl.textContent = "00";
             });
 
-          fetch(`/wishlistdata`)
+          fetch(`http://147.93.45.171:1600/wishlistdata`)
             .then((res) => res.json())
             .then((items) => {
-              const seen = new Set();
-              const unique = items.filter((i) => {
-                if (seen.has(i.product_name)) return false;
-                seen.add(i.product_name);
-                return true;
-              });
-              wishlistEl.textContent = String(unique.length).padStart(2, "0");
+              const names = new Set(items.map((i) => i.product_name.trim()));
+              wishlistEl.textContent = String(names.size).padStart(2, "0");
             })
             .catch(() => {
               wishlistEl.textContent = "00";
@@ -925,13 +910,14 @@
           const id = li.dataset.id;
           if (!id) return console.error("Missing data-id");
 
-          fetch(`/deletecart/${id}`, { method: "DELETE" })
+          fetch(`http://147.93.45.171:1600/deletecart/${id}`, {
+            method: "DELETE",
+          })
             .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
             .then(({ ok, body }) => {
               if (!ok || !body.success)
                 throw new Error(body.message || "Delete failed");
               li.remove();
-
               let newTotal = 0;
               listEl
                 .querySelectorAll(
@@ -943,7 +929,6 @@
                   newTotal += price * qty;
                 });
               subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
-
               showBanner("Product removed from cart.", "success");
             })
             .catch((err) => {
@@ -952,50 +937,46 @@
             });
         });
 
-        loadSidebarCart();
-        updateCounts();
-        setInterval(updateCounts, 1000);
-
-        const checkoutBtn = document.querySelector(
-          ".cart-button-box a[href*='checkout.html']"
-        );
-        if (checkoutBtn) {
-          checkoutBtn.addEventListener("click", (e) => {
+        if (sideCheckout) {
+          sideCheckout.addEventListener("click", (e) => {
             e.preventDefault();
 
             const items = Array.from(
-              listEl.querySelectorAll("li.sidebar-cart-item")
-            )
-              .filter((li) => !li.classList.contains("sidebar-cart-empty"))
-              .map((li) => {
-                const price = parseFloat(li.dataset.price);
-                const quantity = parseInt(li.dataset.qty, 10);
-                const rawSrc =
-                  li.querySelector("img")?.getAttribute("src") || "";
-                const image = rawSrc.split("/").pop() || "";
-                return {
-                  id: li.dataset.id,
-                  name:
-                    li.querySelector("a[href='#'] + a")?.textContent.trim() ||
-                    "",
-                  image,
-                  price,
-                  quantity,
-                  lineTotal: price * quantity,
-                };
-              });
+              listEl.querySelectorAll(
+                "li.sidebar-cart-item:not(.sidebar-cart-empty)"
+              )
+            ).map((li) => {
+              const price = parseFloat(li.dataset.price) || 0;
+              const quantity = parseInt(li.dataset.qty, 10) || 0;
+              return {
+                id: li.dataset.id,
+                name: li.dataset.name,
+                image: li.dataset.image,
+                price,
+                quantity,
+                lineTotal: price * quantity,
+              };
+            });
 
             const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
             const total = subtotal;
 
             localStorage.setItem(
               "checkout_cart",
-              JSON.stringify({ items, subtotal, total })
+              JSON.stringify({
+                items,
+                subtotal,
+                total,
+              })
             );
 
-            window.location.href = checkoutBtn.href;
+            window.location.href = "/checkout";
           });
         }
+
+        loadSidebarCart();
+        updateCounts();
+        setInterval(updateCounts, 1000);
       });
     </script>
 
@@ -1205,7 +1186,32 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        fetch("/blogpostdata")
+        const slugify = (s) =>
+          String(s || "")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-");
+
+        const imageSrc = (img) => {
+          if (!img) return "";
+          const str = String(img).trim();
+          if (/^https?:\/\//i.test(str)) return str;
+          if (str.startsWith("/")) return str;
+          return "/uploads/" + encodeURIComponent(str);
+        };
+
+        const escapeHtml = (str) => {
+          if (str == null) return "";
+          return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        };
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
           .then((response) => {
             if (!response.ok) {
               throw new Error("Failed to fetch blog data.");
@@ -1213,34 +1219,36 @@
             return response.json();
           })
           .then((data) => {
+            if (!Array.isArray(data)) return;
             data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const topPosts = data.slice(0, 3);
-
             const container = document.getElementById("recent-posts-container");
+            if (!container) return;
 
             topPosts.forEach((post) => {
+              const slug = slugify(post.name || "post-" + post.id);
               const postHTML = `
-                  <div class="recent-post-item">
-                     <div class="thumb">
-                      <a href="blog-details.html?id=${
-                        post.id
-                      }" class="w-100 h-100">
-                      <img src="/uploads/${post.image}" alt="post thumb" />
-                      </a>
-                    </div>
-                    <div class="content">
-                      <h4>
-                       <a href="blog-details.html?id=${post.id}">${
-                post.name
-              }</a>
-                      </h4>
-                      <span><a href="blog-details.html?id=${
-                        post.id
-                      }">${formatDate(post.date)}</a></span>
-                    </div>
-                  </div>
-                `;
+            <div class="recent-post-item">
+              <div class="thumb">
+                <a href="/blog-details/${slug}" class="w-100 h-100">
+                  <img src="${imageSrc(post.image)}" alt="${escapeHtml(
+                post.name || "post thumb"
+              )}" />
+                </a>
+              </div>
+              <div class="content">
+                <h4>
+                  <a href="/blog-details/${slug}">${escapeHtml(
+                post.name || ""
+              )}</a>
+                </h4>
+                <span><a href="/blog-details/${slug}">${formatDate(
+                post.date
+              )}</a></span>
+              </div>
+            </div>
+          `;
               container.insertAdjacentHTML("beforeend", postHTML);
             });
           })
@@ -1250,6 +1258,7 @@
 
         function formatDate(dateStr) {
           const date = new Date(dateStr);
+          if (Number.isNaN(date.getTime())) return "";
           const options = { year: "numeric", month: "long", day: "numeric" };
           return date.toLocaleDateString("en-US", options);
         }
@@ -1280,6 +1289,11 @@
         searchForm.style.position = "relative";
         searchForm.appendChild(dropdown);
 
+        searchForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          window.location.href = "/shops-grid";
+        });
+
         let timer;
         searchInput.addEventListener("input", () => {
           clearTimeout(timer);
@@ -1289,7 +1303,7 @@
             return;
           }
           timer = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1297,22 +1311,29 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   dropdown.innerHTML =
                     matches
                       .map((p) => {
                         const priceHTML = p.price_sale
-                          ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price}</del>`
+                          ? `<strong style="color:#000">${p.price}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price_sale}</del>`
                           : `<strong class="text-secondary fw-bold" style="color:#000">${p.price}</strong>`;
 
                         return `
-                <div class="autocomplete-item" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
+                <div class="autocomplete-item" data-name="${(
+                  p.name || ""
+                ).replace(
+                  /"/g,
+                  "&quot;"
+                )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
                   <img src="/uploads/${p.image}" 
-                      alt="${p.name}" 
+                      alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
-                    <div style="font-weight:600;color:#333" class="text-dark fw-bold">${p.name}</div>
+                    <div style="font-weight:600;color:#333" class="text-dark fw-bold">${
+                      p.name
+                    }</div>
                     <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
                   </div>
                 </div>
@@ -1320,8 +1341,8 @@
                       })
                       .join("") +
                     `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
-              Show all results
-            </div>`;
+                  Show all results
+                </div>`;
                 }
                 dropdown.style.display = "block";
               })
@@ -1335,17 +1356,11 @@
         dropdown.addEventListener("click", (e) => {
           const item = e.target.closest(".autocomplete-item");
           if (item) {
-            const name = item.querySelector("div > div").textContent;
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              name
-            )}`;
+            window.location.href = "/shops-grid";
             return;
           }
           if (e.target.closest(".autocomplete-show-all")) {
-            const q = searchInput.value.trim();
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              q
-            )}`;
+            window.location.href = "/shops-grid";
           }
         });
 
@@ -1354,6 +1369,44 @@
             dropdown.style.display = "none";
           }
         });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const res = await fetch("http://147.93.45.171:1600/get-theme-logo");
+          if (!res.ok) throw new Error("Failed to fetch logo data");
+
+          const data = await res.json();
+          const logoUrl = data.logo_url;
+          if (!logoUrl) throw new Error("Logo URL not found in API response");
+
+          const uploadPath = `/uploads/${logoUrl}`;
+
+          const logoImgs = [
+            ...document.querySelectorAll(".brand-logo img"),
+            ...document.querySelectorAll(".site-branding .brand-logo img"),
+            ...document.querySelectorAll(
+              ".site-branding.d-lg-none .brand-logo img"
+            ),
+            ...document.querySelectorAll(".footer-logo img"),
+          ];
+
+          logoImgs.forEach((img) => {
+            img.src = uploadPath;
+            img.width = 144;
+            img.height = 44;
+            img.alt = data.alt_text || "Logo";
+
+            img.addEventListener("error", () => {
+              console.warn("Logo image failed to load:", uploadPath);
+              img.src = "assets/images/logo/logo-main.png";
+            });
+          });
+        } catch (error) {
+          console.error("Logo load error:", error);
+        }
       });
     </script>
 

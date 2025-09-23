@@ -16,10 +16,10 @@
     />
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
-    <!-- <link rel="stylesheet" href="assets/css/venobox.min.css" /> -->
-    <!-- <link rel="stylesheet" href="assets/css/odometer.min.css" /> -->
+    <link rel="stylesheet" href="assets/css/venobox.min.css" />
+    <link rel="stylesheet" href="assets/css/odometer.min.css" />
     <link rel="stylesheet" href="assets/css/nice-select.css" />
-    <!-- <link rel="stylesheet" href="assets/css/swiper.min.css" /> -->
+    <link rel="stylesheet" href="assets/css/swiper.min.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -164,17 +164,21 @@
                       >+(258) 2159-2159</a
                     >
                   </div>
-                  <a href="tel:+25821592159" class="icon">
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
                     <i class="fa-regular fa-phone"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="wishlist.html" class="icon">
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
                     <i class="fa-sharp fa-regular fa-heart"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="cart.html" class="icon">
+                  <a href="cart.html" class="icon" aria-label="View cart">
                     <i class="fa-light fa-bag-shopping"></i>
                     <span>0</span>
                   </a>
@@ -225,7 +229,7 @@
                     <a href="shop-grid.html">men</a>
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#">Pages</a>
+                    <a href="/about">Pages</a>
                     <ul>
                       <li><a href="about.html">About</a></li>
                       <li><a href="login.html">Login</a></li>
@@ -250,9 +254,13 @@
               <div class="header-right">
                 <span>Get 30% Discount Now <span>Sale</span></span>
                 <div class="header-right-item">
-                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
-                    ><i class="fa-sharp fa-solid fa-bars"></i
-                  ></a>
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -337,7 +345,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -345,7 +353,7 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   resultBox.innerHTML =
                     matches
@@ -354,10 +362,10 @@
                         const mainPrice = formatPrice(p.price);
                         const salePrice = p.price_sale
                           ? `<strong class="text-dark me-2">${formatPrice(
-                              p.price_sale
+                              p.price
                             )}</strong>
                               <s class="fw-bold text-danger">${formatPrice(
-                                p.price
+                                p.price_sale
                               )}</s>`
                           : `<strong class="fw-bold text-dark">${formatPrice(
                               p.price
@@ -365,9 +373,7 @@
 
                         return `
                         <div
-                          onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                            q
-                          )}'"
+                          onclick="window.location.href='/shop'"
                           style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                         >
                           <img src="/uploads/${img}" alt="${p.name}"
@@ -384,9 +390,7 @@
                       .join("") +
                     `
                       <div
-                        onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                          q
-                        )}'"
+                       onclick="window.location.href='/shop'"
                         style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
                       >
                         Show all results
@@ -472,17 +476,15 @@
       <div class="container">
         <div class="page-header-content">
           <h1 class="title">Blog Details</h1>
-          <h4 class="sub-title">
+          <h2 class="sub-title">
             <span class="home">
-              <a href="index.html">
-                <span>Home</span>
-              </a>
+              <a href="#"><span>Home</span></a>
             </span>
-            <span class="icon"><i class="fa-solid fa-angle-right"></i></span>
-            <span class="inner">
-              <span>Blog Details</span>
+            <span class="icon">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
             </span>
-          </h4>
+            <span class="inner"><span>Blog Details</span></span>
+          </h2>
         </div>
       </div>
     </section>
@@ -490,7 +492,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -628,28 +632,45 @@
                       <li><a href="#">Birthday</a></li>
                     </ul>
                   </div>
+
                   <div class="social-list-wrap">
-                    <h4 class="follow">Follow Us:</h4>
+                    <h3 class="follow">Follow Us:</h3>
                     <ul class="social-list">
                       <li>
-                        <a href="#" class="facebook"
-                          ><i class="fab fa-facebook-f"></i
-                        ></a>
+                        <a
+                          href="#"
+                          class="facebook"
+                          aria-label="Follow us on Facebook"
+                        >
+                          <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        </a>
                       </li>
                       <li>
-                        <a href="#" class="twitter"
-                          ><i class="fab fa-twitter"></i
-                        ></a>
+                        <a
+                          href="#"
+                          class="twitter"
+                          aria-label="Follow us on Twitter"
+                        >
+                          <i class="fab fa-twitter" aria-hidden="true"></i>
+                        </a>
                       </li>
                       <li>
-                        <a href="#" class="linkedin"
-                          ><i class="fab fa-linkedin-in"></i
-                        ></a>
+                        <a
+                          href="#"
+                          class="linkedin"
+                          aria-label="Follow us on LinkedIn"
+                        >
+                          <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+                        </a>
                       </li>
                       <li>
-                        <a href="#" class="instagram"
-                          ><i class="fab fa-instagram"></i
-                        ></a>
+                        <a
+                          href="#"
+                          class="instagram"
+                          aria-label="Follow us on Instagram"
+                        >
+                          <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -672,24 +693,43 @@
                       </p>
                       <ul class="social-list">
                         <li>
-                          <a href="#" class="facebook"
-                            ><i class="fab fa-facebook-f"></i
-                          ></a>
+                          <a
+                            href="#"
+                            class="facebook"
+                            aria-label="Follow us on Facebook"
+                          >
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                          </a>
                         </li>
                         <li>
-                          <a href="#" class="twitter"
-                            ><i class="fab fa-twitter"></i
-                          ></a>
+                          <a
+                            href="#"
+                            class="twitter"
+                            aria-label="Follow us on Twitter"
+                          >
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                          </a>
                         </li>
                         <li>
-                          <a href="#" class="linkedin"
-                            ><i class="fab fa-linkedin-in"></i
-                          ></a>
+                          <a
+                            href="#"
+                            class="linkedin"
+                            aria-label="Follow us on LinkedIn"
+                          >
+                            <i
+                              class="fab fa-linkedin-in"
+                              aria-hidden="true"
+                            ></i>
+                          </a>
                         </li>
                         <li>
-                          <a href="#" class="instagram"
-                            ><i class="fab fa-instagram"></i
-                          ></a>
+                          <a
+                            href="#"
+                            class="instagram"
+                            aria-label="Follow us on Instagram"
+                          >
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                          </a>
                         </li>
                       </ul>
                     </div>
@@ -698,7 +738,7 @@
 
                 <div class="comments-area">
                   <div class="section-heading">
-                    <h5 class="section-title section-title1">Comments (3)</h5>
+                    <h3 class="section-title section-title1">Comments (3)</h3>
                   </div>
                 </div>
 
@@ -777,10 +817,10 @@
           <div class="col-lg-4">
             <div class="sidebar-widget">
               <div class="search-box">
-                <form action="contact.php" class="search-form">
+                <form action="#" class="search-form">
                   <input
                     type="text"
-                    class="form-control"
+                    class="form-control py-4"
                     placeholder="Search"
                   />
                 </form>
@@ -901,7 +941,7 @@
               const dateStr = formatDate(c.created_at || c.date);
               li.innerHTML = `
               <div class="comment-thumb">
-                <img src="data:image/jpeg;base64,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" alt="author"/>
+                <img src="data:image/jpeg;base64,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" alt="author image" loading="lazy"/>
               </div>
               <div class="comment-info">
                 <div class="comments-meta">
@@ -973,71 +1013,32 @@
     </script>
 
     <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        const params = new URLSearchParams(location.search);
-        let id = params.get("id");
-
-        let posts = [];
-        try {
-          const res = await fetch("/blogpostdata");
-          if (!res.ok) throw new Error(res.status);
-          posts = await res.json();
-        } catch (err) {
-          return console.error("Failed to load posts:", err);
+      document.addEventListener("DOMContentLoaded", async function () {
+        function makeUploadsUrl(path) {
+          if (!path) return "";
+          if (/^https?:\/\//i.test(path)) return path;
+          if (!/^\/?uploads\//i.test(path))
+            path = "/uploads/" + path.replace(/^\/+/, "");
+          return window.location.origin + path;
         }
 
-        posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        if (!id && posts.length) {
-          id = String(posts[0].id);
+        function stripHtml(s) {
+          if (!s) return "";
+          try {
+            return s.replace(/<[^>]*>/g, "").trim();
+          } catch (e) {
+            return String(s);
+          }
         }
-
-        const post = posts.find((p) => String(p.id) === id);
-        if (!post) return console.error("Post not found for id:", id);
-
-        document.querySelector(
-          ".blog-details-img img"
-        ).src = `/uploads/${post.image.trim()}`;
-        document.querySelector(
-          ".blog-details-content .details-title"
-        ).textContent = post.name;
-        document.querySelector(
-          ".post-meta li:nth-child(1)"
-        ).innerHTML = `<i class="fa-sharp fa-regular fa-clock"></i>${formatDate(
-          post.date
-        )}`;
-        document.querySelector(
-          ".post-meta li:nth-child(2)"
-        ).innerHTML = `<i class="fa-light fa-user"></i>${post.author_name}`;
-
-        document.querySelectorAll(
-          ".tag-list li"
-        )[1].innerHTML = `<a href="#">${post.tags}</a>`;
-
-        const contentWrap = document.querySelector(".blog-details-content");
-        contentWrap.querySelector("p.mb-20").innerHTML = post.description;
-        contentWrap.querySelector("p.mb-30:last-of-type").innerHTML =
-          post.extra || "";
-        contentWrap.querySelector("blockquote .content p").innerHTML =
-          post.blockquote || "No quote provided.";
-
-        const imgs = document.querySelectorAll(".details-img-wrap img");
-        if (imgs.length >= 2) {
-          imgs[0].src = `/uploads/${post.image_1 || post.image}`;
-          imgs[1].src = `/uploads/${post.image_2 || post.image}`;
-        }
-
-        document.querySelector(".radiosbcrumb-end span").textContent =
-          post.name;
 
         function formatDate(dateString) {
+          if (!dateString) return "";
           const d = new Date(dateString);
           const day = d.getDate();
           const month = d.toLocaleString("en-US", { month: "long" });
           const year = d.getFullYear();
           return `${day}${getOrdinal(day)} ${month}, ${year}`;
         }
-
         function getOrdinal(n) {
           if (n > 3 && n < 21) return "th";
           switch (n % 10) {
@@ -1050,6 +1051,197 @@
             default:
               return "th";
           }
+        }
+
+        function getRequestedSlug() {
+          try {
+            const path = window.location.pathname || "";
+            const prefix = "/blog-details/";
+            if (path.toLowerCase().startsWith(prefix)) {
+              const raw = path.substring(prefix.length);
+              if (raw) return decodeURIComponent(raw.replace(/^\/+|\/+$/g, ""));
+            }
+          } catch (e) {}
+          try {
+            const sp = sessionStorage.getItem("selectedPostPermalink");
+            if (sp) {
+              sessionStorage.removeItem("selectedPostPermalink");
+              return decodeURIComponent(sp);
+            }
+          } catch (e) {}
+          try {
+            const id = sessionStorage.getItem("selectedPostId");
+            if (id) {
+              sessionStorage.removeItem("selectedPostId");
+              return String(id);
+            }
+          } catch (e) {}
+          return null;
+        }
+
+        let posts = [];
+        try {
+          const res = await fetch("http://147.93.45.171:1600/blogpostdata");
+          if (!res.ok) throw new Error("Failed to fetch blog posts");
+          const data = await res.json();
+          posts = Array.isArray(data) ? data : data.items || [];
+          posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        } catch (err) {
+          console.error("Failed to load posts:", err);
+          return;
+        }
+
+        const requested = getRequestedSlug();
+
+        const findPost = (key) => {
+          if (!key) return null;
+          const rawLower = (key || "").toString().trim().toLowerCase();
+
+          if (/^\d+$/.test(rawLower)) {
+            const found = posts.find((p) => String(p.id) === rawLower);
+            if (found) return found;
+          }
+
+          const byPermalink = posts.find((p) => {
+            const pPerm = (p.permalink || p.slug || "")
+              .toString()
+              .trim()
+              .toLowerCase();
+            if (pPerm && pPerm === rawLower) return true;
+            const normKey = rawLower.replace(/[-_\s%20]+/g, "");
+            const normPerm = (pPerm || "").replace(/[-_\s%20]+/g, "");
+            return normPerm && normPerm === normKey;
+          });
+          if (byPermalink) return byPermalink;
+
+          const byName = posts.find(
+            (p) => (p.name || "").toString().trim().toLowerCase() === rawLower
+          );
+          if (byName) return byName;
+
+          return null;
+        };
+
+        let post = null;
+        if (requested) {
+          post = findPost(requested);
+        }
+        if (!post) {
+          post = posts[0] || null;
+        }
+
+        if (!post) {
+          console.error("No blog posts available");
+          return;
+        }
+
+        const mainImg = document.querySelector(".blog-details-img img");
+        if (mainImg) mainImg.src = makeUploadsUrl(post.image || "");
+
+        const titleEl = document.querySelector(
+          ".blog-details-content .details-title"
+        );
+        if (titleEl) titleEl.textContent = post.name || post.title || "";
+
+        const dateMeta = document.querySelector(".post-meta li:nth-child(1)");
+        if (dateMeta)
+          dateMeta.innerHTML = `<i class="fa-sharp fa-regular fa-clock"></i> ${formatDate(
+            post.date
+          )}`;
+
+        const authorMeta = document.querySelector(".post-meta li:nth-child(2)");
+        if (authorMeta)
+          authorMeta.innerHTML = `<i class="fa-light fa-user"></i> ${
+            post.author_name || post.author || "Admin"
+          }`;
+
+        const tagListItems = document.querySelectorAll(".tag-list li");
+        if (tagListItems && tagListItems.length) {
+          const tagText = post.tags || "";
+          if (tagListItems[1])
+            tagListItems[1].innerHTML = `<a href="/blog-grid?tag=${encodeURIComponent(
+              tagText
+            )}">${tagText}</a>`;
+          else if (tagListItems[0])
+            tagListItems[0].innerHTML = `<a href="/blog-grid?tag=${encodeURIComponent(
+              tagText
+            )}">${tagText}</a>`;
+        }
+
+        const contentWrap = document.querySelector(".blog-details-content");
+        if (contentWrap) {
+          const p1 = contentWrap.querySelector("p.mb-20");
+          const p2 = contentWrap.querySelector("p.mb-30:last-of-type");
+          if (p1)
+            p1.innerHTML = post.description || stripHtml(post.content || "");
+          if (p2) p2.innerHTML = post.extra || "";
+          const quoteEl = contentWrap.querySelector("blockquote .content p");
+          if (quoteEl)
+            quoteEl.innerHTML = post.blockquote || "No quote provided.";
+        }
+
+        const imgs = document.querySelectorAll(".details-img-wrap img");
+        if (imgs.length >= 1)
+          imgs[0].src = makeUploadsUrl(post.image_1 || post.image);
+        if (imgs.length >= 2)
+          imgs[1].src = makeUploadsUrl(post.image_2 || post.image);
+
+        const crumb = document.querySelector(".radiosbcrumb-end span");
+        if (crumb) crumb.textContent = post.name || post.title || "";
+
+        try {
+          let canonical = document.head.querySelector('link[rel="canonical"]');
+          const canonicalHref =
+            window.location.origin +
+            "/blog-details/" +
+            encodeURIComponent(
+              post.permalink || post.slug || post.id || post.name
+            );
+          if (!canonical) {
+            canonical = document.createElement("link");
+            canonical.rel = "canonical";
+            document.head.appendChild(canonical);
+          }
+          canonical.href = canonicalHref;
+        } catch (e) {}
+
+        try {
+          const schemaData = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            headline: post.name || post.title || "",
+            description: stripHtml(post.description || post.content || ""),
+            datePublished: post.date || "",
+            dateModified: post.updated_at || post.date || "",
+            author: {
+              "@type": "Person",
+              name: post.author_name || post.author || "Admin",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Your Website Name",
+              logo: {
+                "@type": "ImageObject",
+                url: window.location.origin + "/logo.png",
+              },
+            },
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": window.location.href,
+            },
+            image: makeUploadsUrl(post.image || ""),
+          };
+
+          let schemaScript = document.getElementById("blogpost-schema");
+          if (!schemaScript) {
+            schemaScript = document.createElement("script");
+            schemaScript.type = "application/ld+json";
+            schemaScript.id = "blogpost-schema";
+            document.head.appendChild(schemaScript);
+          }
+          schemaScript.textContent = JSON.stringify(schemaData, null, 2);
+        } catch (err) {
+          console.error("Schema injection failed:", err);
         }
       });
     </script>
@@ -1072,7 +1264,7 @@
         let filteredPosts = [];
 
         function fetchAllPosts() {
-          return fetch("/blogpostdata")
+          return fetch("http://147.93.45.171:1600/blogpostdata")
             .then((res) => res.json())
             .then((data) => {
               allPosts = data.sort(
@@ -1092,33 +1284,51 @@
             const card = document.createElement("div");
             card.className = "post-card-2 inner-blog";
             card.innerHTML = `
-              <div class="post-thumb">
-                <img src="/uploads/${
-                  post.image
-                }" alt="post" style="width:100%;height:auto;">
-              </div>
-              <div class="post-content-wrap">
-                <div class="post-content">
-                  <ul class="post-meta">
-                    <li><i class="fa-sharp fa-solid fa-clock"></i> ${new Date(
-                      post.date
-                    ).toLocaleDateString()}</li>
-                    <li><i class="fa-sharp fa-solid fa-folder"></i> ${
-                      post.tags
-                    }</li>
-                  </ul>
-                  <h3 class="title">
-                    <a href="/blog/${post.id}">${post.name}</a>
-                  </h3>
-                  <p>${post.description}</p>
-                  <a href="/blog/${post.id}" class="blog-btn">
-                    <i class="fa-sharp fa-regular fa-arrow-right"></i> Read More
+                <div class="post-thumb">
+                  <a href="/blog-details" data-post-id="${post.id}">
+                    <img src="/uploads/${
+                      post.image
+                    }" alt="post" style="width:100%;height:auto;">
                   </a>
                 </div>
-              </div>`;
+                <div class="post-content-wrap">
+                  <div class="post-content">
+                    <ul class="post-meta">
+                      <li><i class="fa-sharp fa-solid fa-clock"></i> ${new Date(
+                        post.date
+                      ).toLocaleDateString()}</li>
+                      <li><i class="fa-sharp fa-solid fa-folder"></i> ${
+                        post.tags
+                      }</li>
+                    </ul>
+                    <h3 class="title">
+                      <a href="/blog-details" data-post-id="${post.id}">${
+              post.name
+            }</a>
+                    </h3>
+                    <p>${post.description}</p>
+                    <a href="/blog-details" class="blog-btn" data-post-id="${
+                      post.id
+                    }">
+                      <i class="fa-sharp fa-regular fa-arrow-right"></i> Read More
+                    </a>
+                  </div>
+                </div>`;
             blogContainer.appendChild(card);
           });
         }
+
+        document.body.addEventListener("click", (e) => {
+          const link = e.target.closest("a[data-post-id]");
+          if (!link) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
+          const id = link.dataset.postId;
+          try {
+            sessionStorage.setItem("selectedPostId", String(id));
+          } catch {}
+          window.location.href = "/blog-details";
+        });
 
         function renderPagination(totalPages, currentPage) {
           paginationContainer.innerHTML = "";
@@ -1168,15 +1378,21 @@
             const div = document.createElement("div");
             div.className = "sidebar-post";
             div.innerHTML = `
-              <img src="/uploads/${post.image}" alt="post" />
-              <div class="post-content">
-                <ul class="post-meta">
-                  <li><i class="fa-sharp fa-regular fa-clock"></i> ${new Date(
-                    post.date
-                  ).toLocaleDateString()}</li>
-                </ul>
-                <h3 class="title"><a href="#">${post.name}</a></h3>
-              </div>`;
+                <a href="/blog-details" data-post-id="${post.id}">
+                  <img src="/uploads/${post.image}" alt="post" />
+                </a>
+                <div class="post-content">
+                  <ul class="post-meta">
+                    <li><i class="fa-sharp fa-regular fa-clock"></i> ${new Date(
+                      post.date
+                    ).toLocaleDateString()}</li>
+                  </ul>
+                  <h3 class="title">
+                    <a href="/blog-details" data-post-id="${post.id}">${
+              post.name
+            }</a>
+                  </h3>
+                </div>`;
             latestPostsContainer.appendChild(div);
           });
         }
@@ -1190,14 +1406,17 @@
         }
 
         function loadTags() {
-          fetch("/blogalldata")
+          fetch("http://147.93.45.171:1600/blogalldata")
             .then((res) => res.json())
             .then((tags) => {
               tagsContainer.innerHTML = "";
               tags.slice(0, 8).forEach((t) => {
-                const li = document.createElement("li"),
-                  a = document.createElement("a");
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+
+                a.href = `/blog-grid?tag=${encodeURIComponent(t.slug)}`;
                 a.textContent = t.name;
+
                 li.appendChild(a);
                 tagsContainer.appendChild(li);
               });
@@ -1205,7 +1424,7 @@
         }
 
         function loadCategories() {
-          fetch("/allcategorydata")
+          fetch("http://147.93.45.171:1600/allcategorydata")
             .then((res) => res.json())
             .then((cats) => {
               categoryContainer.innerHTML = "";
@@ -1213,8 +1432,8 @@
                 const li = document.createElement("li"),
                   id = `category-${i + 1}`;
                 li.innerHTML = `
-                  <input type="checkbox" id="${id}" class="category-filter" value="${cat.name}">
-                  <label for="${id}">${cat.name}</label>`;
+                    <input type="checkbox" id="${id}" class="category-filter" value="${cat.name}">
+                    <label for="${id}">${cat.name}</label>`;
                 categoryContainer.appendChild(li);
               });
               categoryContainer.addEventListener("change", applyCategoryFilter);
@@ -1259,7 +1478,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -1301,7 +1520,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -1473,7 +1692,7 @@
                 <div class="footer-form mb-20">
                   <form action="#" class="rr-subscribe-form">
                     <input
-                      class="form-control"
+                      class="form-control py-4"
                       type="email"
                       name="email"
                       placeholder="Email address"
@@ -1531,11 +1750,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1560,15 +1782,19 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="#"
-                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  <a href="javascript:void(0)"
+                    ><img
+                      src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
+                      alt="img"
+                      loading="lazy"
+                      style="width: 264px; height: 24px"
                   /></a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6">
               <p>
-                Copyright & Design <span id="designYear">2024</span>
+                Copyright & Design <span id="designYear">2025</span>
                 <span>©Roiser</span>. All Right Reserved
               </p>
             </div>
@@ -1588,7 +1814,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1621,7 +1847,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1640,7 +1866,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1692,12 +1918,22 @@
     </script>
 
     <script src="assets/js/vendor/jquary-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/bootstrap-bundle.js"></script>
     <script src="assets/js/vendor/imagesloaded-pkgd.js"></script>
     <script src="assets/js/vendor/waypoints.min.js"></script>
     <script src="assets/js/vendor/venobox.min.js"></script>
+    <script src="assets/js/vendor/odometer.min.js"></script>
     <script src="assets/js/vendor/meanmenu.js"></script>
+    <script src="assets/js/vendor/smooth-scroll.js"></script>
+    <script src="assets/js/vendor/jquery.isotope.js"></script>
+    <script src="assets/js/vendor/wow.min.js"></script>
     <script src="assets/js/vendor/swiper.min.js"></script>
+    <script src="assets/js/vendor/split-type.min.js"></script>
+    <script src="assets/js/vendor/gsap.min.js"></script>
+    <script src="assets/js/vendor/scroll-trigger.min.js"></script>
     <script src="assets/js/vendor/nice-select.js"></script>
+    <script src="assets/js/ajax-form.js"></script>
+    <script src="assets/js/contact.js"></script>
     <script src="assets/js/main.js"></script>
   </body>
 </html>

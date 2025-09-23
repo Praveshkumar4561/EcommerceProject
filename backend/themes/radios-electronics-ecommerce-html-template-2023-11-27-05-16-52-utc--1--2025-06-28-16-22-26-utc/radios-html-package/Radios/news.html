@@ -26,7 +26,7 @@
     <link rel="stylesheet" href="assets/css/slick.css" />
     <link rel="stylesheet" href="assets/css/magnific-popup.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -51,7 +51,7 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
   </head>
 
   <style>
@@ -252,7 +252,7 @@
           <div class="header__middle ul_li_between justify-content-xs-center">
             <div class="header__logo">
               <a href="index.html">
-                <img src="assets/img/logo/logo.svg" alt="" />
+                <img src="assets/img/logo/logo.svg" alt="Image" />
               </a>
             </div>
             <form class="header__search-box" action="#">
@@ -277,16 +277,18 @@
                 const searchForm = document.querySelector(
                   ".header__search-box"
                 );
+                if (!searchForm) return;
                 const searchInput =
                   searchForm.querySelector('input[type="text"]');
+                if (!searchInput) return;
 
                 const dropdown = document.createElement("div");
                 dropdown.className = "header-search-autocomplete";
                 Object.assign(dropdown.style, {
                   position: "absolute",
                   top: "100%",
-                  left: 0,
-                  right: 0,
+                  left: "0",
+                  right: "0",
                   background: "#fff",
                   border: "1px solid #ddd",
                   zIndex: 1000,
@@ -294,124 +296,174 @@
                   overflowY: "auto",
                   display: "none",
                 });
-                searchForm.style.position = "relative";
+                const prevPos = getComputedStyle(searchForm).position;
+                if (prevPos === "static")
+                  searchForm.style.position = "relative";
                 searchForm.appendChild(dropdown);
 
                 const catsMap = {};
                 try {
-                  const res = await fetch("/productcatdata");
-                  if (!res.ok) throw new Error(res.status);
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/productcatdata"
+                  );
+                  if (!res.ok) throw new Error("failed to load categories");
                   const cats = await res.json();
-                  cats
+                  (Array.isArray(cats) ? cats : [])
                     .filter(
-                      (c) => c.status === "Published" || c.status === "Draft"
+                      (c) =>
+                        c && (c.status === "Published" || c.status === "Draft")
                     )
                     .sort((a, b) => new Date(b.date) - new Date(a.date))
                     .forEach((c) => {
                       catsMap[c.id] = c.name;
-                      const opt = document.createElement("option");
-                      opt.value = c.id;
-                      opt.textContent = c.name;
-                      select.appendChild(opt);
+                      if (select) {
+                        const opt = document.createElement("option");
+                        opt.value = c.id;
+                        opt.textContent = c.name;
+                        select.appendChild(opt);
+                      }
                     });
-                } catch {
-                  const errOpt = document.createElement("option");
-                  errOpt.value = "";
-                  errOpt.text = "Unable to load categories";
-                  select.appendChild(errOpt);
+                } catch (e) {
+                  if (select) {
+                    const errOpt = document.createElement("option");
+                    errOpt.value = "";
+                    errOpt.text = "Unable to load categories";
+                    select.appendChild(errOpt);
+                  }
                 }
 
-                let timer;
+                const navigateToShop = (searchParams) => {
+                  let qs = "";
+                  if (typeof searchParams === "string") qs = searchParams;
+                  else if (searchParams instanceof URLSearchParams)
+                    qs = searchParams.toString();
+                  else if (searchParams && typeof searchParams === "object")
+                    qs = new URLSearchParams(searchParams).toString();
+
+                  const stateObj = { search: "", category: "" };
+                  if (qs) {
+                    const parsed = new URLSearchParams(qs);
+                    stateObj.search = parsed.get("search") || "";
+                    stateObj.category = parsed.get("category") || "";
+                  }
+
+                  try {
+                    history.pushState(stateObj, document.title || "", "/shop");
+
+                    if (
+                      window.__themeRoute &&
+                      typeof window.__themeRoute === "function"
+                    ) {
+                      try {
+                        window.__themeRoute("/shop", { replace: false });
+                        window.dispatchEvent(new PopStateEvent("popstate"));
+                        return;
+                      } catch (e) {}
+                    }
+
+                    window.dispatchEvent(new PopStateEvent("popstate"));
+
+                    if (!window.__themeRoute) {
+                      window.location.href = "/shop";
+                    }
+                  } catch (err) {
+                    const fallback = "/shop" + (qs ? "?" + qs : "");
+                    window.location.href = fallback;
+                  }
+                };
+
+                let timer = null;
                 searchInput.addEventListener("input", () => {
                   clearTimeout(timer);
-                  const q = searchInput.value.trim();
-                  const catId = select.value;
+                  const q = (searchInput.value || "").trim();
+                  const catId = (select && select.value) || "";
                   if (q.length < 2) {
                     dropdown.style.display = "none";
                     return;
                   }
-                  timer = setTimeout(() => {
-                    fetch("/productpagedata")
-                      .then((r) => r.json())
-                      .then((products) => {
-                        let list = products;
 
-                        if (catId) {
-                          const catName = catsMap[catId];
-                          list = list.filter(
-                            (p) =>
-                              p.categories &&
-                              p.categories
-                                .split(",")
-                                .map((s) => s.trim())
-                                .includes(catName)
-                          );
-                        }
+                  timer = setTimeout(async () => {
+                    try {
+                      const r = await fetch(
+                        "http://147.93.45.171:1600/productpagedata"
+                      );
+                      if (!r.ok) throw new Error("failed to load products");
+                      const products = await r.json();
+                      let list = Array.isArray(products) ? products : [];
 
-                        const matches = list
-                          .filter((p) =>
-                            p.name.toLowerCase().includes(q.toLowerCase())
-                          )
-                          .slice(0, 5);
+                      if (catId) {
+                        const catName = catsMap[catId];
+                        list = list.filter(
+                          (p) =>
+                            p.categories &&
+                            p.categories
+                              .split(",")
+                              .map((s) => s.trim())
+                              .includes(catName)
+                        );
+                      }
 
-                        if (!matches.length) {
-                          dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
-                        } else {
-                          dropdown.innerHTML =
-                            matches
-                              .map((p) => {
-                                const priceHTML = p.price_sale
-                                  ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999">${p.price}</del>`
-                                  : `<strong style="color:#000">${p.price}</strong>`;
-                                return `
-                            <div class="autocomplete-item" 
-                                 style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee"
-                                 data-name="${encodeURIComponent(p.name)}">
-                              <img src="/uploads/${p.image}" 
-                                   alt="${p.name}" 
-                                   style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
-                              <div>
-                                <div style="font-weight:600;color:#333">${
-                                  p.name
-                                }</div>
-                                <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
-                              </div>
-                            </div>`;
-                              })
-                              .join("") +
-                            `
-                          <div class="autocomplete-show-all" 
-                               style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
-                            Show all results
-                          </div>`;
-                        }
+                      const matches = list
+                        .filter((p) =>
+                          (p.name || "").toLowerCase().includes(q.toLowerCase())
+                        )
+                        .slice(0, 5);
 
-                        dropdown.style.display = "block";
-                      })
-                      .catch(() => {
-                        dropdown.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
-                        dropdown.style.display = "block";
-                      });
+                      if (!matches.length) {
+                        dropdown.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
+                      } else {
+                        dropdown.innerHTML =
+                          matches
+                            .map((p) => {
+                              const priceHTML = p.price_sale
+                                ? `<strong style="color:#000">${p.price}</strong> <del style="color:#999">${p.price_sale}</del>`
+                                : `<strong style="color:#000">${p.price}</strong>`;
+                              return `
+                              <div class="autocomplete-item"
+                                  style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee"
+                                  data-name="${encodeURIComponent(
+                                    p.name || ""
+                                  )}">
+                                <img src="/uploads/${p.image || ""}"
+                                    alt="${(p.name || "").replace(/"/g, "")}"
+                                    style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                                <div>
+                                  <div style="font-weight:600;color:#333">${
+                                    p.name || ""
+                                  }</div>
+                                  <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
+                                </div>
+                              </div>`;
+                            })
+                            .join("") +
+                          `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">Show all results</div>`;
+                      }
+
+                      dropdown.style.display = "block";
+                    } catch (err) {
+                      dropdown.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                      dropdown.style.display = "block";
+                    }
                   }, 300);
                 });
 
                 dropdown.addEventListener("click", (e) => {
                   const item = e.target.closest(".autocomplete-item");
                   if (item) {
-                    const name = decodeURIComponent(item.dataset.name);
+                    const name = decodeURIComponent(item.dataset.name || "");
                     const params = new URLSearchParams({
                       search: name,
-                      category: select.value,
+                      category: select ? select.value : "",
                     });
-                    window.location.href = `shop.html?${params}`;
+                    navigateToShop(params);
                     return;
                   }
                   if (e.target.closest(".autocomplete-show-all")) {
                     const params = new URLSearchParams({
                       search: searchInput.value.trim(),
-                      category: select.value,
+                      category: select ? select.value : "",
                     });
-                    window.location.href = `shop.html?${params}`;
+                    navigateToShop(params);
                   }
                 });
 
@@ -424,38 +476,41 @@
                   e.preventDefault();
                   const params = new URLSearchParams({
                     search: searchInput.value.trim(),
-                    category: select.value,
+                    category: select ? select.value : "",
                   });
-                  window.location.href = `shop.html?${params}`;
+                  navigateToShop(params);
                 });
               });
             </script>
+
             <div class="header__lang ul_li">
               <div class="header__language mr-15">
                 <ul>
                   <li>
-                    <a href="#!" class="lang-btn"
+                    <a href="shop.html" class="lang-btn"
                       >USD <i class="far fa-chevron-down"></i
                     ></a>
                     <ul class="lang_sub_list">
-                      <li><a href="#">USD</a></li>
-                      <li><a href="#">BDT</a></li>
-                      <li><a href="#">EUR</a></li>
+                      <li><a href="javascript:void(0)">USD</a></li>
+                      <li><a href="javascript:void(0)">BDT</a></li>
+                      <li><a href="javascript:void(0)">EUR</a></li>
                     </ul>
                   </li>
                 </ul>
               </div>
+
               <div class="header__language">
                 <ul>
                   <li>
-                    <a href="#!" class="lang-btn"
-                      ><img src="assets/img/icon/usd_flag.png" alt="" />English
-                      <i class="far fa-chevron-down"></i
+                    <a href="shop.html" class="lang-btn"
+                      ><img
+                        src="assets/img/icon/usd_flag.png"
+                        alt="Image" />English <i class="far fa-chevron-down"></i
                     ></a>
                     <ul class="lang_sub_list">
-                      <li><a href="#">English</a></li>
-                      <li><a href="#">Arabic</a></li>
-                      <li><a href="#">Bangla</a></li>
+                      <li><a href="javascript:void(0)">English</a></li>
+                      <li><a href="javascript:void(0)">Arabic</a></li>
+                      <li><a href="javascript:void(0)">Bangla</a></li>
                     </ul>
                   </li>
                 </ul>
@@ -464,17 +519,17 @@
             <div class="header__icons ul_li">
               <div class="icon">
                 <a href="account.html"
-                  ><img src="assets/img/icon/user.svg" alt=""
+                  ><img src="assets/img/icon/user.svg" alt="Image"
                 /></a>
               </div>
               <div class="icon wishlist-icon">
-                <a href="#!">
-                  <img src="assets/img/icon/heart.svg" alt="" />
+                <a href="cart.html">
+                  <img src="assets/img/icon/heart.svg" alt="Image" />
                   <span class="count" id="wishlist-data">0</span>
                 </a>
               </div>
               <div class="cart_btn icon">
-                <img src="assets/img/icon/shopping_bag.svg" alt="" />
+                <img src="assets/img/icon/shopping_bag.svg" alt="Image" />
                 <span class="count" id="cart-data">0</span>
               </div>
             </div>
@@ -488,7 +543,7 @@
             <div class="header__wrap ul_li_between">
               <div class="header__cat ul_li">
                 <div class="hamburger_menu">
-                  <a href="javascript:void(0);" class="active">
+                  <a href="javascript:void(0)" class="active">
                     <div class="icon bar">
                       <span><i class="fal fa-bars"></i></span>
                     </div>
@@ -498,42 +553,54 @@
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_01.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_01.svg"
+                          alt="Image" /></span
                       >Laptops & Computers</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_02.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_02.svg"
+                          alt="Image" /></span
                       >CC Tv & Camera</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_03.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_03.svg"
+                          alt="Image" /></span
                       >Home Equipment</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_04.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_04.svg"
+                          alt="Image" /></span
                       >Tv & Audios</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_05.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_05.svg"
+                          alt="Image" /></span
                       >Printers & Ink</a
                     >
                   </li>
                   <li>
                     <a href="shop.html"
                       ><span
-                        ><img src="assets/img/icon/hc_06.svg" alt="" /></span
+                        ><img
+                          src="assets/img/icon/hc_06.svg"
+                          alt="Image" /></span
                       >Gaming & Fun</a
                     >
                   </li>
@@ -554,7 +621,7 @@
 
       <aside class="slide-bar">
         <div class="close-mobile-menu">
-          <a href="javascript:void(0);"><i class="fal fa-times"></i></a>
+          <a href="javascript:void(0)"><i class="fal fa-times"></i></a>
         </div>
 
         <div class="cart_sidebar">
@@ -610,7 +677,9 @@
 
             async function loadWishlist() {
               try {
-                const res = await fetch("/wishlistdata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/wishlistdata"
+                );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
 
@@ -626,7 +695,9 @@
 
             async function loadCart() {
               try {
-                const res = await fetch("/allcartdata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/allcartdata"
+                );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
 
@@ -680,9 +751,12 @@
               const id = itemEl.dataset.id;
 
               try {
-                const res = await fetch(`/deletecart/${id}`, {
-                  method: "DELETE",
-                });
+                const res = await fetch(
+                  `http://147.93.45.171:1600/deletecart/${id}`,
+                  {
+                    method: "DELETE",
+                  }
+                );
                 const json = await res.json();
                 if (res.ok && json.success) {
                   loadCart();
@@ -749,7 +823,7 @@
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#">Shop</a>
+              <a href="/shop">Shop</a>
               <ul class="sub-menu">
                 <li><a href="shop.html">Shop Default</a></li>
                 <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
@@ -761,14 +835,14 @@
             </li>
             <li><a href="shop.html">Accesories</a></li>
             <li class="dropdown">
-              <a href="#!">Blog</a>
+              <a href="/news">Blog</a>
               <ul class="sub-menu">
                 <li><a href="news.html">Blog</a></li>
                 <li><a href="news-single.html">Blog Details</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#!">Pages</a>
+              <a href="/about">Pages</a>
               <ul class="submenu">
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="account.html">Account</a></li>
@@ -814,6 +888,7 @@
                     <h2 class="widget__title">
                       <span>Search</span>
                     </h2>
+
                     <form class="widget__search" action="#">
                       <input type="text" placeholder="Search..." required />
                       <button type="submit">
@@ -834,7 +909,7 @@
                           ></span>
                           <span>Facebook</span>
                         </div>
-                        <a href="#!">Follow</a>
+                        <a href="#">Follow</a>
                       </li>
                       <li>
                         <div class="left-text ul_li">
@@ -843,7 +918,7 @@
                           ></span>
                           <span>Twitter</span>
                         </div>
-                        <a href="#!">Follow</a>
+                        <a href="#">Follow</a>
                       </li>
                       <li>
                         <div class="left-text ul_li">
@@ -852,7 +927,7 @@
                           ></span>
                           <span>Instagram</span>
                         </div>
-                        <a href="#!">Follow</a>
+                        <a href="#">Follow</a>
                       </li>
                       <li>
                         <div class="left-text ul_li">
@@ -861,7 +936,7 @@
                           ></span>
                           <span>Youtube</span>
                         </div>
-                        <a href="#!">Subscribe</a>
+                        <a href="#">Subscribe</a>
                       </li>
                       <li>
                         <div class="left-text ul_li">
@@ -870,7 +945,7 @@
                           ></span>
                           <span>Pinterest</span>
                         </div>
-                        <a href="#!">Follow</a>
+                        <a href="#">Follow</a>
                       </li>
                     </ul>
                   </div>
@@ -884,15 +959,17 @@
                         <div class="post-item">
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
-                              <a href="news-single.html"
-                                ><img src="assets/img/news/img_11.jpg" alt=""
+                              <a href="/news-single"
+                                ><img
+                                  src="assets/img/news/img_11.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">01</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -902,14 +979,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_12.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_12.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">02</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -919,14 +998,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_13.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_13.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">03</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -936,14 +1017,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_14.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_14.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">04</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -954,14 +1037,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_11.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_11.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">01</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -971,14 +1056,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_12.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_12.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">02</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -988,14 +1075,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_13.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_13.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">03</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -1005,14 +1094,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_14.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_14.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">04</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -1024,14 +1115,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_11.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_11.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">01</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -1041,14 +1134,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_12.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_12.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">02</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -1058,14 +1153,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_13.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_13.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">03</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -1075,14 +1172,16 @@
                           <div class="ul_li tx-post">
                             <div class="post-thumb">
                               <a href="news-single.html"
-                                ><img src="assets/img/news/img_14.jpg" alt=""
+                                ><img
+                                  src="assets/img/news/img_14.jpg"
+                                  alt="Image"
                               /></a>
                               <span class="post-number">04</span>
                             </div>
                             <div class="post-content">
-                              <a class="cat" href="#!">Sports</a>
+                              <a class="cat" href="/news-single">Sports</a>
                               <h4 class="post-title border-effect-2">
-                                <a href="#!"
+                                <a href="/news-single"
                                   >Severance Nightmare Visi Of office Life</a
                                 >
                               </h4>
@@ -1101,7 +1200,7 @@
                           2021 <span>Laptop</span> <br />
                           Collection
                         </h3>
-                        <a class="thm-btn no-icon" href="#!">
+                        <a class="thm-btn no-icon" href="/news-single">
                           <span class="btn-wrap">
                             <span>Buy Now</span>
                             <span>Buy Now</span>
@@ -1112,12 +1211,12 @@
                         <img
                           class="add_img"
                           src="assets/img/product/img_177.png"
-                          alt=""
+                          alt="Image"
                         />
                         <img
                           class="add_shape"
                           src="assets/img/shape/add_shape.png"
-                          alt=""
+                          alt="Image"
                         />
                       </div>
                     </div>
@@ -1137,7 +1236,7 @@
                           </div>
                           <p>
                             (Berkeley DataBase) An open source system that uses
-                            "<a href="#!">www.twitter/de.com</a>"
+                            "<a href="#">www.twitter/de.com</a>"
                           </p>
                           <span class="date"
                             ><i class="far fa-calendar-alt"></i>8 jul 2022</span
@@ -1153,7 +1252,7 @@
                           </div>
                           <p>
                             (Berkeley DataBase) An open source system that uses
-                            "<a href="#!">www.twitter/de.com</a>"
+                            "<a href="#">www.twitter/de.com</a>"
                           </p>
                           <span class="date"
                             ><i class="far fa-calendar-alt"></i>8 jul 2022</span
@@ -1169,7 +1268,7 @@
                           </div>
                           <p>
                             (Berkeley DataBase) An open source system that uses
-                            "<a href="#!">www.twitter/de.com</a>"
+                            "<a href="#">www.twitter/de.com</a>"
                           </p>
                           <span class="date"
                             ><i class="far fa-calendar-alt"></i>8 jul 2022</span
@@ -1203,7 +1302,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", () => {
-          const POSTS_URL = "/blogpostdata";
+          const POSTS_URL = "http://147.93.45.171:1600/blogpostdata";
           const POSTS_PER_PAGE = 4;
 
           let allPosts = [],
@@ -1212,8 +1311,7 @@
 
           const wrap = document.querySelector(".blog-post-wrap");
           const pagination = wrap.querySelector(".pagination_wrap ul");
-          const searchForm = document.querySelector(".widget__search");
-          const searchInput = searchForm.querySelector("input");
+          const searchInput = document.querySelector(".widget__search input");
 
           const latestBanner = document.createElement("div");
           latestBanner.className = "latest-banner mb-30";
@@ -1221,6 +1319,7 @@
             "font-weight:bold; font-size:0.9rem; color:#555;";
           wrap.prepend(latestBanner);
 
+          // Fetch posts
           fetch(POSTS_URL)
             .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
             .then((json) => {
@@ -1240,8 +1339,8 @@
               );
             });
 
-          searchForm.addEventListener("submit", (e) => {
-            e.preventDefault();
+          // Search input (filter as you type)
+          searchInput.addEventListener("input", () => {
             const term = searchInput.value.trim().toLowerCase();
             filteredPosts = allPosts.filter((p) =>
               p.name.toLowerCase().includes(term)
@@ -1249,15 +1348,6 @@
             currentPage = 1;
             buildPage(1);
             buildPagination();
-          });
-
-          searchInput.addEventListener("input", () => {
-            if (searchInput.value.trim() === "") {
-              filteredPosts = allPosts.slice();
-              currentPage = 1;
-              buildPage(1);
-              buildPagination();
-            }
           });
 
           function buildPage(page) {
@@ -1284,50 +1374,61 @@
               (page - 1) * POSTS_PER_PAGE,
               page * POSTS_PER_PAGE
             );
+
             slice.forEach((post, idx) => {
+              let slug = post.slug;
+              if (!slug || slug.trim() === "") {
+                slug = post.name
+                  .toLowerCase()
+                  .replace(/\s+/g, "-")
+                  .replace(/[^\w-]+/g, "")
+                  .replace(/--+/g, "-")
+                  .replace(/^-+|-+$/g, "");
+              }
+
               const art = document.createElement("article");
               art.className =
                 "tx-post-item tx-post format-standard" +
                 (idx > 0 ? " mt-50" : "");
               art.innerHTML = `
-                <div class="post-thumb">
-                  <a href="#">
-                    <img src="/uploads/${post.image.trim()}" alt="">
-                  </a>
-                  <div class="post-date">
-                    ${new Date(post.date).getDate()}<br>
-                    <span>${new Date(post.date).toLocaleString("default", {
-                      month: "short",
-                    })}</span>
-                  </div>
-                </div>
-                <div class="post-content mt-25">
-                  <ul class="post-tags post-tags--2 ul_li mb-15">
-                    <li><span># Tags</span></li>
-                    ${post.tags
-                      .split(/,\s*/)
-                      .map((tag) => `<li><a href="#">${tag}</a></li>`)
-                      .join("")}
-                  </ul>
-                  <h2 class="post-title border-effect">
-                    <a href="news-single.html?id=${post.id}">${post.name}</a>
-                  </h2>
-                  <ul class="post-meta ul_li mt-10">
-                    <li>
-                      <div class="post-meta__author ul_li">
-                        <div class="avatar">
-                          <img src="assets/img/avatar/img_02.jpg" alt="">
-                        </div>
-                        <span>
-                          ${post.author_name} /
-                          <span class="year">${timeAgo(post.date)}</span>
-                        </span>
-                      </div>
-                    </li>
-                  </ul>
-                  <p>${post.description}</p>
-                </div>
-              `;
+    <div class="post-thumb">
+      <a href="/news-single/${slug}">
+        <img src="/uploads/${post.image.trim()}" alt="Image">
+      </a>
+      <div class="post-date">
+        ${new Date(post.date).getDate()}<br>
+        <span>${new Date(post.date).toLocaleString("default", {
+          month: "short",
+        })}</span>
+      </div>
+    </div>
+    <div class="post-content mt-25">
+      <ul class="post-tags post-tags--2 ul_li mb-15">
+        <li><span># Tags</span></li>
+        ${post.tags
+          .split(/,\s*/)
+          .map((tag) => `<li><a href="#">${tag}</a></li>`)
+          .join("")}
+      </ul>
+      <h2 class="post-title border-effect">
+        <a href="/news-single/${slug}">${post.name}</a>
+      </h2>
+      <ul class="post-meta ul_li mt-10">
+        <li>
+          <div class="post-meta__author ul_li">
+            <div class="avatar">
+              <img src="https://avatars.mds.yandex.net/i?id=bd9a15b2ceda41a635d6a3a6643742dba63ff8c3-9644918-images-thumbs&n=13" alt="Image">
+            </div>
+            <span>
+              ${post.author_name} /
+              <span class="year">${timeAgo(post.date)}</span>
+            </span>
+          </div>
+        </li>
+      </ul>
+      <p>${post.description}</p>
+    </div>
+  `;
               wrap.insertBefore(art, wrap.querySelector(".pagination_wrap"));
             });
           }
@@ -1347,9 +1448,7 @@
                 "fal fa-angle-double-left"
               )
             );
-            for (let i = 1; i <= total; i++) {
-              pagination.append(childLink(i));
-            }
+            for (let i = 1; i <= total; i++) pagination.append(childLink(i));
             pagination.append(
               childLink(
                 currentPage < total ? currentPage + 1 : null,
@@ -1368,9 +1467,8 @@
             } else {
               a.href = "#";
               a.dataset.page = page;
-              if (iconCls) {
-                a.innerHTML = `<i class="${iconCls}"></i>`;
-              } else {
+              if (iconCls) a.innerHTML = `<i class="${iconCls}"></i>`;
+              else {
                 a.textContent = String(page).padStart(2, "0");
                 if (page === currentPage) a.classList.add("current_page");
               }
@@ -1405,7 +1503,9 @@
         document.addEventListener("DOMContentLoaded", async () => {
           const list = document.querySelector(".widget__category");
           try {
-            const res = await fetch("/allcategorydata");
+            const res = await fetch(
+              "http://147.93.45.171:1600/allcategorydata"
+            );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
 
@@ -1438,7 +1538,7 @@
         document.addEventListener("DOMContentLoaded", async () => {
           const container = document.querySelector(".tagcloud");
           try {
-            const res = await fetch("/blogalldata");
+            const res = await fetch("http://147.93.45.171:1600/blogalldata");
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
 
@@ -1491,7 +1591,7 @@
               <div class="footer__widget col-lg-3 col-md-6 mt-40">
                 <div class="footer__logo mb-20">
                   <a href="index.html"
-                    ><img src="assets/img/logo/logo.svg" alt=""
+                    ><img src="assets/img/logo/logo.svg" alt="Image"
                   /></a>
                 </div>
                 <p>
@@ -1507,13 +1607,13 @@
                 </ul>
                 <div class="apps-img mt-15 ul_li">
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/google_play.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/google_play.png" alt="Image"
                     /></a>
                   </div>
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/app_store.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/app_store.png" alt="Image"
                     /></a>
                   </div>
                 </div>
@@ -1560,7 +1660,8 @@
           <div class="footer__bottom ul_li_center">
             <div class="footer__copyright mt-15">
               &copy; <span id="currentYear" class="text-dark"></span>
-              <a href="index.html">Themexriver</a> . All Rights Reserved.
+              <a href="index.html">Themexriver</a>
+              <span class="text-dark">. All Rights Reserved.</span>
             </div>
 
             <script>
@@ -1570,24 +1671,24 @@
               })();
             </script>
             <div class="footer__social mt-15">
-              <a href="https://www.facebook.com/"
+              <a href="https://www.facebook.com/" target="_blank"
                 ><i class="fab fa-facebook-f"></i
               ></a>
-              <a href="https://www.twitter.com/"
+              <a href="https://www.twitter.com/" target="_blank"
                 ><i class="fab fa-twitter"></i
               ></a>
-              <a href="https://www.instagram.com/"
+              <a href="https://www.instagram.com/" target="_blank"
                 ><i class="fab fa-instagram"></i
               ></a>
-              <a href="https://www.youtube.com/"
+              <a href="https://www.youtube.com/" target="_blank"
                 ><i class="fab fa-youtube"></i
               ></a>
-              <a href="https://www.pinterest.com/"
+              <a href="https://www.pinterest.com/" target="_blank"
                 ><i class="fab fa-pinterest"></i
               ></a>
             </div>
             <div class="payment_method mt-15">
-              <img src="assets/img/bg/payment_method.png" alt="" />
+              <img src="assets/img/bg/payment_method.png" alt="Image" />
             </div>
           </div>
         </div>
@@ -1627,11 +1728,14 @@
             }
 
             try {
-              const res = await fetch("/newsletterpost", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
-              });
+              const res = await fetch(
+                "http://147.93.45.171:1600/newsletterpost",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ email }),
+                }
+              );
               const text = await res.text();
               if (res.ok) {
                 showBanner("Subscribed successfully!", "success");

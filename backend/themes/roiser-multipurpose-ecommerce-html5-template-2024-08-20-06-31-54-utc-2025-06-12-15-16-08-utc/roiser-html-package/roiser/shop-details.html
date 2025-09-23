@@ -14,10 +14,6 @@
       type="image/x-icon"
       href="assets/img/favicon.png"
     />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
     <link rel="stylesheet" href="assets/css/venobox.min.css" />
@@ -25,7 +21,6 @@
     <link rel="stylesheet" href="assets/css/nice-select.css" />
     <link rel="stylesheet" href="assets/css/swiper.min.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
@@ -241,17 +236,21 @@
                       >+(258) 2159-2159</a
                     >
                   </div>
-                  <a href="tel:+25821592159" class="icon">
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
                     <i class="fa-regular fa-phone"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="wishlist.html" class="icon">
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
                     <i class="fa-sharp fa-regular fa-heart"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="cart.html" class="icon">
+                  <a href="cart.html" class="icon" aria-label="View cart">
                     <i class="fa-light fa-bag-shopping"></i>
                     <span>0</span>
                   </a>
@@ -303,7 +302,7 @@
                     <a href="shop-grid.html">men</a>
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#">Pages</a>
+                    <a href="/about">Pages</a>
                     <ul>
                       <li><a href="about.html">About</a></li>
                       <li><a href="login.html">Login</a></li>
@@ -328,9 +327,13 @@
               <div class="header-right">
                 <span>Get 30% Discount Now <span>Sale</span></span>
                 <div class="header-right-item">
-                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
-                    ><i class="fa-sharp fa-solid fa-bars"></i
-                  ></a>
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -399,7 +402,7 @@
       <div class="container">
         <div class="page-header-content">
           <h1 class="title">Shop Details</h1>
-          <h4 class="sub-title">
+          <h2 class="sub-title">
             <span class="home">
               <a href="#">
                 <span>Home</span>
@@ -409,7 +412,7 @@
             <span class="inner">
               <span>Shop Details</span>
             </span>
-          </h4>
+          </h2>
         </div>
       </div>
     </section>
@@ -417,7 +420,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -747,7 +752,7 @@
                                 type="text"
                                 id="user_name"
                                 name="user_name"
-                                class="form-control"
+                                class="form-control py-4"
                                 placeholder="Your Name"
                                 required
                               />
@@ -759,7 +764,7 @@
                                 type="email"
                                 id="email"
                                 name="email"
-                                class="form-control"
+                                class="form-control py-4"
                                 placeholder="Your Email"
                                 required
                               />
@@ -778,6 +783,7 @@
                                 class="form-control address"
                                 placeholder="Comment"
                                 required
+                                style="height: 100px"
                               ></textarea>
                             </div>
                           </div>
@@ -824,7 +830,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -866,7 +872,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -997,7 +1003,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1005,7 +1011,7 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   resultBox.innerHTML =
                     matches
@@ -1015,20 +1021,18 @@
 
                         const salePrice = p.price_sale
                           ? `<strong class="text-dark me-2">${formatPrice(
-                              p.price_sale
+                              p.price
                             )}</strong>
-                          <s class="fw-bold text-danger">${formatPrice(
-                            p.price
-                          )}</s>`
+                              <s class="fw-bold text-danger">${formatPrice(
+                                p.price_sale
+                              )}</s>`
                           : `<strong class="fw-bold text-dark">${formatPrice(
                               p.price
                             )}</strong>`;
 
                         return `
                     <div
-                      onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                        q
-                      )}'"
+                     onclick="window.location.href='/shop-details/${p.slug}'"
                       style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                     >
                       <img src="/uploads/${img}" alt="${p.name}"
@@ -1045,9 +1049,7 @@
                       .join("") +
                     `
                   <div
-                    onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                      q
-                    )}'"
+                    onclick="window.location.href='/shop-details/${p.slug}'"
                     style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
                   >
                     Show all results
@@ -1073,11 +1075,9 @@
       });
     </script>
 
-    <script>
+    <!-- <script>
       document.addEventListener("DOMContentLoaded", async () => {
         let currentProduct = null;
-        const params = new URLSearchParams(window.location.search);
-        const requested = params.get("id");
         const productBrand = document.getElementById("product-brand");
         const productTitle = document.getElementById("product-title");
         const productPrice = document.getElementById("product-price");
@@ -1101,7 +1101,7 @@
         }
 
         try {
-          const res = await fetch("/productpagedata");
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
           if (!res.ok) throw new Error("Failed to fetch products");
           products = await res.json();
         } catch (err) {
@@ -1109,14 +1109,17 @@
           showErrorBanner("Could not load products.");
           return;
         }
+
         if (!Array.isArray(products) || products.length === 0) {
           showErrorBanner("No products available.");
           return;
         }
 
+        const requested = localStorage.getItem("selectedProductId");
         currentProduct = requested
           ? products.find((p) => String(p.id) === requested) || products[0]
           : products[0];
+        localStorage.removeItem("selectedProductId");
 
         renderDetails(currentProduct);
         renderThumbs(products.slice(0, 3));
@@ -1126,7 +1129,6 @@
 
         function renderDetails(p) {
           currentProduct = p;
-          history.replaceState(null, "", `?id=${p.id}`);
           productBrand.textContent = p.brand || "N/A";
           productTitle.textContent = p.name || "";
           productPrice.textContent = p.price_sale || "";
@@ -1142,7 +1144,6 @@
             Math.round((stockCount / maxStock) * 100),
             100
           );
-
           const lineBeforeStyleId = "dynamic-stock-line-style";
           const existingStyle = document.getElementById(lineBeforeStyleId);
           if (existingStyle) existingStyle.remove();
@@ -1150,16 +1151,16 @@
           const style = document.createElement("style");
           style.id = lineBeforeStyleId;
           style.innerHTML = `
-            .item-left-line .line::before {
-              background-color: #e53e3e !important;
-              content: "";
-              width: ${percent}% !important;
-              height: 100% !important;
-              position: absolute !important;
-              top: 0 !important;
-              left: 0 !important;
-            }
-          `;
+          .item-left-line .line::before {
+            background-color: #e53e3e !important;
+            content: "";
+            width: ${percent}% !important;
+            height: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+          }
+        `;
           document.head.appendChild(style);
 
           galleryMain.innerHTML = `
@@ -1187,12 +1188,12 @@
           });
           if (map.size || map.bust || map.waist || map.hip) {
             sizeBody.innerHTML = `
-              <tr>
-                <td>${(map.size || "--").toUpperCase()}</td>
-                <td>${map.bust || "--"}</td>
-                <td>${map.waist || "--"}</td>
-                <td>${map.hip || "--"}</td>
-              </tr>`;
+        <tr>
+          <td>${(map.size || "--").toUpperCase()}</td>
+          <td>${map.bust || "--"}</td>
+          <td>${map.waist || "--"}</td>
+          <td>${map.hip || "--"}</td>
+        </tr>`;
           }
 
           if (cartBtn) cartBtn.setAttribute("data-id", p.id);
@@ -1206,9 +1207,9 @@
             const d = document.createElement("div");
             d.className = "swiper-slide";
             d.innerHTML = `
-              <div class="thumb-item">
-                <img src="/uploads/${p.image}" alt="${p.name}"/>
-              </div>`;
+        <div class="thumb-item">
+          <img src="/uploads/${p.image}" alt="${p.name}"/>
+        </div>`;
             d.addEventListener("click", () => renderDetails(p));
             thumbWrapper.appendChild(d);
           });
@@ -1229,7 +1230,7 @@
               quantity: qty,
             };
             try {
-              const res = await fetch("/addcart", {
+              const res = await fetch("http://147.93.45.171:1600/addcart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -1283,7 +1284,7 @@
           fd.append("product_image", window.selectedProductImg);
 
           try {
-            const res = await fetch("/reviewdatasubmit", {
+            const res = await fetch("http://147.93.45.171:1600/reviewdatasubmit", {
               method: "POST",
               body: fd,
             });
@@ -1329,7 +1330,669 @@
           setTimeout(() => b.remove(), 3000);
         }
       });
+    </script> -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        let currentProduct = null;
+        const productBrand = document.getElementById("product-brand");
+        const productTitle = document.getElementById("product-title");
+        const productPrice = document.getElementById("product-price");
+        const productSale = document.getElementById("product-sale-price");
+        const productDesc = document.getElementById("product-desc");
+        const productDesc1 = document.getElementById("product-desc1");
+        const productLabel = document.getElementById("product-label");
+        const galleryMain = document.getElementById("product-gallery");
+        const gallerySide = document.getElementById("product-gallery1");
+        const thumbWrapper = document.getElementById("product-thumbs");
+        const productStock = document.getElementById("product-stock");
+        const sizeBody = document.getElementById("product-size-table-body");
+        const cartBtn = document.querySelector(".cart-btn-wrap-2 .cart-btn");
+        const qtyInput = document.getElementById("age");
+        let products;
+
+        function stripTags(html) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = html || "";
+          return tmp.textContent || tmp.innerText || "";
+        }
+
+        function toSeoUrl(str = "") {
+          return String(str)
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w\-]+/g, "");
+        }
+
+        function getQueryParam(name) {
+          const params = new URLSearchParams(window.location.search);
+          return params.get(name);
+        }
+
+        function getUrlSlug() {
+          try {
+            const path = window.location.pathname || "";
+            const segs = path.split("/").filter(Boolean);
+            return segs.length ? decodeURIComponent(segs[segs.length - 1]) : "";
+          } catch {
+            return "";
+          }
+        }
+
+        try {
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
+          if (!res.ok) throw new Error("Failed to fetch products");
+          products = await res.json();
+        } catch (err) {
+          console.error(err);
+          showErrorBanner("Could not load products.");
+          return;
+        }
+
+        if (!Array.isArray(products) || products.length === 0) {
+          showErrorBanner("No products available.");
+          return;
+        }
+
+        // ensure each product has a slug and name
+        products.forEach((p) => {
+          if (!p) return;
+          p.name =
+            p.name ||
+            "product-" + (p.id || Math.random().toString(36).slice(2, 8));
+          p.slug =
+            (p.slug && String(p.slug).trim()) ||
+            toSeoUrl(p.name) ||
+            String(p.id);
+        });
+
+        const lsRequested = localStorage.getItem("selectedProductId");
+        const urlSlug = getUrlSlug();
+        const qsProduct = getQueryParam("product") || getQueryParam("id") || "";
+        let selected = null;
+
+        if (lsRequested) {
+          selected = products.find(
+            (p) =>
+              String(p.id) === String(lsRequested) ||
+              String(p.slug) === String(lsRequested)
+          );
+        }
+
+        if (!selected && urlSlug) {
+          selected =
+            products.find((p) => String(p.slug) === String(urlSlug)) ||
+            products.find((p) => toSeoUrl(p.name) === String(urlSlug)) ||
+            products.find((p) => String(p.id) === String(urlSlug));
+        }
+
+        if (!selected && qsProduct) {
+          selected =
+            products.find((p) => String(p.slug) === String(qsProduct)) ||
+            products.find((p) => toSeoUrl(p.name) === String(qsProduct)) ||
+            products.find((p) => String(p.id) === String(qsProduct));
+        }
+
+        if (!selected) selected = products[0];
+
+        localStorage.removeItem("selectedProductId");
+
+        currentProduct = selected;
+        renderDetails(currentProduct);
+
+        // helper: always return up to `limit` related products excluding selectedId
+        // prefer previousId if available so the previous current stays visible after switching
+        function getRelatedFor(selectedId, previousId, limit = 3) {
+          const others = products.filter(
+            (p) => String(p.id) !== String(selectedId)
+          );
+          if (others.length <= limit) return others.slice(0, limit);
+          const result = [];
+          if (previousId) {
+            const prevIdx = others.findIndex(
+              (p) => String(p.id) === String(previousId)
+            );
+            if (prevIdx !== -1) {
+              result.push(others.splice(prevIdx, 1)[0]);
+            }
+          }
+          for (let i = 0; i < others.length && result.length < limit; i++) {
+            result.push(others[i]);
+          }
+          return result;
+        }
+
+        const initialRelated = getRelatedFor(currentProduct.id, null, 3);
+        renderThumbs(initialRelated);
+
+        window.selectedProductName = currentProduct.name;
+        window.selectedProductImg = `${currentProduct.image || ""}`;
+
+        function renderDetails(p) {
+          if (!p) return;
+          currentProduct = p;
+          if (productBrand) productBrand.textContent = p.brand || "N/A";
+          if (productTitle) productTitle.textContent = p.name || "";
+          if (productPrice)
+            productPrice.textContent = p.price_sale != null ? p.price_sale : "";
+          if (productSale)
+            productSale.textContent = p.price != null ? p.price : "";
+          if (productDesc) productDesc.textContent = stripTags(p.description);
+          if (productDesc1) productDesc1.textContent = stripTags(p.description);
+          if (productLabel) productLabel.textContent = p.label || "";
+          const stockCount = parseInt(p.minimumorder) || 0;
+          if (productStock)
+            productStock.textContent = `Only ${stockCount} items left in stock!`;
+
+          const maxStock = 100;
+          const percent = Math.min(
+            Math.round((stockCount / maxStock) * 100),
+            100
+          );
+          const lineBeforeStyleId = "dynamic-stock-line-style";
+          const existingStyle = document.getElementById(lineBeforeStyleId);
+          if (existingStyle) existingStyle.remove();
+          const style = document.createElement("style");
+          style.id = lineBeforeStyleId;
+          style.innerHTML = `
+              .item-left-line .line::before {
+                background-color: #e53e3e !important;
+                content: "";
+                width: ${percent}% !important;
+                height: 100% !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+              }
+            `;
+          document.head.appendChild(style);
+
+          if (galleryMain) {
+            galleryMain.innerHTML = `
+                <div class="swiper-slide">
+                  <div class="gallary-item">
+                    <img src="/uploads/${p.image || ""}" alt="${(
+              p.name || ""
+            ).replace(/"/g, "")}"
+                        style="width:100%;height:100%;object-fit:cover"/>
+                  </div>
+                </div>`;
+          }
+
+          if (gallerySide) {
+            gallerySide.innerHTML = `
+                <div class="right-content">
+                  <div class="gallary-item">
+                    <img src="/uploads/${p.image || ""}" alt="${(
+              p.name || ""
+            ).replace(
+              /"/g,
+              ""
+            )}" style="width: 100%; height: 100%; object-fit: cover;" />
+                  </div>
+                </div>
+              `;
+          }
+
+          if (sizeBody) {
+            sizeBody.innerHTML = "";
+            const attrs = (p.attribute || "").split(",").map((s) => s.trim());
+            const map = {};
+            attrs.forEach((pair) => {
+              const [k, v] = (pair || "").split(":").map((x) => x && x.trim());
+              if (k && v) map[k.toLowerCase()] = v;
+            });
+            if (map.size || map.bust || map.waist || map.hip) {
+              sizeBody.innerHTML = `
+                  <tr>
+                    <td>${(map.size || "--").toUpperCase()}</td>
+                    <td>${map.bust || "--"}</td>
+                    <td>${map.waist || "--"}</td>
+                    <td>${map.hip || "--"}</td>
+                  </tr>`;
+            }
+          }
+
+          if (cartBtn) cartBtn.setAttribute("data-id", p.id);
+          window.selectedProductName = p.name;
+          window.selectedProductImg = `${p.image || ""}`;
+        }
+
+        function renderThumbs(arr) {
+          if (!thumbWrapper) return;
+          thumbWrapper.innerHTML = "";
+          arr.forEach((p) => {
+            if (!p) return;
+            const d = document.createElement("div");
+            d.className = "swiper-slide";
+            d.innerHTML = `
+                <div class="thumb-item">
+                  <img src="/uploads/${p.image || ""}" alt="${(
+              p.name || ""
+            ).replace(/"/g, "")}"/>
+                </div>`;
+            d.addEventListener("click", () => {
+              const previous = currentProduct && currentProduct.id;
+              // switch main product
+              renderDetails(p);
+              // recompute related (prefer including previous main so thumbs stay stable)
+              const newRelated = getRelatedFor(p.id, previous, 3);
+              renderThumbs(newRelated);
+              // update URL slug (non-reloading)
+              try {
+                const newSlug = p.slug || toSeoUrl(p.name);
+                const base = window.location.pathname.replace(/\/[^/]*$/, "");
+                window.history.replaceState(
+                  {},
+                  "",
+                  base + "/" + encodeURIComponent(newSlug)
+                );
+              } catch {}
+            });
+            thumbWrapper.appendChild(d);
+          });
+        }
+
+        if (cartBtn) {
+          cartBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const user_id_now = localStorage.getItem("user_id");
+            if (!user_id_now) {
+              showErrorBanner("Please log in first");
+              return;
+            }
+            const qty = parseInt(qtyInput && qtyInput.value, 10) || 1;
+            const payload = {
+              user_id: user_id_now,
+              name: currentProduct && currentProduct.name,
+              store: "default",
+              price: currentProduct && currentProduct.price,
+              price_sale: currentProduct && currentProduct.price_sale,
+              image: currentProduct && currentProduct.image,
+              quantity: qty,
+            };
+            try {
+              const res = await fetch("http://147.93.45.171:1600/addcart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              if (!res.ok) throw new Error("Add to cart failed");
+              showSuccessBanner("Product added to cart!");
+              cartBtn.innerHTML = `<i class="fa-solid fa-check"></i> Added!`;
+              cartBtn.classList.add("added");
+            } catch (err) {
+              console.error(err);
+              showErrorBanner("Failed to add to cart.");
+            }
+          });
+        }
+
+        // Rating UI (guarded)
+        const starList = document.getElementById("star-rating");
+        const ratingInput = document.getElementById("rating-value");
+        let currentRating = 4;
+        if (starList) {
+          try {
+            starList.style.flexDirection = "row";
+            const stars = Array.from(starList.querySelectorAll("li"));
+            function paint(u) {
+              stars.forEach((li) => {
+                const i = +li.dataset.index;
+                const icon = li.querySelector("i");
+                if (icon) icon.style.color = i <= u ? "#E53E3E" : "#ccc";
+              });
+            }
+            function renderStars() {
+              paint(currentRating);
+            }
+            stars.forEach((li) => {
+              const idx = +li.dataset.index;
+              li.addEventListener("mouseover", () => paint(idx));
+              li.addEventListener("mouseout", renderStars);
+              li.addEventListener("click", () => {
+                currentRating = idx;
+                if (ratingInput) ratingInput.value = idx;
+                renderStars();
+              });
+            });
+            renderStars();
+          } catch (err) {
+            console.warn("Star rating setup failed:", err);
+          }
+        }
+
+        const form = document.querySelector(".review-form-wrap form");
+        if (form) {
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!currentRating || currentRating === 0) {
+              showErrorBanner("Please select a star rating.");
+              return;
+            }
+            const fd = new FormData(form);
+            fd.append("product_name", window.selectedProductName || "");
+            fd.append("product_image", window.selectedProductImg || "");
+            try {
+              const res = await fetch(
+                "http://147.93.45.171:1600/reviewdatasubmit",
+                { method: "POST", body: fd }
+              );
+              if (!res.ok) {
+                const t = await res.text();
+                throw new Error(t || res.statusText);
+              }
+              showSuccessBanner("Review submitted successfully!");
+              form.reset();
+              currentRating = 0;
+              if (ratingInput) ratingInput.value = 0;
+              if (starList) {
+                const stars = Array.from(starList.querySelectorAll("li"));
+                stars.forEach((li) => {
+                  const icon = li.querySelector("i");
+                  if (icon) icon.style.color = "#ccc";
+                });
+              }
+            } catch (err) {
+              console.error(err);
+              showErrorBanner("Failed to submit review.");
+            }
+          });
+        }
+
+        function showSuccessBanner(msg) {
+          const b = document.createElement("div");
+          b.className = "alert alert-success";
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 9999,
+          });
+          b.innerText = msg;
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+
+        function showErrorBanner(msg) {
+          const b = document.createElement("div");
+          b.className = "alert alert-danger";
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 9999,
+          });
+          b.innerText = msg;
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+      });
     </script>
+
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        let currentProduct = null;
+        const productBrand = document.getElementById("product-brand");
+        const productTitle = document.getElementById("product-title");
+        const productPrice = document.getElementById("product-price");
+        const productSale = document.getElementById("product-sale-price");
+        const productDesc = document.getElementById("product-desc");
+        const productDesc1 = document.getElementById("product-desc1");
+        const productLabel = document.getElementById("product-label");
+        const galleryMain = document.getElementById("product-gallery");
+        const gallerySide = document.getElementById("product-gallery1");
+        const thumbWrapper = document.getElementById("product-thumbs");
+        const productStock = document.getElementById("product-stock");
+        const sizeBody = document.getElementById("product-size-table-body");
+        const cartBtn = document.querySelector(".cart-btn-wrap-2 .cart-btn");
+        const qtyInput = document.getElementById("age");
+        let products;
+
+        function stripTags(html) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = html || "";
+          return tmp.textContent || tmp.innerText;
+        }
+
+        try {
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
+          if (!res.ok) throw new Error("Failed to fetch products");
+          products = await res.json();
+        } catch (err) {
+          console.error(err);
+          showErrorBanner("Could not load products.");
+          return;
+        }
+
+        if (!Array.isArray(products) || products.length === 0) {
+          showErrorBanner("No products available.");
+          return;
+        }
+
+        const requested = localStorage.getItem("selectedProductId");
+        currentProduct = requested
+          ? products.find((p) => String(p.id) === requested) || products[0]
+          : products[0];
+        localStorage.removeItem("selectedProductId");
+
+        renderDetails(currentProduct);
+        renderThumbs(products.slice(0, 3));
+
+        window.selectedProductName = currentProduct.name;
+        window.selectedProductImg = `${currentProduct.image}`;
+
+        function renderDetails(p) {
+          currentProduct = p;
+          productBrand.textContent = p.brand || "N/A";
+          productTitle.textContent = p.name || "";
+          productPrice.textContent = p.price_sale || "";
+          productSale.textContent = p.price || "";
+          productDesc.textContent = stripTags(p.description);
+          productDesc1.textContent = stripTags(p.description);
+          productLabel.textContent = p.label || "";
+          const stockCount = parseInt(p.minimumorder) || 0;
+          productStock.textContent = `Only ${stockCount} items left in stock!`;
+
+          const maxStock = 100;
+          const percent = Math.min(
+            Math.round((stockCount / maxStock) * 100),
+            100
+          );
+          const lineBeforeStyleId = "dynamic-stock-line-style";
+          const existingStyle = document.getElementById(lineBeforeStyleId);
+          if (existingStyle) existingStyle.remove();
+
+          const style = document.createElement("style");
+          style.id = lineBeforeStyleId;
+          style.innerHTML = `
+          .item-left-line .line::before {
+            background-color: #e53e3e !important;
+            content: "";
+            width: ${percent}% !important;
+            height: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+          }
+        `;
+          document.head.appendChild(style);
+
+          galleryMain.innerHTML = `
+            <div class="swiper-slide">
+              <div class="gallary-item">
+                <img src="/uploads/${p.image}" alt="${p.name}"
+                     style="width:100%;height:100%;object-fit:cover"/>
+              </div>
+            </div>`;
+
+          gallerySide.innerHTML = `
+            <div class="right-content"
+             <div class="gallary-item">
+             <img src="/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+          </div>
+        `;
+
+          sizeBody.innerHTML = "";
+          const attrs = (p.attribute || "").split(",").map((s) => s.trim());
+          const map = {};
+          attrs.forEach((pair) => {
+            const [k, v] = pair.split(":").map((x) => x.trim());
+            if (k && v) map[k.toLowerCase()] = v;
+          });
+          if (map.size || map.bust || map.waist || map.hip) {
+            sizeBody.innerHTML = `
+        <tr>
+          <td>${(map.size || "--").toUpperCase()}</td>
+          <td>${map.bust || "--"}</td>
+          <td>${map.waist || "--"}</td>
+          <td>${map.hip || "--"}</td>
+        </tr>`;
+          }
+
+          if (cartBtn) cartBtn.setAttribute("data-id", p.id);
+          window.selectedProductName = p.name;
+          window.selectedProductImg = `${p.image}`;
+        }
+
+        function renderThumbs(arr) {
+          thumbWrapper.innerHTML = "";
+          arr.forEach((p) => {
+            const d = document.createElement("div");
+            d.className = "swiper-slide";
+            d.innerHTML = `
+        <div class="thumb-item">
+          <img src="/uploads/${p.image}" alt="${p.name}"/>
+        </div>`;
+            d.addEventListener("click", () => renderDetails(p));
+            thumbWrapper.appendChild(d);
+          });
+        }
+
+        if (cartBtn) {
+          cartBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+
+            const user_id_now = localStorage.getItem("user_id");
+            if (!user_id_now) {
+              showErrorBanner("Please log in first");
+              return;
+            }
+
+            const qty = parseInt(qtyInput && qtyInput.value, 10) || 1;
+            const payload = {
+              user_id: user_id_now,
+              name: currentProduct.name,
+              store: "default",
+              price: currentProduct.price,
+              price_sale: currentProduct.price_sale,
+              image: currentProduct.image,
+              quantity: qty,
+            };
+            try {
+              const res = await fetch("http://147.93.45.171:1600/addcart", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              if (!res.ok) throw new Error("Add to cart failed");
+              showSuccessBanner("Product added to cart!");
+              cartBtn.innerHTML = `<i class="fa-solid fa-check"></i> Added!`;
+              cartBtn.classList.add("added");
+            } catch (err) {
+              console.error(err);
+              showErrorBanner("Failed to add to cart.");
+            }
+          });
+        }
+
+        const starList = document.getElementById("star-rating");
+        starList.style.flexDirection = "row";
+        const stars = Array.from(starList.querySelectorAll("li"));
+        const ratingInput = document.getElementById("rating-value");
+        let currentRating = 4;
+        function paint(u) {
+          stars.forEach((li) => {
+            const i = +li.dataset.index;
+            li.querySelector("i").style.color = i <= u ? "#E53E3E" : "#ccc";
+          });
+        }
+        function renderStars() {
+          paint(currentRating);
+        }
+        stars.forEach((li) => {
+          const idx = +li.dataset.index;
+          li.addEventListener("mouseover", () => paint(idx));
+          li.addEventListener("mouseout", renderStars);
+          li.addEventListener("click", () => {
+            currentRating = idx;
+            ratingInput.value = idx;
+            renderStars();
+          });
+        });
+        renderStars();
+
+        const form = document.querySelector(".review-form-wrap form");
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (currentRating === 0) {
+            showErrorBanner("Please select a star rating.");
+            return;
+          }
+          const fd = new FormData(form);
+          fd.append("product_name", window.selectedProductName);
+          fd.append("product_image", window.selectedProductImg);
+
+          try {
+            const res = await fetch("http://147.93.45.171:1600/reviewdatasubmit", {
+              method: "POST",
+              body: fd,
+            });
+            if (!res.ok) {
+              const t = await res.text();
+              throw new Error(t || res.statusText);
+            }
+            showSuccessBanner("Review submitted successfully!");
+            form.reset();
+            currentRating = 0;
+            ratingInput.value = 0;
+            renderStars();
+          } catch (err) {
+            console.error(err);
+            showErrorBanner("Failed to submit review.");
+          }
+        });
+
+        function showSuccessBanner(msg) {
+          const b = document.createElement("div");
+          b.className = "alert alert-success";
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 9999,
+          });
+          b.innerText = msg;
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+        function showErrorBanner(msg) {
+          const b = document.createElement("div");
+          b.className = "alert alert-danger";
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "20px",
+            right: "20px",
+            zIndex: 9999,
+          });
+          b.innerText = msg;
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+      });
+    </script> -->
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -1338,7 +2001,7 @@
         const reviewTab = document.querySelector(".contact-tabs");
 
         function loadReviews() {
-          fetch("/reviewdata")
+          fetch("http://147.93.45.171:1600/reviewdata")
             .then((res) => res.json())
             .then((reviews) => {
               container.innerHTML = "";
@@ -1534,7 +2197,7 @@
                 <div class="footer-form mb-20">
                   <form action="#" class="rr-subscribe-form">
                     <input
-                      class="form-control"
+                      class="form-control py-4"
                       type="email"
                       name="email"
                       placeholder="Email address"
@@ -1592,11 +2255,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1622,15 +2288,19 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="#"
-                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  <a href="javascript:void(0)"
+                    ><img
+                      src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
+                      alt="img"
+                      loading="lazy"
+                      style="width: 264px; height: 24px"
                   /></a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6">
               <p>
-                Copyright & Design <span id="designYear">2024</span>
+                Copyright & Design <span id="designYear">2025</span>
                 <span>©Roiser</span>. All Right Reserved
               </p>
             </div>
@@ -1650,7 +2320,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1660,7 +2330,7 @@
             s.type = "text/css";
 
             s.textContent = `
-                            body {
+            body {
                 font-family: ${cfg.font_family}, sans-serif !important;
                 font-size: ${cfg.body_font_size}px !important;
               }
@@ -1683,7 +2353,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1702,7 +2372,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1753,7 +2423,6 @@
       });
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="assets/js/vendor/jquary-3.6.0.min.js"></script>
     <script src="assets/js/vendor/bootstrap-bundle.js"></script>
     <script src="assets/js/vendor/imagesloaded-pkgd.js"></script>
@@ -1772,5 +2441,6 @@
     <script src="assets/js/ajax-form.js"></script>
     <script src="assets/js/contact.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   </body>
 </html>

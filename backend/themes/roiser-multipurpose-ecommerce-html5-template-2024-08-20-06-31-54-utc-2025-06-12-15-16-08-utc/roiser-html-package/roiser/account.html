@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Sign in to your ROISER account for a seamless shopping experience. Access your orders, wishlist, and exclusive deals securely."
+    />
+    <title>Login to Your Account - Secure Access | ROISER</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="assets/img/favicon.png"
+    />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="assets/css/nice-select.css" />
+    <link rel="stylesheet" href="assets/css/swiper.min.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("http://147.93.45.171:1600/themeoptionsdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Fetch failed");
+            return res.json();
+          })
+          .then((data) => {
+            let titleTag = document.head.querySelector("title");
+            if (!titleTag) {
+              titleTag = document.createElement("title");
+              document.head.appendChild(titleTag);
+            }
+            titleTag.textContent =
+              data.site_title || data.seo_title || "Website";
+
+            let desc = document.querySelector('meta[name="description"]');
+            if (!desc) {
+              desc = document.createElement("meta");
+              desc.name = "description";
+              document.head.appendChild(desc);
+            }
+            desc.content = data.seo_description || "";
+
+            let og = document.querySelector('meta[property="og:image"]');
+            if (!og) {
+              og = document.createElement("meta");
+              og.setAttribute("property", "og:image");
+              document.head.appendChild(og);
+            }
+            og.content = data.seo_og_image_url || "";
+
+            const url = `/uploads/${
+              data.lazy_placeholder_image
+            }?v=${Date.now()}`;
+            const oldIcon = document.querySelector(
+              'link[rel="icon"], link[rel="shortcut icon"]'
+            );
+            if (oldIcon) oldIcon.remove();
+
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.type = "image/png";
+            link.href = url;
+            document.head.appendChild(link);
+          })
+          .catch((e) => console.error("Theme load error:", e));
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function makeAbsolute(u) {
+          if (!u) return u;
+          if (/^https?:\/\//i.test(u)) return u;
+          return window.location.origin + (u.startsWith("/") ? u : "/" + u);
+        }
+
+        function withUploads(u) {
+          if (!u) return u;
+          if (u.startsWith("/uploads/")) return makeAbsolute(u);
+          return makeAbsolute("/uploads/" + u.replace(/^\/+/, ""));
+        }
+
+        function toSlug(str = "") {
+          return str
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+        }
+
+        function stripTags(str = "") {
+          return String(str).replace(/<[^>]*>/g, "");
+        }
+
+        Promise.all([
+          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
+            r.json()
+          ),
+          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
+        ])
+          .then(([products, blogs]) => {
+            products = Array.isArray(products)
+              ? products
+              : products.items || [];
+            blogs = Array.isArray(blogs) ? blogs : blogs.items || [];
+
+            const featuredProducts = products.slice(0, 10);
+            const featuredBlogs = blogs.slice(0, 5);
+
+            const productSchema = featuredProducts.map((p) => {
+              const slug = p.slug
+                ? p.slug
+                : toSlug(p.name || p.title || p.id || "");
+              const productUrl = makeAbsolute(`/shop-details/${slug}`);
+              return {
+                "@type": "Product",
+                name: p.name || p.title || "",
+                image: withUploads(p.image || (p.images && p.images[0]) || ""),
+                description: stripTags(p.description || ""),
+                brand: { "@type": "Brand", name: p.brand || "" },
+                sku: p.sku || p.id || "",
+                offers: {
+                  "@type": "Offer",
+                  url: productUrl,
+                  priceCurrency: p.currency || "USD",
+                  price:
+                    p.price_sale != null
+                      ? p.price_sale
+                      : p.price != null
+                      ? p.price
+                      : undefined,
+                  availability: p.stockstatus
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+                },
+                aggregateRating:
+                  p.ratingCount || p.ratingValue
+                    ? {
+                        "@type": "AggregateRating",
+                        ratingValue: p.ratingValue || 4.5,
+                        bestRating: p.bestRating || 5,
+                        ratingCount: p.ratingCount || 0,
+                      }
+                    : undefined,
+              };
+            });
+
+            const blogSchema = featuredBlogs.map((b) => ({
+              "@type": "BlogPosting",
+              headline: b.title || "",
+              image: withUploads(b.image || ""),
+              description: stripTags(b.excerpt || b.description || ""),
+              url: makeAbsolute(b.url || `/blog/${b.slug || b.id || ""}`),
+              datePublished: b.datePublished || b.published_at || undefined,
+              author: { "@type": "Person", name: b.author_name || "Admin" },
+            }));
+
+            const schemaData = {
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  name: "ROISER",
+                  url: window.location.origin + "/",
+                  logo: makeAbsolute("/Tonic.svg"),
+                  description:
+                    "ROISER is a leading eCommerce platform offering healthcare and wellness products.",
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    telephone: "+1-800-654-3210",
+                    contactType: "customer service",
+                    areaServed: "US",
+                    availableLanguage: "English",
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  name: "ROISER",
+                  url: window.location.origin + "/",
+                  description: "Shop the latest healthcare products at ROISER.",
+                  keywords:
+                    "ROISER, Ecommerce, healthcare, online pharmacy, wellness products",
+                },
+                {
+                  "@type": "LocalBusiness",
+                  name: "ROISER Healthcare Store",
+                  url: window.location.origin + "/",
+                  image: makeAbsolute("/Tonic.svg"),
+                  description:
+                    "ROISER's physical store provides healthcare and wellness products.",
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: "123 Healthcare Street",
+                    addressLocality: "New York",
+                    addressRegion: "NY",
+                    postalCode: "10001",
+                    addressCountry: "US",
+                  },
+                  telephone: "+1-800-654-3210",
+                  areaServed: "US",
+                },
+                ...productSchema,
+                ...blogSchema,
+              ].filter(Boolean),
+            };
+
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.text = JSON.stringify(schemaData);
+            document.head.appendChild(script);
+          })
+          .catch((err) => console.error("Schema error", err));
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud/");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud/${page}`);
+            }
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud/";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+  </head>
+
+  <style>
+    .account-section {
+      padding: 100px 0;
+      background-color: #f8f9fa;
+    }
+
+    .account-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
+    .account-wrapper {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .account-row {
+      display: flex;
+      min-height: 600px;
+    }
+
+    .account-col {
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .account-col:first-child {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .account-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .account-form {
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .account-col:first-child .form-label {
+      color: white;
+    }
+
+    .account-col:first-child .form-input {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+
+    .account-col:first-child .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+    }
+
+    .checkbox-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .checkbox-label a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .checkbox-label a:hover {
+      text-decoration: underline;
+    }
+
+    .account-btn {
+      width: 100%;
+      margin-top: 30px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .account-col:first-child .submit-btn {
+      background: white;
+      color: #667eea;
+    }
+
+    .account-col:first-child .submit-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .alert {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .alert-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    @media (max-width: 768px) {
+      .account-row {
+        flex-direction: column;
+      }
+
+      .account-col {
+        padding: 30px 20px;
+      }
+
+      .account-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+
+  <body>
+    <header class="header sticky-active">
+      <div class="top-bar">
+        <div class="container">
+          <div class="top-bar-inner">
+            <div class="top-bar-left">
+              <ul class="top-left-list">
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">My Account</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+                <li><a href="checkout.html">Checkout</a></li>
+              </ul>
+            </div>
+
+            <div class="top-bar-middle">
+              <span
+                id="announcement-text"
+                style="
+                  display: inline-block;
+                  transition: transform 0.5s ease;
+                  white-space: nowrap;
+                "
+              ></span>
+            </div>
+
+            <div class="top-bar-right">
+              <ul class="top-right-list">
+                <li><a href="contact.html">Store Location</a></li>
+                <li>
+                  <div class="nice-select select-control country1" tabindex="0">
+                    <span class="current">Language</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Language
+                      </li>
+                      <li data-value="vdt" class="option">English</li>
+                      <li data-value="can" class="option">Bangla</li>
+                      <li data-value="uk" class="option">Arabic</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div
+                    class="nice-select select-control select-2 country"
+                    tabindex="0"
+                  >
+                    <span class="current">Currency</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Currency
+                      </li>
+                      <li data-value="vdt" class="option">Doller</li>
+                      <li data-value="can" class="option">Rupee</li>
+                      <li data-value="uk" class="option">Taka</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-middle">
+        <div class="container">
+          <div class="header-middle-inner">
+            <div class="header-middle-left">
+              <div class="header-logo d-lg-block">
+                <a href="index.html">
+                  <img
+                    src="assets/img/logo/logo-1.png"
+                    alt="Logo"
+                    id="site-logo"
+                    loading="lazy"
+                  />
+                </a>
+              </div>
+
+              <div class="category-form-wrap">
+                <div class="nice-select select-control country" tabindex="0">
+                  <span class="current">ALL Categories</span>
+                  <ul class="list">
+                    <li data-value="" class="option selected focus">
+                      ALL Categories
+                    </li>
+                    <li data-value="vdt" class="option">Fashion</li>
+                    <li data-value="can" class="option">Organic</li>
+                    <li data-value="uk" class="option">Furniture</li>
+                  </ul>
+                </div>
+
+                <form class="header-form">
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="search"
+                    placeholder="Search here..."
+                    required
+                  />
+                  <button class="submit rr-primary-btn" type="submit">
+                    Search here
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="header-middle-right">
+              <ul class="contact-item-list">
+                <li>
+                  <div class="content">
+                    <span>Call Us Now:</span>
+                    <a class="number" href="tel:+25821592159"
+                      >+(258) 2159-2159</a
+                    >
+                  </div>
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
+                    <i class="fa-regular fa-phone"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
+                    <i class="fa-sharp fa-regular fa-heart"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="cart.html" class="icon" aria-label="View cart">
+                    <i class="fa-light fa-bag-shopping"></i>
+                    <span>0</span>
+                  </a>
+                  <div class="content">
+                    <span>Your cart,</span>
+                    <h5 class="number">$0.00</h5>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="primary-header">
+        <div class="container">
+          <div class="primary-header-inner">
+            <div class="header-logo mobile-logo">
+              <a href="index.html">
+                <img
+                  src="assets/img/logo/logo-1.png"
+                  alt="Logo"
+                  loading="lazy"
+                />
+              </a>
+            </div>
+            <div class="header-menu-wrap">
+              <div class="mobile-menu-items">
+                <ul>
+                  <li class="menu-item-has-children active">
+                    <a href="index.html">Home</a>
+                    <ul>
+                      <li><a href="index.html">Fashion Home</a></li>
+                      <li><a href="index-2.html">Grocery Home</a></li>
+                      <li><a href="index-3.html">Furniture</a></li>
+                    </ul>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="shop.html">Shop</a>
+                    <ul>
+                      <li><a href="shop.html">Shop</a></li>
+                      <li><a href="shop-grid.html">Shop Grid</a></li>
+                      <li><a href="shop-details.html">Shop Details</a></li>
+                      <li><a href="cart.html">Cart</a></li>
+                      <li><a href="wishlist.html">Wishlist</a></li>
+                      <li><a href="checkout.html">Checkout</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">Women</a>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">men</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="/about">Pages</a>
+                    <ul>
+                      <li><a href="about.html">About</a></li>
+                      <li><a href="login.html">Login</a></li>
+                      <li><a href="register.html">Register</a></li>
+                      <li><a href="faq.html">Faq</a></li>
+                      <li><a href="error.html">404 Error</a></li>
+                    </ul>
+                  </li>
+
+                  <li class="menu-item-has-children">
+                    <a href="blog-grid.html">Blog</a>
+                    <ul>
+                      <li><a href="blog-grid.html">Blog Grid</a></li>
+                      <li><a href="blog-list.html">Blog list</a></li>
+                      <li><a href="blog-details.html">Blog Details</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="contact.html">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="header-right-wrap">
+              <div class="header-right">
+                <span>Get 30% Discount Now <span>Sale</span></span>
+                <div class="header-right-item">
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div id="popup-search-box">
+      <div class="box-inner-wrap d-flex align-items-center">
+        <form id="form" action="#" method="get" role="search">
+          <input
+            id="popup-search"
+            type="text"
+            name="search"
+            placeholder="Type keywords here..."
+          />
+        </form>
+        <div class="search-close">
+          <i class="fa-sharp fa-regular fa-xmark"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-side-menu">
+      <div class="side-menu-content">
+        <div class="side-menu-head">
+          <a href="index.html"
+            ><img src="assets/img/logo/logo-1.png" alt="logo" loading="lazy"
+          /></a>
+          <button class="mobile-side-menu-close">
+            <i class="fa-regular fa-xmark"></i>
+          </button>
+        </div>
+        <div class="side-menu-wrap"></div>
+        <ul class="side-menu-list">
+          <li>
+            <i class="fa-light fa-location-dot"></i>Address :
+            <span>Amsterdam, 109-74</span>
+          </li>
+          <li>
+            <i class="fa-light fa-phone"></i>Phone :
+            <a href="tel:+01569896654">+01 569 896 654</a>
+          </li>
+          <li>
+            <i class="fa-light fa-envelope"></i>Email :
+            <a href="mailto:info@example.com">info@example.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="preloader">
+      <div class="preloader-close">X</div>
+      <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
+      </div>
+    </div>
+
+    <section class="account-section">
+      <div class="container">
+        <div class="account-wrapper">
+          <div class="account-row">
+            <div class="account-col">
+              <h2 class="account-title">Create Account</h2>
+              <div id="signup-alert" class="alert" style="display: none"></div>
+              <form class="account-form" id="signup-form">
+                <div class="form-group">
+                  <label class="form-label" for="signup-name">Full Name</label>
+                  <input
+                    type="text"
+                    class="form-input"
+                    id="signup-name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="signup-email"
+                    >Email Address</label
+                  >
+                  <input
+                    type="email"
+                    class="form-input"
+                    id="signup-email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="signup-password"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-input"
+                    id="signup-password"
+                    name="password"
+                    placeholder="Create a strong password"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <div class="form-checkbox">
+                    <input
+                      type="checkbox"
+                      id="signup-terms"
+                      name="terms"
+                      required
+                    />
+                    <label class="checkbox-label" for="signup-terms">
+                      I agree to the <a href="#">Terms & Conditions</a> and
+                      <a href="#">Privacy Policy</a>
+                    </label>
+                  </div>
+                </div>
+                <div class="account-btn">
+                  <button type="submit" class="submit-btn">
+                    Create Account
+                  </button>
+                </div>
+              </form>
+              <div class="login-link">
+                Already have an account?
+                <a href="#" onclick="switchToLogin()">Sign In</a>
+              </div>
+            </div>
+
+            <div class="account-col">
+              <h2 class="account-title">Welcome Back</h2>
+              <div id="login-alert" class="alert" style="display: none"></div>
+              <form class="account-form" id="login-form">
+                <div class="form-group">
+                  <label class="form-label" for="login-email"
+                    >Email Address</label
+                  >
+                  <input
+                    type="email"
+                    class="form-input"
+                    id="login-email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="login-password"
+                    >Password</label
+                  >
+                  <input
+                    type="password"
+                    class="form-input"
+                    id="login-password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <div class="form-checkbox">
+                    <input type="checkbox" id="remember-me" name="remember" />
+                    <label class="checkbox-label" for="remember-me">
+                      Remember me
+                    </label>
+                  </div>
+                </div>
+                <div class="account-btn">
+                  <button type="submit" class="submit-btn">Sign In</button>
+                </div>
+              </form>
+              <div class="login-link">
+                Don't have an account?
+                <a href="#" onclick="switchToSignup()">Create Account</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        function showAlert(message, type, containerId) {
+          const alertDiv = document.getElementById(containerId);
+          alertDiv.textContent = message;
+          alertDiv.className = `alert alert-${type}`;
+          alertDiv.style.display = "block";
+
+          setTimeout(() => {
+            alertDiv.style.display = "none";
+          }, 5000);
+        }
+
+        function switchToLogin() {
+          document.querySelector(".account-col:first-child").style.display =
+            "none";
+          document.querySelector(".account-col:last-child").style.flex = "1";
+          document.querySelector(".account-col:last-child").style.padding =
+            "50px";
+        }
+
+        function switchToSignup() {
+          document.querySelector(".account-col:last-child").style.display =
+            "none";
+          document.querySelector(".account-col:first-child").style.display =
+            "flex";
+          document.querySelector(".account-col:first-child").style.flex = "1";
+        }
+
+        // Make functions global
+        window.switchToLogin = switchToLogin;
+        window.switchToSignup = switchToSignup;
+
+        // Signup form handler
+        document
+          .getElementById("signup-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("signup-name").value.trim();
+            const email = document.getElementById("signup-email").value.trim();
+            const password = document.getElementById("signup-password").value;
+
+            if (!name || !email || !password) {
+              showAlert("All fields are required", "error", "signup-alert");
+              return;
+            }
+
+            try {
+              const response = await fetch("http://147.93.45.171:1600/submit", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+                body: JSON.stringify({ first_name: name, email, password }),
+              });
+
+              const data = await response.json();
+
+              if (response.ok && data.success) {
+                showAlert(
+                  "Account created successfully! You can now sign in.",
+                  "success",
+                  "signup-alert"
+                );
+                document.getElementById("signup-form").reset();
+              } else {
+                showAlert(
+                  data.Error || "Registration failed",
+                  "error",
+                  "signup-alert"
+                );
+              }
+            } catch (error) {
+              console.error("Signup error:", error);
+              showAlert(
+                "Network error. Please try again.",
+                "error",
+                "signup-alert"
+              );
+            }
+          });
+
+        // Login form handler
+        document
+          .getElementById("login-form")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value;
+
+            if (!email || !password) {
+              showAlert(
+                "Email and password are required",
+                "error",
+                "login-alert"
+              );
+              return;
+            }
+
+            try {
+              const response = await fetch("http://147.93.45.171:1600/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Accept: "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+              });
+
+              if (response.status === 400) {
+                showAlert("Invalid email or password", "error", "login-alert");
+                return;
+              }
+
+              const data = await response.json();
+
+              if (response.ok && data.success) {
+                localStorage.setItem("user_id", data.user_id);
+                showAlert(
+                  "Login successful! Redirecting...",
+                  "success",
+                  "login-alert"
+                );
+
+                setTimeout(() => {
+                  window.parent.location.href = "http://srv689968.hstgr.cloud/";
+                }, 1500);
+              } else {
+                showAlert(data.Error || "Login failed", "error", "login-alert");
+              }
+            } catch (error) {
+              console.error("Login error:", error);
+              showAlert(
+                "Network error. Please try again.",
+                "error",
+                "login-alert"
+              );
+            }
+          });
+
+        // Update cart count
+        function updateCartCount() {
+          const userId = localStorage.getItem("user_id");
+          if (!userId) return;
+
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
+            .then((res) => res.json())
+            .then((data) => {
+              if (Array.isArray(data)) {
+                const uniqueItems = new Set(data.map((item) => item.name));
+                document.querySelector(
+                  ".contact-item-list .icon span"
+                ).textContent = uniqueItems.size;
+              }
+            })
+            .catch((err) => console.error("Cart update error:", err));
+        }
+
+        updateCartCount();
+        setInterval(updateCartCount, 3000);
+      });
+    </script>
+
+    <footer class="footer-section bg-grey pt-60">
+      <div class="container">
+        <div class="footer-items">
+          <div class="footer-item">
+            <div class="icon">
+              <img
+                src="assets/img/icon/footer-1.png"
+                alt="icon"
+                loading="lazy"
+              />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Shipping</h4>
+              <span>Free shipping on orders over $65.00</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img
+                src="assets/img/icon/footer-2.png"
+                alt="icon"
+                loading="lazy"
+              />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Returns</h4>
+              <span>30-days free return policy</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img
+                src="assets/img/icon/footer-3.png"
+                alt="icon"
+                loading="lazy"
+              />
+            </div>
+            <div class="content">
+              <h4 class="title">Secured Payments</h4>
+              <span>We accept all major credit card</span>
+            </div>
+          </div>
+          <div class="footer-item item-2">
+            <div class="icon">
+              <img
+                src="assets/img/icon/footer-4.png"
+                alt="icon"
+                loading="lazy"
+              />
+            </div>
+            <div class="content">
+              <h4 class="title">Customer Service</h4>
+              <span>Top notch customer service</span>
+            </div>
+          </div>
+        </div>
+        <div class="row footer-widget-wrap pb-60">
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">About Store</h3>
+              </div>
+              <div class="footer-contact">
+                <div class="icon">
+                  <i class="fa-sharp fa-solid fa-phone-rotary"></i>
+                </div>
+                <div class="content">
+                  <span>Have Question? Call Us 24/7</span>
+                  <a href="tel:+25836922569">+258 3692 2569</a>
+                </div>
+              </div>
+              <ul class="schedule-list">
+                <li><span>Monday - Friday:</span>8:00am - 6:00pm</li>
+                <li><span>Saturday:</span>8:00am - 6:00pm</li>
+                <li><span>Sunday</span> Service Close</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Stores</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">New York</a></li>
+                <li><a href="contact.html">London SF</a></li>
+                <li><a href="contact.html">Los Angele</a></li>
+                <li><a href="contact.html">Chicago</a></li>
+                <li><a href="contact.html">Las Vegas</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Shop Categories</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="shop-grid.html">New Arrivals</a></li>
+                <li><a href="shop-grid.html">Best Selling</a></li>
+                <li><a href="shop-grid.html">Vegetables</a></li>
+                <li><a href="shop-grid.html">Fresh Meat</a></li>
+                <li><a href="shop-grid.html">Fresh Seafood</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Useful Links</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">Privacy Policy</a></li>
+                <li><a href="contact.html">Terms & Conditions</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="blog-grid.html">Latest News</a></li>
+                <li><a href="contact.html">Our Sitemaps</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

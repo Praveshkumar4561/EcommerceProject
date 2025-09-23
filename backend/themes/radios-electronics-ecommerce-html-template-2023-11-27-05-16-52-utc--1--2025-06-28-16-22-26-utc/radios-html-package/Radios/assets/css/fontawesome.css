@@ -8134,7 +8134,7 @@ readers do not read off random characters that represent icons */
   font-family: 'Font Awesome 5 Brands';
   font-style: normal;
   font-weight: normal;
-  font-display: auto;
+  font-display: swap;
   src: url("../fonts/fa-brands-400.ttf") format("truetype");
 }
 
@@ -8145,7 +8145,7 @@ readers do not read off random characters that represent icons */
   font-family: 'Font Awesome 5 Pro';
   font-style: normal;
   font-weight: 300;
-  font-display: auto;
+  font-display: swap;
   src: url("../fonts/fa-light-300.ttf") format("truetype");
 }
 
@@ -8157,7 +8157,7 @@ readers do not read off random characters that represent icons */
   font-family: 'Font Awesome 5 Pro';
   font-style: normal;
   font-weight: 400;
-  font-display: auto;
+  font-display: swap;
   src: url("../fonts/fa-regular-400.ttf") format("truetype");
 }
 
@@ -8169,7 +8169,7 @@ readers do not read off random characters that represent icons */
   font-family: 'Font Awesome 5 Pro';
   font-style: normal;
   font-weight: 900;
-  font-display: auto;
+  font-display: swap;
   src: url("../fonts/fa-solid-900.ttf") format("truetype");
 }
 

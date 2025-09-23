@@ -4,8 +4,11 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <title>Website</title>
+    <meta
+      name="description"
+      content="Shop premium healthcare and wellness products online at ROISER. Discover high-quality medical essentials, vitamins, supplements, and personal care items at unbeatable prices. Enjoy fast delivery and secure checkout."
+    />
+    <title>ROISER</title>
     <link
       rel="shortcut icon"
       type="image/x-icon"
@@ -13,15 +16,13 @@
     />
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
-    <link rel="stylesheet" href="assets/css/venobox.min.css" />
-    <link rel="stylesheet" href="assets/css/odometer.min.css" />
     <link rel="stylesheet" href="assets/css/nice-select.css" />
     <link rel="stylesheet" href="assets/css/swiper.min.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/themeoptionsdata")
+        fetch("http://147.93.45.171:1600/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -70,29 +71,173 @@
     </script>
 
     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function makeAbsolute(u) {
+          if (!u) return u;
+          if (/^https?:\/\//i.test(u)) return u;
+          return window.location.origin + (u.startsWith("/") ? u : "/" + u);
+        }
+
+        function withUploads(u) {
+          if (!u) return u;
+          if (u.startsWith("/uploads/")) return makeAbsolute(u);
+          return makeAbsolute("/uploads/" + u.replace(/^\/+/, ""));
+        }
+
+        function toSlug(str = "") {
+          return str
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+        }
+
+        function stripTags(str = "") {
+          return String(str).replace(/<[^>]*>/g, "");
+        }
+
+        Promise.all([
+          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
+            r.json()
+          ),
+          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
+        ])
+          .then(([products, blogs]) => {
+            products = Array.isArray(products)
+              ? products
+              : products.items || [];
+            blogs = Array.isArray(blogs) ? blogs : blogs.items || [];
+
+            const featuredProducts = products.slice(0, 10);
+            const featuredBlogs = blogs.slice(0, 5);
+
+            const productSchema = featuredProducts.map((p) => {
+              const slug = p.slug
+                ? p.slug
+                : toSlug(p.name || p.title || p.id || "");
+              const productUrl = makeAbsolute(`/shop-details/${slug}`);
+              return {
+                "@type": "Product",
+                name: p.name || p.title || "",
+                image: withUploads(p.image || (p.images && p.images[0]) || ""),
+                description: stripTags(p.description || ""),
+                brand: { "@type": "Brand", name: p.brand || "" },
+                sku: p.sku || p.id || "",
+                offers: {
+                  "@type": "Offer",
+                  url: productUrl,
+                  priceCurrency: p.currency || "USD",
+                  price:
+                    p.price_sale != null
+                      ? p.price_sale
+                      : p.price != null
+                      ? p.price
+                      : undefined,
+                  availability: p.stockstatus
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+                },
+                aggregateRating:
+                  p.ratingCount || p.ratingValue
+                    ? {
+                        "@type": "AggregateRating",
+                        ratingValue: p.ratingValue || 4.5,
+                        bestRating: p.bestRating || 5,
+                        ratingCount: p.ratingCount || 0,
+                      }
+                    : undefined,
+              };
+            });
+
+            const blogSchema = featuredBlogs.map((b) => ({
+              "@type": "BlogPosting",
+              headline: b.title || "",
+              image: withUploads(b.image || ""),
+              description: stripTags(b.excerpt || b.description || ""),
+              url: makeAbsolute(b.url || `/blog/${b.slug || b.id || ""}`),
+              datePublished: b.datePublished || b.published_at || undefined,
+              author: { "@type": "Person", name: b.author_name || "Admin" },
+            }));
+
+            const schemaData = {
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  name: "ROISER",
+                  url: window.location.origin + "/",
+                  logo: makeAbsolute("/Tonic.svg"),
+                  description:
+                    "ROISER is a leading eCommerce platform offering healthcare and wellness products.",
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    telephone: "+1-800-654-3210",
+                    contactType: "customer service",
+                    areaServed: "US",
+                    availableLanguage: "English",
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  name: "ROISER",
+                  url: window.location.origin + "/",
+                  description: "Shop the latest healthcare products at ROISER.",
+                  keywords:
+                    "ROISER, Ecommerce, healthcare, online pharmacy, wellness products",
+                },
+                {
+                  "@type": "LocalBusiness",
+                  name: "ROISER Healthcare Store",
+                  url: window.location.origin + "/",
+                  image: makeAbsolute("/Tonic.svg"),
+                  description:
+                    "ROISER's physical store provides healthcare and wellness products.",
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: "123 Healthcare Street",
+                    addressLocality: "New York",
+                    addressRegion: "NY",
+                    postalCode: "10001",
+                    addressCountry: "US",
+                  },
+                  telephone: "+1-800-654-3210",
+                  areaServed: "US",
+                },
+                ...productSchema,
+                ...blogSchema,
+              ].filter(Boolean),
+            };
+
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.text = JSON.stringify(schemaData);
+            document.head.appendChild(script);
+          })
+          .catch((err) => console.error("Schema error", err));
+      });
+    </script>
+
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
-          .querySelectorAll(
-            "a[href$='.html'], a[href*='.html?']:not(.lang-btn)"
-          )
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
           .forEach((a) => {
             const href = a.getAttribute("href");
-            const [path, query] = href.split("?");
-            const page = path.replace(/\.html$/, "");
-            const baseUrl =
-              page === "index" || page === ""
-                ? "http://srv689968.hstgr.cloud/"
-                : `http://srv689968.hstgr.cloud/${page}`;
-            const newHref = query ? `${baseUrl}?${query}` : baseUrl;
-
-            a.setAttribute("href", newHref);
-
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud/");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud/${page}`);
+            }
             a.addEventListener("click", (e) => {
               e.preventDefault();
-              window.parent.location.href = newHref;
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud/";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+              }
             });
           });
-
         document.querySelectorAll('a[href="#"]').forEach((a) => {
           a.addEventListener("click", (e) => e.preventDefault());
         });
@@ -294,7 +439,6 @@
             <div class="top-bar-right">
               <ul class="top-right-list">
                 <li><a href="contact.html">Store Location</a></li>
-
                 <li>
                   <div class="nice-select select-control country1" tabindex="0">
                     <span class="current">Language</span>
@@ -308,7 +452,6 @@
                     </ul>
                   </div>
                 </li>
-
                 <li>
                   <div
                     class="nice-select select-control select-2 country"
@@ -341,6 +484,7 @@
                     src="assets/img/logo/logo-1.png"
                     alt="Logo"
                     id="site-logo"
+                    loading="lazy"
                   />
                 </a>
               </div>
@@ -382,17 +526,21 @@
                       >+(258) 2159-2159</a
                     >
                   </div>
-                  <a href="tel:+25821592159" class="icon">
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
                     <i class="fa-regular fa-phone"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="wishlist.html" class="icon">
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
                     <i class="fa-sharp fa-regular fa-heart"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="cart.html" class="icon">
+                  <a href="cart.html" class="icon" aria-label="View cart">
                     <i class="fa-light fa-bag-shopping"></i>
                     <span>0</span>
                   </a>
@@ -412,7 +560,11 @@
           <div class="primary-header-inner">
             <div class="header-logo mobile-logo">
               <a href="index.html">
-                <img src="assets/img/logo/logo-1.png" alt="Logo" />
+                <img
+                  src="assets/img/logo/logo-1.png"
+                  alt="Logo"
+                  loading="lazy"
+                />
               </a>
             </div>
             <div class="header-menu-wrap">
@@ -444,7 +596,7 @@
                     <a href="shop-grid.html">men</a>
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#">Pages</a>
+                    <a href="/about">Pages</a>
                     <ul>
                       <li><a href="about.html">About</a></li>
                       <li><a href="login.html">Login</a></li>
@@ -471,9 +623,13 @@
               <div class="header-right">
                 <span>Get 30% Discount Now <span>Sale</span></span>
                 <div class="header-right-item">
-                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
-                    ><i class="fa-sharp fa-solid fa-bars"></i
-                  ></a>
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -502,7 +658,7 @@
       <div class="side-menu-content">
         <div class="side-menu-head">
           <a href="index.html"
-            ><img src="assets/img/logo/logo-1.png" alt="logo"
+            ><img src="assets/img/logo/logo-1.png" alt="logo" loading="lazy"
           /></a>
           <button class="mobile-side-menu-close">
             <i class="fa-regular fa-xmark"></i>
@@ -542,14 +698,23 @@
           <img
             src="https://avatars.mds.yandex.net/i?id=3f3247dd8514f337fcb10728d33e03e4161df202-8255800-images-thumbs&n=13"
             alt="img"
+            loading="lazy"
             style="width: 1068px; height: 650px; object-fit: cover"
           />
         </div>
         <div class="hero-shape">
-          <img src="assets/img/shapes/hero-shape-1.png" alt="shape" />
+          <img
+            src="assets/img/shapes/hero-shape-1.png"
+            alt="shape"
+            loading="lazy"
+          />
         </div>
         <div class="hero-shape-2">
-          <img src="assets/img/shapes/hero-shape-2.png" alt="shape" />
+          <img
+            src="assets/img/shapes/hero-shape-2.png"
+            alt="shape"
+            loading="lazy"
+          />
         </div>
       </div>
       <div class="container">
@@ -557,9 +722,9 @@
           <div class="col-xl-8"></div>
           <div class="col-xl-4 col-lg-12">
             <div class="hero-content">
-              <h4 class="sub-title">Summer 22 women’s collection</h4>
-              <h2 class="title">Super COLLECTION <br />FOR WOMEN</h2>
-              <h5 class="price"><span>From</span>$50.00</h5>
+              <h2 class="sub-title">Summer 22 women’s collection</h2>
+              <h3 class="title">Super COLLECTION <br />FOR WOMEN</h3>
+              <p class="price"><span>From</span> $50.00</p>
               <a href="shop.html" class="rr-primary-btn">View Collections</a>
             </div>
           </div>
@@ -601,7 +766,7 @@
 
         const allowedStatuses = ["Published", "Draft"];
 
-        fetch("/productcatdata")
+        fetch("http://147.93.45.171:1600/productcatdata")
           .then((response) => response.json())
           .then((categories) => {
             const validCategories = categories.filter((cat) =>
@@ -621,18 +786,12 @@
               slide.innerHTML = `
                 <div class="category-item">
                   <div class="category-img">
-                    <a href="shop.html?category=${encodeURIComponent(
-                      category.name
-                    )}">
-                      <img src="/uploads/${category.image}" alt="${
-                category.name
-              }" />
+                    <a href="/shop">
+                      <img src="/uploads/${category.image}" alt="${category.name}" loading="lazy"/>
                     </a>
                   </div>
                   <h3 class="title">
-                    <a href="shop.html?category=${encodeURIComponent(
-                      category.name
-                    )}">
+                    <a href="/shop">
                       ${category.name}
                     </a>
                   </h3>
@@ -663,7 +822,7 @@
             console.error("Error loading category data:", error);
           });
 
-        fetch("/productpagedata")
+        fetch("http://147.93.45.171:1600/productpagedata")
           .then((response) => response.json())
           .then((products) => {
             const validProducts = products.filter((prod) =>
@@ -691,7 +850,11 @@
           <div class="discount-item item-1">
             <div class="product-overlay"></div>
             <div class="shape">
-              <img src="assets/img/shapes/dis-shpe.png" alt="shape" />
+              <img
+                src="assets/img/shapes/dis-shpe.png"
+                alt="shape"
+                loading="lazy"
+              />
             </div>
             <div class="content">
               <span>Special 50% Disocunt</span>
@@ -707,6 +870,7 @@
               <img
                 src="https://avatars.mds.yandex.net/i?id=c0f2ba0358cfc4d1238e4d8da8380b55955477b8-5269428-images-thumbs&n=13"
                 alt="img"
+                loading="lazy"
                 style="width: 233px; height: 256px; object-fit: cover"
               />
             </div>
@@ -716,12 +880,17 @@
           <div class="discount-item">
             <div class="product-overlay"></div>
             <div class="shape">
-              <img src="assets/img/shapes/dis-shpe.png" alt="shape" />
+              <img
+                src="assets/img/shapes/dis-shpe.png"
+                alt="shape"
+                loading="lazy"
+              />
             </div>
             <div class="men">
               <img
                 src="https://avatars.mds.yandex.net/i?id=9f6a957fce5b368eff2dea1c02beee5204a7cde0-9245612-images-thumbs&n=13"
                 alt="img"
+                loading="lazy"
                 style="width: 281px; height: 241px; object-fit: cover"
               />
             </div>
@@ -744,6 +913,7 @@
               <img
                 src="https://avatars.mds.yandex.net/i?id=e10b2e5fb33e0284f4d1959b45ddeed1cb280e29-10783551-images-thumbs&n=13"
                 alt="img"
+                loading="lazy"
                 style="width: 301px; height: 252px; object-fit: cover"
               />
             </div>
@@ -786,11 +956,15 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const cleanPrice = (str = "") => str.replace(/[^0-9.]/g, "");
+        const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
 
         Promise.all([
-          fetch("/productcatdata").then((res) => res.json()),
-          fetch("/productpagedata").then((res) => res.json()),
+          fetch("http://147.93.45.171:1600/productcatdata").then((res) =>
+            res.json()
+          ),
+          fetch("http://147.93.45.171:1600/productpagedata").then((res) =>
+            res.json()
+          ),
         ])
           .then(([rawCats, rawProds]) => {
             const categories = Array.isArray(rawCats)
@@ -800,27 +974,24 @@
               ? rawProds
               : rawProds.products || rawProds.data || [];
 
-            document.getElementById(
-              "product-count1"
-            ).textContent = `${categories.length} categories`;
-            document.getElementById(
-              "product-count2"
-            ).textContent = `${products.length} products`;
+            const count1El = document.getElementById("product-count1");
+            const count2El = document.getElementById("product-count2");
+            if (count1El)
+              count1El.textContent = `${categories.length} categories`;
+            if (count2El) count2El.textContent = `${products.length} products`;
 
             products = products
-              .filter((p) => p.date && !isNaN(new Date(p.date)))
+              .filter((p) => p && p.date && !isNaN(new Date(p.date)))
               .sort((a, b) => new Date(b.date) - new Date(a.date));
 
             const productMainImages = products.map((p) => {
-              const imgs = (p.image || "")
+              const imgs = (p && p.image ? String(p.image) : "")
                 .split(",")
                 .map((i) => i.trim())
                 .filter(Boolean);
               return imgs[0] || "";
             });
 
-            let currentImages = [],
-              currentIndex = 0;
             const imageLightbox = document.getElementById("image-lightbox");
             const lightboxImg = document.getElementById("lightbox-image");
             const counterEl = document.getElementById("lightbox-counter");
@@ -828,14 +999,19 @@
             const btnNext = document.getElementById("lightbox-next");
             const btnClose = document.getElementById("lightbox-close");
 
+            let currentImages = [],
+              currentIndex = 0;
             function openLightbox(idx) {
               currentImages = productMainImages.slice();
-              currentIndex = idx;
+              currentIndex = Math.max(
+                0,
+                Math.min(idx, currentImages.length - 1)
+              );
               updateLightbox();
-              imageLightbox.style.display = "flex";
+              if (imageLightbox) imageLightbox.style.display = "flex";
             }
             function updateLightbox() {
-              if (!currentImages.length) return;
+              if (!currentImages.length || !lightboxImg || !counterEl) return;
               lightboxImg.src = `/uploads/${currentImages[currentIndex]}`;
               counterEl.textContent = `${currentIndex + 1} of ${
                 currentImages.length
@@ -846,7 +1022,7 @@
               btn.addEventListener("click", (e) => {
                 e.preventDefault();
                 if (btn === btnClose) {
-                  imageLightbox.style.display = "none";
+                  if (imageLightbox) imageLightbox.style.display = "none";
                   currentImages = [];
                   currentIndex = 0;
                 } else {
@@ -881,96 +1057,157 @@
             }
 
             const wrapper = document.getElementById("product-wrapper");
+            if (!wrapper) {
+              console.warn("product-wrapper not found");
+              return;
+            }
             wrapper.innerHTML = "";
+
             products.forEach((product, idx) => {
               const slide = document.createElement("div");
               slide.className = "swiper-slide";
-              const img = productMainImages[idx];
-              slide.innerHTML = `
-              <div class="shop-item">
-                <div class="shop-thumb">
-                  <div class="overlay"></div>
-                  <a href="shop-details.html?id=${product.id}">
-                    <img src="/uploads/${img}" alt="${product.name}" />
-                  </a>
-                  <span class="sale">${product.label || "New"}</span>
-                  <ul class="shop-list d-flex flex-column">
-                    <li>
-                      <a href="javascript:void(0)" class="add-to-cart"
-                        data-name="${product.name}"
-                        data-price="${product.price}"
-                        data-price_sale="${product.price_sale}"
-                        data-image="${img}"
-                        data-store="${product.store || "default"}">
-                        <i class="fa-regular fa-cart-shopping"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0)" class="add-to-wishlist"
-                        data-name="${product.name}"
-                        data-image="${img}"
-                        data-store="${product.store || "default"}"
-                        data-price="${product.price}"
-                        data-price_sale="${product.price_sale}"
-                        data-sku="${product.sku || ""}"
-                        data-stockstatus="${product.stockstatus || "In Stock"}">
-                        <i class="fa-light fa-heart"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0)" class="view-lightbox" data-index="${idx}">
-                        <i class="fa-light fa-eye"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="shop-content">
-                  <span class="category">${product.brand || "No Brand"}</span>
-                  <h3 class="title">
-                    <a href="shop-details.html?id=${product.id}">${
-                product.name
-              }</a>
-                  </h3>
-                  <div class="review-wrap">
-                    <ul class="review">
-                      <li><i class="fa-solid fa-star"></i></li>
-                      <li><i class="fa-solid fa-star"></i></li>
-                      <li><i class="fa-solid fa-star"></i></li>
-                      <li><i class="fa-solid fa-star"></i></li>
-                      <li><i class="fa-solid fa-star"></i></li>
-                    </ul>
-                    <span>(${
-                      Math.floor(Math.random() * 100) + 1
-                    } Reviews)</span>
-                  </div>
-                  <div class="d-flex flex-row flex-nowrap">
-                    <span class="price">${product.price}</span>
-                    <span class="price_sale ms-2 text-decoration-line-through">
-                      ${product.price_sale}
-                    </span>
-                  </div>
-                </div>
-              </div>`;
-              wrapper.appendChild(slide);
+              const img = productMainImages[idx] || "";
+              const safeName = product?.name
+                ? String(product.name).replace(/"/g, "&quot;")
+                : "";
+              const slug = (product.name || "")
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z0-9-]/g, "");
 
-              slide
-                .querySelector(".add-to-cart")
-                .addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const btn = e.currentTarget;
+              slide.innerHTML = `
+                  <div class="shop-item" data-product-id="${product.id}">
+                    <div class="shop-thumb">
+                      <div class="overlay"></div>
+
+                      <a href="/shop-details/${slug}" class="product-link"
+                        data-id="${product.id}"
+                        data-name="${encodeURIComponent(product.name || "")}"
+                        aria-label="View details of ${safeName}">
+                        <img src="/uploads/${img}" alt="${safeName}" loading="lazy"
+                            onerror="this.onerror=null;"/>
+                      </a>
+
+                      <span class="sale">${product.label || "New"}</span>
+                      <ul class="shop-list d-flex flex-column">
+                        <li>
+                          <a href="javascript:void(0)" data-action="add-to-cart" data-product-id="${
+                            product.id
+                          }"
+                            aria-label="Add ${safeName} to cart"
+                            data-name="${encodeURIComponent(
+                              product.name || ""
+                            )}"
+                            data-price="${product.price || ""}"
+                            data-price_sale="${product.price_sale || ""}"
+                            data-image="${encodeURIComponent(img || "")}"
+                            data-store="${product.store || "default"}">
+                            <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0)" data-action="add-to-wishlist" data-product-id="${
+                            product.id
+                          }"
+                            aria-label="Add ${safeName} to wishlist"
+                            data-name="${encodeURIComponent(
+                              product.name || ""
+                            )}"
+                            data-image="${encodeURIComponent(img || "")}"
+                            data-store="${product.store || "default"}"
+                            data-price="${product.price || ""}"
+                            data-price_sale="${product.price_sale || ""}"
+                            data-sku="${product.sku || ""}"
+                            data-stockstatus="${
+                              product.stockstatus || "In Stock"
+                            }">
+                            <i class="fa-light fa-heart" aria-hidden="true"></i>
+                          </a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0)" data-action="view-lightbox" data-product-id="${
+                            product.id
+                          }" data-index="${idx}"
+                            aria-label="View ${safeName} image preview">
+                            <i class="fa-light fa-eye" aria-hidden="true"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="shop-content">
+                      <span class="category">${
+                        product.brand || "No Brand"
+                      }</span>
+                      <h3 class="title">
+                        <a href="/shop-details/${slug}" class="product-link"
+                          data-id="${product.id}"
+                          data-name="${encodeURIComponent(product.name || "")}"
+                          aria-label="View details of ${safeName}">
+                          ${safeName}
+                        </a>
+                      </h3>
+                      <div class="review-wrap">
+                        <ul class="review">
+                          <li><i class="fa-solid fa-star"></i></li>
+                          <li><i class="fa-solid fa-star"></i></li>
+                          <li><i class="fa-solid fa-star"></i></li>
+                          <li><i class="fa-solid fa-star"></i></li>
+                          <li><i class="fa-solid fa-star"></i></li>
+                        </ul>
+                        <span>(${
+                          Math.floor(Math.random() * 100) + 1
+                        } Reviews)</span>
+                      </div>
+                      <div class="d-flex flex-row flex-nowrap">
+                        <span class="price">${product.price}</span>
+                        <span class="price_sale ms-2 text-decoration-line-through">
+                          ${product.price_sale}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              wrapper.appendChild(slide);
+            });
+
+            wrapper.addEventListener("click", (e) => {
+              const actionBtn = e.target.closest("[data-action]");
+              if (actionBtn) {
+                e.preventDefault();
+                const action = actionBtn.dataset.action;
+                const productId = actionBtn.dataset.productId;
+                function updateAllInstances(updater) {
+                  document
+                    .querySelectorAll(
+                      `[data-product-id="${productId}"] [data-action="${action}"]`
+                    )
+                    .forEach(updater);
+                }
+
+                if (action === "add-to-cart") {
                   const user_id = localStorage.getItem("user_id");
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  fetch("/addcart", {
+                  const name = decodeURIComponent(actionBtn.dataset.name || "");
+                  const price = cleanPrice(actionBtn.dataset.price || "");
+                  const price_sale = cleanPrice(
+                    actionBtn.dataset.price_sale || ""
+                  );
+                  const image = decodeURIComponent(
+                    actionBtn.dataset.image || ""
+                  );
+                  const store = actionBtn.dataset.store || "default";
+                  fetch("http://147.93.45.171:1600/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      name: btn.dataset.name,
-                      price: cleanPrice(btn.dataset.price),
-                      price_sale: cleanPrice(btn.dataset.price_sale),
-                      image: btn.dataset.image,
+                      name,
+                      price,
+                      price_sale,
+                      image,
                       user_id,
-                      store: btn.dataset.store,
+                      store,
                     }),
                   })
                     .then((r) => {
@@ -978,32 +1215,43 @@
                       return r.text();
                     })
                     .then(() => {
-                      btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      updateAllInstances(
+                        (el) =>
+                          (el.innerHTML = '<i class="fa-solid fa-check"></i>')
+                      );
                       showBanner("Product added to cart!", "success");
                     })
                     .catch(() => showBanner("Failed to add to cart", "error"));
-                });
+                }
 
-              slide
-                .querySelector(".add-to-wishlist")
-                .addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const btn = e.currentTarget;
+                if (action === "add-to-wishlist") {
                   const user_id = localStorage.getItem("user_id");
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  fetch("/wishlistpost", {
+                  const name = decodeURIComponent(actionBtn.dataset.name || "");
+                  const image = decodeURIComponent(
+                    actionBtn.dataset.image || ""
+                  );
+                  const store = actionBtn.dataset.store || "default";
+                  const price = cleanPrice(actionBtn.dataset.price || "");
+                  const price_sale = cleanPrice(
+                    actionBtn.dataset.price_sale || ""
+                  );
+                  const sku = actionBtn.dataset.sku || "";
+                  const stockstatus =
+                    actionBtn.dataset.stockstatus || "In Stock";
+                  fetch("http://147.93.45.171:1600/wishlistpost", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                       user_id,
-                      product_name: btn.dataset.name,
-                      image: btn.dataset.image,
-                      store: btn.dataset.store,
-                      price: cleanPrice(btn.dataset.price),
-                      price_sale: cleanPrice(btn.dataset.price_sale),
-                      sku: btn.dataset.sku,
-                      stockstatus: btn.dataset.stockstatus,
+                      product_name: name,
+                      image,
+                      store,
+                      price,
+                      price_sale,
+                      sku,
+                      stockstatus,
                     }),
                   })
                     .then((r) => {
@@ -1011,20 +1259,41 @@
                       return r.text();
                     })
                     .then(() => {
-                      btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      updateAllInstances(
+                        (el) =>
+                          (el.innerHTML = '<i class="fa-solid fa-check"></i>')
+                      );
                       showBanner("Added to wishlist!", "success");
                     })
                     .catch(() =>
                       showBanner("Failed to add to wishlist", "error")
                     );
-                });
+                }
 
-              slide
-                .querySelector(".view-lightbox")
-                .addEventListener("click", (e) => {
-                  e.preventDefault();
-                  openLightbox(+e.currentTarget.dataset.index);
-                });
+                if (action === "view-lightbox") {
+                  const idx = Number(actionBtn.dataset.index) || 0;
+                  openLightbox(idx);
+                }
+                return;
+              }
+
+              const productLink = e.target.closest(".product-link");
+              if (productLink) {
+                if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)
+                  return;
+                e.preventDefault();
+                const pid = productLink.dataset.id;
+                const rawName = decodeURIComponent(
+                  productLink.dataset.name || ""
+                );
+                const slug = rawName
+                  .toLowerCase()
+                  .trim()
+                  .replace(/\s+/g, "-")
+                  .replace(/[^a-z0-9-]/g, "");
+                if (pid) localStorage.setItem("selectedProductId", pid);
+                window.location.href = `/shop-details/${slug}`;
+              }
             });
 
             const currencyRates = {
@@ -1033,69 +1302,72 @@
               uk: { symbol: "৳", rate: 108 },
             };
             const dropdown = document.querySelector(".nice-select.country");
-            const display = dropdown.querySelector(".current");
-            const options = Array.from(dropdown.querySelectorAll(".option"));
-
-            let selected = localStorage.getItem("currency") || "vdt";
-            if (!currencyRates[selected]) selected = "vdt";
-            options.forEach((o) =>
-              o.classList.toggle("selected", o.dataset.value === selected)
-            );
-            display.textContent = options.find(
-              (o) => o.dataset.value === selected
-            ).textContent;
-
-            const parsePrice = (txt) =>
-              parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
-            const formatPrice = (num, key) =>
-              currencyRates[key].symbol + num.toFixed(2);
-
-            function normalizePrices() {
-              document.querySelectorAll(".price, .price_sale").forEach((el) => {
-                if (!el.dataset.basePrice) {
-                  el.dataset.basePrice = parsePrice(el.textContent);
-                }
+            if (dropdown) {
+              const display = dropdown.querySelector(".current");
+              const options = Array.from(dropdown.querySelectorAll(".option"));
+              let selected = localStorage.getItem("currency") || "vdt";
+              if (!currencyRates[selected]) selected = "vdt";
+              options.forEach((o) =>
+                o.classList.toggle("selected", o.dataset.value === selected)
+              );
+              if (display)
+                display.textContent =
+                  (options.find((o) => o.dataset.value === selected) || {})
+                    .textContent || display.textContent;
+              const parsePrice = (txt) =>
+                parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
+              const formatPrice = (num, key) =>
+                currencyRates[key].symbol + num.toFixed(2);
+              function normalizePrices() {
+                document
+                  .querySelectorAll(".price, .price_sale")
+                  .forEach((el) => {
+                    if (!el.dataset.basePrice)
+                      el.dataset.basePrice = parsePrice(el.textContent);
+                  });
+              }
+              function applyCurrency(key) {
+                document
+                  .querySelectorAll(".price, .price_sale")
+                  .forEach((el) => {
+                    const base = +el.dataset.basePrice;
+                    const converted =
+                      base *
+                      (currencyRates[key].rate / currencyRates["vdt"].rate);
+                    el.textContent = formatPrice(converted, key);
+                  });
+              }
+              normalizePrices();
+              applyCurrency(selected);
+              options.forEach((opt) => {
+                opt.addEventListener("click", () => {
+                  const key = opt.dataset.value;
+                  if (!currencyRates[key]) return;
+                  options.forEach((o) => o.classList.remove("selected"));
+                  opt.classList.add("selected");
+                  display.textContent = opt.textContent;
+                  localStorage.setItem("currency", key);
+                  applyCurrency(key);
+                });
               });
             }
 
-            function applyCurrency(key) {
-              document.querySelectorAll(".price, .price_sale").forEach((el) => {
-                const base = +el.dataset.basePrice;
-                const converted =
-                  base * (currencyRates[key].rate / currencyRates["vdt"].rate);
-                el.textContent = formatPrice(converted, key);
+            if (typeof Swiper !== "undefined") {
+              new Swiper(".shop-carousel", {
+                slidesPerView: 4,
+                spaceBetween: 30,
+                loop: true,
+                navigation: { prevEl: ".shop-prev", nextEl: ".shop-next" },
+                breakpoints: {
+                  0: { slidesPerView: 1 },
+                  768: { slidesPerView: 2 },
+                  992: { slidesPerView: 3 },
+                  1200: { slidesPerView: 4 },
+                },
               });
+            } else {
+              console.warn("Swiper not loaded");
             }
-
-            normalizePrices();
-            applyCurrency(selected);
-            options.forEach((opt) => {
-              opt.addEventListener("click", () => {
-                const key = opt.dataset.value;
-                if (!currencyRates[key]) return;
-                options.forEach((o) => o.classList.remove("selected"));
-                opt.classList.add("selected");
-                display.textContent = opt.textContent;
-                localStorage.setItem("currency", key);
-                applyCurrency(key);
-              });
-            });
-
-            new Swiper(".shop-carousel", {
-              slidesPerView: 4,
-              spaceBetween: 30,
-              loop: true,
-              navigation: {
-                prevEl: ".shop-prev",
-                nextEl: ".shop-next",
-              },
-              breakpoints: {
-                0: { slidesPerView: 1 },
-                768: { slidesPerView: 2 },
-                992: { slidesPerView: 3 },
-                1200: { slidesPerView: 4 },
-              },
-            });
           })
           .catch((err) => console.error("Error loading data:", err));
       });
@@ -1148,6 +1420,7 @@
           <img
             id="lightbox-image"
             src=""
+            loading="lazy"
             alt="Product"
             style="
               width: 336px;
@@ -1245,6 +1518,7 @@
                 <img
                   src="https://avatars.mds.yandex.net/i?id=7bd8243391bb2d4b66bd856a14db2183-4390495-images-thumbs&n=13"
                   alt="discount"
+                  loading="lazy"
                   style="width: 708px; height: 640px; object-fit: cover"
                 />
               </div>
@@ -1264,6 +1538,7 @@
                 <div class="men">
                   <img
                     src="https://avatars.mds.yandex.net/i?id=e0d87cd41d4d906fecf2935482aa91d234fa7606-12498607-images-thumbs&n=13"
+                    loading="lazy"
                     alt="discount"
                     style="width: 708px; height: 310px; object-fit: cover"
                   />
@@ -1282,6 +1557,7 @@
                   <img
                     src="https://avatars.mds.yandex.net/i?id=e062d9833afc9391800c7fec84c1fbeca61a47ec-11951579-images-thumbs&n=13"
                     alt="discount"
+                    loading="lazy"
                     style="width: 708px; height: 310px; object-fit: cover"
                   />
                 </div>
@@ -1315,36 +1591,94 @@
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", () => initSponsors());
+
+      window.forceRefreshSponsors = async function () {
+        const wrap = document.getElementById("sponsorWrap");
+        if (wrap) wrap.dataset.rendered = "false";
+        await initSponsors(true);
+      };
+
+      async function initSponsors(force = false) {
         const sponsorContainer = document.getElementById("sponsorWrap");
+        if (!sponsorContainer) return;
 
-        fetch("/productpagedata")
-          .then((response) => response.json())
-          .then((data) => {
-            const products = data.slice(0, 10);
+        if (sponsorContainer.dataset.rendered === "true" && !force) return;
 
-            products.forEach((product, index) => {
-              const itemDiv = document.createElement("div");
-              itemDiv.classList.add("sponsor-item");
+        sponsorContainer.innerHTML = "";
 
-              if ((index + 1) % 5 !== 0) itemDiv.classList.add("bd-right");
-              if (index < 5) itemDiv.classList.add("bd-bottom");
+        try {
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
+          if (!res.ok) throw new Error("Network response was not ok");
+          const data = await res.json();
+          const products = (Array.isArray(data) ? data : []).slice(0, 10);
 
-              const link = document.createElement("a");
+          const appended = new Set();
 
-              const img = document.createElement("img");
-              img.src = `/uploads/${product.image}`;
-              img.alt = product.name || "Product Image";
+          products.forEach((product, index) => {
+            const pid = String(product.id ?? product.slug ?? index);
 
-              link.appendChild(img);
-              itemDiv.appendChild(link);
-              sponsorContainer.appendChild(itemDiv);
-            });
-          })
-          .catch((error) => {
-            console.error("Error fetching product data:", error);
+            if (
+              appended.has(pid) ||
+              sponsorContainer.querySelector(`[data-product-id="${pid}"]`)
+            ) {
+              return;
+            }
+            appended.add(pid);
+
+            const itemDiv = document.createElement("div");
+            itemDiv.classList.add("sponsor-item");
+            if ((index + 1) % 5 !== 0) itemDiv.classList.add("bd-right");
+            if (index < 5) itemDiv.classList.add("bd-bottom");
+
+            itemDiv.setAttribute("role", "link");
+            itemDiv.setAttribute("tabindex", "0");
+            itemDiv.dataset.productId = pid;
+            if (product.slug) itemDiv.dataset.slug = product.slug;
+
+            const img = document.createElement("img");
+            img.src = `/uploads/${product.image || ""}`;
+            img.alt = product.name || "Product Image";
+            img.loading = "lazy";
+            img.onerror = () => {
+              img.onerror = null;
+              img.src = "https://via.placeholder.com/300x300?text=No+Image";
+            };
+
+            itemDiv.appendChild(img);
+            sponsorContainer.appendChild(itemDiv);
           });
-      });
+
+          sponsorContainer.dataset.rendered = "true";
+        } catch (error) {
+          console.error("Error fetching product data:", error);
+        }
+
+        if (!sponsorContainer.dataset.handlersAttached) {
+          sponsorContainer.addEventListener("click", (ev) => {
+            const item = ev.target.closest(".sponsor-item");
+            if (!item) return;
+            const slug = item.dataset.slug;
+            const id = item.dataset.productId;
+          });
+
+          sponsorContainer.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter" || ev.key === " ") {
+              const item = ev.target.closest(".sponsor-item");
+              if (!item) return;
+              ev.preventDefault();
+              const slug = item.dataset.slug;
+              const id = item.dataset.productId;
+            }
+          });
+
+          sponsorContainer.dataset.handlersAttached = "true";
+        }
+
+        window.addEventListener("pagehide", () => {
+          sponsorContainer.dataset.rendered = "false";
+        });
+      }
     </script>
 
     <script>
@@ -1423,7 +1757,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1431,7 +1765,7 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   resultBox.innerHTML =
                     matches
@@ -1440,10 +1774,10 @@
                         const mainPrice = formatPrice(p.price);
                         const salePrice = p.price_sale
                           ? `<strong class="text-dark me-2">${formatPrice(
-                              p.price_sale
+                              p.price
                             )}</strong>
                               <s class="fw-bold text-danger">${formatPrice(
-                                p.price
+                                p.price_sale
                               )}</s>`
                           : `<strong class="fw-bold text-dark">${formatPrice(
                               p.price
@@ -1451,12 +1785,10 @@
 
                         return `
                         <div
-                          onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                            q
-                          )}'"
+                          onclick="window.location.href='/shop'"
                           style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                         >
-                          <img src="/uploads/${img}" alt="${p.name}"
+                          <img src="/uploads/${img}" alt="${p.name}" loading="lazy"
                               style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                           <div>
                             <div class="fw-bold text-dark">${p.name}</div>
@@ -1469,9 +1801,7 @@
                       })
                       .join("") +
                     `
-                      <div onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                        q
-                      )}'"
+                      <div onclick="window.location.href='/shop'"
                         style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
                       >
                         Show all results
@@ -1501,7 +1831,11 @@
       <div class="container">
         <div class="row deal-wrap align-items-center">
           <div class="shape">
-            <img src="assets/img/shapes/deal-shape.png" alt="shape" />
+            <img
+              src="assets/img/shapes/deal-shape.png"
+              alt="shape"
+              loading="lazy"
+            />
           </div>
           <div class="col-xl-5 col-lg-12">
             <div class="deal-content">
@@ -1514,7 +1848,11 @@
               </div>
               <div class="deal-info">
                 <div class="icon">
-                  <img src="assets/img/icon/deal-icon.png" alt="icon" />
+                  <img
+                    src="assets/img/icon/deal-icon.png"
+                    alt="icon"
+                    loading="lazy"
+                  />
                 </div>
                 <div class="content">
                   <p id="flash-expiry">
@@ -1535,19 +1873,33 @@
                 <div class="shop-item deal-shop">
                   <div class="shop-thumb">
                     <div class="overlay"></div>
-                    <img src="assets/img/shop/shop-5.jpg" alt="shop" />
+                    <img
+                      src="assets/img/shop/shop-5.jpg"
+                      alt="shop"
+                      loading="lazy"
+                    />
                     <span class="sale">New</span>
                     <ul class="shop-list">
                       <li>
-                        <a href="#"
-                          ><i class="fa-regular fa-cart-shopping"></i
+                        <a href="javascript:void(0)"
+                          ><i
+                            class="fa-regular fa-cart-shopping"
+                            aria-hidden="true"
+                          ></i
                         ></a>
                       </li>
                       <li>
-                        <a href="#"><i class="fa-light fa-heart"></i></a>
+                        <a href="javascript:void(0)"
+                          ><i class="fa-light fa-heart"></i
+                        ></a>
                       </li>
                       <li>
-                        <a href="#" class="view-lightbox" data-index="${idx}">
+                        <a
+                          href="javascript:void(0)"
+                          class="view-lightbox"
+                          aria-label="View ${product.name} image preview"
+                          data-index="${idx}"
+                        >
                           <i class="fa-light fa-eye"></i>
                         </a>
                       </li>
@@ -1586,6 +1938,13 @@
           return localStorage.getItem("user_id") || null;
         }
 
+        function toSeoUrl(str) {
+          return str
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+        }
+
         let currentImages = [];
         let currentIndex = 0;
 
@@ -1595,10 +1954,7 @@
         const btnPrev = document.getElementById("lightbox-prev");
         const btnNext = document.getElementById("lightbox-next");
         const btnClose = document.getElementById("lightbox-close");
-
-        function scrollToTop() {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        const flashExpiryEl = document.getElementById("flash-expiry");
 
         function openLightbox(index) {
           if (!window.productMainImages || !window.productMainImages.length)
@@ -1656,7 +2012,20 @@
           setTimeout(() => b.remove(), 3000);
         }
 
-        fetch("/flashsalesmaindata")
+        function formatPrice(price) {
+          const p = parseFloat(price);
+          return isNaN(p) ? "$0.01" : `$${p.toFixed(2)}`;
+        }
+
+        function getRandomStars() {
+          return Math.floor(Math.random() * 2) + 4;
+        }
+
+        function getRandomReviews() {
+          return Math.floor(Math.random() * 100) + 1;
+        }
+
+        fetch("http://147.93.45.171:1600/flashsalesmaindata")
           .then((res) => res.json())
           .then((data) => {
             const dealWrapper = document.getElementById(
@@ -1687,31 +2056,35 @@
             const firstSaleId = saleIds[0];
             const products = grouped[firstSaleId].slice(0, 2);
 
-            const firstDealShop = dealWrapper.querySelector(".deal-shop");
-            if (!firstDealShop) {
-              console.warn(
-                "No .deal-shop template found inside #deal-products-wrapper"
-              );
-              return;
+            const endDates = products.map((p) => new Date(p.end_date));
+            const latestEndDate = new Date(Math.max(...endDates));
+            if (flashExpiryEl) {
+              const options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              };
+              flashExpiryEl.innerHTML = `Limited Time offer. The Deal will expire <br />${latestEndDate.toLocaleDateString(
+                "en-US",
+                options
+              )}`;
             }
 
+            const firstDealShop = dealWrapper.querySelector(".deal-shop");
+            if (!firstDealShop) return;
             const templateCard =
               firstDealShop.closest(".col-md-6") || firstDealShop.parentElement;
-            if (!templateCard) {
-              console.warn(
-                "Could not find column wrapper for .deal-shop template"
-              );
-              return;
-            }
+            if (!templateCard) return;
 
-            const existingCols = Array.from(
-              dealWrapper.querySelectorAll(".col-md-6")
+            Array.from(dealWrapper.querySelectorAll(".col-md-6")).forEach(
+              (col) => {
+                if (col.querySelector(".deal-shop")) col.remove();
+              }
             );
-            existingCols.forEach((col) => {
-              if (col.querySelector(".deal-shop")) col.remove();
-            });
 
-            window.productMainImages = products.map((p) => p.image);
+            window.productMainImages = products.map(
+              (p) => p.image || "placeholder.jpg"
+            );
 
             products.forEach((prd, idx) => {
               const container = templateCard.cloneNode(true);
@@ -1720,14 +2093,17 @@
               if (img) {
                 img.src = `/uploads/${prd.image}`;
                 img.alt = prd.product_name || "";
+                if (img.parentElement)
+                  img.parentElement.href = `/shop-details/${toSeoUrl(
+                    prd.product_name
+                  )}`;
               }
 
               const badge = container.querySelector(".shop-thumb .sale");
-              if (badge) {
+              if (badge)
                 badge.textContent = prd.price_sale
                   ? prd.label || "Sale"
                   : "New";
-              }
 
               const categoryEl = container.querySelector(
                 ".shop-content .category"
@@ -1739,160 +2115,117 @@
               );
               if (titleLink) {
                 titleLink.textContent = prd.product_name || "";
-                titleLink.href = `shop-details.html?product=${encodeURIComponent(
-                  prd.product_id
-                )}`;
+                titleLink.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
+                titleLink.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  window.location.href = `/shop-details/${toSeoUrl(
+                    prd.product_name
+                  )}`;
+                });
               }
 
-              const offerSpan = container.querySelector(".shop-content .offer");
-              if (offerSpan) {
-                offerSpan.textContent =
-                  prd.price_sale != null ? String(prd.price_sale) : "";
+              const priceEl = container.querySelector(".shop-content .price");
+              if (priceEl) {
+                if (prd.price_sale && prd.price_sale !== prd.price) {
+                  priceEl.innerHTML = `<span class="offer">${prd.price}</span>`;
+                } else {
+                  priceEl.textContent = prd.price;
+                }
               }
 
-              const priceContainer = container.querySelector(
-                ".shop-content .price"
+              const reviewStars = container.querySelector(
+                ".review-wrap .review"
               );
-              if (priceContainer) {
-                let priceTarget =
-                  priceContainer.querySelector("ins, .amount, span, label") ||
-                  priceContainer.lastElementChild;
-                if (!priceTarget) priceTarget = priceContainer;
-                try {
-                  priceTarget.textContent =
-                    prd.price != null ? String(prd.price) : "";
-                } catch (err) {
-                  priceContainer.textContent =
-                    prd.price != null ? String(prd.price) : "";
+              const reviewCount = container.querySelector("#review-count");
+              if (reviewStars && reviewCount) {
+                const stars = getRandomStars();
+                reviewStars.innerHTML = "";
+                for (let i = 0; i < 5; i++) {
+                  const iconClass =
+                    i < stars ? "fa-solid fa-star" : "fa-regular fa-star";
+                  reviewStars.innerHTML += `<li><i class="${iconClass}"></i></li>`;
                 }
+                reviewCount.textContent = `(${getRandomReviews()} Reviews)`;
               }
 
-              const reviewSpan = container.querySelector(
-                ".review-wrap span#review-count"
-              );
-              if (reviewSpan) {
-                const randomReviews = Math.floor(Math.random() * 100) + 1;
-                reviewSpan.textContent = `(${randomReviews} Reviews)`;
-              }
-
-              const cartIcon = container.querySelector("i.fa-cart-shopping");
-              if (cartIcon) {
-                const cartBtn = cartIcon.closest("a");
-                if (cartBtn) {
-                  cartBtn.classList.add("add-to-cart");
-                  cartBtn.dataset.name = prd.product_name || "";
-                  cartBtn.dataset.price = prd.price || "";
-                  cartBtn.dataset.price_sale = prd.price_sale || "";
-                  cartBtn.dataset.image = prd.image || "";
-                  cartBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const user_id = getUserId();
-                    if (!user_id)
-                      return showBanner("Please log in first", "error");
-                    fetch("/addcart", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        name: prd.product_name,
-                        price: prd.price,
-                        price_sale: prd.price_sale,
-                        image: prd.image,
-                        user_id,
-                        store: "default",
-                      }),
+              const cartBtn = container
+                .querySelector("i.fa-cart-shopping")
+                ?.closest("a");
+              if (cartBtn) {
+                cartBtn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  const user_id = getUserId();
+                  if (!user_id)
+                    return showBanner("Please log in first", "error");
+                  fetch("http://147.93.45.171:1600/addcart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name: prd.product_name,
+                      price: prd.price,
+                      price_sale: prd.price_sale,
+                      image: prd.image,
+                      user_id,
+                      store: "default",
+                    }),
+                  })
+                    .then((r) => r.text())
+                    .then(() => {
+                      cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      showBanner("Product added to cart!", "success");
                     })
-                      .then((r) => r.text())
-                      .then(() => {
-                        cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                        showBanner("Product added to cart!", "success");
-                      })
-                      .catch(() =>
-                        showBanner("Failed to add to cart", "error")
-                      );
-                  });
-                }
+                    .catch(() => showBanner("Failed to add to cart", "error"));
+                });
               }
 
-              const wishIcon = container.querySelector("i.fa-heart");
-              if (wishIcon) {
-                const wishBtn = wishIcon.closest("a");
-                if (wishBtn) {
-                  wishBtn.classList.add("add-to-wishlist");
-                  wishBtn.dataset.name = prd.product_name || "";
-                  wishBtn.dataset.image = prd.image || "";
-                  wishBtn.dataset.store = "default";
-                  wishBtn.dataset.price = prd.price || "";
-                  wishBtn.dataset.price_sale = prd.price_sale || "";
-                  wishBtn.dataset.sku = prd.product_id || "";
-                  wishBtn.dataset.stockstatus =
-                    prd.quantity > 0 ? "In Stock" : "Out of Stock";
-                  wishBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const user_id = getUserId();
-                    if (!user_id)
-                      return showBanner("Please log in first", "error");
-                    fetch("/wishlistpos1t", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        user_id,
-                        product_name: prd.product_name,
-                        image: prd.image,
-                        store: "default",
-                        price: prd.price,
-                        price_sale: prd.price_sale,
-                        sku: prd.product_id,
-                        stockstatus:
-                          prd.quantity > 0 ? "In Stock" : "Out of Stock",
-                      }),
+              const heartBtn = container
+                .querySelector("i.fa-heart")
+                ?.closest("a");
+              if (heartBtn) {
+                heartBtn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  const user_id = getUserId();
+                  if (!user_id)
+                    return showBanner("Please log in first", "error");
+                  fetch("http://147.93.45.171:1600/wishlistpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_id,
+                      product_name: prd.product_name,
+                      image: prd.image,
+                      store: "default",
+                      price: prd.price,
+                      price_sale: prd.price_sale,
+                      sku: prd.sku || prd.id || "",
+                      stockstatus: prd.stockstatus || true,
+                    }),
+                  })
+                    .then((r) => {
+                      if (!r.ok) throw Error();
+                      return r.text();
                     })
-                      .then((r) => r.text())
-                      .then(() => {
-                        wishBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                        showBanner("Added to wishlist!", "success");
-                      })
-                      .catch(() =>
-                        showBanner("Failed to add to wishlist", "error")
-                      );
-                  });
-                }
+                    .then(() => {
+                      heartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      showBanner("Added to wishlist!", "success");
+                    })
+                    .catch(() =>
+                      showBanner("Failed to add to wishlist", "error")
+                    );
+                });
               }
 
-              const eyeIcon = container.querySelector("i.fa-eye");
+              const eyeIcon = container.querySelector("a.view-lightbox");
               if (eyeIcon) {
-                const viewBtn = eyeIcon.closest("a");
-                if (viewBtn) {
-                  viewBtn.classList.add("view-lightbox");
-                  viewBtn.dataset.index = String(idx);
-                  viewBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const index = parseInt(viewBtn.dataset.index, 10);
-                    if (!Number.isNaN(index)) openLightbox(index);
-                  });
-                }
+                eyeIcon.dataset.index = idx;
+                eyeIcon.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  openLightbox(Number(eyeIcon.dataset.index));
+                });
               }
 
               dealWrapper.appendChild(container);
             });
-
-            const firstItemWithDate = grouped[firstSaleId].find(
-              (it) => it.end_date
-            );
-            if (firstItemWithDate && firstItemWithDate.end_date) {
-              const endDateStr = firstItemWithDate.end_date;
-              const dt = new Date(endDateStr);
-              if (!isNaN(dt.getTime())) {
-                const formatted = dt.toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                });
-                const expiryEl = document.getElementById("flash-expiry");
-                if (expiryEl) {
-                  expiryEl.textContent = `Limited Time offer. The Deal will expire on ${formatted}`;
-                }
-              }
-            }
           })
           .catch((err) => {
             console.error("Error loading flash sale data:", err);
@@ -1914,7 +2247,16 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        fetch("/blogpostdata")
+        function slugify(str) {
+          return String(str || "")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^a-z0-9\-]/g, "")
+            .replace(/\-+/g, "-");
+        }
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network response not ok");
             return res.json();
@@ -1922,42 +2264,62 @@
           .then((posts) => {
             const top = posts.slice(0, 3);
             const wrapper = document.getElementById("blog-wrapper");
+
             wrapper.innerHTML = top
-              .map(
-                (p) => `
-              <div class="col-lg-4 col-md-6">
-                <div class="post-card">
-                  <div class="post-thumb">
-                    <a href="blog-details.html?id=${p.id}">
-                    <img src="/uploads/${p.image}" alt="${p.name}" />
-                    </a>
-                  </div>
-                  <div class="post-content-wrap">
-                    <div class="post-content">
-                      <ul class="post-meta">
-                        <li>
-                          <i class="fa-sharp fa-solid fa-calendar-days"></i>
-                          ${new Date(p.date).toLocaleDateString()}
-                        </li>
-                        <li><i class="fa-regular fa-tag"></i>${
-                          p.categories
-                        }</li>
-                      </ul>
-                      <h3 class="title">
-                        <a href="blog-details.html?id=${p.id}">${p.name}</a>
-                      </h3>
+              .map((p) => {
+                const slug = p.slug ? p.slug : slugify(p.name);
+                const postUrl = `/blog-details/${encodeURIComponent(slug)}`;
+                return `
+                    <div class="col-lg-4 col-md-6">
+                      <div class="post-card" data-id="${p.id}">
+                        <div class="post-thumb">
+                          <a href="${postUrl}" class="blog-link"
+                            data-id="${p.id}" aria-label="Read blog: ${p.name}">
+                            <img src="/uploads/${p.image}" alt="${
+                  p.name
+                }" loading="lazy" />
+                          </a>
+                        </div>
+                        <div class="post-content-wrap">
+                          <div class="post-content">
+                            <ul class="post-meta">
+                              <li>
+                                <i class="fa-sharp fa-solid fa-calendar-days"></i>
+                                ${new Date(p.date).toLocaleDateString()}
+                              </li>
+                              <li><i class="fa-regular fa-tag"></i>${
+                                p.categories
+                              }</li>
+                            </ul>
+                            <h3 class="title">
+                              <a href="${postUrl}" class="blog-link" data-id="${
+                  p.id
+                }">
+                                ${p.name}
+                              </a>
+                            </h3>
+                          </div>
+                          <div class="post-bottom">
+                            <a href="${postUrl}" class="blog-link"
+                              data-id="${
+                                p.id
+                              }" aria-label="Read full blog post: ${p.name}">
+                              Read More <i class="fa-regular fa-arrow-right"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="post-bottom">
-                      <a href="blog-details.html?id=${p.id}" class="read-more">
-                        Read More<i class="fa-regular fa-arrow-right"></i>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `
-              )
+                  `;
+              })
               .join("");
+
+            wrapper.addEventListener("click", (e) => {
+              const link = e.target.closest(".blog-link");
+              if (!link) return;
+              const postId = link.dataset.id;
+              if (postId) sessionStorage.setItem("selectedPostId", postId);
+            });
           })
           .catch((err) => console.error("Failed to load blog posts:", err));
       });
@@ -1970,7 +2332,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -2012,7 +2374,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -2072,7 +2434,11 @@
         <div class="footer-items">
           <div class="footer-item">
             <div class="icon">
-              <img src="assets/img/icon/footer-1.png" alt="icon" />
+              <img
+                src="assets/img/icon/footer-1.png"
+                alt="icon"
+                loading="lazy"
+              />
             </div>
             <div class="content">
               <h4 class="title">Free Shipping</h4>
@@ -2081,7 +2447,11 @@
           </div>
           <div class="footer-item">
             <div class="icon">
-              <img src="assets/img/icon/footer-2.png" alt="icon" />
+              <img
+                src="assets/img/icon/footer-2.png"
+                alt="icon"
+                loading="lazy"
+              />
             </div>
             <div class="content">
               <h4 class="title">Free Returns</h4>
@@ -2090,7 +2460,11 @@
           </div>
           <div class="footer-item">
             <div class="icon">
-              <img src="assets/img/icon/footer-3.png" alt="icon" />
+              <img
+                src="assets/img/icon/footer-3.png"
+                alt="icon"
+                loading="lazy"
+              />
             </div>
             <div class="content">
               <h4 class="title">Secured Payments</h4>
@@ -2099,7 +2473,11 @@
           </div>
           <div class="footer-item item-2">
             <div class="icon">
-              <img src="assets/img/icon/footer-4.png" alt="icon" />
+              <img
+                src="assets/img/icon/footer-4.png"
+                alt="icon"
+                loading="lazy"
+              />
             </div>
             <div class="content">
               <h4 class="title">Customer Service</h4>
@@ -2184,7 +2562,7 @@
                 <div class="footer-form mb-20">
                   <form action="#" class="rr-subscribe-form">
                     <input
-                      class="form-control"
+                      class="form-control py-4"
                       type="email"
                       name="email"
                       placeholder="Email address"
@@ -2242,11 +2620,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -2271,8 +2652,12 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="#"
-                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  <a href="javascript:void(0)"
+                    ><img
+                      src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
+                      alt="img"
+                      style="width: 264px; height: 24px"
+                      loading="lazy"
                   /></a>
                 </div>
               </div>
@@ -2280,7 +2665,7 @@
 
             <div class="col-lg-6">
               <p>
-                Copyright & Design <span id="designYear">2024</span>
+                Copyright & Design <span id="designYear">2025</span>
                 <span>©Roiser</span>. All Right Reserved
               </p>
             </div>
@@ -2300,7 +2685,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -2333,7 +2718,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -2352,7 +2737,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -2411,6 +2796,6 @@
     <script src="assets/js/vendor/swiper.min.js"></script>
     <script src="assets/js/vendor/nice-select.js"></script>
     <script src="assets/js/main.js"></script>
-    <script src="/assets/vendor/jquary-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   </body>
 </html>

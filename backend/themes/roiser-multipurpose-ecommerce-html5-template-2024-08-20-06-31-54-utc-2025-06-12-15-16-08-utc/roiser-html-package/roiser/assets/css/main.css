@@ -67,7 +67,7 @@ START: Template Default CSS
 
 body {
   background-color: var(--rr-color-common-white);
-  font-family: var(--rr-ff-body);
+  font-family: var(--rr-ff-body) !important;
   font-size: 16px;
   line-height: 1.625;
   font-weight: normal;
@@ -4511,6 +4511,18 @@ START: Header CSS
   }
 }
 
+.hero-content .sub-title {
+  font-size: 14px !important;
+}
+
+.hero-content .title {
+  font-size: 32px !important;
+}
+
+.hero-content .price {
+  font-size: 14px !important;
+}
+
 .hero-content {
   padding: 160px 0;
   position: relative;
@@ -8122,7 +8134,7 @@ blockquote .content p {
 
 .shop-content {
   padding: 30px;
-  border: 1px solid var(--rr-color-border-1);
+  /* border: 1px solid var(--rr-color-border-1); */
   border-top: none;
   border-radius: 0 0 6px 6px;
 }
@@ -8395,6 +8407,7 @@ blockquote .content p {
 }
 .grid-shop .shop-content {
   border: none;
+  width: 100%;
 }
 .grid-shop .shop-content .title {
   font-size: 30px;
@@ -10069,4 +10082,11 @@ START: Footer CSS
   .dynamic-image {
     max-width: 100%;
   }
+}
+
+.form-header-name {
+  font-size: 0.90rem !important;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
 }

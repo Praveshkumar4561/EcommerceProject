@@ -41,48 +41,36 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
-    <!-- <script>
-      (function () {
-        document.addEventListener(
-          "click",
-          function (e) {
-            const a = e.target.closest("a[href$='.html']:not(.lang-btn)");
-            if (!a) return;
-
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            const url = new URL(a.href, window.location.href);
-            const filename = url.pathname.split("/").pop();
-            const page = filename.replace(/\.html$/, "") || "index";
-
-            const targetUrl =
-              page === "index"
-                ? "http://srv689968.hstgr.cloud/"
-                : `http://srv689968.hstgr.cloud/${page}`;
-
-            window.parent.location.href = targetUrl;
-          },
-          true
-        );
-
-        document.addEventListener(
-          "click",
-          function (e) {
-            const a = e.target.closest("a[href='#']");
-            if (a) {
-              e.preventDefault();
-              e.stopImmediatePropagation();
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud/");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud/${page}`);
             }
-          },
-          true
-        );
-      })();
-    </script> -->
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud/";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/themeoptionsdata")
+        fetch("http://147.93.45.171:1600/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -209,7 +197,7 @@
               <div class="cart-total">
                 <span><strong>Subtotal:</strong></span>
                 <span class="amount"
-                  >1 × <span><span class="currency">$</span>940.00</span></span
+                  >1 × <span><span class="currency">$</span>00.00</span></span
                 >
               </div>
             </div>
@@ -288,10 +276,18 @@
                   <li>
                     <div class="social-box">
                       <span>Follow US</span>
-                      <a href="#"><i class="flaticon-facebook"></i></a>
-                      <a href="#"><i class="flaticon-instagram"></i></a>
-                      <a href="#"><i class="flaticon-linkedin"></i></a>
-                      <a href="#"><i class="flaticon-twitter"></i></a>
+                      <a href="https://www.facebook.com/" target="_blank"
+                        ><i class="flaticon-facebook"></i
+                      ></a>
+                      <a href="https://www.instagram.com/" target="_blank"
+                        ><i class="flaticon-instagram"></i
+                      ></a>
+                      <a href="https://in.linkedin.com/" target="_blank"
+                        ><i class="flaticon-linkedin"></i
+                      ></a>
+                      <a href="https://x.com/" target="_blank"
+                        ><i class="flaticon-twitter"></i
+                      ></a>
                     </div>
                   </li>
                 </ul>
@@ -326,14 +322,14 @@
                 <nav class="main-menu">
                   <ul>
                     <li class="menu-item has-children">
-                      <a href="#">Home</a>
+                      <a href="index.html">Home</a>
                       <ul class="sub-menu">
                         <li><a href="index.html">Home 01</a></li>
                         <li><a href="index-2.html">Home 02</a></li>
                       </ul>
                     </li>
                     <li class="menu-item has-children">
-                      <a href="#">Shop</a>
+                      <a href="/shops-grid">Shop</a>
                       <ul class="sub-menu">
                         <li><a href="shops-grid.html">Shop Grid</a></li>
                         <li><a href="shops.html">Shop left Sidebar</a></li>
@@ -349,14 +345,14 @@
                       </ul>
                     </li>
                     <li class="menu-item has-children">
-                      <a href="#">Blogs</a>
+                      <a href="/blogs">Blogs</a>
                       <ul class="sub-menu">
                         <li><a href="blogs.html">Our Blog</a></li>
                         <li><a href="blog-details.html">Blog Details</a></li>
                       </ul>
                     </li>
                     <li class="menu-item has-children">
-                      <a href="#">Pages</a>
+                      <a href="/about-us">Pages</a>
                       <ul class="sub-menu">
                         <li><a href="about-us.html">About Us</a></li>
                         <li><a href="faq.html">Faqs</a></li>
@@ -427,7 +423,11 @@
             "
           ></div>
           <div class="hero-image d-none d-xl-block">
-            <img src="assets/images/hero/hero-two_img1.jpg" alt="Hero Image" />
+            <img
+              src="https://avatars.mds.yandex.net/i?id=12e55206dd195cd7feff7273f96107414f1591c9-3526614-images-thumbs&n=13"
+              alt="Hero Image"
+              style="width: 978px; height: 800px"
+            />
             <div class="hero-img-shape">
               <img
                 src="assets/images/hero/hero-two-img-shape1.png"
@@ -546,7 +546,9 @@
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           try {
-            const res = await fetch("/flashsalesmaindata");
+            const res = await fetch(
+              "http://147.93.45.171:1600/flashsalesmaindata"
+            );
             if (!res.ok) throw new Error("Failed to fetch flash sale data");
             const data = await res.json();
 
@@ -605,7 +607,7 @@
                       <span>${item.label || "Offer"} - ${priceInfo}</span>
                       <h4>${item.product_name}</h4>
                       <div class="separator"></div>
-                      <a href="shops.html" class="theme-btn ${buttonClass}">Shop Now</a>
+                      <a href="/shops" class="theme-btn ${buttonClass}">Shop Now</a>
                     </div>
                   </div>
                 </div>
@@ -663,9 +665,7 @@
           </div>
 
           <div class="category-wrapper pt-80">
-            <div class="row justify-content-center">
-              <!-- JS will inject here -->
-            </div>
+            <div class="row justify-content-center"></div>
           </div>
         </div>
       </section>
@@ -676,8 +676,8 @@
             products = [];
           try {
             const [catRes, prodRes] = await Promise.all([
-              fetch("/productcatdata"),
-              fetch("/productpagedata"),
+              fetch("http://147.93.45.171:1600/productcatdata"),
+              fetch("http://147.93.45.171:1600/productpagedata"),
             ]);
             if (!catRes.ok || !prodRes.ok) throw new Error("Network error");
             cats = await catRes.json();
@@ -710,7 +710,6 @@
                 : (p.categories || "").split(",").map((s) => s.trim());
               return acc + (list.includes(cat.name) ? 1 : 0);
             }, 0);
-            console.log(`Category “${cat.name}” has ${count} items`);
 
             const words = cat.name.split(" ");
             const btnLabel =
@@ -719,25 +718,25 @@
             const col = document.createElement("div");
             col.className = "col-xl-2 col-lg-3 col-md-4 col-sm-6";
             col.innerHTML = `
-              <div
-                class="category-item style-two mb-110"
-                data-aos="fade-up"
-                data-aos-delay="${10 + i * 50}"
-                data-aos-duration="800"
-              >
-                <div class="category-img category-man">
-                  <img src="/uploads/${cat.image}" alt="${cat.name}" />
-                </div>
-                <div class="category-content">
-                  <a href="shops.html?category=${encodeURIComponent(
-                    cat.name
-                  )}" class="category-btn">
-                    ${btnLabel}
-                  </a>
-                  <span>${count} items</span>
-                </div>
-              </div>
-            `;
+    <div
+      class="category-item style-two mb-110"
+      data-aos="fade-up"
+      data-aos-delay="${10 + i * 50}"
+      data-aos-duration="800"
+    >
+      <div class="category-img category-man">
+        <a href="/shops">
+          <img src="/uploads/${cat.image}" alt="${cat.name}" />
+        </a>
+      </div>
+      <div class="category-content">
+        <a href="/shops" class="category-btn">
+          ${btnLabel}
+        </a>
+        <span>${count} items</span>
+      </div>
+    </div>
+  `;
             row.appendChild(col);
           });
 
@@ -773,20 +772,22 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
-          const endpoint = "/productpagedata";
-          const tabs = {
-            cat1: "Hot",
-            cat2: "New",
-            cat3: "Sale",
-          };
+          const endpoint = "http://147.93.45.171:1600/productpagedata";
+          const tabs = { cat1: "Hot", cat2: "New", cat3: "Sale" };
+
+          function toSlug(str) {
+            return str
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[^\w-]+/g, "")
+              .replace(/--+/g, "-")
+              .replace(/^-+|-+$/g, "");
+          }
 
           function renderProducts(container, items) {
             container.innerHTML = "";
             if (!items.length) {
-              container.innerHTML = `
-                  <div class="text-center w-100 py-5">
-                    <h4>No products available</h4>
-                  </div>`;
+              container.innerHTML = `<div class="text-center w-100 py-5"><h4>No products available</h4></div>`;
               return;
             }
 
@@ -799,84 +800,81 @@
               const discountBadge = hasLabel
                 ? `<div class="discount">${p.label}</div>`
                 : "";
+              const slug = toSlug(p.name);
 
               const html = `
-                  <div class="product-item style-three" data-aos="fade-up" data-aos-duration="${
-                    900 + i * 100
-                  }">
-                    <div class="product-thumbnail">
-                      <a href="shop-details.html?id=${
-                        p.id
-                      }" class="w-100 h-100">
-                      <img src="/uploads/${p.image}" alt="${p.name}" />
-                      </a>
-                      ${discountBadge}
-                      <div class="hover-content">
-                        <a href="javascript:void(0);" class="icon-btn add-to-wishlist"
-                          data-id="${p.id}"
-                          data-name="${p.name}"
-                          data-store="${p.store}"
-                          data-image="${p.image}"
-                          data-price="${priceRaw}"
-                          data-price_sale="${priceSaleRaw}"
-                          data-sku="${p.sku}"
-                          data-stockstatus="${p.stockstatus}">
-                          <i class="fa fa-heart"></i>
-                        </a>
-      
-                        <a href="javascript:void(0);" class="cart-btn add-to-cart"
-                            data-id="${p.id}"
-                            data-name="${p.name}"
-                            data-store="${p.store}"
-                            data-image="${p.image}"
-                            data-price="${p.price}"
-                            data-price_sale="${p.price_sale}">
-                            <i class="far fa-shopping-basket"></i>
-                        </a>
-      
-                        <a href="/uploads/${
-                          p.image
-                        }" class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
-                      </div>
-                    </div>
-                    <div class="product-info-wrap">
-                      <div class="product-info">
-                        <div class="product-meta d-flex">
-                          <span>Brand: <a href="#">${
-                            p.brand || "Unknown"
-                          }</a></span>
-                          <span class="d-none">Sku: <a href="#">${
-                            p.sku || "Unknown"
-                          }</a></span>
-                          <span class="d-none">Stockstatus: <a href="#">${
-                            p.stockstatus || "Unknown"
-                          }</a></span>
-                          <ul class="ratings rating4">
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                          </ul>
-                        </div>
-                        <h4 class="title">
-                          <a href="shop-details.html?id=${p.id}" title="${
-                p.name
-              }">
-                            ${p.name.split(" ").slice(0, 3).join(" ")}...
-                          </a>
-                        </h4>
-                      </div>
-                      <div class="product-price">
-                        <span class="price new-price"><span class="currency"></span>${
-                          p.price
-                        }</span>
-                        <span class="price prev-price"><span class="currency"></span>${
-                          p.price_sale
-                        }</span>
-                      </div>
-                    </div>
-                  </div>`;
+        <div class="product-item style-three" data-aos="fade-up" data-aos-duration="${
+          900 + i * 100
+        }">
+          <div class="product-thumbnail">
+            <a href="/shop-details/${slug}" class="w-100 h-100">
+              <img src="/uploads/${p.image}" alt="${p.name}" />
+            </a>
+            ${discountBadge}
+            <div class="hover-content">
+              <a href="javascript:void(0)" class="icon-btn add-to-wishlist"
+                data-id="${p.id}"
+                data-name="${p.name}"
+                data-store="${p.store}"
+                data-image="${p.image}"
+                data-price="${priceRaw}"
+                data-price_sale="${priceSaleRaw}"
+                data-sku="${p.sku}"
+                data-stockstatus="${p.stockstatus}">
+                <i class="fa fa-heart"></i>
+              </a>
+
+              <a href="javascript:void(0)" class="cart-btn add-to-cart"
+                  data-id="${p.id}"
+                  data-name="${p.name}"
+                  data-store="${p.store}"
+                  data-image="${p.image}"
+                  data-price="${p.price}"
+                  data-price_sale="${p.price_sale}">
+                  <i class="far fa-shopping-basket"></i>
+              </a>
+
+              <a href="/uploads/${
+                p.image
+              }" class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+            </div>
+          </div>
+          <div class="product-info-wrap">
+            <div class="product-info">
+              <div class="product-meta d-flex">
+                <span>Brand: <a href="javascript:void(0)">${
+                  p.brand || "Unknown"
+                }</a></span>
+                <span class="d-none">Sku: <a href="#">${
+                  p.sku || "Unknown"
+                }</a></span>
+                <span class="d-none">Stockstatus: <a href="#">${
+                  p.stockstatus || "Unknown"
+                }</a></span>
+                <ul class="ratings rating4">
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                </ul>
+              </div>
+              <h4 class="title">
+                <a href="/shop-details/${slug}" title="${p.name}">
+                  ${p.name.split(" ").slice(0, 3).join(" ")}...
+                </a>
+              </h4>
+            </div>
+            <div class="product-price">
+              <span class="price new-price"><span class="currency"></span>${
+                p.price
+              }</span>
+              <span class="price prev-price"><span class="currency"></span>${
+                p.price_sale
+              }</span>
+            </div>
+          </div>
+        </div>`;
               container.insertAdjacentHTML("beforeend", html);
             });
           }
@@ -892,9 +890,8 @@
               const ct = document.querySelector(
                 `#${tabId} .products-item-wrapper`
               );
-              if (ct) {
+              if (ct)
                 ct.innerHTML = `<div class="text-center w-100 py-5"><h4>No products available</h4></div>`;
-              }
             });
             return;
           }
@@ -951,16 +948,15 @@
             btn.addEventListener("click", async (e) => {
               e.preventDefault();
               const user_id = localStorage.getItem("user_id");
-              if (!user_id) {
+              if (!user_id)
                 return showBanner("Please log in to add to cart.", "error");
-              }
 
               const { name, store, image } = btn.dataset;
               const price = btn.dataset.price.replace(/[^0-9.]/g, "");
               const price_sale = btn.dataset.price_sale.replace(/[^0-9.]/g, "");
 
               try {
-                const res = await fetch("/addcart", {
+                const res = await fetch("http://147.93.45.171:1600/addcart", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -973,15 +969,13 @@
                     quantity: 1,
                   }),
                 });
-
                 const resultText = await res.text();
                 if (res.ok) {
                   showBanner("Product added to cart successfully", "success");
                   if (window.loadSidebarCart) window.loadSidebarCart();
                   if (window.updateCounts) window.updateCounts();
-                } else {
+                } else
                   showBanner(resultText || "Failed to add product", "error");
-                }
               } catch (err) {
                 console.error("Add to cart error:", err);
                 showBanner(
@@ -996,39 +990,38 @@
             btn.addEventListener("click", async (e) => {
               e.preventDefault();
               const user_id = localStorage.getItem("user_id");
-              if (!user_id) {
+              if (!user_id)
                 return showBanner("Please log in to add to wishlist.", "error");
-              }
 
               const { name, image, store, sku, stockstatus } = btn.dataset;
               const price = btn.dataset.price.replace(/[^0-9.]/g, "");
               const price_sale = btn.dataset.price_sale.replace(/[^0-9.]/g, "");
 
               try {
-                const res = await fetch("/wishlistpost", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    user_id,
-                    product_name: name,
-                    image,
-                    store,
-                    price,
-                    price_sale,
-                    sku,
-                    stockstatus,
-                  }),
-                });
-
+                const res = await fetch(
+                  "http://147.93.45.171:1600/wishlistpost",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_id,
+                      product_name: name,
+                      image,
+                      store,
+                      price,
+                      price_sale,
+                      sku,
+                      stockstatus,
+                    }),
+                  }
+                );
                 const text = await res.text();
-                if (res.ok) {
+                if (res.ok)
                   showBanner(
                     "Product added to wishlist successfully",
                     "success"
                   );
-                } else {
-                  showBanner(text || "Failed to add to wishlist", "error");
-                }
+                else showBanner(text || "Failed to add to wishlist", "error");
               } catch (err) {
                 console.error("Wishlist error:", err);
                 showBanner(
@@ -1044,9 +1037,10 @@
       <script>
         document.addEventListener("DOMContentLoaded", () => {
           const listEl = document.querySelector(".pesco-mini-cart-list");
-          const badgeEl = document.querySelector("#pro-counts");
-          const wishlistEl = document.querySelector("#pro-counts1");
+          const badgeEl = document.getElementById("pro-counts");
+          const wishlistEl = document.getElementById("pro-counts1");
           const subtotalEl = document.querySelector(".cart-mini-total .amount");
+          const sideCheckout = document.querySelector(".cart-button-box a");
 
           function showBanner(msg, type = "success") {
             const b = document.createElement("div");
@@ -1068,8 +1062,8 @@
             setTimeout(() => b.remove(), 3000);
           }
 
-          window.loadSidebarCart = function () {
-            fetch(`/allcartdata`)
+          function loadSidebarCart() {
+            fetch(`http://147.93.45.171:1600/allcartdata`)
               .then((res) => res.json())
               .then((items) => {
                 const seen = new Set();
@@ -1079,79 +1073,63 @@
                   return true;
                 });
 
-                listEl.innerHTML = "";
-                if (!unique.length) {
-                  listEl.innerHTML = `
-          <li class="sidebar-cart-item sidebar-cart-empty">
-            Your cart is empty.
-          </li>`;
-                  subtotalEl.textContent = "$0.00";
-                  return;
-                }
+                listEl.innerHTML = unique.length
+                  ? ""
+                  : `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
 
                 let total = 0;
                 unique.forEach((item) => {
-                  const price = parseFloat(item.price_sale);
-                  const qty = parseInt(item.quantity, 10);
+                  const price = parseFloat(item.price_sale) || 0;
+                  const qty = parseInt(item.quantity, 10) || 0;
                   total += price * qty;
 
                   listEl.insertAdjacentHTML(
                     "beforeend",
                     `
-          <li class="sidebar-cart-item" data-id="${
-            item.id
-          }" data-price="${price}" data-qty="${qty}">
-            <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-            <a href="#">
-              <img src="/uploads/${item.image}" alt="${item.name}"/>
-              ${item.name}
-            </a>
-            <span class="quantity">
-              ${qty} × <span><span class="currency">$</span>${price.toFixed(
-                      2
-                    )}</span>
-            </span>
-          </li>
-        `
+            <li class="sidebar-cart-item"
+                data-id="${item.id}"
+                data-name="${item.name}"
+                data-image="${item.image}"
+                data-price="${price}"
+                data-qty="${qty}">
+              <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+              <a href="#"><img src="/uploads/${item.image}" alt="${
+                      item.name
+                    }"/> ${item.name}</a>
+              <span class="quantity">${qty} × $${price.toFixed(2)}</span>
+            </li>
+          `
                   );
                 });
 
                 subtotalEl.textContent = `$${total.toFixed(2)}`;
               })
-              .catch((err) => console.error("Sidebar load error:", err));
-          };
+              .catch((err) => {
+                console.error("Sidebar load error:", err);
+              });
+          }
 
-          window.updateCounts = function () {
-            fetch(`/allcartdata`)
+          function updateCounts() {
+            fetch(`http://147.93.45.171:1600/allcartdata`)
               .then((res) => res.json())
               .then((items) => {
-                const seen = new Set();
-                const unique = items.filter((i) => {
-                  if (seen.has(i.name)) return false;
-                  seen.add(i.name);
-                  return true;
-                });
-                badgeEl.textContent = String(unique.length).padStart(2, "0");
+                const names = new Set(items.map((i) => i.name.trim()));
+                badgeEl.textContent = String(names.size).padStart(2, "0");
               })
               .catch(() => {
                 badgeEl.textContent = "00";
               });
 
-            fetch(`/wishlistdata`)
+            fetch(`http://147.93.45.171:1600/wishlistdata`)
               .then((res) => res.json())
               .then((items) => {
-                const seen = new Set();
-                const unique = items.filter((i) => {
-                  if (seen.has(i.product_name)) return false;
-                  seen.add(i.product_name);
-                  return true;
-                });
-                wishlistEl.textContent = String(unique.length).padStart(2, "0");
+                const names = new Set(items.map((i) => i.product_name.trim()));
+                wishlistEl.textContent = String(names.size).padStart(2, "0");
               })
               .catch(() => {
                 wishlistEl.textContent = "00";
               });
-          };
+          }
 
           listEl.addEventListener("click", (e) => {
             const rem = e.target.closest(".remove-cart");
@@ -1162,13 +1140,14 @@
             const id = li.dataset.id;
             if (!id) return console.error("Missing data-id");
 
-            fetch(`/deletecart/${id}`, { method: "DELETE" })
+            fetch(`http://147.93.45.171:1600/deletecart/${id}`, {
+              method: "DELETE",
+            })
               .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
               .then(({ ok, body }) => {
                 if (!ok || !body.success)
                   throw new Error(body.message || "Delete failed");
                 li.remove();
-
                 let newTotal = 0;
                 listEl
                   .querySelectorAll(
@@ -1180,7 +1159,6 @@
                     newTotal += price * qty;
                   });
                 subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
-
                 showBanner("Product removed from cart.", "success");
               })
               .catch((err) => {
@@ -1189,228 +1167,48 @@
               });
           });
 
-          loadSidebarCart();
-          updateCounts();
-          setInterval(updateCounts, 1000);
-
-          const checkoutBtn = document.querySelector(
-            ".cart-button-box a[href*='checkout.html']"
-          );
-          if (checkoutBtn) {
-            checkoutBtn.addEventListener("click", (e) => {
+          if (sideCheckout) {
+            sideCheckout.addEventListener("click", (e) => {
               e.preventDefault();
 
               const items = Array.from(
-                listEl.querySelectorAll("li.sidebar-cart-item")
-              )
-                .filter((li) => !li.classList.contains("sidebar-cart-empty"))
-                .map((li) => {
-                  const price = parseFloat(li.dataset.price);
-                  const quantity = parseInt(li.dataset.qty, 10);
-                  const rawSrc =
-                    li.querySelector("img")?.getAttribute("src") || "";
-                  const image = rawSrc.split("/").pop() || "";
-                  return {
-                    id: li.dataset.id,
-                    name:
-                      li.querySelector("a[href='#'] + a")?.textContent.trim() ||
-                      "",
-                    image,
-                    price,
-                    quantity,
-                    lineTotal: price * quantity,
-                  };
-                });
+                listEl.querySelectorAll(
+                  "li.sidebar-cart-item:not(.sidebar-cart-empty)"
+                )
+              ).map((li) => {
+                const price = parseFloat(li.dataset.price) || 0;
+                const quantity = parseInt(li.dataset.qty, 10) || 0;
+                return {
+                  id: li.dataset.id,
+                  name: li.dataset.name,
+                  image: li.dataset.image,
+                  price,
+                  quantity,
+                  lineTotal: price * quantity,
+                };
+              });
 
               const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
               const total = subtotal;
 
               localStorage.setItem(
                 "checkout_cart",
-                JSON.stringify({ items, subtotal, total })
+                JSON.stringify({
+                  items,
+                  subtotal,
+                  total,
+                })
               );
 
-              window.location.href = checkoutBtn.href;
+              window.location.href = "/checkout";
             });
           }
+
+          loadSidebarCart();
+          updateCounts();
+          setInterval(updateCounts, 1000);
         });
       </script>
-
-      <!-- <section class="today-deals-section white-bg pb-130 pt-130">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-8">
-              <div
-                class="section-title mb-50"
-                data-aos="fade-right"
-                data-aos-duration="1000"
-              >
-                <div class="sub-heading d-inline-flex align-items-center">
-                  <i class="flaticon-sparkler"></i>
-                  <span class="sub-title">Today Deals</span>
-                </div>
-                <h2>Hurry Up. offer in End</h2>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div
-                class="today-deals-arrows style-one mb-60"
-                data-aos="fade-left"
-                data-aos-duration="1200"
-              ></div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="today-deals-slider"
-          data-aos="fade-up"
-          data-aos-duration="1400"
-        >
-          <div class="product-item style-four">
-            <div class="product-thumbnail">
-              <img src="assets/images/products/deal-1.png" alt="Products" />
-            </div>
-            <div class="product-info-wrap">
-              <div class="product-info">
-                <div class="product-meta d-flex">
-                  <span>Brand: <a href="#">SOFOLI</a></span>
-                  <ul class="ratings rating4">
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                  </ul>
-                </div>
-                <h4 class="title">
-                  <a href="shop-details.html"
-                    >Cozy women knit sweater with pockets
-                  </a>
-                </h4>
-              </div>
-              <div class="product-countdown">
-                <div class="simply-countdown"></div>
-              </div>
-              <div class="product-price">
-                <span class="price new-price"
-                  ><span class="currency">$</span>15.60</span
-                >
-                <span class="price prev-price"
-                  ><span class="currency">$</span>34.00</span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="product-item style-four">
-            <div class="product-thumbnail">
-              <img src="assets/images/products/deal-2.png" alt="Products" />
-            </div>
-            <div class="product-info-wrap">
-              <div class="product-info">
-                <div class="product-meta d-flex">
-                  <span>Brand: <a href="#">SOFOLI</a></span>
-                  <ul class="ratings rating4">
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                  </ul>
-                </div>
-                <h4 class="title">
-                  <a href="shop-details.html"
-                    >Cozy women knit sweater with pockets
-                  </a>
-                </h4>
-              </div>
-              <div class="product-countdown">
-                <div class="simply-countdown"></div>
-              </div>
-              <div class="product-price">
-                <span class="price new-price"
-                  ><span class="currency">$</span>15.60</span
-                >
-                <span class="price prev-price"
-                  ><span class="currency">$</span>34.00</span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="product-item style-four">
-            <div class="product-thumbnail">
-              <img src="assets/images/products/deal-3.png" alt="Products" />
-            </div>
-            <div class="product-info-wrap">
-              <div class="product-info">
-                <div class="product-meta d-flex">
-                  <span>Brand: <a href="#">SOFOLI</a></span>
-                  <ul class="ratings rating4">
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                  </ul>
-                </div>
-                <h4 class="title">
-                  <a href="shop-details.html"
-                    >Cozy women knit sweater with pockets
-                  </a>
-                </h4>
-              </div>
-              <div class="product-countdown">
-                <div class="simply-countdown"></div>
-              </div>
-              <div class="product-price">
-                <span class="price new-price"
-                  ><span class="currency">$</span>15.60</span
-                >
-                <span class="price prev-price"
-                  ><span class="currency">$</span>34.00</span
-                >
-              </div>
-            </div>
-          </div>
-
-          <div class="product-item style-four">
-            <div class="product-thumbnail">
-              <img src="assets/images/products/deal-2.png" alt="Products" />
-            </div>
-            <div class="product-info-wrap">
-              <div class="product-info">
-                <div class="product-meta d-flex">
-                  <span>Brand: <a href="#">SOFOLI</a></span>
-                  <ul class="ratings rating4">
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                    <li><i class="fas fa-star"></i></li>
-                  </ul>
-                </div>
-                <h4 class="title">
-                  <a href="shop-details.html"
-                    >Cozy women knit sweater with pockets
-                  </a>
-                </h4>
-              </div>
-              <div class="product-countdown">
-                <div class="simply-countdown"></div>
-              </div>
-              <div class="product-price">
-                <span class="price new-price"
-                  ><span class="currency">$</span>15.60</span
-                >
-                <span class="price prev-price"
-                  ><span class="currency">$</span>34.00</span
-                >
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> -->
 
       <section class="today-deals-section white-bg pb-130 pt-130">
         <div class="container">
@@ -1437,7 +1235,6 @@
             </div>
           </div>
         </div>
-
         <div
           class="today-deals-slider"
           data-aos="fade-up"
@@ -1448,8 +1245,11 @@
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           let items = [];
+
           try {
-            const res = await fetch("/flashsalesmaindata");
+            const res = await fetch(
+              "http://147.93.45.171:1600/flashsalesmaindata"
+            );
             if (!res.ok) throw new Error("Network response was not ok");
             items = await res.json();
           } catch (err) {
@@ -1458,69 +1258,132 @@
           }
 
           const slider = document.querySelector(".today-deals-slider");
+          if (!slider) return;
           slider.innerHTML = "";
 
+          const escapeHtml = (s = "") =>
+            String(s)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+
+          const getImageSrc = (img) => {
+            if (!img) return "../assets/images/products/deal-1.png";
+            if (/^(https?:)?\/\//.test(img)) return img;
+            return `/uploads/${encodeURIComponent(img)}`;
+          };
+
           items.forEach((prod, idx) => {
-            const end = new Date(prod.end_date);
+            const title = prod.product_name || prod.name || "";
+            const endRaw = prod.end_date || "";
+            let end = new Date(endRaw);
+            if (isNaN(end)) {
+              if (/^\d{4}-\d{2}-\d{2}$/.test(endRaw)) {
+                end = new Date(endRaw + "T23:59:59");
+              } else {
+                end = new Date(Date.now() + 24 * 3600 * 1000);
+              }
+            }
+
+            const newPrice = prod.price_sale || prod.price || "";
+            const prevPrice = prod.price_sale && prod.price ? prod.price : "";
+
             const slide = document.createElement("div");
             slide.className = "product-item style-four";
 
             slide.innerHTML = `
-              <div class="product-thumbnail">
-                <img src="/uploads/${prod.image}" alt="${prod.name}" />
-              </div>
-              <div class="product-info-wrap">
-                <div class="product-info">
-                  <div class="product-meta d-flex">
-                    <span>Brand: <a href="#">${prod.brand}</a></span>
-                    <ul class="ratings rating4">
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="fas fa-star"></i></li>
-                      <li><i class="fas fa-star"></i></li>
-                    </ul>
-                  </div>
-                  <h4 class="title">
-                    <a href="shop-details.html">${prod.name}</a>
-                  </h4>
-                </div>
-                <div class="product-countdown">
-                  <div id="countdown-${idx}" class="simply-countdown"></div>
-                </div>
-                <div class="product-price">
-                  <span class="price new-price">
-                    <span class="currency"></span>${prod.price}
-                  </span>
-                  <span class="price prev-price">
-                    <span class="currency"></span>${prod.price_sale}
-                  </span>
-                </div>
+      <div class="product-thumbnail">
+        <a href="/shops">
+          <img src="${escapeHtml(getImageSrc(prod.image))}" alt="${escapeHtml(
+              title
+            )}" width="236" height="283" />
+        </a>
+      </div>
+      <div class="product-info-wrap">
+        <div class="product-info">
+          <div class="product-meta d-flex">
+            <span>Brand: <a href="/shops">${escapeHtml(
+              prod.brand || ""
+            )}</a></span>
+            <ul class="ratings rating4">
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="fas fa-star"></i></li>
+              <li><i class="fas fa-star"></i></li>
+            </ul>
+          </div>
+          <h4 class="title">
+            <a href="/shops">${escapeHtml(title)}</a>
+          </h4>
+        </div>
+        <div class="product-countdown">
+          <div id="countdown-${idx}" class="simply-countdown" data-end="${escapeHtml(
+              end.toISOString()
+            )}"></div>
+        </div>
+        <div class="product-price">
+          ${
+            prod.price
+              ? `<span class="price new-price"><span class="currency"></span>${escapeHtml(
+                  prod.price
+                )}</span>`
+              : ""
+          }
+          ${
+            prod.price_sale
+              ? `<span class="price prev-price"><span class="currency"></span>${escapeHtml(
+                  prod.price_sale
+                )}</span>`
+              : ""
+          }
+        </div>
+
               </div>
             `;
 
             slider.appendChild(slide);
 
-            if (window.simplyCountdown) {
-              simplyCountdown(`#countdown-${idx}`, {
-                year: end.getFullYear(),
-                month: end.getMonth() + 1,
-                day: end.getDate(),
-                hours: end.getHours(),
-                minutes: end.getMinutes(),
-                seconds: end.getSeconds(),
-                words: {
-                  days: "Days",
-                  hours: "Hours",
-                  minutes: "Minutes",
-                  seconds: "Seconds",
-                },
-                plural: true,
-                inline: false,
-                enableUtc: false,
-              });
+            if (window.simplyCountdown && end instanceof Date && !isNaN(end)) {
+              try {
+                simplyCountdown(`#countdown-${idx}`, {
+                  year: end.getFullYear(),
+                  month: end.getMonth() + 1,
+                  day: end.getDate(),
+                  hours: end.getHours(),
+                  minutes: end.getMinutes(),
+                  seconds: end.getSeconds(),
+                  words: {
+                    days: "Days",
+                    hours: "Hours",
+                    minutes: "Minutes",
+                    seconds: "Seconds",
+                  },
+                  plural: true,
+                  inline: false,
+                  enableUtc: false,
+                });
+              } catch (scErr) {
+                console.warn("simplyCountdown init failed for", idx, scErr);
+              }
             }
           });
+
+          try {
+            slider.dispatchEvent(
+              new CustomEvent("today-deals:updated", {
+                detail: { count: items.length },
+              })
+            );
+            if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
+              const $c = jQuery(slider);
+              if ($c.hasClass("slick-initialized")) $c.slick("refresh");
+            }
+          } catch (e) {
+            console.warn("Slider refresh not required or failed:", e);
+          }
 
           if (window.AOS) AOS.refresh();
         });
@@ -1585,7 +1448,9 @@
           const countdownBox = document.querySelector(".week-deals-box");
 
           try {
-            const res = await fetch("/flashsalesmaindata");
+            const res = await fetch(
+              "http://147.93.45.171:1600/flashsalesmaindata"
+            );
             if (!res.ok) throw new Error("Failed to fetch flash sale data");
             flashsales = await res.json();
           } catch (err) {
@@ -1983,7 +1848,7 @@
           let brands = [];
 
           try {
-            const res = await fetch("/brandsdata");
+            const res = await fetch("http://147.93.45.171:1600/brandsdata");
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             brands = await res.json();
           } catch (err) {
@@ -2035,8 +1900,9 @@
           data-aos-duration="1000"
         >
           <img
-            src="assets/images/testimonial/testimonial-img1.png"
+            src="https://avatars.mds.yandex.net/i?id=054b11a32ed8f7463780fd5936eb09e59ba52026-5653750-images-thumbs&n=13"
             alt="Testimonial Image"
+            style="width: 1072px; height: 846px"
           />
         </div>
         <div class="container">
@@ -2072,7 +1938,9 @@
           if (!container) return;
 
           try {
-            const res = await fetch("/gettestimonials");
+            const res = await fetch(
+              "http://147.93.45.171:1600/gettestimonials"
+            );
             if (!res.ok) throw new Error("Failed to fetch testimonials");
             const testimonials = await res.json();
 
@@ -2150,171 +2018,119 @@
           </div>
 
           <div
-            class="blogs-slider-one swiper my-blogs-swiper"
+            class="blogs-slider-one"
             data-aos="fade-up"
             data-aos-duration="1400"
-          >
-            <div class="blog-post-item style-three mb-30">
-              <div class="post-thumbnail">
-                <img src="assets/images/blog/blog-1.jpg" alt="Post Thumbnail" />
-              </div>
-              <div class="post-content">
-                <div class="post-meta">
-                  <span><a href="#">WordPress</a></span>
-                  <span><a href="#">Aug 29, 2024</a></span>
-                </div>
-                <h3 class="title">
-                  <a href="blog-details.html"
-                    >10 must-have fashion trends for this season. Those should
-                    be outstanding look</a
-                  >
-                </h3>
-                <a href="blog-details.html" class="theme-btn style-one"
-                  >Read More</a
-                >
-              </div>
-            </div>
-            <div class="blog-post-item style-three mb-30">
-              <div class="post-thumbnail">
-                <img src="assets/images/blog/blog-2.jpg" alt="Post Thumbnail" />
-              </div>
-              <div class="post-content">
-                <div class="post-meta">
-                  <span><a href="#">WordPress</a></span>
-                  <span><a href="#">Aug 29, 2024</a></span>
-                </div>
-                <h3 class="title">
-                  <a href="blog-details.html"
-                    >How to style your wardrobe on a budget. Make it easy for
-                    you to look great.</a
-                  >
-                </h3>
-                <a href="blog-details.html" class="theme-btn style-one"
-                  >Read More</a
-                >
-              </div>
-            </div>
-            <div class="blog-post-item style-three mb-30">
-              <div class="post-thumbnail">
-                <img src="assets/images/blog/blog-3.jpg" alt="Post Thumbnail" />
-              </div>
-              <div class="post-content">
-                <div class="post-meta">
-                  <span><a href="#">WordPress</a></span>
-                  <span><a href="#">Aug 29, 2024</a></span>
-                </div>
-                <h3 class="title">
-                  <a href="blog-details.html"
-                    >top 5 accessories to elevate any outfit. the ultimate guide
-                    to sustainable fashion</a
-                  >
-                </h3>
-                <a href="blog-details.html" class="theme-btn style-one"
-                  >Read More</a
-                >
-              </div>
-            </div>
-            <div class="blog-post-item style-three mb-30">
-              <div class="post-thumbnail">
-                <img src="assets/images/blog/blog-4.jpg" alt="Post Thumbnail" />
-              </div>
-              <div class="post-content">
-                <div class="post-meta">
-                  <span><a href="#">WordPress</a></span>
-                  <span><a href="#">Aug 29, 2024</a></span>
-                </div>
-                <h3 class="title">
-                  <a href="blog-details.html"
-                    >Effortless fashion tips for everyone. How to style your
-                    wardrobe on a budget.
-                  </a>
-                </h3>
-                <a href="blog-details.html" class="theme-btn style-one"
-                  >Read More</a
-                >
-              </div>
-            </div>
-            <div class="blog-post-item style-three mb-30">
-              <div class="post-thumbnail">
-                <img src="assets/images/blog/blog-2.jpg" alt="Post Thumbnail" />
-              </div>
-              <div class="post-content">
-                <div class="post-meta">
-                  <span><a href="#">WordPress</a></span>
-                  <span><a href="#">Aug 29, 2024</a></span>
-                </div>
-                <h3 class="title">
-                  <a href="blog-details.html"
-                    >How to style your wardrobe on a budget. Make it easy for
-                    you to look great.</a
-                  >
-                </h3>
-                <a href="blog-details.html" class="theme-btn style-one"
-                  >Read More</a
-                >
-              </div>
-            </div>
-          </div>
+          ></div>
         </div>
       </section>
 
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           const container = document.querySelector(".blogs-slider-one");
+          if (!container) return;
 
-          try {
-            const res = await fetch("/blogpostdata");
-            if (!res.ok) throw new Error("Failed to fetch blog posts");
+          const escapeHtml = (str = "") =>
+            String(str)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
 
-            const blogs = await res.json();
-
-            const publishedBlogs = blogs.filter(
-              (post) => post.status === "Published" && post.feature === "Yes"
-            );
-
-            container.innerHTML = "";
-
-            publishedBlogs.forEach((post) => {
-              const blogHTML = `
-                <div class="blog-post-item style-three mb-30">
-                  <div class="post-thumbnail">
-                   <a href="blog-details.html?id=${post.id}">
-                    <img src="/uploads/${
-                      post.image
-                    }" alt="Post Thumbnail" onerror="this.src='assets/images/blog/default.jpg'" />
-                    <img src="/uploads/${
-                      post.image
-                    }" alt="Post Thumbnail" onerror="this.src='assets/images/blog/default.jpg'" />
-                    </a>
-                  </div>
-                  <div class="post-content">
-                    <div class="post-meta">
-                      <span><a href="blog-details.html?id=${post.id}">${
-                post.categories || "Uncategorized"
-              }</a></span>
-                      <span><a href="blog-details.html?id=${
-                        post.id
-                      }">${new Date(post.date).toLocaleDateString("en-GB", {
-                year: "numeric",
+          const formatDate = (iso) => {
+            try {
+              const d = new Date(iso);
+              if (isNaN(d)) return escapeHtml(iso || "");
+              return d.toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
-              })}</a></span>
-                    </div>
-                    <h3 class="title">
-                      <a href="blog-details.html?id=${post.id}">${post.name}</a>
-                    </h3>
-                    <a href="blog-details.html?id=${
-                      post.id
-                    }" class="theme-btn style-one">Read More</a>
-                  </div>
-                </div>
-              `;
-              container.insertAdjacentHTML("beforeend", blogHTML);
+                year: "numeric",
+              });
+            } catch (e) {
+              return escapeHtml(iso || "");
+            }
+          };
+
+          const getImageSrc = (img) => {
+            if (!img) return "../assets/images/blog/blog-1.jpg";
+            if (/^(https?:)?\/\//.test(img)) return img;
+            return `/uploads/${encodeURIComponent(img)}`;
+          };
+
+          try {
+            const resp = await fetch("http://147.93.45.171:1600/blogpostdata", {
+              cache: "no-store",
+            });
+            if (!resp.ok) throw new Error("Network response was not ok");
+            const posts = await resp.json();
+            if (!Array.isArray(posts) || posts.length === 0) return;
+
+            posts.sort((a, b) => {
+              const dateA = new Date(a.date);
+              const dateB = new Date(b.date);
+              return dateB - dateA;
+            });
+            container.innerHTML = "";
+            posts.forEach((post) => {
+              const slug =
+                post.slug ||
+                (post.name || "")
+                  .toLowerCase()
+                  .trim()
+                  .replace(/\s+/g, "-")
+                  .replace(/[^\w-]+/g, "") ||
+                "";
+
+              const item = document.createElement("div");
+              item.className = "blog-post-item style-three mb-30";
+              item.innerHTML = `
+              <div class="post-thumbnail">
+                <img src="${escapeHtml(
+                  getImageSrc(post.image)
+                )}" alt="${escapeHtml(post.name || "Post Thumbnail")}" />
+              </div>
+            <div class="post-content">
+              <div class="post-meta">
+                <span><a href="#">${escapeHtml(
+                  post.categories || ""
+                )}</a></span>
+                <span><a href="#">${escapeHtml(
+                  formatDate(post.date)
+                )}</a></span>
+              </div>
+
+          <h3 class="title">
+            <a href="/blog-details/${escapeHtml(slug)}">${escapeHtml(
+                post.name || ""
+              )}</a>
+          </h3>
+          <a href="/blog-details/${escapeHtml(
+            slug
+          )}" class="theme-btn style-one">Read More</a>
+        </div>
+      `;
+              container.appendChild(item);
             });
 
-            if (window.AOS) AOS.refresh();
-          } catch (error) {
-            console.error("Blog fetch error:", error);
+            try {
+              container.dispatchEvent(
+                new CustomEvent("blogs:updated", {
+                  detail: { count: posts.length },
+                })
+              );
+
+              if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
+                const $c = jQuery(container);
+                if ($c.hasClass("slick-initialized")) {
+                  $c.slick("refresh");
+                }
+              }
+            } catch (e) {
+              console.warn("Slider refresh not required or failed:", e);
+            }
+          } catch (err) {
+            console.error("Failed to load blog posts from /blogpostdata:", err);
           }
         });
       </script>
@@ -2327,8 +2143,9 @@
             data-aos-duration="1200"
           >
             <img
-              src="assets/images/newsletter/newsletter-2.jpg"
+              src="https://avatars.mds.yandex.net/i?id=3a5795c1d20e41172c0ef0c31e3e63f477f8a773-12884996-images-thumbs&n=13"
               alt="newsletter image"
+              style="width: 826px; height: 602px"
             />
           </div>
           <div class="container">
@@ -2473,11 +2290,14 @@
           }
 
           try {
-            const res = await fetch("/newsletterpost", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email }),
-            });
+            const res = await fetch(
+              "http://147.93.45.171:1600/newsletterpost",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+              }
+            );
             const text = await res.text();
             if (res.ok) {
               showBanner("Subscribed successfully!", "success");
@@ -2699,54 +2519,70 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        fetch("/blogpostdata")
+        function formatDate(dateStr) {
+          const date = new Date(dateStr);
+          return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+        }
+
+        function slugify(str) {
+          return String(str || "")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-");
+        }
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
           .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch blog data.");
-            }
+            if (!response.ok) throw new Error("Failed to fetch blog data.");
             return response.json();
           })
           .then((data) => {
-            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sorted = [...data].sort(
+              (a, b) => new Date(b.date) - new Date(a.date)
+            );
 
-            const topPosts = data.slice(0, 3);
-
+            const topPosts = sorted.slice(0, 3);
             const container = document.getElementById("recent-posts-container");
+            if (!container) return;
 
+            container.innerHTML = "";
             topPosts.forEach((post) => {
-              const postHTML = `
-                        <div class="recent-post-item">
-                                              <div class="thumb">
-                      <a href="blog-details.html?id=${
-                        post.id
-                      }" class="w-100 h-100">
-                      <img src="/uploads/${post.image}" alt="post thumb" />
-                      </a>
-                    </div>
-                          <div class="content">
-                            <h4>
-                             <a href="blog-details.html?id=${post.id}">${
+              const slug = post.slug ? post.slug : slugify(post.name);
+
+              const html = `
+            <div class="recent-post-item">
+              <div class="thumb">
+                <a href="/blog-details/${encodeURIComponent(
+                  slug
+                )}" class="w-100 h-100">
+                  <img src="/uploads/${post.image}" alt="${post.name}" />
+                </a>
+              </div>
+              <div class="content">
+                <h4>
+                  <a href="/blog-details/${encodeURIComponent(slug)}">${
                 post.name
               }</a>
-                            </h4>
-                            <span><a href="blog-details.html?id=${
-                              post.id
-                            }">${formatDate(post.date)}</a></span>
-                          </div>
-                        </div>
-                      `;
-              container.insertAdjacentHTML("beforeend", postHTML);
+                </h4>
+                <span>
+                  <a href="/blog-details/${encodeURIComponent(slug)}">
+                    ${formatDate(post.date)}
+                  </a>
+                </span>
+              </div>
+            </div>
+          `;
+              container.insertAdjacentHTML("beforeend", html);
             });
           })
           .catch((error) => {
             console.error("Error loading blog posts:", error);
           });
-
-        function formatDate(dateStr) {
-          const date = new Date(dateStr);
-          const options = { year: "numeric", month: "long", day: "numeric" };
-          return date.toLocaleDateString("en-US", options);
-        }
       });
     </script>
 
@@ -2774,6 +2610,11 @@
         searchForm.style.position = "relative";
         searchForm.appendChild(dropdown);
 
+        searchForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          window.location.href = "/shops-grid";
+        });
+
         let timer;
         searchInput.addEventListener("input", () => {
           clearTimeout(timer);
@@ -2783,7 +2624,7 @@
             return;
           }
           timer = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -2791,31 +2632,38 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   dropdown.innerHTML =
                     matches
                       .map((p) => {
                         const priceHTML = p.price_sale
-                          ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price}</del>`
+                          ? `<strong style="color:#000">${p.price}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price_sale}</del>`
                           : `<strong class="text-secondary fw-bold" style="color:#000">${p.price}</strong>`;
 
                         return `
-                  <div class="autocomplete-item" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                    <img src="/uploads/${p.image}" 
-                        alt="${p.name}" 
-                        style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
-                    <div>
-                      <div style="font-weight:600;color:#333" class="text-dark fw-bold">${p.name}</div>
-                      <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
-                    </div>
+                <div class="autocomplete-item" data-name="${(
+                  p.name || ""
+                ).replace(
+                  /"/g,
+                  "&quot;"
+                )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
+                  <img src="/uploads/${p.image}" 
+                      alt="${(p.name || "").replace(/"/g, "&quot;")}" 
+                      style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                  <div>
+                    <div style="font-weight:600;color:#333" class="text-dark fw-bold">${
+                      p.name
+                    }</div>
+                    <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
                   </div>
-                `;
+                </div>
+              `;
                       })
                       .join("") +
                     `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
-                Show all results
-              </div>`;
+                  Show all results
+                </div>`;
                 }
                 dropdown.style.display = "block";
               })
@@ -2829,17 +2677,11 @@
         dropdown.addEventListener("click", (e) => {
           const item = e.target.closest(".autocomplete-item");
           if (item) {
-            const name = item.querySelector("div > div").textContent;
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              name
-            )}`;
+            window.location.href = "/shops-grid";
             return;
           }
           if (e.target.closest(".autocomplete-show-all")) {
-            const q = searchInput.value.trim();
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              q
-            )}`;
+            window.location.href = "/shops-grid";
           }
         });
 
@@ -2848,6 +2690,191 @@
             dropdown.style.display = "none";
           }
         });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const res = await fetch("http://147.93.45.171:1600/get-theme-logo");
+          if (!res.ok) throw new Error("Failed to fetch logo data");
+
+          const data = await res.json();
+          const logoUrl = data.logo_url;
+          if (!logoUrl) throw new Error("Logo URL not found in API response");
+
+          const uploadPath = `/uploads/${logoUrl}`;
+
+          const logoImgs = [
+            ...document.querySelectorAll(".brand-logo img"),
+            ...document.querySelectorAll(".site-branding .brand-logo img"),
+            ...document.querySelectorAll(
+              ".site-branding.d-lg-none .brand-logo img"
+            ),
+            ...document.querySelectorAll(".footer-logo img"),
+          ];
+
+          logoImgs.forEach((img) => {
+            img.src = uploadPath;
+            img.width = 144;
+            img.height = 44;
+            img.alt = data.alt_text || "Logo";
+
+            img.addEventListener("error", () => {
+              console.warn("Logo image failed to load:", uploadPath);
+              img.src = "assets/images/logo/logo-main.png";
+            });
+          });
+        } catch (error) {
+          console.error("Logo load error:", error);
+        }
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function makeAbsolute(u) {
+          if (!u) return u;
+          if (/^https?:\/\//i.test(u)) return u;
+          return window.location.origin + (u.startsWith("/") ? u : "/" + u);
+        }
+
+        function withUploads(u) {
+          if (!u) return u;
+          if (u.startsWith("/uploads/")) return makeAbsolute(u);
+          return makeAbsolute("/uploads/" + u.replace(/^\/+/, ""));
+        }
+
+        function toSlug(str = "") {
+          return str
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+        }
+
+        function stripTags(str = "") {
+          return String(str).replace(/<[^>]*>/g, "");
+        }
+
+        Promise.all([
+          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
+            r.json()
+          ),
+          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
+        ])
+          .then(([products, blogs]) => {
+            products = Array.isArray(products)
+              ? products
+              : products.items || [];
+            blogs = Array.isArray(blogs) ? blogs : blogs.items || [];
+
+            const featuredProducts = products.slice(0, 10);
+            const featuredBlogs = blogs.slice(0, 5);
+
+            const productSchema = featuredProducts.map((p) => {
+              const slug = p.slug
+                ? p.slug
+                : toSlug(p.name || p.title || p.id || "");
+              const productUrl = makeAbsolute(`/shop-details/${slug}`);
+              return {
+                "@type": "Product",
+                name: p.name || p.title || "",
+                image: withUploads(p.image || (p.images && p.images[0]) || ""),
+                description: stripTags(p.description || ""),
+                brand: { "@type": "Brand", name: p.brand || "" },
+                sku: p.sku || p.id || "",
+                offers: {
+                  "@type": "Offer",
+                  url: productUrl,
+                  priceCurrency: p.currency || "USD",
+                  price:
+                    p.price_sale != null
+                      ? p.price_sale
+                      : p.price != null
+                      ? p.price
+                      : undefined,
+                  availability: p.stockstatus
+                    ? "https://schema.org/InStock"
+                    : "https://schema.org/OutOfStock",
+                },
+                aggregateRating:
+                  p.ratingCount || p.ratingValue
+                    ? {
+                        "@type": "AggregateRating",
+                        ratingValue: p.ratingValue || 4.5,
+                        bestRating: p.bestRating || 5,
+                        ratingCount: p.ratingCount || 0,
+                      }
+                    : undefined,
+              };
+            });
+
+            const blogSchema = featuredBlogs.map((b) => ({
+              "@type": "BlogPosting",
+              headline: b.title || "",
+              image: withUploads(b.image || ""),
+              description: stripTags(b.excerpt || b.description || ""),
+              url: makeAbsolute(b.url || `/blog/${b.slug || b.id || ""}`),
+              datePublished: b.datePublished || b.published_at || undefined,
+              author: { "@type": "Person", name: b.author_name || "Admin" },
+            }));
+
+            const schemaData = {
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  name: "PESCO",
+                  url: window.location.origin + "/",
+                  logo: makeAbsolute("/Tonic.svg"),
+                  description:
+                    "PESCO is a leading eCommerce platform offering healthcare and wellness products.",
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    telephone: "+1-800-654-3210",
+                    contactType: "customer service",
+                    areaServed: "US",
+                    availableLanguage: "English",
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  name: "PESCO",
+                  url: window.location.origin + "/",
+                  description: "Shop the latest healthcare products at PESCO.",
+                  keywords:
+                    "PESCO, Ecommerce, healthcare, online pharmacy, wellness products",
+                },
+                {
+                  "@type": "LocalBusiness",
+                  name: "PESCO Healthcare Store",
+                  url: window.location.origin + "/",
+                  image: makeAbsolute("/Tonic.svg"),
+                  description:
+                    "PESCO's physical store provides healthcare and wellness products.",
+                  address: {
+                    "@type": "PostalAddress",
+                    streetAddress: "123 Healthcare Street",
+                    addressLocality: "New York",
+                    addressRegion: "NY",
+                    postalCode: "10001",
+                    addressCountry: "US",
+                  },
+                  telephone: "+1-800-654-3210",
+                  areaServed: "US",
+                },
+                ...productSchema,
+                ...blogSchema,
+              ].filter(Boolean),
+            };
+
+            const script = document.createElement("script");
+            script.type = "application/ld+json";
+            script.text = JSON.stringify(schemaData);
+            document.head.appendChild(script);
+          })
+          .catch((err) => console.error("Schema error", err));
       });
     </script>
 

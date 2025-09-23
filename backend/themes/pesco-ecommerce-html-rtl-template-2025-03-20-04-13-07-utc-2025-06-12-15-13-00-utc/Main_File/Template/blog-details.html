@@ -41,7 +41,7 @@
     <link rel="stylesheet" href="assets/css/default.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
 
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -66,7 +66,7 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
   </head>
 
   <style>
@@ -96,7 +96,7 @@
               <div class="cart-total">
                 <span><strong>Subtotal:</strong></span>
                 <span class="amount"
-                  >1 × <span><span class="currency">$</span>940.00</span></span
+                  >1 × <span><span class="currency">$</span>00.00</span></span
                 >
               </div>
             </div>
@@ -165,7 +165,7 @@
             </div>
             <div class="nav-inner-menu">
               <div class="main-categories-wrap d-none d-lg-block">
-                <a class="categories-btn-active" href="#">
+                <a class="categories-btn-active" href="/shops">
                   <span class="fas fa-list"></span
                   ><span class="text"
                     >Products Category<i class="fas fa-angle-down"></i
@@ -278,14 +278,14 @@
                         <nav class="main-menu">
                           <ul>
                             <li class="menu-item has-children">
-                              <a href="#">Home</a>
+                              <a href="index.html">Home</a>
                               <ul class="sub-menu">
                                 <li><a href="index.html">Home 01</a></li>
                                 <li><a href="index-2.html">Home 02</a></li>
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Shop</a>
+                              <a href="/shops-grid">Shop</a>
                               <ul class="sub-menu">
                                 <li><a href="shops-grid.html">Shop Grid</a></li>
                                 <li>
@@ -307,7 +307,7 @@
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Blog</a>
+                              <a href="/blogs">Blog</a>
                               <ul class="sub-menu">
                                 <li><a href="blogs.html">Our Blog</a></li>
                                 <li>
@@ -316,7 +316,7 @@
                               </ul>
                             </li>
                             <li class="menu-item has-children">
-                              <a href="#">Pages</a>
+                              <a href="/about-us">Pages</a>
                               <ul class="sub-menu">
                                 <li><a href="about-us.html">About Us</a></li>
                                 <li><a href="faq.html">Faqs</a></li>
@@ -388,14 +388,14 @@
                   <nav class="main-menu d-none d-lg-block">
                     <ul>
                       <li class="menu-item has-children">
-                        <a href="#">Home</a>
+                        <a href="index.html">Home</a>
                         <ul class="sub-menu">
                           <li><a href="index.html">Home 01</a></li>
                           <li><a href="index-2.html">Home 02</a></li>
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Shop</a>
+                        <a href="/shops-grid">Shop</a>
                         <ul class="sub-menu">
                           <li><a href="shops-grid.html">Shop Grid</a></li>
                           <li><a href="shops.html">Shop left Sidebar</a></li>
@@ -413,14 +413,14 @@
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Blog</a>
+                        <a href="/blogs">Blog</a>
                         <ul class="sub-menu">
                           <li><a href="blogs.html">Our Blog</a></li>
                           <li><a href="blog-details.html">Blog Details</a></li>
                         </ul>
                       </li>
                       <li class="menu-item has-children">
-                        <a href="#">Pages</a>
+                        <a href="/about-us">Pages</a>
                         <ul class="sub-menu">
                           <li><a href="about-us.html">About Us</a></li>
                           <li><a href="faq.html">Faqs</a></li>
@@ -503,11 +503,11 @@
           <div class="shape shape-two"><span></span></div>
           <div class="shape shape-three">
             <span
-              ><img src="assets/images/shape/curved-arrow.png" alt=""
+              ><img src="assets/images/shape/curved-arrow.png" alt="Image"
             /></span>
           </div>
           <div class="shape shape-four">
-            <span><img src="assets/images/shape/stars.png" alt="" /></span>
+            <span><img src="assets/images/shape/stars.png" alt="Image" /></span>
           </div>
           <div class="container">
             <div class="row">
@@ -622,8 +622,9 @@
                             data-aos-duration="1000"
                           >
                             <img
-                              src="assets/images/blog/blog-single-2.jpg"
+                              src="https://avatars.mds.yandex.net/i?id=9969aa67a0fa3de567c7c81d45ae476a8cc01881-9151820-images-thumbs&n=13"
                               alt="Post Thumbnail"
+                              style="width: 495px; height: 300px"
                             />
                           </figure>
                         </div>
@@ -634,8 +635,9 @@
                             data-aos-duration="1000"
                           >
                             <img
-                              src="assets/images/blog/blog-single-3.jpg"
+                              src="https://avatars.mds.yandex.net/i?id=f3b55a7306849ffcf56b0fc4803e1ddf6c014825-12752860-images-thumbs&n=13"
                               alt="Post Thumbnail"
+                              style="width: 476px; height: 300px"
                             />
                           </figure>
                         </div>
@@ -668,7 +670,7 @@
                         <a href="https://www.linkedin.com" target="_blank"
                           ><i class="fab fa-linkedin-in"></i
                         ></a>
-                        <a href="https://www.twitter.com" target="_blank"
+                        <a href="https://x.com/" target="_blank"
                           ><i class="fab fa-twitter"></i
                         ></a>
                       </div>
@@ -720,7 +722,7 @@
                     let posts = [];
                     let currentIndex = 0;
 
-                    fetch("/blogpostdata")
+                    fetch("http://147.93.45.171:1600/blogpostdata")
                       .then((res) => res.json())
                       .then((data) => {
                         posts = data;
@@ -1170,11 +1172,14 @@
           }
 
           try {
-            const res = await fetch("/newsletterpost", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email }),
-            });
+            const res = await fetch(
+              "http://147.93.45.171:1600/newsletterpost",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+              }
+            );
             const text = await res.text();
             if (res.ok) {
               showBanner("Subscribed successfully!", "success");
@@ -1192,67 +1197,197 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
-        const params = new URLSearchParams(location.search);
-        let id = params.get("id");
-        let posts;
+        const slugify = (s) =>
+          String(s || "")
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-");
 
+        const params = new URLSearchParams(location.search);
+        let slugOrId = params.get("id") || null;
+
+        if (!slugOrId) {
+          const parts = location.pathname.split("/").filter(Boolean);
+          if (parts.length) {
+            const last = parts[parts.length - 1];
+            if (
+              !/\.[a-z0-9]+$/i.test(last) &&
+              last.toLowerCase() !== "blog-details"
+            ) {
+              slugOrId = last;
+            } else {
+              slugOrId = null;
+            }
+          }
+        }
+
+        let posts;
         try {
-          const res = await fetch("/blogpostdata");
-          if (!res.ok) throw new Error(res.statusText);
+          const res = await fetch("http://147.93.45.171:1600/blogpostdata");
+          if (!res.ok)
+            throw new Error(res.statusText || "Failed to fetch posts");
           posts = await res.json();
+          if (!Array.isArray(posts)) throw new Error("Invalid posts payload");
         } catch (err) {
-          return console.error("Failed to load posts:", err);
+          console.error("Failed to load posts:", err);
+          return;
         }
 
         posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-        if (!id && posts.length) id = String(posts[0].id);
 
-        const post = posts.find((p) => String(p.id) === id);
-        if (!post) {
-          return console.error(`Post not found for id=${id}`);
+        if (!slugOrId && posts.length) {
+          const first = posts[0];
+          slugOrId = String(first.id);
+
+          try {
+            const nicePath =
+              "/blog-details/" + slugify(first.name || "post-" + first.id);
+            history.replaceState(null, "", nicePath);
+          } catch (e) {}
         }
 
-        document.querySelector(".blog-details-content .title").textContent =
-          post.name;
+        const post = posts.find(
+          (p) =>
+            String(p.id) === String(slugOrId) ||
+            slugify(p.name) === String(slugOrId)
+        );
+
+        if (!post) {
+          console.error(`Post not found for id/slug=${slugOrId}`);
+          return;
+        }
+
+        const titleEl = document.querySelector(".blog-details-content .title");
+        if (titleEl) titleEl.textContent = post.name || "";
 
         const metaSpans = document.querySelectorAll(
           ".blog-details-content .post-meta span a"
         );
-        metaSpans[0].innerHTML = `<i class="far fa-user"></i>By ${post.author_name}`;
-        metaSpans[1].innerHTML = `<i class="far fa-calendar-alt"></i>${new Date(
-          post.date
-        ).toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        })}`;
+        if (metaSpans && metaSpans.length >= 2) {
+          metaSpans[0].innerHTML = `<i class="far fa-user"></i>By ${
+            post.author_name || ""
+          }`;
+          metaSpans[1].innerHTML = `<i class="far fa-calendar-alt"></i>${new Date(
+            post.date
+          ).toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })}`;
+        }
 
-        document.querySelector(".blog-details-content p").textContent =
-          post.description;
-        document.querySelector(
-          ".blog-details-content figure img"
-        ).src = `/uploads/${post.image.trim()}`;
+        const descEl = document.querySelector(".blog-details-content p");
+        if (descEl) descEl.textContent = post.description || "";
+
+        (function handleImage() {
+          let imgEl = document.querySelector(
+            ".blog-details-content figure img"
+          );
+          const figureEl = document.querySelector(
+            ".blog-details-content figure"
+          );
+          if (!imgEl) {
+            const createdImg = document.createElement("img");
+            if (figureEl) figureEl.appendChild(createdImg);
+            else {
+              const newFigure = document.createElement("figure");
+              newFigure.appendChild(createdImg);
+              const container = document.querySelector(".blog-details-content");
+              if (container)
+                container.insertBefore(newFigure, container.firstChild);
+            }
+            imgEl = document.querySelector(".blog-details-content figure img");
+          }
+
+          const rawImg = String(post.image || "").trim();
+          let src;
+
+          if (!rawImg) {
+            src =
+              "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+            console.warn("Post has no image defined; using placeholder.");
+          } else if (/^https?:\/\//i.test(rawImg)) {
+            src = rawImg;
+          } else if (rawImg.startsWith("/")) {
+            src = rawImg;
+          } else {
+            src = "/uploads/" + encodeURI(rawImg);
+          }
+
+          if (imgEl) {
+            imgEl.alt = post.name || "blog image";
+            imgEl.src = src;
+            imgEl.onload = () => {
+              imgEl.classList &&
+                imgEl.classList.add &&
+                imgEl.classList.add("loaded");
+            };
+            imgEl.onerror = () => {
+              console.error("Image failed to load:", src);
+              if (rawImg && !src.includes("%")) {
+                const altSrc = "/uploads/" + encodeURIComponent(rawImg);
+                if (altSrc !== src) {
+                  imgEl.src = altSrc;
+                  return;
+                }
+              }
+              imgEl.src =
+                "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+            };
+          }
+        })();
 
         const tagContainer = document.querySelector(".entry-footer .tag-links");
-        tagContainer.innerHTML = "Tag: ";
-        post.tags.split(",").forEach((t) => {
-          const a = document.createElement("a");
-          a.href = `?tag=${encodeURIComponent(t.trim())}`;
-          a.textContent = t.trim();
-          tagContainer.appendChild(a);
-        });
+        if (tagContainer) {
+          tagContainer.innerHTML = "Tag: ";
+          const rawTags = String(post.tags || "")
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean);
+          rawTags.forEach((t, i) => {
+            const a = document.createElement("a");
+            a.href = `?tag=${encodeURIComponent(t)}`;
+            a.textContent = t;
+            tagContainer.appendChild(a);
+            if (i < rawTags.length - 1)
+              tagContainer.appendChild(document.createTextNode(" "));
+          });
+        }
 
         try {
-          const comRes = await fetch(`/commentsdatagets/${id}`);
-          if (!comRes.ok) throw new Error(comRes.statusText);
+          const comRes = await fetch(`/commentsdatagets/${post.id}`);
+          if (!comRes.ok)
+            throw new Error(comRes.statusText || "Failed to fetch comments");
           const comments = await comRes.json();
-          const count = comments.length;
-          const commentLink = document.querySelector(
-            ".blog-details-content .post-meta span a[href='#'] i.fa-comment"
-          ).parentElement;
-          commentLink.innerHTML = `<i class="far fa-comment"></i>${count} Comment${
-            count !== 1 ? "s" : ""
-          }`;
+          const count = Array.isArray(comments) ? comments.length : 0;
+
+          let commentLink = document.querySelector(
+            ".blog-details-content .post-meta a[href='#'] i.fa-comment"
+          );
+          if (commentLink) commentLink = commentLink.parentElement;
+          if (!commentLink) {
+            const icons = document.querySelectorAll(
+              ".blog-details-content .post-meta i.fa-comment"
+            );
+            if (icons.length) commentLink = icons[0].parentElement;
+          }
+          if (commentLink) {
+            commentLink.innerHTML = `<i class="far fa-comment"></i>${count} Comment${
+              count !== 1 ? "s" : ""
+            }`;
+          } else {
+            const metaArea = document.querySelector(
+              ".blog-details-content .post-meta"
+            );
+            if (metaArea) {
+              const span = document.createElement("span");
+              span.innerHTML = ` <a href="#comments"><i class="far fa-comment"></i>${count} Comment${
+                count !== 1 ? "s" : ""
+              }</a>`;
+              metaArea.appendChild(span);
+            }
+          }
         } catch (err) {
           console.error("Failed to load comment count:", err);
         }
@@ -1262,9 +1397,10 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const listEl = document.querySelector(".pesco-mini-cart-list");
-        const badgeEl = document.querySelector("#pro-counts");
-        const wishlistEl = document.querySelector("#pro-counts1");
+        const badgeEl = document.getElementById("pro-counts");
+        const wishlistEl = document.getElementById("pro-counts1");
         const subtotalEl = document.querySelector(".cart-mini-total .amount");
+        const sideCheckout = document.querySelector(".cart-button-box a");
 
         function showBanner(msg, type = "success") {
           const b = document.createElement("div");
@@ -1287,7 +1423,7 @@
         }
 
         function loadSidebarCart() {
-          fetch(`/allcartdata`)
+          fetch(`http://147.93.45.171:1600/allcartdata`)
             .then((res) => res.json())
             .then((items) => {
               const seen = new Set();
@@ -1297,74 +1433,58 @@
                 return true;
               });
 
-              listEl.innerHTML = "";
-              if (!unique.length) {
-                listEl.innerHTML = `
-                  <li class="sidebar-cart-item sidebar-cart-empty">
-                    Your cart is empty.
-                  </li>`;
-                subtotalEl.textContent = "$0.00";
-                return;
-              }
+              listEl.innerHTML = unique.length
+                ? ""
+                : `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
 
               let total = 0;
               unique.forEach((item) => {
-                const price = parseFloat(item.price_sale);
-                const qty = parseInt(item.quantity, 10);
+                const price = parseFloat(item.price_sale) || 0;
+                const qty = parseInt(item.quantity, 10) || 0;
                 total += price * qty;
 
                 listEl.insertAdjacentHTML(
                   "beforeend",
                   `
-                  <li class="sidebar-cart-item" data-id="${
-                    item.id
-                  }" data-price="${price}" data-qty="${qty}">
-                    <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-                    <a href="#">
-                      <img src="/uploads/${item.image}" alt="${item.name}"/>
-                      ${item.name}
-                    </a>
-                    <span class="quantity">
-                      ${qty} × <span><span class="currency">$</span>${price.toFixed(
-                    2
-                  )}</span>
-                    </span>
-                  </li>
-                `
+            <li class="sidebar-cart-item"
+                data-id="${item.id}"
+                data-name="${item.name}"
+                data-image="${item.image}"
+                data-price="${price}"
+                data-qty="${qty}">
+              <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+              <a href="#"><img src="/uploads/${item.image}" alt="${
+                    item.name
+                  }"/> ${item.name}</a>
+              <span class="quantity">${qty} × $${price.toFixed(2)}</span>
+            </li>
+          `
                 );
               });
 
               subtotalEl.textContent = `$${total.toFixed(2)}`;
             })
-            .catch((err) => console.error("Sidebar load error:", err));
+            .catch((err) => {
+              console.error("Sidebar load error:", err);
+            });
         }
 
         function updateCounts() {
-          fetch(`/allcartdata`)
+          fetch(`http://147.93.45.171:1600/allcartdata`)
             .then((res) => res.json())
             .then((items) => {
-              const seen = new Set();
-              const unique = items.filter((i) => {
-                if (seen.has(i.name)) return false;
-                seen.add(i.name);
-                return true;
-              });
-              badgeEl.textContent = String(unique.length).padStart(2, "0");
+              const names = new Set(items.map((i) => i.name.trim()));
+              badgeEl.textContent = String(names.size).padStart(2, "0");
             })
             .catch(() => {
               badgeEl.textContent = "00";
             });
 
-          fetch(`/wishlistdata`)
+          fetch(`http://147.93.45.171:1600/wishlistdata`)
             .then((res) => res.json())
             .then((items) => {
-              const seen = new Set();
-              const unique = items.filter((i) => {
-                if (seen.has(i.product_name)) return false;
-                seen.add(i.product_name);
-                return true;
-              });
-              wishlistEl.textContent = String(unique.length).padStart(2, "0");
+              const names = new Set(items.map((i) => i.product_name.trim()));
+              wishlistEl.textContent = String(names.size).padStart(2, "0");
             })
             .catch(() => {
               wishlistEl.textContent = "00";
@@ -1380,13 +1500,14 @@
           const id = li.dataset.id;
           if (!id) return console.error("Missing data-id");
 
-          fetch(`/deletecart/${id}`, { method: "DELETE" })
+          fetch(`http://147.93.45.171:1600/deletecart/${id}`, {
+            method: "DELETE",
+          })
             .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
             .then(({ ok, body }) => {
               if (!ok || !body.success)
                 throw new Error(body.message || "Delete failed");
               li.remove();
-
               let newTotal = 0;
               listEl
                 .querySelectorAll(
@@ -1398,7 +1519,6 @@
                   newTotal += price * qty;
                 });
               subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
-
               showBanner("Product removed from cart.", "success");
             })
             .catch((err) => {
@@ -1407,50 +1527,46 @@
             });
         });
 
-        loadSidebarCart();
-        updateCounts();
-        setInterval(updateCounts, 1000);
-
-        const checkoutBtn = document.querySelector(
-          ".cart-button-box a[href*='checkout.html']"
-        );
-        if (checkoutBtn) {
-          checkoutBtn.addEventListener("click", (e) => {
+        if (sideCheckout) {
+          sideCheckout.addEventListener("click", (e) => {
             e.preventDefault();
 
             const items = Array.from(
-              listEl.querySelectorAll("li.sidebar-cart-item")
-            )
-              .filter((li) => !li.classList.contains("sidebar-cart-empty"))
-              .map((li) => {
-                const price = parseFloat(li.dataset.price);
-                const quantity = parseInt(li.dataset.qty, 10);
-                const rawSrc =
-                  li.querySelector("img")?.getAttribute("src") || "";
-                const image = rawSrc.split("/").pop() || "";
-                return {
-                  id: li.dataset.id,
-                  name:
-                    li.querySelector("a[href='#'] + a")?.textContent.trim() ||
-                    "",
-                  image,
-                  price,
-                  quantity,
-                  lineTotal: price * quantity,
-                };
-              });
+              listEl.querySelectorAll(
+                "li.sidebar-cart-item:not(.sidebar-cart-empty)"
+              )
+            ).map((li) => {
+              const price = parseFloat(li.dataset.price) || 0;
+              const quantity = parseInt(li.dataset.qty, 10) || 0;
+              return {
+                id: li.dataset.id,
+                name: li.dataset.name,
+                image: li.dataset.image,
+                price,
+                quantity,
+                lineTotal: price * quantity,
+              };
+            });
 
             const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
             const total = subtotal;
 
             localStorage.setItem(
               "checkout_cart",
-              JSON.stringify({ items, subtotal, total })
+              JSON.stringify({
+                items,
+                subtotal,
+                total,
+              })
             );
 
-            window.location.href = checkoutBtn.href;
+            window.location.href = "/checkout";
           });
         }
+
+        loadSidebarCart();
+        updateCounts();
+        setInterval(updateCounts, 1000);
       });
     </script>
 
@@ -1682,6 +1798,11 @@
         searchForm.style.position = "relative";
         searchForm.appendChild(dropdown);
 
+        searchForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          window.location.href = "/shops-grid";
+        });
+
         let timer;
         searchInput.addEventListener("input", () => {
           clearTimeout(timer);
@@ -1691,7 +1812,7 @@
             return;
           }
           timer = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1699,31 +1820,38 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   dropdown.innerHTML =
                     matches
                       .map((p) => {
                         const priceHTML = p.price_sale
-                          ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price}</del>`
+                          ? `<strong style="color:#000">${p.price}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price_sale}</del>`
                           : `<strong class="text-secondary fw-bold" style="color:#000">${p.price}</strong>`;
 
                         return `
-                          <div class="autocomplete-item" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                            <img src="/uploads/${p.image}" 
-                                alt="${p.name}" 
-                                style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
-                            <div>
-                              <div style="font-weight:600;color:#333" class="text-dark fw-bold">${p.name}</div>
-                              <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
-                            </div>
-                          </div>
-                        `;
+                <div class="autocomplete-item" data-name="${(
+                  p.name || ""
+                ).replace(
+                  /"/g,
+                  "&quot;"
+                )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
+                  <img src="/uploads/${p.image}" 
+                      alt="${(p.name || "").replace(/"/g, "&quot;")}" 
+                      style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                  <div>
+                    <div style="font-weight:600;color:#333" class="text-dark fw-bold">${
+                      p.name
+                    }</div>
+                    <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
+                  </div>
+                </div>
+              `;
                       })
                       .join("") +
                     `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
-                        Show all results
-                      </div>`;
+                  Show all results
+                </div>`;
                 }
                 dropdown.style.display = "block";
               })
@@ -1737,17 +1865,11 @@
         dropdown.addEventListener("click", (e) => {
           const item = e.target.closest(".autocomplete-item");
           if (item) {
-            const name = item.querySelector("div > div").textContent;
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              name
-            )}`;
+            window.location.href = "/shops-grid";
             return;
           }
           if (e.target.closest(".autocomplete-show-all")) {
-            const q = searchInput.value.trim();
-            window.location.href = `shops-grid.html?search=${encodeURIComponent(
-              q
-            )}`;
+            window.location.href = "/shops-grid";
           }
         });
 
@@ -1761,44 +1883,52 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        fetch("/blogpostdata")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch blog data.");
-            }
-            return response.json();
+        function toSlug(str) {
+          return String(str || "")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-") // spaces → hyphens
+            .replace(/[^\w-]+/g, ""); // remove everything except letters, numbers, hyphens
+        }
+
+        function formatDate(dateStr) {
+          const date = new Date(dateStr);
+          const opts = { year: "numeric", month: "long", day: "numeric" };
+          return date.toLocaleDateString("en-US", opts);
+        }
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to fetch blog data.");
+            return res.json();
           })
           .then((data) => {
             const sortedPosts = data.sort(
               (a, b) => new Date(b.date) - new Date(a.date)
             );
-
             const topPosts = sortedPosts.slice(0, 3);
 
             const container = document.getElementById("recent-posts-container");
             if (container) {
               container.innerHTML = "";
               topPosts.forEach((post) => {
-                const postHTML = `
-                  <div class="recent-post-item">
-                     <div class="thumb">
-                      <a href="blog-details.html?id=${
-                        post.id
-                      }" class="w-100 h-100">
-                      <img src="/uploads/${post.image}" alt="post thumb" />
-                      </a>
-                    </div>
-                    <div class="content">
-                      <h4>
-                       <a href="blog-details.html?id=${post.id}">${
-                  post.name
-                }</a>
-                      </h4>
-                      <span><a href="#">${formatDate(post.date)}</a></span>
-                    </div>
-                  </div>
-                `;
-                container.insertAdjacentHTML("beforeend", postHTML);
+                const slugUrl = `/blog-details/${toSlug(post.name)}`;
+                const html = `
+            <div class="recent-post-item">
+              <div class="thumb">
+                <a href="${slugUrl}" class="w-100 h-100">
+                  <img src="/uploads/${post.image}" alt="post thumb" />
+                </a>
+              </div>
+              <div class="content">
+                <h4>
+                  <a href="${slugUrl}">${post.name}</a>
+                </h4>
+                <span><a href="#">${formatDate(post.date)}</a></span>
+              </div>
+            </div>
+          `;
+                container.insertAdjacentHTML("beforeend", html);
               });
             }
 
@@ -1806,50 +1936,37 @@
             if (postList) {
               postList.innerHTML = "";
               topPosts.forEach((post) => {
-                const listItem = document.createElement("li");
-                listItem.className = "post-thumbnail-content";
-
-                listItem.innerHTML = `
-                  <img src="/uploads/${post.image}" alt="post thumb" />
-                  <div class="post-title-date">
-                    <h6>
-                     <a href="blog-details.html?id=${post.id}">${post.name}</a>
-                    </h6>
-                    <span class="posted-on"><a href="#">${formatDate(
-                      post.date
-                    )}</a></span>
-                  </div>
-                `;
-                postList.appendChild(listItem);
+                const slugUrl = `/blog-details/${toSlug(post.name)}`;
+                const li = document.createElement("li");
+                li.className = "post-thumbnail-content";
+                li.innerHTML = `
+            <img src="/uploads/${post.image}" alt="post thumb" />
+            <div class="post-title-date">
+              <h6>
+                <a href="${slugUrl}">${post.name}</a>
+              </h6>
+              <span class="posted-on">
+                <a href="#">${formatDate(post.date)}</a>
+              </span>
+            </div>
+          `;
+                postList.appendChild(li);
               });
             }
           })
-          .catch((error) => {
-            console.error("Error loading blog posts:", error);
-          });
-
-        function formatDate(dateStr) {
-          const date = new Date(dateStr);
-          const options = { year: "numeric", month: "long", day: "numeric" };
-          return date.toLocaleDateString("en-US", options);
-        }
+          .catch((err) => console.error("Error loading blog posts:", err));
 
         const tagCloud = document.querySelector(
           ".sidebar-tag-widget .tagcloud"
         );
-
-        fetch("/blogalldata")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(
-                `Network response was not ok (${response.status})`
-              );
-            }
-            return response.json();
+        fetch("http://147.93.45.171:1600/blogalldata")
+          .then((r) => {
+            if (!r.ok) throw new Error(`Network error: ${r.status}`);
+            return r.json();
           })
           .then((tags) => {
+            if (!tagCloud) return;
             tagCloud.innerHTML = "";
-
             tags.forEach((tag) => {
               if (tag.status === "Published") {
                 const a = document.createElement("a");
@@ -1858,42 +1975,71 @@
               }
             });
           })
-          .catch((err) => {
-            console.error("Failed to load tags:", err);
-          });
+          .catch((err) => console.error("Failed to load tags:", err));
 
         const navList = document.querySelector(
           ".sidebar-category-widget .widget-nav"
         );
-
-        fetch("/allcategorydata")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`Fetch error: ${response.status}`);
-            }
-            return response.json();
+        fetch("http://147.93.45.171:1600/allcategorydata")
+          .then((r) => {
+            if (!r.ok) throw new Error(`Fetch error: ${r.status}`);
+            return r.json();
           })
           .then((categories) => {
+            if (!navList) return;
             navList.innerHTML = "";
-
             categories.forEach((cat) => {
               if (cat.status === "Published") {
                 const li = document.createElement("li");
                 const a = document.createElement("a");
                 a.textContent = cat.name + " ";
-
                 const icon = document.createElement("i");
                 icon.className = "far fa-arrow-right";
                 a.appendChild(icon);
-
                 li.appendChild(a);
                 navList.appendChild(li);
               }
             });
           })
-          .catch((err) => {
-            console.error("Could not load categories:", err);
+          .catch((err) => console.error("Could not load categories:", err));
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const res = await fetch("http://147.93.45.171:1600/get-theme-logo");
+          if (!res.ok) throw new Error("Failed to fetch logo data");
+
+          const data = await res.json();
+          const logoUrl = data.logo_url;
+          if (!logoUrl) throw new Error("Logo URL not found in API response");
+
+          const uploadPath = `/uploads/${logoUrl}`;
+
+          const logoImgs = [
+            ...document.querySelectorAll(".brand-logo img"),
+            ...document.querySelectorAll(".site-branding .brand-logo img"),
+            ...document.querySelectorAll(
+              ".site-branding.d-lg-none .brand-logo img"
+            ),
+            ...document.querySelectorAll(".footer-logo img"),
+          ];
+
+          logoImgs.forEach((img) => {
+            img.src = uploadPath;
+            img.width = 144;
+            img.height = 44;
+            img.alt = data.alt_text || "Logo";
+
+            img.addEventListener("error", () => {
+              console.warn("Logo image failed to load:", uploadPath);
+              img.src = "assets/images/logo/logo-main.png";
+            });
           });
+        } catch (error) {
+          console.error("Logo load error:", error);
+        }
       });
     </script>
 

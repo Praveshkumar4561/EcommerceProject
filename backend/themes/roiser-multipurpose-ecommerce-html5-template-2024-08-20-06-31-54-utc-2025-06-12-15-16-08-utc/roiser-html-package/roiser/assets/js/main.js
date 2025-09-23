@@ -38,6 +38,10 @@
     $("#preloader").delay(0).fadeOut(500);
   });
 
+
+
+
+  
   $(document).ready(function () {
     if (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
       $("body").addClass("firefox");
@@ -172,6 +176,19 @@
       }
     );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     $("select").niceSelect();
 
     $(".filter-items").imagesLoaded(function () {
@@ -199,6 +216,22 @@
         },
       });
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     var swiperCategory = new Swiper(".category-carousel", {
       slidesPerView: 6,

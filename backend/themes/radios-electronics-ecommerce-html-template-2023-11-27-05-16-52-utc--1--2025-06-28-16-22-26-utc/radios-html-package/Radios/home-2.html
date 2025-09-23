@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="assets/css/slick.css" />
     <link rel="stylesheet" href="assets/css/magnific-popup.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-    <!-- <script>
+    <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
           .querySelectorAll("a[href$='.html']:not(.lang-btn)")
@@ -48,11 +48,11 @@
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
-    </script> -->
+    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/themeoptionsdata")
+        fetch("http://147.93.45.171:1600/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -217,8 +217,8 @@
     }
 
     .vd-banner__item-one img {
-      width: 213px;
-      height: 210px;
+      width: 213px !important;
+      height: 210px !important;
       object-fit: contain;
     }
 
@@ -271,14 +271,14 @@
           <div class="container mxw_1530">
             <div class="header__top-info ul_li_between mt-none-10">
               <ul class="header__top-left ul_li mt-10">
-                <li><a href="#!">Call us</a> free 24/7 : (555) 172-244-7888</li>
+                <li><a href="#">Call us</a> free 24/7 : (555) 172-244-7888</li>
                 <li><i class="fas fa-envelope"></i> adminpath@gmail.com</li>
               </ul>
               <ul class="header__top-right ul_li mt-10">
                 <li><i class="fas fa-clouds"></i>30 degree</li>
                 <li><i class="far fa-city"></i>New York</li>
                 <li>
-                  <a href="#!"><i class="fas fa-star"></i>My Wishlist</a>
+                  <a href="#"><i class="fas fa-star"></i>My Wishlist</a>
                 </li>
                 <li>
                   <a href="checkout.html"
@@ -289,14 +289,15 @@
                   <div class="header__language currency">
                     <ul>
                       <li>
-                        <a href="#!" class="lang-btn"
-                          ><img src="assets/img/icon/usd_flag.png" alt="" />USD
-                          <i class="far fa-chevron-down"></i
+                        <a href="javascript:void(0)" class="lang-btn"
+                          ><img
+                            src="assets/img/icon/usd_flag.png"
+                            alt="Image" />USD <i class="far fa-chevron-down"></i
                         ></a>
                         <ul class="lang_sub_list">
-                          <li><a href="#">USD</a></li>
-                          <li><a href="#">BDT</a></li>
-                          <li><a href="#">EUR</a></li>
+                          <li><a href="javascript:void(0)">USD</a></li>
+                          <li><a href="javascript:void(0)">BDT</a></li>
+                          <li><a href="javascript:void(0)">EUR</a></li>
                         </ul>
                       </li>
                     </ul>
@@ -311,7 +312,7 @@
           <div class="header__middle ul_li_between">
             <div class="header__logo">
               <a href="index.html">
-                <img src="assets/img/logo/logo.svg" alt="" />
+                <img src="assets/img/logo/logo.svg" alt="Image" />
               </a>
             </div>
 
@@ -358,8 +359,8 @@
             </script>
 
             <div class="add">
-              <a href="#!">
-                <img src="assets/img/add/img_01.jpg" alt="" />
+              <a href="#">
+                <img src="assets/img/add/img_01.jpg" alt="Image" />
               </a>
             </div>
             <div class="d-none d-lg-block">
@@ -367,23 +368,31 @@
                 <div class="header__language style-2 mr-25">
                   <ul>
                     <li>
-                      <a href="#!" class="lang-btn"
-                        ><img src="assets/img/icon/usd_flag.png" alt="" />
+                      <a href="javascript:void(0)" class="lang-btn"
+                        ><img src="assets/img/icon/usd_flag.png" alt="Image" />
                         English <i class="far fa-chevron-down"></i
                       ></a>
                       <ul class="lang_sub_list">
-                        <li><a href="#">English</a></li>
-                        <li><a href="#">Arabic</a></li>
-                        <li><a href="#">Bangla</a></li>
+                        <li><a href="javascript:void(0)">English</a></li>
+                        <li><a href="javascript:void(0)">Arabic</a></li>
+                        <li><a href="javascript:void(0)">Bangla</a></li>
                       </ul>
                     </li>
                   </ul>
                 </div>
                 <div class="header__social">
-                  <a href="#!"><i class="fab fa-facebook-f"></i></a>
-                  <a href="#!"><i class="fab fa-twitter"></i></a>
-                  <a href="#!"><i class="fab fa-instagram"></i></a>
-                  <a href="#!"><i class="fab fa-youtube"></i></a>
+                  <a href="https://www.facebook.com/" target="_blank"
+                    ><i class="fab fa-facebook-f"></i
+                  ></a>
+                  <a href="https://x.com/" target="_blank"
+                    ><i class="fab fa-twitter"></i
+                  ></a>
+                  <a href="https://www.instagram.com/" target="_blank"
+                    ><i class="fab fa-instagram"></i
+                  ></a>
+                  <a href="https://www.youtube.com/"
+                    ><i class="fab fa-youtube"></i
+                  ></a>
                 </div>
               </div>
             </div>
@@ -397,109 +406,117 @@
             <div class="header__main ul_li">
               <div class="header__logo">
                 <a href="index.html">
-                  <img src="assets/img/logo/logo.svg" alt="" />
+                  <img src="assets/img/logo/logo.svg" alt="Image" />
                 </a>
               </div>
               <div class="header__category pos-rel">
                 <div class="vertical-menu">
                   <button class="header__category-nav">
-                    <img class="bar" src="assets/img/icon/bar.svg" alt="" />
+                    <img
+                      class="bar"
+                      src="assets/img/icon/bar.svg"
+                      alt="Image"
+                    />
                     Browse Catetory
                     <i class="fas fa-chevron-down"></i>
                   </button>
                   <div class="vertical-menu-list category-nav">
                     <ul class="category-nav__list list-unstyled">
                       <li>
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_01.svg"
-                            alt=""
+                            alt="Image"
                           />Bluetooth speaker</a
                         >
                       </li>
                       <li class="menu-item-has-children">
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_02.svg"
-                            alt=""
+                            alt="Image"
                           />Digital camera</a
                         >
                         <ul>
-                          <li><a href="#">Electric razor</a></li>
-                          <li><a href="#">Digital camera</a></li>
-                          <li><a href="#">Electric frying pan</a></li>
-                          <li><a href="#">external hard drive</a></li>
+                          <li><a href="/shop">Electric razor</a></li>
+                          <li><a href="/shop">Digital camera</a></li>
+                          <li><a href="/shop">Electric frying pan</a></li>
+                          <li><a href="/shop">external hard drive</a></li>
                         </ul>
                       </li>
                       <li>
-                        <a href="#"
-                          ><img src="assets/img/icon/cat_03.svg" alt="" />Laser
-                          printer</a
+                        <a href="/shop"
+                          ><img
+                            src="assets/img/icon/cat_03.svg"
+                            alt="Image"
+                          />Laser printer</a
                         >
                       </li>
                       <li class="menu-item-has-children">
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_04.svg"
-                            alt=""
+                            alt="Image"
                           />Electric frying pan</a
                         >
                         <ul>
-                          <li><a href="#">Electric razor</a></li>
-                          <li><a href="#">Digital camera</a></li>
-                          <li><a href="#">Electric frying pan</a></li>
-                          <li><a href="#">external hard drive</a></li>
+                          <li><a href="/shop">Electric razor</a></li>
+                          <li><a href="/shop">Digital camera</a></li>
+                          <li><a href="/shop">Electric frying pan</a></li>
+                          <li><a href="/shop">external hard drive</a></li>
                         </ul>
                       </li>
                       <li>
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_05.svg"
-                            alt=""
+                            alt="Image"
                           />Robotics vacuum</a
                         >
                       </li>
                       <li class="menu-item-has-children">
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_06.svg"
-                            alt=""
+                            alt="Image"
                           />external hard drive</a
                         >
                         <ul>
-                          <li><a href="#">Electric razor</a></li>
-                          <li><a href="#">Digital camera</a></li>
-                          <li><a href="#">Electric frying pan</a></li>
-                          <li><a href="#">external hard drive</a></li>
+                          <li><a href="/shop">Electric razor</a></li>
+                          <li><a href="/shop">Digital camera</a></li>
+                          <li><a href="/shop">Electric frying pan</a></li>
+                          <li><a href="/shop">external hard drive</a></li>
                         </ul>
                       </li>
                       <li>
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_07.svg"
-                            alt=""
+                            alt="Image"
                           />Electric razor</a
                         >
                       </li>
                       <li>
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_08.svg"
-                            alt=""
+                            alt="Image"
                           />Washing machine</a
                         >
                       </li>
                       <li>
-                        <a href="#"
-                          ><img src="assets/img/icon/cat_09.svg" alt="" />Rice
-                          cooker</a
+                        <a href="/shop"
+                          ><img
+                            src="assets/img/icon/cat_09.svg"
+                            alt="Image"
+                          />Rice cooker</a
                         >
                       </li>
                       <li>
-                        <a href="#"
+                        <a href="/shop"
                           ><img
                             src="assets/img/icon/cat_10.svg"
-                            alt=""
+                            alt="Image"
                           />Telivsion & Monitor</a
                         >
                       </li>
@@ -508,7 +525,7 @@
                 </div>
               </div>
               <div class="hamburger_menu d-lg-none">
-                <a href="javascript:void(0);" class="active">
+                <a href="javascript:void(0)" class="active">
                   <div class="icon bar">
                     <span><i class="fal fa-bars"></i></span>
                   </div>
@@ -528,7 +545,7 @@
                                   <a href="index.html">
                                     <img
                                       src="assets/img/demo/demo-1.jpg"
-                                      alt=""
+                                      alt="Image"
                                     />
                                   </a>
                                 </div>
@@ -539,7 +556,7 @@
                                   <a href="home-2.html">
                                     <img
                                       src="assets/img/demo/demo-2.jpg"
-                                      alt=""
+                                      alt="Image"
                                     />
                                   </a>
                                 </div>
@@ -550,7 +567,7 @@
                                   <a href="home-3.html">
                                     <img
                                       src="assets/img/demo/demo-3.jpg"
-                                      alt=""
+                                      alt="Image"
                                     />
                                   </a>
                                 </div>
@@ -568,7 +585,7 @@
                       </ul>
                     </li>
                     <li class="menu-item-has-children">
-                      <a href="#!">Shop</a>
+                      <a href="/shop">Shop</a>
                       <ul class="submenu">
                         <li><a href="shop.html">Shop Default</a></li>
                         <li>
@@ -582,14 +599,14 @@
                     </li>
                     <li><a href="shop.html">Accesories</a></li>
                     <li class="menu-item-has-children">
-                      <a href="#!">Blog</a>
+                      <a href="/news">Blog</a>
                       <ul class="submenu">
                         <li><a href="news.html">Blog</a></li>
                         <li><a href="news-single.html">Blog Details</a></li>
                       </ul>
                     </li>
                     <li class="menu-item-has-children">
-                      <a href="#!">Pages</a>
+                      <a href="/about">Pages</a>
                       <ul class="submenu">
                         <li><a href="about.html">About Us</a></li>
                         <li><a href="account.html">Account</a></li>
@@ -610,12 +627,12 @@
                 <div class="header__icons ul_li mr-15">
                   <div class="icon">
                     <a href="account.html">
-                      <img src="assets/img/icon/user.svg" alt="" />
+                      <img src="assets/img/icon/user.svg" alt="Image" />
                     </a>
                   </div>
 
                   <div class="icon wishlist-icon">
-                    <a href="#!">
+                    <a href="cart.html">
                       <img src="assets/img/icon/heart.svg" alt="Wishlist" />
                       <span id="wishlist-data" class="count">0</span>
                     </a>
@@ -623,7 +640,7 @@
 
                   <div class="icon cart-icon">
                     <a href="cart.html">
-                      <img src="assets/img/icon/bookmark.svg" alt="" />
+                      <img src="assets/img/icon/bookmark.svg" alt="Image" />
                       <span id="cart-data" class="count">0</span>
                     </a>
                   </div>
@@ -645,7 +662,7 @@
 
       <aside class="slide-bar">
         <div class="close-mobile-menu">
-          <a href="javascript:void(0);"><i class="fal fa-times"></i></a>
+          <a href="javascript:void(0)"><i class="fal fa-times"></i></a>
         </div>
 
         <div class="cart_sidebar">
@@ -701,7 +718,9 @@
 
             async function loadWishlist() {
               try {
-                const res = await fetch("/wishlistdata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/wishlistdata"
+                );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
 
@@ -717,7 +736,9 @@
 
             async function loadCart() {
               try {
-                const res = await fetch("/allcartdata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/allcartdata"
+                );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
 
@@ -771,9 +792,12 @@
               const id = itemEl.dataset.id;
 
               try {
-                const res = await fetch(`/deletecart/${id}`, {
-                  method: "DELETE",
-                });
+                const res = await fetch(
+                  `http://147.93.45.171:1600/deletecart/${id}`,
+                  {
+                    method: "DELETE",
+                  }
+                );
                 const json = await res.json();
                 if (res.ok && json.success) {
                   loadCart();
@@ -840,7 +864,7 @@
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#">Shop</a>
+              <a href="/shop">Shop</a>
               <ul class="sub-menu">
                 <li><a href="shop.html">Shop Default</a></li>
                 <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
@@ -852,14 +876,14 @@
             </li>
             <li><a href="shop.html">Accesories</a></li>
             <li class="dropdown">
-              <a href="#!">Blog</a>
+              <a href="/news">Blog</a>
               <ul class="sub-menu">
                 <li><a href="news.html">Blog</a></li>
                 <li><a href="news-single.html">Blog Details</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#!">Pages</a>
+              <a href="/about">Pages</a>
               <ul class="submenu">
                 <li><a href="about.html">About Us</a></li>
                 <li><a href="account.html">Account</a></li>
@@ -953,14 +977,35 @@
 
         <div class="banner-product">
           <div class="container mxw_1530 pt-45">
-            <div class="row mt-none-30"></div>
+            <div class="row mt-none-30 h-auto"></div>
           </div>
         </div>
 
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+
+            function getSlugForProduct(p) {
+              if (typeof p.slug === "string" && p.slug.trim() !== "")
+                return encodeURIComponent(p.slug.trim());
+              return encodeURIComponent(
+                toSeoUrl(p.product_name || "product-" + (p.id || ""))
+              );
+            }
+
             try {
-              const res = await fetch("/flashsalesmaindata");
+              const res = await fetch(
+                "http://147.93.45.171:1600/flashsalesmaindata"
+              );
               const products = await res.json();
               if (!Array.isArray(products)) return;
 
@@ -979,34 +1024,41 @@
                   width: 120,
                   height: 120,
                 };
+                const slug = getSlugForProduct(product);
+                const productUrl = `/shop-single/${slug}`;
 
                 const col = document.createElement("div");
                 col.className = "col-lg-3 col-md-6 mt-30";
 
                 col.innerHTML = `
-                  <div class="banner-product__item ul_li bg_img" style="background-image: url('assets/img/bg/bg_08.jpg')">
-                    <div class="banner-product__img">
-                      <img src="/uploads/${product.image}" alt="${
-                  product.product_name
-                }" style="width: ${width}px; height: ${height}px;" />
-                    </div>
-                    <div class="banner-product__content">
-                      <h2>
-                        ${product.name}<br />
-                        <span>${product.label || "Deal"}</span> on this
-                      </h2>
-                     <div class="upto-offer ul_li mb-10">
-                      <span class="upto">Up <br />To</span>
-                      <span class="offer-no">${Math.round(
-                        parseFloat(product.price_sale.replace(/[^0-9.]/g, ""))
-                      )} <span>%</span></span>
-                     </div>
-                      <a href="shop.html">
-                        Shop Now <i class="fas fa-chevron-circle-right"></i>
-                      </a>
-                    </div>
-                  </div>
-                `;
+        <div class="banner-product__item ul_li bg_img" style="background-image: url('assets/img/bg/bg_08.jpg')">
+          <div class="banner-product__img">
+            <a href="${productUrl}">
+              <img src="/uploads/${product.image}" alt="${(
+                  product.product_name || ""
+                ).replace(
+                  /"/g,
+                  "&quot;"
+                )}" style="width: ${width}px !important; height: ${height}px !important;" />
+            </a>
+          </div>
+          <div class="banner-product__content">
+            <h2>
+              ${product.product_name}<br />
+              <span>${product.label || "Deal"}</span> on this
+            </h2>
+            <div class="upto-offer ul_li mb-10">
+              <span class="upto">Up <br />To</span>
+              <span class="offer-no">${Math.round(
+                parseFloat(product.price_sale.replace(/[^0-9.]/g, ""))
+              )} <span>%</span></span>
+            </div>
+            <a href="/shop">
+              Shop Now <i class="fas fa-chevron-circle-right"></i>
+            </a>
+          </div>
+        </div>
+      `;
                 container.appendChild(col);
               });
             } catch (error) {
@@ -1177,7 +1229,10 @@
                           </div>
                         </div>
                         <div class="image">
-                          <img src="assets/img/product/img_79.png" alt="" />
+                          <img
+                            src="assets/img/product/img_79.png"
+                            alt="Image"
+                          />
                         </div>
                         <div class="vd-banner__offer-box">
                           25%<span>off</span>
@@ -1199,7 +1254,10 @@
                           </div>
                         </div>
                         <div class="image">
-                          <img src="assets/img/product/img_80.png" alt="" />
+                          <img
+                            src="assets/img/product/img_80.png"
+                            alt="Image"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1212,8 +1270,29 @@
 
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+
+            function getSlugForProduct(p) {
+              if (typeof p.slug === "string" && p.slug.trim() !== "")
+                return encodeURIComponent(p.slug.trim());
+              return encodeURIComponent(
+                toSeoUrl(p.name || "product-" + (p.id || ""))
+              );
+            }
+
             try {
-              const res = await fetch("/flashsalesmaindata");
+              const res = await fetch(
+                "http://147.93.45.171:1600/flashsalesmaindata"
+              );
               const data = await res.json();
               if (!Array.isArray(data)) return;
 
@@ -1240,7 +1319,6 @@
 
               const bothExpired =
                 isExpired(products[0]) && isExpired(products[1]);
-
               if (bothExpired) {
                 if (banner1Wrapper) banner1Wrapper.style.display = "none";
                 if (banner2Wrapper) banner2Wrapper.style.display = "none";
@@ -1250,10 +1328,9 @@
                   const noOfferDiv = document.createElement("div");
                   noOfferDiv.className = "col-12 mt-30 text-center";
                   noOfferDiv.innerHTML = `
-                    <div class="no-offer-message py-5">
-                      <h3 style="font-size: 20px; color: #cc0d39; margin: 0;">No offer available</h3>
-                    </div>
-                  `;
+          <div class="no-offer-message py-5">
+            <h3 style="font-size: 20px; color: #cc0d39; margin: 0;">No offer available</h3>
+          </div>`;
                   parentRow.appendChild(noOfferDiv);
                 }
                 return;
@@ -1265,6 +1342,9 @@
                   return;
                 }
 
+                const slug = getSlugForProduct(product);
+                const productUrl = `/shop-single/${slug}`;
+
                 const bg = banner.getAttribute("data-background");
                 banner.style.backgroundImage = `url(${bg})`;
 
@@ -1275,10 +1355,15 @@
                 const offerBox = banner.querySelector(".vd-banner__offer-box");
 
                 span.textContent = "Get 30% off";
-                h2.textContent = product.name || "Buy One. Get Free delivery";
-                h3span.textContent = product.price_sale || "0.00";
+                h2.innerHTML = `<a href="${productUrl}">${
+                  product.name || "Buy One. Get Free delivery"
+                }</a>`;
+                h3span.innerHTML = `<a href="${productUrl}">${
+                  product.price_sale || "0.00"
+                }</a>`;
                 img.src = `/uploads/${product.image}`;
                 img.alt = product.name || "";
+                img.parentElement.href = productUrl;
                 if (offerBox) {
                   offerBox.style.display = "";
                   offerBox.innerHTML = `25%<span>off</span>`;
@@ -1302,9 +1387,30 @@
             const lightboxImg = document.getElementById("lightbox-image");
             const counterEl = document.getElementById("lightbox-counter");
 
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+            function getSlugForProduct(p) {
+              if (!p) return "";
+              if (typeof p.slug === "string" && p.slug.trim() !== "")
+                return encodeURIComponent(p.slug.trim());
+              return encodeURIComponent(
+                toSeoUrl(p.name || "product-" + (p.id || p.product_id || ""))
+              );
+            }
+
             let prods;
             try {
-              const res = await fetch("/productpagedata");
+              const res = await fetch(
+                "http://147.93.45.171:1600/productpagedata"
+              );
               prods = await res.json();
               prods.sort((a, b) => new Date(b.date) - new Date(a.date));
             } catch (e) {
@@ -1328,19 +1434,23 @@
               widgetContainer.innerHTML = slides
                 .map(
                   (group) => `
-                  <div class="tx-widget__product-single">
-                    ${group
-                      .map(
-                        (p) => `
+            <div class="tx-widget__product-single">
+              ${group
+                .map((p) => {
+                  const slug = getSlugForProduct(p);
+                  const productUrl = `/shop-single/${slug}`;
+                  return `
                       <div class="tx-widget__product-item tx-product ul_li mb-4">
                         <div class="thumb">
-                          <a href="shop-single.html?id=${p.id}">
-                            <img src="/uploads/${p.image}" alt="${p.name}" class="border"/>
+                          <a href="${productUrl}">
+                            <img src="/uploads/${p.image}" alt="${(
+                    p.name || ""
+                  ).replace(/"/g, "&quot;")}" class="border"/>
                           </a>
                         </div>
                         <div class="content">
                           <h3>
-                            <a href="shop-single.html?id=${p.id}">${p.name}</a>
+                            <a href="${productUrl}">${p.name}</a>
                           </h3>
                           <h4 class="product__price">
                             <span class="new">${p.price}</span>
@@ -1348,11 +1458,11 @@
                           </h4>
                         </div>
                       </div>
-                      `
-                      )
-                      .join("")}
-                  </div>
-                `
+                    `;
+                })
+                .join("")}
+            </div>
+          `
                 )
                 .join("");
             }
@@ -1371,85 +1481,93 @@
 
             function buildCard(p) {
               const pct = Math.min(100, Math.max(0, p.minimumorder || 0));
+              const slug = getSlugForProduct(p);
+              const productUrl = `/shop-single/${slug}`;
               return `
-                <div class="col-1-of-5">
-                  <div class="product__item style-2">
-                    <div class="product__img text-center pos-rel">
-                      <a href="shop-single.html?id=${p.id}">
-                        <img src="/uploads/${p.image}" alt="${p.name}" />
-                      </a>
-                      <ul class="product__action style-2 ul_li">
-                        
-                        <li>
-                          <a href="/uploads/${
-                            p.image
-                          }" class="img-popup icon-btn">
-                            <i class="far fa-compress-alt"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" class="add-to-cart icon-btn"
-                             data-id="${p.id}"
-                             data-name="${p.name}"
-                             data-store="${p.store}"
-                             data-price="${p.price.replace(/[^0-9.]/g, "")}"
-                             data-price_sale="${p.price_sale.replace(
-                               /[^0-9.]/g,
-                               ""
-                             )}"
-                             data-image="${p.image}">
-                            <i class="far fa-shopping-basket"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#" class="add-to-wishlist icon-btn"
-                             data-id="${p.id}"
-                             data-name="${p.name}"
-                             data-store="${p.store}"
-                             data-price="${p.price.replace(/[^0-9.]/g, "")}"
-                             data-price_sale="${p.price_sale.replace(
-                               /[^0-9.]/g,
-                               ""
-                             )}"
-                             data-image="${p.image}"
-                             data-sku="${p.sku}"
-                             data-stockstatus="${p.stockstatus}">
-                            <i class="far fa-heart"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="product__content">
-                      <div class="product__review ul_li">
-                        <ul class="rating-star ul_li mr-10">
-                          <li><i class="fas fa-star"></i></li>
-                          <li><i class="fas fa-star"></i></li>
-                          <li><i class="fas fa-star"></i></li>
-                          <li><i class="far fa-star"></i></li>
-                          <li><i class="far fa-star"></i></li>
-                        </ul>
-                        <span>(${Math.floor(Math.random() * 100)})</span>
-                      </div>
-                      <div class="product__progress progress mt-2 color-primary">
-                        <div class="progress-bar"
-                             role="progressbar"
-                             style="width:${pct}%;"
-                             aria-valuenow="${pct}"
-                             aria-valuemin="0"
-                             aria-valuemax="100">
-                        </div>
-                      </div>
-                      <h2 class="product__title">
-                        <a href="shop-single.html?id=${p.id}">${p.name}</a>
-                      </h2>
-                      <h4 class="product__price">
-                        <span class="new">${p.price}</span>
-                        <span class="old">${p.price_sale}</span>
-                      </h4>
-                      <span class="badge-skew">${p.label}</span>
-                    </div>
-                  </div>
-                </div>`;
+        <div class="col-1-of-5">
+          <div class="product__item style-2">
+            <div class="product__img text-center pos-rel">
+              <a href="${productUrl}">
+                <img src="/uploads/${p.image}" alt="${(p.name || "").replace(
+                /"/g,
+                "&quot;"
+              )}" />
+              </a>
+              <ul class="product__action style-2 ul_li">
+                <li>
+                  <a href="/uploads/${p.image}" class="img-popup icon-btn">
+                    <i class="far fa-compress-alt"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" class="add-to-cart icon-btn"
+                     data-id="${p.id}"
+                     data-name="${p.name}"
+                     data-store="${p.store}"
+                     data-price="${String(p.price || "").replace(
+                       /[^0-9.]/g,
+                       ""
+                     )}"
+                     data-price_sale="${String(p.price_sale || "").replace(
+                       /[^0-9.]/g,
+                       ""
+                     )}"
+                     data-image="${p.image}">
+                    <i class="far fa-shopping-basket"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" class="add-to-wishlist icon-btn"
+                     data-id="${p.id}"
+                     data-name="${p.name}"
+                     data-store="${p.store}"
+                     data-price="${String(p.price || "").replace(
+                       /[^0-9.]/g,
+                       ""
+                     )}"
+                     data-price_sale="${String(p.price_sale || "").replace(
+                       /[^0-9.]/g,
+                       ""
+                     )}"
+                     data-image="${p.image}"
+                     data-sku="${p.sku}"
+                     data-stockstatus="${p.stockstatus}">
+                    <i class="far fa-heart"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="product__content">
+              <div class="product__review ul_li">
+                <ul class="rating-star ul_li mr-10">
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="far fa-star"></i></li>
+                  <li><i class="far fa-star"></i></li>
+                </ul>
+                <span>(${Math.floor(Math.random() * 100)})</span>
+              </div>
+              <div class="product__progress progress mt-2 color-primary">
+                <div class="progress-bar"
+                     role="progressbar"
+                     style="width:${pct}%;"
+                     aria-valuenow="${pct}"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                </div>
+              </div>
+              <h2 class="product__title">
+                <a href="${productUrl}">${p.name}</a>
+              </h2>
+              <h4 class="product__price">
+                <span class="new">${p.price}</span>
+                <span class="old">${p.price_sale}</span>
+              </h4>
+              <span class="badge-skew">${p.label}</span>
+            </div>
+          </div>
+        </div>`;
             }
 
             for (let i = 1; i <= 5; i++) {
@@ -1491,10 +1609,11 @@
             let lbIdx = 0;
 
             function show(i) {
+              if (!urls.length) return;
               lbIdx = (i + urls.length) % urls.length;
               lightboxImg.src = urls[lbIdx];
               counterEl.textContent = `${lbIdx + 1} of ${urls.length}`;
-              lightbox.style.display = "flex";
+              if (lightbox) lightbox.style.display = "flex";
             }
 
             uniquePopupLinks.forEach((a, i) => {
@@ -1504,14 +1623,16 @@
               });
             });
 
-            document.getElementById("lightbox-prev").onclick = () =>
-              show(lbIdx - 1);
-            document.getElementById("lightbox-next").onclick = () =>
-              show(lbIdx + 1);
-            document.getElementById("lightbox-close").onclick = () =>
-              (lightbox.style.display = "none");
+            const prevEl = document.getElementById("lightbox-prev");
+            const nextEl = document.getElementById("lightbox-next");
+            const closeEl = document.getElementById("lightbox-close");
+            if (prevEl) prevEl.onclick = () => show(lbIdx - 1);
+            if (nextEl) nextEl.onclick = () => show(lbIdx + 1);
+            if (closeEl)
+              closeEl.onclick = () => (lightbox.style.display = "none");
+
             window.addEventListener("keydown", (e) => {
-              if (lightbox.style.display !== "flex") return;
+              if (!lightbox || lightbox.style.display !== "flex") return;
               if (e.key === "Escape") lightbox.style.display = "none";
               if (e.key === "ArrowLeft") show(lbIdx - 1);
               if (e.key === "ArrowRight") show(lbIdx + 1);
@@ -1531,7 +1652,7 @@
 
               if (cartBtn) {
                 try {
-                  const res = await fetch("/addcart", {
+                  const res = await fetch("http://147.93.45.171:1600/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1561,20 +1682,23 @@
 
               if (wishBtn) {
                 try {
-                  const res = await fetch("/wishlistpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      user_id: +userId,
-                      product_name: wishBtn.dataset.name,
-                      store: wishBtn.dataset.store,
-                      price: wishBtn.dataset.price,
-                      price_sale: wishBtn.dataset.price_sale,
-                      image: wishBtn.dataset.image,
-                      sku: wishBtn.dataset.sku,
-                      stockstatus: wishBtn.dataset.stockstatus,
-                    }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/wishlistpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        user_id: +userId,
+                        product_name: wishBtn.dataset.name,
+                        store: wishBtn.dataset.store,
+                        price: wishBtn.dataset.price,
+                        price_sale: wishBtn.dataset.price_sale,
+                        image: wishBtn.dataset.image,
+                        sku: wishBtn.dataset.sku,
+                        stockstatus: wishBtn.dataset.stockstatus,
+                      }),
+                    }
+                  );
                   if (res.ok) {
                     showBanner("Product added to wishlist!", "success");
                     if (typeof updateCounts === "function") updateCounts();
@@ -1639,7 +1763,7 @@
                       </a>
                     </div>
                     <div class="add-banner__img">
-                      <img src="assets/img/product/img_81.png" alt="" />
+                      <img src="assets/img/product/img_81.png" alt="Image" />
                     </div>
                   </div>
                 </div>
@@ -1684,7 +1808,10 @@
                         aria-labelledby="wp-tab-01"
                       >
                         <div class="weekly-product__img">
-                          <img src="assets/img/product/img_82.png" alt="" />
+                          <img
+                            src="assets/img/product/img_82.png"
+                            alt="Image"
+                          />
                         </div>
                       </div>
                       <div
@@ -1694,7 +1821,10 @@
                         aria-labelledby="wp-tab-02"
                       >
                         <div class="weekly-product__img">
-                          <img src="assets/img/product/img_82.png" alt="" />
+                          <img
+                            src="assets/img/product/img_82.png"
+                            alt="Image"
+                          />
                         </div>
                       </div>
                       <div
@@ -1704,7 +1834,10 @@
                         aria-labelledby="wp-tab-03"
                       >
                         <div class="weekly-product__img">
-                          <img src="assets/img/product/img_82.png" alt="" />
+                          <img
+                            src="assets/img/product/img_82.png"
+                            alt="Image"
+                          />
                         </div>
                       </div>
                       <div
@@ -1714,7 +1847,10 @@
                         aria-labelledby="wp-tab-04"
                       >
                         <div class="weekly-product__img">
-                          <img src="assets/img/product/img_82.png" alt="" />
+                          <img
+                            src="assets/img/product/img_82.png"
+                            alt="Image"
+                          />
                         </div>
                       </div>
                     </div>
@@ -1736,7 +1872,10 @@
                         aria-selected="true"
                       >
                         <span class="weekly-product__nav-img">
-                          <img src="assets/img/product/img_83.png" alt="" />
+                          <img
+                            src="assets/img/product/img_83.png"
+                            alt="Image"
+                          />
                         </span>
                       </button>
                     </li>
@@ -1752,7 +1891,10 @@
                         aria-selected="false"
                       >
                         <span class="weekly-product__nav-img">
-                          <img src="assets/img/product/img_84.png" alt="" />
+                          <img
+                            src="assets/img/product/img_84.png"
+                            alt="Image"
+                          />
                         </span>
                       </button>
                     </li>
@@ -1768,7 +1910,10 @@
                         aria-selected="false"
                       >
                         <span class="weekly-product__nav-img">
-                          <img src="assets/img/product/img_85.png" alt="" />
+                          <img
+                            src="assets/img/product/img_85.png"
+                            alt="Image"
+                          />
                         </span>
                       </button>
                     </li>
@@ -1786,7 +1931,7 @@
                       aria-labelledby="rds-tab-01"
                     >
                       <div class="rd-side__img">
-                        <img src="assets/img/product/img_88.png" alt="" />
+                        <img src="assets/img/product/img_88.png" alt="Image" />
                       </div>
                     </div>
                     <div
@@ -1796,7 +1941,7 @@
                       aria-labelledby="rds-tab-02"
                     >
                       <div class="rd-side__img">
-                        <img src="assets/img/product/img_88.png" alt="" />
+                        <img src="assets/img/product/img_88.png" alt="Image" />
                       </div>
                     </div>
                     <div
@@ -1806,7 +1951,7 @@
                       aria-labelledby="rds-tab-03"
                     >
                       <div class="rd-side__img">
-                        <img src="assets/img/product/img_88.png" alt="" />
+                        <img src="assets/img/product/img_88.png" alt="Image" />
                       </div>
                     </div>
                   </div>
@@ -1826,7 +1971,7 @@
                         aria-controls="rds-01"
                         aria-selected="true"
                       >
-                        <img src="assets/img/product/img_89.png" alt="" />
+                        <img src="assets/img/product/img_89.png" alt="Image" />
                       </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -1840,7 +1985,7 @@
                         aria-controls="rds-02"
                         aria-selected="false"
                       >
-                        <img src="assets/img/product/img_90.png" alt="" />
+                        <img src="assets/img/product/img_90.png" alt="Image" />
                       </button>
                     </li>
                     <li class="nav-item" role="presentation">
@@ -1854,13 +1999,13 @@
                         aria-controls="rds-03"
                         aria-selected="false"
                       >
-                        <img src="assets/img/product/img_91.png" alt="" />
+                        <img src="assets/img/product/img_91.png" alt="Image" />
                       </button>
                     </li>
                   </ul>
 
                   <h2 class="title">
-                    <a href="#!">Amazon Cloud Cam Security</a>
+                    <a href="#">Amazon Cloud Cam Security</a>
                   </h2>
                   <div class="product__review ul_li">
                     <ul class="rating-star ul_li mr-10">
@@ -1885,9 +2030,30 @@
 
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+
+            function getSlugForDeal(d) {
+              if (typeof d.slug === "string" && d.slug.trim() !== "")
+                return encodeURIComponent(d.slug.trim());
+              return encodeURIComponent(
+                toSeoUrl(d.product_name || "product-" + (d.product_id || ""))
+              );
+            }
+
             let deals;
             try {
-              const res = await fetch("/flashsalesmaindata");
+              const res = await fetch(
+                "http://147.93.45.171:1600/flashsalesmaindata"
+              );
               deals = await res.json();
             } catch (err) {
               console.error("Failed to load flash sales:", err);
@@ -1902,12 +2068,12 @@
             const section = document.querySelector(".pt-30");
             if (valid.length === 0) {
               section.innerHTML = `
-                <div class="container mxw_1530 text-center py-5">
-                  <h2 class="section-heading mb-4">
-                    <span><span>Deals</span> Of The Day</span>
-                  </h2>
-                  <h3>No deals available at this time.</h3>
-                </div>`;
+      <div class="container mxw_1530 text-center py-5">
+        <h2 class="section-heading mb-4">
+          <span><span>Deals</span> Of The Day</span>
+        </h2>
+        <h3>No deals available at this time.</h3>
+      </div>`;
               return;
             }
 
@@ -1918,8 +2084,14 @@
               const banner = document.querySelector(".add-banner__3");
               if (!banner) return;
 
+              const slug = getSlugForDeal(d);
+              const productUrl = `/shop`;
+
               const h3 = banner.querySelector(".add-banner__content h3");
-              h3.innerHTML = d.product_name.replace(/<br\s*\/?>/i, "<br/>");
+              h3.innerHTML = `<a class="text-dark" href="${productUrl}">${d.product_name.replace(
+                /<br\s*\/?>/i,
+                "<br/>"
+              )}</a>`;
 
               const saveSpan = banner.querySelector(
                 ".add-banner__content span"
@@ -1932,11 +2104,11 @@
               const shopLink = banner.querySelector(
                 ".add-banner__content a.thm-btn"
               );
-              if (shopLink)
-                shopLink.href = `shop-single.html?id=${d.product_id}`;
+              if (shopLink) shopLink.href = productUrl;
 
               const img = banner.querySelector(".add-banner__img img");
               if (img) img.src = `/uploads/${d.image}`;
+              if (img) img.parentElement.href = productUrl;
             })(mainDeals[0]);
 
             mainDeals.forEach((d, i) => {
@@ -1944,14 +2116,24 @@
               const thumb = document.querySelector(
                 `#wp-tab-0${i + 1} .weekly-product__nav-img img`
               );
-              if (paneImg) paneImg.src = `/uploads/${d.image}`;
+              if (paneImg) {
+                paneImg.src = `/uploads/${d.image}`;
+                paneImg.parentElement.href = `/shop-single/${getSlugForDeal(
+                  d
+                )}`;
+              }
               if (thumb) thumb.src = `/uploads/${d.image}`;
             });
 
             sideDeals.forEach((d, i) => {
               const paneImg = document.querySelector(`#rds-0${i + 1} img`);
               const thumb = document.querySelector(`#rds-tab-0${i + 1} img`);
-              if (paneImg) paneImg.src = `/uploads/${d.image}`;
+              if (paneImg) {
+                paneImg.src = `/uploads/${d.image}`;
+                paneImg.parentElement.href = `/shop-single/${getSlugForDeal(
+                  d
+                )}`;
+              }
               if (thumb) thumb.src = `/uploads/${d.image}`;
             });
 
@@ -1965,7 +2147,9 @@
                   const sideTitle = document.querySelector(
                     ".rd-side__product .title a"
                   );
-                  sideTitle.textContent = d.product_name;
+                  sideTitle.innerHTML = `<a href="/shop-single/${getSlugForDeal(
+                    d
+                  )}">${d.product_name}</a>`;
 
                   const priceEl = document.querySelector(
                     ".rd-side__product .product__price"
@@ -1995,8 +2179,11 @@
                   const d = mainDeals[idx];
                   if (!d) return;
 
-                  document.querySelector(".weekly-product__title").textContent =
-                    d.product_name;
+                  document.querySelector(
+                    ".weekly-product__title"
+                  ).innerHTML = `<a class="text-dark" href="/shop-single/${getSlugForDeal(
+                    d
+                  )}">${d.product_name}</a>`;
 
                   const priceEl = document.querySelector(
                     ".weekly-product__price"
@@ -2027,12 +2214,10 @@
                 ];
                 cdEl.innerHTML = units
                   .map(
-                    (u) => `
-                  <div class="time-box">
+                    (u) => `<div class="time-box">
                     <span class="time" data-unit="${u.key}">00</span>
                     <span class="label">${u.label}</span>
-                  </div>
-                `
+                  </div>`
                   )
                   .join("");
                 cdEl.dataset.initialized = "true";
@@ -2103,7 +2288,25 @@
             let allImages = [];
             let currentIndex = 0;
 
-            fetch("/productpagedata")
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+            function getSlugForProduct(p) {
+              if (typeof p.slug === "string" && p.slug.trim() !== "")
+                return encodeURIComponent(p.slug.trim());
+              return encodeURIComponent(
+                toSeoUrl(p.name || "product-" + (p.id || ""))
+              );
+            }
+
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((res) => res.json())
               .then((products) => {
                 const tructorParts = products.filter(
@@ -2119,95 +2322,80 @@
 
                 const productHTML = displayProducts
                   .map((product) => {
+                    const slug = getSlugForProduct(product);
+                    const productUrl = `/shop-single/${slug}`;
                     const imageIndex = allImages.indexOf(
                       `/uploads/${product.image}`
                     );
                     return `
-                      <div class="tab-product__item tx-product text-center">
-                        <div class="thumb">
-                          <a href="#">
-                            <img src="/uploads/${product.image}" alt="${
+            <div class="tab-product__item tx-product text-center">
+              <div class="thumb">
+                <a href="${productUrl}">
+                  <img src="/uploads/${product.image}" alt="${(
+                      product.name || ""
+                    ).replace(/"/g, "&quot;")}" />
+                </a>
+                <ul class="product__action style-2 ul_li">
+                  <li>
+                    <a href="#" class="img-popup icon-btn" data-index="${imageIndex}">
+                      <i class="far fa-compress-alt"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="javascript:void(0)" class="add-to-cart icon-btn"
+                      data-id="${product.id}"
+                      data-name="${product.name}"
+                      data-store="${product.store}"
+                      data-price="${product.price.replace(/[^0-9.]/g, "")}"
+                      data-price_sale="${product.price_sale.replace(
+                        /[^0-9.]/g,
+                        ""
+                      )}"
+                      data-image="${product.image}">
+                      <i class="far fa-shopping-basket"></i>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="javascript:void(0)" class="add-to-wishlist icon-btn"
+                      data-id="${product.id}"
+                      data-name="${product.name}"
+                      data-store="${product.store}"
+                      data-price="${product.price.replace(/[^0-9.]/g, "")}"
+                      data-price_sale="${product.price_sale.replace(
+                        /[^0-9.]/g,
+                        ""
+                      )}"
+                      data-image="${product.image}"
+                      data-sku="${product.sku}"
+                      data-stockstatus="${product.stockstatus}">
+                      <i class="far fa-heart"></i>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="content">
+                <div class="product__review ul_li_center">
+                  <ul class="rating-star ul_li mr-10">
+                    <li><i class="fas fa-star"></i></li>
+                    <li><i class="fas fa-star"></i></li>
+                    <li><i class="fas fa-star"></i></li>
+                    <li><i class="far fa-star"></i></li>
+                    <li><i class="far fa-star"></i></li>
+                  </ul>
+                  <span>(${Math.floor(Math.random() * 100)})</span>
+                </div>
+                <h3 class="title"><a href="${productUrl}">${
                       product.name
-                    }" />
-                          </a>
-                          <ul class="product__action style-2 ul_li">
-                            <li>
-                              <a href="#" class="img-popup icon-btn" data-index="${imageIndex}">
-                                <i class="far fa-compress-alt"></i>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="#" class="add-to-cart icon-btn"
-                                data-id="${product.id}"
-                                data-name="${product.name}"
-                                data-store="${product.store}"
-                                data-price="${product.price.replace(
-                                  /[^0-9.]/g,
-                                  ""
-                                )}"
-                                data-price_sale="${product.price_sale.replace(
-                                  /[^0-9.]/g,
-                                  ""
-                                )}"
-                                data-image="${product.image}">
-                                <i class="far fa-shopping-basket"></i>
-                              </a>
-                            </li>
-                            <li>
-                              <a href="#" class="add-to-wishlist icon-btn"
-                                data-id="${product.id}"
-                                data-name="${product.name}"
-                                data-store="${product.store}"
-                                data-price="${product.price.replace(
-                                  /[^0-9.]/g,
-                                  ""
-                                )}"
-                                data-price_sale="${product.price_sale.replace(
-                                  /[^0-9.]/g,
-                                  ""
-                                )}"
-                                data-image="${product.image}"
-                                data-sku="${product.sku}"
-                                data-stockstatus="${product.stockstatus}">
-                                <i class="far fa-heart"></i>
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div class="content">
-                          <div class="product__review ul_li_center">
-                            <ul class="rating-star ul_li mr-10">
-                              <li><i class="fas fa-star"></i></li>
-                              <li><i class="fas fa-star"></i></li>
-                              <li><i class="fas fa-star"></i></li>
-                              <li><i class="far fa-star"></i></li>
-                              <li><i class="far fa-star"></i></li>
-                            </ul>
-                            <span>(${Math.floor(Math.random() * 100)})</span>
-                          </div>
-                          <h3 class="title"><a href="shop-single.html?id=${
-                            product.id
-                          }">${product.name}</a></h3>
-                          <h3 class="title d-none"><a href="#">${
-                            product.store
-                          }</a></h3>
-                          <h3 class="title d-none"><a href="#">${
-                            product.sku
-                          }</a></h3>
-                          <h3 class="title d-none"><a href="#">${
-                            product.stockstatus
-                          }</a></h3>
-                          <span class="price">
-                            ( ${product.price} - <span class="old-price">${
+                    }</a></h3>
+                <span class="price">( ${
+                  product.price
+                } - <span class="old-price">${
                       product.price_sale
-                    }</span> )
-                          </span>
-                        </div>
-                        <span class="badge-skew">${
-                          product.label || "New"
-                        }</span>
-                      </div>
-                    `;
+                    }</span> )</span>
+              </div>
+              <span class="badge-skew">${product.label || "New"}</span>
+            </div>
+          `;
                   })
                   .join("");
 
@@ -2237,12 +2425,10 @@
             lightboxClose.addEventListener("click", () => {
               lightbox.style.display = "none";
             });
-
             lightboxNext.addEventListener("click", () => {
               currentIndex = (currentIndex + 1) % allImages.length;
               openLightbox(allImages[currentIndex]);
             });
-
             lightboxPrev.addEventListener("click", () => {
               currentIndex =
                 (currentIndex - 1 + allImages.length) % allImages.length;
@@ -2447,9 +2633,30 @@
               "#rdp-tab5": "Fuel Tank",
             };
 
+            function toSeoUrl(str) {
+              return (str || "")
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/[\s_]+/g, "-")
+                .replace(/[^a-z0-9\-]+/g, "")
+                .replace(/\-+/g, "-")
+                .replace(/^\-+|\-+$/g, "");
+            }
+
+            function getSlugForProduct(p) {
+              if (typeof p.slug === "string" && p.slug.trim() !== "")
+                return encodeURIComponent(p.slug.trim());
+              return encodeURIComponent(
+                toSeoUrl(p.name || "product-" + (p.id || ""))
+              );
+            }
+
             async function loadProducts() {
               try {
-                const res = await fetch("/productpagedata");
+                const res = await fetch(
+                  "http://147.93.45.171:1600/productpagedata"
+                );
                 if (!res.ok) throw new Error(res.statusText);
                 const data = await res.json();
                 if (!Array.isArray(data)) throw new Error("Invalid JSON");
@@ -2482,11 +2689,11 @@
               container.innerHTML = "";
               if (filtered.length === 0) {
                 container.innerHTML = `
-                  <div class="col-12 text-center mt-30">
-                    <p class="text-danger fw-bold">
-                      No “${attrName}” products available.
-                    </p>
-                  </div>`;
+        <div class="col-12 text-center mt-30">
+          <p class="text-danger fw-bold">
+            No “${attrName}” products available.
+          </p>
+        </div>`;
                 currentImages = [];
                 return;
               }
@@ -2494,78 +2701,76 @@
               currentImages = filtered.map((p) => `/uploads/${p.image}`);
 
               filtered.forEach((p, i) => {
+                const slug = getSlugForProduct(p);
+                const productUrl = `/shop-single/${slug}`;
                 container.insertAdjacentHTML(
                   "beforeend",
                   `
-                  <div class="col-1-of-5 mt-30">
-                    <div class="product__item style-3">
-                      <div class="product__img text-center pos-rel">
-                        <a href="shop-single.html">
-                          <img src="/uploads/${p.image}" alt="${p.name}" />
-                        </a>
-                        <ul class="product__action style-2 ul_li">
-                          <li>
-                            <a href="/uploads/${p.image}"
-                               class="img-popup icon-btn"
-                               data-index="${i}">
-                              <i class="far fa-compress-alt"></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#" class="add-to-cart icon-btn"
-                               data-id="${p.id}"
-                               data-name="${p.name}"
-                               data-store="${p.store}"
-                               data-price="${p.price.replace(/[^0-9.]/g, "")}"
-                               data-price_sale="${p.price_sale.replace(
-                                 /[^0-9.]/g,
-                                 ""
-                               )}"
-                               data-image="${p.image}">
-                              <i class="far fa-shopping-basket"></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#" class="add-to-wishlist icon-btn"
-                               data-id="${p.id}"
-                               data-name="${p.name}"
-                               data-store="${p.store}"
-                               data-price="${p.price.replace(/[^0-9.]/g, "")}"
-                               data-price_sale="${p.price_sale.replace(
-                                 /[^0-9.]/g,
-                                 ""
-                               )}"
-                               data-image="${p.image}"
-                               data-sku="${p.sku}"
-                               data-stockstatus="${p.stockstatus}">
-                              <i class="far fa-heart"></i>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="product__content">
-                        <div class="product__review ul_li_center">
-                          <ul class="rating-star ul_li mr-10">
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="fas fa-star"></i></li>
-                            <li><i class="far fa-star"></i></li>
-                            <li><i class="far fa-star"></i></li>
-                          </ul>
-                          <span>(${Math.floor(Math.random() * 100)})</span>
-                        </div>
-                        <h2 class="product__title text-center">
-                          <a href="shop-single.html">${p.name}</a>
-                        </h2>
-                        <h4 class="product__price text-center">
-                          <span class="new">${p.price}</span>
-                          <span class="old">${p.price_sale}</span>
-                        </h4>
-                      </div>
-                      <span class="badge-skew">${p.label}</span>
-                    </div>
-                  </div>
-                `
+        <div class="col-1-of-5 mt-30">
+          <div class="product__item style-3">
+            <div class="product__img text-center pos-rel">
+              <a href="${productUrl}">
+                <img src="/uploads/${p.image}" alt="${(p.name || "").replace(
+                    /"/g,
+                    "&quot;"
+                  )}" />
+              </a>
+              <ul class="product__action style-2 ul_li">
+                <li>
+                  <a href="/uploads/${
+                    p.image
+                  }" class="img-popup icon-btn" data-index="${i}">
+                    <i class="far fa-compress-alt"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" class="add-to-cart icon-btn"
+                     data-id="${p.id}"
+                     data-name="${p.name}"
+                     data-store="${p.store}"
+                     data-price="${p.price.replace(/[^0-9.]/g, "")}"
+                     data-price_sale="${p.price_sale.replace(/[^0-9.]/g, "")}"
+                     data-image="${p.image}">
+                    <i class="far fa-shopping-basket"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" class="add-to-wishlist icon-btn"
+                     data-id="${p.id}"
+                     data-name="${p.name}"
+                     data-store="${p.store}"
+                     data-price="${p.price.replace(/[^0-9.]/g, "")}"
+                     data-price_sale="${p.price_sale.replace(/[^0-9.]/g, "")}"
+                     data-image="${p.image}"
+                     data-sku="${p.sku}"
+                     data-stockstatus="${p.stockstatus}">
+                    <i class="far fa-heart"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="product__content">
+              <div class="product__review ul_li_center">
+                <ul class="rating-star ul_li mr-10">
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="fas fa-star"></i></li>
+                  <li><i class="far fa-star"></i></li>
+                  <li><i class="far fa-star"></i></li>
+                </ul>
+                <span>(${Math.floor(Math.random() * 100)})</span>
+              </div>
+              <h2 class="product__title text-center">
+                <a href="${productUrl}">${p.name}</a>
+              </h2>
+              <h4 class="product__price text-center">
+                <span class="new">${p.price}</span>
+                <span class="old">${p.price_sale}</span>
+              </h4>
+            </div>
+            <span class="badge-skew">${p.label}</span>
+          </div>
+        </div>`
                 );
               });
 
@@ -2575,6 +2780,14 @@
                   currentIndex = +link.dataset.index;
                   openLightbox(currentImages[currentIndex]);
                 });
+              });
+
+              tab.querySelectorAll(".product__img a").forEach((link, idx) => {
+                link.href = `/shop-single/${getSlugForProduct(filtered[idx])}`;
+              });
+
+              tab.querySelectorAll(".product__title a").forEach((link, idx) => {
+                link.href = `/shop-single/${getSlugForProduct(filtered[idx])}`;
               });
             }
 
@@ -2822,10 +3035,10 @@
                         <div class="product-cat__content mt-20">
                           <h3 class="title">welding stud welding</h3>
                           <ul class="list-unstyled">
-                            <li><a href="#!">Bluetooth speaker</a></li>
-                            <li><a href="#!">Robotics vacuum</a></li>
-                            <li><a href="#!">Laser printer</a></li>
-                            <li><a href="#!">Electric frying pan</a></li>
+                            <li><a href="/shop">Bluetooth speaker</a></li>
+                            <li><a href="/shop">Robotics vacuum</a></li>
+                            <li><a href="/shop">Laser printer</a></li>
+                            <li><a href="/shop">Electric frying pan</a></li>
                           </ul>
                         </div>
 
@@ -2912,10 +3125,10 @@
                         <div class="product-cat__content mt-20">
                           <h3 class="title">car automotive engine</h3>
                           <ul class="list-unstyled">
-                            <li><a href="#!">Bluetooth speaker</a></li>
-                            <li><a href="#!">Robotics vacuum</a></li>
-                            <li><a href="#!">Laser printer</a></li>
-                            <li><a href="#!">Electric frying pan</a></li>
+                            <li><a href="/shop">Bluetooth speaker</a></li>
+                            <li><a href="/shop">Robotics vacuum</a></li>
+                            <li><a href="/shop">Laser printer</a></li>
+                            <li><a href="/shop">Electric frying pan</a></li>
                           </ul>
                         </div>
                         <span class="product-cat__number">02</span>
@@ -3001,10 +3214,10 @@
                         <div class="product-cat__content mt-20">
                           <h3 class="title">engines muffler two</h3>
                           <ul class="list-unstyled">
-                            <li><a href="#!">Bluetooth speaker</a></li>
-                            <li><a href="#!">Robotics vacuum</a></li>
-                            <li><a href="#!">Laser printer</a></li>
-                            <li><a href="#!">Electric frying pan</a></li>
+                            <li><a href="/shop">Bluetooth speaker</a></li>
+                            <li><a href="/shop">Robotics vacuum</a></li>
+                            <li><a href="/shop">Laser printer</a></li>
+                            <li><a href="/shop">Electric frying pan</a></li>
                           </ul>
                         </div>
                         <span class="product-cat__number">03</span>
@@ -3090,10 +3303,10 @@
                         <div class="product-cat__content mt-20">
                           <h3 class="title">air suspension car</h3>
                           <ul class="list-unstyled">
-                            <li><a href="#!">Bluetooth speaker</a></li>
-                            <li><a href="#!">Robotics vacuum</a></li>
-                            <li><a href="#!">Laser printer</a></li>
-                            <li><a href="#!">Electric frying pan</a></li>
+                            <li><a href="/shop">Bluetooth speaker</a></li>
+                            <li><a href="/shop">Robotics vacuum</a></li>
+                            <li><a href="/shop">Laser printer</a></li>
+                            <li><a href="/shop">Electric frying pan</a></li>
                           </ul>
                         </div>
                         <span class="product-cat__number">04</span>
@@ -3179,10 +3392,10 @@
                         <div class="product-cat__content mt-20">
                           <h3 class="title">brake pad wheel</h3>
                           <ul class="list-unstyled">
-                            <li><a href="#!">Bluetooth speaker</a></li>
-                            <li><a href="#!">Robotics vacuum</a></li>
-                            <li><a href="#!">Laser printer</a></li>
-                            <li><a href="#!">Electric frying pan</a></li>
+                            <li><a href="/shop">Bluetooth speaker</a></li>
+                            <li><a href="/shop">Robotics vacuum</a></li>
+                            <li><a href="/shop">Laser printer</a></li>
+                            <li><a href="/shop">Electric frying pan</a></li>
                           </ul>
                         </div>
                         <span class="product-cat__number">05</span>
@@ -3268,10 +3481,10 @@
                         <div class="product-cat__content mt-20">
                           <h3 class="title">Smartphone & Tablet</h3>
                           <ul class="list-unstyled">
-                            <li><a href="#!">Bluetooth speaker</a></li>
-                            <li><a href="#!">Robotics vacuum</a></li>
-                            <li><a href="#!">Laser printer</a></li>
-                            <li><a href="#!">Electric frying pan</a></li>
+                            <li><a href="/shop">Bluetooth speaker</a></li>
+                            <li><a href="/shop">Robotics vacuum</a></li>
+                            <li><a href="/shop">Laser printer</a></li>
+                            <li><a href="/shop">Electric frying pan</a></li>
                           </ul>
                         </div>
                         <span class="product-cat__number">06</span>
@@ -3320,22 +3533,26 @@
                   From Expertist
                 </h3>
                 <p>Sumptuous, filling, and temptingly healthy.</p>
-                <a class="hero__btn" href="#!"
+                <a class="hero__btn" href="#"
                   >Make enquiry <i class="far fa-long-arrow-right"></i
                 ></a>
               </div>
               <div class="banner__ofer-box">
-                <img src="assets/img/icon/offer_bg.png" alt="" />
+                <img src="assets/img/icon/offer_bg.png" alt="Image" />
                 <span class="offer-text"
                   >30% <br />
                   <span>OFF</span></span
                 >
               </div>
               <div class="banner-img">
-                <img src="assets/img/product/img_108.png" alt="" />
+                <img
+                  src="https://avatars.mds.yandex.net/i?id=c98619c4312208f0cb6b08186ed20d7aff363515-9147160-images-thumbs&n=13"
+                  alt="Image"
+                  style="width: 401px; height: 362px"
+                />
               </div>
               <div class="banner-offer-text">
-                <img src="assets/img/icon/offer_text.png" alt="" />
+                <img src="assets/img/icon/offer_text.png" alt="Image" />
               </div>
             </div>
           </div>
@@ -3389,7 +3606,26 @@
 
               <script>
                 document.addEventListener("DOMContentLoaded", function () {
-                  fetch("/productpagedata")
+                  function toSeoUrl(str) {
+                    return (str || "")
+                      .toString()
+                      .trim()
+                      .toLowerCase()
+                      .replace(/[\s_]+/g, "-")
+                      .replace(/[^a-z0-9\-]+/g, "")
+                      .replace(/\-+/g, "-")
+                      .replace(/^\-+|\-+$/g, "");
+                  }
+
+                  function getSlugForProduct(p) {
+                    if (typeof p.slug === "string" && p.slug.trim() !== "")
+                      return encodeURIComponent(p.slug.trim());
+                    return encodeURIComponent(
+                      toSeoUrl(p.name || "product-" + (p.id || ""))
+                    );
+                  }
+
+                  fetch("http://147.93.45.171:1600/productpagedata")
                     .then((res) => res.json())
                     .then((data) => {
                       const topRated = data
@@ -3404,24 +3640,28 @@
                         .slice(0, 4);
 
                       const createProductHTML = (product) => {
+                        const slug = getSlugForProduct(product);
+                        const productUrl = `/shop-single/${slug}`;
                         return `
-                          <div class="tx-widget__product-item style-2 tx-product ul_li">
-                            <div class="thumb">
-                              <a href="#">
-                                <img src="/uploads/${product.image}" alt="${product.name}" class="border"/>
-                              </a>
-                            </div>
-                            <div class="content">
-                              <h3>
-                                <a href="shop-single.html?id=${product.id}">${product.name}</a>
-                              </h3>
-                              <h4 class="product__price">
-                                <span class="new">${product.price}</span>
-                                <span class="old">${product.price_sale}</span>
-                              </h4>
-                            </div>
-                          </div>
-                        `;
+          <div class="tx-widget__product-item style-2 tx-product ul_li">
+            <div class="thumb">
+              <a href="${productUrl}">
+                <img src="/uploads/${product.image}" alt="${(
+                          product.name || ""
+                        ).replace(/"/g, "&quot;")}" class="border"/>
+              </a>
+            </div>
+            <div class="content">
+              <h3>
+                <a href="${productUrl}">${product.name}</a>
+              </h3>
+              <h4 class="product__price">
+                <span class="new">${product.price}</span>
+                <span class="old">${product.price_sale}</span>
+              </h4>
+            </div>
+          </div>
+        `;
                       };
 
                       const insertProducts = (containerSelector, products) => {
@@ -3430,10 +3670,10 @@
                         if (!container) return;
 
                         container.innerHTML = `
-                          <div class="tx-widget__product-single">
-                            ${products.map(createProductHTML).join("")}
-                          </div>
-                        `;
+          <div class="tx-widget__product-single">
+            ${products.map(createProductHTML).join("")}
+          </div>
+        `;
                       };
 
                       insertProducts(".top-rated-products", topRated);
@@ -3450,7 +3690,7 @@
                 <div class="add-banner__wrap ml-none-70">
                   <div
                     class="add-banner add-banner__4 add-banner__h476 br-5 bg_img text-center"
-                    data-background="assets/img/bg/bg_18.jpg"
+                    data-background="https://avatars.mds.yandex.net/i?id=167ab586129bfea36ddf3289a5bb062ac4ff5c18-5502280-images-thumbs&n=13"
                   >
                     <span>Get Save 30% off</span>
                     <h3 class="text-capitalize">
@@ -3476,38 +3716,38 @@
           <div class="container mxw_1530">
             <div class="brand__active">
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_01.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_01.png" alt="Image" />
                 </a>
               </div>
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_02.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_02.png" alt="Image" />
                 </a>
               </div>
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_03.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_03.png" alt="Image" />
                 </a>
               </div>
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_04.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_04.png" alt="Image" />
                 </a>
               </div>
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_05.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_05.png" alt="Image" />
                 </a>
               </div>
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_06.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_06.png" alt="Image" />
                 </a>
               </div>
               <div class="brand__item">
-                <a href="#!">
-                  <img src="assets/img/brand/img_03.png" alt="" />
+                <a href="shop.html">
+                  <img src="assets/img/brand/img_03.png" alt="Image" />
                 </a>
               </div>
             </div>
@@ -3518,12 +3758,25 @@
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           try {
-            const res = await fetch("/productcatdata");
+            const res = await fetch("http://147.93.45.171:1600/productcatdata");
             if (!res.ok)
               throw new Error(`Failed to load categories: HTTP ${res.status}`);
             const cats = await res.json();
             if (!Array.isArray(cats))
               throw new Error("Category data is not an array");
+
+            function makeShopLink(a, cat) {
+              a.href = "/shop";
+              const catKey = cat.slug || cat.name || "";
+              a.dataset.cat = catKey;
+              a.addEventListener("click", (ev) => {
+                ev.preventDefault();
+                const q = catKey
+                  ? `?category=${encodeURIComponent(catKey)}`
+                  : "";
+                window.location.href = `/shop${q}`;
+              });
+            }
 
             const sidebarUl = document.querySelector(
               ".product-category__two ul"
@@ -3534,7 +3787,7 @@
                 const li = document.createElement("li");
                 if (cat.parent) li.classList.add("cat-item-has-children");
                 const a = document.createElement("a");
-                a.href = cat.permalink;
+                makeShopLink(a, cat);
                 a.textContent = cat.name;
                 li.appendChild(a);
                 sidebarUl.appendChild(li);
@@ -3551,16 +3804,22 @@
             featured.slice(0, featureItems.length).forEach((cat, idx) => {
               const item = featureItems[idx];
               const imgUrl = `/uploads/${cat.image}`;
+
               item
                 .querySelectorAll(".product-cat__images .tab-pane img")
                 .forEach((img) => (img.src = imgUrl));
               item
                 .querySelectorAll(".product-cat__nav img")
                 .forEach((thumb) => (thumb.src = imgUrl));
+
               const titleEl = item.querySelector(
                 ".product-cat__content .title"
               );
               if (titleEl) titleEl.textContent = cat.name;
+
+              item.querySelectorAll("a").forEach((a) => {
+                makeShopLink(a, cat);
+              });
             });
 
             const altUl = document.querySelector(
@@ -3572,7 +3831,7 @@
                 const li = document.createElement("li");
                 li.classList.add("cat-item-has-children");
                 const a = document.createElement("a");
-                a.href = "#!";
+                makeShopLink(a, cat);
                 a.textContent = cat.name;
                 li.appendChild(a);
                 altUl.appendChild(li);
@@ -3611,7 +3870,7 @@
               <div class="footer__widget col-lg-3 col-md-6 mt-40">
                 <div class="footer__logo mb-20">
                   <a href="index.html"
-                    ><img src="assets/img/logo/logo-2.svg" alt=""
+                    ><img src="assets/img/logo/logo-2.svg" alt="Image"
                   /></a>
                 </div>
                 <p>
@@ -3627,13 +3886,13 @@
                 </ul>
                 <div class="apps-img mt-15 ul_li">
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/google_play.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/google_play.png" alt="Image"
                     /></a>
                   </div>
                   <div class="app mt-15">
-                    <a href="#!"
-                      ><img src="assets/img/icon/app_store.png" alt=""
+                    <a href="index.html"
+                      ><img src="assets/img/icon/app_store.png" alt="Image"
                     /></a>
                   </div>
                 </div>
@@ -3680,7 +3939,8 @@
           <div class="footer__bottom ul_li_center">
             <div class="footer__copyright mt-15">
               &copy; <span id="currentYear" class="text-light"></span>
-              <a href="index.html">Themexriver</a> . All Rights Reserved.
+              <a href="index.html">Themexriver</a>
+              <span class="text-light">. All Rights Reserved.</span>
             </div>
 
             <script>
@@ -3691,25 +3951,25 @@
             </script>
 
             <div class="footer__social mt-15">
-              <a href="https://www.facebook.com/"
+              <a href="https://www.facebook.com/" target="_blank"
                 ><i class="fab fa-facebook-f"></i
               ></a>
-              <a href="https://www.twitter.com/"
+              <a href="https://www.twitter.com/" target="_blank"
                 ><i class="fab fa-twitter"></i
               ></a>
-              <a href="https://www.instagram.com/"
+              <a href="https://www.instagram.com/" target="_blank"
                 ><i class="fab fa-instagram"></i
               ></a>
-              <a href="https://www.youtube.com/"
+              <a href="https://www.youtube.com/" target="_blank"
                 ><i class="fab fa-youtube"></i
               ></a>
-              <a href="https://www.pinterest.com/"
+              <a href="https://www.pinterest.com/" target="_blank"
                 ><i class="fab fa-pinterest"></i
               ></a>
             </div>
 
             <div class="payment_method mt-15">
-              <img src="assets/img/bg/payment_method.png" alt="" />
+              <img src="assets/img/bg/payment_method.png" alt="Image" />
             </div>
           </div>
         </div>
@@ -3750,11 +4010,14 @@
               }
 
               try {
-                const res = await fetch("/newsletterpost", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email }),
-                });
+                const res = await fetch(
+                  "http://147.93.45.171:1600/newsletterpost",
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                  }
+                );
                 const text = await res.text();
                 if (res.ok) {
                   showBanner("Subscribed successfully!", "success");

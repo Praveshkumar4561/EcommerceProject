@@ -18,7 +18,11 @@
     <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
     <link rel="stylesheet" href="assets/css/nice-select.css" />
     <link rel="stylesheet" href="assets/css/main.css" />
-
+    <link
+      rel="preload"
+      as="image"
+      href="assets/img/shapes/page-header-shape.png"
+    />
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         document
@@ -70,6 +74,7 @@
                 "
               ></span>
             </div>
+
             <div class="top-bar-right">
               <ul class="top-right-list">
                 <li><a href="contact.html">Store Location</a></li>
@@ -117,6 +122,8 @@
                     src="assets/img/logo/logo-1.png"
                     alt="Logo"
                     id="site-logo"
+                    width="200"
+                    height="60"
                   />
                 </a>
               </div>
@@ -155,18 +162,21 @@
                       >+(258) 2159-2159</a
                     >
                   </div>
-                  <a href="tel:+25821592159" class="icon">
+                  <a href="tel:+25821592159" class="icon" aria-label="Call us">
                     <i class="fa-regular fa-phone"></i>
                   </a>
                 </li>
                 <li>
-                  <a href="wishlist.html" class="icon">
+                  <a
+                    href="wishlist.html"
+                    class="icon"
+                    aria-label="View wishlist"
+                  >
                     <i class="fa-sharp fa-regular fa-heart"></i>
                   </a>
                 </li>
-
                 <li>
-                  <a href="cart.html" class="icon">
+                  <a href="cart.html" class="icon" aria-label="View cart">
                     <i class="fa-light fa-bag-shopping"></i>
                     <span>0</span>
                   </a>
@@ -217,7 +227,7 @@
                     <a href="shop-grid.html">men</a>
                   </li>
                   <li class="menu-item-has-children">
-                    <a href="#">Pages</a>
+                    <a href="/about">Pages</a>
                     <ul>
                       <li><a href="about.html">About</a></li>
                       <li><a href="login.html">Login</a></li>
@@ -242,9 +252,13 @@
               <div class="header-right">
                 <span>Get 30% Discount Now <span>Sale</span></span>
                 <div class="header-right-item">
-                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
-                    ><i class="fa-sharp fa-solid fa-bars"></i
-                  ></a>
+                  <button
+                    class="mobile-side-menu-toggle"
+                    aria-label="Toggle mobile menu"
+                    type="button"
+                  >
+                    <i class="fa-sharp fa-solid fa-bars" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
             </div>
@@ -308,22 +322,26 @@
 
     <section class="page-header">
       <div class="shape">
-        <img src="assets/img/shapes/page-header-shape.png" alt="shape" />
+        <img
+          src="assets/img/shapes/page-header-shape.png"
+          alt="shape"
+          width="1920"
+          height="400"
+          style="width: 100%; height: auto"
+        />
       </div>
       <div class="container">
         <div class="page-header-content">
           <h1 class="title">Contact</h1>
-          <h4 class="sub-title">
+          <h2 class="sub-title">
             <span class="home">
-              <a href="#">
-                <span>Home</span>
-              </a>
+              <a href="#"><span>Home</span></a>
             </span>
-            <span class="icon"><i class="fa-solid fa-angle-right"></i></span>
-            <span class="inner">
-              <span>Contact</span>
+            <span class="icon">
+              <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
             </span>
-          </h4>
+            <span class="inner"><span>Contact</span></span>
+          </h2>
         </div>
       </div>
     </section>
@@ -331,7 +349,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -397,12 +417,14 @@
                   <div class="form-group row">
                     <div class="col-md-6">
                       <div class="form-item">
-                        <h4 class="form-header">Your name</h4>
+                        <label for="name" class="form-header form-header-name"
+                          >Your name</label
+                        >
                         <input
                           type="text"
                           id="name"
                           name="name"
-                          class="form-control"
+                          class="form-control py-4"
                           placeholder="Enter your name"
                           required
                         />
@@ -410,12 +432,14 @@
                     </div>
                     <div class="col-md-6">
                       <div class="form-item">
-                        <h4 class="form-header">Email address</h4>
+                        <label for="email" class="form-header form-header-name"
+                          >Email address</label
+                        >
                         <input
                           type="email"
                           id="email"
                           name="email"
-                          class="form-control"
+                          class="form-control py-4"
                           placeholder="Enter your email"
                           required
                         />
@@ -426,12 +450,16 @@
                   <div class="form-group row">
                     <div class="col-md-12">
                       <div class="form-item">
-                        <h4 class="form-header">Subject</h4>
+                        <label
+                          for="subject"
+                          class="form-header form-header-name"
+                          >Subject</label
+                        >
                         <input
                           type="text"
                           id="subject"
                           name="subject"
-                          class="form-control"
+                          class="form-control py-4"
                           placeholder="Subject"
                           required
                         />
@@ -442,7 +470,11 @@
                   <div class="form-group row">
                     <div class="col-md-12">
                       <div class="form-item message-item">
-                        <h4 class="form-header">Write Your Message</h4>
+                        <label
+                          for="content"
+                          class="form-header form-header-name"
+                          >Write Your Message</label
+                        >
                         <textarea
                           id="content"
                           name="content"
@@ -450,6 +482,7 @@
                           rows="5"
                           class="form-control"
                           placeholder="Your message..."
+                          style="height: 100px"
                           required
                         ></textarea>
                       </div>
@@ -513,7 +546,7 @@
                 }
 
                 try {
-                  const res = await fetch("/contact", {
+                  const res = await fetch("http://147.93.45.171:1600/contact", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, email, subject, content }),
@@ -576,7 +609,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -618,7 +651,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -749,7 +782,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -757,7 +790,7 @@
                   .slice(0, 5);
 
                 if (!matches.length) {
-                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No matching products found at this time.</div>`;
                 } else {
                   resultBox.innerHTML =
                     matches
@@ -766,20 +799,18 @@
                         const mainPrice = formatPrice(p.price);
                         const salePrice = p.price_sale
                           ? `<strong class="text-dark me-2">${formatPrice(
-                              p.price_sale
+                              p.price
                             )}</strong>
-                          <s class="fw-bold text-danger">${formatPrice(
-                            p.price
-                          )}</s>`
+                              <s class="fw-bold text-danger">${formatPrice(
+                                p.price_sale
+                              )}</s>`
                           : `<strong class="fw-bold text-dark">${formatPrice(
                               p.price
                             )}</strong>`;
 
                         return `
                     <div
-                      onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                        q
-                      )}'"
+                     onclick="window.location.href='/shop'"
                       style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                     >
                       <img src="/uploads/${img}" alt="${p.name}"
@@ -796,9 +827,7 @@
                       .join("") +
                     `
                   <div
-                    onclick="window.location.href='shop.html?search=${encodeURIComponent(
-                      q
-                    )}'"
+                 onclick="window.location.href='/shop'"
                     style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
                   >
                     Show all results
@@ -827,12 +856,15 @@
     <div class="map-wrapper pb-130">
       <div class="container">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d8826.923787362664!2d-118.27754354757262!3d34.03471770929568!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf6f254608f4!2sLos%20Angeles%2C%20California%2C%20Hoa%20K%E1%BB%B3!5e0!3m2!1svi!2s!4v1566525118697!5m2!1svi!2s"
+          title="Map of Los Angeles, California"
+          src="https://www.google.com/maps/embed?pb=..."
           width="100%"
           height="600"
           frameborder="0"
           style="border: 0"
           allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
     </div>
@@ -954,7 +986,7 @@
                 <div class="footer-form mb-20">
                   <form action="#" class="rr-subscribe-form">
                     <input
-                      class="form-control"
+                      class="form-control py-4"
                       type="email"
                       name="email"
                       placeholder="Email address"
@@ -1012,11 +1044,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1041,15 +1076,19 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="#"
-                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  <a href="javascript:void(0)"
+                    ><img
+                      src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
+                      alt="img"
+                      loading="lazy"
+                      style="width: 264px; height: 24px"
                   /></a>
                 </div>
               </div>
             </div>
             <div class="col-lg-6">
               <p>
-                Copyright & Design <span id="designYear">2024</span>
+                Copyright & Design <span id="designYear">2025</span>
                 <span>©Roiser</span>. All Right Reserved
               </p>
             </div>
@@ -1069,7 +1108,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1079,7 +1118,7 @@
             s.type = "text/css";
 
             s.textContent = `
-                            body {
+            body {
                 font-family: ${cfg.font_family}, sans-serif !important;
                 font-size: ${cfg.body_font_size}px !important;
               }
@@ -1102,7 +1141,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1121,7 +1160,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1180,5 +1219,6 @@
     <script src="assets/js/vendor/swiper.min.js"></script>
     <script src="assets/js/vendor/nice-select.js"></script>
     <script src="assets/js/main.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
   </body>
 </html>
