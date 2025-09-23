@@ -6,6 +6,7 @@ import history from "connect-history-api-fallback";
 
 export default defineConfig({
   plugins: [react({ fastRefresh: true }), svgr(), visualizer({ open: false })],
+
   server: {
     port: 5173,
     open: true,
@@ -28,13 +29,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
-
       "/themes": {
         target: "http://147.93.45.171:1600",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/themes/, "/themes"),
       },
-
       "/upload": {
         target: "http://147.93.45.171:1600",
         changeOrigin: true,
@@ -52,5 +51,6 @@ export default defineConfig({
   build: {
     target: "es2020",
     polyfillDynamicImport: false,
+    base: "/",
   },
 });
