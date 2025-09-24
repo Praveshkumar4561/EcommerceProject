@@ -13,9 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import axios from "axios";
-import { jsPDF } from "jspdf";
 import { Helmet } from "react-helmet-async";
 
 function InvoiceEdit() {
@@ -35,7 +34,7 @@ function InvoiceEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -181,7 +180,7 @@ function InvoiceEdit() {
   useEffect(() => {
     let alldata = async () => {
       let response = await axios.get(
-        `http://89.116.170.231:1600/checkoutsome/${id}`
+        `http://147.93.45.171:1600/checkoutsome/${id}`
       );
       setInvoice(response.data);
     };
@@ -205,91 +204,308 @@ function InvoiceEdit() {
     });
 
   const downloadInvoice = async () => {
-    const doc = new jsPDF();
-
-    if (!invoice || !Array.isArray(invoice) || invoice.length === 0) {
+    if (!Array.isArray(invoice) || invoice.length === 0) {
       console.error("No invoice data available!");
       return;
     }
 
-    for (let index = 0; index < invoice.length; index++) {
-      const data = invoice[index];
-      doc.setFontSize(16);
-      const invoiceX = 14;
-      const orderNumberX = 120;
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-      doc.text(`Invoice Code: #${data.invoice_number.slice(-2)}`, invoiceX, 22);
-      doc.text(`Order Number: ${data.order_number}`, orderNumberX, 22);
-      doc.text(`Customer: ${data.first_name} ${data.last_name}`, 14, 30);
-      doc.text(`Email: ${data.email}`, 14, 38);
-      doc.text(`Phone: ${data.phone_number}`, 14, 46);
-      doc.text(`Address: ${data.address} ${data.country}`, 14, 54);
-      doc.text(
+    for (let i = 0; i < invoice.length; i++) {
+      const data = invoice[i];
+      const page = pdfDoc.addPage([595, 842]);
+      const { width, height } = page.getSize();
+      let y = height - 40;
+
+      page.drawText(`Invoice Code: #${data.invoice_number.slice(-2)}`, {
+        x: 14,
+        y,
+        font: fontBold,
+        size: 16,
+      });
+      page.drawText(`Order Number: ${data.order_number}`, {
+        x: width - 180,
+        y,
+        font: fontBold,
+        size: 16,
+      });
+      y -= 30;
+
+      [
+        `Customer: ${data.first_name} ${data.last_name}`,
+        `Email: ${data.email}`,
+        `Phone: ${data.phone_number}`,
+        `Address: ${data.address}, ${data.country}`,
         `Issue Date: ${new Date(data.date).toLocaleDateString("en-GB", {
           day: "numeric",
           month: "long",
           year: "numeric",
         })}`,
-        14,
-        62
-      );
-
-      let yOffset = 70;
+      ].forEach((line) => {
+        page.drawText(line, { x: 14, y, font, size: 12 });
+        y -= 20;
+      });
 
       if (data.image) {
         try {
-          const imageUrl = `http://89.116.170.231:1600/src/image/${data.image}`;
-          const base64 = await loadImageAsBase64(imageUrl);
-          doc.addImage(base64, "JPEG", 14, yOffset, 40, 40);
-          yOffset += 50;
-        } catch (err) {
-          console.warn("Image load failed:", err);
-          yOffset += 10;
+          const b64 = await fetchImageAsBase64(
+            `http://147.93.45.171:1600/src/image/${data.image}`
+          );
+          const imgBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+          const jpg = await pdfDoc.embedJpg(imgBytes);
+          const dims = jpg.scale(0.15);
+          page.drawImage(jpg, {
+            x: 14,
+            y: y - dims.height,
+            width: dims.width,
+            height: dims.height,
+          });
+          y -= dims.height + 10;
+        } catch (e) {
+          console.warn("Failed to embed main image:", e);
+          y -= 10;
         }
       }
 
-      doc.text(`Product Name: ${data.name}`, 14, yOffset);
-      yOffset += 8;
-      doc.text(`Quantity: ${data.quantity}`, 14, yOffset);
-      yOffset += 8;
-      doc.text(`SubTotal: $${data.subtotal}`, 14, yOffset);
-      yOffset += 8;
-      doc.text(`Shipping Fee: $${data.shippingfee}`, 14, yOffset);
-      yOffset += 8;
+      [
+        `Product Name: ${data.name}`,
+        `Quantity: ${data.quantity}`,
+        `SubTotal: $${data.subtotal}`,
+      ].forEach((line) => {
+        page.drawText(line, { x: 14, y, font, size: 12 });
+        y -= 18;
+      });
 
-      doc.setFontSize(12);
-      if (Array.isArray(data.items) && data.items.length > 0) {
-        data.items.forEach((item) => {
-          doc.text(
-            `${item.name} - $${item.price} x ${item.quantity}`,
-            14,
-            yOffset
-          );
-          yOffset += 8;
-          doc.text(`Product Name: ${item.name}`, 14, yOffset);
-          yOffset += 8;
-          doc.text(`Price: $${item.price}`, 14, yOffset);
-          yOffset += 8;
-          doc.text(`Store: ${item.store}`, 14, yOffset);
-          yOffset += 8;
-          doc.text(`Quantity: ${item.quantity}`, 14, yOffset);
-          yOffset += 8;
-          doc.text(`Total: $${item.price * item.quantity}`, 14, yOffset);
-          yOffset += 8;
-        });
+      y -= 10;
+      if (Array.isArray(data.items)) {
+        for (let item of data.items) {
+          if (item.image) {
+            try {
+              const b64 = await fetchImageAsBase64(
+                `http://147.93.45.171:1600/src/image/${item.image}`
+              );
+              const imgBytes = Uint8Array.from(atob(b64), (c) =>
+                c.charCodeAt(0)
+              );
+              const jpg = await pdfDoc.embedJpg(imgBytes);
+              const dims = jpg.scale(0.1);
+              page.drawImage(jpg, {
+                x: 14,
+                y: y - dims.height + 4,
+                width: dims.width,
+                height: dims.height,
+              });
+            } catch (e) {
+              console.warn("Failed to embed item image:", e);
+            }
+          }
+
+          page.drawText(`${item.name} - $${item.price} x ${item.quantity}`, {
+            x: 14 + 60,
+            y,
+            font,
+            size: 10,
+          });
+          y -= 16;
+          page.drawText(`Store: ${item.store}`, {
+            x: 14 + 60,
+            y,
+            font,
+            size: 10,
+          });
+          y -= 16;
+          page.drawText(`Total: $${(item.price * item.quantity).toFixed(2)}`, {
+            x: 14 + 60,
+            y,
+            font,
+            size: 10,
+          });
+          y -= 20;
+
+          if (y < 100) {
+            page.addPage([595, 842]);
+            y = page.getSize().height - 40;
+          }
+        }
       }
 
-      doc.text(`Payment Method: Cash on Delivery`, 14, yOffset);
-      yOffset += 8;
-      doc.text(`Grand Total: $${data.total}`, 14, yOffset);
-      yOffset += 8;
-
-      if (invoice.length > 1 && index !== invoice.length - 1) {
-        doc.addPage();
-      }
+      [
+        `Payment Method: Cash on Delivery`,
+        `Grand Total: $${data.total}`,
+      ].forEach((line) => {
+        page.drawText(line, { x: 14, y, font: fontBold, size: 12 });
+        y -= 20;
+      });
     }
 
-    doc.save(`Invoice-${invoice[0].invoice_number}.pdf`);
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Invoice-${invoice[0].invoice_number}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const fetchImageAsBase64 = async (url) => {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Image load failed"));
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const printInvoice = async () => {
+    if (!Array.isArray(invoice) || invoice.length === 0) {
+      console.error("No invoice data available!");
+      return;
+    }
+
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    for (let i = 0; i < invoice.length; i++) {
+      const data = invoice[i];
+      const page = pdfDoc.addPage([595, 842]);
+      const { width, height } = page.getSize();
+      let y = height - 40;
+
+      page.drawText(`Invoice Code: #${data.invoice_number.slice(-2)}`, {
+        x: 40,
+        y,
+        font: fontBold,
+        size: 16,
+      });
+      page.drawText(`Order Number: ${data.order_number}`, {
+        x: width - 200,
+        y,
+        font: fontBold,
+        size: 16,
+      });
+      y -= 30;
+
+      [
+        `Customer: ${data.first_name} ${data.last_name}`,
+        `Email: ${data.email}`,
+        `Phone: ${data.phone_number}`,
+        `Address: ${data.address}, ${data.country}`,
+        `Issue Date: ${new Date(data.date).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}`,
+      ].forEach((line) => {
+        page.drawText(line, { x: 40, y, font, size: 12 });
+        y -= 20;
+      });
+
+      y -= 10;
+      if (data.image) {
+        try {
+          const b64 = await fetchImageAsBase64(
+            `http://147.93.45.171:1600/src/image/${data.image}`
+          );
+          const imgBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+          const jpg = await pdfDoc.embedJpg(imgBytes);
+          const dims = jpg.scale(0.15);
+          page.drawImage(jpg, {
+            x: 40,
+            y: y - dims.height,
+            width: dims.width,
+            height: dims.height,
+          });
+          y -= dims.height + 10;
+        } catch (e) {
+          console.warn("Failed to embed main image:", e);
+        }
+      }
+
+      [
+        `Product Name: ${data.name}`,
+        `Quantity: ${data.quantity}`,
+        `SubTotal: $${data.subtotal}`,
+      ].forEach((line) => {
+        page.drawText(line, { x: 40, y, font, size: 12 });
+        y -= 18;
+      });
+
+      y -= 10;
+      if (Array.isArray(data.items)) {
+        for (let item of data.items) {
+          if (item.image) {
+            try {
+              const b64 = await fetchImageAsBase64(
+                `http://147.93.45.171:1600/src/image/${item.image}`
+              );
+              const imgBytes = Uint8Array.from(atob(b64), (c) =>
+                c.charCodeAt(0)
+              );
+              const jpg = await pdfDoc.embedJpg(imgBytes);
+              const dims = jpg.scale(0.1);
+              page.drawImage(jpg, {
+                x: 40,
+                y: y - dims.height + 4,
+                width: dims.width,
+                height: dims.height,
+              });
+            } catch (e) {
+              console.warn("Failed to embed item image:", e);
+            }
+          }
+
+          page.drawText(`${item.name} - $${item.price} x ${item.quantity}`, {
+            x: 40 + 60,
+            y,
+            font,
+            size: 10,
+          });
+          y -= dims?.height + 8 || 16;
+
+          page.drawText(`Store: ${item.store}`, { x: 60, y, font, size: 10 });
+          y -= 16;
+          page.drawText(`Total: $${(item.price * item.quantity).toFixed(2)}`, {
+            x: 60,
+            y,
+            font,
+            size: 10,
+          });
+          y -= 20;
+
+          if (y < 100) {
+            page.addPage([595, 842]);
+            y = page.getSize().height - 40;
+          }
+        }
+      }
+
+      [
+        `Payment Method: Cash on Delivery`,
+        `Grand Total: $${data.total}`,
+      ].forEach((line) => {
+        page.drawText(line, { x: 40, y, font: fontBold, size: 12 });
+        y -= 20;
+      });
+    }
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const printWindow = window.open(url, "_blank");
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.focus();
+        printWindow.print();
+      };
+    }
   };
 
   return (
@@ -305,12 +521,12 @@ function InvoiceEdit() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -323,10 +539,10 @@ function InvoiceEdit() {
         />
         <meta property="og:title" content="Invoices | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -418,11 +634,11 @@ function InvoiceEdit() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1016,7 +1232,7 @@ function InvoiceEdit() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1831,46 +2047,6 @@ function InvoiceEdit() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2286,9 +2462,12 @@ function InvoiceEdit() {
 
       <div className="container-fluid">
         <div className="container">
-          <div className="row">
+          <div className="row button-print1">
             <div className="col-lg-12 d-flex flex-row gap-2 justify-content-end ms-lg-5 button-print mt-2 me-0">
-              <button className="btn btn-outline-success border d-flex flex-row align-items-center rounded py-4 gap-1 cart-cart">
+              <button
+                className="btn btn-outline-success border d-flex flex-row align-items-center rounded py-4 gap-1 cart-cart"
+                onClick={printInvoice}
+              >
                 <FontAwesomeIcon icon={faPrint} className="me-1" />
                 Print Invoice
               </button>
@@ -2393,7 +2572,7 @@ function InvoiceEdit() {
                           <td>{data.id}</td>
                           <td>
                             <img
-                              src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                              src={`http://147.93.45.171:1600/src/image/${data.image}`}
                               alt="RxLYTE"
                               className="w-25 img-thumbnail"
                             />

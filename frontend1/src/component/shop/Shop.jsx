@@ -25,7 +25,7 @@ function Shop() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -42,9 +42,7 @@ function Shop() {
   }, []);
 
   let productimage = async () => {
-    let response = await axios.get(
-      "http://89.116.170.231:1600/productpagedata"
-    );
+    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
     setImage(response.data);
   };
 
@@ -54,7 +52,7 @@ function Shop() {
     const detailsdata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/productpagedata"
+          "http://147.93.45.171:1600/productpagedata"
         );
         const filteredData = response.data.filter(
           (detail) => detail.status === "Published" || detail.status === "Draft"
@@ -81,7 +79,7 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://89.116.170.231:1600/addcart", formData);
+      await axios.post("http://147.93.45.171:1600/addcart", formData);
       setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
@@ -109,7 +107,7 @@ function Shop() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/productlabelsdata"
+          "http://147.93.45.171:1600/productlabelsdata"
         );
         const filteredData = response.data.filter(
           (label) => label.status === "Published" || label.status === "Draft"
@@ -136,7 +134,7 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://89.116.170.231:1600/wishlistpost", formData);
+      await axios.post("http://147.93.45.171:1600/wishlistpost", formData);
       setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
@@ -192,11 +190,11 @@ function Shop() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -210,7 +208,7 @@ function Shop() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setUser(response.data);
       } catch (error) {
@@ -226,7 +224,7 @@ function Shop() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -240,7 +238,7 @@ function Shop() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setUser(response.data);
       } catch (error) {
@@ -260,13 +258,13 @@ function Shop() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv724100.hstgr.cloud/",
+            item: "http://srv689968.hstgr.cloud/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Shop",
-            item: "http://srv724100.hstgr.cloud/shop",
+            item: "http://srv689968.hstgr.cloud/shop",
           },
         ],
       },
@@ -350,11 +348,11 @@ function Shop() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -366,7 +364,7 @@ function Shop() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setUser(response.data);
       } catch (error) {
@@ -378,7 +376,7 @@ function Shop() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/themestylesdata")
+      .get("http://147.93.45.171:1600/themestylesdata")
       .then((res) => setStyles(res.data))
       .catch((err) => console.error("Error fetching styles:", err));
   }, []);
@@ -388,7 +386,7 @@ function Shop() {
       user?.background_color ||
       (user?.background_image ? "transparent" : "#f2f5f7"),
     backgroundImage: user?.background_image
-      ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+      ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
       : "none",
     backgroundSize: "cover",
     backgroundPosition: "center",
@@ -437,7 +435,7 @@ function Shop() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://89.116.170.231:1600/adsdata");
+        const response = await axios.get("http://147.93.45.171:1600/adsdata");
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -457,7 +455,7 @@ function Shop() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/cookiesalldata"
+          "http://147.93.45.171:1600/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -504,7 +502,7 @@ function Shop() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -540,7 +538,7 @@ function Shop() {
           content="Explore our latest collection and shop online for the best deals on top-quality products. Fast shipping & secure checkout available."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/shop" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/shop" />
       </Helmet>
 
       <div className="container-fluid">
@@ -568,17 +566,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -720,7 +718,7 @@ function Shop() {
                       alt="Cart"
                       className="img-fluid profiles1 mt-1 pt-0 navbar-shop cart-image"
                     />
-                    <div className="addcarts ps-1 pt-lg-0 mt-lg-0 count-badge1">
+                    <div className="addcarts ps-2 pt-lg-0 mt-lg-0 count-badge1">
                       {count}
                     </div>
                   </Link>
@@ -841,17 +839,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -892,12 +890,12 @@ function Shop() {
                     aria-label={`View details for ${data.image}`}
                   >
                     <img
-                      src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                      src={`http://147.93.45.171:1600/src/image/${data.image}`}
                       alt={`Product ${key + 1}: ${data.image}`}
                       srcSet={`
-                      http://89.116.170.231:1600/src/image/${data.image}?w=150&h=150&fit=cover 150w,
-                      http://89.116.170.231:1600/src/image/${data.image}?w=204&h=204&fit=cover 204w,
-                      http://89.116.170.231:1600/src/image/${data.image}?w=300&h=300&fit=cover 300w
+                      http://147.93.45.171:1600/src/image/${data.image}?w=150&h=150&fit=cover 150w,
+                      http://147.93.45.171:1600/src/image/${data.image}?w=204&h=204&fit=cover 204w,
+                      http://147.93.45.171:1600/src/image/${data.image}?w=300&h=300&fit=cover 300w
                     `}
                       sizes="(max-width: 600px) 150px, (max-width: 1024px) 204px, 300px"
                     />
@@ -1038,7 +1036,7 @@ function Shop() {
                 );
                 const labelColor = productLabel ? productLabel.color : "green";
                 const productImage = data.image
-                  ? `http://89.116.170.231:1600/src/image/${data.image}`
+                  ? `http://147.93.45.171:1600/src/image/${data.image}`
                   : "/path/to/default-image.jpg";
 
                 return (
@@ -1059,13 +1057,13 @@ function Shop() {
                       <Link to={`/${url.productDetails}`}>
                         <img
                           src={productImage}
+                          className=" w-100 h-100 object-fit-cover border-0 image-watch"
+                          style={{ cursor: "pointer" }}
                           alt={
                             data.name
                               ? `${data.name} product image`
                               : "Product image"
                           }
-                          className="w-100 h-100 object-fit-cover border-0 image-watch"
-                          style={{ cursor: "pointer" }}
                           loading="lazy"
                         />
                       </Link>
@@ -1153,17 +1151,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -1195,9 +1193,12 @@ function Shop() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -1293,7 +1294,8 @@ function Shop() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <div className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </div>
             </div>
           </div>
@@ -1325,17 +1327,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />

@@ -15,7 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import axios from "axios";
 import cutting from "../../../assets/Cutting.webp";
 import { Helmet } from "react-helmet-async";
@@ -171,7 +171,7 @@ function ProductAttributesEdit() {
     (async () => {
       try {
         const { data } = await axios.get(
-          `http://89.116.170.231:1600/attributesomedata/${id}`
+          `http://147.93.45.171:1600/attributesomedata/${id}`
         );
         const row = data[0];
         const raw = row.options;
@@ -278,7 +278,7 @@ function ProductAttributesEdit() {
 
     try {
       const res = await axios.put(
-        `http://89.116.170.231:1600/updateattributes/${id}`,
+        `http://147.93.45.171:1600/updateattributes/${id}`,
         fm,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -298,7 +298,7 @@ function ProductAttributesEdit() {
 
   let attributedata = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/attributesomedata/${id}`
+      `http://147.93.45.171:1600/attributesomedata/${id}`
     );
     setUser(response.data[0]);
   };
@@ -325,7 +325,7 @@ function ProductAttributesEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -344,12 +344,12 @@ function ProductAttributesEdit() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -362,10 +362,10 @@ function ProductAttributesEdit() {
         />
         <meta property="og:title" content="Edit product attributes | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -457,11 +457,11 @@ function ProductAttributesEdit() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1055,7 +1055,7 @@ function ProductAttributesEdit() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1870,46 +1870,7 @@ function ProductAttributesEdit() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2419,7 +2380,7 @@ function ProductAttributesEdit() {
                       <tr>
                         <th className="text-center fw-light">#</th>
                         <th className="text-center fw-light">Is Default?</th>
-                        <th className="text-center fw-light">Title</th>
+                        <th className="text-center fw-light">Value</th>
                         <th className="text-center fw-light">Color</th>
                         <th className="text-center fw-light">Image</th>
                         <th className="text-center fw-light">Remove</th>
@@ -2450,7 +2411,7 @@ function ProductAttributesEdit() {
                               name="title"
                               value={attribute.title}
                               className="form-control py-4 cart-cart"
-                              placeholder="Title"
+                              placeholder="Value"
                               onChange={(e) => handleInputChange(index, e)}
                             />
                           </td>

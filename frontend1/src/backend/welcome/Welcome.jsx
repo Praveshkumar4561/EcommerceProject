@@ -8,6 +8,10 @@ import {
   faBell,
   faMoon,
   faEnvelope,
+  faEye,
+  faUser,
+  faFile,
+  faBolt,
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
@@ -193,16 +197,14 @@ function Welcome() {
   let [count1, setCount1] = useState(0);
 
   let alldata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/alldata");
+    let response = await axios.get("http://147.93.45.171:1600/alldata");
     setCount1(response.data.length);
   };
 
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get(
-      "http://89.116.170.231:1600/productpagedata"
-    );
+    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
     setCount2(response.data.length);
   };
   showdata();
@@ -210,7 +212,7 @@ function Welcome() {
   let [count4, setCount4] = useState(0);
 
   let reviews = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/reviewdata");
+    let response = await axios.get("http://147.93.45.171:1600/reviewdata");
     setCount4(response.data.length);
   };
   reviews();
@@ -219,7 +221,7 @@ function Welcome() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -239,7 +241,7 @@ function Welcome() {
     const blogpostdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/blogpostdata"
+          "http://147.93.45.171:1600/blogpostdata"
         );
         setUser(response.data);
       } catch (error) {
@@ -345,7 +347,7 @@ function Welcome() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://89.116.170.231:1600/analytics");
+      const response = await axios.get("http://147.93.45.171:1600/analytics");
       const responseData = response.data;
       const labels = [];
       const visitors = [];
@@ -385,7 +387,7 @@ function Welcome() {
 
   const fetchSummary = async () => {
     try {
-      const response = await axios.get("http://89.116.170.231:1600/summary");
+      const response = await axios.get("http://147.93.45.171:1600/summary");
       setSummary(response.data);
     } catch (error) {
       console.error("Error fetching summary", error);
@@ -394,7 +396,7 @@ function Welcome() {
 
   const fetchCountryVisitors = async () => {
     try {
-      const res = await fetch("http://89.116.170.231:1600/country-visits");
+      const res = await fetch("http://147.93.45.171:1600/country-visits");
       const data = await res.json();
       setVisitorData(data);
     } catch (error) {
@@ -439,12 +441,12 @@ function Welcome() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -457,10 +459,10 @@ function Welcome() {
         />
         <meta property="og:title" content="Dashboard | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -573,13 +575,11 @@ function Welcome() {
             </span>
 
             <Link to="/admin/ecommerce/orders">
-              <Link to="/admin/ecommerce/orders">
-                <img
-                  src={Shopping}
-                  alt="Shopping"
-                  className="search-box search-box1"
-                />
-              </Link>
+              <img
+                src={Shopping}
+                alt="Shopping"
+                className="search-box search-box1"
+              />
             </Link>
           </div>
         </div>
@@ -1159,7 +1159,7 @@ function Welcome() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1977,46 +1977,6 @@ function Welcome() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2565,7 +2525,10 @@ function Welcome() {
 
             <div className="stats d-flex gap-0 flex-wrap session-para1 cart-cart">
               <div className="stat border mt-3 d-flex flex-row justify-content-start session-para1 align-items-start">
-                <i className="fas fa-eye bg-success px-2 py-2 rounded text-light mt-2"></i>
+                <FontAwesomeIcon
+                  icon={faEye}
+                  className="bg-success px-2 py-2 rounded text-light mt-2"
+                />
                 <div>
                   <p className="sessional ms-2">Sessions</p>
                   <h4 className="sessional1 ms-2 sales-font">201</h4>
@@ -2573,7 +2536,10 @@ function Welcome() {
               </div>
 
               <div className="stat border mt-3 d-flex justify-content-start w- align-items-start flex-row ">
-                <i className="fas fa-user bg-info px-2 py-2 rounded text-light mt-2"></i>
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="bg-info px-2 py-2 rounded text-light mt-2"
+                />
                 <div>
                   <p className="sessional ms-2">Visitors</p>
                   <h4 className="sessional1 ms-2 sales-font">
@@ -2583,7 +2549,10 @@ function Welcome() {
               </div>
 
               <div className="stat border mt-3 d-flex flex-row justify-content-start w- align-items-start">
-                <i className="fas fa-file-alt bg-primary px-2 py-2 rounded text-light mt-2"></i>
+                <FontAwesomeIcon
+                  icon={faFile}
+                  className="bg-primary px-2 py-2 rounded text-light mt-2"
+                />
                 <div className="ms-2">
                   <p className="sessional ms-2 ms-lg-0">Pageviews</p>
                   <h4 className="sessional1 ms-0 sales-font text-start">
@@ -2593,7 +2562,10 @@ function Welcome() {
               </div>
 
               <div className="stat border mt-3 d-flex flex-row justify-content-start w- align-items-start">
-                <i className="fas fa-bolt bg-warning px-2 py-2 rounded text-light mt-2"></i>
+                <FontAwesomeIcon
+                  icon={faBolt}
+                  className="bg-warning px-2 py-2 rounded text-light mt-2"
+                />
                 <div>
                   <p className="sessional ms-2">Bounce Rate</p>
                   <h4 className="sessional1 ms-2 sales-font">56%</h4>

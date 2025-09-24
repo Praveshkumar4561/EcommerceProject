@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import { applyTypographyStyles } from "../src/typography";
@@ -9,6 +10,15 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+// import AddCart from "./component/addcart/AddCart.jsx";
+// Theme components
+import ThemeLoader from "./component/ThemeLoader";
+import { Outlet } from "react-router-dom";
+import FrontendThemeLoader from "./component/FrontendThemeLoader";
+import HtmlRedirect from "./User.jsx";
+import ThemePageViewer from "./component/ThemePageViewer";
+import DynamicPage from "./component/dynamicpage/DynamicPage.jsx";
+// frontend all pages routes
 import HomePage from "./component/homepage/HomePage.jsx";
 import AboutPage from "./component/aboutpage/AboutPage.jsx";
 import Shop from "./component/shop/Shop.jsx";
@@ -21,7 +31,27 @@ import BlogDetails from "./component/blogdetails/BlogDetails.jsx";
 import Faqs from "./component/faqs/Faqs.jsx";
 import ErrorPage from "./component/errorpage/ErrorPage.jsx";
 import ContactUs from "./component/contactus/ContactUs.jsx";
-// import AddCart from "./component/addcart/AddCart.jsx";
+import Privacy from "./component/privacypolicy/Privacy.jsx";
+import MedicinePolicy from "./component/medicinepolicy/MedicinePolicy.jsx";
+import TermsCondition from "./component/termsandconditions/TermsCondition.jsx";
+import ProductHome from "./component/producthome/ProductHome.jsx";
+import Wishlist from "./component/wishlist/Wishlist.jsx";
+import Sitemap from "./component/sitemap/Sitemap.jsx";
+import Users from "./Users.jsx";
+// customer details
+import CustomerDetails from "./component/customerdetails/CustomerDetails.jsx";
+import CustomerOrder from "./component/customerdetails/CustomerOrder.jsx";
+import CustomerReview from "./component/customerdetails/CustomerReview.jsx";
+import CustomerDownload from "./component/customerdetails/CustomerDownload.jsx";
+import CustomerRequest from "./component/customerdetails/CustomerRequest.jsx";
+import CustomerAddress from "./component/customerdetails/CustomerAddress.jsx";
+import CustomerAddressCreate from "./component/customerdetails/CustomerAddressCreate.jsx";
+import CustomerDashEdit from "./component/customerdetails/CustomerDashEdit.jsx";
+import CustomerAccount from "./component/customerdetails/CustomerAccount.jsx";
+import CustomerPassword from "./component/customerdetails/CustomerPassword.jsx";
+import CustomerView from "./component/customerdetails/CustomerView.jsx";
+
+// admin all pages routes
 import User from "./User.jsx";
 import Welcome from "./backend/welcome/Welcome.jsx";
 import PlatForm from "./backend/platform/PlatForm.jsx";
@@ -123,27 +153,12 @@ import SocialSharing from "./backend/appearance/themeoptions/themesocialsharing/
 import ThemeFacebook from "./backend/appearance/themeoptions/facebookintegration/ThemeFacebook.jsx";
 import Ecommerce from "./backend/appearance/themeoptions/themeecommerce/Ecommerce.jsx";
 import ThemeStyles from "./backend/appearance/themeoptions/themestyles/ThemeStyles.jsx";
-import Privacy from "./component/privacypolicy/Privacy.jsx";
-import TermsCondition from "./component/termsandconditions/TermsCondition.jsx";
-import MedicinePolicy from "./component/medicinepolicy/MedicinePolicy.jsx";
 import Shipment from "./backend/ecommerce/shipments/Shipment.jsx";
 import Invoice from "./backend/ecommerce/invoice/Invoice.jsx";
 import InvoiceEdit from "./backend/ecommerce/invoice/InvoiceEdit.jsx";
 import Orders from "./backend/ecommerce/orders/Orders.jsx";
 import OrdersCreate from "./backend/ecommerce/orders/OrdersCreate.jsx";
-import CustomerDetails from "./component/customerdetails/CustomerDetails.jsx";
-import CustomerOrder from "./component/customerdetails/CustomerOrder.jsx";
-import CustomerReview from "./component/customerdetails/CustomerReview.jsx";
-import CustomerDownload from "./component/customerdetails/CustomerDownload.jsx";
-import CustomerRequest from "./component/customerdetails/CustomerRequest.jsx";
-import CustomerAddress from "./component/customerdetails/CustomerAddress.jsx";
-import CustomerAddressCreate from "./component/customerdetails/CustomerAddressCreate.jsx";
-import CustomerDashEdit from "./component/customerdetails/CustomerDashEdit.jsx";
-import CustomerAccount from "./component/customerdetails/CustomerAccount.jsx";
-import CustomerPassword from "./component/customerdetails/CustomerPassword.jsx";
-import ProductHome from "./component/producthome/ProductHome.jsx";
 import AdminTheme from "./backend/appearance/AdminTheme/AdminTheme.jsx";
-import CustomerView from "./component/customerdetails/CustomerView.jsx";
 import SpecificationGroupCreate from "./backend/productspecification/SpecificationGroupCreate.jsx";
 import SpecificationGroup from "./backend/productspecification/SpecificationGroup.jsx";
 import SpecificationEdit from "./backend/productspecification/SpecificationEdit.jsx";
@@ -162,15 +177,16 @@ import PaymentMethod from "./backend/payments/PaymentMethod.jsx";
 import AdminLogin from "./backend/AdminLogin.jsx";
 import AdminReset from "./backend/AdminReset.jsx";
 import ProtectedRoute from "./component/ProtectedRoute";
-import Wishlist from "./component/wishlist/Wishlist.jsx";
-import DynamicPage from "./component/dynamicpage/DynamicPage.jsx";
-import axios from "axios";
-import Sitemap from "./component/sitemap/Sitemap.jsx";
-import Users from "./Users.jsx";
 import AdsSettings from "./backend/ads/AdsSettings.jsx";
 import AdminDetails from "./backend/admindetails/AdminDetails.jsx";
 import AdminCreate from "./backend/admindetails/AdminCreate.jsx";
 import AdminEdit from "./backend/admindetails/AdminEdit.jsx";
+// routing integration pages
+import HtmlPageViewer from "./pages/HtmlPageViewer.jsx";
+import Account from "./pages/Account.jsx";
+import IframePage from "./pages/IframePage.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
+// import IframeLoader from "./pages/IframeLoader.jsx";
 
 function App() {
   useEffect(() => {
@@ -185,7 +201,7 @@ function App() {
   useEffect(() => {
     const fetchPageSettings = async () => {
       try {
-        const response = await fetch("http://89.116.170.231:1600/get-homepage");
+        const response = await fetch("http://147.93.45.171:1600/get-homepage");
         const data = await response.json();
         if (data.homepageSettings) {
           setPageSettings(data.homepageSettings);
@@ -228,7 +244,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data && response.data.favicon_url) {
           updateFavicon(response.data.favicon_url);
@@ -244,651 +260,562 @@ function App() {
       favicon.rel = "icon";
       document.head.appendChild(favicon);
     }
-    favicon.href = `http://89.116.170.231:1600/src/image/${faviconUrl}`;
+    favicon.href = `http://147.93.45.171:1600/src/image/${faviconUrl}`;
     favicon.setAttribute("sizes", "200x200");
   };
 
   return (
-    <RouterProvider
-      router={createBrowserRouter(
-        createRoutesFromElements(
-          <>
-            <Route>
-              <Route path="*" element={<Navigate to="/error" />} />
-            </Route>
-
-            <Route path="/admin">
-              <Route path="" element={<Navigate to="/admin/login" />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
-            </Route>
-
-            <Route path="/" element={<User />}>
-              <Route path="/:name" element={<DynamicPage />} />
-              <Route path="/admin/*" element={<ProtectedRoute />}>
-                <Route path="welcome" element={<Welcome />} />
-                <Route path="system" element={<PlatForm />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="announcements" element={<Announcement />} />
-                <Route path="testimonials" element={<Testimonial />} />
-                <Route path="galleries" element={<Galleries />} />
-                <Route path="simple-sliders" element={<SimpleSliders />} />
-                <Route path="newsletters" element={<NewsLetters />} />
-                <Route path="contacts" element={<ContactPage />} />
-                <Route path="pages" element={<Pages />} />
-                <Route path="faqs" element={<FaqBack />} />
-                <Route path="faq-categories" element={<FaqCategory />} />
-                <Route path="ads" element={<AdsPage />} />
-                <Route path="customers" element={<Customers />} />
-                <Route path="menus" element={<Menus />} />
-                <Route path="widgets" element={<Widgets />} />
-              </Route>
-
-              <Route path="/admin/system/*" element={<ProtectedRoute />}>
-                <Route path="users" element={<AdminDetails />} />
-              </Route>
-
-              <Route path="/admin/system/users/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<AdminCreate />} />
-              </Route>
-
-              <Route path="/admin/system/users/*" element={<ProtectedRoute />}>
-                <Route path="profile/:id" element={<AdminEdit />} />
-              </Route>
-
-              <Route path="/admin/password">
-                <Route path="reset" element={<AdminReset />} />
-              </Route>
-
-              <Route path="/admin/theme/*" element={<ProtectedRoute />}>
-                <Route path="custom-css" element={<CustomCss />} />
-                <Route path="robots-txt" element={<RobotTxt />} />
-                <Route path="custom-js" element={<CustomJs />} />
-                <Route path="custom-html" element={<CustomHtml />} />
-                <Route path="options" element={<General />} />
-                <Route path="all" element={<AdminTheme />} />
-              </Route>
-
-              <Route path="/admin/payments/*" element={<ProtectedRoute />}>
-                <Route path="transactions" element={<Transactions />} />
-                <Route path="logs" element={<PaymentLog />} />
-                <Route path="methods" element={<PaymentMethod />} />
-              </Route>
-
-              <Route path="/admin/payments/*" element={<ProtectedRoute />}>
-                <Route path="transactions/:id" element={<TransactionsEdit />} />
-              </Route>
-
-              <Route path="/admin/theme/options/*" element={<ProtectedRoute />}>
-                <Route
-                  path="opt-text-subsection-general"
-                  element={<General />}
-                />
-                <Route
-                  path="opt-text-subsection-page"
-                  element={<ThemePage />}
-                />
-                <Route
-                  path="opt-text-subsection-breadcrumb"
-                  element={<BreadCrumb />}
-                />
-                <Route
-                  path="opt-text-subsection-logo"
-                  element={<ThemeLogo />}
-                />
-                <Route
-                  path="opt-text-subsection-marketplace"
-                  element={<MarketPlace />}
-                />
-                <Route
-                  path="opt-text-subsection-blog"
-                  element={<BlogOptions />}
-                />
-                <Route
-                  path="opt-text-subsection-cookie-consent"
-                  element={<ThemeCookie />}
-                />
-                <Route
-                  path="opt-text-subsection-newsletter-popup"
-                  element={<ThemeNewsLetters />}
-                />
-                <Route
-                  path="opt-text-subsection-typography"
-                  element={<Typography />}
-                />
-                <Route
-                  path="opt-text-subsection-ecommerce-slug"
-                  element={<ThemeEcommerce />}
-                />
-                <Route
-                  path="opt-text-subsection-social-links"
-                  element={<SocialLinks />}
-                />
-                <Route
-                  path="opt-text-subsection-social-sharing"
-                  element={<SocialSharing />}
-                />
-                <Route
-                  path="opt-text-subsection-facebook-integration"
-                  element={<ThemeFacebook />}
-                />
-                <Route
-                  path="opt-text-subsection-ecommerce"
-                  element={<Ecommerce />}
-                />
-                <Route
-                  path="opt-text-subsection-styles"
-                  element={<ThemeStyles />}
-                />
-              </Route>
-
-              <Route path="/admin/menus/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<MenusCreate />} />
-                <Route path="edit/:id" element={<MenusEdit />} />
-              </Route>
-
-              <Route path="/admin/customers/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<CustomerCreate />} />
-                <Route path="edit/:id" element={<CustomerEdit />} />
-              </Route>
-
-              <Route path="/admin/ecommerce/*" element={<ProtectedRoute />}>
-                <Route
-                  path="incomplete-orders"
-                  element={<IncompleteOrders />}
-                />
-                <Route path="product-tags" element={<ProductTags />} />
-                <Route path="options" element={<ProductOptions />} />
-                <Route path="order-returns" element={<OrderReturns />} />
-                <Route
-                  path="product-collections"
-                  element={<ProductCollections />}
-                />
-                <Route path="product-labels" element={<ProductLabels />} />
-                <Route path="brands" element={<Brands />} />
-                <Route
-                  path="product-attribute-sets"
-                  element={<ProductAttributes />}
-                />
-                <Route path="flash-sales" element={<FlashSales />} />
-                <Route path="reviews" element={<Reviews />} />
-                <Route path="discounts" element={<Discounts />} />
-                <Route path="reports" element={<Reports />} />
-                <Route path="products" element={<Products />} />
-                <Route path="product-prices" element={<ProductPrices />} />
-                <Route
-                  path="product-inventory"
-                  element={<ProductInventory />}
-                />
-                <Route
-                  path="product-categories"
-                  element={<ProductCategory />}
-                />
-                <Route path="shipments" element={<Shipment />} />
-                <Route path="invoices" element={<Invoice />} />
-                <Route path="orders" element={<Orders />} />
-                <Route
-                  path="specification-groups"
-                  element={<SpecificationGroup />}
-                />
-                <Route
-                  path="specification-tables"
-                  element={<SpecificationTable />}
-                />
-                <Route
-                  path="specification-attributes"
-                  element={<SpecificationAttributes />}
-                />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/shipments/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="edit/:id" element={<ShipmentEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/specification-groups/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<SpecificationGroupCreate />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/specification-groups/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="edit/:id" element={<SpecificationEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/specification-tables/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<SpecificationTableCreate />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/specification-tables/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="edit/:id" element={<SpecificationTableEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/specification-attributes/*"
-                element={<ProtectedRoute />}
-              >
-                <Route
-                  path="create"
-                  element={<SpecificationAttributeCreate />}
-                />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/specification-attributes/*"
-                element={<ProtectedRoute />}
-              >
-                <Route
-                  path="edit/:id"
-                  element={<SpecificationAttributeEdit />}
-                />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/orders/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<OrdersCreate />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/orders/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="edit/:id" element={<OrdersEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/invoices/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="edit/:id" element={<InvoiceEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/products/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ProductsCreate />} />
-                <Route path="edit/:id" element={<ProductsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/discounts/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<DiscountsCreate />} />
-                <Route path="edit/:id" element={<DiscountsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/reviews/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ReviewsCreate />} />
-                <Route path="view/:id" element={<ReviewsView />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/flash-sales/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<FlashSalesCreate />} />
-                <Route path="edit/:id" element={<FlashSalesEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/product-attribute-sets/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ProductAttributesCreate />} />
-                <Route path="edit/:id" element={<ProductAttributesEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/brands/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<BrandsCreate />} />
-                <Route path="edit/:id" element={<BrandsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/product-collections/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ProductCollectionsCreate />} />
-                <Route path="edit/:id" element={<ProductCollectionsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/product-labels/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ProductLabelsCreate />} />
-                <Route path="edit/:id" element={<ProductLabelsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/product-tags/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ProductTagsCreate />} />
-                <Route path="edit/:id" element={<ProductTagsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/ecommerce/options/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<ProductOptionscreate />} />
-                <Route path="edit/:id" element={<ProductOptionsEdit />} />
-              </Route>
-
-              <Route path="/admin/announcements/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<AnnouncementCreate />} />
-                <Route path="edit/:id" element={<AnnouncementEdit />} />
-              </Route>
-
-              <Route path="/admin/testimonials/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<TestimonialCreate />} />
-                <Route path="edit/:id" element={<TestimonialEdit />} />
-              </Route>
-
-              <Route path="/admin/galleries/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<GalleryCreate />} />
-                <Route path="edit/:id" element={<GalleryEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/simple-sliders/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<SimpleSlidersCreate />} />
-                <Route path="edit/:id" element={<SimpleSlidersEdit />} />
-              </Route>
-
-              <Route path="/admin/contacts/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<ContactsCreate />} />
-                <Route path="edit/:id" element={<ContactsEdit />} />
-              </Route>
-
-              <Route path="/admin/pages/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<PagesCreate />} />
-                <Route path="edit/:id" element={<PagesEdit />} />
-              </Route>
-
-              <Route path="/admin/faqs/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<FaqCreate />} />
-                <Route path="edit/:id" element={<FaqsEdit />} />
-              </Route>
-
-              <Route
-                path="/admin/faq-categories/*"
-                element={<ProtectedRoute />}
-              >
-                <Route path="create" element={<FaqCategoryCreate />} />
-                <Route path="edit/:id" element={<FaqCategoryEdit />} />
-              </Route>
-
-              <Route path="/admin/blog/*" element={<ProtectedRoute />}>
-                <Route path="tags" element={<BlogTags />} />
-                <Route path="posts" element={<BlogPost />} />
-                <Route path="categories" element={<BlogCategory />} />
-              </Route>
-
-              <Route path="/admin/blog/tags/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<BlogTagsCreate />} />
-                <Route path="edit/:id" element={<BlogTagsEdit />} />
-              </Route>
-
-              <Route path="/admin/blog/posts/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<BlogPostCreate />} />
-                <Route path="edit/:id" element={<BlogPostEdit />} />
-              </Route>
-
-              <Route path="/admin/ads/*" element={<ProtectedRoute />}>
-                <Route path="create" element={<AdsCreate />} />
-                <Route path="edit/:id" element={<AdsEdit />} />
-              </Route>
-
-              <Route path="/admin/settings/*" element={<ProtectedRoute />}>
-                <Route path="ads" element={<AdsSettings />} />
-              </Route>
-
-              <Route path="/" element={<Users />}>
-                <Route
-                  path="/"
-                  element={
-                    selectedHomepage === "about" ? (
-                      <AboutPage />
-                    ) : selectedHomepage === "shop" ? (
-                      <Shop />
-                    ) : selectedHomepage === "blog" ? (
-                      <BlogPage />
-                    ) : selectedHomepage === "contact-us" ? (
-                      <ContactUs />
-                    ) : selectedHomepage === "faqs" ? (
-                      <Faqs />
-                    ) : (
-                      <HomePage />
-                    )
-                  }
-                />
-                <Route
-                  path="/about"
-                  element={
-                    selectedHomepage === "about" ? (
-                      <Navigate to="/" replace />
-                    ) : (
-                      <AboutPage />
-                    )
-                  }
-                />
-
-                <Route
-                  path="/shop"
-                  element={
-                    selectedHomepage === "shop" ? (
-                      <Navigate to="/" replace />
-                    ) : (
-                      <Shop />
-                    )
-                  }
-                />
-
-                <Route
-                  path="/blog"
-                  element={
-                    selectedHomepage === "blog" ? (
-                      <Navigate to="/" replace />
-                    ) : (
-                      <BlogPage />
-                    )
-                  }
-                />
-
-                <Route
-                  path="/contact-us"
-                  element={
-                    selectedHomepage === "contact-us" ? (
-                      <Navigate to="/" replace />
-                    ) : (
-                      <ContactUs />
-                    )
-                  }
-                />
-
-                <Route
-                  path="/faqs"
-                  element={
-                    selectedHomepage === "faqs" ? (
-                      <Navigate to="/" replace />
-                    ) : (
-                      <Faqs />
-                    )
-                  }
-                />
-
-                <Route
-                  path="/"
-                  element={
-                    <Navigate to={`/${urlState.productDetails}`} replace />
-                  }
-                />
-
-                <Route
-                  path={`/${urlState.productDetails}`}
-                  element={<ProductDetail />}
-                />
-
-                <Route
-                  path="/"
-                  element={<Navigate to={`/${urlState.wishlist}`} replace />}
-                />
-                <Route path={`/${urlState.wishlist}`} element={<Wishlist />} />
-
-                <Route
-                  path="/"
-                  element={<Navigate to={`/${urlState.cart}`} replace />}
-                />
-                <Route path={`/${urlState.cart}`} element={<Cart />} />
-
-                <Route
-                  path="/"
-                  element={<Navigate to={`/${urlState.checkout}`} replace />}
-                />
-                <Route path={`/${urlState.checkout}`} element={<Checkout />} />
-
-                <Route path="/blog-details/:id" element={<BlogDetails />} />
-                <Route path="/error" element={<ErrorPage />} />
-
-                <Route
-                  path="/"
-                  element={<Navigate to={`/${urlState.login}`} replace />}
-                />
-                <Route path={`/${urlState.login}`} element={<Login />} />
-                {/* <Route path="/addcart" element={<AddCart />} /> */}
-                <Route path="/sitemap" element={<Sitemap />} />
-                <Route path="/privacy-policy" element={<Privacy />} />
-                <Route path="/terms-condition" element={<TermsCondition />} />
-                <Route path="/medicine-policy" element={<MedicinePolicy />} />
-                <Route path="/product-categories" element={<ProductHome />} />
-              </Route>
-
-              <Route path="/user">
-                <Route
-                  index
-                  element={
-                    <Navigate to={`/${urlState.userDashboard}`} replace />
-                  }
-                />
-
-                <Route
-                  path={`/${urlState.userDashboard}`}
-                  element={<CustomerDetails />}
-                />
-
-                <Route
-                  index
-                  element={<Navigate to={`/${urlState.userOrders}`} replace />}
-                />
-
-                <Route
-                  path={`/${urlState.userOrders}`}
-                  element={<CustomerOrder />}
-                />
-
-                <Route
-                  index
-                  element={
-                    <Navigate to={`/${urlState.userProductReviews}`} replace />
-                  }
-                />
-
-                <Route
-                  path={`/${urlState.userProductReviews}`}
-                  element={<CustomerReview />}
-                />
-
-                <Route
-                  index
-                  element={
-                    <Navigate to={`/${urlState.userOrderReturns}`} replace />
-                  }
-                />
-                <Route
-                  path={`/${urlState.userOrderReturns}`}
-                  element={<CustomerRequest />}
-                />
-
-                <Route
-                  index
-                  element={
-                    <Navigate to={`/${urlState.userDownloads}`} replace />
-                  }
-                />
-                <Route
-                  path={`/${urlState.userDownloads}`}
-                  element={<CustomerDownload />}
-                />
-
-                <Route
-                  index
-                  element={<Navigate to={`/${urlState.userAddress}`} replace />}
-                />
-                <Route
-                  path={`/${urlState.userAddress}`}
-                  element={<CustomerAddress />}
-                />
-
-                <Route
-                  index
-                  element={
-                    <Navigate to={`/${urlState.userEditAccount}`} replace />
-                  }
-                />
-                <Route
-                  path={`/${urlState.userEditAccount}`}
-                  element={<CustomerAccount />}
-                />
-
-                <Route
-                  index
-                  element={
-                    <Navigate to={`/${urlState.changePassword}`} replace />
-                  }
-                />
-                <Route
-                  path={`/${urlState.changePassword}`}
-                  element={<CustomerPassword />}
-                />
-              </Route>
-
-              <Route path="/user/orders">
-                <Route path="view/:id" element={<CustomerView />} />
-              </Route>
-
-              <Route path="/user/address">
-                <Route path="create" element={<CustomerAddressCreate />} />
-                <Route path="edit/:id" element={<CustomerDashEdit />} />
-              </Route>
-            </Route>
-          </>
-        )
-      )}
-    />
+    <>
+      <ThemeProvider>
+        <ThemeLoader />
+        <RouterProvider
+          router={createBrowserRouter(
+            createRoutesFromElements(
+              <>
+                <Route path="/" element={<User />}>
+                  <Route
+                    index
+                    element={
+                      <FrontendThemeLoader>
+                        {/* <HomePage /> */}
+                        <IframePage />
+                      </FrontendThemeLoader>
+                    }
+                  />
+
+                  <Route
+                    path="theme/:themePath/*"
+                    element={
+                      <FrontendThemeLoader>
+                        <Outlet />
+                      </FrontendThemeLoader>
+                    }
+                  />
+
+                  <Route path="user">
+                    <Route path="dashboard" element={<CustomerDetails />} />
+                    <Route path="orders" element={<CustomerOrder />} />
+                    <Route path="reviews" element={<CustomerReview />} />
+                    <Route path="downloads" element={<CustomerDownload />} />
+                    <Route path="requests" element={<CustomerRequest />} />
+                    <Route path="address" element={<CustomerAddress />} />
+                    <Route
+                      path="address/create"
+                      element={<CustomerAddressCreate />}
+                    />
+                    <Route
+                      path="address/edit/:id"
+                      element={<CustomerDashEdit />}
+                    />
+                    <Route path="account" element={<CustomerAccount />} />
+                    <Route path="password" element={<CustomerPassword />} />
+                    <Route path="orders/view/:id" element={<CustomerView />} />
+                  </Route>
+                </Route>
+
+                <Route path="admin">
+                  <Route path="" element={<Navigate to="/admin/login" />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                </Route>
+
+                {/* <Route path="/" element={<User />}>
+                <Route index element={<IframePage />} />
+                <Route path="*" element={<IframeLoader />} />
+                <Route path=":page" element={<IframePage />} />
+                <Route path="account" element={<Account />} />
+                <Route path="*" element={<Navigate to="/error" replace />} /> */}
+
+                {/* 111111111111111111 */}
+
+                <Route path="/" element={<User />}>
+                  <Route index element={<IframePage />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path=":page" element={<IframePage />} />
+                  <Route path="*" element={<Navigate to="/error" replace />} />
+
+                  {/* <Route path="/" element={<User />}>
+                  <Route index element={<IframePage />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path=":page" element={<IframePage />} />
+                  <Route path="*" element={<Navigate to="/error" replace />} /> */}
+
+                  {/* 1111111111111111111 */}
+
+                  {/* <Route path="/" element={<User />}>
+                  <Route index element={<Navigate to="/index" replace />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path=":page" element={<IframePage />} />
+                  <Route path="*" element={<Navigate to="/index" replace />} />
+                  <Route path="*" element={<Navigate to="/error" replace />} /> */}
+
+                  {/* <Route index element={<IframePage />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path="html/:page" element={<HtmlPageViewer />} />
+                  <Route path=":page" element={<IframePage />} /> */}
+
+                  {/* <Route path="/" element={<User />}>
+                  <Route index element={<IframePage />} />
+                  <Route path="account" element={<Account />} />
+                  <Route path=":page" element={<IframePage />} />
+                  <Route path="*" element={<Navigate to="/error" replace />} /> */}
+
+                  {/* <Route path="page/:pageName" element={<ThemePageViewer />} /> */}
+                  {/* <Route path="/:name" element={<DynamicPage />} /> */}
+
+                  <Route path="/admin/*" element={<ProtectedRoute />}>
+                    <Route path="welcome" element={<Welcome />} />
+                    <Route path="system" element={<PlatForm />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="announcements" element={<Announcement />} />
+                    <Route path="testimonials" element={<Testimonial />} />
+                    <Route path="galleries" element={<Galleries />} />
+                    <Route path="simple-sliders" element={<SimpleSliders />} />
+                    <Route path="newsletters" element={<NewsLetters />} />
+                    <Route path="contacts" element={<ContactPage />} />
+                    <Route path="pages" element={<Pages />} />
+                    <Route path="faqs" element={<FaqBack />} />
+                    <Route path="faq-categories" element={<FaqCategory />} />
+                    <Route path="ads" element={<AdsPage />} />
+                    <Route path="customers" element={<Customers />} />
+                    <Route path="menus" element={<Menus />} />
+                    <Route path="widgets" element={<Widgets />} />
+                  </Route>
+
+                  <Route path="/admin/system/*" element={<ProtectedRoute />}>
+                    <Route path="users" element={<AdminDetails />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/system/users/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<AdminCreate />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/system/users/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="profile/:id" element={<AdminEdit />} />
+                  </Route>
+
+                  <Route path="/admin/password">
+                    <Route path="reset" element={<AdminReset />} />
+                  </Route>
+
+                  <Route path="/admin/theme/*" element={<ProtectedRoute />}>
+                    <Route path="custom-css" element={<CustomCss />} />
+                    <Route path="robots-txt" element={<RobotTxt />} />
+                    <Route path="custom-js" element={<CustomJs />} />
+                    <Route path="custom-html" element={<CustomHtml />} />
+                    <Route path="options" element={<General />} />
+                    <Route path="all" element={<AdminTheme />} />
+                  </Route>
+
+                  <Route path="/admin/payments/*" element={<ProtectedRoute />}>
+                    <Route path="transactions" element={<Transactions />} />
+                    <Route path="logs" element={<PaymentLog />} />
+                    <Route path="methods" element={<PaymentMethod />} />
+                  </Route>
+
+                  <Route path="/admin/payments/*" element={<ProtectedRoute />}>
+                    <Route
+                      path="transactions/:id"
+                      element={<TransactionsEdit />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/theme/options/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="opt-text-subsection-general"
+                      element={<General />}
+                    />
+                    <Route
+                      path="opt-text-subsection-page"
+                      element={<ThemePage />}
+                    />
+                    <Route
+                      path="opt-text-subsection-breadcrumb"
+                      element={<BreadCrumb />}
+                    />
+                    <Route
+                      path="opt-text-subsection-logo"
+                      element={<ThemeLogo />}
+                    />
+                    <Route
+                      path="opt-text-subsection-marketplace"
+                      element={<MarketPlace />}
+                    />
+                    <Route
+                      path="opt-text-subsection-blog"
+                      element={<BlogOptions />}
+                    />
+                    <Route
+                      path="opt-text-subsection-cookie-consent"
+                      element={<ThemeCookie />}
+                    />
+                    <Route
+                      path="opt-text-subsection-newsletter-popup"
+                      element={<ThemeNewsLetters />}
+                    />
+                    <Route
+                      path="opt-text-subsection-typography"
+                      element={<Typography />}
+                    />
+                    <Route
+                      path="opt-text-subsection-ecommerce-slug"
+                      element={<ThemeEcommerce />}
+                    />
+                    <Route
+                      path="opt-text-subsection-social-links"
+                      element={<SocialLinks />}
+                    />
+                    <Route
+                      path="opt-text-subsection-social-sharing"
+                      element={<SocialSharing />}
+                    />
+                    <Route
+                      path="opt-text-subsection-facebook-integration"
+                      element={<ThemeFacebook />}
+                    />
+                    <Route
+                      path="opt-text-subsection-ecommerce"
+                      element={<Ecommerce />}
+                    />
+                    <Route
+                      path="opt-text-subsection-styles"
+                      element={<ThemeStyles />}
+                    />
+                  </Route>
+
+                  <Route path="/admin/menus/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<MenusCreate />} />
+                    <Route path="edit/:id" element={<MenusEdit />} />
+                  </Route>
+
+                  <Route path="/admin/customers/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<CustomerCreate />} />
+                    <Route path="edit/:id" element={<CustomerEdit />} />
+                  </Route>
+
+                  <Route path="/admin/ecommerce/*" element={<ProtectedRoute />}>
+                    <Route
+                      path="incomplete-orders"
+                      element={<IncompleteOrders />}
+                    />
+                    <Route path="product-tags" element={<ProductTags />} />
+                    <Route path="options" element={<ProductOptions />} />
+                    <Route path="order-returns" element={<OrderReturns />} />
+                    <Route
+                      path="product-collections"
+                      element={<ProductCollections />}
+                    />
+                    <Route path="product-labels" element={<ProductLabels />} />
+                    <Route path="brands" element={<Brands />} />
+                    <Route
+                      path="product-attribute-sets"
+                      element={<ProductAttributes />}
+                    />
+                    <Route path="flash-sales" element={<FlashSales />} />
+                    <Route path="reviews" element={<Reviews />} />
+                    <Route path="discounts" element={<Discounts />} />
+                    <Route path="reports" element={<Reports />} />
+                    <Route path="products" element={<Products />} />
+                    <Route path="product-prices" element={<ProductPrices />} />
+                    <Route
+                      path="product-inventory"
+                      element={<ProductInventory />}
+                    />
+                    <Route
+                      path="product-categories"
+                      element={<ProductCategory />}
+                    />
+                    <Route path="shipments" element={<Shipment />} />
+                    <Route path="invoices" element={<Invoice />} />
+                    <Route path="orders" element={<Orders />} />
+                    <Route
+                      path="specification-groups"
+                      element={<SpecificationGroup />}
+                    />
+                    <Route
+                      path="specification-tables"
+                      element={<SpecificationTable />}
+                    />
+                    <Route
+                      path="specification-attributes"
+                      element={<SpecificationAttributes />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/shipments/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="edit/:id" element={<ShipmentEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/specification-groups/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="create"
+                      element={<SpecificationGroupCreate />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/specification-groups/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="edit/:id" element={<SpecificationEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/specification-tables/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="create"
+                      element={<SpecificationTableCreate />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/specification-tables/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="edit/:id"
+                      element={<SpecificationTableEdit />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/specification-attributes/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="create"
+                      element={<SpecificationAttributeCreate />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/specification-attributes/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="edit/:id"
+                      element={<SpecificationAttributeEdit />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/orders/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<OrdersCreate />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/orders/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="edit/:id" element={<OrdersEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/invoices/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="edit/:id" element={<InvoiceEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/products/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<ProductsCreate />} />
+                    <Route path="edit/:id" element={<ProductsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/discounts/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<DiscountsCreate />} />
+                    <Route path="edit/:id" element={<DiscountsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/reviews/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<ReviewsCreate />} />
+                    <Route path="view/:id" element={<ReviewsView />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/flash-sales/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<FlashSalesCreate />} />
+                    <Route path="edit/:id" element={<FlashSalesEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/product-attribute-sets/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="create"
+                      element={<ProductAttributesCreate />}
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={<ProductAttributesEdit />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/brands/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<BrandsCreate />} />
+                    <Route path="edit/:id" element={<BrandsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/product-collections/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route
+                      path="create"
+                      element={<ProductCollectionsCreate />}
+                    />
+                    <Route
+                      path="edit/:id"
+                      element={<ProductCollectionsEdit />}
+                    />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/product-labels/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<ProductLabelsCreate />} />
+                    <Route path="edit/:id" element={<ProductLabelsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/product-tags/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<ProductTagsCreate />} />
+                    <Route path="edit/:id" element={<ProductTagsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/ecommerce/options/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<ProductOptionscreate />} />
+                    <Route path="edit/:id" element={<ProductOptionsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/announcements/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<AnnouncementCreate />} />
+                    <Route path="edit/:id" element={<AnnouncementEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/testimonials/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<TestimonialCreate />} />
+                    <Route path="edit/:id" element={<TestimonialEdit />} />
+                  </Route>
+
+                  <Route path="/admin/galleries/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<GalleryCreate />} />
+                    <Route path="edit/:id" element={<GalleryEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/simple-sliders/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<SimpleSlidersCreate />} />
+                    <Route path="edit/:id" element={<SimpleSlidersEdit />} />
+                  </Route>
+
+                  <Route path="/admin/contacts/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<ContactsCreate />} />
+                    <Route path="edit/:id" element={<ContactsEdit />} />
+                  </Route>
+
+                  <Route path="/admin/pages/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<PagesCreate />} />
+                    <Route path="edit/:id" element={<PagesEdit />} />
+                  </Route>
+
+                  <Route path="/admin/faqs/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<FaqCreate />} />
+                    <Route path="edit/:id" element={<FaqsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/faq-categories/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<FaqCategoryCreate />} />
+                    <Route path="edit/:id" element={<FaqCategoryEdit />} />
+                  </Route>
+
+                  <Route path="/admin/blog/*" element={<ProtectedRoute />}>
+                    <Route path="tags" element={<BlogTags />} />
+                    <Route path="posts" element={<BlogPost />} />
+                    <Route path="categories" element={<BlogCategory />} />
+                  </Route>
+
+                  <Route path="/admin/blog/tags/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<BlogTagsCreate />} />
+                    <Route path="edit/:id" element={<BlogTagsEdit />} />
+                  </Route>
+
+                  <Route
+                    path="/admin/blog/posts/*"
+                    element={<ProtectedRoute />}
+                  >
+                    <Route path="create" element={<BlogPostCreate />} />
+                    <Route path="edit/:id" element={<BlogPostEdit />} />
+                  </Route>
+
+                  <Route path="/admin/ads/*" element={<ProtectedRoute />}>
+                    <Route path="create" element={<AdsCreate />} />
+                    <Route path="edit/:id" element={<AdsEdit />} />
+                  </Route>
+
+                  <Route path="/admin/settings/*" element={<ProtectedRoute />}>
+                    <Route path="ads" element={<AdsSettings />} />
+                  </Route>
+
+                  {/* <Route path="/addcart" element={<AddCart />} /> */}
+                </Route>
+                {/* <Route path="*" element={<Navigate to="/error" replace />} /> */}
+              </>
+            )
+          )}
+        />
+      </ThemeProvider>
+    </>
   );
 }
 

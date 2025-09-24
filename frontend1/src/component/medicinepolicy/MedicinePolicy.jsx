@@ -18,7 +18,7 @@ function MedicinePolicy() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -84,11 +84,11 @@ function MedicinePolicy() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -102,7 +102,7 @@ function MedicinePolicy() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -118,7 +118,7 @@ function MedicinePolicy() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -139,7 +139,7 @@ function MedicinePolicy() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/cookiesalldata"
+          "http://147.93.45.171:1600/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -186,7 +186,7 @@ function MedicinePolicy() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -222,7 +222,7 @@ function MedicinePolicy() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv724100.hstgr.cloud/medicine-policy"
+          href="http://srv689968.hstgr.cloud/medicine-policy"
         />
       </Helmet>
 
@@ -234,7 +234,7 @@ function MedicinePolicy() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${cart.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -647,9 +647,12 @@ function MedicinePolicy() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -745,7 +748,8 @@ function MedicinePolicy() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <div className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </div>
             </div>
           </div>

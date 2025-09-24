@@ -109,8 +109,6 @@ input[type="search"] {
   .count-value {
     display: none;
   }
-  .sidebar-back4 {
-  }
 }
 
 @media (max-width: 768px) {
@@ -347,4 +345,32 @@ input[type="search"] {
 .input-text {
   width: 100%;
   max-width: 100%;
+}
+
+.group-create {
+  margin-left: 13.2% !important;
+}
+
+@media (max-width: 992px) {
+  .group-create {
+    margin-left: 0 !important;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+  .group-create {
+    margin-left: 5.8% !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1400px) {
+  .group-create {
+    margin-left: 4% !important;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+  .group-create {
+    margin-left: 4% !important;
+  }
 }

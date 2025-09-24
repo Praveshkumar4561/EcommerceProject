@@ -37,7 +37,7 @@ function ProductDetail() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -76,7 +76,7 @@ function ProductDetail() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -139,7 +139,7 @@ function ProductDetail() {
 
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/reviewdatasubmit",
+        "http://147.93.45.171:1600/reviewdatasubmit",
         formData
       );
       if (response.status === 200) {
@@ -227,7 +227,7 @@ function ProductDetail() {
 
   useEffect(() => {
     let reviewdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/reviewdata");
+      let response = await axios.get("http://147.93.45.171:1600/reviewdata");
       setReviews(response.data);
     };
     reviewdata();
@@ -554,7 +554,7 @@ function ProductDetail() {
                         .map((data, key) => (
                           <img
                             key={key}
-                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
                             alt="Customer Upload"
                             className="img-thumbnail"
                             style={{
@@ -590,7 +590,7 @@ function ProductDetail() {
                           <img
                             src={
                               selectedImage ||
-                              `http://89.116.170.231:1600/src/image/${detail[0].image}`
+                              `http://147.93.45.171:1600/src/image/${detail[0].image}`
                             }
                             alt="Product"
                             className="img-fluid"
@@ -616,7 +616,7 @@ function ProductDetail() {
     const detailsdata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/productpagedata"
+          "http://147.93.45.171:1600/productpagedata"
         );
         const filteredData = response.data.filter(
           (detail) => detail.status === "Published" || detail.status === "Draft"
@@ -635,7 +635,7 @@ function ProductDetail() {
     const shopdata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/productpagedata"
+          "http://147.93.45.171:1600/productpagedata"
         );
         const filteredData = response.data.filter(
           (shop) => shop.status === "Published" || shop.status === "Draft"
@@ -707,7 +707,7 @@ function ProductDetail() {
 
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/addcart",
+        "http://147.93.45.171:1600/addcart",
         formData
       );
       if (response.status === 200) {
@@ -766,7 +766,7 @@ function ProductDetail() {
 
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/wishlistpost",
+        "http://147.93.45.171:1600/wishlistpost",
         formData
       );
       setCount6((prevCount) => prevCount + 1);
@@ -786,7 +786,7 @@ function ProductDetail() {
     const tagdata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/producttagdata"
+          "http://147.93.45.171:1600/producttagdata"
         );
         const filteredData = response.data.filter(
           (user) => user.status === "Published" || user.status === "Draft"
@@ -805,7 +805,7 @@ function ProductDetail() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/productlabelsdata"
+          "http://147.93.45.171:1600/productlabelsdata"
         );
         const filteredData = response.data.filter(
           (label) => label.status === "Published" || label.status === "Draft"
@@ -852,11 +852,11 @@ function ProductDetail() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -870,7 +870,7 @@ function ProductDetail() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setBread(response.data);
       } catch (error) {
@@ -890,13 +890,13 @@ function ProductDetail() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv724100.hstgr.cloud/",
+            item: "http://srv689968.hstgr.cloud/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Products",
-            item: "http://srv724100.hstgr.cloud/product/details",
+            item: "http://srv689968.hstgr.cloud/product/details",
           },
         ],
       },
@@ -932,7 +932,7 @@ function ProductDetail() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://89.116.170.231:1600/adsdata");
+        const response = await axios.get("http://147.93.45.171:1600/adsdata");
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -946,7 +946,7 @@ function ProductDetail() {
   useEffect(() => {
     let attribues = async () => {
       let response = await axios.get(
-        "http://89.116.170.231:1600/attributesdata1"
+        "http://147.93.45.171:1600/attributesdata1"
       );
       setAttribute(response.data);
     };
@@ -964,7 +964,7 @@ function ProductDetail() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/cookiesalldata"
+          "http://147.93.45.171:1600/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -1011,7 +1011,7 @@ function ProductDetail() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -1049,7 +1049,7 @@ function ProductDetail() {
     const fetchFlashSales = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allflashdata"
+          "http://147.93.45.171:1600/allflashdata"
         );
         const data = response.data;
         setFlash(data);
@@ -1109,7 +1109,7 @@ function ProductDetail() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv724100.hstgr.cloud/product-details"
+          href="http://srv689968.hstgr.cloud/product-details"
         />
       </Helmet>
 
@@ -1121,7 +1121,7 @@ function ProductDetail() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1346,17 +1346,17 @@ function ProductDetail() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                           loading="lazy"
@@ -1403,7 +1403,7 @@ function ProductDetail() {
                           key={key}
                           onClick={() =>
                             applyImage(
-                              `http://89.116.170.231:1600/src/image/${data.image}`,
+                              `http://147.93.45.171:1600/src/image/${data.image}`,
                               data.name,
                               data.description,
                               data.price,
@@ -1413,7 +1413,7 @@ function ProductDetail() {
                           }
                         >
                           <img
-                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
                             alt="RxLYTE"
                             className="border"
                             loading="lazy"
@@ -1429,7 +1429,7 @@ function ProductDetail() {
                   <img
                     src={
                       selectedImage ||
-                      `http://89.116.170.231:1600/src/image/${shop[0]?.image}`
+                      `http://147.93.45.171:1600/src/image/${shop[0]?.image}`
                     }
                     alt={`${shop[0]?.name || "RxLYTE"} product shot`}
                     className="head-image"
@@ -1448,8 +1448,8 @@ function ProductDetail() {
                 {Array.isArray(shop) && shop.length > 0 ? (
                   shop.slice(0, 1).map((item, idx) => (
                     <React.Fragment key={idx}>
-                      <div className="d-flex flex-row me- pe-41 pe-lg-0 googles1">
-                        <h2 className="mt-2 pt-3 me-md-5 me-lg-0 me-xxl-4 pe-lg-5 ms-0 ms-lg-0 ps-0 ps-lg-0 cart-cart text-start home-detail ms-3 ms-md-5 mb-2 ps-md-5">
+                      <div className="d-flex flex-row pe-lg-0">
+                        <h2 className="mt-2 pt-3 me-md-5 me-lg-0 me-xxl-4 pe-lg-5 ms-0 ms-lg-0 ps-0 ps-lg-0 cart-cart text-start home-detail ms-md-5 mb-1 ps-md-5">
                           {selectedName || item.name}
                         </h2>
                       </div>
@@ -1458,7 +1458,7 @@ function ProductDetail() {
                         {selectedStore || item.store}
                       </h3>
 
-                      <p className="text-dark text-start lh-lg cart-cart me-2 pe-3 pe-lg-0 ms-lg-1">
+                      <p className="text-dark text-start mb-0 lh-lg cart-cart me-2 pe-3 pe-lg-0 ms-lg-1">
                         {selectedDescription || item.description}
                       </p>
 
@@ -1466,7 +1466,7 @@ function ProductDetail() {
                         <h4 className="mt-0 pt-0 text-success fw-medium d-flex flex-row ms-0 ms-md-0 me-auto">
                           {selectedPrice || item.price}
                         </h4>
-                        <h4 className="mt-0 pt-0 text-success fw-medium d-flex flex-row ms-0 dollar-rupeex me-auto">
+                        <h4 className="mt-0 pt-0 text-danger fw-medium d-flex flex-row ms-0 dollar-rupeex me-auto">
                           <strike>{selectedSale || item.price_sale}</strike>
                         </h4>
                       </div>
@@ -1555,7 +1555,7 @@ function ProductDetail() {
                 <h4>SKU: {selectedSku || detail[0]?.sku}</h4>
               </div>
 
-              <div className="d-flex flex-row flex-wrap justify-content-start mt-3 ms-0 ps-0 cart-cart">
+              <div className="d-flex flex-row flex-wrap justify-content-start mt-2 ms-0 ps-0 cart-cart">
                 <h4>Attributes:</h4>
                 {Array.isArray(attribute) && attribute.length > 0 ? (
                   attribute.map((attr, i) => (
@@ -1651,8 +1651,8 @@ function ProductDetail() {
                     ? productLabel.color
                     : "green";
                   const imageUrl = data.image
-                    ? `http://89.116.170.231:1600/src/image/${data.image}`
-                    : "http://89.116.170.231:1600/src/image/default-image.jpg";
+                    ? `http://147.93.45.171:1600/src/image/${data.image}`
+                    : "http://147.93.45.171:1600/src/image/default-image.jpg";
                   const getFormattedName = (name, index) => {
                     const words = name.split(" ");
                     if (index === 0) return words.slice(0, 4).join(" ");
@@ -1841,8 +1841,9 @@ function ProductDetail() {
                           >
                             {data.label}
                           </button>
+
                           <img
-                            src={`http://89.116.170.231:1600/src/image/${
+                            src={`http://147.93.45.171:1600/src/image/${
                               data.image || "default-image.jpg"
                             }`}
                             alt={
@@ -1995,17 +1996,17 @@ function ProductDetail() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                           loading="lazy"
@@ -2137,7 +2138,8 @@ function ProductDetail() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <div className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </div>
             </div>
           </div>
@@ -2169,17 +2171,17 @@ function ProductDetail() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                           loading="lazy"

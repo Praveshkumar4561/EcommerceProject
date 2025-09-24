@@ -15,7 +15,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,12 +28,11 @@ function Pages() {
   let [ads, setAds] = useState(false);
   let [appear, setAppear] = useState(false);
   let [commerce, setCommerce] = useState(false);
-
   let [count5, setCount5] = useState(0);
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -191,18 +189,18 @@ function Pages() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/pagesearch/${search}`
+      `http://147.93.45.171:1600/pagesearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/pagesdata");
+    let response = await axios.get("http://147.93.45.171:1600/pagesdata");
     setUser(response.data);
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 7;
 
   const paginatedData = user.slice(
     (currentPage - 1) * itemsPerPage,
@@ -210,7 +208,7 @@ function Pages() {
   );
 
   let deletedata = async (id) => {
-    await axios.delete(`http://89.116.170.231:1600/pagesdelete/${id}`, user);
+    await axios.delete(`http://147.93.45.171:1600/pagesdelete/${id}`, user);
     const updatedData = user.filter((item) => item.id !== id);
     const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
     if (currentPage > newTotalPages && newTotalPages > 0) {
@@ -251,12 +249,12 @@ function Pages() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -270,10 +268,10 @@ function Pages() {
         <meta property="og:title" content="Pages | RxLYTE" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -365,11 +363,11 @@ function Pages() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -963,7 +961,7 @@ function Pages() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1677,7 +1675,11 @@ function Pages() {
                   strokeLinejoin="round"
                 >
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                  <path d="M12.802 2.165l5.575 2.389c.48 .206 .863 .589 1.07 1.07l2.388 5.574c.22 .512 .22 1.092 0 1.604l-2.389 5.575c-.206 .48 -.589 .863 -1.07 1.07l-5.574 2.388c-.512 .22 -1.092 .22 -1.604 0l-5.575 -2.389a2.036 2.036 0 0 1 -1.07 -1.07l-2.388 -5.574a2.036 2.036 0 0 1 0 -1.604l2.389 -5.575c.206 -.48 .589 -.863 1.07 -1.07l5.574 -2.388a2.036 2.036 0 0 1 1.604 0z"></path>
+                  <path
+                    d="M12.802 2.165l5.575 2.389c.48 .206 .863 .589 1.07 1.07l2.388 5.574c.22 .512 .22 1.092 0 1.604l-2.389 
+                    5.575c-.206 .48 -.589 .863 -1.07 1.07l-5.574 2.388c-.512 .22 -1.092 .22 -1.604 0l-5.575 -2.389a2.036 2.036 
+                    0 0 1 -1.07 -1.07l-2.388 -5.574a2.036 2.036 0 0 1 0 -1.604l2.389 -5.575c.206 -.48 .589 -.863 1.07 -1.07l5.574 -2.388a2.036 2.036 0 0 1 1.604 0z"
+                  ></path>
                   <path d="M12 16v.01"></path>
                   <path d="M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483"></path>
                 </svg>
@@ -1776,46 +1778,6 @@ function Pages() {
                 </svg>
                 Newsletters
               </Link>
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
             </li>
 
             <div>
@@ -2257,6 +2219,7 @@ function Pages() {
                   <button
                     className="btn btn-reload border cart-cart"
                     type="button"
+                    onClick={() => window.location.reload()}
                   >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
@@ -2278,7 +2241,6 @@ function Pages() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       ID
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2287,7 +2249,6 @@ function Pages() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Name
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2296,7 +2257,6 @@ function Pages() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Template
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th
@@ -2305,11 +2265,9 @@ function Pages() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Created At
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
                     <th scope="col" className="fw-light">
                       Status
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-light">
@@ -2333,7 +2291,9 @@ function Pages() {
                         </td>
 
                         <td>
-                          <span className="sliders1">{data.template}</span>
+                          <Link to={`/admin/pages/edit/${data.id}`}>
+                            {data.template}
+                          </Link>
                         </td>
 
                         <td>{data.date}</td>

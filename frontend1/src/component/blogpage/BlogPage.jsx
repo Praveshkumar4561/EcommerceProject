@@ -21,7 +21,7 @@ function BlogPage() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -57,22 +57,23 @@ function BlogPage() {
   let [user, setUser] = useState([]);
 
   useEffect(() => {
+    const alldata = async () => {
+      try {
+        let response = await axios.get(
+          "http://147.93.45.171:1600/blogpostdata"
+        );
+        const filteredData = response.data.filter(
+          (blog) =>
+            (blog.status === "Published" || blog.status === "Draft") &&
+            String(blog.feature).toLowerCase() === "yes"
+        );
+        setUser(filteredData);
+      } catch (error) {
+        console.error("Error fetching blog data:", error);
+      }
+    };
     alldata();
   }, []);
-
-  const alldata = async () => {
-    try {
-      let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
-      const filteredData = response.data.filter(
-        (blog) =>
-          (blog.status === "Published" || blog.status === "Draft") &&
-          String(blog.feature).toLowerCase() === "yes"
-      );
-      setUser(filteredData);
-    } catch (error) {
-      console.error("Error fetching blog data:", error);
-    }
-  };
 
   const defaultUrlState = {
     login: "login",
@@ -107,11 +108,11 @@ function BlogPage() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -125,7 +126,7 @@ function BlogPage() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -141,7 +142,7 @@ function BlogPage() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -157,7 +158,7 @@ function BlogPage() {
       {
         "@type": "WebSite",
         name: "RxLyte",
-        url: "http://srv724100.hstgr.cloud/",
+        url: "http://srv689968.hstgr.cloud/",
         description:
           "RxLyte is a modern ecommerce platform offering a wide range of premium healthcare products.",
         keywords:
@@ -184,13 +185,13 @@ function BlogPage() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv724100.hstgr.cloud/",
+            item: "http://srv689968.hstgr.cloud/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Blog",
-            item: "http://srv724100.hstgr.cloud/blog",
+            item: "http://srv689968.hstgr.cloud/blog",
           },
         ],
       },
@@ -225,7 +226,7 @@ function BlogPage() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://89.116.170.231:1600/adsdata");
+        const response = await axios.get("http://147.93.45.171:1600/adsdata");
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -245,7 +246,7 @@ function BlogPage() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/cookiesalldata"
+          "http://147.93.45.171:1600/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -292,7 +293,7 @@ function BlogPage() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -327,7 +328,7 @@ function BlogPage() {
           content="Stay updated with the latest shopping trends, expert tips, and exclusive insights. Read our blog for guides, reviews, and industry news."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/blog" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/blog" />
       </Helmet>
 
       <div className="container-fluid">
@@ -347,17 +348,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />
@@ -390,7 +391,7 @@ function BlogPage() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${cart.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -599,17 +600,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />
@@ -646,7 +647,7 @@ function BlogPage() {
                 >
                   <div className="image-page">
                     <img
-                      src={`http://89.116.170.231:1600/src/image/${blog.image}`}
+                      src={`http://147.93.45.171:1600/src/image/${blog.image}`}
                       alt={
                         blog.name
                           ? `Image for ${blog.name}`
@@ -777,17 +778,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />
@@ -818,9 +819,12 @@ function BlogPage() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -916,7 +920,8 @@ function BlogPage() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <div className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </div>
             </div>
           </div>
@@ -940,17 +945,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />

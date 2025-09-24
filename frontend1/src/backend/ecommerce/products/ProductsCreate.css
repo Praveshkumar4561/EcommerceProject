@@ -220,46 +220,6 @@ input[type="search"] {
   color: #4299e1;
 }
 
-#role-announce {
-  width: 100%;
-  display: flex;
-}
-
-@media (max-width: 992px) {
-  .editor-toolbar {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .container-create {
-    margin-left: 0;
-    padding: 0.5rem;
-    width: 100%;
-  }
-
-  .editor-toolbar {
-    width: 100%;
-  }
-}
-
-.image-card a:hover {
-  text-decoration: underline;
-}
-
-.card {
-  margin-bottom: 1rem;
-}
-
-.card-title1 {
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.link-primary1:hover {
-  text-decoration: underline;
-}
-
 @media (max-width: 576px) {
   .attribute-produc {
     position: relative;
@@ -323,17 +283,6 @@ input[type="search"] {
   }
 }
 
-.image-para {
-  margin-left: -1rem;
-}
-
-@media (max-width: 576px) {
-  .image-product {
-    width: 100vw;
-    max-width: 86.2vw;
-  }
-}
-
 .coupon-barcode {
   margin-left: 0.5rem;
 }
@@ -371,86 +320,10 @@ input[type="search"] {
   max-width: 96%;
 }
 
-.add-option {
-  position: relative;
-  right: 40%;
-  top: 3rem;
-}
-
-.globally-add {
-  position: relative;
-  left: 37%;
-}
-
-.globally-add1 {
-  position: relative;
-  left: 35%;
-  height: 48px;
-}
-
-@media (max-width: 768px) {
-  .globally-add1 {
-    width: 100%;
-  }
-  .globally-add {
-    width: 100%;
-    max-width: 39%;
-  }
-  .global-select {
-    gap: 11px;
-    position: relative;
-    right: 30%;
-  }
-  .product-opt1 {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .add-option {
-    width: 26%;
-    position: relative;
-    right: 33%;
-    top: 0;
-  }
-
-  .globally-add1 {
-    margin-top: 10px;
-  }
-
-  .globally-add {
-    margin-top: 10px;
-  }
-}
-
 @media (max-width: 576px) {
   .table-lable1 {
     width: 100%;
     max-width: 94%;
-  }
-  .add-option {
-    width: 100%;
-    max-width: 30%;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 992px) {
-  .add-option {
-    position: relative;
-    right: 37%;
-  }
-  .global-select {
-    position: relative;
-    right: 10%;
-  }
-}
-@media (min-width: 992px) and (max-width: 1200px) {
-  .add-option {
-    position: relative;
-    right: 37%;
-  }
-  .global-select {
-    position: relative;
-    right: 10%;
   }
 }
 
@@ -460,6 +333,7 @@ input[type="search"] {
   white-space: nowrap;
   letter-spacing: 1px;
 }
+
 @media (max-width: 576px) {
   .stock-radio {
     display: flex;
@@ -482,6 +356,7 @@ input[type="search"] {
   width: 100%;
   max-width: 50%;
 }
+
 @media (max-width: 576px) {
   .shipping-label {
     width: 100%;
@@ -502,24 +377,6 @@ input[type="search"] {
 
 .coupon-condition {
   width: 100%;
-}
-
-.footer-botble {
-  letter-spacing: 1px;
-  word-spacing: 1px;
-  line-height: 1.1rem;
-}
-
-.ckeditor-width {
-  width: 200%;
-  max-width: 150%;
-}
-
-@media (max-width: 576px) {
-  .ckeditor-width {
-    width: 100%;
-    max-width: 98%;
-  }
 }
 
 .input-question {

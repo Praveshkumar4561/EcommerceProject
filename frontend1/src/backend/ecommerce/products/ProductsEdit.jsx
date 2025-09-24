@@ -20,7 +20,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -29,6 +28,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
 
 function ProductsEdit() {
+  const { id } = useParams();
   const [seo, setSeo] = useState(false);
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -187,12 +187,11 @@ function ProductsEdit() {
     setBlog(!blog);
   };
 
-  let { id } = useParams();
-
   const [user, setUser] = useState({
     name: "",
     permalink: "",
     description: "",
+    content: "",
     sku: "",
     price: "",
     price_sale: "",
@@ -220,6 +219,7 @@ function ProductsEdit() {
     name,
     permalink,
     description,
+    content,
     sku,
     price,
     price_sale,
@@ -259,7 +259,8 @@ function ProductsEdit() {
     let formData = new FormData();
     formData.append("name", name);
     formData.append("permalink", permalink);
-    formData.append("description", stripHtml(editorData2));
+    formData.append("description", description);
+    formData.append("content", content);
     formData.append("sku", sku);
     formData.append("price", price);
     formData.append("price_sale", price_sale);
@@ -287,7 +288,7 @@ function ProductsEdit() {
 
     try {
       const response = await axios.put(
-        `http://89.116.170.231:1600/productupdate/${id}`,
+        `http://147.93.45.171:1600/productupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -298,13 +299,295 @@ function ProductsEdit() {
     }
   };
 
+  const [editorData2, setEditorData2] = useState("");
+  const [textAreaData2, setTextAreaData2] = useState("");
+  const [showEdit2, setShowEdit2] = useState(true);
+
+  const handleEditorChange2 = (event, editor) => {
+    const data = editor.getData();
+    setEditorData2(data);
+    const plain = stripHTML(data);
+    setTextAreaData2(plain);
+    setUser((prev) => ({
+      ...prev,
+      description: data,
+    }));
+  };
+
+  const handleTextAreaChange2 = (e) => {
+    const data = e.target.value;
+    setTextAreaData2(data);
+    setUser((prevState) => ({
+      ...prevState,
+      description: data,
+    }));
+    setEditorData2(data);
+  };
+
+  const showEditorClicked2 = (e) => {
+    e.preventDefault();
+    setShowEdit2(!showEdit2);
+  };
+
+  const descEditorRef = useRef(null);
+  const contentEditorRef = useRef(null);
+
+  const handleEditorReady = (editor, target) => {
+    if (target === "desc") descEditorRef.current = editor;
+    else contentEditorRef.current = editor;
+  };
+
+  const mediaUpload = async (e, target = "desc") => {
+    e && e.preventDefault();
+
+    const toastOptions = {
+      position: "bottom-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeButton: true,
+      draggable: true,
+      progress: undefined,
+    };
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+
+    const getEditor = () =>
+      target === "desc" ? descEditorRef.current : contentEditorRef.current;
+    const setEditorDataByTarget =
+      target === "desc" ? setEditorData2 : setEditorData1;
+    const editorDataByTarget = target === "desc" ? editorData2 : editorData1;
+
+    fileInput.addEventListener(
+      "change",
+      async (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) {
+          fileInput.remove();
+          return;
+        }
+
+        const MAX_MB = 3;
+        if (file.size > MAX_MB * 1024 * 1024) {
+          toast.error(`Image too large. Max ${MAX_MB} MB.`, toastOptions);
+          fileInput.remove();
+          return;
+        }
+
+        try {
+          const reader = new FileReader();
+
+          reader.onload = () => {
+            const dataUrl = reader.result;
+            const editor = getEditor();
+
+            if (editor) {
+              try {
+                editor.model.change((writer) => {
+                  let imageEl = null;
+                  try {
+                    imageEl = writer.createElement("imageBlock", {
+                      src: dataUrl,
+                      alt: file.name,
+                    });
+                  } catch (err) {
+                    try {
+                      imageEl = writer.createElement("image", {
+                        src: dataUrl,
+                        alt: file.name,
+                      });
+                    } catch (e) {
+                      imageEl = null;
+                    }
+                  }
+
+                  if (imageEl) {
+                    editor.model.insertContent(
+                      imageEl,
+                      editor.model.document.selection
+                    );
+                  } else {
+                    const html = `<figure class="image"><img src="${dataUrl}" alt="${file.name}"></figure>`;
+                    const viewFragment = editor.data.processor.toView(html);
+                    const modelFragment = editor.data.toModel(viewFragment);
+                    editor.model.insertContent(
+                      modelFragment,
+                      editor.model.document.selection
+                    );
+                  }
+                });
+
+                const newData = editor.getData();
+                setEditorDataByTarget(newData);
+                setUser((p) => ({ ...p, content: newData }));
+                toast.success("Image inserted successfully", toastOptions);
+              } catch (insertErr) {
+                console.error("Insert failed:", insertErr);
+                toast.error("Could not insert image into editor", toastOptions);
+              }
+            } else {
+              const imgHtml = `<img src="${dataUrl}" alt="${file.name}" />`;
+              setEditorDataByTarget((prev) =>
+                prev ? prev + imgHtml : imgHtml
+              );
+              setUser((p) => ({
+                ...p,
+                content: (editorDataByTarget || "") + imgHtml,
+              }));
+              toast.info(
+                "Editor not ready — image data appended as HTML",
+                toastOptions
+              );
+            }
+          };
+
+          reader.onerror = (err) => {
+            console.error("FileReader error", err);
+            toast.error("Failed to read file", toastOptions);
+          };
+
+          reader.readAsDataURL(file);
+        } finally {
+          fileInput.remove();
+        }
+      },
+      { once: true }
+    );
+
+    fileInput.click();
+  };
+
+  useEffect(() => {
+    const loadAll = async () => {
+      try {
+        const [{ data: defs }, { data: prodArr }, { data: allFaqs }] =
+          await Promise.all([
+            axios.get("http://147.93.45.171:1600/attributesdata"),
+            axios.get(`http://147.93.45.171:1600/productsomedata/${id}`),
+            axios.get("http://147.93.45.171:1600/pagesdatafaqs"),
+          ]);
+        setCreate(defs || []);
+        const publishedFaqs = (allFaqs || []).filter(
+          (p) => p.status === "published" || p.status === "default"
+        );
+        setPages(publishedFaqs);
+        const pd = prodArr[0] || {};
+        setUser({
+          name: pd.name || "",
+          permalink: pd.permalink || "",
+          description: pd.description || "",
+          content: pd.content || "",
+          sku: pd.sku || "",
+          price: pd.price || "",
+          price_sale: pd.price_sale || "",
+          cost: pd.cost || "",
+          barcode: pd.barcode || "",
+          stockstatus: pd.stockstatus || "",
+          weight: pd.weight || "",
+          length: pd.length || "",
+          wide: pd.wide || "",
+          height: pd.height || "",
+          status: pd.status || "",
+          store: pd.store || "",
+          featured: pd.featured === "Yes",
+          brand: pd.brand || "",
+          minimumorder: pd.minimumorder || "",
+          maximumorder: pd.maximumorder || "",
+          tags: pd.tags || "",
+          date: pd.date || "",
+          image: pd.image || "",
+          file: null,
+        });
+        setEditorData2(pd.description || "");
+        setTextAreaData2(pd.description || "");
+        setEditorData1(pd.content || "");
+        setTextAreaData1(pd.content || "");
+        setSelectedLabels(
+          pd.label ? pd.label.split(",").map((s) => s.trim()) : []
+        );
+        setSelectedCollections(
+          pd.label1 ? pd.label1.split(",").map((s) => s.trim()) : []
+        );
+        const catMap = {};
+        (pd.categories || "")
+          .split(",")
+          .map((s) => s.trim())
+          .forEach((c) => {
+            catMap[c] = true;
+          });
+        setCheckedItems(catMap);
+        if (pd.attribute) {
+          const arr = pd.attribute.split(",").map((pair) => {
+            const [rawName, rawValue] = pair.split(":").map((s) => s.trim());
+            const def = defs.find((d) => d.title === rawName);
+            return {
+              attributeId: def ? String(def.id) : "",
+              attributeValue: rawValue,
+            };
+          });
+          setMore(arr);
+        }
+        if (pd.faqs) {
+          const wanted = pd.faqs.split(",").map((s) => s.trim().toLowerCase());
+
+          const matchedIds = publishedFaqs
+            .filter((f) => wanted.includes(f.question.trim().toLowerCase()))
+            .map((f) => f.id);
+
+          setSelectedIds(matchedIds);
+          console.log("Matched FAQ IDs:", matchedIds);
+        }
+      } catch (err) {
+        console.error("Error loading edit data", err);
+      }
+    };
+
+    loadAll();
+  }, [id]);
+
+  const stripHTML = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const [editorData1, setEditorData1] = useState(user.content || "");
+  const [textAreaData1, setTextAreaData1] = useState(user.content || "");
+  const [showEdit1, setShowEdit1] = useState(true);
+
+  const showEditorClicked1 = (e) => {
+    e.preventDefault();
+    setShowEdit1(!showEdit1);
+  };
+
+  const handleEditorChange1 = (event, editor) => {
+    const data = editor.getData();
+    setEditorData1(data);
+    const plain = stripHTML(data);
+    setTextAreaData1(plain);
+    setUser((prev) => ({
+      ...prev,
+      content: data,
+    }));
+  };
+
+  const handleTextAreaChange1 = (e) => {
+    const data = e.target.value;
+    setTextAreaData1(data);
+    setUser((prevState) => ({
+      ...prevState,
+      content: data,
+    }));
+    setEditorData1(data);
+  };
+
   let [create, setCreate] = useState([]);
 
   useEffect(() => {
     const attributedata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/attributesdata"
+          "http://147.93.45.171:1600/attributesdata"
         );
         setCreate(response.data);
       } catch (error) {
@@ -352,91 +635,6 @@ function ProductsEdit() {
       }));
     }
   };
-
-  useEffect(() => {
-    const loadAll = async () => {
-      try {
-        const [{ data: defs }, { data: prodArr }, { data: allFaqs }] =
-          await Promise.all([
-            axios.get("http://89.116.170.231:1600/attributesdata"),
-            axios.get(`http://89.116.170.231:1600/productsomedata/${id}`),
-            axios.get("http://89.116.170.231:1600/pagesdatafaqs"),
-          ]);
-        setCreate(defs || []);
-        const publishedFaqs = (allFaqs || []).filter(
-          (p) => p.status === "published" || p.status === "default"
-        );
-        setPages(publishedFaqs);
-        const pd = prodArr[0] || {};
-        setUser({
-          name: pd.name || "",
-          permalink: pd.permalink || "",
-          description: pd.description || "",
-          sku: pd.sku || "",
-          price: pd.price || "",
-          price_sale: pd.price_sale || "",
-          cost: pd.cost || "",
-          barcode: pd.barcode || "",
-          stockstatus: pd.stockstatus || "",
-          weight: pd.weight || "",
-          length: pd.length || "",
-          wide: pd.wide || "",
-          height: pd.height || "",
-          status: pd.status || "",
-          store: pd.store || "",
-          featured: pd.featured === "Yes",
-          brand: pd.brand || "",
-          minimumorder: pd.minimumorder || "",
-          maximumorder: pd.maximumorder || "",
-          tags: pd.tags || "",
-          date: pd.date || "",
-          image: pd.image || "",
-          file: null,
-        });
-        setEditorData2(pd.description || "");
-        setTextAreaData2(stripHtml(pd.description || ""));
-        setSelectedLabels(
-          pd.label ? pd.label.split(",").map((s) => s.trim()) : []
-        );
-        setSelectedCollections(
-          pd.label1 ? pd.label1.split(",").map((s) => s.trim()) : []
-        );
-        const catMap = {};
-        (pd.categories || "")
-          .split(",")
-          .map((s) => s.trim())
-          .forEach((c) => {
-            catMap[c] = true;
-          });
-        setCheckedItems(catMap);
-        if (pd.attribute) {
-          const arr = pd.attribute.split(",").map((pair) => {
-            const [rawName, rawValue] = pair.split(":").map((s) => s.trim());
-            const def = defs.find((d) => d.title === rawName);
-            return {
-              attributeId: def ? String(def.id) : "",
-              attributeValue: rawValue,
-            };
-          });
-          setMore(arr);
-        }
-        if (pd.faqs) {
-          const wanted = pd.faqs.split(",").map((s) => s.trim().toLowerCase());
-
-          const matchedIds = publishedFaqs
-            .filter((f) => wanted.includes(f.question.trim().toLowerCase()))
-            .map((f) => f.id);
-
-          setSelectedIds(matchedIds);
-          console.log("Matched FAQ IDs:", matchedIds);
-        }
-      } catch (err) {
-        console.error("Error loading edit data", err);
-      }
-    };
-
-    loadAll();
-  }, [id]);
 
   const [searchText, setSearchText] = useState("");
   const [checkedItems, setCheckedItems] = useState({});
@@ -639,71 +837,6 @@ function ProductsEdit() {
     );
   };
 
-  const [editorData2, setEditorData2] = useState("");
-  const [textAreaData2, setTextAreaData2] = useState("");
-  const [showEdit2, setShowEdit2] = useState(true);
-
-  const stripHtml = (html) => {
-    const tmp = document.createElement("DIV");
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
-  };
-
-  const handleEditorChange2 = (event, editor) => {
-    const data = editor.getData();
-    const plainText = stripHtml(data);
-    setEditorData2(data);
-    setUser((prevState) => ({
-      ...prevState,
-      description: plainText,
-    }));
-    setTextAreaData2(plainText);
-  };
-
-  const handleTextAreaChange2 = (e) => {
-    const data = e.target.value;
-    setTextAreaData2(data);
-    setUser((prevState) => ({
-      ...prevState,
-      description: data,
-    }));
-    setEditorData2(data);
-  };
-
-  const showEditorClicked2 = (e) => {
-    e.preventDefault();
-    setShowEdit2(!showEdit2);
-  };
-
-  const mediaUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
-          const data = await response.json();
-          console.log("Image uploaded successfully", data);
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      }
-    });
-  };
-
   const [tag1, setTag1] = useState([]);
   const [tags1, setTags1] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -712,7 +845,7 @@ function ProductsEdit() {
   useEffect(() => {
     const tagsdata = async () => {
       let response = await axios.get(
-        "http://89.116.170.231:1600/producttagdata"
+        "http://147.93.45.171:1600/producttagdata"
       );
       setTag1(response.data);
     };
@@ -752,37 +885,6 @@ function ProductsEdit() {
         handleAddTag(match.name);
       }
     }
-  };
-
-  const [editorData1, setEditorData1] = useState(user.content || "");
-  const [textAreaData1, setTextAreaData1] = useState(
-    stripHtml(user.content || "")
-  );
-  const [showEdit1, setShowEdit1] = useState(true);
-
-  const showEditorClicked1 = (e) => {
-    e.preventDefault();
-    setShowEdit1(!showEdit1);
-  };
-
-  const handleEditorChange1 = (event, editor) => {
-    const data = editor.getData();
-    setEditorData1(data);
-    setUser((prevState) => ({
-      ...prevState,
-      content: data,
-    }));
-    setTextAreaData1(stripHtml(data));
-  };
-
-  const handleTextAreaChange1 = (e) => {
-    const data = e.target.value;
-    setTextAreaData1(data);
-    setUser((prevState) => ({
-      ...prevState,
-      content: data,
-    }));
-    setEditorData1(data);
   };
 
   const extendedTypes = ["Checkbox", "RadioButton", "Dropdown"];
@@ -889,13 +991,6 @@ function ProductsEdit() {
     );
   };
 
-  let [attributes, setAttributes] = useState(false);
-
-  let addAttribute = (e) => {
-    e.preventDefault();
-    setAttributes(!attributes);
-  };
-
   const [click, setClick] = useState(false);
   const [global, setGlobal] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -903,7 +998,7 @@ function ProductsEdit() {
   useEffect(() => {
     const globaldata = async () => {
       const response = await axios.get(
-        "http://89.116.170.231:1600/productoptiondata"
+        "http://147.93.45.171:1600/productoptiondata"
       );
       setGlobal(response.data);
     };
@@ -1016,7 +1111,7 @@ function ProductsEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -1037,7 +1132,7 @@ function ProductsEdit() {
     const load = async () => {
       try {
         const { data } = await axios.get(
-          "http://89.116.170.231:1600/pagesdatafaqs"
+          "http://147.93.45.171:1600/pagesdatafaqs"
         );
         setPages(
           data.filter((p) => p.status === "published" || p.status === "default")
@@ -1092,7 +1187,7 @@ function ProductsEdit() {
   const attributedata = async () => {
     try {
       let response = await axios.get(
-        "http://89.116.170.231:1600/attributesdata"
+        "http://147.93.45.171:1600/attributesdata"
       );
       setCreate(response.data);
     } catch (error) {
@@ -1135,7 +1230,7 @@ function ProductsEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://89.116.170.231:1600/productpagedata?search=${search}`
+          `http://147.93.45.171:1600/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -1164,7 +1259,7 @@ function ProductsEdit() {
       try {
         setLoading1(true);
         const response = await axios.get(
-          `http://89.116.170.231:1600/productpagedata?search=${search}`
+          `http://147.93.45.171:1600/productpagedata?search=${search}`
         );
         setProducts1(response.data);
       } catch (error) {
@@ -1184,7 +1279,7 @@ function ProductsEdit() {
     const fetchCollections = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/collectionsdata"
+          "http://147.93.45.171:1600/collectionsdata"
         );
         setCollections(response.data);
       } catch (error) {
@@ -1215,7 +1310,7 @@ function ProductsEdit() {
     const labelsdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/productlabelsdata"
+          "http://147.93.45.171:1600/productlabelsdata"
         );
         setLabels(response.data);
       } catch (error) {
@@ -1238,7 +1333,7 @@ function ProductsEdit() {
   useEffect(() => {
     let brandsdata = async () => {
       try {
-        let response = await axios.get("http://89.116.170.231:1600/brandsdata");
+        let response = await axios.get("http://147.93.45.171:1600/brandsdata");
         setBrands(response.data);
       } catch (error) {
         console.error("error", error);
@@ -1260,12 +1355,12 @@ function ProductsEdit() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -1278,10 +1373,10 @@ function ProductsEdit() {
         />
         <meta property="og:title" content="Edit product | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -1373,11 +1468,11 @@ function ProductsEdit() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1971,7 +2066,7 @@ function ProductsEdit() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -2785,46 +2880,6 @@ function ProductsEdit() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -3299,7 +3354,7 @@ function ProductsEdit() {
                     </button>
                     <button
                       className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                      onClick={mediaUpload}
+                      onClick={(e) => mediaUpload(e, "desc")}
                     >
                       <FontAwesomeIcon icon={faImage} className="me-2" />
                       Add Media
@@ -3309,7 +3364,8 @@ function ProductsEdit() {
                     <div className="mb-3">
                       <CKEditor
                         editor={ClassicEditor}
-                        data={editorData2}
+                        onReady={(editor) => handleEditorReady(editor, "desc")}
+                        data={editorData2 || description}
                         onChange={handleEditorChange2}
                         config={{
                           toolbar: [
@@ -3396,7 +3452,7 @@ function ProductsEdit() {
                         className="form-control"
                         placeholder="Short description"
                         name="description"
-                        value={stripHtml(editorData2)}
+                        value={textAreaData2}
                         onChange={handleTextAreaChange2}
                         style={{ height: "110px" }}
                       />
@@ -3418,7 +3474,7 @@ function ProductsEdit() {
                       </button>
                       <button
                         className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                        onClick={mediaUpload}
+                        onClick={(e) => mediaUpload(e, "content")}
                       >
                         <FontAwesomeIcon icon={faImage} className="me-2" />
                         Add Media
@@ -3436,6 +3492,9 @@ function ProductsEdit() {
                       <div className="mb-3">
                         <CKEditor
                           editor={ClassicEditor}
+                          onReady={(editor) =>
+                            handleEditorReady(editor, "content")
+                          }
                           data={editorData1}
                           onChange={handleEditorChange1}
                           config={{
@@ -3522,7 +3581,7 @@ function ProductsEdit() {
                           id="contentEditor"
                           className="form-control"
                           placeholder="Short description"
-                          value={stripHtml(editorData1)}
+                          value={editorData1}
                           onChange={handleTextAreaChange1}
                           style={{
                             height: "58px",
@@ -4726,7 +4785,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.slice(0, 5).map((product) => {
-                        const imageUrl = `http://89.116.170.231:1600/src/image/${product.image}`;
+                        const imageUrl = `http://147.93.45.171:1600/src/image/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -4741,7 +4800,7 @@ function ProductsEdit() {
                                 alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
+                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -4785,7 +4844,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.slice(0, 5).map((product2) => {
-                        const imageUrl = `http://89.116.170.231:1600/src/image/${product2.image}`;
+                        const imageUrl = `http://147.93.45.171:1600/src/image/${product2.image}`;
                         return (
                           <div
                             key={product2.id}
@@ -4800,7 +4859,7 @@ function ProductsEdit() {
                                 alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://89.116.170.231:1600/path/to/fallback-image.jpg")
+                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -5306,7 +5365,7 @@ function ProductsEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://89.116.170.231:1600/src/image/${user.image}`}
+                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
                       alt="Background"
                       className="w-100 h-100 rounded"
                       onClick={() =>

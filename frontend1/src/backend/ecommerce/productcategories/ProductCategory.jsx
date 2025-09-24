@@ -18,7 +18,6 @@ import {
 import Shopping from "../../../assets/Shopping.svg";
 import Cutting from "../../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
@@ -211,7 +210,7 @@ function ProductCategory() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://89.116.170.231:1600/productcatdata");
+      const res = await axios.get("http://147.93.45.171:1600/productcatdata");
       setCate(res.data);
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -274,15 +273,26 @@ function ProductCategory() {
       let response;
       if (editingId) {
         response = await axios.put(
-          `http://89.116.170.231:1600/categoriesupdate/${editingId}`,
-          formData
+          `http://147.93.45.171:1600/categoriesupdate/${editingId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
       } else {
         response = await axios.post(
-          "http://89.116.170.231:1600/product-category",
-          formData
+          "http://147.93.45.171:1600/product-category",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
       }
+
       if (response.status === 200 && response.data.success) {
         toast.success(
           response.data.message ||
@@ -291,17 +301,17 @@ function ProductCategory() {
               : "Category created successfully"),
           { position: "bottom-right", autoClose: 1000 }
         );
+        const categoryRes = await axios.get(
+          "http://147.93.45.171:1600/productcatdata"
+        );
+        setCate(categoryRes.data);
+        resetForm();
       } else {
         toast.error(response.data.message || "Operation failed", {
           position: "bottom-right",
           autoClose: 1000,
         });
       }
-      const categoryRes = await axios.get(
-        "http://89.116.170.231:1600/productcatdata"
-      );
-      setCate(categoryRes.data);
-      resetForm();
     } catch (err) {
       console.error("Submit error:", err);
       toast.error("Operation failed", {
@@ -329,7 +339,11 @@ function ProductCategory() {
 
   const handleItemClick = (id) => {
     const sel = cate.find((c) => c.id === id);
+    if (!sel) return;
+
     setEditingId(id);
+    setSelectedId(id);
+
     setUser({
       name: sel.name,
       permalink: sel.permalink,
@@ -339,6 +353,7 @@ function ProductCategory() {
       is_featured: sel.is_featured,
       file: null,
     });
+
     setMainImageUrl(sel.image_url || null);
     setErrors({});
   };
@@ -352,8 +367,8 @@ function ProductCategory() {
     async function fetchData() {
       try {
         const [catRes, prodRes] = await Promise.all([
-          axios.get("http://89.116.170.231:1600/productcatdata"),
-          axios.get("http://89.116.170.231:1600/productpagedata"),
+          axios.get("http://147.93.45.171:1600/productcatdata"),
+          axios.get("http://147.93.45.171:1600/productpagedata"),
         ]);
         setCate(catRes.data || []);
         setProduct(prodRes.data || []);
@@ -384,7 +399,7 @@ function ProductCategory() {
 
   const deletedata = async (id) => {
     try {
-      await axios.delete(`http://89.116.170.231:1600/categoriesdelete/${id}`);
+      await axios.delete(`http://147.93.45.171:1600/categoriesdelete/${id}`);
       setCate((prev) => prev.filter((c) => c.id !== id));
       if (selectedId === id) setSelectedId(null);
       toast.success("Category deleted successfully", {
@@ -437,12 +452,6 @@ function ProductCategory() {
     });
   };
 
-  const stripHtml = (html) => {
-    const tmp = document.createElement("DIV");
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
-  };
-
   const toggleEditor2 = (e) => {
     e.preventDefault();
     setShowEdit2((prev) => !prev);
@@ -452,7 +461,7 @@ function ProductCategory() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -477,12 +486,12 @@ function ProductCategory() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -495,10 +504,10 @@ function ProductCategory() {
         />
         <meta property="og:title" content="Product categories | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -590,11 +599,11 @@ function ProductCategory() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1188,7 +1197,7 @@ function ProductCategory() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -2002,46 +2011,6 @@ function ProductCategory() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2491,7 +2460,6 @@ function ProductCategory() {
                           className="list-group-item d-flex align-items-center flex-row border align-items-lg-center"
                           onClick={() => handleItemClick(cat.id)}
                         >
-                          <i className="fas fa-bars bg-light px-2 py-2 rounded me-2" />
                           <svg
                             className="icon svg-icon-ti-ti-file text-dark me-2"
                             xmlns="http://www.w3.org/2000/svg"
@@ -2634,7 +2602,7 @@ function ProductCategory() {
                       <div className="mb-3">
                         <CKEditor
                           editor={ClassicEditor}
-                          data={user.description}
+                          data={user.description || ""}
                           onChange={(e, editor) => {
                             const html = editor.getData();
                             setUser((u) => ({ ...u, description: html }));
@@ -2654,7 +2622,6 @@ function ProductCategory() {
                               "bulletedList",
                               "numberedList",
                               "alignment",
-                              "textDirection",
                               "blockQuote",
                               "indent",
                               "outdent",
@@ -2665,13 +2632,15 @@ function ProductCategory() {
                               "redo",
                               "findAndReplace",
                               "removeFormat",
-                              "source",
                               "codeBlock",
-                              "fullscreen",
                             ],
                             heading: {
                               options: [
-                                { model: "paragraph", title: "Paragraph" },
+                                {
+                                  model: "paragraph",
+                                  title: "Paragraph",
+                                  class: "ck-heading_paragraph",
+                                },
                                 {
                                   model: "heading1",
                                   view: "h1",
@@ -2989,7 +2958,6 @@ function ProductCategory() {
             </div>
           </div>
         </div>
-
         <ToastContainer />
       </div>
     </>

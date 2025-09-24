@@ -32,6 +32,7 @@ function IncompleOrders() {
   const resultsRef = useRef(null);
   let [Specification, setSpecifcation] = useState(false);
   let [payment, setPayment] = useState(false);
+  let [incomplete, setIncomplete] = useState([]);
 
   let paymentgateway = () => {
     setPayment(!payment);
@@ -171,7 +172,7 @@ function IncompleOrders() {
   useEffect(() => {
     let customerdata = async () => {
       const response = await axios.get(
-        "http://89.116.170.231:1600/checkoutdata"
+        "http://147.93.45.171:1600/checkoutdata"
       );
       setCount5(response.data.length);
     };
@@ -191,12 +192,12 @@ function IncompleOrders() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -209,10 +210,10 @@ function IncompleOrders() {
         />
         <meta property="og:title" content="Incomplete orders | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
       <div
         className={`container-fluid navbar-back ${
@@ -303,11 +304,11 @@ function IncompleOrders() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -901,7 +902,7 @@ function IncompleOrders() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1715,46 +1716,6 @@ function IncompleOrders() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2160,7 +2121,7 @@ function IncompleOrders() {
               <div className="col-12 col-md-12 col-lg-12 rounded mt-lg-3 d-flex flex-column align-items-center lh-lg cart-cart py-2">
                 <img src={Output} alt="RxLYTE" className="mt-4 img-fluid" />
                 <h3 className="mt-4 fw-medium">Manage incomplete orders</h3>
-                <span className="text-start mb-4">
+                <span className="mb-4 text-start">
                   Incomplete order is an order created when a customer adds a
                   product to the cart, proceeds to fill out the purchase
                   information but does not complete the checkout process.
@@ -2236,6 +2197,7 @@ function IncompleOrders() {
                         <button
                           className="btn btn-reload border cart-cart d-flex flex-row align-items-center border"
                           type="button"
+                          onClick={() => window.location.reload()}
                         >
                           <FontAwesomeIcon icon={faRotate} className="me-2" />
                           Reload
@@ -2260,7 +2222,6 @@ function IncompleOrders() {
                             style={{ whiteSpace: "nowrap" }}
                           >
                             ID
-                            <i className="fas fa-sort ms-1"></i>
                           </th>
 
                           <th
@@ -2269,7 +2230,6 @@ function IncompleOrders() {
                             style={{ whiteSpace: "nowrap" }}
                           >
                             Customer
-                            <i className="fas fa-sort ms-1"></i>
                           </th>
 
                           <th
@@ -2278,7 +2238,6 @@ function IncompleOrders() {
                             style={{ whiteSpace: "nowrap" }}
                           >
                             Amount
-                            <i className="fas fa-sort ms-1"></i>
                           </th>
 
                           <th
@@ -2287,12 +2246,10 @@ function IncompleOrders() {
                             style={{ whiteSpace: "nowrap" }}
                           >
                             Created At
-                            <i className="fas fa-sort ms-1"></i>
                           </th>
 
                           <th scope="col" className="fw-light">
                             Store
-                            <i className="fas fa-sort ms-1"></i>
                           </th>
 
                           <th scope="col" className="fw-light">

@@ -15,7 +15,7 @@ import {
 import Shopping from "../../assets/Shopping.svg";
 import Cutting from "../../assets/Cutting.webp";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,7 +39,7 @@ function BlogCategory() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -254,7 +254,7 @@ function BlogCategory() {
     try {
       if (editingId) {
         await axios.put(
-          `http://89.116.170.231:1600/categoryupdate/${editingId}`,
+          `http://147.93.45.171:1600/categoryupdate/${editingId}`,
           category
         );
         toast.success("Category updated successfully", {
@@ -263,7 +263,7 @@ function BlogCategory() {
         });
       } else {
         await axios.post(
-          "http://89.116.170.231:1600/blogcategorypost",
+          "http://147.93.45.171:1600/blogcategorypost",
           category
         );
         toast.success("Category created successfully", {
@@ -272,7 +272,7 @@ function BlogCategory() {
         });
       }
       const categoryRes = await axios.get(
-        "http://89.116.170.231:1600/allcategorydata"
+        "http://147.93.45.171:1600/allcategorydata"
       );
       setCates(categoryRes.data || []);
       setCategory({
@@ -322,7 +322,7 @@ function BlogCategory() {
   let deletedata = async (id) => {
     try {
       await axios.delete(
-        `http://89.116.170.231:1600/categoriesdelete/${id}`,
+        `http://147.93.45.171:1600/categoriesdelete/${id}`,
         cates
       );
       setCates((prev) => prev.filter((item) => item.id !== id));
@@ -353,8 +353,8 @@ function BlogCategory() {
     const fetchData = async () => {
       try {
         const [categoryRes, blogRes] = await Promise.all([
-          axios.get("http://89.116.170.231:1600/allcategorydata"),
-          axios.get("http://89.116.170.231:1600/blogpostdata"),
+          axios.get("http://147.93.45.171:1600/allcategorydata"),
+          axios.get("http://147.93.45.171:1600/blogpostdata"),
         ]);
         setCates(categoryRes.data || []);
         setBlogs(blogRes.data || []);
@@ -378,12 +378,12 @@ function BlogCategory() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -397,10 +397,10 @@ function BlogCategory() {
         <meta property="og:title" content="Categories | RxLYTE" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -1092,7 +1092,7 @@ function BlogCategory() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1906,46 +1906,6 @@ function BlogCategory() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2431,7 +2391,6 @@ function BlogCategory() {
                           }}
                         >
                           <span className="d-lg-flex d-flex flex-row align-items-start">
-                            <i className="fas fa-bars bg-light px-lg-2 py-2 me-lg-0 rounded"></i>
                             <svg
                               className="icon svg-icon-ti-ti-file ms-lg-1 text-dark ms-1 mb-1 mt-1"
                               xmlns="http://www.w3.org/2000/svg"

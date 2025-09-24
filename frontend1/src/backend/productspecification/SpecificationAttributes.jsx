@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import "./SpecificationAttributes.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
-import "font-awesome/css/font-awesome.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleDown,
@@ -26,7 +25,7 @@ function SpecificationAttributes() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -192,7 +191,7 @@ function SpecificationAttributes() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://89.116.170.231:1600/specificationattributesearch/${search}`,
+        `http://147.93.45.171:1600/specificationattributesearch/${search}`,
         user
       );
       setUser(response.data);
@@ -203,7 +202,7 @@ function SpecificationAttributes() {
 
   const alldata = async () => {
     let response = await axios.get(
-      "http://89.116.170.231:1600/spceficationattributedata"
+      "http://147.93.45.171:1600/spceficationattributedata"
     );
     setUser(response.data);
   };
@@ -218,7 +217,7 @@ function SpecificationAttributes() {
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://89.116.170.231:1600/specificationdeleteattribute/${id}`,
+      `http://147.93.45.171:1600/specificationdeleteattribute/${id}`,
       user
     );
     const updatedData = user.filter((item) => item.id !== id);
@@ -261,12 +260,12 @@ function SpecificationAttributes() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -279,10 +278,10 @@ function SpecificationAttributes() {
         />
         <meta property="og:title" content="Specification Attributes | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -374,11 +373,11 @@ function SpecificationAttributes() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -972,7 +971,7 @@ function SpecificationAttributes() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1786,46 +1785,6 @@ function SpecificationAttributes() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
 
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
@@ -2221,7 +2180,7 @@ function SpecificationAttributes() {
         </ol>
       </nav>
 
-      <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
+      <main className="col-md-9 ms-sm-auto col-lg-10 ms-lg-2 px-md-4 table-announce w-auto d-flex justify-content-center align-items-center cart-cart">
         <div className="card mt-3 testimonial me-lg-4 me-0 ms-2 ms-lg-4 ms-md-0 border table-price">
           <div className="card-body">
             <div className="d-flex justify-content-between mb-3 flex-row">
@@ -2244,7 +2203,11 @@ function SpecificationAttributes() {
                       Create
                     </button>
                   </Link>
-                  <button className="btn btn-reload border" type="button">
+                  <button
+                    className="btn btn-reload border"
+                    type="button"
+                    onClick={() => window.location.reload()}
+                  >
                     <FontAwesomeIcon icon={faRotate} className="me-2" />
                     Reload
                   </button>
@@ -2257,10 +2220,7 @@ function SpecificationAttributes() {
                 <thead className="table-secondary">
                   <tr>
                     <th scope="col" className="fw-light">
-                      <span className="d-flex mt-1">
-                        ID
-                        <i className="fas fa-sort ms-1"></i>
-                      </span>
+                      <span className="d-flex mt-1">ID</span>
                     </th>
 
                     <th
@@ -2269,22 +2229,18 @@ function SpecificationAttributes() {
                       style={{ whiteSpace: "nowrap" }}
                     >
                       Name
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-light">
                       <span>Description</span>
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-light">
                       Created At
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
 
                     <th scope="col" className="fw-light">
                       Operations
-                      <i className="fas fa-sort ms-1"></i>
                     </th>
                   </tr>
                 </thead>
@@ -2329,7 +2285,9 @@ function SpecificationAttributes() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="9" className="text-center cart-cart"></td>
+                      <td colSpan="9" className="text-center cart-cart">
+                        No Specification data Found
+                      </td>
                     </tr>
                   )}
                 </tbody>

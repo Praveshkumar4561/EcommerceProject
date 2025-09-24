@@ -23,7 +23,7 @@ function Sitemap() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -90,11 +90,11 @@ function Sitemap() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -103,30 +103,16 @@ function Sitemap() {
   }, []);
 
   let [cart, setCart] = useState("");
-
-  useEffect(() => {
-    const fetchBreadcrumbData = async () => {
-      try {
-        const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
-        );
-        setCart(response.data);
-      } catch (error) {
-        console.error("Error fetching breadcrumb settings:", error);
-      }
-    };
-    fetchBreadcrumbData();
-  }, []);
-
   let [about, setAbout] = useState("");
 
   useEffect(() => {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/get-theme-breadcrumb"
+          "http://147.93.45.171:1600/get-theme-breadcrumb"
         );
         setAbout(response.data);
+        setCart(response.data);
       } catch (error) {
         console.error("Error fetching breadcrumb settings:", error);
       }
@@ -140,7 +126,7 @@ function Sitemap() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -156,22 +142,22 @@ function Sitemap() {
   const productsPerPage = 6;
 
   useEffect(() => {
+    const fetchProductData = async () => {
+      try {
+        const response = await axios.get(
+          "http://147.93.45.171:1600/productpagedata"
+        );
+        setDetail(response.data);
+      } catch (error) {
+        console.error("Error occurred", error);
+      }
+    };
     fetchProductData();
   }, []);
 
-  const fetchProductData = async () => {
-    try {
-      const response = await axios.get(
-        "http://89.116.170.231:1600/productpagedata"
-      );
-      setDetail(response.data);
-    } catch (error) {
-      console.error("Error occurred", error);
-    }
-  };
-
   let currentProducts = detail;
   let totalPages = 1;
+
   if (detail.length >= 500) {
     totalPages = Math.ceil(detail.length / productsPerPage);
     const indexOfLastProduct = currentPage * productsPerPage;
@@ -206,17 +192,18 @@ function Sitemap() {
   const productsPerPage1 = 6;
 
   useEffect(() => {
+    const alldata = async () => {
+      try {
+        let response = await axios.get(
+          "http://147.93.45.171:1600/blogpostdata"
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching blog data:", error);
+      }
+    };
     alldata();
   }, []);
-
-  const alldata = async () => {
-    try {
-      let response = await axios.get("http://89.116.170.231:1600/blogpostdata");
-      setUser(response.data);
-    } catch (error) {
-      console.error("Error fetching blog data:", error);
-    }
-  };
 
   let currentBlogs = user;
   let totalPages1 = 1;
@@ -278,7 +265,7 @@ function Sitemap() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -312,7 +299,7 @@ function Sitemap() {
           content="Explore the Sitemap of YourSiteName to easily navigate our website. This page is optimized for SEO and is fully indexable."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/sitemap" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/sitemap" />
       </Helmet>
 
       <script type="application/ld+json">
@@ -321,22 +308,22 @@ function Sitemap() {
               "@context": "https://schema.org",
               "@type": "SiteNavigationElement",
               "name": "Sitemap",
-              "url": "http://srv724100.hstgr.cloud/sitemap",
+              "url": "http://srv689968.hstgr.cloud/sitemap",
               "hasPart": [
-                {"@type": "SiteNavigationElement", "name": "Home", "url": "http://srv724100.hstgr.cloud/"},
-                {"@type": "SiteNavigationElement", "name": "About", "url": "http://srv724100.hstgr.cloud/about"},
-                {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://srv724100.hstgr.cloud/shop"},
-                {"@type": "SiteNavigationElement", "name": "Blog", "url": "https://www.yoursitename.com/blog"},
-                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://srv724100.hstgr.cloud/product-details"},
-                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "http://srv724100.hstgr.cloud/product-categories"},
-                {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://srv724100.hstgr.cloud/cart"},
-                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://srv724100.hstgr.cloud/wishlist"},
-                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://srv724100.hstgr.cloud/contact-us"},
-                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "http://srv724100.hstgr.cloud/faqs"},
-                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "http://srv724100.hstgr.cloud/privacy-policy"},
-                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "http://srv724100.hstgr.cloud/medicine-policy"},
-                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "http://srv724100.hstgr.cloud/terms-condition"},
-                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "http://srv724100.hstgr.cloud/sitemap"}
+                {"@type": "SiteNavigationElement", "name": "Home", "url": "http://srv689968.hstgr.cloud/"},
+                {"@type": "SiteNavigationElement", "name": "About", "url": "http://srv689968.hstgr.cloud/about"},
+                {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://srv689968.hstgr.cloud/shop"},
+                {"@type": "SiteNavigationElement", "name": "Blog", "url": "http://srv689968.hstgr.cloud/blog"},
+                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://srv689968.hstgr.cloud/product-details"},
+                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "http://srv689968.hstgr.cloud/product-categories"},
+                {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://srv689968.hstgr.cloud/cart"},
+                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://srv689968.hstgr.cloud/wishlist"},
+                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://srv689968.hstgr.cloud/contact-us"},
+                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "http://srv689968.hstgr.cloud/faqs"},
+                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "http://srv689968.hstgr.cloud/privacy-policy"},
+                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "http://srv689968.hstgr.cloud/medicine-policy"},
+                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "http://srv689968.hstgr.cloud/terms-condition"},
+                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "http://srv689968.hstgr.cloud/sitemap"}
               ]
             }
           `}
@@ -350,7 +337,7 @@ function Sitemap() {
             about?.background_color ||
             (about?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: about?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${about.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${about.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -700,9 +687,12 @@ function Sitemap() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -822,7 +812,8 @@ function Sitemap() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </p>
             </div>
           </div>

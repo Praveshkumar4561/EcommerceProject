@@ -41,7 +41,7 @@ function CustomerAddress() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -56,7 +56,7 @@ function CustomerAddress() {
   const alldata = async () => {
     try {
       let response = await axios.get(
-        "http://89.116.170.231:1600/userdashboarddata"
+        "http://147.93.45.171:1600/userdashboarddata"
       );
       setUser(response.data);
     } catch (error) {
@@ -66,7 +66,7 @@ function CustomerAddress() {
   alldata();
 
   let removedata = async (id) => {
-    await axios.delete(`http://89.116.170.231:1600/deleteuser/${id}`, user);
+    await axios.delete(`http://147.93.45.171:1600/deleteuser/${id}`, user);
     try {
       toast.success("Data successfully deleted", {
         position: "bottom-right",
@@ -96,7 +96,7 @@ function CustomerAddress() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/getannounce"
+          "http://147.93.45.171:1600/getannounce"
         );
         setCustomer(response.data);
       } catch (error) {
@@ -134,7 +134,7 @@ function CustomerAddress() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://89.116.170.231:1600/logout")
+      .get("http://147.93.45.171:1600/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           localStorage.removeItem("token");
@@ -161,7 +161,6 @@ function CustomerAddress() {
         navigate("/login");
       } else if (storedUser && storedUser.tokenExpiration) {
         if (Date.now() > storedUser.tokenExpiration) {
-          console.log("Token expired. Logging out...");
           localStorage.removeItem("user");
           localStorage.removeItem("auth");
           toast.error("Session expired. Please log in again.");
@@ -212,11 +211,11 @@ function CustomerAddress() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://89.116.170.231:1600/src/image/${response.data.logo_url}`
+            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -230,7 +229,7 @@ function CustomerAddress() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -293,7 +292,7 @@ function CustomerAddress() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -333,7 +332,7 @@ function CustomerAddress() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/productsearch/${search}`
+      `http://147.93.45.171:1600/productsearch/${search}`
     );
     setSearch1(response.data);
   };
@@ -341,7 +340,7 @@ function CustomerAddress() {
   const homedata = async () => {
     try {
       let response = await axios.get(
-        "http://89.116.170.231:1600/productpagedata"
+        "http://147.93.45.171:1600/productpagedata"
       );
       const filteredData = response.data.filter(
         (product) =>
@@ -384,7 +383,7 @@ function CustomerAddress() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv724100.hstgr.cloud/user/address"
+          href="http://srv689968.hstgr.cloud/user/address"
         />
       </Helmet>
 
@@ -396,7 +395,7 @@ function CustomerAddress() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -845,7 +844,7 @@ function CustomerAddress() {
                           >
                             <div className="search-result-item d-flex align-items-center p-2 border-bottom">
                               <img
-                                src={`http://89.116.170.231:1600/src/image/${product.image}`}
+                                src={`http://147.93.45.171:1600/src/image/${product.image}`}
                                 alt={product.name}
                                 className="ms-2 img-thumbnail"
                                 style={{
@@ -1329,9 +1328,12 @@ function CustomerAddress() {
             <div className="col-12 col-md-6 col-lg-3 col-xl-3 mx-auto mt-lg-3 mt-0 d-flex flex-column text-start ms-0">
               <img
                 src={Tonic}
-                alt="RxTonic"
+                alt="Tonic"
+                width="190"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -1449,7 +1451,8 @@ function CustomerAddress() {
           <div className="row align-items-center footer-lyte1">
             <div className="col-md-6 col-lg-7">
               <p className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </p>
             </div>
           </div>

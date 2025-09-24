@@ -8,13 +8,11 @@ import {
   faBell,
   faEnvelope,
   faMoon,
-  faImage,
   faSave,
   faSignOut,
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
@@ -33,7 +31,7 @@ function FaqCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -166,7 +164,7 @@ function FaqCreate() {
   useEffect(() => {
     let categorydata = async () => {
       let response = await axios.get(
-        "http://89.116.170.231:1600/faqcategorydata"
+        "http://147.93.45.171:1600/faqcategorydata"
       );
       setCat(response.data);
     };
@@ -207,10 +205,10 @@ function FaqCreate() {
     if (!validateForm()) {
       return;
     }
-    const updatedUser = { ...user, answer: stripHtml(editorData2) };
+    const updatedUser = { ...user, answer };
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/faqsubmit",
+        "http://147.93.45.171:1600/faqsubmit",
         updatedUser
       );
       if (response.status === 200) {
@@ -223,6 +221,32 @@ function FaqCreate() {
 
   let onInputChange = async (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  const [showEdit2, setShowEdit2] = useState(true);
+  const [editorData2, setEditorData2] = useState("");
+
+  const handleEditorChange = (event, editor) => {
+    const data = editor.getData();
+    setEditorData2(data);
+    setUser((prev) => ({
+      ...prev,
+      answer: data,
+    }));
+  };
+
+  const showEditorClicked2 = (e) => {
+    e.preventDefault();
+    setShowEdit2((prev) => !prev);
+  };
+
+  const handleTextAreaChange2 = (e) => {
+    const val = e.target.value;
+    setEditorData2(val);
+    setUser((prev) => ({
+      ...prev,
+      answer: val,
+    }));
   };
 
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
@@ -243,48 +267,6 @@ function FaqCreate() {
     }
   };
 
-  const [showEdit2, setShowEdit2] = useState(true);
-  const [editorData2, setEditorData2] = useState("");
-
-  const showEditorClicked2 = (e) => {
-    e.preventDefault();
-    setShowEdit2(!showEdit2);
-  };
-
-  const mediaUpload = async (e) => {
-    e.preventDefault();
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "image/*";
-    fileInput.click();
-
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
-        } catch (error) {
-          console.error("Error uploading image:", error);
-        }
-      }
-    });
-  };
-
-  const stripHtml = (html) => {
-    const tmp = document.createElement("DIV");
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
-  };
-
   return (
     <>
       <Helmet>
@@ -298,12 +280,12 @@ function FaqCreate() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -317,10 +299,10 @@ function FaqCreate() {
 
         <meta property="og:title" content="New FAQ | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -412,11 +394,11 @@ function FaqCreate() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1010,7 +992,7 @@ function FaqCreate() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1824,46 +1806,7 @@ function FaqCreate() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2355,13 +2298,6 @@ function FaqCreate() {
                       >
                         Show/Hide Editor
                       </button>
-                      <button
-                        className="btn bg-body border d-flex py-4 mb-2 flex-row align-items-center"
-                        onClick={mediaUpload}
-                      >
-                        <FontAwesomeIcon icon={faImage} className="me-2" />
-                        Add Media
-                      </button>
                     </div>
 
                     {showEdit2 ? (
@@ -2369,14 +2305,7 @@ function FaqCreate() {
                         <CKEditor
                           editor={ClassicEditor}
                           data={editorData2}
-                          onChange={(event, editor) => {
-                            const data = editor.getData();
-                            setEditorData2(data);
-                            setUser((prevUser) => ({
-                              ...prevUser,
-                              answer: stripHtml(data),
-                            }));
-                          }}
+                          onChange={handleEditorChange}
                           config={{
                             toolbar: [
                               "heading",

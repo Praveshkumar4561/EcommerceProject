@@ -3,7 +3,6 @@ import "./TestimonialCreate.css";
 import Hamburger from "../../assets/hamburger.svg";
 import Logo from "../../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "font-awesome/css/font-awesome.min.css";
 import {
   faBell,
   faEnvelope,
@@ -25,7 +24,6 @@ import { Helmet } from "react-helmet-async";
 function TestimonialEdit() {
   let navigate = useNavigate();
   let { id } = useParams();
-
   const [imageUrl, setImageUrl] = useState(null);
   let [isVisible, setIsVisible] = useState(false);
   let [blog, setBlog] = useState(false);
@@ -92,6 +90,7 @@ function TestimonialEdit() {
     "/admin/payments/methods": "# Payments > Payment Methods",
     "/admin/system/users": "# Platform > System > Users",
   };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (resultsRef.current && !resultsRef.current.contains(event.target)) {
@@ -200,7 +199,7 @@ function TestimonialEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -210,7 +209,7 @@ function TestimonialEdit() {
     const fetchData = async () => {
       try {
         let response = await axios.get(
-          `http://89.116.170.231:1600/sometest/${id}`
+          `http://147.93.45.171:1600/sometest/${id}`
         );
         const userData = response.data[0];
         setUser(userData);
@@ -257,50 +256,131 @@ function TestimonialEdit() {
     setShowEdit2(!showEdit2);
   };
 
+  const editorRef = useRef(null);
+
+  const handleEditorReady = (editor) => {
+    editorRef.current = editor;
+  };
+
   const mediaUpload = async (e) => {
-    e.preventDefault();
+    e && e.preventDefault();
+    const toastOptions = {
+      position: "bottom-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeButton: true,
+      draggable: true,
+      progress: undefined,
+    };
+
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
-    fileInput.click();
 
-    fileInput.addEventListener("change", async (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
+    fileInput.addEventListener(
+      "change",
+      async (ev) => {
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) {
+          fileInput.remove();
+          return;
+        }
+
+        const MAX_MB = 3;
+        if (file.size > MAX_MB * 1024 * 1024) {
+          toast.error(`Image too large. Max ${MAX_MB} MB.`, toastOptions);
+          fileInput.remove();
+          return;
+        }
 
         try {
-          const response = await fetch("/upload", {
-            method: "POST",
-            body: formData,
-          });
+          const reader = new FileReader();
+          reader.onload = () => {
+            const dataUrl = reader.result;
+            const editor = editorRef.current;
+            if (editor) {
+              try {
+                editor.model.change((writer) => {
+                  let imageEl = null;
+                  try {
+                    imageEl = writer.createElement("imageBlock", {
+                      src: dataUrl,
+                      alt: file.name,
+                    });
+                  } catch (err) {
+                    try {
+                      imageEl = writer.createElement("image", {
+                        src: dataUrl,
+                        alt: file.name,
+                      });
+                    } catch (e) {
+                      imageEl = null;
+                    }
+                  }
 
-          if (!response.ok) {
-            throw new Error("Image upload failed");
-          }
+                  if (imageEl) {
+                    editor.model.insertContent(
+                      imageEl,
+                      editor.model.document.selection
+                    );
+                  } else {
+                    const html = `<figure class="image"><img src="${dataUrl}" alt="${file.name}"></figure>`;
+                    const viewFragment = editor.data.processor.toView(html);
+                    const modelFragment = editor.data.toModel(viewFragment);
+                    editor.model.insertContent(
+                      modelFragment,
+                      editor.model.document.selection
+                    );
+                  }
+                });
 
-          const data = await response.json();
-          console.log("Image uploaded successfully", data);
-        } catch (error) {
-          console.error("Error uploading image:", error);
+                const newData = editor.getData();
+                setEditorData2(newData);
+                setUser((p) => ({ ...p, content: newData }));
+                toast.success("Image inserted successfully)", toastOptions);
+              } catch (insertErr) {
+                console.error("Insert failed:", insertErr);
+                toast.error("Could not insert image into editor", toastOptions);
+              }
+            } else {
+              setTextAreaData2((prev) =>
+                prev ? prev + `\n${dataUrl}` : dataUrl
+              );
+              setUser((p) => ({ ...p, content: dataUrl }));
+              toast.info(
+                "Editor not ready — image data appended as text",
+                toastOptions
+              );
+            }
+          };
+
+          reader.onerror = (err) => {
+            console.error("FileReader error", err);
+            toast.error("Failed to read file", toastOptions);
+          };
+
+          reader.readAsDataURL(file);
+        } finally {
+          fileInput.remove();
         }
-      }
-    });
+      },
+      { once: true }
+    );
+
+    fileInput.click();
   };
 
   const handleSubmit = async () => {
     const formData = new FormData();
-    const cleanContent = stripHtml(user.content || "");
     formData.append("name", user.name);
     formData.append("company", user.company);
     formData.append("status", user.status);
     formData.append("date", user.date);
-    formData.append("content", cleanContent);
+    formData.append("content", user.content);
     formData.append("file", user.file);
     try {
       const response = await axios.put(
-        `http://89.116.170.231:1600/updatetest/${id}`,
+        `http://147.93.45.171:1600/updatetest/${id}`,
         formData
       );
       toast.success("Data successfully updated", {
@@ -324,12 +404,6 @@ function TestimonialEdit() {
     }
   };
 
-  const stripHtml = (html) => {
-    const tmp = document.createElement("DIV");
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || "";
-  };
-
   const onInputChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
@@ -347,12 +421,12 @@ function TestimonialEdit() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -365,10 +439,10 @@ function TestimonialEdit() {
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -460,11 +534,11 @@ function TestimonialEdit() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1058,7 +1132,7 @@ function TestimonialEdit() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1872,46 +1946,7 @@ function TestimonialEdit() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2392,6 +2427,7 @@ function TestimonialEdit() {
                     <div className="mb-3">
                       <CKEditor
                         editor={ClassicEditor}
+                        onReady={handleEditorReady}
                         data={editorData2}
                         onChange={handleEditorChange2}
                         config={{
@@ -2535,7 +2571,7 @@ function TestimonialEdit() {
                 <h4 className="mt-0 text-start">Status</h4>
                 <hr />
                 <select
-                  className="form-select mb-3 customer-page1"
+                  className="form-select mb-3"
                   style={{ height: "46px" }}
                   name="status"
                   value={status}
@@ -2564,7 +2600,7 @@ function TestimonialEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://89.116.170.231:1600/src/image/${user.image}`}
+                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

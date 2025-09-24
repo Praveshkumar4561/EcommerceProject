@@ -9,7 +9,6 @@ body {
   width: 100vw;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
 }
 
 body {
@@ -268,9 +267,8 @@ input[type="search"] {
 
 .recent-table {
   width: 100%;
-  max-width: 62.3%;
-  position: relative;
-  left: 3.7%;
+  max-width: 69%;
+  margin-left: 1.2% !important;
 }
 
 .content-reports1 {
@@ -320,10 +318,12 @@ input[type="search"] {
   }
   .recent-table {
     width: 100%;
-    max-width: 94%;
+    max-width: 100%;
     position: relative;
-    left: -12px;
   }
+  .content-customer {
+  height: 260px;
+}
 }
 @media (min-width: 576px) and (max-width: 768px) {
   .content-reports {
@@ -445,48 +445,6 @@ input[type="search"] {
 .content-customer svg {
   width: 100%;
   max-width: 100%;
-}
-
-.chart-header .card {
-  margin: 0;
-  height: 24rem;
-  width: 88%;
-}
-.chart-header1 {
-  width: 42%;
-  position: relative;
-  right: 4.2rem;
-}
-.chart-header svg {
-  width: 100%;
-  height: 100%;
-}
-
-.chart-header1 svg {
-  width: 100%;
-}
-
-.chart-header .row {
-  margin: 0;
-}
-
-.chart-header .col-lg-6 {
-  padding: 0;
-}
-
-@media (max-width: 576px) {
-  .chart-header {
-    position: relative;
-    left: -0.6rem;
-    width: 120%;
-    max-width: 120%;
-  }
-  .chart-header1 {
-    width: 100%;
-    position: relative;
-    left: 0.1rem;
-    top: 1.7rem;
-  }
 }
 
 .chartdata-labels {

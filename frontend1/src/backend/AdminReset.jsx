@@ -30,7 +30,7 @@ function AdminReset() {
     }
     try {
       const response = await axios.post(
-        "http://89.116.170.231:1600/forgot-password",
+        "http://147.93.45.171:1600/forgot-password",
         {
           email: email,
         }
@@ -83,12 +83,12 @@ function AdminReset() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -102,10 +102,10 @@ function AdminReset() {
         <meta property="og:title" content="Testimonials | RxLYTE" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div className="container-fluid m-0 p-0">

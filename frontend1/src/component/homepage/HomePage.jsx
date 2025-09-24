@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "./HomePage.css";
+import Tonic from "/assets/Tonic.svg";
+import Panic from "/assets/panic-attacks.webp";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,10 +24,8 @@ import Close from "../../assets/Close.webp";
 import Carthome from "../../assets/Carthome.webp";
 import Wishlists from "../../assets/Wishlists.webp";
 import Accounts from "../../assets/Accounts.webp";
-import Panic from "../../assets/panic-attacks.webp";
 import Generic from "../../assets/Lytes.svg";
 import PainRelief from "../../assets/Latest.svg";
-import Tonic from "../../assets/Tonic.svg";
 import Support from "../../assets/Support.svg";
 import Payments from "../../assets/Payments.svg";
 import Returns from "../../assets/Returns.svg";
@@ -36,7 +36,6 @@ import "react-toastify/dist/ReactToastify.css";
 import JsonLd from "../JsonLd";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-const DEFAULT_HEIGHT = "45";
 
 function HomePage() {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -58,7 +57,7 @@ function HomePage() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/pagesdatafaqs"
+          "http://147.93.45.171:1600/pagesdatafaqs"
         );
         const filteredData = response.data.filter(
           (faqs) => faqs.status === "published" || faqs.status === "default"
@@ -79,7 +78,7 @@ function HomePage() {
     const showdata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/blogpostdata"
+          "http://147.93.45.171:1600/blogpostdata"
         );
         const filteredData = response.data.filter(
           (b) =>
@@ -123,7 +122,7 @@ function HomePage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/getannounce"
+          "http://147.93.45.171:1600/getannounce"
         );
 
         const now = new Date();
@@ -175,7 +174,6 @@ function HomePage() {
         navigate("/");
       } else if (storedUser && storedUser.tokenExpiration) {
         if (Date.now() > storedUser.tokenExpiration) {
-          console.log("Token expired. Logging out...");
           localStorage.removeItem("user");
           localStorage.removeItem("auth");
           toast.error("Session expired. Please log in again.");
@@ -198,7 +196,7 @@ function HomePage() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allcartdata"
+          "http://147.93.45.171:1600/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -214,7 +212,7 @@ function HomePage() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/wishlistdata"
+          "http://147.93.45.171:1600/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -239,7 +237,7 @@ function HomePage() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/productsearch/${search}`
+      `http://147.93.45.171:1600/productsearch/${search}`
     );
     setSearch1(response.data);
   };
@@ -247,7 +245,7 @@ function HomePage() {
   const homedata = async () => {
     try {
       let response = await axios.get(
-        "http://89.116.170.231:1600/productpagedata"
+        "http://147.93.45.171:1600/productpagedata"
       );
       const filteredData = response.data.filter(
         (product) =>
@@ -285,7 +283,7 @@ function HomePage() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://89.116.170.231:1600/productlabelsdata"
+          "http://147.93.45.171:1600/productlabelsdata"
         );
         const filteredData = response.data.filter(
           (label) => label.status === "Published" || label.status === "Draft"
@@ -310,7 +308,7 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://89.116.170.231:1600/addcart", formData);
+      await axios.post("http://147.93.45.171:1600/addcart", formData);
       setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
@@ -344,7 +342,7 @@ function HomePage() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://89.116.170.231:1600/wishlistpost", formData);
+      await axios.post("http://147.93.45.171:1600/wishlistpost", formData);
       setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
@@ -385,111 +383,24 @@ function HomePage() {
     }
   }, []);
 
-  // const [logoUrl, setLogoUrl] = useState(Tonic);
-  // const [logoHeight, setLogoHeight] = useState("45");
-
-  // const preloadImage = (url) => {
-  //   if (!document.querySelector(`link[rel="preload"][href="${url}"]`)) {
-  //     const link = document.createElement("link");
-  //     link.rel = "preload";
-  //     link.as = "image";
-  //     link.href = url;
-  //     link.fetchPriority = "high";
-  //     document.head.appendChild(link);
-  //   }
-  //   const img = new Image();
-  //   img.src = url;
-  // };
-
-  // useEffect(() => {
-  //   preloadImage(Tonic);
-  //   const cached = localStorage.getItem("cachedLogoUrl");
-  //   const cachedHeight = localStorage.getItem("cachedLogoHeight");
-  //   if (cached) {
-  //     setLogoUrl(cached);
-  //     setLogoHeight(cachedHeight || DEFAULT_HEIGHT);
-  //     preloadImage(cached);
-  //   }
-  //   axios
-  //     .get("http://89.116.170.231:1600/get-theme-logo")
-  //     .then(({ data }) => {
-  //       if (data.logo_url) {
-  //         const url = `http://89.116.170.231:1600/src/image/${data.logo_url}`;
-  //         const height = data.logo_height || DEFAULT_HEIGHT;
-
-  //         if (url !== logoUrl) {
-  //           preloadImage(url);
-  //           setLogoUrl(url);
-  //           setLogoHeight(height);
-  //           localStorage.setItem("cachedLogoUrl", url);
-  //           localStorage.setItem("cachedLogoHeight", height);
-  //         }
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setLogoUrl(Tonic);
-  //       setLogoHeight(DEFAULT_HEIGHT);
-  //       preloadImage(Tonic);
-  //       localStorage.removeItem("cachedLogoUrl");
-  //       localStorage.removeItem("cachedLogoHeight");
-  //     });
-  // }, []);
-
-  // useEffect(() => {
-  //   const preloadLCPImage = (url) => {
-  //     const link = document.createElement("link");
-  //     link.rel = "preload";
-  //     link.as = "image";
-  //     link.href = url;
-  //     link.fetchPriority = "high";
-  //     document.head.appendChild(link);
-  //   };
-
-  //   preloadLCPImage(logoUrl);
-  // }, [logoUrl]);
-
-  const [logoUrl, setLogoUrl] = useState(Tonic);
-  const [logoHeight, setLogoHeight] = useState(DEFAULT_HEIGHT);
-
-  const preloadImage = (url) => {
-    if (!document.querySelector(`link[rel="preload"][href="${url}"]`)) {
-      const link = document.createElement("link");
-      link.rel = "preload";
-      link.as = "image";
-      link.href = url;
-      link.fetchPriority = "high";
-      document.head.appendChild(link);
-    }
-    const img = new Image();
-    img.src = url;
-  };
+  const [logoUrl, setLogoUrl] = useState(
+    window.__APP_CONFIG__?.logoUrl || "/assets/Tonic.svg"
+  );
+  const [logoHeight, setLogoHeight] = useState(
+    window.__APP_CONFIG__?.logoHeight || "45"
+  );
 
   useEffect(() => {
-    preloadImage(Tonic);
-    const cached = localStorage.getItem("cachedLogoUrl");
-    const cachedHeight = localStorage.getItem("cachedLogoHeight");
-    if (cached) {
-      setLogoUrl(cached);
-      setLogoHeight(cachedHeight || DEFAULT_HEIGHT);
-      preloadImage(cached);
-    }
     axios
-      .get("http://89.116.170.231:1600/get-theme-logo")
+      .get("http://147.93.45.171:1600/get-theme-logo")
       .then(({ data }) => {
-        if (data.logo_url) {
-          const url = `http://89.116.170.231:1600/src/image/${data.logo_url}`;
-          const height = data.logo_height || DEFAULT_HEIGHT;
-          preloadImage(url);
-          setLogoUrl(url);
-          setLogoHeight(height);
-          localStorage.setItem("cachedLogoUrl", url);
-          localStorage.setItem("cachedLogoHeight", height);
-        }
+        const url = data.logo_url
+          ? `http://147.93.45.171:1600/src/image/${data.logo_url}`
+          : "/assets/Tonic.svg";
+        setLogoUrl(url);
+        setLogoHeight(data.logo_height || "45");
       })
-      .catch(() => {
-        localStorage.removeItem("cachedLogoUrl");
-        localStorage.removeItem("cachedLogoHeight");
-      });
+      .catch(() => {});
   }, []);
 
   const [review, setReview] = useState([]);
@@ -499,7 +410,7 @@ function HomePage() {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/allreviewdata"
+          "http://147.93.45.171:1600/allreviewdata"
         );
         setReview(response.data);
       } catch (error) {
@@ -559,8 +470,8 @@ function HomePage() {
       {
         "@type": "Organization",
         name: "RxLYTE",
-        url: "http://srv724100.hstgr.cloud/",
-        logo: "http://srv724100.hstgr.cloud/Tonic.svg",
+        url: "http://srv689968.hstgr.cloud/",
+        logo: "http://srv689968.hstgr.cloud/Tonic.svg",
         description:
           "RxLyte is a leading eCommerce platform offering a premium selection of healthcare and wellness products, ensuring high-quality and affordable solutions for customers.",
         contactPoint: {
@@ -574,7 +485,7 @@ function HomePage() {
       {
         "@type": "WebSite",
         name: "RxLYTE",
-        url: "http://srv724100.hstgr.cloud/",
+        url: "http://srv689968.hstgr.cloud/",
         description:
           "Shop the latest healthcare products at RxLyte, your trusted online pharmacy for premium wellness essentials.",
         keywords:
@@ -583,8 +494,8 @@ function HomePage() {
       {
         "@type": "LocalBusiness",
         name: "RxLYTE Healthcare Store",
-        url: "http://srv724100.hstgr.cloud/",
-        image: "http://srv724100.hstgr.cloud/Tonic.svg",
+        url: "http://srv689968.hstgr.cloud/",
+        image: "http://srv689968.hstgr.cloud/Tonic.svg",
         description:
           "RxLyte's physical store provides top-tier healthcare and wellness products, ensuring convenient access for all customers.",
         address: {
@@ -659,7 +570,7 @@ function HomePage() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://89.116.170.231:1600/adsdata");
+        const response = await axios.get("http://147.93.45.171:1600/adsdata");
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -677,7 +588,7 @@ function HomePage() {
     if (!consent) {
       setShouldShowCookie(true);
       axios
-        .get("http://89.116.170.231:1600/cookiesalldata")
+        .get("http://147.93.45.171:1600/cookiesalldata")
         .then((response) => {
           const dataArray = Array.isArray(response.data)
             ? response.data
@@ -708,7 +619,7 @@ function HomePage() {
       try {
         const path = window.location.pathname;
         const response = await axios.get(
-          `http://89.116.170.231:1600/track?page=${path}`
+          `http://147.93.45.171:1600/track?page=${path}`
         );
         setTotalVisits(response.data.total);
       } catch (error) {
@@ -748,7 +659,7 @@ function HomePage() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/newsletterpost", letter);
+      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -773,7 +684,7 @@ function HomePage() {
     setLetter({ ...letter, [e.target.name]: e.target.value });
   };
 
-  const domain = "http://srv724100.hstgr.cloud/";
+  const domain = "http://srv689968.hstgr.cloud//";
 
   let [home, setHome] = useState(null);
 
@@ -781,7 +692,7 @@ function HomePage() {
     const fetchSEOData = async () => {
       try {
         const response = await axios.get(
-          "http://89.116.170.231:1600/themeoptionsdata"
+          "http://147.93.45.171:1600/themeoptionsdata"
         );
         setHome(response.data);
       } catch (error) {
@@ -791,31 +702,9 @@ function HomePage() {
     fetchSEOData();
   }, []);
 
-  useEffect(() => {
-    const img = new Image();
-    img.src = Panic;
-  }, []);
-
-  useEffect(() => {
-    const preloadFont = () => {
-      const href = "/fonts/SanDiego.woff";
-      if (!document.querySelector(`link[rel="preload"][href="${href}"]`)) {
-        const link = document.createElement("link");
-        link.rel = "preload";
-        link.href = href;
-        link.as = "font";
-        link.type = "font/woff";
-        link.crossOrigin = "anonymous";
-        document.head.appendChild(link);
-      }
-    };
-    preloadFont();
-  }, []);
-
   return (
     <>
       <JsonLd data={schemaData} />
-
       {home && (
         <Helmet>
           <title>
@@ -902,11 +791,6 @@ function HomePage() {
           />
         </Helmet>
       )}
-
-      <Helmet>
-        <link rel="preload" as="image" href={logoUrl} fetchpriority="high" />
-      </Helmet>
-
       <div
         className="container d-lg-none d-block"
         id="container-customx1"
@@ -915,7 +799,7 @@ function HomePage() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://89.116.170.231:1600/src/image/${user.background_image})`
+            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -963,7 +847,7 @@ function HomePage() {
             <nav className="navbar navbar-expand-lg navbar-light w-100 d-flex flex-row flex-nowrap">
               <div className="container">
                 <Link className="navbar-brand d-non d-lg-block" to="/">
-                  {/* <img
+                  <img
                     src={logoUrl || Tonic}
                     alt="Tonic Logo"
                     className="image-galaxy"
@@ -971,22 +855,6 @@ function HomePage() {
                     loading="eager"
                     decoding="async"
                     fetchpriority="high"
-                  /> */}
-                  <img
-                    src={logoUrl}
-                    alt="Tonic Logo"
-                    className="img-fluid"
-                    width="280"
-                    height={logoHeight}
-                    loading="eager"
-                    decoding="async"
-                    fetchpriority="high"
-                    srcSet={`
-                      ${logoUrl}?w=300 300w,
-                      ${logoUrl}?w=600 600w,
-                      ${logoUrl}?w=1200 1200w
-                    `}
-                    sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </Link>
 
@@ -1049,7 +917,10 @@ function HomePage() {
                     <img
                       src={Wishlists}
                       alt="RxLYTE"
-                      className="cart-image profiles1 mt-2 mt-lg-1 mt-md-"
+                      className="cart-image profiles1 mt-2 mt-lg-1"
+                      width="50"
+                      height="50"
+                      loading="lazy"
                     />
                   </Link>
 
@@ -1062,6 +933,9 @@ function HomePage() {
                       src={Accounts}
                       alt="Profile"
                       className="profiles1 img-fluid me-3 mt-1"
+                      width="50"
+                      height="50"
+                      loading="lazy"
                     />
                   </Link>
 
@@ -1072,8 +946,15 @@ function HomePage() {
                     <img
                       src={Carthome}
                       alt="Cart"
-                      className="img-fluid profiles1 mt-1 pt-1 pt-md-0"
+                      className="profiles1 img-fluid mt-2"
+                      style={{
+                        height: "50px",
+                        width: "auto",
+                        objectFit: "contain",
+                      }}
+                      loading="lazy"
                     />
+
                     <div className="addcarts ms-1 ps-1 pt-sm-1 pt-lg-1 pt-0 pt-md-0 count-badge1">
                       {count}
                     </div>
@@ -1120,6 +1001,7 @@ function HomePage() {
           </header>
         </div>
       </div>
+
       <div></div>
 
       <div className="container-fluid">
@@ -1203,6 +1085,9 @@ function HomePage() {
                               src={Wishlists}
                               alt="RxLYTE"
                               className="cart-image1 profiles1 mt-2"
+                              width="50"
+                              height="50"
+                              loading="lazy"
                             />
                           </Link>
 
@@ -1215,6 +1100,9 @@ function HomePage() {
                               src={Accounts}
                               alt="Profile"
                               className="cart-image2 img-fluid me-3 mt-1"
+                              width="50"
+                              height="50"
+                              loading="lazy"
                             />
                           </Link>
 
@@ -1226,6 +1114,9 @@ function HomePage() {
                               src={Carthome}
                               alt="Cart"
                               className="img-fluid cart-image mt-1 pt-1 mt-lg-2 pt-md-0"
+                              width="50"
+                              height="50"
+                              loading="lazy"
                             />
                             <div className="addcarts ms-1 mt-1 ps-1 count-badge1 count-cart">
                               {count}
@@ -1250,6 +1141,9 @@ function HomePage() {
                     src={Wishlists}
                     alt="RxLYTE"
                     className="mt-3 cart-image1"
+                    width="50"
+                    height="50"
+                    loading="lazy"
                   />
                 </Link>
 
@@ -1258,6 +1152,9 @@ function HomePage() {
                     src={Accounts}
                     alt="RxLYTE"
                     className="cart-image2 mt-2"
+                    width="50"
+                    height="50"
+                    loading="lazy"
                   />
                 </Link>
 
@@ -1272,6 +1169,9 @@ function HomePage() {
                     src={Carthome}
                     alt="RxLYTE"
                     className="mt-3 cart-image"
+                    width="50"
+                    height="50"
+                    loading="lazy"
                   />
                 </Link>
               </div>
@@ -1282,22 +1182,20 @@ function HomePage() {
         <div className="container bg-light d-lg-block d-none">
           <div className="row d-flex justify-content-start text-center align-items-start mt-0 mb-lg-0 mb-2">
             <div className="col-12 col-md-8 d-flex align-items-center mb-2 mt-0 flex-row">
-              <img
-                src={logoUrl}
-                alt="Logo"
-                className="img-fluid"
-                width="280"
-                height={logoHeight}
-                loading="eager"
-                decoding="async"
-                fetchpriority="high"
-                srcSet={`
-              ${logoUrl}?w=300 300w,
-              ${logoUrl}?w=600 600w,
-              ${logoUrl}?w=1200 1200w
-            `}
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
+              <div className="logo-container">
+                <img
+                  className="img-fluid"
+                  src={logoUrl}
+                  alt="Logo"
+                  width={280}
+                  height={logoHeight}
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                  srcSet={`${logoUrl}?w=300 300w, ${logoUrl}?w=600 600w, ${logoUrl}?w=1200 1200w`}
+                  sizes="(max-width: 768px) 100vw, 280px"
+                />
+              </div>
 
               <div
                 ref={searchContainerRef}
@@ -1385,7 +1283,7 @@ function HomePage() {
                           >
                             <div className="search-result-item d-flex align-items-center p-2 border-bottom">
                               <img
-                                src={`http://89.116.170.231:1600/src/image/${product.image}`}
+                                src={`http://147.93.45.171:1600/src/image/${product.image}`}
                                 alt={product.name}
                                 className="img-thumbnail"
                                 style={{
@@ -1713,67 +1611,57 @@ function HomePage() {
         </div>
 
         <div className="container cart-cart">
-          <div className="row g-3 d-flex flex-row flex-lg-nowrap">
-            <div className="col-12 col-lg-8 m-0">
-              <div className="box-panic shadow-sm p-4 position-relative">
-                <div className="d-flex flex-column mt-2">
-                  <h2 className="text-start generic-med mb-1">
-                    Get rid of your Panic Attacks
-                  </h2>
-                  <div className="text-danger-access mb-2 text-start sales-font">
-                    Starting at $05.99
+          <div className="row g-3 d-flex flex-row flex-lg-nowrap flex-md-nowrap">
+            <div className="col-12 col-lg-8 m-0 col-md-8">
+              <div className="container">
+                <div className="promo-box">
+                  <div className="promo-content text-start lh-1">
+                    <h3>Get rid of your Panic Attacks</h3>
+                    <p className="sales-font text-danger-access fw-light mt-0">
+                      Starting at $05.99
+                    </p>
+                    <Link
+                      to="/shop"
+                      className="text-decoration-none text-light d-flex justify-content-center align-items-center"
+                      aria-label="Go to Shop page"
+                      style={{
+                        backgroundColor: "#0f5132",
+                        width: "150px",
+                        height: "50px",
+                        borderRadius: "8px",
+                        whiteSpace: "nowrap",
+                        fontWeight: "500",
+                        fontSize: "1rem",
+                        padding: "0 12px",
+                      }}
+                    >
+                      <span className="d-flex align-items-center flex-row flex-nowrap">
+                        Shop Now
+                        <FontAwesomeIcon
+                          icon={faArrowRightLong}
+                          className="ms-2 mt-1"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </Link>
                   </div>
-                  <Link
-                    to="/shop"
-                    className="text-decoration-none text-light d-flex justify-content-center align-items-center"
-                    aria-label="Go to Shop page"
-                    style={{
-                      backgroundColor: "#0f5132",
-                      width: "150px",
-                      height: "50px",
-                      borderRadius: "8px",
-                      whiteSpace: "nowrap",
-                      fontWeight: "500",
-                      fontSize: "1rem",
-                      padding: "0 12px",
-                    }}
-                  >
-                    <span className="d-flex align-items-center flex-row flex-nowrap">
-                      Shop Now
-                      <FontAwesomeIcon
-                        icon={faArrowRightLong}
-                        className="ms-2 mt-1"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Link>
-                </div>
-
-                <div className="d-flex justify-content-end align-items-end">
                   <img
                     src={Panic}
-                    alt="Panic Attacks"
-                    width={600}
-                    height={400}
-                    className="panic-img img-fluid"
-                    loading="lazy"
-                    decoding="async"
-                    srcSet={`
-                      ${Panic}?w=600 600w,
-                      ${Panic}?w=1200 1200w
-                    `}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    alt="Panic Attack"
+                    className="promo-image"
+                    loading="eager"
+                    fetchpriority="high"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="col-12 col-lg-4 d-flex flex-column gap-3 gap-md-0 align-items-md-start align-items-lg-start align-items-xxl-center align-items-xl-center m-0 mt-3 mt-lg-2 mt-xl-0 mt-xxl-0 generic-lyte">
+            <div className="col-12 col-lg-4 d-flex flex-column gap-3 gap-md-0 align-items-md-start align-items-lg-start align-items-xxl-center align-items-xl-center m-0 mt-3 mt-md-0 mt-lg-2 mt-xl-0 mt-xxl-0 generic-lyte">
               <div className="box-generic shadow-sm p-4 position-relative lh-lg">
-                <h2 className="text-start generic-med mb-1">
+                <h2 className="text-start generic-med mb-0">
                   Buy Generic Medicines
                 </h2>
-                <div className="text-danger-access mb-2 text-start sales-font">
+                <div className="text-danger-access mb-1 text-start sales-font">
                   Starting at $05.99
                 </div>
 
@@ -1806,21 +1694,26 @@ function HomePage() {
                   <img
                     src={Generic}
                     alt="Generic Medicines"
+                    width={280}
+                    height={280}
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
                     className="generic-img position-absolute me-lg-2 me-0"
                   />
                 </div>
               </div>
 
-              <div className="box-pain shadow-sm p-4 position-relative w-100 mt-lg-2 mt-xl-3 mt-xxl-3 mt-md-2">
+              <div className="box-pain shadow-sm p-4 position-relative mt-lg-2 mt-xl-3 mt-xxl-3 mt-md-2">
                 <div className="d-flex align-items-start flex-column align-items-lg-end lh-lg align-items-md-end">
                   <div className="d-flex flex-column align-items-lg-start align-items-xl-start align-items-xxl-start product-homepage flex-wrap ms-lg-5 ps-lg-5 ps-xl-0 ps-xxl-0 ms-xl-0 ms-xxl-0">
                     <h2 className="text-success-accessible ms-lg-5 text-start ms-0 mb-1 customer-help">
                       Hot Product
                     </h2>
-                    <h2 className="text-start text-lg-start text-md-end me-lg-0 ms-lg-5 ms-0 me-0 text-start generic-med mb-1">
+                    <h2 className="text-start text-lg-start text-md-end me-lg-0 ms-lg-5 ms-0 me-0 text-start generic-med mb-0">
                       Buy Pain Relief Medicines
                     </h2>
-                    <div className="mb-2 text-center sales-font ms-lg-5 text-danger-access">
+                    <div className="mb-2 text-lg-center text-md-start sales-font ms-lg-5 text-danger-access">
                       $199.00/60%
                     </div>
 
@@ -1889,14 +1782,19 @@ function HomePage() {
                         >
                           {data.label || "label"}
                         </button>
+
                         <Link to={`/${url.productDetails}`}>
                           <img
-                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
                             style={{ cursor: "pointer" }}
                             alt={data.name || "Product Image"}
+                            loading="lazy"
+                            width="300"
+                            height="300"
                           />
                         </Link>
+
                         <button
                           className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success-accesses"
                           onClick={() => addWishlistItem(data)}
@@ -1971,7 +1869,7 @@ function HomePage() {
                     <div className="d-flex flex-row align-items-center justify-content-between w-100">
                       <div className="customer-homeimage border mt-3 ms-2">
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${item.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${item.image}`}
                           alt={`Customer: ${item.first_name} ${item.last_name}`}
                           className="img-fluid"
                         />
@@ -2052,14 +1950,19 @@ function HomePage() {
                             {data.label}
                           </button>
                         )}
+
                         <Link to={`/${url.productDetails}`}>
                           <img
-                            src={`http://89.116.170.231:1600/src/image/${data.image}`}
+                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
                             className="w-100 h-100 object-fit-cover border-0 image-watch"
                             style={{ cursor: "pointer" }}
                             alt={data.name || "Product Image"}
+                            loading="lazy"
+                            width="300"
+                            height="300"
                           />
                         </Link>
+
                         <button
                           className="position-absolute me-1 btn btn-light wishlist-button wishlist-button1 text-light btn-success-accesses"
                           onClick={() => addWishlistItem(data)}
@@ -2116,7 +2019,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-
       <div className="container-fluid mt-3 mt-lg-0 cart-cart">
         <h3 className="mt-lg-4 mt-0 text-center faq-typo1">
           Best Selling Item
@@ -2132,7 +2034,7 @@ function HomePage() {
 
                 return (
                   <div
-                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch h-auto"
+                    className="col-12 col-lg-3 col-md-6 text-center border rounded feature-watch"
                     key={index}
                   >
                     <div className="feature-box rounded-0 position-relative rounded-1">
@@ -2147,10 +2049,13 @@ function HomePage() {
 
                       <Link to={`/${url.productDetails}`}>
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${data.image}`}
-                          alt={data.name || "Product Image"}
+                          src={`http://147.93.45.171:1600/src/image/${data.image}`}
                           className="w-100 h-100 object-fit-cover border-0 image-watch"
                           style={{ cursor: "pointer" }}
+                          alt={data.name || "Product Image"}
+                          loading="lazy"
+                          width="300"
+                          height="300"
                         />
                       </Link>
 
@@ -2210,9 +2115,7 @@ function HomePage() {
           </div>
         </div>
       </div>
-
       {totalVisits !== null}
-
       {shouldShowCookie && (
         <div className="container-fluid">
           <div className="container">
@@ -2262,7 +2165,6 @@ function HomePage() {
           </div>
         </div>
       )}
-
       <div className="container-fluid full-height d-flex justify-content-center align-items-center">
         <div className="container">
           <div className="row mt-lg-4">
@@ -2332,7 +2234,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-
       <div className="container-fluid lorem-home">
         <div className="container">
           <h2 className="text-center mt-4 fw-medium faq-typo1">Latest Blogs</h2>
@@ -2344,7 +2245,7 @@ function HomePage() {
                   className="col-12 col-xxl-4 col-lg-4 col-md-4 custom-height3 border mb-3 d-flex flex-column align-items-center text-center latest-read ms-md-3 mt-md-2"
                 >
                   <img
-                    src={`http://89.116.170.231:1600/src/image/${post.image}`}
+                    src={`http://147.93.45.171:1600/src/image/${post.image}`}
                     alt={
                       post.title
                         ? `Image for ${post.title}`
@@ -2424,11 +2325,10 @@ function HomePage() {
           </div>
         </div>
       </div>
-
       <div className="container-fluid bg-light py-4 mt-4">
-        <div className="container cart-cart">
-          <div className="row text-center">
-            <div className="col-6 col-lg-3 d-flex align-items-center justify-content-center mb-3 mb-lg-0">
+        <div className="container cart-cart ">
+          <div className="row text-center d-flex w-1001 flex-lg-nowrap flex-wrap flex-row align-items-start">
+            <div className="col-6 col-lg-3 d-flex align-items-center justify-content-start mb-3 mb-lg-0">
               <div className="border bg-body px-2 py-1 rounded me-2">
                 <img
                   src={Shipping}
@@ -2458,8 +2358,8 @@ function HomePage() {
               </h3>
             </div>
 
-            <div className="col-6 col-lg-3 d-flex align-items-center justify-content-center mb-3 mb-lg-0 mt-md-3 mt-lg-0">
-              <div className="border bg-body px-2 py-1 rounded me-2 ms-md-4 ms-lg-0">
+            <div className="col-6 col-lg-3 d-flex align-items-center justify-content-start mb-3 mb-lg-0 mt-md-3 mt-lg-0">
+              <div className="border bg-body px-2 py-1 rounded me-2 ms-md-0 ms-lg-0">
                 <img
                   src={Payments}
                   alt="Free Shipping"
@@ -2490,7 +2390,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-
       <div className="container-fluid">
         <div className="container">
           <div className="row m-auto">
@@ -2516,17 +2415,17 @@ function HomePage() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -2551,7 +2450,6 @@ function HomePage() {
           </div>
         </div>
       </div>
-
       <footer className="footer pt-4 pb-4 cart-cart mt-4">
         <div className="container text-center text-md-left">
           <div className="row footer-lyte">
@@ -2560,9 +2458,10 @@ function HomePage() {
                 src={Tonic}
                 alt="Tonic"
                 width="190"
-                height="auto"
+                height="190"
                 className="img-fluid mb-3"
                 style={{ maxWidth: "190px" }}
+                loading="lazy"
               />
               <h2 className="mb-2 about-blog">About Us</h2>
               <ul className="text-start lh-lg footer-list ps-0">
@@ -2656,15 +2555,15 @@ function HomePage() {
           <hr className="my-4 me-3" />
 
           <div className="row align-items-center footer-lyte1">
-            <div className="col-md-6 col-lg-7">
-              <div className="text-md-start text-lg-start text-start mb-0">
-                &copy; {new Date().getFullYear()} RxLYTE. All rights reserved.
+            <div className="col-md-6 col-lg-7 col-12 text-start">
+              <div className="text-md-start text-lg-start mb-0">
+                © {new Date().getFullYear()} Copyright RxLYTE. All rights
+                reserved.
               </div>
             </div>
           </div>
         </div>
       </footer>
-
       <div className="container-fluid">
         <div className="container">
           <div className="row m-auto">
@@ -2690,17 +2589,17 @@ function HomePage() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://89.116.170.231:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://89.116.170.231:1600/src/image/${footerAd.image}`}
+                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -2728,4 +2627,5 @@ function HomePage() {
     </>
   );
 }
+
 export default HomePage;

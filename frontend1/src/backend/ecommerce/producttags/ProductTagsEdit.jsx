@@ -14,7 +14,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../assets/Shopping.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -194,7 +193,7 @@ function ProductTagsEdit() {
   let handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://89.116.170.231:1600/updateproducttags/${id}`,
+        `http://147.93.45.171:1600/updateproducttags/${id}`,
         user
       );
       if (response.status === 200) {
@@ -215,7 +214,7 @@ function ProductTagsEdit() {
 
   let showdata = async () => {
     let response = await axios.get(
-      `http://89.116.170.231:1600/productsometag/${id}`
+      `http://147.93.45.171:1600/productsometag/${id}`
     );
     setUser(response.data[0]);
   };
@@ -242,7 +241,7 @@ function ProductTagsEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -261,12 +260,12 @@ function ProductTagsEdit() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -278,10 +277,10 @@ function ProductTagsEdit() {
           content="Copyright 2025 © RxLYTE. All rights reserved."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -373,11 +372,11 @@ function ProductTagsEdit() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -971,7 +970,7 @@ function ProductTagsEdit() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1786,46 +1785,7 @@ function ProductTagsEdit() {
                 Newsletters
               </Link>
             </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
-            </li>
+
             <div>
               <li onClick={appearence} style={{ cursor: "pointer" }}>
                 <svg
@@ -2312,6 +2272,145 @@ function ProductTagsEdit() {
                   </div>
                 </div>
               </form>
+              <div className="card mt-3 seo-metas1 text-start">
+                <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
+                  <div className="w-100">
+                    <h5 className="card-title1">Search Engine Optimize</h5>
+                    <Link
+                      to="#"
+                      className="link-primary1 primary2 meta float-end"
+                      onClick={seotags}
+                      style={{ zIndex: "100" }}
+                    >
+                      Edit SEO meta
+                    </Link>
+                    <div className="border seo-names mt-3"></div>
+                    <div className="lh-base d-flex flex-column mt-3">
+                      <h5 className="seo-name">{user.name}</h5>
+                      <span className="seo-name1">{user.permalink}</span>
+                      <span>
+                        <span className="text-secondary">
+                          {new Date(user.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "2-digit",
+                            year: "numeric",
+                          })}
+                          :
+                        </span>
+                        <span className="card-text text-dark ms-2">
+                          {user.description}
+                          <div className="border seo-names mt-3"></div>
+                          {tags && (
+                            <>
+                              <div className="mt-3">
+                                <label htmlFor="">SEO Title</label>
+                                <input
+                                  type="text"
+                                  className="form-control mt-2 py-4 seo-edit"
+                                  placeholder="SEO Title"
+                                />
+                              </div>
+
+                              <div className="mt-3">
+                                <label htmlFor="seo-description">
+                                  SEO Description
+                                </label>
+                                <textarea
+                                  id="seo-description"
+                                  className="form-control mt-2 seo-edit"
+                                  placeholder="SEO Description"
+                                  style={{
+                                    height: "100px",
+                                    overflow: "auto",
+                                    resize: "vertical",
+                                    minHeight: "100px",
+                                  }}
+                                />
+                              </div>
+
+                              <div>
+                                <label className="mt-3 pt-2 ms-2">
+                                  SEO image
+                                </label>
+                                <div className="image-card border-0 ps-1">
+                                  <div
+                                    className="image-placeholder"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInput")
+                                        .click()
+                                    }
+                                  >
+                                    {imageUrl ? (
+                                      <img
+                                        alt="Uploaded preview"
+                                        src={imageUrl}
+                                        width="100"
+                                        height="100"
+                                      />
+                                    ) : (
+                                      <img
+                                        src={Cutting}
+                                        alt="RxLYTE"
+                                        className="w-75 h-75 img-fluid"
+                                      />
+                                    )}
+                                  </div>
+                                  <input
+                                    id="fileInput"
+                                    type="file"
+                                    name="file"
+                                    style={{ display: "none" }}
+                                    onChange={handleFileChange}
+                                  />
+                                  <Link
+                                    className="ms-5"
+                                    to="#"
+                                    onClick={() =>
+                                      document
+                                        .getElementById("fileInput")
+                                        .click()
+                                    }
+                                  >
+                                    Choose image <br />
+                                  </Link>
+                                  <span className="ms-2 me-2 ms-5">or</span>
+                                  <Link to="#" onClick={handleAddFromUrl}>
+                                    Add from URL
+                                  </Link>
+                                </div>
+                              </div>
+
+                              <div className="ms-2 mt-2 pb-2">
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="check"
+                                  id="Index"
+                                />
+                                <label htmlFor="Index" className="ms-2">
+                                  Index
+                                </label>
+
+                                <input
+                                  className="form-check-input ms-2"
+                                  type="radio"
+                                  value="index"
+                                  name="check"
+                                  id="No index"
+                                />
+                                <label htmlFor="No index" className="ms-2">
+                                  No index
+                                </label>
+                              </div>
+                            </>
+                          )}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="col-12 col-sm-12 col-md-12 col-lg-4 d-flex flex-column gap-3 customer-page1">
@@ -2351,139 +2450,6 @@ function ProductTagsEdit() {
                   <option value="Draft">Draft</option>
                   <option value="Pending">Pending</option>
                 </select>
-              </div>
-            </div>
-          </div>
-          <div className="card mt-3 seo-metas">
-            <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
-              <div className="w-100">
-                <h5 className="card-title1">Search Engine Optimize</h5>
-                <Link
-                  to="#"
-                  className="link-primary1 primary2 meta float-end"
-                  onClick={seotags}
-                  style={{ zIndex: "100" }}
-                >
-                  Edit SEO meta
-                </Link>
-                <div className="border seo-names mt-3"></div>
-                <div className="lh-base d-flex flex-column mt-3">
-                  <h5 className="seo-name">{user.name}</h5>
-                  <span className="seo-name1">{user.permalink}</span>
-                  <span>
-                    <span className="text-secondary">
-                      {new Date(user.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}
-                      :
-                    </span>
-                    <span className="card-text text-dark ms-2">
-                      {user.description}
-                      <div className="border seo-names mt-3"></div>
-                      {tags && (
-                        <>
-                          <div className="mt-3">
-                            <label htmlFor="">SEO Title</label>
-                            <input
-                              type="text"
-                              className="form-control mt-2 py-4 seo-edit"
-                              placeholder="SEO Title"
-                            />
-                          </div>
-
-                          <div className="mt-3">
-                            <label htmlFor="seo-description">
-                              SEO Description
-                            </label>
-                            <textarea
-                              id="seo-description"
-                              className="form-control mt-2 seo-edit"
-                              placeholder="SEO Description"
-                              style={{
-                                height: "100px",
-                                overflow: "auto",
-                                resize: "vertical",
-                                minHeight: "100px",
-                              }}
-                            />
-                          </div>
-
-                          <div>
-                            <label className="mt-3 pt-2 ms-2">SEO image</label>
-                            <div className="image-card border-0 ps-1">
-                              <div
-                                className="image-placeholder"
-                                onClick={() =>
-                                  document.getElementById("fileInput").click()
-                                }
-                              >
-                                {imageUrl ? (
-                                  <img
-                                    alt="Uploaded preview"
-                                    src={imageUrl}
-                                    width="100"
-                                    height="100"
-                                  />
-                                ) : (
-                                  <img
-                                    src={Cutting}
-                                    alt="RxLYTE"
-                                    className="w-75 h-75 img-fluid"
-                                  />
-                                )}
-                              </div>
-                              <input
-                                id="fileInput"
-                                type="file"
-                                name="file"
-                                style={{ display: "none" }}
-                                onChange={handleFileChange}
-                              />
-                              <Link
-                                className="ms-5"
-                                to="#"
-                                onClick={() =>
-                                  document.getElementById("fileInput").click()
-                                }
-                              >
-                                Choose image <br />
-                              </Link>
-                              <span className="ms-2 me-2 ms-5">or</span>
-                              <Link to="#" onClick={handleAddFromUrl}>
-                                Add from URL
-                              </Link>
-                            </div>
-                          </div>
-
-                          <div className="ms-2 mt-2 pb-2">
-                            <input
-                              className="form-check-input"
-                              type="radio"
-                              name="check"
-                              id="Index"
-                            />
-                            <label htmlFor="Index" className="ms-2">
-                              Index
-                            </label>
-
-                            <input
-                              className="form-check-input ms-2"
-                              type="radio"
-                              value="index"
-                              name="check"
-                              id="No index"
-                            />
-                            <label htmlFor="No index" className="ms-2">
-                              No index
-                            </label>
-                          </div>
-                        </>
-                      )}
-                    </span>
-                  </span>
-                </div>
               </div>
             </div>
           </div>

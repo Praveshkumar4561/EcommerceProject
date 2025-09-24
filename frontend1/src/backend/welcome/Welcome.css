@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body {
+  font-size: 15px !important;
+}
+
 .navbar-back {
   width: 100%;
   max-width: 100%;
@@ -315,6 +319,7 @@ input[type="search"] {
   font-size: 1.5rem;
   margin-right: 0.5rem;
 }
+
 @media (max-width: 768px) {
   .content-home {
     margin-left: 0;
@@ -521,13 +526,15 @@ input[type="search"] {
 .search-results-container {
   position: absolute;
   top: 73px;
-  left: 60.6%;
-  height: 25rem;
-  overflow-y: scroll;
-  right: 21%;
+  left: 57%;
+  width: 19%;
+  max-height: 25rem;
+  height: auto;
+  overflow-y: auto;
   background-color: #e9efec;
   z-index: 1000;
   border-radius: 3px;
+  line-height: 25px;
 }
 
 .search-results {

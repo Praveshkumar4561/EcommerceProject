@@ -10,7 +10,7 @@ body {
   max-height: 100vh;
   margin: 0;
   overflow-x: hidden;
-  font-family: "SanDiego";
+
   position: relative;
 }
 
@@ -18,11 +18,6 @@ body {
   color: #2c2c2c;
   font-weight: 700;
   font-size: 2rem;
-}
-.para-eu {
-  color: #2c2c2c;
-  font-weight: 700;
-  font-size: 18px;
 }
 
 .justo {
@@ -35,11 +30,6 @@ body {
   background-color: #f2f5f7;
   height: 100rem;
   max-height: 45.7rem;
-}
-@media (max-width: 576px) {
-  .faqs-page1 {
-    height: auto;
-  }
 }
 
 .question {
@@ -60,18 +50,6 @@ body {
   box-sizing: border-box;
 }
 
-@media (max-width: 576px) {
-  .name-text {
-    width: 100%;
-  }
-}
-
-.message-btn {
-  background-color: #0a9a73;
-  position: relative;
-  left: 0.4rem;
-}
-
 .lorem-faqs1 {
   width: 100%;
   max-width: 92%;
@@ -85,17 +63,12 @@ body {
     max-width: 97%;
   }
 }
+
 @media (max-width: 768px) {
   .lorem-faqs2 {
     width: 100%;
     max-width: 97%;
   }
-}
-
-.lorem-faqs3 {
-  letter-spacing: 2px;
-  word-spacing: 1px;
-  font-size: 1rem;
 }
 
 .captcha-container1 {
@@ -146,17 +119,6 @@ body {
     width: 100%;
     height: 100%;
   }
-  .faqs-page1 {
-    height: auto;
-  }
-}
-
-@media (max-width: 992px) {
-  .faqs-page1 {
-    height: auto;
-  }
-}
-@media (max-width: 1200px) {
   .faqs-page1 {
     height: auto;
   }

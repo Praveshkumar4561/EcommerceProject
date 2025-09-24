@@ -27,7 +27,7 @@ function CustomerVendor() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -78,7 +78,7 @@ function CustomerVendor() {
       return;
     }
     try {
-      await axios.post("http://89.116.170.231:1600/vendorshop", user);
+      await axios.post("http://147.93.45.171:1600/vendorshop", user);
       toast.success("Shop registered successfully!", {
         position: "bottom-right",
         autoClose: 1000,
@@ -106,7 +106,7 @@ function CustomerVendor() {
   let [vendor, setVendor] = useState([]);
 
   let vendor_data = async () => {
-    let response = await axios.get("http://89.116.170.231:1600/vendordata", user);
+    let response = await axios.get("http://147.93.45.171:1600/vendordata", user);
     setVendor(response.data);
   };
   vendor_data();

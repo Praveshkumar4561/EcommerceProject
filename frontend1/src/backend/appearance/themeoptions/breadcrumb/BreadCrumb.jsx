@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Shopping from "../../../../assets/Shopping.svg";
 import { Link, useNavigate } from "react-router-dom";
-import "font-awesome/css/font-awesome.min.css";
+
 import Cutting from "../../../../assets/Cutting.webp";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -171,7 +171,7 @@ function BreadCrumb() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://89.116.170.231:1600/checkoutdata");
+      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
       setCount5(response.data.length);
     };
     orderdata();
@@ -223,7 +223,7 @@ function BreadCrumb() {
     }
     try {
       await axios.post(
-        "http://89.116.170.231:1600/breadcrumb-settings",
+        "http://147.93.45.171:1600/breadcrumb-settings",
         formdata
       );
       toast.success("breadcrumb successfully updated?", {
@@ -255,7 +255,7 @@ function BreadCrumb() {
 
   useEffect(() => {
     axios
-      .get("http://89.116.170.231:1600/get-theme-breadcrumb")
+      .get("http://147.93.45.171:1600/get-theme-breadcrumb")
       .then((response) => setUser(response.data))
       .catch((error) => console.error("Error fetching font settings:", error));
   }, []);
@@ -309,12 +309,12 @@ function BreadCrumb() {
 
         <link
           rel="shortcut icon"
-          href="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv724100.hstgr.cloud/assets/Tonic.svg"
+          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
         />
 
         <meta
@@ -331,10 +331,10 @@ function BreadCrumb() {
           content="Theme Options - Breadcrumb | RxLYTE"
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv724100.hstgr.cloud/" />
+        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv724100.hstgr.cloud/" />
+        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
       </Helmet>
 
       <div
@@ -426,11 +426,11 @@ function BreadCrumb() {
 
           <FontAwesomeIcon
             icon={faMoon}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faBell}
-            className="text-light fs-4 me-2 search-box"
+            className="text-light fs-4 search-box"
           />
           <FontAwesomeIcon
             icon={faEnvelope}
@@ -1024,7 +1024,7 @@ function BreadCrumb() {
                         ></path>
                         <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path>
                       </svg>
-                      Reviws
+                      Reviews
                     </li>
                   </Link>
 
@@ -1836,46 +1836,6 @@ function BreadCrumb() {
                 </svg>
                 Newsletters
               </Link>
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-world me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
-                <path d="M3.6 9h16.8"></path>
-                <path d="M3.6 15h16.8"></path>
-                <path d="M11.5 3a17 17 0 0 0 0 18"></path>
-                <path d="M12.5 3a17 17 0 0 1 0 18"></path>
-              </svg>
-              Locations
-            </li>
-            <li>
-              <svg
-                className="icon svg-icon-ti-ti-folder me-2 mb-1"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-11a2 2 0 0 1 2 -2"></path>
-              </svg>
-              Media
             </li>
 
             <div>
@@ -2716,7 +2676,7 @@ function BreadCrumb() {
                   <option value="">Select an option</option>
                   <option value="none">None</option>
                   <option value="align start">Align start</option>
-                  <option value="align center">Align end</option>
+                  <option value="align center">Align center</option>
                   <option value="without title">Without title</option>
                 </select>
               </div>
@@ -2806,7 +2766,7 @@ function BreadCrumb() {
                     <img
                       src={
                         user.background_image
-                          ? `http://89.116.170.231:1600/src/image/${user.background_image}`
+                          ? `http://147.93.45.171:1600/src/image/${user.background_image}`
                           : Cutting
                       }
                       alt="Background"
@@ -2891,7 +2851,6 @@ function BreadCrumb() {
             </div>
           </form>
         </div>
-
         <ToastContainer />
       </div>
     </>
