@@ -339,9 +339,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch(
-            "http://147.93.45.171:1600/get-theme-breadcrumb"
-          );
+          const res = await fetch("/get-theme-breadcrumb");
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -436,56 +434,56 @@
               <h3 class="widget-title">Instagram Posts</h3>
               <div class="blog-gallery-wrap">
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=21da416045381245af6b2bd7e3b4616a599bbd33-15365595-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=4cfc4aa1caad239b778b41fe469560ad1280f9ed-16922036-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=fd02cb8365f18fdb94ef968ce191f1571b951fc2-9858823-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=fd02cb8365f18fdb94ef968ce191f1571b951fc2-9858823-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=d68071988d46ce9cd4d4aa9858c09820eb09c118-8544486-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=fc83cfdb0832c9adb2470a98ea9e882697a3951b-4818428-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=5744fcd632225923c76f71db6b7af0c18070e404-5866055-images-thumbs&n=13"
                       alt="img"
                   /></a>
                 </div>
                 <div class="gallary-img">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=5e3e4eb7a4f140bf9db922151eb2825f95c224a4-5911735-images-thumbs&n=13"
                       alt="img"
@@ -510,7 +508,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
+          fetch(`/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -552,7 +550,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("http://147.93.45.171:1600/getannounce")
+          fetch("/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -683,7 +681,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("http://147.93.45.171:1600/productpagedata")
+            fetch("/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -806,7 +804,7 @@
         }
 
         function fetchAllPosts() {
-          return fetch("http://147.93.45.171:1600/blogpostdata")
+          return fetch("/blogpostdata")
             .then((res) => {
               if (!res.ok)
                 throw new Error("Failed to fetch blog data: " + res.status);
@@ -992,9 +990,7 @@
             displayPage(1);
             return;
           }
-          fetch(
-            `http://147.93.45.171:1600/blogpostsearch/${encodeURIComponent(q)}`
-          )
+          fetch(`/blogpostsearch/${encodeURIComponent(q)}`)
             .then((res) => res.json())
             .then((res) => {
               filteredPosts = Array.isArray(res)
@@ -1009,7 +1005,7 @@
 
         function loadTags() {
           if (!tagsContainer) return;
-          fetch("http://147.93.45.171:1600/blogalldata")
+          fetch("/blogalldata")
             .then((res) => res.json())
             .then((tags) => {
               tagsContainer.innerHTML = "";
@@ -1029,7 +1025,7 @@
 
         function loadCategories() {
           if (!categoryContainer) return;
-          fetch("http://147.93.45.171:1600/allcategorydata")
+          fetch("/allcategorydata")
             .then((res) => res.json())
             .then((cats) => {
               categoryContainer.innerHTML = "";
@@ -1258,14 +1254,11 @@
                 }
 
                 try {
-                  const res = await fetch(
-                    "http://147.93.45.171:1600/newsletterpost",
-                    {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ email }),
-                    }
-                  );
+                  const res = await fetch("/newsletterpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                  });
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1322,7 +1315,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-font-settings")
+        fetch("/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1355,7 +1348,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-theme-logo")
+        fetch("/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1374,7 +1367,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("http://147.93.45.171:1600/themestylesdata")
+        fetch("/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

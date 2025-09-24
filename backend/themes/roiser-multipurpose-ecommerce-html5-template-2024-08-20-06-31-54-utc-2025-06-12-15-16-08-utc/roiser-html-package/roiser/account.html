@@ -22,7 +22,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/themeoptionsdata")
+        fetch("/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -97,10 +97,8 @@
         }
 
         Promise.all([
-          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
-            r.json()
-          ),
-          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
+          fetch("/productpagedata").then((r) => r.json()),
+          fetch("/blogpostdata").then((r) => r.json()),
         ])
           .then(([products, blogs]) => {
             products = Array.isArray(products)
@@ -893,7 +891,7 @@
             }
 
             try {
-              const response = await fetch("http://147.93.45.171:1600/submit", {
+              const response = await fetch("/submit", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -947,7 +945,7 @@
             }
 
             try {
-              const response = await fetch("http://147.93.45.171:1600/login", {
+              const response = await fetch("/login", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -992,7 +990,7 @@
           const userId = localStorage.getItem("user_id");
           if (!userId) return;
 
-          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
+          fetch(`/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               if (Array.isArray(data)) {
