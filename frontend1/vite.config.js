@@ -27,7 +27,7 @@ export default defineConfig({
       "/api": {
         target: "http://147.93.45.171:1600",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        rewrite: (path) => path.replace(/^\http://147.93.45.171:1600/, ""),
       },
       "/themes": {
         target: "http://147.93.45.171:1600",
