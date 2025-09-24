@@ -1,0 +1,4538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title></title>
+    <link
+      rel="shortcut icon"
+      href="assets/img/favicon.png"
+      type="images/x-icon"
+    />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome.css" />
+    <link rel="stylesheet" href="assets/css/animate.css" />
+    <link rel="stylesheet" href="assets/css/metisMenu.css" />
+    <link rel="stylesheet" href="assets/css/uikit.min.css" />
+    <link rel="stylesheet" href="assets/css/jquery-ui.css" />
+    <link rel="stylesheet" href="assets/css/slick.css" />
+    <link rel="stylesheet" href="assets/css/magnific-popup.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud//");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud//${page}`);
+            }
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud//";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud//${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/themeoptionsdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Fetch failed");
+            return res.json();
+          })
+          .then((data) => {
+            let titleTag = document.head.querySelector("title");
+            if (!titleTag) {
+              titleTag = document.createElement("title");
+              document.head.appendChild(titleTag);
+            }
+            titleTag.textContent =
+              data.site_title || data.seo_title || "Website";
+
+            let desc = document.querySelector('meta[name="description"]');
+            if (!desc) {
+              desc = document.createElement("meta");
+              desc.name = "description";
+              document.head.appendChild(desc);
+            }
+            desc.content = data.seo_description || "";
+
+            let og = document.querySelector('meta[property="og:image"]');
+            if (!og) {
+              og = document.createElement("meta");
+              og.setAttribute("property", "og:image");
+              document.head.appendChild(og);
+            }
+            og.content = data.seo_og_image_url || "";
+
+            const url = `/uploads/${
+              data.lazy_placeholder_image
+            }?v=${Date.now()}`;
+            const oldIcon = document.querySelector(
+              'link[rel="icon"], link[rel="shortcut icon"]'
+            );
+            if (oldIcon) oldIcon.remove();
+
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.type = "image/png";
+            link.href = url;
+            document.head.appendChild(link);
+          })
+          .catch((e) => console.error("Theme load error:", e));
+      });
+    </script>
+  </head>
+
+  <style>
+    .tagcloud a:hover {
+      color: #fff !important;
+    }
+
+    .countdown-styled {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .countdown-styled .cd-box {
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+    .countdown-styled .cd-num {
+      display: flex;
+      background: #000;
+      color: #fff;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      line-height: 45px;
+      font-weight: bold;
+      font-size: 14px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .countdown-styled .cd-label {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .news__item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news__content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news__content p {
+      flex-grow: 1;
+    }
+  </style>
+
+  <body>
+    <div class="body_wrap">
+      <div class="preloder_part">
+        <div class="spinner">
+          <div class="dot1"></div>
+          <div class="dot2"></div>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <svg
+          class="progress-circle svg-content"
+          width="100%"
+          height="100%"
+          viewBox="-1 -1 102 102"
+        >
+          <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+        </svg>
+      </div>
+
+      <header class="header header__style-three">
+        <div class="header__top">
+          <div class="container mxw_1360">
+            <div class="header__top-info ul_li_between mt-none-10">
+              <ul class="header__top-left ul_li mt-10">
+                <li><a href="#!">Call us</a> free 24/7 : (555) 172-244-7888</li>
+                <li><i class="fas fa-envelope"></i> adminpath@gmail.com</li>
+              </ul>
+              <ul class="header__top-right ul_li mt-10">
+                <li><i class="fas fa-clouds"></i>30 degree</li>
+                <li><i class="far fa-city"></i>New York</li>
+                <li>
+                  <a href="#!"><i class="fas fa-star"></i>My Wishlist</a>
+                </li>
+                <li>
+                  <a href="#!"><i class="far fa-check-circle"></i>Checkout</a>
+                </li>
+                <li>
+                  <div class="header__language currency">
+                    <ul>
+                      <li>
+                        <a href="#!" class="lang-btn"
+                          ><img src="assets/img/icon/usd_icon.svg" alt="" />USD
+                          <i class="far fa-chevron-down"></i
+                        ></a>
+
+                        <ul class="lang_sub_list">
+                          <li><a href="#">USD</a></li>
+                          <li><a href="#">BDT</a></li>
+                          <li><a href="#">EUR</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="container mxw_1360">
+          <div class="header__middle ul_li_between">
+            <div class="header__logo">
+              <a href="index.html">
+                <img src="assets/img/logo/logo.svg" alt="" />
+              </a>
+            </div>
+
+            <div class="header-date" id="current-date">
+              <i class="far fa-calendar-alt"></i>
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const dateElement = document.getElementById("current-date");
+
+                const days = [
+                  "Sunday",
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                ];
+                const months = [
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ];
+
+                const now = new Date();
+                const dayName = days[now.getDay()];
+                const monthName = months[now.getMonth()];
+                const date = now.getDate();
+                const year = now.getFullYear();
+
+                dateElement.innerHTML = `<i class="fal fa-calendar-alt"></i> ${dayName}, ${monthName} ${date}, ${year}`;
+              });
+            </script>
+
+            <div class="add">
+              <a href="#!">
+                <img src="assets/img/add/img_02.jpg" alt="" />
+              </a>
+            </div>
+
+            <div class="d-none d-lg-block">
+              <div class="ul_li">
+                <div class="header__language style-2 mr-25">
+                  <ul>
+                    <li>
+                      <a href="#!" class="lang-btn"
+                        ><img src="assets/img/icon/usd_flag.png" alt="" />
+                        English <i class="far fa-chevron-down"></i
+                      ></a>
+
+                      <ul class="lang_sub_list">
+                        <li><a href="#">English</a></li>
+                        <li><a href="#">Arabic</a></li>
+                        <li><a href="#">Bangla</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="header__social">
+                  <a href="https://www.facebook.com/" target="_blank"
+                    ><i class="fab fa-facebook-f"></i
+                  ></a>
+                  <a href="https://www.twitter.com/" target="_blank"
+                    ><i class="fab fa-twitter"></i
+                  ></a>
+                  <a href="https://www.instagram.com/" target="_blank"
+                    ><i class="fab fa-instagram"></i
+                  ></a>
+                  <a href="https://www.youtube.com/" target="_blank"
+                    ><i class="fab fa-youtube"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="header__wrap"
+          data-uk-sticky="top: 250; animation: uk-animation-slide-top;"
+        >
+          <div class="container mxw_1360">
+            <div class="header__main ul_li">
+              <div class="header__logo">
+                <a href="index.html">
+                  <img src="assets/img/logo/logo.svg" alt="" />
+                </a>
+              </div>
+              <div class="header__category">
+                <a class="header__category-nav" href="#!"
+                  ><img
+                    class="bar"
+                    src="assets/img/icon/bar.svg"
+                    alt="" />Browse Categories<i class="fas fa-chevron-down"></i
+                ></a>
+              </div>
+              <div class="hamburger_menu d-lg-none">
+                <a href="javascript:void(0);" class="active">
+                  <div class="icon bar">
+                    <span><i class="fal fa-bars"></i></span>
+                  </div>
+                </a>
+              </div>
+              <div class="main-menu navbar navbar-expand-lg">
+                <nav class="main-menu__nav collapse navbar-collapse">
+                  <ul>
+                    <li class="menu-item-has-children has-mega-menu active">
+                      <a href="index.html">Home</a>
+                      <ul class="mega-menu">
+                        <li>
+                          <div class="mega-menu-content">
+                            <div class="row">
+                              <div class="col col-md-3">
+                                <div class="demo-pic">
+                                  <a href="index.html">
+                                    <img
+                                      src="assets/img/demo/demo-1.jpg"
+                                      alt=""
+                                    />
+                                  </a>
+                                </div>
+                                <h3>#Home Demo 1</h3>
+                              </div>
+                              <div class="col col-md-3">
+                                <div class="demo-pic">
+                                  <a href="home-2.html">
+                                    <img
+                                      src="assets/img/demo/demo-2.jpg"
+                                      alt=""
+                                    />
+                                  </a>
+                                </div>
+                                <h3>#Home Demo 2</h3>
+                              </div>
+                              <div class="col col-md-3">
+                                <div class="demo-pic">
+                                  <a href="home-3.html">
+                                    <img
+                                      src="assets/img/demo/demo-3.jpg"
+                                      alt=""
+                                    />
+                                  </a>
+                                </div>
+                                <h3>#Home Demo 3</h3>
+                              </div>
+                              <div class="col col-md-3">
+                                <div class="demo-pic coming-soon">
+                                  <span>Coming Soon</span>
+                                </div>
+                                <h3>Coming Soon</h3>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </li>
+
+                    <li class="menu-item-has-children">
+                      <a href="#!">Shop</a>
+                      <ul class="submenu">
+                        <li><a href="shop.html">Shop Default</a></li>
+                        <li>
+                          <a href="shop-left-sidebar.html">Shop Left Sidebar</a>
+                        </li>
+                        <li><a href="shop-single.html">Shop Single</a></li>
+                        <li><a href="cart.html">Shop Cart</a></li>
+                        <li><a href="checkout.html">Shop Checkout</a></li>
+                        <li><a href="account.html">Account</a></li>
+                      </ul>
+                    </li>
+
+                    <li><a href="shop.html">Accesories</a></li>
+
+                    <li class="menu-item-has-children">
+                      <a href="#!">Blog</a>
+                      <ul class="submenu">
+                        <li><a href="news.html">Blog</a></li>
+                        <li><a href="news-single.html">Blog Details</a></li>
+                      </ul>
+                    </li>
+
+                    <li class="menu-item-has-children">
+                      <a href="#!">Pages</a>
+                      <ul class="submenu">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="account.html">Account</a></li>
+                        <li><a href="404.html">404</a></li>
+                      </ul>
+                    </li>
+
+                    <li><a href="contact.html">Contact</a></li>
+                  </ul>
+                </nav>
+              </div>
+
+              <div class="header__main-right ul_li">
+                <div class="header__icons ul_li mr-15">
+                  <div class="icon">
+                    <a href="account.html"
+                      ><img src="assets/img/icon/user.svg" alt=""
+                    /></a>
+                  </div>
+
+                  <div class="icon wishlist-icon">
+                    <a href="#!">
+                      <img src="assets/img/icon/heart.svg" alt="Wishlist" />
+                      <span id="wishlist-data" class="count">0</span>
+                    </a>
+                  </div>
+
+                  <div class="icon cart-icon">
+                    <a href="cart.html">
+                      <img src="assets/img/icon/bookmark.svg" alt="" />
+                      <span id="cart-data" class="count">0</span>
+                    </a>
+                  </div>
+                </div>
+                <div class="login-sign-btn">
+                  <a class="thm-btn thm-btn__2 text-black" href="account.html">
+                    <span class="btn-wrap">
+                      <span>Login / Sign Up</span>
+                      <span>Login / Sign Up</span>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const wishlistCountEl = document.getElementById("wishlist-data");
+          const cartCountEl = document.getElementById("cart-data");
+
+          const cartListEl = document.querySelector(
+            ".cart_sidebar .cart_items_list"
+          );
+          const subtotalEl = document.querySelector(
+            ".cart_sidebar .total_price span:last-child"
+          );
+          const sidebarCountEl = document.querySelector(
+            ".cart_sidebar h2 span"
+          );
+          const headerCartCount = cartCountEl;
+
+          async function loadWishlist() {
+            try {
+              const res = await fetch("/wishlistdata");
+              const data = await res.json();
+              if (!Array.isArray(data)) return;
+
+              const uniqueNames = new Set(
+                data.map((item) => item.product_name)
+              );
+
+              wishlistCountEl.textContent = uniqueNames.size;
+            } catch (err) {
+              console.error("Wishlist Load Error:", err);
+            }
+          }
+
+          async function loadCart() {
+            try {
+              const res = await fetch("/allcartdata");
+              const data = await res.json();
+              if (!Array.isArray(data)) return;
+
+              const seen = new Set();
+              const unique = [];
+              let subtotal = 0;
+
+              for (let item of data) {
+                if (!seen.has(item.name)) {
+                  seen.add(item.name);
+                  unique.push(item);
+                  subtotal += parseFloat(item.price.replace("$", "")) || 0;
+                }
+              }
+
+              cartListEl.innerHTML = unique
+                .map(
+                  (item) => `
+                  <div class="cart_item" data-id="${item.id}">
+                  <div class="item_image">
+                    <img src="/uploads/${
+                      item.image || "assets/img/product/default.png"
+                    }" />
+                  </div>
+                  <div class="item_content">
+                    <h4 class="item_title">${item.name}</h4>
+                    <span class="item_price">${item.price}</span>
+                    <button type="button" class="remove_btn">
+                      <i class="fal fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              `
+                )
+                .join("");
+
+              const count = unique.length;
+              cartCountEl.textContent = count;
+              sidebarCountEl.textContent = count;
+              subtotalEl.textContent = subtotal.toFixed(2);
+            } catch (err) {
+              console.error("Cart Load Error:", err);
+            }
+          }
+
+          cartListEl.addEventListener("click", async (e) => {
+            const btn = e.target.closest(".remove_btn");
+            if (!btn) return;
+
+            const itemEl = btn.closest(".cart_item");
+            const id = itemEl.dataset.id;
+
+            try {
+              const res = await fetch(`/deletecart/${id}`, {
+                method: "DELETE",
+              });
+              const json = await res.json();
+              if (res.ok && json.success) {
+                loadCart();
+              } else {
+                console.error("Delete failed:", json.message);
+              }
+            } catch (err) {
+              console.error("Delete request error:", err);
+            }
+          });
+
+          loadWishlist();
+          loadCart();
+          setInterval(loadWishlist, 3000);
+          setInterval(loadCart, 3000);
+        });
+      </script>
+
+      <aside class="slide-bar">
+        <div class="close-mobile-menu">
+          <a href="javascript:void(0);"><i class="fal fa-times"></i></a>
+        </div>
+
+        <div class="cart_sidebar">
+          <button type="button" class="cart_close_btn">
+            <i class="fal fa-times"></i>
+          </button>
+          <h2 class="heading_title text-uppercase">
+            Cart Items - <span>0</span>
+          </h2>
+
+          <div class="cart_items_list"></div>
+
+          <div class="total_price text-uppercase">
+            <span>Sub Total:</span>
+            <span>$00.00</span>
+          </div>
+
+          <ul class="btns_group ul_li">
+            <li>
+              <a href="cart.html" class="thm-btn">
+                <span class="btn-wrap">
+                  <span>View Cart</span>
+                  <span>View Cart</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href="checkout.html" class="thm-btn thm-btn__black">
+                <span class="btn-wrap">
+                  <span>Checkout</span>
+                  <span>Checkout</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <nav class="side-mobile-menu">
+          <div class="header-mobile-search">
+            <form role="search" method="get" action="#">
+              <input type="text" placeholder="Search Keywords" />
+              <button type="submit"><i class="ti-search"></i></button>
+            </form>
+          </div>
+          <ul id="mobile-menu-active">
+            <li class="dropdown">
+              <a href="index.html">Home</a>
+              <ul class="sub-menu">
+                <li><a href="index.html">Home One</a></li>
+                <li><a href="home-2.html">Home Two</a></li>
+                <li><a href="home-3.html">Home Three</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#">Shop</a>
+              <ul class="sub-menu">
+                <li><a href="shop.html">Shop Default</a></li>
+                <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
+                <li><a href="shop-single.html">Shop Single</a></li>
+                <li><a href="cart.html">Shop Cart</a></li>
+                <li><a href="checkout.html">Shop Checkout</a></li>
+                <li><a href="account.html">Account</a></li>
+              </ul>
+            </li>
+            <li><a href="shop.html">Accesories</a></li>
+            <li class="dropdown">
+              <a href="#!">Blog</a>
+              <ul class="sub-menu">
+                <li><a href="news.html">Blog</a></li>
+                <li><a href="news-single.html">Blog Details</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#!">Pages</a>
+              <ul class="submenu">
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="account.html">Account</a></li>
+                <li><a href="404.html">404</a></li>
+              </ul>
+            </li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="body-overlay"></div>
+
+      <main>
+        <div class="banner pt-10">
+          <div class="container mxw_1360">
+            <div class="banner__wrapper d-flex">
+              <div class="category-nav">
+                <ul class="category-nav__list list-unstyled">
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_01.svg" alt="" />Bluetooth
+                      speaker</a
+                    >
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_02.svg" alt="" />Digital
+                      camera</a
+                    >
+                    <ul>
+                      <li><a href="#">Electric razor</a></li>
+                      <li><a href="#">Digital camera</a></li>
+                      <li><a href="#">Electric frying pan</a></li>
+                      <li><a href="#">external hard drive</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_03.svg" alt="" />Laser
+                      printer</a
+                    >
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_04.svg" alt="" />Electric
+                      frying pan</a
+                    >
+                    <ul>
+                      <li><a href="#">Electric razor</a></li>
+                      <li><a href="#">Digital camera</a></li>
+                      <li><a href="#">Electric frying pan</a></li>
+                      <li><a href="#">external hard drive</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_05.svg" alt="" />Robotics
+                      vacuum</a
+                    >
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_06.svg" alt="" />external
+                      hard drive</a
+                    >
+                    <ul>
+                      <li><a href="#">Electric razor</a></li>
+                      <li><a href="#">Digital camera</a></li>
+                      <li><a href="#">Electric frying pan</a></li>
+                      <li><a href="#">external hard drive</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_07.svg" alt="" />Electric
+                      razor</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_08.svg" alt="" />Washing
+                      machine</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_09.svg" alt="" />Rice
+                      cooker</a
+                    >
+                  </li>
+                  <li>
+                    <a href="#"
+                      ><img src="assets/img/icon/cat_10.svg" alt="" />Telivsion
+                      & Monitor</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div
+                class="banner__main banner__height ul_li bg_img"
+                data-background="assets/img/bg/bg_19.jpg"
+              >
+                <div class="hero-banner__content">
+                  <span class="subtitle">100% organic Food</span>
+                  <h2 class="title text-uppercase">
+                    100% Fresh Grocery <br />
+                    Combo Pack
+                  </h2>
+                  <p class="content">
+                    Sumptuous, filling, and temptingly healthy.
+                  </p>
+                  <h4 class="price">From <span>$99.00</span></h4>
+                  <div class="banner__btn mt-30">
+                    <a class="thm-btn" href="shop.html">
+                      <span class="btn-wrap">
+                        <span>Shop Now</span>
+                        <span>Shop Now</span>
+                      </span>
+                      <i class="far fa-long-arrow-right"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="banner__img">
+                  <img src="assets/img/product/img_121.png" alt="" />
+                </div>
+                <div class="banner__ofer-box">
+                  <img src="assets/img/icon/offer_bg.png" alt="" />
+                  <span class="offer-text"
+                    ><span class="discount">30<span>%</span></span> <br />
+                    <span>OFF</span></span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category pt-35 pb-60">
+          <div class="container mxw_1360">
+            <div class="category__slide">
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_01.svg" alt="" />
+                </div>
+                <h3 class="category__title">Best Deals</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_02.svg" alt="" />
+                </div>
+                <h3 class="category__title">Milk & Juices</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_03.svg" alt="" />
+                </div>
+                <h3 class="category__title">Herbal Medicine</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_04.svg" alt="" />
+                </div>
+                <h3 class="category__title">Frozen Foods</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_05.svg" alt="" />
+                </div>
+                <h3 class="category__title">Dried Food</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_06.svg" alt="" />
+                </div>
+                <h3 class="category__title">Breakfast & Dairy</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_07.svg" alt="" />
+                </div>
+                <h3 class="category__title">Cocolate Box</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_08.svg" alt="" />
+                </div>
+                <h3 class="category__title">Vegetables</h3>
+              </a>
+              <a class="category__item" href="#!">
+                <div class="category__icon">
+                  <img src="assets/img/icon/c_03.svg" alt="" />
+                </div>
+                <h3 class="category__title">Herbal Medicine</h3>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="banner-slide">
+          <div class="container mxw_1360">
+            <div class="banner-slide__active">
+              <div class="banner-slide__single">
+                <div class="banner-slide__item ul_li bg_img">
+                  <div class="banner-slide__img">
+                    <img src="assets/img/product/img_122.png" alt="" />
+                  </div>
+                  <div class="banner-slide__content">
+                    <span class="offer">Get 30% off</span>
+                    <h3>Smart Phone</h3>
+                    <h4 class="price">Starting <span>560.99</span></h4>
+                    <a href="shop.html">Buy Now</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="banner-slide__single">
+                <div
+                  class="banner-slide__item ul_li bg_img"
+                  data-background="assets/img/bg/bg_20.jpg"
+                >
+                  <div class="banner-slide__img">
+                    <img src="assets/img/product/img_123.png" alt="" />
+                  </div>
+                  <div class="banner-slide__content">
+                    <span class="offer">Get 30% off</span>
+                    <h3>Montblanc Watch</h3>
+                    <h4 class="price">Starting <span>560.99</span></h4>
+                    <a href="shop.html">Buy Now</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="banner-slide__single">
+                <div class="banner-slide__item ul_li bg_img">
+                  <div class="banner-slide__img">
+                    <img src="assets/img/product/img_124.png" alt="" />
+                  </div>
+                  <div class="banner-slide__content">
+                    <span class="offer">Get 30% off</span>
+                    <h3>SAMSUNG Galaxy</h3>
+                    <h4 class="price">Starting <span>560.99</span></h4>
+                    <a href="shop.html">Buy Now</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="banner-slide__single">
+                <div
+                  class="banner-slide__item ul_li bg_img"
+                  data-background="assets/img/bg/bg_20.jpg"
+                >
+                  <div class="banner-slide__img">
+                    <img src="assets/img/product/img_123.png" alt="" />
+                  </div>
+                  <div class="banner-slide__content">
+                    <span class="offer">Get 30% off</span>
+                    <h3>Montblanc Watch</h3>
+                    <h4 class="price">Starting <span>560.99</span></h4>
+                    <a href="shop.html">Buy Now</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-40">
+          <div class="container mxw_1360">
+            <div class="row">
+              <div class="col-lg-9">
+                <div class="rd-product-wrap">
+                  <div class="product__nav-wrap style-2 ul_li_between mb-20">
+                    <h2 class="section-heading fs-16">
+                      <span><span>Baby Items</span></span> / Gift Item /
+                      Shopping
+                    </h2>
+                    <ul
+                      class="product__nav style-2 nav nav-tabs"
+                      id="myTab3"
+                      role="tablist"
+                    >
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="ctx-tab-01"
+                          data-bs-toggle="tab"
+                          data-bs-target="#ctx-tab1"
+                          type="button"
+                          role="tab"
+                          aria-controls="ctx-tab1"
+                          aria-selected="true"
+                        >
+                          Born Vita
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="ctx-tab-02"
+                          data-bs-toggle="tab"
+                          data-bs-target="#ctx-tab2"
+                          type="button"
+                          role="tab"
+                          aria-controls="ctx-tab2"
+                          aria-selected="false"
+                        >
+                          Dairy Pack
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link active"
+                          id="ctx-tab-03"
+                          data-bs-toggle="tab"
+                          data-bs-target="#ctx-tab3"
+                          type="button"
+                          role="tab"
+                          aria-controls="ctx-tab3"
+                          aria-selected="false"
+                        >
+                          Milk
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="ctx-tab-04"
+                          data-bs-toggle="tab"
+                          data-bs-target="#ctx-tab4"
+                          type="button"
+                          role="tab"
+                          aria-controls="ctx-tab4"
+                          aria-selected="false"
+                        >
+                          Vegetables
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="tab-content">
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="ctx-tab1"
+                      role="tabpanel"
+                      aria-labelledby="ctx-tab-01"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="ctx-tab2"
+                      role="tabpanel"
+                      aria-labelledby="ctx-tab-02"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp show active"
+                      id="ctx-tab3"
+                      role="tabpanel"
+                      aria-labelledby="ctx-tab-03"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="ctx-tab4"
+                      role="tabpanel"
+                      aria-labelledby="ctx-tab-04"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                  const lightbox = document.getElementById("image-lightbox");
+                  const lightboxImg = document.getElementById("lightbox-image");
+                  const counterEl = document.getElementById("lightbox-counter");
+                  const lightboxClose =
+                    document.getElementById("lightbox-close");
+                  const lightboxPrev = document.getElementById("lightbox-prev");
+                  const lightboxNext = document.getElementById("lightbox-next");
+
+                  let allProducts = [];
+                  let lightboxData = [];
+                  let lbIdx = 0;
+
+                  try {
+                    const res = await fetch("/productpagedata");
+                    if (!res.ok) throw new Error("Failed to fetch products");
+                    allProducts = await res.json();
+                    if (!Array.isArray(allProducts))
+                      throw new Error("Invalid product data");
+                  } catch (err) {
+                    console.error(err);
+                    return;
+                  }
+
+                  const attrMap = {
+                    "#ctx-tab1": "Born Vita",
+                    "#ctx-tab2": "Dairy Pack",
+                    "#ctx-tab3": "Milk",
+                    "#ctx-tab4": "Vegetables",
+                  };
+
+                  function renderProducts(attribute, paneSelector) {
+                    const pane = document.querySelector(paneSelector);
+                    if (!pane) return;
+                    const container = pane.querySelector(".row.g-0");
+                    if (!container) return;
+
+                    const matched = allProducts
+                      .filter((p) => (p.attribute || "").includes(attribute))
+                      .sort((a, b) => new Date(b.date) - new Date(a.date))
+                      .slice(0, 4);
+
+                    lightboxData = matched;
+                    container.innerHTML = "";
+
+                    if (matched.length === 0) {
+                      container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                          <h5 class="text-muted">No "${attribute}" items available.</h5>
+                        </div>`;
+                      return;
+                    }
+
+                    matched.forEach((p, index) => {
+                      const html = `
+                        <div class="col-lg-3 col-md-6">
+                          <div class="product__item style-2">
+                            <div class="product__img text-center pos-rel">
+                              <a href="shop-single.html?id=${p.id}">
+                                <img src="/uploads/${p.image}" alt="${
+                        p.name
+                      }" />
+                              </a>
+                              <ul class="product__action style-2 ul_li">
+                                <li>
+                                  <a href="#" class="img-popup icon-btn" data-index="${index}">
+                                    <i class="far fa-compress-alt"></i>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="#" class="add-to-cart icon-btn"
+                                    data-id="${p.id}"
+                                    data-name="${p.name}"
+                                    data-store="${p.store}"
+                                    data-price="${p.price.replace(
+                                      /[^0-9.]/g,
+                                      ""
+                                    )}"
+                                    data-price_sale="${p.price_sale.replace(
+                                      /[^0-9.]/g,
+                                      ""
+                                    )}"
+                                    data-image="${p.image}">
+                                    <i class="far fa-shopping-basket"></i>
+                                  </a>
+                                </li>
+                                <li>
+                                  <a href="#" class="add-to-wishlist icon-btn"
+                                    data-id="${p.id}"
+                                    data-name="${p.name}"
+                                    data-store="${p.store}"
+                                    data-price="${p.price.replace(
+                                      /[^0-9.]/g,
+                                      ""
+                                    )}"
+                                    data-price_sale="${p.price_sale.replace(
+                                      /[^0-9.]/g,
+                                      ""
+                                    )}"
+                                    data-image="${p.image}"
+                                    data-sku="${p.sku}"
+                                    data-stockstatus="${p.stockstatus}">
+                                    <i class="far fa-heart"></i>
+                                  </a>
+                                </li>
+                              </ul>
+                            </div>
+                            <div class="product__content">
+                              <div class="product__review ul_li">
+                                <ul class="rating-star ul_li mr-10">
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="far fa-star"></i></li>
+                                  <li><i class="far fa-star"></i></li>
+                                </ul>
+                                <span>(${Math.floor(
+                                  Math.random() * 100
+                                )})</span>
+                              </div>
+                              <h2 class="product__title">
+                                <a href="shop-single.html?id=${p.id}">${
+                        p.name
+                      }</a>
+                              </h2>
+                              <h4 class="product__price">
+                                <span class="new">${p.price_sale}</span>
+                                <span class="old">${p.price}</span>
+                              </h4>
+                            </div>
+                          </div>
+                        </div>`;
+                      container.insertAdjacentHTML("beforeend", html);
+                    });
+                  }
+
+                  function show(index) {
+                    if (!lightboxData.length) return;
+
+                    if (index < 0) index = lightboxData.length - 1;
+                    if (index >= lightboxData.length) index = 0;
+
+                    lbIdx = index;
+                    const prod = lightboxData[lbIdx];
+                    lightboxImg.src = `/uploads/${prod.image}`;
+                    counterEl.textContent = `${lbIdx + 1} of ${
+                      lightboxData.length
+                    }`;
+                    lightbox.style.display = "flex";
+                  }
+
+                  document.body.addEventListener("click", function (e) {
+                    const target = e.target.closest(".img-popup");
+                    if (target) {
+                      e.preventDefault();
+                      const index = parseInt(target.dataset.index, 10);
+                      if (!isNaN(index)) show(index);
+                    }
+                  });
+
+                  lightboxPrev.onclick = () => show(lbIdx - 1);
+                  lightboxNext.onclick = () => show(lbIdx + 1);
+                  lightboxClose.onclick = () =>
+                    (lightbox.style.display = "none");
+
+                  window.addEventListener("keydown", (e) => {
+                    if (lightbox.style.display !== "flex") return;
+                    if (e.key === "Escape") lightbox.style.display = "none";
+                    if (e.key === "ArrowLeft") show(lbIdx - 1);
+                    if (e.key === "ArrowRight") show(lbIdx + 1);
+                  });
+
+                  document
+                    .querySelectorAll("#myTab3 button.nav-link")
+                    .forEach((btn) => {
+                      btn.addEventListener("click", () => {
+                        const paneSel = btn.getAttribute("data-bs-target");
+                        const attr = attrMap[paneSel];
+                        if (attr) renderProducts(attr, paneSel);
+                      });
+                    });
+
+                  renderProducts("Milk", "#ctx-tab3");
+                });
+              </script>
+
+              <div
+                id="image-lightbox"
+                style="
+                  display: none;
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background-color: rgba(0, 0, 0, 0.9);
+                  justify-content: center;
+                  align-items: center;
+                  z-index: 9999;
+                  flex-direction: column;
+                "
+              >
+                <div
+                  style="
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 100%;
+                    height: 100%;
+                  "
+                >
+                  <button
+                    id="lightbox-prev"
+                    style="
+                      position: absolute;
+                      left: 20px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      font-size: 22px;
+                      color: white;
+                      background: none;
+                      border: none;
+                      cursor: pointer;
+                    "
+                  >
+                    <i
+                      class="fas fa-play"
+                      style="transform: rotate(180deg)"
+                    ></i>
+                  </button>
+
+                  <div style="position: relative; display: inline-block">
+                    <img
+                      id="lightbox-image"
+                      src=""
+                      alt="Product"
+                      style="
+                        width: 336px;
+                        height: 400px;
+                        object-fit: contain;
+                        border-radius: 4px;
+                      "
+                    />
+
+                    <div
+                      id="lightbox-counter"
+                      style="
+                        position: absolute;
+                        bottom: 0px;
+                        right: -2px;
+                        color: #fff;
+                        padding: 4px 8px;
+                        border-radius: 12px;
+                        font-size: 14px;
+                      "
+                    >
+                      1 of 0
+                    </div>
+
+                    <button
+                      id="lightbox-close"
+                      style="
+                        position: absolute;
+                        top: 0;
+                        right: -8px;
+                        font-size: 30px;
+                        color: white;
+                        background: none;
+                        border: none;
+                        border-radius: 50%;
+                        width: 32px;
+                        height: 32px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+                        z-index: 10;
+                      "
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <button
+                    id="lightbox-next"
+                    style="
+                      position: absolute;
+                      right: 20px;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      font-size: 22px;
+                      color: white;
+                      background: none;
+                      border: none;
+                      cursor: pointer;
+                    "
+                  >
+                    <i class="fas fa-play"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-lg-3">
+                <div class="tx-sidebar">
+                  <a href="#!">
+                    <div
+                      class="add-banner add-banner__3 br-5 add-banner__h407 p-30"
+                      data-bg-color="#EFEFEF"
+                    >
+                      <div class="add-banner__content">
+                        <span>Get Save 30% off</span>
+                        <h3 class="fw-500">
+                          Cloud Cam, <br />
+                          Security Camera
+                        </h3>
+                        <div class="upto-offer ul_li mt-15 mb-10">
+                          <span class="upto"
+                            >Up <br />
+                            To</span
+                          >
+                          <span class="offer-no">70 <span>%</span></span>
+                        </div>
+                      </div>
+                      <div class="add-banner__img">
+                        <img src="assets/img/product/img_130.png" alt="" />
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-45">
+          <div class="container mxw_1360">
+            <div class="row">
+              <div class="col-lg-9">
+                <div class="rd-product-wrap">
+                  <div class="tx-product-style-02">
+                    <div class="row mt-none-30">
+                      <div class="col-lg-3 mt-30">
+                        <div
+                          class="add-banner fd-column add-banner__3 p-30 bg_img add-banner__h480"
+                          data-background="assets/img/bg/bg_21.jpg"
+                        >
+                          <div class="add-banner__content">
+                            <span>Get Save 30% off</span>
+                            <h3>Cloud Cam, Security Camera</h3>
+                            <div class="upto-offer ul_li mt-15 mb-10">
+                              <span class="upto"
+                                >Up <br />
+                                To</span
+                              >
+                              <span class="offer-no">70 <span>%</span></span>
+                            </div>
+                            <a class="add-banner__btn" href="#!">Buy Now</a>
+                          </div>
+                          <div class="add-banner-img">
+                            <img src="assets/img/product/img_131.png" alt="" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-9 mt-30">
+                        <div class="offer-product ml-10">
+                          <div
+                            class="product__head ul_li_between mb-10 mt-none-15"
+                          >
+                            <h2 class="section-heading mt-15">
+                              <span><span>Baby Items</span></span> / Gift Item
+                            </h2>
+                            <div
+                              class="countdown countdown__black ul_li mt-15"
+                              data-countdown="2024/08/28"
+                            ></div>
+                            <div class="product__btn mt-15">
+                              <a
+                                class="thm-btn text-capitalize"
+                                href="shop.html"
+                              >
+                                <span class="btn-wrap">
+                                  <span>All Items</span>
+                                  <span>All Items</span>
+                                </span>
+                                <i class="far fa-long-arrow-right"></i>
+                              </a>
+                            </div>
+                          </div>
+
+                          <div class="row g-0"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                  const countdownEl = document.querySelector(
+                    ".offer-product .countdown"
+                  );
+                  const productsRow = document.querySelector(
+                    ".offer-product .row.g-0"
+                  );
+                  const lightbox = document.getElementById("image-lightbox");
+                  const lightboxImg = document.getElementById("lightbox-image");
+                  const counterEl = document.getElementById("lightbox-counter");
+                  const lightboxClose =
+                    document.getElementById("lightbox-close");
+                  const lightboxPrev = document.getElementById("lightbox-prev");
+                  const lightboxNext = document.getElementById("lightbox-next");
+
+                  let flashData = [];
+
+                  try {
+                    const res = await fetch("/flashsalesmaindata");
+                    if (!res.ok) throw new Error("Network error");
+                    flashData = await res.json();
+                  } catch (err) {
+                    console.error("Could not load flash sales:", err);
+                    return;
+                  }
+
+                  if (!Array.isArray(flashData) || !flashData.length) return;
+
+                  const sale = flashData[0];
+                  const products = flashData.filter(
+                    (f) =>
+                      f.flashsale_id === sale.flashsale_id &&
+                      f.status === "Published"
+                  );
+
+                  if (countdownEl) {
+                    countdownEl.classList.add("countdown-styled");
+                    const end = new Date(sale.end_date).getTime();
+                    function updateCountdown() {
+                      const now = Date.now();
+                      let diff = end - now;
+                      if (diff < 0) diff = 0;
+                      const days = Math.floor(diff / 86400000);
+                      const hours = Math.floor((diff % 86400000) / 3600000);
+                      const minutes = Math.floor((diff % 3600000) / 60000);
+                      const seconds = Math.floor((diff % 60000) / 1000);
+
+                      countdownEl.innerHTML = `
+                                <div class="cd-box"><span class="cd-num">${String(
+                                  days
+                                ).padStart(
+                                  2,
+                                  "0"
+                                )}</span><span class="cd-label">DAYS</span></div>
+                                <div class="cd-box"><span class="cd-num">${String(
+                                  hours
+                                ).padStart(
+                                  2,
+                                  "0"
+                                )}</span><span class="cd-label">HOURS</span></div>
+                                <div class="cd-box"><span class="cd-num">${String(
+                                  minutes
+                                ).padStart(
+                                  2,
+                                  "0"
+                                )}</span><span class="cd-label">MINS</span></div>
+                                <div class="cd-box"><span class="cd-num">${String(
+                                  seconds
+                                ).padStart(
+                                  2,
+                                  "0"
+                                )}</span><span class="cd-label">SEC</span></div>
+                              `;
+                      if (diff <= 0) clearInterval(timerId);
+                    }
+                    updateCountdown();
+                    const timerId = setInterval(updateCountdown, 1000);
+                  }
+
+                  if (productsRow) {
+                    productsRow.innerHTML = "";
+                    products.slice(0, 3).forEach((p, idx) => {
+                      const col = document.createElement("div");
+                      col.className = "col-lg-4 col-md-6";
+                      col.innerHTML = `
+                                <div class="product__item style-2 h-100">
+                                  <div class="product__img text-center pos-rel">
+                                    <a href="shop-single.html?id=${
+                                      p.product_id
+                                    }">
+                                      <img src="/uploads/${p.image}" alt="${
+                        p.product_name
+                      }" />
+                                    </a>
+                                    <ul class="product__action style-2 ul_li">
+                                      <li>
+                                        <a href="/uploads/${
+                                          p.image
+                                        }" class="img-popup" data-index="${idx}">
+                                          <i class="far fa-compress-alt"></i>
+                                        </a>
+                                      </li>
+                                      <li>
+                                        <a href="#" class="add-to-cart"
+                                          data-id="${p.product_id}"
+                                          data-name="${p.product_name}"
+                                          data-price="${p.price.replace(
+                                            /[^0-9.]/g,
+                                            ""
+                                          )}"
+                                          data-price_sale="${p.price_sale.replace(
+                                            /[^0-9.]/g,
+                                            ""
+                                          )}"
+                                          data-image="${p.image}"
+                                          data-store="${
+                                            p.brand || "Default Store"
+                                          }"
+                                          data-sku="${p.product_id}-${idx}"
+                                          data-stockstatus="In Stock">
+                                          <i class="far fa-shopping-basket"></i>
+                                        </a>
+                                      </li>
+                                      <li>
+                                        <a href="#" class="add-to-wishlist"
+                                          data-id="${p.product_id}"
+                                          data-name="${p.product_name}"
+                                          data-price="${p.price.replace(
+                                            /[^0-9.]/g,
+                                            ""
+                                          )}"
+                                          data-price_sale="${p.price_sale.replace(
+                                            /[^0-9.]/g,
+                                            ""
+                                          )}"
+                                          data-image="${p.image}"
+                                          data-store="${
+                                            p.brand || "Default Store"
+                                          }"
+                                          data-sku="${p.product_id}-${idx}"
+                                          data-stockstatus="In Stock">
+                                          <i class="far fa-heart"></i>
+                                        </a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div class="product__content">
+                                    <div class="product__review ul_li">
+                                      <ul class="rating-star ul_li mr-10">
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="fas fa-star"></i></li>
+                                        <li><i class="far fa-star"></i></li>
+                                        <li><i class="far fa-star"></i></li>
+                                      </ul>
+                                      <span>(${p.quantity})</span>
+                                    </div>
+                                    <h2 class="product__title">
+                                      <a href="shop-single.html?id=${
+                                        p.product_id
+                                      }">${p.product_name}</a>
+                                    </h2>
+                                    <h4 class="product__price">
+                                      <span class="new">${p.price}</span>
+                                      <span class="old">${p.price_sale}</span>
+                                    </h4>
+                                  </div>
+                                </div>`;
+                      productsRow.appendChild(col);
+                    });
+
+                    const imageLinks = document.querySelectorAll(".img-popup");
+                    const images = products.map((p) => `/uploads/${p.image}`);
+                    let currentIndex = 0;
+
+                    function showLightbox(index) {
+                      currentIndex = (index + images.length) % images.length;
+                      lightboxImg.src = images[currentIndex];
+                      counterEl.textContent = `${currentIndex + 1} of ${
+                        images.length
+                      }`;
+                      lightbox.style.display = "flex";
+                    }
+
+                    imageLinks.forEach((link) => {
+                      link.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        showLightbox(+link.dataset.index);
+                      });
+                    });
+
+                    lightboxClose.onclick = () =>
+                      (lightbox.style.display = "none");
+                    lightboxPrev.onclick = () => showLightbox(currentIndex - 1);
+                    lightboxNext.onclick = () => showLightbox(currentIndex + 1);
+                    window.addEventListener("keydown", (e) => {
+                      if (lightbox.style.display !== "flex") return;
+                      if (e.key === "Escape") lightbox.style.display = "none";
+                      if (e.key === "ArrowLeft") showLightbox(currentIndex - 1);
+                      if (e.key === "ArrowRight")
+                        showLightbox(currentIndex + 1);
+                    });
+                  }
+
+                  document.body.addEventListener("click", async (e) => {
+                    const cartBtn = e.target.closest(".add-to-cart");
+                    const wishBtn = e.target.closest(".add-to-wishlist");
+                    if (!cartBtn && !wishBtn) return;
+                    e.preventDefault();
+
+                    const userId = localStorage.getItem("user_id");
+                    if (!userId) {
+                      alert("Please log in first.");
+                      return;
+                    }
+
+                    if (cartBtn) {
+                      try {
+                        const res = await fetch("/addcart", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            user_id: +userId,
+                            name: cartBtn.dataset.name,
+                            store: cartBtn.dataset.store,
+                            price: cartBtn.dataset.price,
+                            price_sale: cartBtn.dataset.price_sale,
+                            image: cartBtn.dataset.image,
+                            quantity: 1,
+                          }),
+                        });
+                        alert(res.ok ? "Added to cart!" : "Add to cart failed");
+                      } catch {
+                        alert("Cart error");
+                      }
+                    }
+
+                    if (wishBtn) {
+                      try {
+                        const res = await fetch("/wishlistpost", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            user_id: +userId,
+                            product_name: wishBtn.dataset.name,
+                            store: wishBtn.dataset.store,
+                            price: wishBtn.dataset.price,
+                            price_sale: wishBtn.dataset.price_sale,
+                            image: wishBtn.dataset.image,
+                            sku: wishBtn.dataset.sku,
+                            stockstatus: wishBtn.dataset.stockstatus,
+                          }),
+                        });
+                        alert(
+                          res.ok
+                            ? "Added to wishlist!"
+                            : "Add to wishlist failed"
+                        );
+                      } catch {
+                        alert("Wishlist error");
+                      }
+                    }
+                  });
+                });
+              </script>
+
+              <div class="col-lg-3">
+                <div class="tx-sidebar">
+                  <div class="tx-widget widget__product">
+                    <h2 class="section-heading mb-20 fs-18">
+                      <span>Latest Item</span>
+                    </h2>
+                    <div class="tx-widget__product-slide tx-arrow">
+                      <div class="tx-widget__product-single">
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_135.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Apple iPhone 12 Pro, 128GB, Pacific Blue</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_136.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Portable 2TB External Hard Drive</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_137.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Skullcandy Dime True In-Ear Earbuds</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_138.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Freestanding Air Conditioner</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_135.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Galaxy S20 FE 5G Cell Phone, Factory</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tx-widget__product-single">
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_135.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Apple iPhone 12 Pro, 128GB, Pacific Blue</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_136.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Portable 2TB External Hard Drive</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_137.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Skullcandy Dime True In-Ear Earbuds</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_138.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Freestanding Air Conditioner</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                        <div class="tx-widget__product-item tx-product ul_li">
+                          <div class="thumb">
+                            <a href="shop-single.html"
+                              ><img src="assets/img/product/img_135.png" alt=""
+                            /></a>
+                          </div>
+                          <div class="content">
+                            <h3>
+                              <a href="shop-single.html"
+                                >Galaxy S20 FE 5G Cell Phone, Factory</a
+                              >
+                            </h3>
+                            <h4 class="product__price">
+                              <span class="new">$30.52</span
+                              ><span class="old">$28.52</span>
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                  try {
+                    const res = await fetch("/productpagedata");
+                    if (!res.ok) throw new Error("Failed to fetch data");
+
+                    const data = await res.json();
+                    if (!Array.isArray(data)) return;
+
+                    const latestContainer = document.querySelectorAll(
+                      ".tx-widget__product-single"
+                    );
+                    if (!latestContainer.length) return;
+
+                    const latestItems = data
+                      .filter((p) => p.status === "Published")
+                      .slice(0, 5);
+
+                    latestContainer.forEach(
+                      (container) => (container.innerHTML = "")
+                    );
+
+                    const chunkSize = 5;
+                    for (let i = 0; i < latestItems.length; i += chunkSize) {
+                      const group = latestItems.slice(i, i + chunkSize);
+                      const block = document.createElement("div");
+                      block.className = "tx-widget__product-single";
+
+                      group.forEach((p) => {
+                        block.innerHTML += `
+                          <div class="tx-widget__product-item tx-product ul_li mb-3">
+                            <div class="thumb">
+                              <a href="shop-single.html?id=${p.id}">
+                                <img src="/uploads/${p.image}" alt="${p.name}" class="border"/>
+                              </a>
+                            </div>
+                            <div class="content">
+                              <h3>
+                                <a href="shop-single.html?id=${p.id}">${p.name}</a>
+                              </h3>
+                              <h4 class="product__price">
+                                <span class="new">${p.price}</span>
+                                <span class="old">${p.price_sale}</span>
+                              </h4>
+                            </div>
+                          </div>`;
+                      });
+
+                      document
+                        .querySelector(".tx-widget__product-slide")
+                        .appendChild(block);
+                    }
+                  } catch (err) {
+                    console.error("Error loading latest items:", err);
+                  }
+                });
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <div class="product pt-40">
+          <div class="container mxw_1360">
+            <div class="row mt-none-30">
+              <div class="col-lg-3 mt-30">
+                <h2 class="section-heading mb-20"><span>Latest Item</span></h2>
+                <div class="side-product__slide tx-arrow">
+                  <div class="side-product__slide-item">
+                    <a
+                      class="side-product__item ul_li bg_img"
+                      href="#!"
+                      data-background="assets/img/bg/bg_22.jpg"
+                    >
+                      <div class="side-product__content">
+                        <ul class="rating-star ul_li">
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                        </ul>
+                        <h3>Bluest Headphone</h3>
+                        <h3 class="price">
+                          <span class="new">$9.52</span
+                          ><span class="old">$11.90</span>
+                        </h3>
+                      </div>
+                      <div class="side-product__img">
+                        <img src="assets/img/product/img_143.png" alt="" />
+                      </div>
+                      <div class="side-product__offer">
+                        25% <br />
+                        <span>off</span>
+                      </div>
+                    </a>
+                    <a
+                      class="side-product__item ul_li bg_img"
+                      href="#!"
+                      data-background="assets/img/bg/bg_23.jpg"
+                    >
+                      <div class="side-product__content">
+                        <ul class="rating-star ul_li">
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                        </ul>
+                        <h3>Bluest Headphone</h3>
+                        <h3 class="price">
+                          <span class="new">$9.52</span
+                          ><span class="old">$11.90</span>
+                        </h3>
+                      </div>
+                      <div class="side-product__img">
+                        <img src="assets/img/product/img_144.png" alt="" />
+                      </div>
+                      <div class="side-product__offer">
+                        25% <br />
+                        <span>off</span>
+                      </div>
+                    </a>
+                    <a
+                      class="side-product__item ul_li bg_img"
+                      href="#!"
+                      data-background="assets/img/bg/bg_24.jpg"
+                    >
+                      <div class="side-product__content">
+                        <ul class="rating-star ul_li">
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                        </ul>
+                        <h3>Bluest Headphone</h3>
+                        <h3 class="price">
+                          <span class="new">$9.52</span
+                          ><span class="old">$11.90</span>
+                        </h3>
+                      </div>
+                      <div class="side-product__img">
+                        <img src="assets/img/product/img_145.png" alt="" />
+                      </div>
+                      <div class="side-product__offer">
+                        25% <br />
+                        <span>off</span>
+                      </div>
+                    </a>
+                  </div>
+                  <div class="side-product__slide-item">
+                    <a
+                      class="side-product__item ul_li bg_img"
+                      href="#!"
+                      data-background="assets/img/bg/bg_22.jpg"
+                    >
+                      <div class="side-product__content">
+                        <ul class="rating-star ul_li">
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                        </ul>
+                        <h3>Bluest Headphone</h3>
+                        <h3 class="price">
+                          <span class="new">$9.52</span
+                          ><span class="old">$11.90</span>
+                        </h3>
+                      </div>
+                      <div class="side-product__img">
+                        <img src="assets/img/product/img_143.png" alt="" />
+                      </div>
+                      <div class="side-product__offer">
+                        25% <br />
+                        <span>off</span>
+                      </div>
+                    </a>
+                    <a
+                      class="side-product__item ul_li bg_img"
+                      href="#!"
+                      data-background="assets/img/bg/bg_23.jpg"
+                    >
+                      <div class="side-product__content">
+                        <ul class="rating-star ul_li">
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                        </ul>
+                        <h3>Bluest Headphone</h3>
+                        <h3 class="price">
+                          <span class="new">$9.52</span
+                          ><span class="old">$11.90</span>
+                        </h3>
+                      </div>
+                      <div class="side-product__img">
+                        <img src="assets/img/product/img_144.png" alt="" />
+                      </div>
+                      <div class="side-product__offer">
+                        25% <br />
+                        <span>off</span>
+                      </div>
+                    </a>
+                    <a
+                      class="side-product__item ul_li bg_img"
+                      href="#!"
+                      data-background="assets/img/bg/bg_24.jpg"
+                    >
+                      <div class="side-product__content">
+                        <ul class="rating-star ul_li">
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="fas fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                          <li><i class="far fa-star"></i></li>
+                        </ul>
+                        <h3>Bluest Headphone</h3>
+                        <h3 class="price">
+                          <span class="new">$9.52</span
+                          ><span class="old">$11.90</span>
+                        </h3>
+                      </div>
+                      <div class="side-product__img">
+                        <img src="assets/img/product/img_145.png" alt="" />
+                      </div>
+                      <div class="side-product__offer">
+                        25% <br />
+                        <span>off</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-9 mt-30">
+                <div class="product__wrap">
+                  <div class="rd-products__nav ul_li_between mb-20">
+                    <h2 class="section-heading"><span>Some Product</span></h2>
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="home-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#home"
+                          type="button"
+                          role="tab"
+                          aria-controls="home"
+                          aria-selected="true"
+                        >
+                          Recent
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="profile-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#profile"
+                          type="button"
+                          role="tab"
+                          aria-controls="profile"
+                          aria-selected="false"
+                        >
+                          Best Seller
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="messages-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#messages"
+                          type="button"
+                          role="tab"
+                          aria-controls="messages"
+                          aria-selected="false"
+                        >
+                          Top
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link active"
+                          id="settings-tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#settings"
+                          type="button"
+                          role="tab"
+                          aria-controls="settings"
+                          aria-selected="false"
+                        >
+                          New Arrivals
+                        </button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button
+                          class="nav-link"
+                          id="tab-05"
+                          data-bs-toggle="tab"
+                          data-bs-target="#tab5"
+                          type="button"
+                          role="tab"
+                          aria-controls="tab5"
+                          aria-selected="false"
+                        >
+                          top rating
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="tab-content">
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="home"
+                      role="tabpanel"
+                      aria-labelledby="home-tab"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="profile"
+                      role="tabpanel"
+                      aria-labelledby="profile-tab"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="messages"
+                      role="tabpanel"
+                      aria-labelledby="messages-tab"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp show active"
+                      id="settings"
+                      role="tabpanel"
+                      aria-labelledby="settings-tab"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+
+                    <div
+                      class="tab-pane animated fadeInUp"
+                      id="tab5"
+                      role="tabpanel"
+                      aria-labelledby="tab-05"
+                    >
+                      <div class="row g-0"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="add mt-25">
+                  <a href="#!"
+                    ><img src="assets/img/add/img_03.jpg" alt=""
+                  /></a>
+                </div>
+              </div>
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                const lightbox = document.getElementById("image-lightbox");
+                const lightboxImg = document.getElementById("lightbox-image");
+                const counterEl = document.getElementById("lightbox-counter");
+                const tabButtons =
+                  document.querySelectorAll("#myTab .nav-link");
+
+                const tabMap = {
+                  Recent: "#home",
+                  "Best Seller": "#profile",
+                  Top: "#messages",
+                  "New Arrivals": "#settings",
+                  "top rating": "#tab5",
+                };
+
+                let allProducts = [];
+
+                fetch("/productpagedata")
+                  .then((res) => res.json())
+                  .then((data) => {
+                    allProducts = data;
+                    renderProducts("New Arrival", "#settings");
+                    bindLightbox("#settings");
+                  });
+
+                tabButtons.forEach((btn) => {
+                  btn.addEventListener("shown.bs.tab", () => {
+                    const tabText = btn.textContent.trim();
+                    const paneSelector = tabMap[tabText];
+                    if (!paneSelector) return;
+
+                    const keyword = mapTabToKeyword(tabText);
+                    renderProducts(keyword, paneSelector);
+                    bindLightbox(paneSelector);
+                  });
+                });
+
+                function mapTabToKeyword(tabLabel) {
+                  switch (tabLabel) {
+                    case "Recent":
+                      return "new";
+                    case "Best Seller":
+                      return "sale";
+                    case "Top":
+                      return "New";
+                    case "New Arrivals":
+                      return "New Arrival";
+                    case "top rating":
+                      return "Sale";
+                    default:
+                      return "";
+                  }
+                }
+
+                function renderProducts(keyword, paneSelector, tabName) {
+                  const container = document.querySelector(
+                    `${paneSelector} .row`
+                  );
+                  if (!container) return;
+
+                  const filtered = allProducts
+                    .filter((prod) => {
+                      const label = (prod.label || "").toLowerCase();
+                      const cats = (prod.categories || "").toLowerCase();
+                      return (
+                        label.includes(keyword.toLowerCase()) ||
+                        cats.includes(keyword.toLowerCase())
+                      );
+                    })
+                    .slice(0, 4);
+
+                  container.innerHTML = filtered
+                    .map((prod) => {
+                      const pct = Math.min(
+                        100,
+                        Math.max(0, parseInt(prod.minimumorder) || 0)
+                      );
+                      return `
+                      <div class="col-lg-3 col-md-6">
+                        <div class="product__item style-2 h-100">
+                          <div class="product__img text-center pos-rel">
+                            <a href="#">
+                              <img src="/uploads/${prod.image}" alt="${
+                        prod.name
+                      }" />
+                            </a>
+                            <ul class="product__action style-2 ul_li">
+                              <li>
+                                <a href="/uploads/${
+                                  prod.image
+                                }" class="img-popup icon-btn">
+                                  <i class="far fa-compress-alt"></i>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="#" class="add-to-cart icon-btn"
+                                  data-id="${prod.id}"
+                                  data-name="${prod.name}"
+                                  data-store="${prod.store}"
+                                  data-price="${prod.price.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-price_sale="${prod.price_sale.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-image="${prod.image}">
+                                  <i class="far fa-shopping-basket"></i>
+                                </a>
+                              </li>
+                              <li>
+                                <a href="#" class="add-to-wishlist icon-btn"
+                                  data-id="${prod.id}"
+                                  data-name="${prod.name}"
+                                  data-store="${prod.store}"
+                                  data-price="${prod.price.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-price_sale="${prod.price_sale.replace(
+                                    /[^0-9.]/g,
+                                    ""
+                                  )}"
+                                  data-image="${prod.image}"
+                                  data-sku="${prod.sku}"
+                                  data-stockstatus="${prod.stockstatus}">
+                                  <i class="far fa-heart"></i>
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="product__content">
+                            <div class="product__review ul_li">
+                              <ul class="rating-star ul_li mr-10">
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="far fa-star"></i></li>
+                                <li><i class="far fa-star"></i></li>
+                              </ul>
+                              <span>(${Math.floor(Math.random() * 100)})</span>
+                            </div>
+                            <h2 class="product__title">
+                              <a href="shop-single.html?id=${prod.id}">${
+                        prod.name
+                      }</a>
+                            </h2>
+                            <span class="product__available">Available: <span>${
+                              prod.minimumorder
+                            }</span></span>
+                            <div class="product__progress progress mt-2">
+                              <div class="progress-bar" role="progressbar" style="width:${pct}%"
+                                aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <h4 class="product__price">
+                              <span class="new">${prod.price}</span>
+                              <span class="old">${prod.price_sale}</span>
+                            </h4>
+                          </div>
+                          <span class="product__badge"><span>${
+                            prod.label
+                          }</span></span>
+                        </div>
+                      </div>
+                    `;
+                    })
+                    .join("");
+
+                  if (filtered.length === 0) {
+                    container.innerHTML = `<div class="col-12 text-center">No <strong>${tabName}</strong> products available</div>`;
+                  }
+                }
+
+                function bindLightbox(containerId) {
+                  let urls = [];
+                  let idx = 0;
+
+                  const links = Array.from(
+                    document.querySelectorAll(containerId + " a.img-popup")
+                  );
+                  const seen = new Set();
+                  links.forEach((a) => {
+                    const href = a.getAttribute("href");
+                    if (!seen.has(href)) {
+                      seen.add(href);
+                      urls.push(href);
+                      a.onclick = (e) => {
+                        e.preventDefault();
+                        showLightbox(Array.from(urls).indexOf(href));
+                      };
+                    }
+                  });
+
+                  function showLightbox(i) {
+                    idx = (i + urls.length) % urls.length;
+                    lightboxImg.src = urls[idx];
+                    counterEl.textContent = `${idx + 1} of ${urls.length}`;
+                    lightbox.style.display = "flex";
+                  }
+
+                  ["lightbox-prev", "lightbox-next", "lightbox-close"].forEach(
+                    (id) => {
+                      const old = document.getElementById(id);
+                      const clone = old.cloneNode(true);
+                      old.parentNode.replaceChild(clone, old);
+                    }
+                  );
+
+                  document.getElementById("lightbox-prev").onclick = () =>
+                    showLightbox(idx - 1);
+                  document.getElementById("lightbox-next").onclick = () =>
+                    showLightbox(idx + 1);
+                  document.getElementById("lightbox-close").onclick = () =>
+                    (lightbox.style.display = "none");
+
+                  window.onkeydown = (e) => {
+                    if (lightbox.style.display !== "flex") return;
+                    if (e.key === "Escape") lightbox.style.display = "none";
+                    if (e.key === "ArrowLeft") showLightbox(idx - 1);
+                    if (e.key === "ArrowRight") showLightbox(idx + 1);
+                  };
+                }
+              });
+            </script>
+
+            <div class="row mt-20">
+              <div class="col-lg-3 mt-30">
+                <div
+                  class="product-category bg_img"
+                  data-background="assets/img/bg/cat_bg.jpg"
+                >
+                  <h2 class="product-category__title">Choose Category</h2>
+                  <ul class="list-unstyled category-list"></ul>
+                </div>
+              </div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", async () => {
+                  try {
+                    const res = await fetch("/productcatdata");
+                    if (!res.ok) throw new Error("Failed to fetch categories");
+
+                    const categories = await res.json();
+                    if (!Array.isArray(categories))
+                      throw new Error("Invalid data format");
+
+                    const container = document.querySelector(".category-list");
+                    container.innerHTML = "";
+
+                    const visibleCount = 10;
+
+                    categories.forEach((cat, index) => {
+                      const li = document.createElement("li");
+                      li.className = "cat-item-has-children category-item";
+                      if (index >= visibleCount) li.style.display = "none";
+                      li.innerHTML = `<a href="#!">${cat.name}</a>`;
+                      container.appendChild(li);
+                    });
+
+                    if (categories.length > visibleCount) {
+                      const moreLi = document.createElement("li");
+                      moreLi.className = "more-item";
+                      const moreLink = document.createElement("a");
+                      moreLink.href = "#!";
+                      moreLink.textContent = "+ More item";
+                      moreLi.appendChild(moreLink);
+                      container.appendChild(moreLi);
+
+                      let expanded = false;
+
+                      moreLink.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        const items =
+                          document.querySelectorAll(".category-item");
+
+                        if (!expanded) {
+                          items.forEach(
+                            (el) => (el.style.display = "list-item")
+                          );
+                          moreLink.textContent = "– Show fewer";
+                          expanded = true;
+                        } else {
+                          items.forEach((el, index) => {
+                            if (index >= visibleCount)
+                              el.style.display = "none";
+                          });
+                          moreLink.textContent = "+ More item";
+                          expanded = false;
+                        }
+                      });
+                    }
+                  } catch (err) {
+                    console.error("Category load error:", err);
+                  }
+                });
+              </script>
+
+              <div class="col-lg-9 mt-30">
+                <div class="rd-products__nav ul_li_between mb-20">
+                  <h2 class="section-heading">
+                    <span>Frozen Foods <span>(new)</span></span>
+                  </h2>
+                  <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="tx-tab-01"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tx-tab1"
+                        type="button"
+                        role="tab"
+                        aria-controls="tx-tab1"
+                        aria-selected="true"
+                      >
+                        Laptop
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="tx-tab-02"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tx-tab2"
+                        type="button"
+                        role="tab"
+                        aria-controls="tx-tab2"
+                        aria-selected="false"
+                      >
+                        Headphone
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="tx-tab-03"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tx-tab3"
+                        type="button"
+                        role="tab"
+                        aria-controls="tx-tab3"
+                        aria-selected="false"
+                      >
+                        Television
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link active"
+                        id="tx-tab-04"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tx-tab4"
+                        type="button"
+                        role="tab"
+                        aria-controls="tx-tab4"
+                        aria-selected="false"
+                      >
+                        Monitor
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="tx-tab-05"
+                        data-bs-toggle="tab"
+                        data-bs-target="#tx-tab5"
+                        type="button"
+                        role="tab"
+                        aria-controls="tx-tab5"
+                        aria-selected="false"
+                      >
+                        Watch
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="tab-content">
+                  <div
+                    class="tab-pane animated fadeInUp"
+                    id="tx-tab1"
+                    role="tabpanel"
+                    aria-labelledby="tx-tab-01"
+                  >
+                    <div class="row g-0"></div>
+                  </div>
+
+                  <div
+                    class="tab-pane animated fadeInUp"
+                    id="tx-tab2"
+                    role="tabpanel"
+                    aria-labelledby="tx-tab-02"
+                  >
+                    <div class="row g-0"></div>
+                  </div>
+
+                  <div
+                    class="tab-pane animated fadeInUp"
+                    id="tx-tab3"
+                    role="tabpanel"
+                    aria-labelledby="tx-tab-03"
+                  >
+                    <div class="row g-0"></div>
+                  </div>
+
+                  <div
+                    class="tab-pane animated fadeInUp show active"
+                    id="tx-tab4"
+                    role="tabpanel"
+                    aria-labelledby="tx-tab-04"
+                  >
+                    <div class="row g-0"></div>
+                  </div>
+
+                  <div
+                    class="tab-pane animated fadeInUp"
+                    id="tx-tab5"
+                    role="tabpanel"
+                    aria-labelledby="tx-tab-05"
+                  >
+                    <div class="row g-0"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            const lightbox = document.getElementById("image-lightbox");
+            const lightboxImg = document.getElementById("lightbox-image");
+            const counterEl = document.getElementById("lightbox-counter");
+            const tabButtons = document.querySelectorAll("#myTab2 .nav-link");
+
+            const tabMap = {
+              Laptop: "#tx-tab1",
+              Headphone: "#tx-tab2",
+              Television: "#tx-tab3",
+              Monitor: "#tx-tab4",
+              Watch: "#tx-tab5",
+            };
+
+            let productsData = [];
+            let urls = [];
+            let idx = 0;
+
+            async function fetchProducts() {
+              if (productsData.length) return;
+              try {
+                const res = await fetch("/productpagedata");
+                productsData = await res.json();
+              } catch (err) {
+                console.error("Failed to fetch products:", err);
+              }
+            }
+
+            function renderProducts(products, containerId, type) {
+              const container = document.querySelector(containerId + " .row");
+              if (!container) return;
+
+              container.innerHTML = "";
+              if (!products.length) {
+                container.innerHTML = `<div class='col-12'><h6 class='text-center text-danger mb-0'>No "${type}" products available.</h6></div>`;
+                return;
+              }
+
+              products.forEach((p) => {
+                const pct = Math.min(100, Math.max(0, p.minimumorder || 0));
+                container.innerHTML += `
+                  <div class="col-lg-3 col-md-6">
+                    <div class="product__item style-2 h-100">
+                      <div class="product__img text-center pos-rel">
+                        <a href="shop-single.html">
+                          <img src="/uploads/${p.image}" alt="" />
+                        </a>
+                      </div>
+                      <div class="product__content">
+                        <div class="product__review ul_li">
+                          <ul class="rating-star ul_li mr-10">
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="far fa-star"></i></li>
+                            <li><i class="far fa-star"></i></li>
+                          </ul>
+                          <span>(${Math.floor(Math.random() * 100)})</span>
+                        </div>
+
+                        <h2 class="product__title">
+                          <a href="shop-single.html?id=${p.id}">${p.name}</a>
+                        </h2>
+
+                        <span class="product__available">Available: <span>${
+                          p.minimumorder
+                        }</span></span>
+                        <div class="product__progress progress mt-2 color-primary">
+                          <div class="progress-bar" role="progressbar" style="width:${pct}%"
+                               aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <h4 class="product__price">
+                          <span class="new">${p.price}</span>
+                          <span class="old">${p.price_sale}</span>
+                        </h4>
+                      </div>
+                      <div class="product__action-wrap">
+                        <span class="plus-icon"><i class="fal fa-plus"></i></span>
+                        <ul class="product__action2">
+                          <li>
+                            <a href="/uploads/${
+                              p.image
+                            }" class="img-popup icon-btn">
+                              <i class="far fa-compress-alt"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" class="add-to-cart icon-btn"
+                               data-id="${p.id}"
+                               data-name="${p.name}"
+                               data-store="${p.store}"
+                               data-price="${p.price.replace(/[^0-9.]/g, "")}"
+                               data-price_sale="${p.price_sale.replace(
+                                 /[^0-9.]/g,
+                                 ""
+                               )}"
+                               data-image="${p.image}">
+                              <i class="far fa-shopping-basket"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" class="add-to-wishlist icon-btn"
+                               data-id="${p.id}"
+                               data-name="${p.name}"
+                               data-store="${p.store}"
+                               data-price="${p.price.replace(/[^0-9.]/g, "")}"
+                               data-price_sale="${p.price_sale.replace(
+                                 /[^0-9.]/g,
+                                 ""
+                               )}"
+                               data-image="${p.image}"
+                               data-sku="${p.sku}"
+                               data-stockstatus="${p.stockstatus}">
+                              <i class="far fa-heart"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>`;
+              });
+            }
+
+            function bindLightbox(containerId) {
+              urls = [];
+              idx = 0;
+              const links = Array.from(
+                document.querySelectorAll(containerId + " a.img-popup")
+              );
+              const seen = new Set();
+              links.forEach((a) => {
+                const href = a.getAttribute("href");
+                if (!seen.has(href)) {
+                  seen.add(href);
+                  urls.push(href);
+                  a.onclick = (e) => {
+                    e.preventDefault();
+                    showLightbox(Array.from(urls).indexOf(href));
+                  };
+                }
+              });
+
+              function showLightbox(i) {
+                idx = (i + urls.length) % urls.length;
+                lightboxImg.src = urls[idx];
+                counterEl.textContent = `${idx + 1} of ${urls.length}`;
+                lightbox.style.display = "flex";
+              }
+
+              ["lightbox-prev", "lightbox-next", "lightbox-close"].forEach(
+                (id) => {
+                  const old = document.getElementById(id);
+                  const clone = old.cloneNode(true);
+                  old.parentNode.replaceChild(clone, old);
+                }
+              );
+
+              document.getElementById("lightbox-prev").onclick = () =>
+                showLightbox(idx - 1);
+              document.getElementById("lightbox-next").onclick = () =>
+                showLightbox(idx + 1);
+              document.getElementById("lightbox-close").onclick = () =>
+                (lightbox.style.display = "none");
+              window.onkeydown = (e) => {
+                if (lightbox.style.display !== "flex") return;
+                if (e.key === "Escape") lightbox.style.display = "none";
+                if (e.key === "ArrowLeft") showLightbox(idx - 1);
+                if (e.key === "ArrowRight") showLightbox(idx + 1);
+              };
+            }
+
+            tabButtons.forEach((btn) => {
+              btn.addEventListener("click", async () => {
+                const type = btn.innerText.trim();
+                const tabId = tabMap[type];
+                if (!tabId) return;
+
+                await fetchProducts();
+                const filtered = productsData
+                  .filter((item) =>
+                    item.attribute?.toLowerCase().includes(type.toLowerCase())
+                  )
+                  .slice(0, 8);
+
+                renderProducts(filtered, tabId, type);
+                bindLightbox(tabId);
+              });
+            });
+
+            document.body.addEventListener("click", async (e) => {
+              const btn = e.target.closest(".add-to-cart, .add-to-wishlist");
+              if (!btn) return;
+              e.preventDefault();
+
+              const userId = localStorage.getItem("user_id");
+              if (!userId) return showBanner("Please log in first", "error");
+
+              const payload = {
+                user_id: +userId,
+                id: +btn.dataset.id,
+                name: btn.dataset.name,
+                store: btn.dataset.store,
+                price: btn.dataset.price,
+                price_sale: btn.dataset.price_sale,
+                image: btn.dataset.image,
+              };
+
+              let url;
+              if (btn.classList.contains("add-to-cart")) {
+                payload.quantity = 1;
+                url = "/addcart";
+              } else {
+                payload.sku = btn.dataset.sku;
+                payload.stockstatus = btn.dataset.stockstatus;
+                url = "/wishlistpost";
+              }
+
+              try {
+                const res = await fetch(url, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(payload),
+                });
+
+                if (res.ok) {
+                  showBanner(
+                    `Product added to ${
+                      btn.classList.contains("add-to-cart")
+                        ? "cart"
+                        : "wishlist"
+                    }!`
+                  );
+                } else {
+                  if (btn.classList.contains("add-to-wishlist")) {
+                    showBanner("Product added to wishlist!");
+                  } else {
+                    showBanner("Action failed.", "error");
+                  }
+                }
+
+                if (typeof updateCounts === "function") updateCounts();
+                if (
+                  btn.classList.contains("add-to-cart") &&
+                  typeof loadSidebarCart === "function"
+                ) {
+                  loadSidebarCart();
+                }
+              } catch (err) {
+                console.error("Action error:", err);
+                if (btn.classList.contains("add-to-wishlist")) {
+                  showBanner("Product added to wishlist!");
+                } else {
+                  showBanner("Action failed.", "error");
+                }
+              }
+            });
+
+            const activeBtn = document.querySelector(
+              "#myTab2 .nav-link.active"
+            );
+            if (activeBtn) activeBtn.click();
+
+            function showBanner(msg, type = "success") {
+              document.querySelectorAll(".banner").forEach((el) => el.remove());
+              const b = document.createElement("div");
+              b.className = `banner ${type}`;
+              b.textContent = msg;
+              Object.assign(b.style, {
+                position: "fixed",
+                top: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                padding: "10px 20px",
+                background: type === "success" ? "#4caf50" : "#f44336",
+                color: "#fff",
+                borderRadius: "4px",
+                zIndex: 9999,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+              });
+              document.body.appendChild(b);
+              setTimeout(() => b.remove(), 3000);
+            }
+          });
+        </script>
+
+        <div
+          id="image-lightbox"
+          style="
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+          "
+        >
+          <div
+            style="
+              position: relative;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+            "
+          >
+            <button
+              id="lightbox-prev"
+              style="
+                position: absolute;
+                left: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 22px;
+                color: white;
+                background: none;
+                border: none;
+                cursor: pointer;
+              "
+            >
+              <i class="fas fa-play" style="transform: rotate(180deg)"></i>
+            </button>
+
+            <div style="position: relative; display: inline-block">
+              <img
+                id="lightbox-image"
+                src=""
+                alt="Product"
+                style="
+                  width: 336px;
+                  height: 400px;
+                  object-fit: contain;
+                  border-radius: 4px;
+                "
+              />
+
+              <div
+                id="lightbox-counter"
+                style="
+                  position: absolute;
+                  bottom: 0px;
+                  right: -2px;
+                  color: #fff;
+                  padding: 4px 8px;
+                  border-radius: 12px;
+                  font-size: 14px;
+                "
+              >
+                1 of 0
+              </div>
+
+              <button
+                id="lightbox-close"
+                style="
+                  position: absolute;
+                  top: 0;
+                  right: -8px;
+                  font-size: 30px;
+                  color: white;
+                  background: none;
+                  border: none;
+                  border-radius: 50%;
+                  width: 32px;
+                  height: 32px;
+                  cursor: pointer;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  padding: 0;
+                  z-index: 10;
+                "
+              >
+                ×
+              </button>
+            </div>
+
+            <button
+              id="lightbox-next"
+              style="
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 22px;
+                color: white;
+                background: none;
+                border: none;
+                cursor: pointer;
+              "
+            >
+              <i class="fas fa-play"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="rd-wrapper pt-40">
+          <div class="container mxw_1360">
+            <div class="row mt-none-30">
+              <div class="col-lg-9 mt-30">
+                <div class="rd-product-wrap">
+                  <div class="vdx-banner">
+                    <div class="row mt-none-30">
+                      <div class="col-lg-5 col-md-6 mt-30">
+                        <a href="#!">
+                          <div
+                            class="vdx-banner__single vdx-banner__single-one ul_li_between"
+                            data-background="assets/img/bg/bg_25.jpg"
+                          >
+                            <div class="vdx-banner__content">
+                              <span>Get Save 30% off</span>
+                              <h3>
+                                dRIED <span>fRU</span>,<br />
+                                nATUREL fRUIT
+                              </h3>
+                            </div>
+                            <div class="vdx-banner__img">
+                              <img
+                                src="assets/img/product/img_154.png"
+                                alt=""
+                              />
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                      <div class="col-lg-7 col-md-6 mt-30">
+                        <a href="#!">
+                          <div
+                            class="vdx-banner__single vdx-banner__single-two ul_li_between"
+                            data-background="assets/img/bg/bg_26.jpg"
+                          >
+                            <div class="vdx-banner__content">
+                              <h3>
+                                USDA Choice Angus Beef <br />
+                                Stew Meat
+                              </h3>
+                              <h4 class="product__price">
+                                <span class="new">$30.52</span
+                                ><span class="old">$28.52</span>
+                              </h4>
+                            </div>
+                            <div class="vdx-banner__img">
+                              <img
+                                src="assets/img/product/img_155.png"
+                                alt=""
+                              />
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row pt-50 mt-none-30">
+                    <div class="col-lg-3 mt-30">
+                      <div class="product__slider-wrap">
+                        <h2 class="section-heading mb-20">
+                          <span>Latest Item</span>
+                        </h2>
+                        <div class="product__slider tx-arrow">
+                          <div class="product__slider-item">
+                            <div class="product__slider-img">
+                              <a href="shop-single.html"
+                                ><img
+                                  src="assets/img/product/img_156.png"
+                                  alt=""
+                              /></a>
+                              <div class="offer">
+                                25% <br />
+                                <span>off</span>
+                              </div>
+                            </div>
+                            <div class="product__slider-content text-center">
+                              <ul class="rating-star ul_li_center mr-10">
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="far fa-star"></i></li>
+                              </ul>
+                              <h3>
+                                <a href="shop-single.html">Washing Machine</a>
+                              </h3>
+                              <h4 class="product__price">
+                                <span class="new">$30.52</span
+                                ><span class="old">$28.52</span>
+                              </h4>
+                              <div
+                                class="product__progress color-primary progress mt-15"
+                              >
+                                <div
+                                  class="progress-bar"
+                                  role="progressbar"
+                                  style="width: 50%"
+                                  aria-valuenow="50"
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"
+                                ></div>
+                              </div>
+                              <div class="ul_li_between">
+                                <span class="fs-13"
+                                  >Available:
+                                  <span class="color-black">334</span></span
+                                >
+                                <span class="fs-13"
+                                  >Stock:
+                                  <span class="color-black">334</span></span
+                                >
+                              </div>
+                            </div>
+                          </div>
+                          <div class="product__slider-item">
+                            <div class="product__slider-img">
+                              <a href="shop-single.html"
+                                ><img
+                                  src="assets/img/product/img_156.png"
+                                  alt=""
+                              /></a>
+                              <div class="offer">
+                                25% <br />
+                                <span>off</span>
+                              </div>
+                            </div>
+                            <div class="product__slider-content text-center">
+                              <ul class="rating-star ul_li_center mr-10">
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="far fa-star"></i></li>
+                              </ul>
+                              <h3>
+                                <a href="shop-single.html">Washing Machine</a>
+                              </h3>
+                              <h4 class="product__price">
+                                <span class="new">$30.52</span
+                                ><span class="old">$28.52</span>
+                              </h4>
+                              <div
+                                class="product__progress color-primary progress mt-15"
+                              >
+                                <div
+                                  class="progress-bar"
+                                  role="progressbar"
+                                  style="width: 50%"
+                                  aria-valuenow="50"
+                                  aria-valuemin="0"
+                                  aria-valuemax="100"
+                                ></div>
+                              </div>
+                              <div class="ul_li_between">
+                                <span class="fs-13"
+                                  >Available:
+                                  <span class="color-black">334</span></span
+                                >
+                                <span class="fs-13"
+                                  >Stock:
+                                  <span class="color-black">334</span></span
+                                >
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <script>
+                      document.addEventListener(
+                        "DOMContentLoaded",
+                        async () => {
+                          let products = [];
+                          try {
+                            const res = await fetch("/productpagedata");
+                            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                            products = await res.json();
+                          } catch (err) {
+                            console.error("Failed to load products:", err);
+                            return;
+                          }
+
+                          const newItems = products
+                            .filter(
+                              (p) => p.label && p.label.toLowerCase() === "new"
+                            )
+                            .slice(0, 1);
+
+                          newItems.sort(
+                            (a, b) => new Date(b.date) - new Date(a.date)
+                          );
+
+                          const sliderEl =
+                            document.querySelector(".product__slider");
+                          if (!sliderEl) return;
+
+                          const slidesHtml = newItems
+                            .map((p) => {
+                              const rawPrice =
+                                parseFloat(p.price.replace(/[^0-9.]/g, "")) ||
+                                0;
+                              const rawSale =
+                                parseFloat(
+                                  p.price_sale.replace(/[^0-9.]/g, "")
+                                ) || rawPrice;
+                              const discountPct = rawPrice
+                                ? Math.round(
+                                    ((rawPrice - rawSale) / rawPrice) * 100
+                                  )
+                                : 0;
+                              const available = p.minimumorder || 0;
+                              const stock = p.minimumorder || 0;
+                              const progressPct = Math.min(
+                                100,
+                                Math.max(0, available)
+                              );
+
+                              return `
+                            <div class="product__slider-item">
+                              <div class="product__slider-img">
+                                <a href="shop-single.html?id=${p.id}">
+                                  <img src="/uploads/${p.image}" alt="${p.name}" />
+                                </a>
+                                <div class="offer">
+                                  ${discountPct}%<br /><span>off</span>
+                                </div>
+                              </div>
+                              <div class="product__slider-content text-center">
+                                <ul class="rating-star ul_li_center mr-10">
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="fas fa-star"></i></li>
+                                  <li><i class="far fa-star"></i></li>
+                                </ul>
+                                <h3><a href="shop-single.html?id=${p.id}">${p.name}</a></h3>
+                                <h4 class="product__price">
+                                  <span class="new">${p.price_sale}</span>
+                                  <span class="old">${p.price}</span>
+                                </h4>
+                                <div class="product__progress color-primary progress mt-15">
+                                  <div class="progress-bar"
+                                       role="progressbar"
+                                       style="width: ${progressPct}%"
+                                       aria-valuenow="${progressPct}"
+                                       aria-valuemin="0"
+                                       aria-valuemax="100"></div>
+                                </div>
+                                <div class="ul_li_between">
+                                  <span class="fs-13">Available: <span class="color-black">${available}</span></span>
+                                  <span class="fs-13">Stock: <span class="color-black">${stock}</span></span>
+                                </div>
+                              </div>
+                            </div>`;
+                            })
+                            .join("");
+
+                          sliderEl.innerHTML = slidesHtml;
+                        }
+                      );
+                    </script>
+
+                    <div class="col-lg-9 mt-30">
+                      <div class="feature-product">
+                        <div
+                          class="product__nav-wrap style-2 ul_li_between mb-15"
+                        >
+                          <h2 class="section-heading">
+                            <span>Monthly Featured Item</span>
+                          </h2>
+                          <ul
+                            class="product__nav product__nav-md style-2 nav nav-tabs"
+                            id="myTab4"
+                            role="tablist"
+                          >
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link active"
+                                id="ftx-tab-01"
+                                data-bs-toggle="tab"
+                                data-bs-target="#ftx-tab1"
+                                type="button"
+                                role="tab"
+                                aria-controls="ftx-tab1"
+                                aria-selected="true"
+                              >
+                                Laptop
+                              </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link"
+                                id="ftx-tab-02"
+                                data-bs-toggle="tab"
+                                data-bs-target="#ftx-tab2"
+                                type="button"
+                                role="tab"
+                                aria-controls="ftx-tab2"
+                                aria-selected="false"
+                              >
+                                Watch
+                              </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                              <button
+                                class="nav-link"
+                                id="ftx-tab-03"
+                                data-bs-toggle="tab"
+                                data-bs-target="#ftx-tab3"
+                                type="button"
+                                role="tab"
+                                aria-controls="ftx-tab3"
+                                aria-selected="false"
+                              >
+                                Television
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="tab-content">
+                        <div
+                          class="tab-pane animated fadeInUp show active"
+                          id="ftx-tab1"
+                          role="tabpanel"
+                          aria-labelledby="ftx-tab-01"
+                        >
+                          <div class="row mt-none-15"></div>
+                        </div>
+
+                        <div
+                          class="tab-pane animated fadeInUp"
+                          id="ftx-tab2"
+                          role="tabpanel"
+                          aria-labelledby="ftx-tab-02"
+                        >
+                          <div class="row mt-none-15"></div>
+                        </div>
+
+                        <div
+                          class="tab-pane animated fadeInUp"
+                          id="ftx-tab3"
+                          role="tabpanel"
+                          aria-labelledby="ftx-tab-03"
+                        >
+                          <div class="row mt-none-15"></div>
+                        </div>
+                      </div>
+
+                      <script>
+                        document.addEventListener(
+                          "DOMContentLoaded",
+                          async () => {
+                            const tabMap = {
+                              Laptop: "#ftx-tab1",
+                              Watch: "#ftx-tab2",
+                              Television: "#ftx-tab3",
+                            };
+
+                            let allProducts = [];
+
+                            try {
+                              const res = await fetch("/productpagedata");
+                              allProducts = await res.json();
+                            } catch (error) {
+                              console.error(
+                                "Failed to load product data:",
+                                error
+                              );
+                              return;
+                            }
+
+                            function renderProducts(tabId, keyword) {
+                              const container = document.querySelector(
+                                `${tabId} .row`
+                              );
+                              if (!container) return;
+
+                              const filtered = allProducts.filter((p) =>
+                                p.attribute
+                                  ?.toLowerCase()
+                                  .includes(keyword.toLowerCase())
+                              );
+
+                              container.innerHTML = "";
+
+                              if (filtered.length === 0) {
+                                container.innerHTML = `
+                                  <div class="col-12">
+                                    <div class="text-center">
+                                      <h6 class="mt-4 text-danger fw-bold">No "${keyword}" products available.</h6>
+                                    </div>
+                                  </div>`;
+                                return;
+                              }
+
+                              filtered.sort(
+                                (a, b) => new Date(b.date) - new Date(a.date)
+                              );
+
+                              const products = filtered.slice(0, 5);
+                              const left = products.slice(0, 2);
+                              const center = products[2];
+                              const right = products.slice(3, 5);
+
+                              let html = `<div class="col-lg-4 col-md-6">
+                                ${left.map(renderSingleProduct).join("")}
+                              </div>`;
+
+                              if (center) {
+                                const centerPct = Math.min(
+                                  100,
+                                  Math.max(
+                                    0,
+                                    parseInt(center.minimumorder) || 0
+                                  )
+                                );
+                                html += `
+                                <div class="col-lg-4 col-md-6">
+                                  <div class="feature-product__single2 mt-15 tx-product">
+                                    <div class="image text-center pos-rel">
+                                      <a href="shop-single.html?product_id=${
+                                        center.id
+                                      }">
+                                        <img src="/uploads/${
+                                          center.image
+                                        }" alt="${center.name}" />
+                                      </a>
+                                      <ul class="product__action style-2 br-5 ul_li">
+                                        <li><a href="/uploads/${
+                                          center.image
+                                        }" class="img-popup"><i class="far fa-compress-alt"></i></a></li>
+                                        <li><a href="#" class="add-to-cart" data-id="${
+                                          center.id
+                                        }" data-name="${center.name}"
+                                              data-price="${center.price.replace(
+                                                /[^0-9.]/g,
+                                                ""
+                                              )}"
+                                              data-price_sale="${center.price_sale.replace(
+                                                /[^0-9.]/g,
+                                                ""
+                                              )}"
+                                              data-image="${
+                                                center.image
+                                              }" data-store="${
+                                  center.brand || "Default Store"
+                                }"
+                                              data-sku="${
+                                                center.id
+                                              }-center" data-stockstatus="In Stock">
+                                              <i class="far fa-shopping-basket"></i></a></li>
+                                        <li><a href="#" class="add-to-wishlist" data-id="${
+                                          center.id
+                                        }" data-name="${center.name}"
+                                              data-price="${center.price.replace(
+                                                /[^0-9.]/g,
+                                                ""
+                                              )}"
+                                              data-price_sale="${center.price_sale.replace(
+                                                /[^0-9.]/g,
+                                                ""
+                                              )}"
+                                              data-image="${
+                                                center.image
+                                              }" data-store="${
+                                  center.brand || "Default Store"
+                                }"
+                                              data-sku="${
+                                                center.id
+                                              }-center" data-stockstatus="In Stock">
+                                              <i class="far fa-heart"></i></a></li>
+                                      </ul>
+                                    </div>
+                                    <div class="product__content text-center">
+                                      <div class="product__review ul_li_center">
+                                        <ul class="rating-star ul_li mr-10">
+                                          ${[...Array(5)]
+                                            .map(
+                                              (_, i) =>
+                                                `<li><i class="${
+                                                  i < 3 ? "fas" : "far"
+                                                } fa-star"></i></li>`
+                                            )
+                                            .join("")}
+                                        </ul>
+                                      </div>
+                                      <h2 class="title">
+                                        <a href="shop-single.html?product_id=${
+                                          center.id
+                                        }">${center.name}</a>
+                                      </h2>
+                                      <h4 class="product__price mb-10">
+                                        <span class="new">${center.price}</span>
+                                        <span class="old">${
+                                          center.price_sale
+                                        }</span>
+                                      </h4>
+                                      <p class="fs-13">${center.description.slice(
+                                        0,
+                                        80
+                                      )}...</p>
+                                      <span class="product__available">Available: <span>${
+                                        center.minimumorder
+                                      }</span></span>
+                                      <div class="product__progress progress mt-2 color-primary">
+                                        <div class="progress-bar" role="progressbar" style="width:${centerPct}%"
+                                            aria-valuenow="${centerPct}" aria-valuemin="0" aria-valuemax="100"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>`;
+                              }
+
+                              html += `<div class="col-lg-4 col-md-6">
+                                ${right.map(renderSingleProduct).join("")}
+                              </div>`;
+
+                              container.innerHTML = html;
+                              bindLightbox(`${tabId} .row`);
+                            }
+
+                            function renderSingleProduct(product) {
+                              const pct = Math.min(
+                                100,
+                                Math.max(0, parseInt(product.minimumorder) || 0)
+                              );
+                              return `
+                                <div class="feature-product__single mt-15">
+                                  <div class="feature-product__product ul_li">
+                                    <div class="image">
+                                      <a href="shop-single.html?product_id=${
+                                        product.id
+                                      }">
+                                        <img src="/uploads/${
+                                          product.image
+                                        }" alt="${product.name}" />
+                                      </a>
+                                    </div>
+                                    <div class="content">
+                                      <ul class="rating-star ul_li">
+                                        ${[...Array(5)]
+                                          .map(
+                                            (_, i) =>
+                                              `<li><i class="${
+                                                i < 4 ? "fas" : "far"
+                                              } fa-star"></i></li>`
+                                          )
+                                          .join("")}
+                                      </ul>
+                                      <h3 class="title">
+                                        <a href="shop-single.html?product_id=${
+                                          product.id
+                                        }">${product.name}</a>
+                                      </h3>
+                                      <h4 class="product__price">
+                                        <span class="new">${
+                                          product.price
+                                        }</span>
+                                        <span class="old">${
+                                          product.price_sale
+                                        }</span>
+                                      </h4>
+                                      <span class="product__available">Available: <span>${
+                                        product.minimumorder
+                                      }</span></span>
+                                      <div class="product__progress progress mt-2 color-primary">
+                                        <div class="progress-bar" role="progressbar" style="width:${pct}%"
+                                            aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>`;
+                            }
+
+                            function bindLightbox(containerSelector) {
+                              const links = Array.from(
+                                document.querySelectorAll(
+                                  containerSelector + " a.img-popup"
+                                )
+                              );
+                              const images = links.map((link) => link.href);
+                              let currentIndex = 0;
+
+                              const lightbox =
+                                document.getElementById("image-lightbox");
+                              const lightboxImg =
+                                document.getElementById("lightbox-image");
+                              const counterEl =
+                                document.getElementById("lightbox-counter");
+                              const lightboxClose =
+                                document.getElementById("lightbox-close");
+                              const lightboxPrev =
+                                document.getElementById("lightbox-prev");
+                              const lightboxNext =
+                                document.getElementById("lightbox-next");
+
+                              links.forEach((link, idx) => {
+                                link.addEventListener("click", (e) => {
+                                  e.preventDefault();
+                                  currentIndex = idx;
+                                  showLightbox();
+                                });
+                              });
+
+                              function showLightbox() {
+                                lightboxImg.src = images[currentIndex];
+                                counterEl.textContent = `${
+                                  currentIndex + 1
+                                } of ${images.length}`;
+                                lightbox.style.display = "flex";
+                              }
+
+                              function closeLightbox() {
+                                lightbox.style.display = "none";
+                              }
+
+                              lightboxPrev.onclick = () => {
+                                currentIndex =
+                                  (currentIndex - 1 + images.length) %
+                                  images.length;
+                                showLightbox();
+                              };
+                              lightboxNext.onclick = () => {
+                                currentIndex =
+                                  (currentIndex + 1) % images.length;
+                                showLightbox();
+                              };
+                              lightboxClose.onclick = closeLightbox;
+                              window.addEventListener("keydown", (e) => {
+                                if (lightbox.style.display !== "flex") return;
+                                if (e.key === "Escape") closeLightbox();
+                                if (e.key === "ArrowLeft") lightboxPrev.click();
+                                if (e.key === "ArrowRight")
+                                  lightboxNext.click();
+                              });
+                            }
+
+                            document
+                              .querySelectorAll(
+                                '#myTab4 button[data-bs-toggle="tab"]'
+                              )
+                              .forEach((btn) => {
+                                btn.addEventListener("shown.bs.tab", (e) => {
+                                  const label = e.target.textContent.trim();
+                                  const tabId = tabMap[label];
+                                  if (tabId) renderProducts(tabId, label);
+                                });
+                              });
+
+                            renderProducts("#ftx-tab1", "Laptop");
+                          }
+                        );
+                      </script>
+
+                      <div class="brand__slide mt-30">
+                        <div class="brand__item">
+                          <a href="#!"
+                            ><img src="assets/img/brand/b_01.png" alt=""
+                          /></a>
+                        </div>
+                        <div class="brand__item">
+                          <a href="#!"
+                            ><img src="assets/img/brand/b_02.png" alt=""
+                          /></a>
+                        </div>
+                        <div class="brand__item">
+                          <a href="#!"
+                            ><img src="assets/img/brand/b_03.png" alt=""
+                          /></a>
+                        </div>
+                        <div class="brand__item">
+                          <a href="#!"
+                            ><img src="assets/img/brand/b_04.png" alt=""
+                          /></a>
+                        </div>
+                        <div class="brand__item">
+                          <a href="#!"
+                            ><img src="assets/img/brand/b_05.png" alt=""
+                          /></a>
+                        </div>
+                        <div class="brand__item">
+                          <a href="#!"
+                            ><img src="assets/img/brand/b_02.png" alt=""
+                          /></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tx-news mt-30">
+                    <h2 class="section-heading mb-20">
+                      <span>Recent news</span>
+                    </h2>
+
+                    <div class="news__slide mt-20 tx-arrow">
+                      <div class="news__item">
+                        <div class="news__thumb">
+                          <a href="#!"><img src="#" alt="" /></a>
+                        </div>
+                        <div class="news__content">
+                          <div class="news__meta ul_li">
+                            <div class="news__meta-author ul_li">
+                              <div class="avatar">
+                                <img src="assets/img/news/avatar.jpg" alt="" />
+                              </div>
+                              <span></span>
+                            </div>
+                            <span class="news__meta-date"
+                              ><i class="far fa-calendar-alt"></i
+                            ></span>
+                          </div>
+                          <h2 class="news__title border-effect mb-10">
+                            <a href="news-single.html"></a>
+                          </h2>
+                          <p></p>
+                          <a class="news__btn" href="news-single.html"
+                            >Read more</a
+                          >
+                        </div>
+                        <span class="news__cat color-2"></span>
+                      </div>
+
+                      <div class="news__item">
+                        <div class="news__thumb">
+                          <a href="#!"
+                            ><img src="assets/img/news/img_02.jpg" alt=""
+                          /></a>
+                        </div>
+                        <div class="news__content">
+                          <div class="news__meta ul_li">
+                            <div class="news__meta-author ul_li">
+                              <div class="avatar">
+                                <img src="assets/img/news/avatar.jpg" alt="" />
+                              </div>
+                              <span>nawab</span>
+                            </div>
+                            <span class="news__meta-date"
+                              ><i class="far fa-calendar-alt"></i>Sep 8,
+                              2021</span
+                            >
+                          </div>
+                          <h2 class="news__title border-effect mb-10">
+                            <a href="news-single.html"
+                              >Providing Filtered Water For The</a
+                            >
+                          </h2>
+                          <p></p>
+                          <a class="news__btn" href="news-single.html"
+                            >Read more</a
+                          >
+                        </div>
+                        <span class="news__cat color-3">#Tech</span>
+                      </div>
+
+                      <div class="news__item">
+                        <div class="news__thumb">
+                          <a href="#!"
+                            ><img src="assets/img/news/img_03.jpg" alt=""
+                          /></a>
+                        </div>
+                        <div class="news__content">
+                          <div class="news__meta ul_li">
+                            <div class="news__meta-author ul_li">
+                              <div class="avatar">
+                                <img src="assets/img/news/avatar.jpg" alt="" />
+                              </div>
+                              <span></span>
+                            </div>
+                          </div>
+                          <h2 class="news__title border-effect mb-10">
+                            <a href="news-single.html"></a>
+                          </h2>
+                          <p></p>
+                          <a class="news__btn" href="news-single.html"
+                            >Read more</a
+                          >
+                        </div>
+                        <span class="news__cat color-4">#Tech</span>
+                      </div>
+
+                      <div class="news__item">
+                        <div class="news__thumb">
+                          <a href="#!"
+                            ><img src="assets/img/news/img_01.jpg" alt=""
+                          /></a>
+                        </div>
+
+                        <div class="news__content">
+                          <div class="news__meta ul_li">
+                            <div class="news__meta-author ul_li">
+                              <div class="avatar">
+                                <img src="assets/img/news/avatar.jpg" alt="" />
+                              </div>
+                              <span></span>
+                            </div>
+                            <span class="news__meta-date"
+                              ><i class="far fa-calendar-alt"></i
+                            ></span>
+                          </div>
+                          <h2 class="news__title border-effect mb-10">
+                            <a href="news-single.html"></a>
+                          </h2>
+                          <p></p>
+                          <a class="news__btn" href="news-single.html"
+                            >Read more</a
+                          >
+                        </div>
+                        <span class="news__cat"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-3 mt-30">
+                <div class="tx-sidebar">
+                  <div
+                    class="add-banner add-banner__3 br-5 add-banner__h460"
+                    data-background="assets/img/bg/bg_29.jpg"
+                  >
+                    <div class="add-banner__content text-center">
+                      <span>Get Save 30% off</span>
+                      <h3 class="text-capitalize fw-500">
+                        Cloud Cam, <br />Security Camera
+                      </h3>
+                      <a class="thm-btn mt-20" href="shop.html">
+                        <span class="btn-wrap">
+                          <span>Shop Now</span>
+                          <span>Shop Now</span>
+                        </span>
+                        <i class="far fa-long-arrow-right"></i>
+                      </a>
+                    </div>
+                    <div class="add-banner__img mb-20">
+                      <img src="assets/img/product/img_164.png" alt="" />
+                    </div>
+                  </div>
+
+                  <div class="tx-widget mt-30">
+                    <h2 class="section-heading mb-20">
+                      <span>Feedback</span>
+                    </h2>
+                    <div class="feedback__slider">
+                      <div class="feedback__carousel">
+                        <div class="feedback__content">
+                          <div class="feedback__head mb-20">
+                            <span>Customer</span>
+                            <h4>Alextina Ditax</h4>
+                          </div>
+                          <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Quas qui dicta quos officiis, quia eum
+                            nesciunt temporibus, beatae quasi accusamus placeat!
+                            Eum
+                          </p>
+                        </div>
+
+                        <div class="feedback__content">
+                          <div class="feedback__head mb-20">
+                            <span>Customer</span>
+                            <h4>Rahim Shaheb</h4>
+                          </div>
+                          <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Quas qui dicta quos officiis, quia eum
+                            nesciunt temporibus, beatae quasi accusamus placeat!
+                            Eum
+                          </p>
+                        </div>
+
+                        <div class="feedback__content">
+                          <div class="feedback__head mb-20">
+                            <span>Customer</span>
+                            <h4>Resalina Dilax</h4>
+                          </div>
+                          <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Quas qui dicta quos officiis, quia eum
+                            nesciunt temporibus, beatae quasi accusamus placeat!
+                            Eum
+                          </p>
+                        </div>
+
+                        <div class="feedback__content">
+                          <div class="feedback__head mb-20">
+                            <span>Customer</span>
+                            <h4>Alextina Ditax</h4>
+                          </div>
+                          <p>
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit. Quas qui dicta quos officiis, quia eum
+                            nesciunt temporibus, beatae quasi accusamus placeat!
+                            Eum
+                          </p>
+                        </div>
+                      </div>
+
+                      <div class="feedback__nav">
+                        <div class="feedback__img">
+                          <img src="assets/img/avatar/img_01.jpg" alt="" />
+                        </div>
+                        <div class="feedback__img">
+                          <img src="assets/img/avatar/img_03.jpg" alt="" />
+                        </div>
+                        <div class="feedback__img">
+                          <img src="assets/img/avatar/img_04.jpg" alt="" />
+                        </div>
+                        <div class="feedback__img">
+                          <img src="assets/img/avatar/img_01.jpg" alt="" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="tx-widget mt-30">
+                    <h2 class="section-heading mb-20">
+                      <span>Tags</span>
+                    </h2>
+                    <div class="tagcloud"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", async () => {
+            try {
+              const res = await fetch("/blogpostdata");
+              if (!res.ok) throw new Error("Failed to fetch blog data");
+
+              const blogs = await res.json();
+              if (!Array.isArray(blogs)) throw new Error("Invalid blog format");
+
+              const filtered = blogs
+                .filter(
+                  (blog) =>
+                    (blog.status === "Published" || blog.status === "Draft") &&
+                    blog.feature === "Yes"
+                )
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+              const newsItems = document.querySelectorAll(
+                ".news__slide .news__item"
+              );
+
+              newsItems.forEach((item, idx) => {
+                const blog = filtered[idx];
+                if (!blog) {
+                  item.style.display = "none";
+                  return;
+                }
+
+                const img = item.querySelector(".news__thumb img");
+                if (img) {
+                  img.src = `/uploads/${blog.image}`;
+                  img.alt = blog.name;
+                }
+
+                const link = item.querySelector(".news__thumb a");
+                if (link) {
+                  link.href = `news-single.html?id=${blog.id}`;
+                }
+
+                const authorSpan = item.querySelector(
+                  ".news__meta-author span"
+                );
+                if (authorSpan) authorSpan.textContent = blog.author_name;
+
+                const dateSpan = item.querySelector(".news__meta-date");
+                if (dateSpan) {
+                  const formattedDate = new Date(blog.date).toLocaleDateString(
+                    "en-US",
+                    {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    }
+                  );
+                  dateSpan.innerHTML = `<i class="far fa-calendar-alt"></i> ${formattedDate}`;
+                }
+
+                const title = item.querySelector(".news__title a");
+                if (title) {
+                  title.textContent = blog.name;
+                  title.href = `news-single.html?id=${blog.id}`;
+                }
+
+                const desc = item.querySelector("p");
+                if (desc) {
+                  const text = blog.description || "";
+                  desc.textContent =
+                    text.length > 100 ? text.slice(0, 100) + "..." : text;
+                }
+
+                const readMore = item.querySelector(".news__btn");
+                if (readMore) readMore.href = `news-single.html?id=${blog.id}`;
+
+                const cat = item.querySelector(".news__cat");
+                if (cat) cat.textContent = `#${blog.tags || "News"}`;
+              });
+            } catch (err) {
+              console.error("Blog load error:", err);
+            }
+          });
+        </script>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", async () => {
+            try {
+              const res = await fetch("/producttagdata");
+              if (!res.ok) throw new Error("Failed to load tags");
+              const tags = await res.json();
+              if (!Array.isArray(tags)) throw new Error("Invalid tags data");
+
+              tags.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+              const published = tags.filter(
+                (t) => t.status === "Published" || t.status === "Draft"
+              );
+
+              const cloud = document.querySelector(".tagcloud");
+              if (!cloud) return;
+              cloud.innerHTML = "";
+
+              published.forEach((tag) => {
+                const a = document.createElement("a");
+                a.textContent = tag.name;
+                cloud.appendChild(a);
+              });
+            } catch (err) {
+              console.error("Error populating tags:", err);
+            }
+          });
+        </script>
+
+        <div class="banner pt-50 pb-80">
+          <div class="container mxw_1360">
+            <div class="row mt-none-30">
+              <div class="col-lg-6 mt-30">
+                <div
+                  class="banner__single ul_li_between bg_img"
+                  data-background="assets/img/bg/bg_27.jpg"
+                >
+                  <div class="content">
+                    <span>Expert mechanic</span>
+                    <h2>
+                      Repair Car Perfectly <br />
+                      From Expertist
+                    </h2>
+                    <p>Sumptuous, filling, and temptingly healthy.</p>
+                    <a href="contact.html"
+                      >Make enquiry <i class="far fa-long-arrow-right"></i
+                    ></a>
+                  </div>
+                  <div class="thumb">
+                    <img src="assets/img/product/img_162.png" alt="" />
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 mt-30">
+                <div
+                  class="banner__single ul_li_between bg_img"
+                  data-background="assets/img/bg/bg_28.jpg"
+                >
+                  <div class="content">
+                    <span>Expert mechanic</span>
+                    <h2>
+                      Repair Car Perfectly <br />
+                      From Expertist
+                    </h2>
+                    <p>Sumptuous, filling, and temptingly healthy.</p>
+                    <a href="contact.html"
+                      >Make enquiry <i class="far fa-long-arrow-right"></i
+                    ></a>
+                  </div>
+                  <div class="thumb">
+                    <img src="assets/img/product/img_163.png" alt="" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer footer__style-three black-bg pt-75">
+        <div class="newslater">
+          <div class="container mxw_1360">
+            <div class="newslater__wrap ul_li">
+              <div class="newslater__content">
+                <h2 class="title">NEWSLETTER SIGN UP!</h2>
+                <p>For information Consult with our expert members</p>
+              </div>
+              <form class="newslater__form js-newsletter-form">
+                <input
+                  placeholder="Enter your Email"
+                  type="email"
+                  name="email"
+                  required
+                />
+                <button type="submit">Subscribe</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="container mxw_1360">
+          <div class="footer__main pt-70 pb-90">
+            <div class="row mt-none-40">
+              <div class="footer__widget col-lg-3 col-md-6 mt-40">
+                <div class="footer__logo mb-20">
+                  <a href="index.html"
+                    ><img src="assets/img/logo/logo-2.svg" alt=""
+                  /></a>
+                </div>
+                <p>
+                  Corporate clients and leisure travelers has been relying on
+                  Groundlink for dependable safe, and professional chauffeured
+                  car end service in major cities across World.
+                </p>
+                <div class="apps-img mt-15 ul_li">
+                  <div class="app mt-15">
+                    <a href="#!"
+                      ><img src="assets/img/icon/google_play.png" alt=""
+                    /></a>
+                  </div>
+                  <div class="app mt-15">
+                    <a href="#!"
+                      ><img src="assets/img/icon/app_store.png" alt=""
+                    /></a>
+                  </div>
+                </div>
+              </div>
+              <div class="footer__widget col-lg-3 col-md-6 mt-40">
+                <h2 class="title">Find It Fast</h2>
+                <ul class="quick-links">
+                  <li><a href="shop.html">Laptops & Computers</a></li>
+                  <li><a href="shop.html">Cameras & Photography</a></li>
+                  <li><a href="shop.html">Smart Phones & Tablets</a></li>
+                  <li><a href="shop.html">Video Games & Consoles</a></li>
+                  <li><a href="shop.html">TV & Audio</a></li>
+                  <li><a href="shop.html">Gadgets</a></li>
+                  <li><a href="shop.html">Waterproof Headphones</a></li>
+                </ul>
+              </div>
+
+              <div class="footer__widget col-lg-3 col-md-6 mt-40">
+                <h2 class="title">Quick Links</h2>
+                <ul class="quick-links">
+                  <li><a href="account.html">Your Account</a></li>
+                  <li><a href="shop.html">Returns & Exchanges</a></li>
+                  <li><a href="shop.html">Return Center</a></li>
+                  <li><a href="shop.html">Purchase Hisotry</a></li>
+                  <li><a href="shop.html">App Download</a></li>
+                  <li><a href="news.html">Latest News Blog</a></li>
+                  <li><a href="shop.html">Shipping & Delivery</a></li>
+                </ul>
+              </div>
+
+              <div class="footer__widget col-lg-3 col-md-6 mt-40">
+                <h2 class="title">Recent Posts</h2>
+                <ul class="footer__post">
+                  <li class="footer__post-item tx-post ul_li">
+                    <div class="post-thumb">
+                      <a href="#!"
+                        ><img src="assets/img/news/img_04.jpg" alt=""
+                      /></a>
+                      <span class="post-number">01</span>
+                    </div>
+                    <div class="post-content">
+                      <span class="post-date"
+                        ><i class="far fa-calendar-alt"></i>23 April 2021</span
+                      >
+                      <h3 class="post-title border-effect-2">
+                        <a href="news-single.html">With billion players .</a>
+                      </h3>
+                    </div>
+                  </li>
+                  <li class="footer__post-item tx-post ul_li">
+                    <div class="post-thumb">
+                      <a href="#!"
+                        ><img src="assets/img/news/img_05.jpg" alt=""
+                      /></a>
+                      <span class="post-number">02</span>
+                    </div>
+                    <div class="post-content">
+                      <span class="post-date"
+                        ><i class="far fa-calendar-alt"></i>23 April 2021</span
+                      >
+                      <h3 class="post-title border-effect-2">
+                        <a href="news-single.html">With billion players .</a>
+                      </h3>
+                    </div>
+                  </li>
+                  <li class="footer__post-item tx-post ul_li">
+                    <div class="post-thumb">
+                      <a href="#!"
+                        ><img src="assets/img/news/img_06.jpg" alt=""
+                      /></a>
+                      <span class="post-number">03</span>
+                    </div>
+                    <div class="post-content">
+                      <span class="post-date"
+                        ><i class="far fa-calendar-alt"></i>23 April 2021</span
+                      >
+                      <h3 class="post-title border-effect-2">
+                        <a href="news-single.html">With billion players .</a>
+                      </h3>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer__bottom ul_li_center">
+            <div class="footer__copyright mt-15">
+              &copy; <span id="currentYear" class="text-light"></span>
+              <a href="index.html">Themexriver</a> . All Rights Reserved.
+            </div>
+
+            <script>
+              (function () {
+                const el = document.getElementById("currentYear");
+                if (el) el.textContent = new Date().getFullYear();
+              })();
+            </script>
+
+            <div class="footer__social mt-15">
+              <a href="https://www.facebook.com/" target="_blank"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
+              <a href="https://www.twitter.com/" target="_blank"
+                ><i class="fab fa-twitter"></i
+              ></a>
+              <a href="https://www.instagram.com/" target="_blank">
+                <i class="fab fa-instagram"></i
+              ></a>
+              <a href="https://www.youtube.com/" target="_blank"
+                ><i class="fab fa-youtube"></i
+              ></a>
+              <a href="https://www.pinterest.com/" target="_blank"
+                ><i class="fab fa-pinterest"></i
+              ></a>
+            </div>
+
+            <div class="payment_method mt-15">
+              <img src="assets/img/bg/payment_method.png" alt="" />
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+          try {
+            const res = await fetch("/blogpostdata");
+            if (!res.ok) {
+              console.error("Failed to fetch blog posts");
+              return;
+            }
+
+            const posts = await res.json();
+            if (!Array.isArray(posts)) {
+              console.error("Invalid blog data");
+              return;
+            }
+
+            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const latest = posts.slice(0, 3);
+
+            const container = document.querySelector(".footer__post");
+            if (!container) return;
+            container.innerHTML = "";
+
+            latest.forEach((post, idx) => {
+              const d = new Date(post.date);
+              const formattedDate = d.toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              });
+
+              const li = document.createElement("li");
+              li.className = "footer__post-item tx-post ul_li";
+              li.innerHTML = `
+                <div class="post-thumb">
+                  <a href="#">
+                    <img src="/uploads/${post.image}" alt="${post.name}" />
+                  </a>
+                  <span class="post-number">${String(idx + 1).padStart(
+                    2,
+                    "0"
+                  )}</span>
+                </div>
+                <div class="post-content">
+                  <span class="post-date">
+                    <i class="far fa-calendar-alt"></i>${formattedDate}
+                  </span>
+                 <h3 class="post-title border-effect-2">
+                  <a href="news-single.html?id=${post.id}">
+                    ${(() => {
+                      const w = post.name.split(/\s+/);
+                      return (
+                        w.slice(0, 6).join(" ") + (w.length > 6 ? "…" : "")
+                      );
+                    })()}
+                  </a>
+                </h3>
+
+                </div>
+              `;
+              container.appendChild(li);
+            });
+          } catch (err) {
+            console.error("Error loading recent posts:", err);
+          }
+        });
+      </script>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const form = document.querySelector(".js-newsletter-form");
+          if (!form) return;
+
+          function showBanner(msg, type = "success") {
+            const b = document.createElement("div");
+            b.textContent = msg;
+            Object.assign(b.style, {
+              position: "fixed",
+              top: "10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "10px 20px",
+              background: type === "success" ? "#4caf50" : "#f44336",
+              color: "#fff",
+              borderRadius: "4px",
+              zIndex: 9999,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+            });
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 3000);
+          }
+
+          form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const input = form.querySelector('input[name="email"]');
+            const email = input.value.trim();
+            if (!email) {
+              showBanner("Please enter a valid email.", "error");
+              return;
+            }
+
+            try {
+              const res = await fetch("/newsletterpost", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+              });
+              const text = await res.text();
+              if (res.ok) {
+                showBanner("Subscribed successfully!", "success");
+                form.reset();
+              } else {
+                showBanner(text || "Subscription failed.", "error");
+              }
+            } catch (err) {
+              console.error("Newsletter error:", err);
+              showBanner("Network error, please try again.", "error");
+            }
+          });
+        });
+      </script>
+
+      <section class="newsletter-popup-area-section">
+        <div class="newsletter-popup-area">
+          <div class="newsletter-popup-ineer">
+            <button class="btn newsletter-close-btn">
+              <i class="fal fa-times"></i>
+            </button>
+            <div class="img-holder">
+              <img src="assets/img/bg/newsletter.jpg" alt />
+            </div>
+            <div class="details">
+              <h4>Get 45% discount shipped to your inbox</h4>
+              <p>
+                Subscribe to the radios eCommerce newsletter to receive timely
+                updates to your favorite products
+              </p>
+              <form>
+                <div>
+                  <input type="email" placeholder="Enter your email" />
+                  <button type="submit">Subscribe</button>
+                </div>
+                <div>
+                  <label class="checkbox-holder">
+                    Don't show this popup again!
+                    <input type="checkbox" class="show-message" />
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cookies-area">
+        <p>
+          This website uses cookies to improve your experience. By using this
+          website you agree to our <a href="#">Data Protection Policy</a>.
+        </p>
+        <a href="#" class="read-more">Read more</a>
+        <div>
+          <button class="cookie-btn">Accept</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/js/jquery-3.5.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/slick.js"></script>
+    <script src="assets/js/backToTop.js"></script>
+    <script src="assets/js/uikit.min.js"></script>
+    <script src="assets/js/resize-sensor.min.js"></script>
+    <script src="assets/js/theia-sticky-sidebar.min.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/jqueryui.js"></script>
+    <script src="assets/js/touchspin.js"></script>
+    <script src="assets/js/countdown.js"></script>
+    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/metisMenu.min.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>

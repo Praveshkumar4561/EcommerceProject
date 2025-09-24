@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <title>Website</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="assets/img/favicon.png"
+    />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="assets/css/venobox.min.css" />
+    <link rel="stylesheet" href="assets/css/odometer.min.css" />
+    <link rel="stylesheet" href="assets/css/nice-select.css" />
+    <link rel="stylesheet" href="assets/css/swiper.min.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/themeoptionsdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Fetch failed");
+            return res.json();
+          })
+          .then((data) => {
+            let titleTag = document.head.querySelector("title");
+            if (!titleTag) {
+              titleTag = document.createElement("title");
+              document.head.appendChild(titleTag);
+            }
+            titleTag.textContent =
+              data.site_title || data.seo_title || "Website";
+
+            let desc = document.querySelector('meta[name="description"]');
+            if (!desc) {
+              desc = document.createElement("meta");
+              desc.name = "description";
+              document.head.appendChild(desc);
+            }
+            desc.content = data.seo_description || "";
+
+            let og = document.querySelector('meta[property="og:image"]');
+            if (!og) {
+              og = document.createElement("meta");
+              og.setAttribute("property", "og:image");
+              document.head.appendChild(og);
+            }
+            og.content = data.seo_og_image_url || "";
+
+            const url = `/uploads/${
+              data.lazy_placeholder_image
+            }?v=${Date.now()}`;
+            const oldIcon = document.querySelector(
+              'link[rel="icon"], link[rel="shortcut icon"]'
+            );
+            if (oldIcon) oldIcon.remove();
+
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.type = "image/png";
+            link.href = url;
+            document.head.appendChild(link);
+          })
+          .catch((e) => console.error("Theme load error:", e));
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll(
+            "a[href$='.html'], a[href*='.html?']:not(.lang-btn)"
+          )
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const [path, query] = href.split("?");
+            const page = path.replace(/\.html$/, "");
+            const baseUrl =
+              page === "index" || page === ""
+                ? "http://srv689968.hstgr.cloud//"
+                : `http://srv689968.hstgr.cloud//${page}`;
+            const newHref = query ? `${baseUrl}?${query}` : baseUrl;
+
+            a.setAttribute("href", newHref);
+
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              window.parent.location.href = newHref;
+            });
+          });
+
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+  </head>
+
+  <style>
+    .blog-section .row.gy-lg-0.gy-4.justify-content-center > [class*="col-"] {
+      display: flex;
+    }
+
+    .post-card {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+
+    .post-card .post-thumb {
+      flex: 0 0 auto;
+    }
+
+    .post-card .post-content-wrap {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+    }
+
+    .post-bottom {
+      margin-top: auto;
+    }
+
+    .swiper-slide {
+      display: flex;
+      height: 100%;
+    }
+
+    .shop-item {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      overflow: hidden;
+      height: 100%;
+      background-color: #fff;
+      box-sizing: border-box;
+    }
+
+    .shop-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+    }
+
+    .shop-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .shop-list {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .shop-content {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .shop-content .category {
+      font-size: 13px;
+      color: #999;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .shop-content .title {
+      font-size: 20px;
+      font-weight: 600;
+      min-height: 48px;
+    }
+
+    .shop-content .review-wrap {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+
+    .shop-content .review {
+      display: flex;
+      gap: 2px;
+    }
+
+    .shop-content .review i {
+      color: #e74c3c;
+      font-size: 12px;
+    }
+
+    .shop-content .price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #222;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .shop-content .offer {
+      color: #e74c3c;
+      text-decoration: line-through;
+    }
+
+    .category-carousel .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .category-item {
+      width: 100%;
+      height: 220px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .category-img {
+      width: 90%;
+      height: 80%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .category-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+
+    .category-item .title {
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .sponsor-item {
+      height: 180px;
+      padding: 50px 50px;
+    }
+  </style>
+
+  <body>
+    <header class="header sticky-active">
+      <div class="top-bar">
+        <div class="container">
+          <div class="top-bar-inner">
+            <div class="top-bar-left">
+              <ul class="top-left-list">
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">My Account</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+                <li><a href="checkout.html">Checkout</a></li>
+              </ul>
+            </div>
+
+            <div class="top-bar-middle">
+              <span
+                id="announcement-text"
+                style="
+                  display: inline-block;
+                  transition: transform 0.5s ease;
+                  white-space: nowrap;
+                "
+              ></span>
+            </div>
+
+            <div class="top-bar-right">
+              <ul class="top-right-list">
+                <li><a href="contact.html">Store Location</a></li>
+
+                <li>
+                  <div class="nice-select select-control country1" tabindex="0">
+                    <span class="current">Language</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Language
+                      </li>
+                      <li data-value="vdt" class="option">English</li>
+                      <li data-value="can" class="option">Bangla</li>
+                      <li data-value="uk" class="option">Arabic</li>
+                    </ul>
+                  </div>
+                </li>
+
+                <li>
+                  <div
+                    class="nice-select select-control select-2 country"
+                    tabindex="0"
+                  >
+                    <span class="current">Currency</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Currency
+                      </li>
+                      <li data-value="vdt" class="option">Doller</li>
+                      <li data-value="can" class="option">Rupee</li>
+                      <li data-value="uk" class="option">Taka</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-middle">
+        <div class="container">
+          <div class="header-middle-inner">
+            <div class="header-middle-left">
+              <div class="header-logo d-lg-block">
+                <a href="index.html">
+                  <img
+                    src="assets/img/logo/logo-1.png"
+                    alt="Logo"
+                    id="site-logo"
+                  />
+                </a>
+              </div>
+
+              <div class="category-form-wrap">
+                <div class="nice-select select-control country" tabindex="0">
+                  <span class="current">ALL Categories</span>
+                  <ul class="list">
+                    <li data-value="" class="option selected focus">
+                      ALL Categories
+                    </li>
+                    <li data-value="vdt" class="option">Fashion</li>
+                    <li data-value="can" class="option">Organic</li>
+                    <li data-value="uk" class="option">Furniture</li>
+                  </ul>
+                </div>
+
+                <form class="header-form">
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="search"
+                    placeholder="Search here..."
+                    required
+                  />
+                  <button class="submit rr-primary-btn" type="submit">
+                    Search here
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="header-middle-right">
+              <ul class="contact-item-list">
+                <li>
+                  <div class="content">
+                    <span>Call Us Now:</span>
+                    <a class="number" href="tel:+25821592159"
+                      >+(258) 2159-2159</a
+                    >
+                  </div>
+                  <a href="tel:+25821592159" class="icon">
+                    <i class="fa-regular fa-phone"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="wishlist.html" class="icon">
+                    <i class="fa-sharp fa-regular fa-heart"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="cart.html" class="icon">
+                    <i class="fa-light fa-bag-shopping"></i>
+                    <span>0</span>
+                  </a>
+                  <div class="content">
+                    <span>Your cart,</span>
+                    <h5 class="number">$0.00</h5>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="primary-header">
+        <div class="container">
+          <div class="primary-header-inner">
+            <div class="header-logo mobile-logo">
+              <a href="index.html">
+                <img src="assets/img/logo/logo-1.png" alt="Logo" />
+              </a>
+            </div>
+            <div class="header-menu-wrap">
+              <div class="mobile-menu-items">
+                <ul>
+                  <li class="menu-item-has-children active">
+                    <a href="index.html">Home</a>
+                    <ul>
+                      <li><a href="index.html">Fashion Home</a></li>
+                      <li><a href="index-2.html">Grocery Home</a></li>
+                      <li><a href="index-3.html">Furniture</a></li>
+                    </ul>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="shop.html">Shop</a>
+                    <ul>
+                      <li><a href="shop.html">Shop</a></li>
+                      <li><a href="shop-grid.html">Shop Grid</a></li>
+                      <li><a href="shop-details.html">Shop Details</a></li>
+                      <li><a href="cart.html">Cart</a></li>
+                      <li><a href="wishlist.html">Wishlist</a></li>
+                      <li><a href="checkout.html">Checkout</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">Women</a>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">men</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#">Pages</a>
+                    <ul>
+                      <li><a href="about.html">About</a></li>
+                      <li><a href="login.html">Login</a></li>
+                      <li><a href="register.html">Register</a></li>
+                      <li><a href="faq.html">Faq</a></li>
+                      <li><a href="error.html">404 Error</a></li>
+                    </ul>
+                  </li>
+
+                  <li class="menu-item-has-children">
+                    <a href="blog-grid.html">Blog</a>
+                    <ul>
+                      <li><a href="blog-grid.html">Blog Grid</a></li>
+                      <li><a href="blog-list.html">Blog list</a></li>
+                      <li><a href="blog-details.html">Blog Details</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="contact.html">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="header-right-wrap">
+              <div class="header-right">
+                <span>Get 30% Discount Now <span>Sale</span></span>
+                <div class="header-right-item">
+                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
+                    ><i class="fa-sharp fa-solid fa-bars"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div id="popup-search-box">
+      <div class="box-inner-wrap d-flex align-items-center">
+        <form id="form" action="#" method="get" role="search">
+          <input
+            id="popup-search"
+            type="text"
+            name="search"
+            placeholder="Type keywords here..."
+          />
+        </form>
+        <div class="search-close">
+          <i class="fa-sharp fa-regular fa-xmark"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-side-menu">
+      <div class="side-menu-content">
+        <div class="side-menu-head">
+          <a href="index.html"
+            ><img src="assets/img/logo/logo-1.png" alt="logo"
+          /></a>
+          <button class="mobile-side-menu-close">
+            <i class="fa-regular fa-xmark"></i>
+          </button>
+        </div>
+        <div class="side-menu-wrap"></div>
+        <ul class="side-menu-list">
+          <li>
+            <i class="fa-light fa-location-dot"></i>Address :
+            <span>Amsterdam, 109-74</span>
+          </li>
+          <li>
+            <i class="fa-light fa-phone"></i>Phone :
+            <a href="tel:+01569896654">+01 569 896 654</a>
+          </li>
+          <li>
+            <i class="fa-light fa-envelope"></i>Email :
+            <a href="mailto:info@example.com">info@example.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="preloader">
+      <div class="preloader-close">X</div>
+      <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
+      </div>
+    </div>
+
+    <section class="hero-section">
+      <div class="overlay"></div>
+      <div class="hero-images">
+        <div class="hero-people">
+          <img
+            src="https://avatars.mds.yandex.net/i?id=3f3247dd8514f337fcb10728d33e03e4161df202-8255800-images-thumbs&n=13"
+            alt="img"
+            style="width: 1068px; height: 650px; object-fit: cover"
+          />
+        </div>
+        <div class="hero-shape">
+          <img src="assets/img/shapes/hero-shape-1.png" alt="shape" />
+        </div>
+        <div class="hero-shape-2">
+          <img src="assets/img/shapes/hero-shape-2.png" alt="shape" />
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-8"></div>
+          <div class="col-xl-4 col-lg-12">
+            <div class="hero-content">
+              <h4 class="sub-title">Summer 22 women’s collection</h4>
+              <h2 class="title">Super COLLECTION <br />FOR WOMEN</h2>
+              <h5 class="price"><span>From</span>$50.00</h5>
+              <a href="shop.html" class="rr-primary-btn">View Collections</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="category-section pt-100 pb-100">
+      <div class="container">
+        <div class="category-top heading-space space-border">
+          <div class="section-heading mb-0">
+            <h2 class="section-title">Best for your categories</h2>
+            <p id="product-count">
+              <span class="product-count1">0 categories</span> belonging to a 0
+              products
+            </p>
+          </div>
+
+          <div class="swiper-arrow">
+            <div class="swiper-nav swiper-next">
+              <i class="fa-regular fa-arrow-left"></i>
+            </div>
+            <div class="swiper-nav swiper-prev">
+              <i class="fa-regular fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-carousel swiper">
+          <div class="swiper-wrapper"></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let totalCategories = 0;
+        let totalProducts = 0;
+
+        const allowedStatuses = ["Published", "Draft"];
+
+        fetch("/productcatdata")
+          .then((response) => response.json())
+          .then((categories) => {
+            const validCategories = categories.filter((cat) =>
+              allowedStatuses.includes(cat.status)
+            );
+
+            totalCategories = validCategories.length;
+
+            const swiperWrapper = document.querySelector(
+              ".category-carousel .swiper-wrapper"
+            );
+            swiperWrapper.innerHTML = "";
+
+            validCategories.forEach((category) => {
+              const slide = document.createElement("div");
+              slide.className = "swiper-slide";
+              slide.innerHTML = `
+                <div class="category-item">
+                  <div class="category-img">
+                    <a href="shop.html?category=${encodeURIComponent(
+                      category.name
+                    )}">
+                      <img src="/uploads/${category.image}" alt="${
+                category.name
+              }" />
+                    </a>
+                  </div>
+                  <h3 class="title">
+                    <a href="shop.html?category=${encodeURIComponent(
+                      category.name
+                    )}">
+                      ${category.name}
+                    </a>
+                  </h3>
+                </div>
+              `;
+              swiperWrapper.appendChild(slide);
+            });
+
+            new Swiper(".category-carousel", {
+              slidesPerView: 6,
+              spaceBetween: 30,
+              navigation: {
+                nextEl: ".swiper-prev",
+                prevEl: ".swiper-next",
+              },
+              loop: true,
+              breakpoints: {
+                0: { slidesPerView: 2 },
+                576: { slidesPerView: 3 },
+                768: { slidesPerView: 4 },
+                992: { slidesPerView: 6 },
+              },
+            });
+
+            updateCounts();
+          })
+          .catch((error) => {
+            console.error("Error loading category data:", error);
+          });
+
+        fetch("/productpagedata")
+          .then((response) => response.json())
+          .then((products) => {
+            const validProducts = products.filter((prod) =>
+              allowedStatuses.includes(prod.status)
+            );
+
+            totalProducts = validProducts.length;
+            updateCounts();
+          })
+          .catch((error) => {
+            console.error("Error loading product data:", error);
+          });
+
+        function updateCounts() {
+          document.querySelector(
+            "#product-count"
+          ).innerHTML = `<span class="product-count1">${totalCategories} categories</span> belonging to ${totalProducts} products`;
+        }
+      });
+    </script>
+
+    <section class="discount-section overflow-hidden pb-100">
+      <div class="row gy-lg-0 gy-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="discount-item item-1">
+            <div class="product-overlay"></div>
+            <div class="shape">
+              <img src="assets/img/shapes/dis-shpe.png" alt="shape" />
+            </div>
+            <div class="content">
+              <span>Special 50% Disocunt</span>
+              <h3 class="title">
+                The Latest Men’s Trends <br />
+                This Season
+              </h3>
+              <a href="shop.html"
+                ><i class="fa-regular fa-plus"></i>View Collections</a
+              >
+            </div>
+            <div class="men">
+              <img
+                src="https://avatars.mds.yandex.net/i?id=c0f2ba0358cfc4d1238e4d8da8380b55955477b8-5269428-images-thumbs&n=13"
+                alt="img"
+                style="width: 233px; height: 256px; object-fit: cover"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="discount-item">
+            <div class="product-overlay"></div>
+            <div class="shape">
+              <img src="assets/img/shapes/dis-shpe.png" alt="shape" />
+            </div>
+            <div class="men">
+              <img
+                src="https://avatars.mds.yandex.net/i?id=9f6a957fce5b368eff2dea1c02beee5204a7cde0-9245612-images-thumbs&n=13"
+                alt="img"
+                style="width: 281px; height: 241px; object-fit: cover"
+              />
+            </div>
+            <div class="content">
+              <span>Special 50% Disocunt</span>
+              <h3 class="title">Latest Kids Trends <br />This Season</h3>
+              <a href="shop.html"
+                ><i class="fa-regular fa-plus"></i>View Collections</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="discount-item">
+            <div class="product-overlay"></div>
+            <div class="shape">
+              <img src="assets/img/shapes/dis-shpe.png" alt="shape" />
+            </div>
+            <div class="men">
+              <img
+                src="https://avatars.mds.yandex.net/i?id=e10b2e5fb33e0284f4d1959b45ddeed1cb280e29-10783551-images-thumbs&n=13"
+                alt="img"
+                style="width: 301px; height: 252px; object-fit: cover"
+              />
+            </div>
+            <div class="content">
+              <span>Special 50% Disocunt</span>
+              <h3 class="title">Latest Women’s Trends <br />This Season</h3>
+              <a href="shop.html"
+                ><i class="fa-regular fa-plus"></i>View Collections</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="fashion-section pb-100">
+      <div class="container">
+        <div class="category-top heading-space space-border">
+          <div class="section-heading mb-0">
+            <h2 class="section-title">GET YOUR FASHION STYLE</h2>
+            <p id="product-count">
+              <span id="product-count1">0 categories</span> belonging to a total
+              <span id="product-count2">0 products</span>
+            </p>
+          </div>
+          <div class="swiper-arrow">
+            <div class="swiper-nav shop-prev">
+              <i class="fa-regular fa-arrow-left"></i>
+            </div>
+            <div class="swiper-nav shop-next">
+              <i class="fa-regular fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+        <div class="shop-carousel swiper">
+          <div class="swiper-wrapper" id="product-wrapper"></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const cleanPrice = (str = "") => str.replace(/[^0-9.]/g, "");
+
+        Promise.all([
+          fetch("/productcatdata").then((res) => res.json()),
+          fetch("/productpagedata").then((res) => res.json()),
+        ])
+          .then(([rawCats, rawProds]) => {
+            const categories = Array.isArray(rawCats)
+              ? rawCats
+              : rawCats.categories || rawCats.data || [];
+            let products = Array.isArray(rawProds)
+              ? rawProds
+              : rawProds.products || rawProds.data || [];
+
+            document.getElementById(
+              "product-count1"
+            ).textContent = `${categories.length} categories`;
+            document.getElementById(
+              "product-count2"
+            ).textContent = `${products.length} products`;
+
+            products = products
+              .filter((p) => p.date && !isNaN(new Date(p.date)))
+              .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const productMainImages = products.map((p) => {
+              const imgs = (p.image || "")
+                .split(",")
+                .map((i) => i.trim())
+                .filter(Boolean);
+              return imgs[0] || "";
+            });
+
+            let currentImages = [],
+              currentIndex = 0;
+            const imageLightbox = document.getElementById("image-lightbox");
+            const lightboxImg = document.getElementById("lightbox-image");
+            const counterEl = document.getElementById("lightbox-counter");
+            const btnPrev = document.getElementById("lightbox-prev");
+            const btnNext = document.getElementById("lightbox-next");
+            const btnClose = document.getElementById("lightbox-close");
+
+            function openLightbox(idx) {
+              currentImages = productMainImages.slice();
+              currentIndex = idx;
+              updateLightbox();
+              imageLightbox.style.display = "flex";
+            }
+            function updateLightbox() {
+              if (!currentImages.length) return;
+              lightboxImg.src = `/uploads/${currentImages[currentIndex]}`;
+              counterEl.textContent = `${currentIndex + 1} of ${
+                currentImages.length
+              }`;
+            }
+            [btnPrev, btnNext, btnClose].forEach((btn) => {
+              if (!btn) return;
+              btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                if (btn === btnClose) {
+                  imageLightbox.style.display = "none";
+                  currentImages = [];
+                  currentIndex = 0;
+                } else {
+                  currentIndex =
+                    btn === btnPrev
+                      ? (currentIndex - 1 + currentImages.length) %
+                        currentImages.length
+                      : (currentIndex + 1) % currentImages.length;
+                  updateLightbox();
+                }
+              });
+            });
+
+            function showBanner(msg, type = "success") {
+              const b = document.createElement("div");
+              b.className = `banner ${type}`;
+              b.textContent = msg;
+              Object.assign(b.style, {
+                position: "fixed",
+                top: "10px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                padding: "10px 20px",
+                background: type === "success" ? "#4caf50" : "#f44336",
+                color: "#fff",
+                borderRadius: "4px",
+                zIndex: 9999,
+                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+              });
+              document.body.appendChild(b);
+              setTimeout(() => b.remove(), 3000);
+            }
+
+            const wrapper = document.getElementById("product-wrapper");
+            wrapper.innerHTML = "";
+            products.forEach((product, idx) => {
+              const slide = document.createElement("div");
+              slide.className = "swiper-slide";
+              const img = productMainImages[idx];
+              slide.innerHTML = `
+              <div class="shop-item">
+                <div class="shop-thumb">
+                  <div class="overlay"></div>
+                  <a href="shop-details.html?id=${product.id}">
+                    <img src="/uploads/${img}" alt="${product.name}" />
+                  </a>
+                  <span class="sale">${product.label || "New"}</span>
+                  <ul class="shop-list d-flex flex-column">
+                    <li>
+                      <a href="javascript:void(0)" class="add-to-cart"
+                        data-name="${product.name}"
+                        data-price="${product.price}"
+                        data-price_sale="${product.price_sale}"
+                        data-image="${img}"
+                        data-store="${product.store || "default"}">
+                        <i class="fa-regular fa-cart-shopping"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="add-to-wishlist"
+                        data-name="${product.name}"
+                        data-image="${img}"
+                        data-store="${product.store || "default"}"
+                        data-price="${product.price}"
+                        data-price_sale="${product.price_sale}"
+                        data-sku="${product.sku || ""}"
+                        data-stockstatus="${product.stockstatus || "In Stock"}">
+                        <i class="fa-light fa-heart"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" class="view-lightbox" data-index="${idx}">
+                        <i class="fa-light fa-eye"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="shop-content">
+                  <span class="category">${product.brand || "No Brand"}</span>
+                  <h3 class="title">
+                    <a href="shop-details.html?id=${product.id}">${
+                product.name
+              }</a>
+                  </h3>
+                  <div class="review-wrap">
+                    <ul class="review">
+                      <li><i class="fa-solid fa-star"></i></li>
+                      <li><i class="fa-solid fa-star"></i></li>
+                      <li><i class="fa-solid fa-star"></i></li>
+                      <li><i class="fa-solid fa-star"></i></li>
+                      <li><i class="fa-solid fa-star"></i></li>
+                    </ul>
+                    <span>(${
+                      Math.floor(Math.random() * 100) + 1
+                    } Reviews)</span>
+                  </div>
+                  <div class="d-flex flex-row flex-nowrap">
+                    <span class="price">${product.price}</span>
+                    <span class="price_sale ms-2 text-decoration-line-through">
+                      ${product.price_sale}
+                    </span>
+                  </div>
+                </div>
+              </div>`;
+              wrapper.appendChild(slide);
+
+              slide
+                .querySelector(".add-to-cart")
+                .addEventListener("click", (e) => {
+                  e.preventDefault();
+                  const btn = e.currentTarget;
+                  const user_id = localStorage.getItem("user_id");
+                  if (!user_id)
+                    return showBanner("Please log in first", "error");
+                  fetch("/addcart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name: btn.dataset.name,
+                      price: cleanPrice(btn.dataset.price),
+                      price_sale: cleanPrice(btn.dataset.price_sale),
+                      image: btn.dataset.image,
+                      user_id,
+                      store: btn.dataset.store,
+                    }),
+                  })
+                    .then((r) => {
+                      if (!r.ok) throw Error();
+                      return r.text();
+                    })
+                    .then(() => {
+                      btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      showBanner("Product added to cart!", "success");
+                    })
+                    .catch(() => showBanner("Failed to add to cart", "error"));
+                });
+
+              slide
+                .querySelector(".add-to-wishlist")
+                .addEventListener("click", (e) => {
+                  e.preventDefault();
+                  const btn = e.currentTarget;
+                  const user_id = localStorage.getItem("user_id");
+                  if (!user_id)
+                    return showBanner("Please log in first", "error");
+                  fetch("/wishlistpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_id,
+                      product_name: btn.dataset.name,
+                      image: btn.dataset.image,
+                      store: btn.dataset.store,
+                      price: cleanPrice(btn.dataset.price),
+                      price_sale: cleanPrice(btn.dataset.price_sale),
+                      sku: btn.dataset.sku,
+                      stockstatus: btn.dataset.stockstatus,
+                    }),
+                  })
+                    .then((r) => {
+                      if (!r.ok) throw Error();
+                      return r.text();
+                    })
+                    .then(() => {
+                      btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      showBanner("Added to wishlist!", "success");
+                    })
+                    .catch(() =>
+                      showBanner("Failed to add to wishlist", "error")
+                    );
+                });
+
+              slide
+                .querySelector(".view-lightbox")
+                .addEventListener("click", (e) => {
+                  e.preventDefault();
+                  openLightbox(+e.currentTarget.dataset.index);
+                });
+            });
+
+            const currencyRates = {
+              vdt: { symbol: "$", rate: 1 },
+              can: { symbol: "₹", rate: 83 },
+              uk: { symbol: "৳", rate: 108 },
+            };
+            const dropdown = document.querySelector(".nice-select.country");
+            const display = dropdown.querySelector(".current");
+            const options = Array.from(dropdown.querySelectorAll(".option"));
+
+            let selected = localStorage.getItem("currency") || "vdt";
+            if (!currencyRates[selected]) selected = "vdt";
+            options.forEach((o) =>
+              o.classList.toggle("selected", o.dataset.value === selected)
+            );
+            display.textContent = options.find(
+              (o) => o.dataset.value === selected
+            ).textContent;
+
+            const parsePrice = (txt) =>
+              parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
+            const formatPrice = (num, key) =>
+              currencyRates[key].symbol + num.toFixed(2);
+
+            function normalizePrices() {
+              document.querySelectorAll(".price, .price_sale").forEach((el) => {
+                if (!el.dataset.basePrice) {
+                  el.dataset.basePrice = parsePrice(el.textContent);
+                }
+              });
+            }
+
+            function applyCurrency(key) {
+              document.querySelectorAll(".price, .price_sale").forEach((el) => {
+                const base = +el.dataset.basePrice;
+                const converted =
+                  base * (currencyRates[key].rate / currencyRates["vdt"].rate);
+                el.textContent = formatPrice(converted, key);
+              });
+            }
+
+            normalizePrices();
+            applyCurrency(selected);
+            options.forEach((opt) => {
+              opt.addEventListener("click", () => {
+                const key = opt.dataset.value;
+                if (!currencyRates[key]) return;
+                options.forEach((o) => o.classList.remove("selected"));
+                opt.classList.add("selected");
+                display.textContent = opt.textContent;
+                localStorage.setItem("currency", key);
+                applyCurrency(key);
+              });
+            });
+
+            new Swiper(".shop-carousel", {
+              slidesPerView: 4,
+              spaceBetween: 30,
+              loop: true,
+              navigation: {
+                prevEl: ".shop-prev",
+                nextEl: ".shop-next",
+              },
+              breakpoints: {
+                0: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                992: { slidesPerView: 3 },
+                1200: { slidesPerView: 4 },
+              },
+            });
+          })
+          .catch((err) => console.error("Error loading data:", err));
+      });
+    </script>
+
+    <div
+      id="image-lightbox"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        flex-direction: column;
+      "
+    >
+      <div
+        style="
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
+        "
+      >
+        <button
+          id="lightbox-prev"
+          style="
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+          "
+        >
+          <i class="fas fa-play" style="transform: rotate(180deg)"></i>
+        </button>
+
+        <div style="position: relative; display: inline-block">
+          <img
+            id="lightbox-image"
+            src=""
+            alt="Product"
+            style="
+              width: 336px;
+              height: 400px;
+              object-fit: contain;
+              border-radius: 4px;
+            "
+          />
+
+          <div
+            id="lightbox-counter"
+            style="
+              position: absolute;
+              bottom: 0px;
+              right: -2px;
+              color: #fff;
+              padding: 4px 8px;
+              border-radius: 12px;
+              font-size: 14px;
+            "
+          >
+            1 of 0
+          </div>
+
+          <button
+            id="lightbox-close"
+            style="
+              position: absolute;
+              top: 0;
+              right: -8px;
+              font-size: 36px;
+              color: white;
+              border: none;
+              border-radius: 50%;
+              width: 32px;
+              height: 32px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0;
+              z-index: 10;
+            "
+          >
+            ×
+          </button>
+        </div>
+
+        <button
+          id="lightbox-next"
+          style="
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 22px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+          "
+        >
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+    </div>
+
+    <section class="collect-section pb-100">
+      <div class="container">
+        <div class="row gy-lg-0 gy-4">
+          <div class="col-lg-6">
+            <div class="collect-item">
+              <span>1500+ Products</span>
+              <h3 class="title">Women Collections</h3>
+              <p>
+                This is genuinely the first theme i bought for which i did not
+                had <br />
+                to write one line of code.
+              </p>
+              <ul class="collect-list">
+                <li><a href="shop.html">Blazer</a></li>
+                <li><a href="shop.html">Blouses & Shirts</a></li>
+                <li><a href="shop.html">Dresser</a></li>
+                <li><a href="shop.html">Jeans</a></li>
+                <li><a href="shop.html">Knits</a></li>
+                <li><a href="shop.html">Pants</a></li>
+                <li><a href="shop.html">Skirts</a></li>
+                <li><a href="shop.html">Suits</a></li>
+                <li><a href="shop.html">Sweatshirts & Hoodie</a></li>
+                <li><a href="shop.html">T-Shirts</a></li>
+                <li><a href="shop.html">Tops & Bodysuits</a></li>
+              </ul>
+
+              <div class="men">
+                <img
+                  src="https://avatars.mds.yandex.net/i?id=7bd8243391bb2d4b66bd856a14db2183-4390495-images-thumbs&n=13"
+                  alt="discount"
+                  style="width: 708px; height: 640px; object-fit: cover"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="collect-items">
+              <div class="collect-item item-1">
+                <span>1500+ Products</span>
+                <h3 class="title">men Collections</h3>
+                <ul class="collect-list">
+                  <li><a href="shop.html">Blazer</a></li>
+                  <li><a href="shop.html">Blouses & Shirts</a></li>
+                  <li><a href="shop.html">Dresser</a></li>
+                  <li><a href="shop.html">Jeans</a></li>
+                </ul>
+                <div class="men">
+                  <img
+                    src="https://avatars.mds.yandex.net/i?id=e0d87cd41d4d906fecf2935482aa91d234fa7606-12498607-images-thumbs&n=13"
+                    alt="discount"
+                    style="width: 708px; height: 310px; object-fit: cover"
+                  />
+                </div>
+              </div>
+              <div class="collect-item item-2">
+                <span>1500+ Products</span>
+                <h3 class="title">Top Accessories</h3>
+                <ul class="collect-list">
+                  <li><a href="shop.html">Blazer</a></li>
+                  <li><a href="shop.html">Blouses & Shirts</a></li>
+                  <li><a href="shop.html">Dresser</a></li>
+                  <li><a href="shop.html">Jeans</a></li>
+                </ul>
+                <div class="men">
+                  <img
+                    src="https://avatars.mds.yandex.net/i?id=e062d9833afc9391800c7fec84c1fbeca61a47ec-11951579-images-thumbs&n=13"
+                    alt="discount"
+                    style="width: 708px; height: 310px; object-fit: cover"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="cta-section pt-100 pb-100"
+      data-background="assets/img/bg-img/cta-bg.jpg"
+    >
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="cta-wrap text-center">
+          <span>Spring summer 22 women’s collection</span>
+          <h2 class="title">-15% Off Discount <br />All Here</h2>
+          <a href="shop.html" class="rr-primary-btn cta-btn"
+            >View Collections</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <div class="sponsor-section pt-100">
+      <div class="container">
+        <div class="row sponsor-wrap" id="sponsorWrap"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const sponsorContainer = document.getElementById("sponsorWrap");
+
+        fetch("/productpagedata")
+          .then((response) => response.json())
+          .then((data) => {
+            const products = data.slice(0, 10);
+
+            products.forEach((product, index) => {
+              const itemDiv = document.createElement("div");
+              itemDiv.classList.add("sponsor-item");
+
+              if ((index + 1) % 5 !== 0) itemDiv.classList.add("bd-right");
+              if (index < 5) itemDiv.classList.add("bd-bottom");
+
+              const link = document.createElement("a");
+
+              const img = document.createElement("img");
+              img.src = `/uploads/${product.image}`;
+              img.alt = product.name || "Product Image";
+
+              link.appendChild(img);
+              itemDiv.appendChild(link);
+              sponsorContainer.appendChild(itemDiv);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching product data:", error);
+          });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let selectedCurrency = localStorage.getItem("currency") || "vdt";
+
+        const currencyRates = {
+          vdt: { symbol: "$", rate: 1 },
+          can: { symbol: "₹", rate: 83 },
+          uk: { symbol: "৳", rate: 108 },
+        };
+
+        const currentCurrency = currencyRates[selectedCurrency];
+        if (currentCurrency) {
+          const selectedOption = document.querySelector(
+            `.nice-select.country .option[data-value="${selectedCurrency}"]`
+          );
+          if (selectedOption) {
+            document.querySelector(
+              ".nice-select.country .current"
+            ).textContent = selectedOption.textContent;
+          }
+        }
+
+        document
+          .querySelectorAll(".nice-select.country .option")
+          .forEach((opt) => {
+            opt.addEventListener("click", () => {
+              const code = opt.dataset.value;
+              if (currencyRates[code]) {
+                selectedCurrency = code;
+                localStorage.setItem("currency", selectedCurrency);
+                document.querySelector(
+                  ".nice-select.country .current"
+                ).textContent = opt.textContent;
+              }
+            });
+          });
+
+        function formatPrice(raw) {
+          const n = parseFloat(raw.replace(/[^0-9.]/g, "")) || 0;
+          const { symbol, rate } = currencyRates[selectedCurrency];
+          return symbol + (n * rate).toFixed(2);
+        }
+
+        const wrapper = document.querySelector(".category-form-wrap");
+        wrapper.style.position = "relative";
+
+        const resultBox = document.createElement("div");
+        resultBox.classList.add("search-result-dropdown");
+        Object.assign(resultBox.style, {
+          position: "absolute",
+          top: "100%",
+          left: "0%",
+          width: "100%",
+          background: "#fff",
+          border: "1px solid #ddd",
+          zIndex: "1000",
+          maxHeight: "300px",
+          overflowY: "auto",
+          display: "none",
+        });
+        wrapper.appendChild(resultBox);
+
+        const searchInput = wrapper.querySelector('input[name="search"]');
+        let timeout;
+
+        searchInput.addEventListener("input", () => {
+          const q = searchInput.value.trim();
+          clearTimeout(timeout);
+
+          if (q.length < 2) {
+            resultBox.style.display = "none";
+            resultBox.innerHTML = "";
+            return;
+          }
+
+          timeout = setTimeout(() => {
+            fetch("/productpagedata")
+              .then((r) => r.json())
+              .then((products) => {
+                const matches = products
+                  .filter((p) => p.name.toLowerCase().includes(q.toLowerCase()))
+                  .slice(0, 5);
+
+                if (!matches.length) {
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                } else {
+                  resultBox.innerHTML =
+                    matches
+                      .map((p) => {
+                        const img = (p.image || "").split(",")[0].trim();
+                        const mainPrice = formatPrice(p.price);
+                        const salePrice = p.price_sale
+                          ? `<strong class="text-dark me-2">${formatPrice(
+                              p.price_sale
+                            )}</strong>
+                              <s class="fw-bold text-danger">${formatPrice(
+                                p.price
+                              )}</s>`
+                          : `<strong class="fw-bold text-dark">${formatPrice(
+                              p.price
+                            )}</strong>`;
+
+                        return `
+                        <div
+                          onclick="window.location.href='shop.html?search=${encodeURIComponent(
+                            q
+                          )}'"
+                          style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
+                        >
+                          <img src="/uploads/${img}" alt="${p.name}"
+                              style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                          <div>
+                            <div class="fw-bold text-dark">${p.name}</div>
+                            <div style="font-size:0.85em;color:#999;">
+                              ${salePrice}
+                            </div>
+                          </div>
+                        </div>
+                      `;
+                      })
+                      .join("") +
+                    `
+                      <div onclick="window.location.href='shop.html?search=${encodeURIComponent(
+                        q
+                      )}'"
+                        style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
+                      >
+                        Show all results
+                      </div>
+                    `;
+                }
+
+                resultBox.style.display = "block";
+              })
+              .catch((err) => {
+                console.error("Error fetching products:", err);
+                resultBox.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                resultBox.style.display = "block";
+              });
+          }, 300);
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!wrapper.contains(e.target)) {
+            resultBox.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <section class="deal-section pt-100 pb-100">
+      <div class="container">
+        <div class="row deal-wrap align-items-center">
+          <div class="shape">
+            <img src="assets/img/shapes/deal-shape.png" alt="shape" />
+          </div>
+          <div class="col-xl-5 col-lg-12">
+            <div class="deal-content">
+              <div class="section-heading mb-0">
+                <h2 class="section-title">Deal Of the days</h2>
+                <p>
+                  Elegant pink origami design three type of dimensional view and
+                  <br />decoration co Great for adding a decorative...
+                </p>
+              </div>
+              <div class="deal-info">
+                <div class="icon">
+                  <img src="assets/img/icon/deal-icon.png" alt="icon" />
+                </div>
+                <div class="content">
+                  <p id="flash-expiry">
+                    Limited Time offer. THe Deal will expire <br />
+                    one august 18, 2024
+                  </p>
+                </div>
+              </div>
+              <a href="shop.html" class="rr-primary-btn deal-btn"
+                >View All Collections</a
+              >
+            </div>
+          </div>
+
+          <div class="col-xl-7 col-lg-12">
+            <div class="row gy-md-0 gy-4" id="deal-products-wrapper">
+              <div class="col-md-6">
+                <div class="shop-item deal-shop">
+                  <div class="shop-thumb">
+                    <div class="overlay"></div>
+                    <img src="assets/img/shop/shop-5.jpg" alt="shop" />
+                    <span class="sale">New</span>
+                    <ul class="shop-list">
+                      <li>
+                        <a href="#"
+                          ><i class="fa-regular fa-cart-shopping"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="#"><i class="fa-light fa-heart"></i></a>
+                      </li>
+                      <li>
+                        <a href="#" class="view-lightbox" data-index="${idx}">
+                          <i class="fa-light fa-eye"></i>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="shop-content">
+                    <span class="category fw-bold">Levi’s Cotton</span>
+                    <h3 class="title">
+                      <a href="shop-details.html">Monica Diara Party Dress</a>
+                    </h3>
+                    <div class="review-wrap">
+                      <ul class="review">
+                        <li><i class="fa-solid fa-star"></i></li>
+                        <li><i class="fa-solid fa-star"></i></li>
+                        <li><i class="fa-solid fa-star"></i></li>
+                        <li><i class="fa-solid fa-star"></i></li>
+                        <li><i class="fa-solid fa-star"></i></li>
+                      </ul>
+                      <span id="review-count">(15 Reviews)</span>
+                    </div>
+                    <span class="price"
+                      ><span class="offer">$250.00</span>$157.00</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        function getUserId() {
+          return localStorage.getItem("user_id") || null;
+        }
+
+        let currentImages = [];
+        let currentIndex = 0;
+
+        const imageLightbox = document.getElementById("image-lightbox");
+        const lightboxImg = document.getElementById("lightbox-image");
+        const counterEl = document.getElementById("lightbox-counter");
+        const btnPrev = document.getElementById("lightbox-prev");
+        const btnNext = document.getElementById("lightbox-next");
+        const btnClose = document.getElementById("lightbox-close");
+
+        function scrollToTop() {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function openLightbox(index) {
+          if (!window.productMainImages || !window.productMainImages.length)
+            return;
+          currentImages = window.productMainImages.slice();
+          currentIndex = index;
+          updateLightbox();
+          if (imageLightbox) imageLightbox.style.display = "flex";
+        }
+
+        function updateLightbox() {
+          if (!currentImages.length || !lightboxImg || !counterEl) return;
+          lightboxImg.src = `/uploads/${currentImages[currentIndex]}`;
+          counterEl.textContent = `${currentIndex + 1} of ${
+            currentImages.length
+          }`;
+        }
+
+        if (btnPrev && btnNext && btnClose) {
+          btnPrev.addEventListener("click", () => {
+            if (!currentImages.length) return;
+            currentIndex =
+              (currentIndex - 1 + currentImages.length) % currentImages.length;
+            updateLightbox();
+          });
+          btnNext.addEventListener("click", () => {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            updateLightbox();
+          });
+          btnClose.addEventListener("click", () => {
+            if (imageLightbox) imageLightbox.style.display = "none";
+            currentImages = [];
+            currentIndex = 0;
+          });
+        }
+
+        function showBanner(msg, type = "success") {
+          const b = document.createElement("div");
+          b.className = `banner ${type}`;
+          b.textContent = msg;
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            background: type === "success" ? "#4caf50" : "#f44336",
+            color: "#fff",
+            borderRadius: "4px",
+            zIndex: 9999,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          });
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+
+        fetch("/flashsalesmaindata")
+          .then((res) => res.json())
+          .then((data) => {
+            const dealWrapper = document.getElementById(
+              "deal-products-wrapper"
+            );
+            if (!dealWrapper) return;
+
+            if (!Array.isArray(data) || data.length === 0) {
+              dealWrapper.innerHTML =
+                '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
+              return;
+            }
+
+            const grouped = data.reduce((acc, item) => {
+              (acc[item.flashsale_id] = acc[item.flashsale_id] || []).push(
+                item
+              );
+              return acc;
+            }, {});
+
+            const saleIds = Object.keys(grouped);
+            if (saleIds.length === 0) {
+              dealWrapper.innerHTML =
+                '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
+              return;
+            }
+
+            const firstSaleId = saleIds[0];
+            const products = grouped[firstSaleId].slice(0, 2);
+
+            const firstDealShop = dealWrapper.querySelector(".deal-shop");
+            if (!firstDealShop) {
+              console.warn(
+                "No .deal-shop template found inside #deal-products-wrapper"
+              );
+              return;
+            }
+
+            const templateCard =
+              firstDealShop.closest(".col-md-6") || firstDealShop.parentElement;
+            if (!templateCard) {
+              console.warn(
+                "Could not find column wrapper for .deal-shop template"
+              );
+              return;
+            }
+
+            const existingCols = Array.from(
+              dealWrapper.querySelectorAll(".col-md-6")
+            );
+            existingCols.forEach((col) => {
+              if (col.querySelector(".deal-shop")) col.remove();
+            });
+
+            window.productMainImages = products.map((p) => p.image);
+
+            products.forEach((prd, idx) => {
+              const container = templateCard.cloneNode(true);
+
+              const img = container.querySelector(".shop-thumb img");
+              if (img) {
+                img.src = `/uploads/${prd.image}`;
+                img.alt = prd.product_name || "";
+              }
+
+              const badge = container.querySelector(".shop-thumb .sale");
+              if (badge) {
+                badge.textContent = prd.price_sale
+                  ? prd.label || "Sale"
+                  : "New";
+              }
+
+              const categoryEl = container.querySelector(
+                ".shop-content .category"
+              );
+              if (categoryEl) categoryEl.textContent = prd.brand || "";
+
+              const titleLink = container.querySelector(
+                ".shop-content .title a"
+              );
+              if (titleLink) {
+                titleLink.textContent = prd.product_name || "";
+                titleLink.href = `shop-details.html?product=${encodeURIComponent(
+                  prd.product_id
+                )}`;
+              }
+
+              const offerSpan = container.querySelector(".shop-content .offer");
+              if (offerSpan) {
+                offerSpan.textContent =
+                  prd.price_sale != null ? String(prd.price_sale) : "";
+              }
+
+              const priceContainer = container.querySelector(
+                ".shop-content .price"
+              );
+              if (priceContainer) {
+                let priceTarget =
+                  priceContainer.querySelector("ins, .amount, span, label") ||
+                  priceContainer.lastElementChild;
+                if (!priceTarget) priceTarget = priceContainer;
+                try {
+                  priceTarget.textContent =
+                    prd.price != null ? String(prd.price) : "";
+                } catch (err) {
+                  priceContainer.textContent =
+                    prd.price != null ? String(prd.price) : "";
+                }
+              }
+
+              const reviewSpan = container.querySelector(
+                ".review-wrap span#review-count"
+              );
+              if (reviewSpan) {
+                const randomReviews = Math.floor(Math.random() * 100) + 1;
+                reviewSpan.textContent = `(${randomReviews} Reviews)`;
+              }
+
+              const cartIcon = container.querySelector("i.fa-cart-shopping");
+              if (cartIcon) {
+                const cartBtn = cartIcon.closest("a");
+                if (cartBtn) {
+                  cartBtn.classList.add("add-to-cart");
+                  cartBtn.dataset.name = prd.product_name || "";
+                  cartBtn.dataset.price = prd.price || "";
+                  cartBtn.dataset.price_sale = prd.price_sale || "";
+                  cartBtn.dataset.image = prd.image || "";
+                  cartBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const user_id = getUserId();
+                    if (!user_id)
+                      return showBanner("Please log in first", "error");
+                    fetch("/addcart", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        name: prd.product_name,
+                        price: prd.price,
+                        price_sale: prd.price_sale,
+                        image: prd.image,
+                        user_id,
+                        store: "default",
+                      }),
+                    })
+                      .then((r) => r.text())
+                      .then(() => {
+                        cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        showBanner("Product added to cart!", "success");
+                      })
+                      .catch(() =>
+                        showBanner("Failed to add to cart", "error")
+                      );
+                  });
+                }
+              }
+
+              const wishIcon = container.querySelector("i.fa-heart");
+              if (wishIcon) {
+                const wishBtn = wishIcon.closest("a");
+                if (wishBtn) {
+                  wishBtn.classList.add("add-to-wishlist");
+                  wishBtn.dataset.name = prd.product_name || "";
+                  wishBtn.dataset.image = prd.image || "";
+                  wishBtn.dataset.store = "default";
+                  wishBtn.dataset.price = prd.price || "";
+                  wishBtn.dataset.price_sale = prd.price_sale || "";
+                  wishBtn.dataset.sku = prd.product_id || "";
+                  wishBtn.dataset.stockstatus =
+                    prd.quantity > 0 ? "In Stock" : "Out of Stock";
+                  wishBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const user_id = getUserId();
+                    if (!user_id)
+                      return showBanner("Please log in first", "error");
+                    fetch("/wishlistpos1t", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        user_id,
+                        product_name: prd.product_name,
+                        image: prd.image,
+                        store: "default",
+                        price: prd.price,
+                        price_sale: prd.price_sale,
+                        sku: prd.product_id,
+                        stockstatus:
+                          prd.quantity > 0 ? "In Stock" : "Out of Stock",
+                      }),
+                    })
+                      .then((r) => r.text())
+                      .then(() => {
+                        wishBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                        showBanner("Added to wishlist!", "success");
+                      })
+                      .catch(() =>
+                        showBanner("Failed to add to wishlist", "error")
+                      );
+                  });
+                }
+              }
+
+              const eyeIcon = container.querySelector("i.fa-eye");
+              if (eyeIcon) {
+                const viewBtn = eyeIcon.closest("a");
+                if (viewBtn) {
+                  viewBtn.classList.add("view-lightbox");
+                  viewBtn.dataset.index = String(idx);
+                  viewBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const index = parseInt(viewBtn.dataset.index, 10);
+                    if (!Number.isNaN(index)) openLightbox(index);
+                  });
+                }
+              }
+
+              dealWrapper.appendChild(container);
+            });
+
+            const firstItemWithDate = grouped[firstSaleId].find(
+              (it) => it.end_date
+            );
+            if (firstItemWithDate && firstItemWithDate.end_date) {
+              const endDateStr = firstItemWithDate.end_date;
+              const dt = new Date(endDateStr);
+              if (!isNaN(dt.getTime())) {
+                const formatted = dt.toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                });
+                const expiryEl = document.getElementById("flash-expiry");
+                if (expiryEl) {
+                  expiryEl.textContent = `Limited Time offer. The Deal will expire on ${formatted}`;
+                }
+              }
+            }
+          })
+          .catch((err) => {
+            console.error("Error loading flash sale data:", err);
+          });
+      });
+    </script>
+
+    <section class="blog-section pb-100">
+      <div class="container">
+        <div class="section-heading text-center">
+          <h2 class="section-title mb-0">Our Latest News Insight</h2>
+        </div>
+        <div
+          class="row gy-lg-0 gy-4 justify-content-center"
+          id="blog-wrapper"
+        ></div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("/blogpostdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network response not ok");
+            return res.json();
+          })
+          .then((posts) => {
+            const top = posts.slice(0, 3);
+            const wrapper = document.getElementById("blog-wrapper");
+            wrapper.innerHTML = top
+              .map(
+                (p) => `
+              <div class="col-lg-4 col-md-6">
+                <div class="post-card">
+                  <div class="post-thumb">
+                    <a href="blog-details.html?id=${p.id}">
+                    <img src="/uploads/${p.image}" alt="${p.name}" />
+                    </a>
+                  </div>
+                  <div class="post-content-wrap">
+                    <div class="post-content">
+                      <ul class="post-meta">
+                        <li>
+                          <i class="fa-sharp fa-solid fa-calendar-days"></i>
+                          ${new Date(p.date).toLocaleDateString()}
+                        </li>
+                        <li><i class="fa-regular fa-tag"></i>${
+                          p.categories
+                        }</li>
+                      </ul>
+                      <h3 class="title">
+                        <a href="blog-details.html?id=${p.id}">${p.name}</a>
+                      </h3>
+                    </div>
+                    <div class="post-bottom">
+                      <a href="blog-details.html?id=${p.id}" class="read-more">
+                        Read More<i class="fa-regular fa-arrow-right"></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `
+              )
+              .join("");
+          })
+          .catch((err) => console.error("Failed to load blog posts:", err));
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const userId = localStorage.getItem("user_id");
+
+        function updateCartIcon() {
+          if (!userId) return;
+
+          fetch(`/allcartdata?user_id=${userId}`)
+            .then((res) => res.json())
+            .then((data) => {
+              let totalItems = 0;
+              let totalAmount = 0;
+              const seen = new Set();
+
+              if (Array.isArray(data) && data.length > 0) {
+                data.forEach((item) => {
+                  const name = item.name;
+                  if (seen.has(name)) {
+                    return;
+                  }
+                  seen.add(name);
+
+                  const quantity = parseInt(item.quantity || 1, 10);
+                  const price = parseFloat(
+                    (item.price || "").replace("$", "") || 0
+                  );
+
+                  totalItems += quantity;
+                  totalAmount += quantity * price;
+                });
+              }
+
+              document.querySelector(".icon span").innerText = totalItems;
+              document.querySelector(
+                ".content h5.number"
+              ).innerText = `$${totalAmount.toFixed(2)}`;
+            })
+            .catch((err) => {
+              console.error("Error updating cart info:", err);
+            });
+        }
+
+        function stripTags(html) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = html;
+          return tmp.textContent || tmp.innerText || "";
+        }
+
+        function updateAnnouncements() {
+          fetch("/getannounce")
+            .then((res) => res.json())
+            .then((data) => {
+              if (!data || !data.length) return;
+
+              const today = new Date();
+              const validAnnouncements = data.filter(
+                (item) =>
+                  item.active === "yes" && new Date(item.end_date) >= today
+              );
+              if (!validAnnouncements.length) return;
+
+              const limitWords = (text, limit = 6) => {
+                const words = text.trim().split(/\s+/);
+                return (
+                  words.slice(0, limit).join(" ") +
+                  (words.length > limit ? "..." : "")
+                );
+              };
+
+              const messages = validAnnouncements.map((item) =>
+                limitWords(stripTags(item.content))
+              );
+
+              const announcer = document.getElementById("announcement-text");
+              let index = 0;
+
+              const rotate = () => {
+                announcer.style.transform = "translateY(-100%)";
+                setTimeout(() => {
+                  announcer.textContent = messages[index];
+                  announcer.style.transform = "translateY(0)";
+                  index = (index + 1) % messages.length;
+                }, 300);
+              };
+
+              announcer.textContent = messages[index];
+              index++;
+              setInterval(rotate, 3000);
+            })
+            .catch((err) => {
+              console.error("Error fetching announcement:", err);
+            });
+        }
+
+        updateCartIcon();
+        setInterval(updateCartIcon, 1000);
+        updateAnnouncements();
+      });
+
+      function getUserId() {
+        return localStorage.getItem("user_id") || null;
+      }
+    </script>
+
+    <footer class="footer-section bg-grey pt-60">
+      <div class="container">
+        <div class="footer-items">
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-1.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Shipping</h4>
+              <span>Free shipping on orders over $65.00</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-2.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Returns</h4>
+              <span>30-days free return policy</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-3.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Secured Payments</h4>
+              <span>We accept all major credit card</span>
+            </div>
+          </div>
+          <div class="footer-item item-2">
+            <div class="icon">
+              <img src="assets/img/icon/footer-4.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Customer Service</h4>
+              <span>Top notch customer service</span>
+            </div>
+          </div>
+        </div>
+        <div class="row footer-widget-wrap pb-60">
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">About Store</h3>
+              </div>
+              <div class="footer-contact">
+                <div class="icon">
+                  <i class="fa-sharp fa-solid fa-phone-rotary"></i>
+                </div>
+                <div class="content">
+                  <span>Have Question? Call Us 24/7</span>
+                  <a href="tel:+25836922569">+258 3692 2569</a>
+                </div>
+              </div>
+              <ul class="schedule-list">
+                <li><span>Monday - Friday:</span>8:00am - 6:00pm</li>
+                <li><span>Saturday:</span>8:00am - 6:00pm</li>
+                <li><span>Sunday</span> Service Close</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Stores</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">New York</a></li>
+                <li><a href="contact.html">London SF</a></li>
+                <li><a href="contact.html">Los Angele</a></li>
+                <li><a href="contact.html">Chicago</a></li>
+                <li><a href="contact.html">Las Vegas</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Shop Categories</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="shop-grid.html">New Arrivals</a></li>
+                <li><a href="shop-grid.html">Best Selling</a></li>
+                <li><a href="shop-grid.html">Vegetables</a></li>
+                <li><a href="shop-grid.html">Fresh Meat</a></li>
+                <li><a href="shop-grid.html">Fresh Seafood</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Useful Links</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">Privacy Policy</a></li>
+                <li><a href="contact.html">Terms & Conditions</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="blog-grid.html">Latest News</a></li>
+                <li><a href="contact.html">Our Sitemaps</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Newsletter</h3>
+              </div>
+              <div class="news-form-wrap">
+                <p class="mb-20">
+                  Subscribe to the mailing list to receive updates one the new
+                  arrivals and other discounts
+                </p>
+                <div class="footer-form mb-20">
+                  <form action="#" class="rr-subscribe-form">
+                    <input
+                      class="form-control"
+                      type="email"
+                      name="email"
+                      placeholder="Email address"
+                      required
+                    />
+                    <input
+                      type="hidden"
+                      name="action"
+                      value="mailchimpsubscribe"
+                    />
+                    <button class="submit" type="submit">Subscribe</button>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+                <p class="mb-0">
+                  I would like to receive news and special offer
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              const form = document.querySelector(".rr-subscribe-form");
+              if (!form) return;
+
+              function showBanner(msg, type = "success") {
+                const b = document.createElement("div");
+                b.className = `banner ${type}`;
+                b.textContent = msg;
+                Object.assign(b.style, {
+                  position: "fixed",
+                  top: "10px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  padding: "10px 20px",
+                  background: type === "success" ? "#4caf50" : "#f44336",
+                  color: "#fff",
+                  borderRadius: "4px",
+                  zIndex: 9999,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                });
+                document.body.appendChild(b);
+                setTimeout(() => b.remove(), 3000);
+              }
+
+              form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const input = form.querySelector('input[name="email"]');
+                const email = input.value.trim();
+                if (!email) {
+                  showBanner("Please enter a valid email.", "error");
+                  return;
+                }
+
+                try {
+                  const res = await fetch("/newsletterpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                  });
+                  const text = await res.text();
+
+                  if (res.ok) {
+                    showBanner("Subscribed successfully!", "success");
+                    form.reset();
+                  } else {
+                    showBanner(text || "Subscription failed.", "error");
+                  }
+                } catch (err) {
+                  console.error("Newsletter error:", err);
+                  showBanner("Network error, please try again.", "error");
+                }
+              });
+            });
+          </script>
+        </div>
+      </div>
+      <div class="copyright-area">
+        <div class="container">
+          <div class="row copyright-content">
+            <div class="col-lg-6">
+              <div class="footer-img-wrap">
+                <span>Payment System:</span>
+                <div class="footer-img">
+                  <a href="#"
+                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  /></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <p>
+                Copyright & Design <span id="designYear">2024</span>
+                <span>©Roiser</span>. All Right Reserved
+              </p>
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                const yearSpan = document.getElementById("designYear");
+                if (yearSpan) {
+                  yearSpan.textContent = new Date().getFullYear();
+                }
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/get-font-settings")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network error");
+            return res.json();
+          })
+          .then((cfg) => {
+            const s = document.createElement("style");
+            s.type = "text/css";
+
+            s.textContent = `
+              body {
+                font-family: ${cfg.font_family}, sans-serif !important;
+                font-size: ${cfg.body_font_size}px !important;
+              }
+              h1 { font-size: ${cfg.h1_font_size}px !important; }
+              h2 { font-size: ${cfg.h2_font_size}px !important; }
+              h3 { font-size: ${cfg.h3_font_size}px !important; }
+              h4 { font-size: ${cfg.h4_font_size}px !important; }
+              h5 { font-size: ${cfg.h5_font_size}px !important; }
+              h6 { font-size: ${cfg.h6_font_size}px !important; }
+            `;
+            document.head.appendChild(s);
+          })
+          .catch((err) => {
+            console.error("Could not load font settings:", err);
+          });
+      });
+    </script>
+
+    <div id="scroll-percentage"><span id="scroll-percentage-value"></span></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/get-theme-logo")
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to load logo data");
+            return res.json();
+          })
+          .then((cfg) => {
+            const img = document.getElementById("site-logo");
+            if (!img) return;
+            if (cfg.logo_url) {
+              img.src = `/uploads/${cfg.logo_url}`;
+            }
+            if (cfg.logo_height) {
+              img.height = cfg.logo_height;
+            }
+          })
+          .catch((err) => {
+            console.error("Could not load theme logo:", err);
+          });
+
+        fetch("/themestylesdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network error");
+            return res.json();
+          })
+          .then((cfg) => {
+            const topBg = cfg.headerBackgroundColor || "#ffffff";
+            const topBar = document.querySelector(".top-bar");
+            if (topBar) {
+              topBar.style.setProperty("background-color", topBg, "important");
+              topBar.querySelectorAll(
+                "a, span, li, .nice-select .current, .nice-select .option"
+              );
+            }
+
+            const midBg = cfg.headerMainColor || "#ffffff";
+            const midTxt = cfg.headerMainTextColor || "#000000";
+            const headerMid = document.querySelector(".header-middle");
+            if (headerMid) {
+              headerMid.style.setProperty(
+                "background-color",
+                midBg,
+                "important"
+              );
+              headerMid
+                .querySelectorAll(
+                  "a, span, li, .contact-item-list .content span, " +
+                    ".contact-item-list .content a, .contact-item-list .number, " +
+                    ".rr-primary-btn, .nice-select .current, .nice-select .option"
+                )
+                .forEach((el) => {
+                  el.style.setProperty("color", midTxt, "important");
+                });
+            }
+
+            const scrollPercentage =
+              document.getElementById("scroll-percentage");
+            if (scrollPercentage) {
+              if (cfg.backToTopButton === "no") {
+                scrollPercentage.style.display = "none";
+              } else {
+                scrollPercentage.style.display = "block";
+              }
+            }
+          })
+          .catch((err) => {
+            console.error("Could not load theme styles:", err);
+          });
+      });
+    </script>
+
+    <script src="assets/js/vendor/jquary-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/imagesloaded-pkgd.js"></script>
+    <script src="assets/js/vendor/waypoints.min.js"></script>
+    <script src="assets/js/vendor/venobox.min.js"></script>
+    <script src="assets/js/vendor/meanmenu.js"></script>
+    <script src="assets/js/vendor/swiper.min.js"></script>
+    <script src="assets/js/vendor/nice-select.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="/assets/vendor/jquary-3.6.0.min.js"></script>
+  </body>
+</html>

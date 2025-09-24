@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta
+      name="description"
+      content="Review the items in your cart and proceed to secure checkout at Pesco Enjoy a seamless shopping experience with safe payments and fast delivery."
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Your Shopping Cart - Secure Checkout | Pesco</title>
+    <link
+      rel="shortcut icon"
+      href="assets/images/favicon.png"
+      type="image/png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Aoboshi+One&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/fonts/flaticon/flaticon_pesco.css" />
+    <link rel="stylesheet" href="assets/fonts/fontawesome/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/vendor/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="assets/vendor/slick/slick.css" />
+    <link
+      rel="stylesheet"
+      href="assets/vendor/nice-select/css/nice-select.css"
+    />
+    <link
+      rel="stylesheet"
+      href="assets/vendor/magnific-popup/dist/magnific-popup.css"
+    />
+    <link rel="stylesheet" href="assets/vendor/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="assets/vendor/aos/aos.css" />
+    <link rel="stylesheet" href="assets/css/default.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud//");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud//${page}`);
+            }
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud//";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud//${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+  </head>
+
+  <style>
+    .proceed-checks {
+      background-color: #13172b;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 20px 40px;
+      line-height: 16px;
+      border-radius: 50px;
+      transition: all 0.3s ease-in;
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff !important;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .proceed-checks:hover {
+      background-color: #cc0d39 !important;
+    }
+
+    .proceed-checks1 {
+      padding: 20px 30px;
+      border-radius: 50px !important;
+    }
+  </style>
+
+  <body>
+    <div class="preloader">
+      <div class="loader">
+        <img src="assets/images/loader.gif" alt="Loader" />
+      </div>
+    </div>
+
+    <div class="offcanvas__overlay"></div>
+
+    <div class="sidemenu-wrapper-cart">
+      <div class="sidemenu-content">
+        <div class="widget widget-shopping-cart">
+          <h4>My cart</h4>
+          <div class="sidemenu-cart-close"><i class="far fa-times"></i></div>
+          <div class="widget-shopping-cart-content">
+            <ul class="pesco-mini-cart-list"></ul>
+            <div class="cart-mini-total">
+              <div class="cart-total">
+                <span><strong>Subtotal:</strong></span>
+                <span class="amount">
+                  1 × <span><span class="currency">$</span>$0.00</span></span
+                >
+              </div>
+            </div>
+            <div class="cart-button-box">
+              <a href="checkout.html" class="theme-btn style-one"
+                >Proceed to checkout</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header class="header-area">
+      <div class="search-header-main">
+        <div class="container">
+          <div class="search-header-inner">
+            <div class="site-branding">
+              <a href="index.html" class="brand-logo"
+                ><img src="assets/images/logo/logo-main.png" alt="Logo"
+              /></a>
+            </div>
+            <div class="product-search-category">
+              <form action="#">
+                <select class="wide">
+                  <option>All Categories</option>
+                  <option>Man Shirts</option>
+                  <option>Denim Jeans</option>
+                  <option>Casual Suit</option>
+                  <option>Summer Dress</option>
+                  <option>Sweaters</option>
+                  <option>Jackets</option>
+                </select>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder="Enter Search Products"
+                    required
+                  />
+                  <button class="search-btn">
+                    <i class="far fa-search"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="hotline-support item-rtl">
+              <div class="icon">
+                <i class="flaticon-support"></i>
+              </div>
+              <div class="info">
+                <span>24/7 Support</span>
+                <h5><a href="tel:+941234567894">+94 123 4567 894</a></h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-navigation style-one">
+        <div class="container">
+          <div class="primary-menu">
+            <div class="site-branding d-lg-none d-block">
+              <a href="index.html" class="brand-logo"
+                ><img src="assets/images/logo/logo-main.png" alt="Logo"
+              /></a>
+            </div>
+            <div class="nav-inner-menu">
+              <div class="main-categories-wrap d-none d-lg-block">
+                <a class="categories-btn-active" href="#">
+                  <span class="fas fa-list"></span
+                  ><span class="text"
+                    >Products Category<i class="fas fa-angle-down"></i
+                  ></span>
+                </a>
+                <div
+                  class="categories-dropdown-wrap categories-dropdown-active"
+                >
+                  <div class="categori-dropdown-item">
+                    <ul>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/shirt.png"
+                            alt="Shirts"
+                          />Man Shirts</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/denim.png"
+                            alt="Jeans"
+                          />Denim Jeans</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/suit.png"
+                            alt="Suit"
+                          />Casual Suit</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/dress.png"
+                            alt="Dress"
+                          />Summer Dress</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/sweaters.png"
+                            alt="Sweaters"
+                          />Sweaters</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="more_slide_open">
+                    <div class="categori-dropdown-item">
+                      <ul>
+                        <li>
+                          <a href="#"
+                            ><img
+                              src="assets/images/icon/jacket.png"
+                              alt="Jackets"
+                            />Jackets</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="more_categories">
+                    <span class="icon"></span> <span>Show more...</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pesco-nav-main">
+                <div class="pesco-nav-menu">
+                  <div class="nav-search mb-40 d-block d-lg-none">
+                    <div class="form-group">
+                      <input
+                        type="search"
+                        class="form_control"
+                        placeholder="Search Here"
+                        name="search"
+                      />
+                      <button class="search-btn">
+                        <i class="far fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pesco-tabs style-three d-block d-lg-none">
+                    <ul class="nav nav-tabs mb-30">
+                      <li>
+                        <button
+                          class="nav-link active"
+                          data-bs-toggle="tab"
+                          data-bs-target="#nav1"
+                        >
+                          Menu
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          class="nav-link"
+                          data-bs-toggle="tab"
+                          data-bs-target="#nav2"
+                        >
+                          Category
+                        </button>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane fade show active" id="nav1">
+                        <nav class="main-menu">
+                          <ul>
+                            <li class="menu-item has-children">
+                              <a href="#">Home</a>
+                              <ul class="sub-menu">
+                                <li><a href="index.html">Home 01</a></li>
+                                <li><a href="index-2.html">Home 02</a></li>
+                              </ul>
+                            </li>
+                            <li class="menu-item has-children">
+                              <a href="#">Shop</a>
+                              <ul class="sub-menu">
+                                <li><a href="shops-grid.html">Shop Grid</a></li>
+                                <li>
+                                  <a href="shops.html">Shop left Sidebar</a>
+                                </li>
+                                <li>
+                                  <a href="shops-right-sidebar.html"
+                                    >Shop Right Sidebar</a
+                                  >
+                                </li>
+                                <li>
+                                  <a href="shop-details.html"
+                                    >Product Details</a
+                                  >
+                                </li>
+                                <li><a href="cart.html">Cart</a></li>
+                                <li><a href="checkout.html">Checkout</a></li>
+                                <li><a href="wishlists.html">Wishlist</a></li>
+                              </ul>
+                            </li>
+                            <li class="menu-item has-children">
+                              <a href="#">Blog</a>
+                              <ul class="sub-menu">
+                                <li><a href="blogs.html">Our Blog</a></li>
+                                <li>
+                                  <a href="blog-details.html">Blog Details</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="menu-item has-children">
+                              <a href="#">Pages</a>
+                              <ul class="sub-menu">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="faq.html">Faqs</a></li>
+                              </ul>
+                            </li>
+                            <li class="menu-item">
+                              <a href="contact.html">Contact</a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                      <div class="tab-pane fade" id="nav2">
+                        <div class="categori-dropdown-item">
+                          <ul>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/shirt.png"
+                                  alt="Shirts"
+                                />Man Shirts</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/denim.png"
+                                  alt="Jeans"
+                                />Denim Jeans</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/suit.png"
+                                  alt="Suit"
+                                />Casual Suit</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/dress.png"
+                                  alt="Dress"
+                                />Summer Dress</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/sweaters.png"
+                                  alt="Sweaters"
+                                />Sweaters</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hotline-support d-flex d-lg-none mt-30">
+                    <div class="icon">
+                      <i class="flaticon-support"></i>
+                    </div>
+                    <div class="info">
+                      <span>24/7 Support</span>
+                      <h5><a href="tel:+941234567894">+94 123 4567 894</a></h5>
+                    </div>
+                  </div>
+                  <nav class="main-menu d-none d-lg-block">
+                    <ul>
+                      <li class="menu-item has-children">
+                        <a href="#">Home</a>
+                        <ul class="sub-menu">
+                          <li><a href="index.html">Home 01</a></li>
+                          <li><a href="index-2.html">Home 02</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item has-children">
+                        <a href="#">Shop</a>
+                        <ul class="sub-menu">
+                          <li><a href="shops-grid.html">Shop Grid</a></li>
+                          <li><a href="shops.html">Shop left Sidebar</a></li>
+                          <li>
+                            <a href="shops-right-sidebar.html"
+                              >Shop Right Sidebar</a
+                            >
+                          </li>
+                          <li>
+                            <a href="shop-details.html">Product Details</a>
+                          </li>
+                          <li><a href="cart.html">Cart</a></li>
+                          <li><a href="checkout.html">Checkout</a></li>
+                          <li><a href="wishlists.html">Wishlist</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item has-children">
+                        <a href="#">Blog</a>
+                        <ul class="sub-menu">
+                          <li><a href="blogs.html">Our Blog</a></li>
+                          <li><a href="blog-details.html">Blog Details</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item has-children">
+                        <a href="#">Pages</a>
+                        <ul class="sub-menu">
+                          <li><a href="about-us.html">About Us</a></li>
+                          <li><a href="faq.html">Faqs</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="contact.html">Contact</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="nav-right-item style-one">
+              <ul>
+                <li>
+                  <div class="deals d-lg-block d-none">
+                    <i class="far fa-fire-alt"></i>Deal
+                  </div>
+                </li>
+
+                <li>
+                  <a href="wishlists.html">
+                    <div class="wishlist-btn d-lg-block d-none">
+                      <i class="far fa-heart"></i>
+                      <span class="pro-count" id="pro-counts1">00</span>
+                    </div>
+                  </a>
+                </li>
+
+                <li>
+                  <div class="cart-button d-flex align-items-center">
+                    <div class="icon">
+                      <i class="fas fa-shopping-bag"></i
+                      ><span class="pro-count" id="pro-counts">00</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="navbar-toggler d-block d-lg-none">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-bg">
+      <section class="page-banner">
+        <div class="page-banner-wrapper p-r z-1">
+          <svg
+            class="lineanm"
+            viewBox="0 0 1920 347"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              class="line"
+              d="M-39 345.187C70 308.353 397.628 293.477 436 145.186C490 -63.5 572 -57.8156 688 255.186C757.071 441.559 989.5 -121.315 1389 98.6856C1708.6 274.686 1940.33 156.519 1964.5 98.6856"
+              stroke="white"
+              stroke-width="3"
+              stroke-dasharray="2 2"
+            />
+          </svg>
+          <div class="page-image">
+            <img src="assets/images/bg/page-img-1.png" alt="image" />
+          </div>
+          <svg class="page-svg" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M21.1742 33.0065C14.029 35.2507 7.5486 39.0636 0 40.7339V86H1937V64.9942C1933.1 60.1623 1912.65 65.1777 1904.51 62.6581C1894.22 59.4678 1884.93 55.0079 1873.77 52.7742C1861.2 50.2585 1823.41 36.3854 1811.99 39.9252C1805.05 42.0727 1796.94 37.6189 1789.36 36.6007C1769.18 33.8879 1747.19 31.1848 1726.71 29.7718C1703.81 28.1919 1678.28 27.0012 1657.53 34.4442C1636.45 42.005 1606.07 60.856 1579.5 55.9191C1561.6 52.5906 1543.41 47.0959 1528.45 56.9075C1510.85 68.4592 1485.74 74.2518 1460.44 76.136C1432.32 78.2297 1408.53 70.6879 1384.73 62.2987C1339.52 46.361 1298.19 27.1677 1255.08 9.28534C1242.58 4.10111 1214.68 15.4762 1200.55 16.6533C1189.77 17.5509 1181.74 15.4508 1172.12 12.8795C1152.74 7.70033 1133.23 2.88525 1111.79 2.63621C1088.85 2.36971 1073.94 7.88289 1056.53 15.8446C1040.01 23.3996 1027.48 26.1777 1007.8 26.1777C993.757 26.1777 975.854 25.6887 962.844 28.9632C941.935 34.2258 932.059 38.7874 914.839 28.6037C901.654 20.8061 866.261 -2.56499 844.356 7.12886C831.264 12.9222 820.932 21.5146 807.663 27.5255C798.74 31.5679 779.299 42.0561 766.33 39.1166C758.156 37.2637 751.815 31.6349 745.591 28.2443C730.967 20.2774 715.218 13.2948 695.846 10.723C676.168 8.11038 658.554 23.1787 641.606 27.4357C617.564 33.4742 602.283 27.7951 579.244 27.7951C568.142 27.7951 548.414 30.4002 541.681 23.6618C535.297 17.2722 530.162 9.74921 523.263 3.71444C517.855 -1.01577 505.798 -0.852017 498.318 2.09709C479.032 9.7007 453.07 10.0516 431.025 9.64475C407.556 9.21163 368.679 1.61612 346.618 10.3636C319.648 21.0575 291.717 53.8338 254.67 45.2266C236.134 40.9201 225.134 37.5813 204.78 40.7339C186.008 43.6415 171.665 50.7785 156.051 57.3567C146.567 61.3523 152.335 52.6281 151.12 47.9222C149.535 41.7853 139.994 34.5585 132.991 30.4008C120.206 22.8098 90.2848 24.3246 74.2546 24.6502C55.5552 25.0301 37.9201 27.747 21.1742 33.0065Z"
+              fill="#FFFAF3"
+            />
+          </svg>
+          <div class="shape shape-one"><span></span></div>
+          <div class="shape shape-two"><span></span></div>
+          <div class="shape shape-three">
+            <span
+              ><img src="assets/images/shape/curved-arrow.png" alt=""
+            /></span>
+          </div>
+          <div class="shape shape-four">
+            <span><img src="assets/images/shape/stars.png" alt="" /></span>
+          </div>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="page-banner-content">
+                  <h1>Cart Page</h1>
+                  <ul class="breadcrumb-link">
+                    <li><a href="index.html">Home</a></li>
+                    <li><i class="far fa-long-arrow-right"></i></li>
+                    <li class="active">Cart</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cart-page-section pt-120 pb-80">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-8">
+              <div
+                class="cart-wrapper mb-40"
+                data-aos="fade-up"
+                data-aos-duration="1200"
+              >
+                <h3 class="mb-20">Total Cart Item: 0</h3>
+                <div class="cart-list table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th><i class="fas fa-tshirt"></i>Products Details</th>
+                        <th><i class="fas fa-sack-dollar"></i>Price</th>
+                        <th style="text-align: center">
+                          <i class="fas fa-eye"></i>Quantity
+                        </th>
+                        <th style="text-align: right">
+                          <i class="fas fa-money-bill"></i>Total
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div
+                  class="cart-bottom d-flex align-items-center justify-content-between mt-40"
+                >
+                  <div class="proceed-checks proceed-checks1">
+                    <li class="menu-item proceced-checkout">
+                      <a href="shops-grid.html">Continue Shopping</a>
+                    </li>
+                  </div>
+
+                  <div class="cl-cart">
+                    <button class="theme-btn style-one">Clear Cart</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4">
+              <div class="cart-sidebar-area">
+                <div
+                  class="cart-widget coupon-box-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-duration="1200"
+                >
+                  <h4>Use Coupon Code</h4>
+                  <p>Enter your coupon code if you have one.</p>
+                  <form>
+                    <input type="text" class="form_control" required />
+                    <button class="thme-btn style-one">Apply</button>
+                  </form>
+                </div>
+
+                <div
+                  class="cart-widget cart-total-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-duration="1400"
+                >
+                  <h4>Cart Totals</h4>
+                  <div class="sub-total">
+                    <h5>Subtotal <span class="price">$0.00</span></h5>
+                  </div>
+                  <div class="shipping-cart">
+                    <h4>Shipping</h4>
+                    <div class="single-radio">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="radio"
+                        checked
+                        value="Slim Fit"
+                        id="radio1"
+                      />
+                      <label class="form-check-label" for="radio1">
+                        Free Delivery <span class="price">$0.00</span>
+                      </label>
+                    </div>
+                    <div class="single-radio">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="radio"
+                        value="Slim Fit"
+                        id="radio2"
+                      />
+                      <label class="form-check-label" for="radio1">
+                        Flat Rate <span class="price">$0.00</span>
+                      </label>
+                    </div>
+                    <div class="single-radio">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="radio"
+                        value="Slim Fit"
+                        id="radio3"
+                      />
+                      <label class="form-check-label" for="radio3">
+                        Local Area <span class="price">$0.00</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="price-total">
+                    <h5>Total <span class="price">$990.00</span></h5>
+                  </div>
+
+                  <!-- <div class="proceed-checks">
+                    <li class="menu-item proceced-checkout">
+                      <a href="checkout.html">Proceed to checkout</a>
+                    </li>
+                  </div> -->
+
+                  <a id="checkout-btn" href="checkout.html"
+                    >Proceed to checkout</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const userId = localStorage.getItem("user_id");
+          if (!userId) return;
+
+          const tbody = document.querySelector(".cart-list tbody");
+          const subtotalEl = document.querySelector(".sub-total .price");
+          const totalEl = document.querySelector(".price-total .price");
+          const headerEl = document.querySelector(".cart-wrapper h3");
+
+          const sidebarList = document.querySelector(".pesco-mini-cart-list");
+          const sidebarSub = document.querySelector(".cart-mini-total .amount");
+
+          const cartBadge = document.querySelector("#pro-counts");
+          const wishBadge = document.querySelector("#pro-counts1");
+
+          const couponInput = document.querySelector(
+            ".coupon-box-widget input.form_control"
+          );
+          const couponBtn = document.querySelector(".coupon-box-widget button");
+
+          const mainCheckout = document.getElementById("checkout-btn");
+          const sideCheckout = document.querySelector(
+            ".cart-button-box a[href*='checkout.html']"
+          );
+
+          let currentDiscount = 0;
+
+          function showBanner(msg, type = "info") {
+            const b = document.createElement("div");
+            b.className = `banner ${type}`;
+            b.textContent = msg;
+            Object.assign(b.style, {
+              position: "fixed",
+              top: "10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "10px 20px",
+              background: type === "success" ? "#4caf50" : "#f44336",
+              color: "#fff",
+              borderRadius: "4px",
+              zIndex: 9999,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+            });
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 3000);
+          }
+
+          async function fetchUniqueCart() {
+            const items = await fetch(`/allcartdata?user_id=${userId}`).then(
+              (r) => r.json()
+            );
+            const map = {};
+            items.forEach((i) => {
+              if (!map[i.name]) {
+                map[i.name] = {
+                  ...i,
+                  price: parseFloat(i.price_sale),
+                  quantity: parseInt(i.quantity, 10),
+                };
+              } else {
+                map[i.name].quantity += parseInt(i.quantity, 10);
+              }
+            });
+            return Object.values(map);
+          }
+
+          async function renderCart() {
+            const unique = await fetchUniqueCart();
+
+            if (!unique.length) {
+              tbody.innerHTML = `<tr><td colspan="4" class="text-center">Your cart is empty.</td></tr>`;
+            } else {
+              tbody.innerHTML = "";
+              unique.forEach((item) => {
+                const rowTotal = (item.price * item.quantity).toFixed(2);
+                tbody.insertAdjacentHTML(
+                  "beforeend",
+                  `
+                  <tr data-id="${item.id}" data-price="${item.price}">
+                    <td>
+                      <div class="product-thumb-item">
+                        <div class="product-img">
+                          <img src="/uploads/${item.image}" alt="${
+                    item.name
+                  }" />
+                        </div>
+                        <div class="product-info">
+                          <h4 class="title"><a href="#">${item.name}</a></h4>
+                          <div class="product-meta"><span>${
+                            item.store
+                          }</span></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="price"><span class="currency">$</span>${item.price.toFixed(
+                        2
+                      )}</div>
+                    </td>
+                    <td>
+                      <div class="action-cart">
+                        <div class="quantity-input">
+                          <button class="quantity-down"><i class="far fa-minus"></i></button>
+                          <input class="quantity" type="text" value="${
+                            item.quantity
+                          }" />
+                          <button class="quantity-up"><i class="far fa-plus"></i></button>
+                        </div>
+                        <div class="cart-remove"><i class="far fa-times"></i></div>
+                      </div>
+                    </td>
+                    <td style="text-align:right">
+                      <div class="total-price">
+                        <span class="currency">$</span><span class="item-total">${rowTotal}</span>
+                      </div>
+                    </td>
+                  </tr>
+                `
+                );
+              });
+            }
+
+            if (!unique.length) {
+              sidebarList.innerHTML = `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
+              sidebarSub.textContent = "$0.00";
+            } else {
+              sidebarList.innerHTML = unique
+                .map((item) => {
+                  const pr = item.price.toFixed(2);
+                  const qty = item.quantity;
+                  return `
+                  <li class="sidebar-cart-item" data-id="${item.id}" data-price="${item.price}" data-qty="${qty}" data-image="${item.image}">
+                    <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+                    <a href="#"><img src="/uploads/${item.image}" alt="${item.name}" /> ${item.name}</a>
+                    <span class="quantity">${qty} × <span><span class="currency">$</span>${pr}</span></span>
+                  </li>
+                `;
+                })
+                .join("");
+            }
+
+            updateUI();
+          }
+
+          function updateUI() {
+            let sum = 0,
+              qtySum = 0;
+            tbody.querySelectorAll("tr[data-id]").forEach((r) => {
+              const q = parseInt(r.querySelector(".quantity").value, 10);
+              const p = parseFloat(r.dataset.price);
+              sum += q * p;
+              qtySum += q;
+            });
+            const discounted = sum * (1 - currentDiscount / 100);
+
+            subtotalEl.textContent = `$${sum.toFixed(2)}`;
+            totalEl.textContent = `$${discounted.toFixed(2)}`;
+            sidebarSub.textContent = `$${discounted.toFixed(2)}`;
+            cartBadge.textContent = String(qtySum).padStart(2, "0");
+            headerEl.textContent = `Total Cart Item: ${
+              tbody.querySelectorAll("tr[data-id]").length
+            }`;
+          }
+
+          async function deleteItem(id) {
+            const res = await fetch(`/deletecart/${id}`, { method: "DELETE" });
+            const json = await res.json();
+            if (!res.ok || !json.success)
+              throw new Error(json.message || "Delete failed");
+            showBanner("Product removed from cart.", "success");
+            await renderCart();
+          }
+
+          tbody.addEventListener("click", (e) => {
+            const tr = e.target.closest("tr[data-id]");
+            if (!tr) return;
+            const inp = tr.querySelector(".quantity");
+            let qty = parseInt(inp.value, 10);
+
+            if (e.target.closest(".quantity-up")) {
+              inp.value = ++qty;
+            } else if (e.target.closest(".quantity-down")) {
+              if (qty > 1) inp.value = --qty;
+              else return;
+            } else if (e.target.closest(".cart-remove")) {
+              deleteItem(tr.dataset.id).catch((err) =>
+                showBanner(err.message, "error")
+              );
+              return;
+            } else return;
+
+            tr.querySelector(".item-total").textContent = (
+              parseFloat(tr.dataset.price) * qty
+            ).toFixed(2);
+            updateUI();
+          });
+
+          tbody.addEventListener("input", (e) => {
+            if (!e.target.classList.contains("quantity")) return;
+            const tr = e.target.closest("tr[data-id]");
+            let qty = Math.max(1, parseInt(e.target.value, 10) || 1);
+            e.target.value = qty;
+            tr.querySelector(".item-total").textContent = (
+              parseFloat(tr.dataset.price) * qty
+            ).toFixed(2);
+            updateUI();
+          });
+
+          sidebarList.addEventListener("click", (e) => {
+            const rem = e.target.closest(".remove-cart");
+            if (!rem) return;
+            e.preventDefault();
+            const id = rem.closest("li.sidebar-cart-item").dataset.id;
+            deleteItem(id).catch((err) => showBanner(err.message, "error"));
+          });
+
+          couponBtn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const code = couponInput.value.trim();
+            if (!code)
+              return showBanner("Please enter a coupon code.", "error");
+            try {
+              const discounts = await fetch("/discountdata").then((r) =>
+                r.json()
+              );
+              const now = new Date();
+              const disc = discounts.find(
+                (d) => d.couponcode === code && d.display === "yes"
+              );
+              if (!disc) return showBanner("Invalid coupon code.", "error");
+              if (new Date(disc.end_date) < now)
+                return showBanner("Coupon expired.", "error");
+              if (disc.coupontype.toLowerCase().includes("percentage")) {
+                currentDiscount = parseFloat(disc.conditions);
+                await renderCart();
+                showBanner(`${currentDiscount}% discount applied.`, "success");
+              } else {
+                showBanner("Coupon type not supported.", "error");
+              }
+            } catch {
+              showBanner("Could not validate coupon.", "error");
+            }
+          });
+
+          async function updateWishlistBadge() {
+            try {
+              const items = await fetch(`/wishlistdata?user_id=${userId}`).then(
+                (r) => r.json()
+              );
+              const uniq = [...new Set(items.map((i) => i.product_name))];
+              wishBadge.textContent = String(uniq.length).padStart(2, "0");
+            } catch {
+              wishBadge.textContent = "00";
+            }
+          }
+
+          if (mainCheckout) {
+            mainCheckout.addEventListener("click", (e) => {
+              e.preventDefault();
+              const rows = Array.from(
+                tbody.querySelectorAll("tr[data-id]")
+              ).map((tr) => {
+                const id = tr.dataset.id;
+                const name = tr.querySelector(".title a").textContent.trim();
+                const img = tr
+                  .querySelector(".product-img img")
+                  .src.split("/")
+                  .pop();
+                const price = parseFloat(tr.dataset.price);
+                const qty = parseInt(tr.querySelector(".quantity").value, 10);
+                const lineTotal = parseFloat(
+                  tr.querySelector(".item-total").textContent
+                );
+                return {
+                  id,
+                  name,
+                  image: img,
+                  price,
+                  quantity: qty,
+                  lineTotal,
+                };
+              });
+              const subtotal = rows.reduce((sum, r) => sum + r.lineTotal, 0);
+              const total = parseFloat(totalEl.textContent.replace("$", ""));
+              localStorage.setItem(
+                "checkout_cart",
+                JSON.stringify({
+                  items: rows,
+                  subtotal: parseFloat(subtotal.toFixed(2)),
+                  total: parseFloat(total.toFixed(2)),
+                })
+              );
+              window.location.href = mainCheckout.href;
+            });
+          }
+
+          if (sideCheckout) {
+            sideCheckout.addEventListener("click", (e) => {
+              e.preventDefault();
+              const items = Array.from(
+                sidebarList.querySelectorAll("li.sidebar-cart-item")
+              )
+                .filter((li) => !li.classList.contains("sidebar-cart-empty"))
+                .map((li) => {
+                  const id = li.dataset.id;
+                  const price = parseFloat(li.dataset.price);
+                  const quantity = parseInt(li.dataset.qty, 10);
+                  const name = li
+                    .querySelector("a:not(.remove-cart)")
+                    .textContent.trim();
+                  const image = li.dataset.image;
+                  return {
+                    id,
+                    name,
+                    image,
+                    price,
+                    quantity,
+                    lineTotal: price * quantity,
+                  };
+                });
+              const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
+              const total = subtotal;
+              localStorage.setItem(
+                "checkout_cart",
+                JSON.stringify({
+                  items,
+                  subtotal: parseFloat(subtotal.toFixed(2)),
+                  total: parseFloat(total.toFixed(2)),
+                })
+              );
+              window.location.href = sideCheckout.href;
+            });
+          }
+
+          renderCart();
+          updateWishlistBadge();
+          setInterval(updateWishlistBadge, 1000);
+        });
+      </script>
+
+      <section class="newsletter-section pb-95">
+        <div class="container">
+          <div
+            class="newsletter-wrapper white-bg p-r z-1"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+          >
+            <div class="newsletter-shape pattern-one">
+              <span
+                ><img
+                  src="assets/images/newsletter/pattern-1.png"
+                  alt="Pattern Shape"
+              /></span>
+            </div>
+            <div class="newsletter-shape pattern-two">
+              <span
+                ><img
+                  src="assets/images/newsletter/pattern-2.png"
+                  alt="Pattern Shape"
+              /></span>
+            </div>
+            <div class="newsletter-shape shape-one">
+              <span
+                ><img src="assets/images/newsletter/shape-1.png" alt="Shape"
+              /></span>
+            </div>
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="newsletter-content-box">
+                  <span class="sub-text">Our Newsletter</span>
+                  <h3>
+                    Get weekly update. Sign up and get up to
+                    <span>20% off</span> your first purchase
+                  </h3>
+                  <form>
+                    <div class="form-group">
+                      <input
+                        type="email"
+                        class="form_control"
+                        placeholder="Write your Email Address"
+                        name="email"
+                        required
+                      />
+                      <button class="theme-btn style-one" type="submit">
+                        Subscribe
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="newsletter-image">
+                  <img
+                    src="https://avatars.mds.yandex.net/i?id=802770c3379c394673fcc33bea11d6b7952ceffd-4012107-images-thumbs&n=13"
+                    alt="Image"
+                    style="width: 511px; height: 360px"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector(".newsletter-section form");
+        if (!form) return;
+
+        function showBanner(msg, type = "success") {
+          const b = document.createElement("div");
+          b.className = `banner ${type}`;
+          b.textContent = msg;
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            background: type === "success" ? "#4caf50" : "#f44336",
+            color: "#fff",
+            borderRadius: "4px",
+            zIndex: 9999,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          });
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const input = form.querySelector('input[name="email"]');
+          const email = input.value.trim();
+          if (!email) {
+            showBanner("Please enter a valid email.", "error");
+            return;
+          }
+
+          try {
+            const res = await fetch("/newsletterpost", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+            const text = await res.text();
+            if (res.ok) {
+              showBanner("Subscribed successfully!", "success");
+              form.reset();
+            } else {
+              showBanner(text || "Subscription failed.", "error");
+            }
+          } catch (err) {
+            console.error("Newsletter error:", err);
+            showBanner("Network error, please try again.", "error");
+          }
+        });
+      });
+    </script>
+
+    <footer class="footer-main">
+      <div class="footer-bg-wrapper gray-light-bg pt-0">
+        <div class="footer-shape shape-one">
+          <span
+            ><img src="assets/images/footer/shape-1.png" alt="shape"
+          /></span>
+        </div>
+        <div class="footer-widget-area pb-80">
+          <div class="container">
+            <div class="row">
+              <div class="col-xl-3 col-sm-6">
+                <div
+                  class="footer-widget about-company-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-delay="10"
+                  data-aos-duration="1000"
+                >
+                  <div class="widget-content">
+                    <a href="index.html" class="footer-logo"
+                      ><img
+                        src="assets/images/logo/logo-main.png"
+                        alt="Brand Logo"
+                    /></a>
+                    <p>
+                      Pesco is an exciting International brand we provide high
+                      quality cloths
+                    </p>
+                    <ul class="ct-info-list mb-30">
+                      <li>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:info@mydomain.com">info@mydomain.com</a>
+                      </li>
+                      <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="mailto:info@mydomain.com">info@mydomain.com</a>
+                      </li>
+                    </ul>
+                    <ul class="social-link">
+                      <li>
+                        <span>Find Us:</span>
+                      </li>
+                      <li>
+                        <a href="https://www.facebook.com/" target="_blank"
+                          ><i class="fab fa-facebook-f"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="https://www.instagram.com/" target="_blank"
+                          ><i class="fab fa-instagram"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="https://in.linkedin.com/" target="_blank"
+                          ><i class="fab fa-linkedin-in"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="https://x.com/" target="_blank"
+                          ><i class="fab fa-twitter"></i
+                        ></a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 col-sm-6">
+                <div
+                  class="footer-widget footer-nav-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-delay="15"
+                  data-aos-duration="1200"
+                >
+                  <div class="widget-content">
+                    <h4 class="widget-title">Customer Services</h4>
+                    <ul class="widget-menu">
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Collections & Delivery</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Returns & Refunds</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Terms & Conditions</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Delivery Return</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Store Locations</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 col-sm-6">
+                <div
+                  class="footer-widget footer-nav-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-delay="20"
+                  data-aos-duration="1400"
+                >
+                  <div class="widget-content">
+                    <h4 class="widget-title">Quick Link</h4>
+                    <ul class="widget-menu">
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Privacy Policy</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Terms Of Use</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="faq.html">FAQ</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="contact.html">Contact</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Login / Register</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-sm-6">
+                <div
+                  class="footer-widget footer-recent-post-widget"
+                  data-aos="fade-up"
+                  data-aos-delay="25"
+                  data-aos-duration="1600"
+                >
+                  <h4 class="widget-title">Recent Post</h4>
+                  <div class="widget-content" id="recent-posts-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="copyright-area">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-lg-6">
+                <div class="copyright-text">
+                  <p>
+                    &copy; 2025. All rights reserved by <span>Pixelfit</span>
+                  </p>
+                </div>
+
+                <script>
+                  document.addEventListener("DOMContentLoaded", () => {
+                    const p = document.querySelector(".copyright-text p");
+                    if (!p) return;
+                    p.innerHTML = p.innerHTML.replace(
+                      /\b\d{4}\b/,
+                      new Date().getFullYear()
+                    );
+                  });
+                </script>
+              </div>
+
+              <div class="col-lg-6">
+                <div class="payment-method text-lg-end">
+                  <a href="#"
+                    ><img
+                      src="assets/images/footer/payment-method.png"
+                      alt="payment-method"
+                  /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchForm = document.querySelector(
+          ".product-search-category form"
+        );
+        const searchInput = searchForm.querySelector('input[type="text"]');
+
+        const dropdown = document.createElement("div");
+        dropdown.className = "header-search-autocomplete";
+        Object.assign(dropdown.style, {
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          right: 0,
+          background: "#fff",
+          border: "1px solid #ddd",
+          zIndex: 1000,
+          maxHeight: "300px",
+          overflowY: "auto",
+          display: "none",
+        });
+        searchForm.style.position = "relative";
+        searchForm.appendChild(dropdown);
+
+        let timer;
+        searchInput.addEventListener("input", () => {
+          clearTimeout(timer);
+          const q = searchInput.value.trim();
+          if (q.length < 2) {
+            dropdown.style.display = "none";
+            return;
+          }
+          timer = setTimeout(() => {
+            fetch("/productpagedata")
+              .then((r) => r.json())
+              .then((products) => {
+                const matches = products
+                  .filter((p) => p.name.toLowerCase().includes(q.toLowerCase()))
+                  .slice(0, 5);
+
+                if (!matches.length) {
+                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                } else {
+                  dropdown.innerHTML =
+                    matches
+                      .map((p) => {
+                        const priceHTML = p.price_sale
+                          ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price}</del>`
+                          : `<strong class="text-secondary fw-bold" style="color:#000">${p.price}</strong>`;
+
+                        return `
+                          <div class="autocomplete-item" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
+                            <img src="/uploads/${p.image}" 
+                                alt="${p.name}" 
+                                style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                            <div>
+                              <div style="font-weight:600;color:#333" class="text-dark fw-bold">${p.name}</div>
+                              <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
+                            </div>
+                          </div>
+                        `;
+                      })
+                      .join("") +
+                    `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
+                        Show all results
+                      </div>`;
+                }
+                dropdown.style.display = "block";
+              })
+              .catch(() => {
+                dropdown.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                dropdown.style.display = "block";
+              });
+          }, 300);
+        });
+
+        dropdown.addEventListener("click", (e) => {
+          const item = e.target.closest(".autocomplete-item");
+          if (item) {
+            const name = item.querySelector("div > div").textContent;
+            window.location.href = `shops-grid.html?search=${encodeURIComponent(
+              name
+            )}`;
+            return;
+          }
+          if (e.target.closest(".autocomplete-show-all")) {
+            const q = searchInput.value.trim();
+            window.location.href = `shops-grid.html?search=${encodeURIComponent(
+              q
+            )}`;
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!searchForm.contains(e.target)) {
+            dropdown.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        fetch("/blogpostdata")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch blog data.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const topPosts = data.slice(0, 3);
+
+            const container = document.getElementById("recent-posts-container");
+
+            topPosts.forEach((post) => {
+              const postHTML = `
+                        <div class="recent-post-item">
+                                              <div class="thumb">
+                      <a href="blog-details.html?id=${
+                        post.id
+                      }" class="w-100 h-100">
+                      <img src="/uploads/${post.image}" alt="post thumb" />
+                      </a>
+                    </div>
+                          <div class="content">
+                            <h4>
+                             <a href="blog-details.html?id=${post.id}">${
+                post.name
+              }</a>
+                            </h4>
+                            <span><a href="blog-details.html?id=${
+                              post.id
+                            }">${formatDate(post.date)}</a></span>
+                          </div>
+                        </div>
+                      `;
+              container.insertAdjacentHTML("beforeend", postHTML);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading blog posts:", error);
+          });
+
+        function formatDate(dateStr) {
+          const date = new Date(dateStr);
+          const options = { year: "numeric", month: "long", day: "numeric" };
+          return date.toLocaleDateString("en-US", options);
+        }
+      });
+    </script>
+
+    <div class="back-to-top"><i class="far fa-angle-up"></i></div>
+    <script src="assets/vendor/jquery-3.7.1.min.js"></script>
+    <script src="assets/vendor/popper/popper.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/vendor/slick/slick.min.js"></script>
+    <script src="assets/vendor/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
+    <script src="assets/vendor/nice-select/js/jquery.nice-select.min.js"></script>
+    <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
+    <script src="assets/vendor/simplyCountdown.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/js/theme.js"></script>
+  </body>
+</html>

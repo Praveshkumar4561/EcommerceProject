@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="eCommerce,shop,fashion" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title></title>
+    <link
+      rel="shortcut icon"
+      href="assets/images/favicon.png"
+      type="image/png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Aoboshi+One&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/fonts/flaticon/flaticon_pesco.css" />
+    <link rel="stylesheet" href="assets/fonts/fontawesome/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="assets/vendor/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="assets/vendor/slick/slick.css" />
+    <link
+      rel="stylesheet"
+      href="assets/vendor/nice-select/css/nice-select.css"
+    />
+    <link
+      rel="stylesheet"
+      href="assets/vendor/magnific-popup/dist/magnific-popup.css"
+    />
+    <link rel="stylesheet" href="assets/vendor/jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" href="assets/vendor/aos/aos.css" />
+    <link rel="stylesheet" href="assets/css/default.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"
+    />
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud//");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud//${page}`);
+            }
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud//";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud//${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/themeoptionsdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Fetch failed");
+            return res.json();
+          })
+          .then((data) => {
+            let titleTag = document.head.querySelector("title");
+            if (!titleTag) {
+              titleTag = document.createElement("title");
+              document.head.appendChild(titleTag);
+            }
+            titleTag.textContent =
+              data.site_title || data.seo_title || "Website";
+
+            let desc = document.querySelector('meta[name="description"]');
+            if (!desc) {
+              desc = document.createElement("meta");
+              desc.name = "description";
+              document.head.appendChild(desc);
+            }
+            desc.content = data.seo_description || "";
+
+            let og = document.querySelector('meta[property="og:image"]');
+            if (!og) {
+              og = document.createElement("meta");
+              og.setAttribute("property", "og:image");
+              document.head.appendChild(og);
+            }
+            og.content = data.seo_og_image_url || "";
+
+            const url = `/uploads/${
+              data.lazy_placeholder_image
+            }?v=${Date.now()}`;
+            const oldIcon = document.querySelector(
+              'link[rel="icon"], link[rel="shortcut icon"]'
+            );
+            if (oldIcon) oldIcon.remove();
+
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.type = "image/png";
+            link.href = url;
+            document.head.appendChild(link);
+          })
+          .catch((e) => console.error("Theme load error:", e));
+      });
+    </script>
+  </head>
+
+  <style>
+    .post-thumbnails img {
+      width: 700px;
+      height: 380px;
+      object-fit: cover;
+    }
+
+    .post-content1 img {
+      width: 330px !important;
+      height: 200px !important;
+      object-fit: cover;
+    }
+
+    .post-content2 img {
+      width: 342px !important;
+      height: 223px !important;
+      object-fit: cover;
+    }
+
+    @media (max-width: 576px) {
+      .post-content1 img {
+        width: 100% !important;
+        height: 200px !important;
+      }
+
+      .post-content2 img {
+        width: 100% !important;
+        height: 200px !important;
+      }
+    }
+
+    .deal-week img {
+      width: 775px;
+      height: 590px;
+    }
+
+    .simply-countdown {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .countdown-section {
+      text-align: center;
+      border: 2px solid #ddd;
+      border-radius: 50%;
+      width: 96px;
+      height: 94px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .countdown-amount {
+      font-size: 32px;
+      font-weight: 900;
+      color: #1e1e1e;
+    }
+    .countdown-label {
+      font-size: 14px;
+      margin-top: 2px;
+      color: #888;
+      font-weight: 900;
+    }
+
+    .product-thumbnail .cart-button {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .product-thumbnail:hover .cart-button {
+      opacity: 1;
+    }
+
+    .category-img img {
+      width: 262px;
+      height: 250px;
+    }
+
+    .category-item.style-one.text-center {
+      margin-bottom: 20px;
+    }
+
+    .banner-img1 img {
+      width: 338px;
+      height: 357px;
+    }
+  </style>
+
+  <body>
+    <div class="preloader">
+      <div class="loader">
+        <img src="assets/images/loader.gif" alt="Loader" />
+      </div>
+    </div>
+
+    <div class="offcanvas__overlay"></div>
+
+    <div class="sidemenu-wrapper-cart">
+      <div class="sidemenu-content">
+        <div class="widget widget-shopping-cart">
+          <h4>My cart</h4>
+          <div class="sidemenu-cart-close"><i class="far fa-times"></i></div>
+          <div class="widget-shopping-cart-content">
+            <ul class="pesco-mini-cart-list"></ul>
+            <div class="cart-mini-total">
+              <div class="cart-total">
+                <span><strong>Subtotal:</strong></span>
+                <span class="amount"
+                  >1 × <span><span class="currency">$</span>940.00</span></span
+                >
+              </div>
+            </div>
+            <div class="cart-button-box">
+              <a href="checkout.html" class="theme-btn style-one"
+                >Proceed to checkout</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <header class="header-area">
+      <div class="search-header-main">
+        <div class="container">
+          <div class="search-header-inner">
+            <div class="site-branding">
+              <a href="index.html" class="brand-logo"
+                ><img src="assets/images/logo/logo-main.png" alt="Logo"
+              /></a>
+            </div>
+            <div class="product-search-category">
+              <form action="#">
+                <select class="wide">
+                  <option>All Categories</option>
+                  <option>Man Shirts</option>
+                  <option>Denim Jeans</option>
+                  <option>Casual Suit</option>
+                  <option>Summer Dress</option>
+                  <option>Sweaters</option>
+                  <option>Jackets</option>
+                </select>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder="Enter Search Products"
+                    required
+                  />
+                  <button class="search-btn">
+                    <i class="far fa-search"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="hotline-support item-rtl">
+              <div class="icon">
+                <i class="flaticon-support"></i>
+              </div>
+              <div class="info">
+                <span>24/7 Support</span>
+                <h5><a href="tel:+941234567894">+94 123 4567 894</a></h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-navigation style-one">
+        <div class="container">
+          <div class="primary-menu">
+            <div class="site-branding d-lg-none d-block">
+              <a href="index.html" class="brand-logo"
+                ><img src="assets/images/logo/logo-main.png" alt="Logo"
+              /></a>
+            </div>
+            <div class="nav-inner-menu">
+              <div class="main-categories-wrap d-none d-lg-block">
+                <a class="categories-btn-active" href="#">
+                  <span class="fas fa-list"></span
+                  ><span class="text"
+                    >Products Category<i class="fas fa-angle-down"></i
+                  ></span>
+                </a>
+                <div
+                  class="categories-dropdown-wrap categories-dropdown-active"
+                >
+                  <div class="categori-dropdown-item">
+                    <ul>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/shirt.png"
+                            alt="Shirts"
+                          />Man Shirts</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/denim.png"
+                            alt="Jeans"
+                          />Denim Jeans</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/suit.png"
+                            alt="Suit"
+                          />Casual Suit</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/dress.png"
+                            alt="Dress"
+                          />Summer Dress</a
+                        >
+                      </li>
+                      <li>
+                        <a href="shops.html">
+                          <img
+                            src="assets/images/icon/sweaters.png"
+                            alt="Sweaters"
+                          />Sweaters</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="more_slide_open">
+                    <div class="categori-dropdown-item">
+                      <ul>
+                        <li>
+                          <a href="#"
+                            ><img
+                              src="assets/images/icon/jacket.png"
+                              alt="Jackets"
+                            />Jackets</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="more_categories">
+                    <span class="icon"></span> <span>Show more...</span>
+                  </div>
+                </div>
+              </div>
+              <div class="pesco-nav-main">
+                <div class="pesco-nav-menu">
+                  <div class="nav-search mb-40 d-block d-lg-none">
+                    <div class="form-group">
+                      <input
+                        type="search"
+                        class="form_control"
+                        placeholder="Search Here"
+                        name="search"
+                      />
+                      <button class="search-btn">
+                        <i class="far fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pesco-tabs style-three d-block d-lg-none">
+                    <ul class="nav nav-tabs mb-30" role="tablist">
+                      <li>
+                        <button
+                          class="nav-link active"
+                          data-bs-toggle="tab"
+                          data-bs-target="#nav1"
+                          role="tab"
+                        >
+                          Menu
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          class="nav-link"
+                          data-bs-toggle="tab"
+                          data-bs-target="#nav2"
+                          role="tab"
+                        >
+                          Category
+                        </button>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane fade show active" id="nav1">
+                        <nav class="main-menu">
+                          <ul>
+                            <li class="menu-item has-children">
+                              <a href="#">Home</a>
+                              <ul class="sub-menu">
+                                <li><a href="index.html">Home 01</a></li>
+                                <li><a href="index-2.html">Home 02</a></li>
+                              </ul>
+                            </li>
+                            <li class="menu-item has-children">
+                              <a href="#">Shop</a>
+                              <ul class="sub-menu">
+                                <li><a href="shops-grid.html">Shop Grid</a></li>
+                                <li>
+                                  <a href="shops.html">Shop left Sidebar</a>
+                                </li>
+                                <li>
+                                  <a href="shops-right-sidebar.html"
+                                    >Shop Right Sidebar</a
+                                  >
+                                </li>
+                                <li>
+                                  <a href="shop-details.html"
+                                    >Product Details</a
+                                  >
+                                </li>
+                                <li><a href="cart.html">Cart</a></li>
+                                <li><a href="checkout.html">Checkout</a></li>
+                                <li><a href="wishlists.html">Wishlist</a></li>
+                              </ul>
+                            </li>
+                            <li class="menu-item has-children">
+                              <a href="#">Blog</a>
+                              <ul class="sub-menu">
+                                <li><a href="blogs.html">Our Blog</a></li>
+                                <li>
+                                  <a href="blog-details.html">Blog Details</a>
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="menu-item has-children">
+                              <a href="#">Pages</a>
+                              <ul class="sub-menu">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="faq.html">Faqs</a></li>
+                              </ul>
+                            </li>
+                            <li class="menu-item">
+                              <a href="contact.html">Contact</a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                      <div class="tab-pane fade" id="nav2">
+                        <div class="categori-dropdown-item">
+                          <ul>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/shirt.png"
+                                  alt="Shirts"
+                                />Man Shirts</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/denim.png"
+                                  alt="Jeans"
+                                />Denim Jeans</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/suit.png"
+                                  alt="Suit"
+                                />Casual Suit</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/dress.png"
+                                  alt="Dress"
+                                />Summer Dress</a
+                              >
+                            </li>
+                            <li>
+                              <a href="shops.html">
+                                <img
+                                  src="assets/images/icon/sweaters.png"
+                                  alt="Sweaters"
+                                />Sweaters</a
+                              >
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="hotline-support d-flex d-lg-none mt-30">
+                    <div class="icon">
+                      <i class="flaticon-support"></i>
+                    </div>
+                    <div class="info">
+                      <span>24/7 Support</span>
+                      <h5><a href="tel:+941234567894">+94 123 4567 894</a></h5>
+                    </div>
+                  </div>
+                  <nav class="main-menu d-none d-lg-block">
+                    <ul>
+                      <li class="menu-item has-children">
+                        <a href="#">Home</a>
+                        <ul class="sub-menu">
+                          <li><a href="index.html">Home 01</a></li>
+                          <li><a href="index-2.html">Home 02</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item has-children">
+                        <a href="#">Shop</a>
+                        <ul class="sub-menu">
+                          <li><a href="shops-grid.html">Shop Grid</a></li>
+                          <li><a href="shops.html">Shop left Sidebar</a></li>
+                          <li>
+                            <a href="shops-right-sidebar.html"
+                              >Shop Right Sidebar</a
+                            >
+                          </li>
+                          <li>
+                            <a href="shop-details.html">Product Details</a>
+                          </li>
+                          <li><a href="cart.html">Cart</a></li>
+                          <li><a href="checkout.html">Checkout</a></li>
+                          <li><a href="wishlists.html">Wishlist</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item has-children">
+                        <a href="#">Blog</a>
+                        <ul class="sub-menu">
+                          <li><a href="blogs.html">Our Blog</a></li>
+                          <li><a href="blog-details.html">Blog Details</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item has-children">
+                        <a href="#">Pages</a>
+                        <ul class="sub-menu">
+                          <li><a href="about-us.html">About Us</a></li>
+                          <li><a href="faq.html">Faqs</a></li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="contact.html">Contact</a>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="nav-right-item style-one">
+              <ul>
+                <li>
+                  <div class="deals d-lg-block d-none">
+                    <i class="far fa-fire-alt"></i>Deal
+                  </div>
+                </li>
+                <li>
+                  <a href="wishlists.html">
+                    <div class="wishlist-btn d-lg-block d-none">
+                      <i class="far fa-heart"></i>
+                      <span class="pro-count" id="pro-counts1">00</span>
+                    </div>
+                  </a>
+                </li>
+
+                <li>
+                  <div class="cart-button d-flex align-items-center">
+                    <div class="icon">
+                      <i class="fas fa-shopping-bag"></i
+                      ><span class="pro-count" id="pro-counts">00</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <div class="navbar-toggler d-block d-lg-none">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-bg">
+      <section class="hero-section">
+        <div class="hero-wrapper-one">
+          <div class="container">
+            <div class="hero-dots"></div>
+            <div class="hero-slider-one">
+              <div class="single-hero-slider">
+                <div class="row align-items-center">
+                  <div class="col-lg-6">
+                    <div class="hero-content style-one mb-50">
+                      <span class="sub-heading">Best for your categories</span>
+                      <h1>
+                        Exclusive Collection <br />
+                        in <span>Our Online</span> Store
+                      </h1>
+                      <p>
+                        Discover our exclusive collection available only in our
+                        online store. Shop now for unique and premium items that
+                        you won't find anywhere else.
+                      </p>
+                      <ul>
+                        <li>
+                          <div class="price-box">
+                            <div class="currency">$</div>
+                            <div class="text">
+                              <span class="discount">Discount Price</span>
+                              <h3>140.00</h3>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <img src="assets/images/hero/line-1.png" alt="" />
+                        </li>
+                        <li>
+                          <a href="shops.html" class="theme-btn style-one"
+                            >Shop Now</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="hero-image-box">
+                      <div class="hero-image">
+                        <img
+                          src="assets/images/hero/hero-one_img1.jpg"
+                          alt="Hero Image"
+                        />
+                        <div
+                          class="hero-shape bg_cover"
+                          style="
+                            background-image: url(assets/images/hero/hero-one-shape1.png);
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="single-hero-slider">
+                <div class="row align-items-center">
+                  <div class="col-lg-6">
+                    <div class="hero-content style-one mb-50">
+                      <span class="sub-heading">Best for your categories</span>
+                      <h1>
+                        Exclusive Collection <br />
+                        in <span>Our Online</span> Store
+                      </h1>
+                      <p>
+                        Discover our exclusive collection available only in our
+                        online store. Shop now for unique and premium items that
+                        you won't find anywhere else.
+                      </p>
+                      <ul>
+                        <li>
+                          <div class="price-box">
+                            <div class="currency">$</div>
+                            <div class="text">
+                              <span class="discount">Discount Price</span>
+                              <h3>140.00</h3>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <img src="assets/images/hero/line-1.png" alt="" />
+                        </li>
+                        <li>
+                          <a href="shops.html" class="theme-btn style-one"
+                            >Shop Now</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="hero-image-box">
+                      <div class="hero-image">
+                        <img
+                          src="assets/images/hero/hero-one_img1.jpg"
+                          alt="Hero Image"
+                        />
+                        <div
+                          class="hero-shape bg_cover"
+                          style="
+                            background-image: url(assets/images/hero/hero-one-shape1.png);
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="single-hero-slider">
+                <div class="row align-items-center">
+                  <div class="col-lg-6">
+                    <div class="hero-content style-one mb-50">
+                      <span class="sub-heading">Best for your categories</span>
+                      <h1>
+                        Exclusive Collection <br />
+                        in <span>Our Online</span> Store
+                      </h1>
+                      <p>
+                        Discover our exclusive collection available only in our
+                        online store. Shop now for unique and premium items that
+                        you won't find anywhere else.
+                      </p>
+                      <ul>
+                        <li>
+                          <div class="price-box">
+                            <div class="currency">$</div>
+                            <div class="text">
+                              <span class="discount">Discount Price</span>
+                              <h3>140.00</h3>
+                            </div>
+                          </div>
+                        </li>
+                        <li>
+                          <img src="assets/images/hero/line-1.png" alt="" />
+                        </li>
+                        <li>
+                          <a href="shops.html" class="theme-btn style-one"
+                            >Shop Now</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="hero-image-box">
+                      <div class="hero-image">
+                        <img
+                          src="assets/images/hero/hero-one_img1.jpg"
+                          alt="Hero Image"
+                        />
+                        <div
+                          class="hero-shape bg_cover"
+                          style="
+                            background-image: url(assets/images/hero/hero-one-shape1.png);
+                          "
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="animated-headline-area primary-dark-bg pt-25 pb-25">
+        <div class="headline-wrap style-one">
+          <span class="marquee-wrap">
+            <span class="marquee-inner left">
+              <span class="marquee-item"
+                ><b>Women</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Shirts</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jackets</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jeans</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Blazer</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Men</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jackets</b><i class="fas fa-bahai"></i
+              ></span>
+            </span>
+            <span class="marquee-inner left">
+              <span class="marquee-item"
+                ><b>Women</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Shirts</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jackets</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jeans</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Blazer</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Men</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jackets</b><i class="fas fa-bahai"></i
+              ></span>
+            </span>
+            <span class="marquee-inner left">
+              <span class="marquee-item"
+                ><b>Women</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Shirts</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jackets</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jeans</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Blazer</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Men</b><i class="fas fa-bahai"></i
+              ></span>
+              <span class="marquee-item"
+                ><b>Jackets</b><i class="fas fa-bahai"></i
+              ></span>
+            </span>
+          </span>
+        </div>
+      </section>
+
+      <section class="features-section pt-130">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div
+                class="features-wrapper"
+                data-aos="fade-up"
+                data-aos-delay="10"
+                data-aos-duration="1000"
+              >
+                <div class="iconic-box-item icon-left-box mb-25">
+                  <div class="icon">
+                    <i class="fas fa-shipping-fast"></i>
+                  </div>
+                  <div class="content">
+                    <h5>Free Shipping</h5>
+                    <p>You get your items delivered without any extra cost.</p>
+                  </div>
+                </div>
+                <div class="divider mb-25">
+                  <img src="assets/images/divider.png" alt="divider" />
+                </div>
+                <div class="iconic-box-item icon-left-box mb-25">
+                  <div class="icon">
+                    <i class="fas fa-microphone"></i>
+                  </div>
+                  <div class="content">
+                    <h5>Great Support 24/7</h5>
+                    <p>
+                      Our customer support team is available around the clock
+                    </p>
+                  </div>
+                </div>
+                <div class="divider mb-25">
+                  <img src="assets/images/divider.png" alt="divider" />
+                </div>
+                <div class="iconic-box-item icon-left-box mb-25">
+                  <div class="icon">
+                    <i class="far fa-handshake"></i>
+                  </div>
+                  <div class="content">
+                    <h5>Return Available</h5>
+                    <p>
+                      Making it easy to return any items if you're not
+                      satisfied.
+                    </p>
+                  </div>
+                </div>
+                <div class="divider mb-25">
+                  <img src="assets/images/divider.png" alt="divider" />
+                </div>
+                <div class="iconic-box-item icon-left-box mb-25">
+                  <div class="icon">
+                    <i class="fas fa-sack-dollar"></i>
+                  </div>
+                  <div class="content">
+                    <h5>Secure Payment</h5>
+                    <p>Shop with confidence knowing that our secure payment</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="category-section pt-125 overflow-hidden">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6 col-md-8">
+              <div
+                class="section-title mb-50"
+                data-aos="fade-right"
+                data-aos-delay="10"
+                data-aos-duration="800"
+              >
+                <div class="sub-heading d-inline-flex align-items-center">
+                  <i class="flaticon-sparkler"></i>
+                  <span class="sub-title">Categories</span>
+                </div>
+                <h2>Browse Top Category</h2>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-4">
+              <div
+                class="category-arrows style-one mb-60"
+                data-aos="fade-left"
+                data-aos-delay="15"
+                data-aos-duration="1000"
+              ></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="category-slider-one"
+          data-aos="fade-up"
+          data-aos-delay="20"
+          data-aos-duration="1200"
+        ></div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch("/productcatdata")
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              const slider = document.querySelector(".category-slider-one");
+
+              if (!slider) return;
+
+              data.forEach((item) => {
+                const categoryItem = document.createElement("div");
+                categoryItem.className = "category-item style-one text-center";
+
+                const imgDiv = document.createElement("div");
+                imgDiv.className = "category-img";
+                const img = document.createElement("img");
+                img.src = "/uploads/" + item.image;
+                img.alt = "category image";
+                imgDiv.appendChild(img);
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "category-content";
+                const link = document.createElement("a");
+                link.href = "index.html";
+                link.className = "category-btn";
+                link.textContent = item.name;
+                contentDiv.appendChild(link);
+
+                categoryItem.appendChild(imgDiv);
+                categoryItem.appendChild(contentDiv);
+
+                slider.appendChild(categoryItem);
+              });
+            })
+            .catch((error) => {
+              console.error("Fetch error:", error);
+            });
+        });
+      </script>
+
+      <section class="banner-section pt-130">
+        <div class="container">
+          <div class="row" id="flash-row">
+            <div class="col-lg-6 banner-flashes">
+              <div
+                class="banner-item style-one bg-one mb-40"
+                data-aos="fade-up"
+                data-aos-delay="10"
+                data-aos-duration="900"
+              >
+                <div class="shape shape-one">
+                  <span
+                    ><img src="assets/images/banner/discount.png" alt="shape"
+                  /></span>
+                </div>
+                <div class="shape shape-two">
+                  <span
+                    ><img src="assets/images/banner/line.png" alt="shape"
+                  /></span>
+                </div>
+                <div class="banner-img banner-img1">
+                  <img src="" alt="" />
+                </div>
+                <div class="banner-content">
+                  <span>UP TO <span class="off"></span></span>
+                  <h4></h4>
+                  <a href="shops.html" class="theme-btn style-one">Shop Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+          const row = document.getElementById("flash-row");
+          const template = row.querySelector(".banner-flashes");
+
+          let sales;
+          try {
+            const res = await fetch("/flashsalesmaindata");
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            sales = await res.json();
+          } catch (err) {
+            console.error(err);
+            row.innerHTML =
+              '<div class="col-12 text-center"><p>No offers available.</p></div>';
+          }
+
+          if (Array.isArray(sales)) {
+            const today = new Date();
+            const valid = sales.filter((item) => {
+              const end = new Date(item.end_date + "T23:59:59");
+              return end >= today;
+            });
+
+            if (valid.length === 0) {
+              row.innerHTML =
+                '<div class="col-12 text-center"><p>No offers available.</p></div>';
+            } else {
+              row.innerHTML = "";
+
+              valid.slice(0, 2).forEach((item, idx) => {
+                const slotWrapper = document.createElement("div");
+                slotWrapper.innerHTML = template.outerHTML;
+                const slot = slotWrapper.firstElementChild;
+
+                const bannerItem = slot.querySelector(".banner-item");
+                if (idx === 0) {
+                  bannerItem.classList.replace("bg-two", "bg-one");
+                  bannerItem.setAttribute("data-aos-delay", "10");
+                  bannerItem.setAttribute("data-aos-duration", "900");
+                } else {
+                  bannerItem.classList.replace("bg-one", "bg-two");
+                  bannerItem.setAttribute("data-aos-delay", "20");
+                  bannerItem.setAttribute("data-aos-duration", "1100");
+                }
+
+                const imgEl = slot.querySelector(".banner-img img");
+                imgEl.src = `/uploads/${item.image}`;
+                imgEl.alt = item.product_name;
+
+                const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
+                const sale = parseFloat(
+                  item.price_sale.replace(/[^0-9.]/g, "")
+                );
+                const pct = Math.round(((orig - sale) / orig) * 100);
+
+                slot.querySelector(".off").textContent = pct + "%";
+                slot.querySelector("h4").textContent = item.product_name;
+
+                row.appendChild(slot);
+              });
+            }
+
+            if (window.AOS) AOS.refresh();
+          }
+
+          const section = document.getElementById("best-deal");
+          let sale;
+          try {
+            const res = await fetch("/flashsalesmaindata");
+            if (!res.ok) throw new Error("Network error");
+            const data = await res.json();
+            if (!Array.isArray(data) || data.length === 0) {
+              section.innerHTML = `
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 text-center py-5">
+                      <h3>No offers available.</h3>
+                    </div>
+                  </div>
+                </div>`;
+              if (window.AOS) AOS.refresh();
+              return;
+            }
+            sale = data[0];
+          } catch (err) {
+            console.error(err);
+            section.innerHTML = `
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 text-center py-5">
+                    <h3>No offers available.</h3>
+                  </div>
+                </div>
+              </div>`;
+            if (window.AOS) AOS.refresh();
+            return;
+          }
+
+          const imgEl2 = document.querySelector(".deal-img img");
+          imgEl2.src = `/uploads/${sale.image}`;
+          imgEl2.alt = sale.product_name;
+
+          const subHeading = document.querySelector(
+            ".deal-content .sub-heading"
+          );
+          subHeading.innerHTML = `<i class="fas fa-tags"></i>Deal of the ${sale.name}`;
+
+          const countdownEl = document.getElementById("flashsale-countdown");
+          const endDate = new Date(sale.end_date + "T23:59:59");
+          let interval;
+
+          function updateCountdown() {
+            const diff = endDate - new Date();
+            if (diff < 0) {
+              section.innerHTML = `
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 text-center py-5">
+                      <h3>No offers available.</h3>
+                    </div>
+                  </div>
+                </div>`;
+              clearInterval(interval);
+              return;
+            }
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            countdownEl.innerHTML = `
+              <div class="countdown-section">
+                <span class="countdown-amount">${days}</span>
+                <span class="countdown-label">day</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${hours}</span>
+                <span class="countdown-label">hour</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${minutes}</span>
+                <span class="countdown-label">minute</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${seconds}</span>
+                <span class="countdown-label">second</span>
+              </div>`;
+            if (window.AOS) AOS.refresh();
+          }
+
+          updateCountdown();
+          interval = setInterval(updateCountdown, 1000);
+        });
+      </script>
+
+      <section class="features-products pt-90">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6">
+              <div
+                class="section-title mb-50 text-center text-lg-start"
+                data-aos="fade-right"
+                data-aos-delay="10"
+                data-aos-duration="1000"
+              >
+                <div class="sub-heading d-inline-flex align-items-center">
+                  <i class="flaticon-sparkler"></i>
+                  <span class="sub-title">Feature Products</span>
+                </div>
+                <h2>Our Features Collection</h2>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div
+                class="pesco-tabs style-one mb-50"
+                data-aos="fade-left"
+                data-aos-delay="15"
+                data-aos-duration="1200"
+              >
+                <ul class="nav nav-tabs" role="tablist">
+                  <li>
+                    <button
+                      class="nav-link active"
+                      data-bs-toggle="tab"
+                      data-bs-target="#cat1"
+                      role="tab"
+                    >
+                      Best Sellers
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      data-bs-target="#cat2"
+                      role="tab"
+                    >
+                      New Products
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      data-bs-target="#cat3"
+                      role="tab"
+                    >
+                      Sale Products
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div
+                class="tab-content"
+                data-aos="fade-up"
+                data-aos-duration="1200"
+              >
+                <div class="tab-pane fade show active" id="cat1">
+                  <div class="row justify-content-center"></div>
+                </div>
+
+                <div class="tab-pane fade" id="cat2">
+                  <div class="row justify-content-center"></div>
+                </div>
+
+                <div class="tab-pane fade" id="cat3">
+                  <div class="row justify-content-center"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const listEl = document.querySelector(".pesco-mini-cart-list");
+          const badgeEl = document.querySelector("#pro-counts");
+          const wishlistEl = document.querySelector("#pro-counts1");
+          const subtotalEl = document.querySelector(".cart-mini-total .amount");
+
+          function showBanner(msg, type = "success") {
+            const b = document.createElement("div");
+            b.className = `banner ${type}`;
+            b.textContent = msg;
+            Object.assign(b.style, {
+              position: "fixed",
+              top: "10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "10px 20px",
+              background: type === "success" ? "#4caf50" : "#f44336",
+              color: "#fff",
+              borderRadius: "4px",
+              zIndex: 9999,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+            });
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 3000);
+          }
+
+          function loadSidebarCart() {
+            fetch(`/allcartdata`)
+              .then((res) => res.json())
+              .then((items) => {
+                const seen = new Set();
+                const unique = items.filter((i) => {
+                  if (seen.has(i.name)) return false;
+                  seen.add(i.name);
+                  return true;
+                });
+
+                listEl.innerHTML = "";
+                if (!unique.length) {
+                  listEl.innerHTML = `
+                    <li class="sidebar-cart-item sidebar-cart-empty">
+                      Your cart is empty.
+                    </li>`;
+                  subtotalEl.textContent = "$0.00";
+                  return;
+                }
+
+                let total = 0;
+                unique.forEach((item) => {
+                  const price = parseFloat(item.price_sale);
+                  const qty = parseInt(item.quantity, 10);
+                  total += price * qty;
+
+                  listEl.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                    <li class="sidebar-cart-item" data-id="${
+                      item.id
+                    }" data-price="${price}" data-qty="${qty}">
+                      <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+                      <a href="shop-details.html?id=${item.id}">
+                        <img src="/uploads/${item.image}" alt="${item.name}"/>
+                        ${item.name}
+                      </a>
+                      <span class="quantity">
+                        ${qty} × <span><span class="currency">$</span>${price.toFixed(
+                      2
+                    )}</span>
+                      </span>
+                    </li>
+                  `
+                  );
+                });
+
+                subtotalEl.textContent = `$${total.toFixed(2)}`;
+              })
+              .catch((err) => console.error("Sidebar load error:", err));
+          }
+
+          function updateCounts() {
+            fetch(`/allcartdata`)
+              .then((res) => res.json())
+              .then((items) => {
+                const seen = new Set();
+                const unique = items.filter((i) => {
+                  if (seen.has(i.name)) return false;
+                  seen.add(i.name);
+                  return true;
+                });
+                badgeEl.textContent = String(unique.length).padStart(2, "0");
+              })
+              .catch(() => {
+                badgeEl.textContent = "00";
+              });
+
+            fetch(`/wishlistdata`)
+              .then((res) => res.json())
+              .then((items) => {
+                const seen = new Set();
+                const unique = items.filter((i) => {
+                  if (seen.has(i.product_name)) return false;
+                  seen.add(i.product_name);
+                  return true;
+                });
+                wishlistEl.textContent = String(unique.length).padStart(2, "0");
+              })
+              .catch(() => {
+                wishlistEl.textContent = "00";
+              });
+          }
+
+          listEl.addEventListener("click", (e) => {
+            const rem = e.target.closest(".remove-cart");
+            if (!rem) return;
+            e.preventDefault();
+
+            const li = rem.closest(".sidebar-cart-item");
+            const id = li.dataset.id;
+            if (!id) return console.error("Missing data-id");
+
+            fetch(`/deletecart/${id}`, { method: "DELETE" })
+              .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
+              .then(({ ok, body }) => {
+                if (!ok || !body.success)
+                  throw new Error(body.message || "Delete failed");
+                li.remove();
+
+                let newTotal = 0;
+                listEl
+                  .querySelectorAll(
+                    "li.sidebar-cart-item:not(.sidebar-cart-empty)"
+                  )
+                  .forEach((itemLi) => {
+                    const price = parseFloat(itemLi.dataset.price);
+                    const qty = parseInt(itemLi.dataset.qty, 10);
+                    newTotal += price * qty;
+                  });
+                subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
+
+                showBanner("Product removed from cart.", "success");
+                updateCounts();
+              })
+              .catch((err) => {
+                console.error("Delete error:", err);
+                showBanner("Could not remove item.", "error");
+              });
+          });
+
+          async function loadFeatureProducts() {
+            const bestRow = document.querySelector(
+              "#cat1 .row.justify-content-center"
+            );
+            const newRow = document.querySelector(
+              "#cat2 .row.justify-content-center"
+            );
+            const saleRow = document.querySelector(
+              "#cat3 .row.justify-content-center"
+            );
+
+            if (!bestRow || !newRow || !saleRow) return;
+
+            bestRow.innerHTML = "";
+            newRow.innerHTML = "";
+            saleRow.innerHTML = "";
+
+            let products = [];
+            try {
+              const res = await fetch("/productpagedata");
+              if (!res.ok) throw new Error("Fetch failed");
+              products = await res.json();
+            } catch (err) {
+              console.error("Error fetching products:", err);
+              return;
+            }
+
+            function makeCard(p) {
+              const price = parseFloat(p.price.replace(/[^0-9.]/g, "")).toFixed(
+                2
+              );
+              const sale = parseFloat(
+                p.price_sale.replace(/[^0-9.]/g, "")
+              ).toFixed(2);
+              const col = document.createElement("div");
+              col.className = "col-xl-3 col-lg-4 col-sm-6";
+              col.innerHTML = `
+                <div class="product-item style-one mb-40" data-aos="fade-up">
+                  <div class="product-thumbnail">
+                    <a href="shop-details.html?id=${p.id}" class="w-100 h-100">
+                      <img src="/uploads/${p.image}" alt="${p.name}">
+                      </a>
+                    <div class="discount">${p.label}</div>
+                    <div class="hover-content">
+                      <a href="javascript:void(0)" class="icon-btn add-to-wishlist"
+                        data-name="${p.name}"
+                        data-store="${p.store}"
+                        data-image="${p.image}"
+                        data-price="${price}"
+                        data-price_sale="${sale}"
+                        data-sku="${p.sku}"
+                        data-stockstatus="${p.stockstatus}">
+                        <i class="fa fa-heart"></i>
+                      </a>
+
+                      <a href="/uploads/${
+                        p.image
+                      }" class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
+
+                    </div>
+                    <div class="cart-button">
+                      <a href="javascript:void(0)" class="cart-btn add-to-cart"
+                        data-name="${p.name}"
+                        data-store="${p.store}"
+                        data-image="${p.image}"
+                        data-price="${price}"
+                        data-price_sale="${sale}"
+                        data-quantity="1">
+                        <i class="far fa-shopping-basket"></i>
+                        <span class="text">Add To Cart</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="product-info-wrap">
+                    <div class="product-info">
+                      <ul class="ratings rating5">
+                        ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
+                        <li><a href="#">(${Math.floor(
+                          Math.random() * 100
+                        )})</a></li>
+                      </ul>
+                      <h4 class="title"><a href="shop-details.html?id=${
+                        p.id
+                      }">${p.name}</a></h4>
+                      <h4 class="title d-none"><a href="">${p.store}</a></h4>
+                      <h4 class="title d-none"><a href="">${
+                        p.stockstatus
+                      }</a></h4>
+                      <h4 class="title d-none"><a href="">${p.sku}</a></h4>
+                    </div>
+                    <div class="product-price">
+                      <span class="price prev-price"><span class="currency"></span>${
+                        p.price_sale
+                      }</span>
+                      <span class="price new-price"><span class="currency"></span>${
+                        p.price
+                      }</span>
+                    </div>
+                  </div>
+                </div>`;
+              return col;
+            }
+
+            products.forEach((p) => {
+              if (p.label === "Sale") {
+                saleRow.appendChild(makeCard(p));
+              } else if (p.label === "New") {
+                newRow.appendChild(makeCard(p));
+              } else {
+                bestRow.appendChild(makeCard(p));
+              }
+            });
+
+            if (typeof AOS !== "undefined") AOS.refresh();
+          }
+
+          document.body.addEventListener("click", async (e) => {
+            const cartBtn = e.target.closest(".add-to-cart");
+            const wishBtn = e.target.closest(".add-to-wishlist");
+            if (!cartBtn && !wishBtn) return;
+            e.preventDefault();
+
+            const userId = localStorage.getItem("user_id");
+            if (!userId) {
+              return showBanner(
+                wishBtn
+                  ? "Please log in to add to wishlist."
+                  : "Please log in to add to cart.",
+                "error"
+              );
+            }
+
+            try {
+              const url = cartBtn ? "/addcart" : "/wishlistpost";
+              const payload = cartBtn
+                ? {
+                    user_id: parseInt(userId),
+                    name: cartBtn.dataset.name,
+                    store: cartBtn.dataset.store,
+                    image: cartBtn.dataset.image,
+                    price: parseFloat(cartBtn.dataset.price),
+                    price_sale: parseFloat(cartBtn.dataset.price_sale),
+                    quantity: parseInt(cartBtn.dataset.quantity || "1", 10),
+                  }
+                : {
+                    user_id: parseInt(userId),
+                    product_name: wishBtn.dataset.name,
+                    store: wishBtn.dataset.store,
+                    image: wishBtn.dataset.image,
+                    price: parseFloat(wishBtn.dataset.price),
+                    price_sale: parseFloat(wishBtn.dataset.price_sale),
+                    sku: wishBtn.dataset.sku,
+                    stockstatus: wishBtn.dataset.stockstatus,
+                  };
+
+              const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+
+              const text = await res.text();
+              if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+
+              showBanner(
+                cartBtn
+                  ? "Product added to cart!"
+                  : "Product added to wishlist!",
+                "success"
+              );
+
+              if (cartBtn) loadSidebarCart();
+              updateCounts();
+            } catch (err) {
+              console.error("Error:", err);
+              showBanner(
+                (cartBtn
+                  ? "Add to cart failed: "
+                  : "Add to wishlist failed: ") + err.message,
+                "error"
+              );
+            }
+          });
+
+          loadFeatureProducts();
+          loadSidebarCart();
+          updateCounts();
+          setInterval(updateCounts, 1000);
+
+          window.addEventListener("pageshow", function (event) {
+            if (event.persisted || performance.navigation.type === 2) {
+              loadFeatureProducts();
+            }
+          });
+
+          const checkoutBtn = document.querySelector(
+            ".cart-button-box a[href*='checkout.html']"
+          );
+          if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              const items = Array.from(
+                listEl.querySelectorAll("li.sidebar-cart-item")
+              )
+                .filter((li) => !li.classList.contains("sidebar-cart-empty"))
+                .map((li) => {
+                  const price = parseFloat(li.dataset.price);
+                  const quantity = parseInt(li.dataset.qty, 10);
+                  const rawSrc =
+                    li.querySelector("img")?.getAttribute("src") || "";
+                  const image = rawSrc.split("/").pop() || "";
+                  return {
+                    id: li.dataset.id,
+                    name:
+                      li.querySelector("a[href='#'] + a")?.textContent.trim() ||
+                      "",
+                    image,
+                    price,
+                    quantity,
+                    lineTotal: price * quantity,
+                  };
+                });
+
+              const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
+              const total = subtotal;
+
+              localStorage.setItem(
+                "checkout_cart",
+                JSON.stringify({ items, subtotal, total })
+              );
+              window.location.href = checkoutBtn.href;
+            });
+          }
+        });
+      </script>
+
+      <div
+        id="image-lightbox"
+        style="
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.9);
+          justify-content: center;
+          align-items: center;
+          z-index: 9999;
+          flex-direction: column;
+        "
+      >
+        <div
+          style="
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+          "
+        >
+          <button
+            id="lightbox-prev"
+            style="
+              position: absolute;
+              left: 20px;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 22px;
+              color: white;
+              background: none;
+              border: none;
+              cursor: pointer;
+            "
+          >
+            <i class="fas fa-play" style="transform: rotate(180deg)"></i>
+          </button>
+
+          <div style="position: relative; display: inline-block">
+            <img
+              id="lightbox-image"
+              src=""
+              alt="Product"
+              style="
+                width: 336px;
+                height: 400px;
+                object-fit: contain;
+                border-radius: 4px;
+              "
+            />
+
+            <div
+              id="lightbox-counter"
+              style="
+                position: absolute;
+                bottom: 0px;
+                right: -2px;
+                color: #fff;
+                padding: 4px 8px;
+                border-radius: 12px;
+                font-size: 14px;
+              "
+            >
+              1 of 0
+            </div>
+
+            <button
+              id="lightbox-close"
+              style="
+                position: absolute;
+                top: 0;
+                right: -8px;
+                font-size: 36px;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 32px;
+                height: 32px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+                z-index: 10;
+              "
+            >
+              ×
+            </button>
+          </div>
+
+          <button
+            id="lightbox-next"
+            style="
+              position: absolute;
+              right: 20px;
+              top: 50%;
+              transform: translateY(-50%);
+              font-size: 22px;
+              color: white;
+              background: none;
+              border: none;
+              cursor: pointer;
+            "
+          >
+            <i class="fas fa-play"></i>
+          </button>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const imageLightbox = document.getElementById("image-lightbox");
+          const lightboxImg = document.getElementById("lightbox-image");
+          const counterEl = document.getElementById("lightbox-counter");
+          const btnPrev = document.getElementById("lightbox-prev");
+          const btnNext = document.getElementById("lightbox-next");
+          const btnClose = document.getElementById("lightbox-close");
+
+          let imageUrls = [];
+          let currentIndex = 0;
+
+          function collectImageUrls() {
+            const urls = Array.from(
+              document.querySelectorAll("a.img-popup")
+            ).map((a) => a.href);
+            imageUrls = [...new Set(urls)];
+          }
+
+          function showLightbox(idx) {
+            if (!imageUrls.length) return;
+            currentIndex =
+              ((idx % imageUrls.length) + imageUrls.length) % imageUrls.length;
+            lightboxImg.src = imageUrls[currentIndex];
+            counterEl.textContent = `${currentIndex + 1} of ${
+              imageUrls.length
+            }`;
+            imageLightbox.style.display = "flex";
+          }
+
+          function bindPreviewClicks() {
+            collectImageUrls();
+            document.querySelectorAll("a.img-popup").forEach((a) => {
+              a.removeEventListener("click", a._lightboxHandler);
+
+              a._lightboxHandler = (e) => {
+                e.preventDefault();
+                collectImageUrls();
+                const idx = imageUrls.indexOf(a.href);
+                showLightbox(idx);
+              };
+
+              a.addEventListener("click", a._lightboxHandler);
+            });
+          }
+
+          btnPrev.addEventListener("click", () =>
+            showLightbox(currentIndex - 1)
+          );
+          btnNext.addEventListener("click", () =>
+            showLightbox(currentIndex + 1)
+          );
+          btnClose.addEventListener("click", () => {
+            imageLightbox.style.display = "none";
+          });
+
+          window.addEventListener("keydown", (e) => {
+            if (imageLightbox.style.display !== "flex") return;
+            if (e.key === "Escape") imageLightbox.style.display = "none";
+            if (e.key === "ArrowLeft") showLightbox(currentIndex - 1);
+            if (e.key === "ArrowRight") showLightbox(currentIndex + 1);
+          });
+
+          bindPreviewClicks();
+          new MutationObserver(bindPreviewClicks).observe(document.body, {
+            childList: true,
+            subtree: true,
+          });
+        });
+      </script>
+
+      <section class="work-processing-section pt-30 pb-90">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div
+                class="section-title text-center mb-60"
+                data-aos="fade-up"
+                data-aos-delay="10"
+                data-aos-duration="800"
+              >
+                <div class="sub-heading d-inline-flex align-items-center">
+                  <i class="flaticon-sparkler"></i>
+                  <span class="sub-title">Work Processing</span>
+                  <i class="flaticon-sparkler"></i>
+                </div>
+                <h2>How it Work processing</h2>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-3 col-sm-6">
+              <div
+                class="iconic-box-item style-two mb-40"
+                data-aos="fade-up"
+                data-aos-duration="1000"
+              >
+                <div class="sn-number">01</div>
+                <div class="icon">
+                  <i class="flaticon-searching"></i>
+                </div>
+                <div class="content">
+                  <h6>Browsing & Choosing</h6>
+                  <p>
+                    This is where customers visit your online store, browse your
+                    products.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+              <div
+                class="iconic-box-item style-two mb-40"
+                data-aos="fade-up"
+                data-aos-duration="1200"
+              >
+                <div class="sn-number">02</div>
+                <div class="icon">
+                  <i class="flaticon-payment-method"></i>
+                </div>
+                <div class="content">
+                  <h6>Checkout & Payment</h6>
+                  <p>
+                    Once they have picked their items, customers proceed to
+                    checkout.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+              <div
+                class="iconic-box-item style-two mb-40"
+                data-aos="fade-up"
+                data-aos-duration="1400"
+              >
+                <div class="sn-number">03</div>
+                <div class="icon">
+                  <i class="flaticon-currency"></i>
+                </div>
+                <div class="content">
+                  <h6>Order Fulfillment</h6>
+                  <p>
+                    After the order is placed, it's sent to your fulfillment
+                    team.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+              <div
+                class="iconic-box-item style-two mb-40"
+                data-aos="fade-up"
+                data-aos-duration="1600"
+              >
+                <div class="sn-number">04</div>
+                <div class="icon">
+                  <i class="flaticon-delivery"></i>
+                </div>
+                <div class="content">
+                  <h6>Delivery to Customer</h6>
+                  <p>
+                    The packed order is then sent off with a shipping carrier
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="best-deal" class="best-deal-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12">
+              <div
+                class="offer-deal-wrapper bg_cover"
+                data-aos="fade-up"
+                data-aos-duration="1400"
+                style="background-image: url(assets/images/bg/deal-bg-1.png)"
+              >
+                <div class="deal-img deal-week">
+                  <span>
+                    <img
+                      src="assets/images/banner/deal-1.png"
+                      alt="Deal Image"
+                    />
+                  </span>
+                </div>
+                <div class="deal-content">
+                  <span class="sub-heading">
+                    <i class="fas fa-tags"></i>Deal of the Week
+                  </span>
+                  <h2>
+                    Hurry Up! Offer ends in. Get <span>UP TO 80% OFF</span>
+                  </h2>
+
+                  <div
+                    class="simply-countdown mb-60"
+                    id="flashsale-countdown"
+                  ></div>
+
+                  <div class="shop-button">
+                    <a href="shops.html" class="theme-btn style-one"
+                      >Shop Now</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonial-section">
+        <div
+          class="testimonial-wrapper overflow-x-hidden pt-190 pb-90 white-bg"
+        >
+          <div class="shape svg-shape1">
+            <img
+              src="../assets/images/testimonial/tl-svgTop.svg"
+              alt="svg shape"
+            />
+          </div>
+          <div class="shape svg-shape2">
+            <img
+              src="../assets/images/testimonial/tl-svgBottom.svg"
+              alt="svg shape"
+            />
+          </div>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4">
+                <div
+                  class="section-content-box mb-40"
+                  data-aos="fade-right"
+                  data-aos-delay="30"
+                  data-aos-duration="800"
+                >
+                  <div class="section-title mb-50">
+                    <h2>What Our Clients Say About Us</h2>
+                  </div>
+                  <div class="testimonial-arrows style-one"></div>
+                </div>
+              </div>
+
+              <div class="col-lg-8">
+                <div
+                  class="testimonial-slider-one"
+                  data-aos="fade-left"
+                  data-aos-delay="50"
+                  data-aos-duration="1000"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch("/gettestimonials")
+            .then((response) => response.json())
+            .then((data) => {
+              const slider = document.querySelector(".testimonial-slider-one");
+
+              if (!slider) return;
+
+              slider.innerHTML = "";
+
+              data.forEach((testimonial) => {
+                const testimonialItem = document.createElement("div");
+                testimonialItem.classList.add(
+                  "testimonial-item",
+                  "style-one",
+                  "mb-40"
+                );
+
+                testimonialItem.innerHTML = `
+                  <div class="testimonial-content">
+                    <p>${testimonial.content}</p>
+                    <div class="author-quote-item d-flex justify-content-between align-items-center">
+                      <div class="author-item d-flex align-items-center">
+                        <div class="author-thumb">
+                          <img
+                            src="/uploads/${testimonial.image}"
+                            alt="author image"
+                          />
+                        </div>
+                        <div class="author-info">
+                          <h5>${testimonial.name}</h5>
+                          <ul class="ratings rating5">
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="fas fa-star"></i></li>
+                            <li><i class="fas fa-star"></i></li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="quote-icon">
+                        <i class="flaticon flaticon-right-quote"></i>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                slider.appendChild(testimonialItem);
+              });
+            })
+            .catch((error) => {
+              console.error("Failed to load testimonials:", error);
+            });
+        });
+      </script>
+
+      <section class="blog-page-section pt-120 pb-95">
+        <div class="container">
+          <div class="row">
+            <div
+              class="col-lg-12 text-center mb-60"
+              data-aos="fade-up"
+              data-aos-duration="1000"
+            >
+              <div class="sub-heading d-inline-flex align-items-center">
+                <i class="flaticon-sparkler"></i>
+                <span class="sub-title">Our Blogs</span>
+                <i class="flaticon-sparkler"></i>
+              </div>
+              <h2>Explore our Articles</h2>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div
+                class="blog-post-item style-one mb-25"
+                data-aos="fade-up"
+                data-aos-duration="1200"
+              >
+                <div class="post-thumbnail post-thumbnails">
+                  <img
+                    src="assets/images/blog/blog-big-1.png"
+                    alt="Post Thumbnail"
+                  />
+                </div>
+                <div class="post-content">
+                  <h3 class="title"><a href="blog-details.html"></a></h3>
+                  <p></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div
+                    class="blog-post-item style-two mb-25"
+                    data-aos="fade-up"
+                    data-aos-duration="1400"
+                  >
+                    <div class="post-thumbnail post-content1">
+                      <img
+                        src="assets/images/blog/blog-sm-1.png"
+                        alt="Post Thumbnail"
+                      />
+                    </div>
+                    <div class="post-content post-content1">
+                      <h3 class="title"><a href="blog-details.html"></a></h3>
+                      <div class="post-meta">
+                        <span><a href="#"></a></span
+                        ><span><a href="#"></a></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="newsletter-section pb-95">
+        <div class="container">
+          <div
+            class="newsletter-wrapper white-bg p-r z-1"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+          >
+            <div class="newsletter-shape pattern-one">
+              <span
+                ><img
+                  src="assets/images/newsletter/pattern-1.png"
+                  alt="Pattern Shape"
+              /></span>
+            </div>
+            <div class="newsletter-shape pattern-two">
+              <span
+                ><img
+                  src="assets/images/newsletter/pattern-2.png"
+                  alt="Pattern Shape"
+              /></span>
+            </div>
+            <div class="newsletter-shape shape-one">
+              <span
+                ><img src="assets/images/newsletter/shape-1.png" alt="Shape"
+              /></span>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="newsletter-content-box">
+                  <span class="sub-text">Our Newsletter</span>
+                  <h3>
+                    Get weekly update. Sign up and get up to
+                    <span>20% off</span> your first purchase
+                  </h3>
+                  <form>
+                    <div class="form-group">
+                      <input
+                        type="email"
+                        class="form_control"
+                        placeholder="Write your Email Address"
+                        name="email"
+                        required
+                      />
+                      <button class="theme-btn style-one" type="submit">
+                        Subscribe
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="newsletter-image">
+                  <img
+                    src="https://avatars.mds.yandex.net/i?id=802770c3379c394673fcc33bea11d6b7952ceffd-4012107-images-thumbs&n=13"
+                    alt="Image"
+                    style="width: 511px; height: 360px"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector(".newsletter-section form");
+        if (!form) return;
+
+        function showBanner(msg, type = "success") {
+          const b = document.createElement("div");
+          b.className = `banner ${type}`;
+          b.textContent = msg;
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            background: type === "success" ? "#4caf50" : "#f44336",
+            color: "#fff",
+            borderRadius: "4px",
+            zIndex: 9999,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          });
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const input = form.querySelector('input[name="email"]');
+          const email = input.value.trim();
+          if (!email) {
+            showBanner("Please enter a valid email.", "error");
+            return;
+          }
+
+          try {
+            const res = await fetch("/newsletterpost", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            });
+            const text = await res.text();
+            if (res.ok) {
+              showBanner("Subscribed successfully!", "success");
+              form.reset();
+            } else {
+              showBanner(text || "Subscription failed.", "error");
+            }
+          } catch (err) {
+            console.error("Newsletter error:", err);
+            showBanner("Network error, please try again.", "error");
+          }
+        });
+      });
+    </script>
+
+    <footer class="footer-main">
+      <div class="footer-bg-wrapper gray-light-bg pt-0">
+        <div class="footer-shape shape-one">
+          <span
+            ><img src="assets/images/footer/shape-1.png" alt="shape"
+          /></span>
+        </div>
+        <div class="footer-widget-area pb-80">
+          <div class="container">
+            <div class="row">
+              <div class="col-xl-3 col-sm-6">
+                <div
+                  class="footer-widget about-company-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-delay="10"
+                  data-aos-duration="1000"
+                >
+                  <div class="widget-content">
+                    <a href="index.html" class="footer-logo"
+                      ><img
+                        src="assets/images/logo/logo-main.png"
+                        alt="Brand Logo"
+                    /></a>
+                    <p>
+                      Pesco is an exciting International brand we provide high
+                      quality cloths
+                    </p>
+                    <ul class="ct-info-list mb-30">
+                      <li>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:info@mydomain.com">info@mydomain.com</a>
+                      </li>
+                      <li>
+                        <i class="fas fa-phone-alt"></i>
+                        <a href="mailto:info@mydomain.com">info@mydomain.com</a>
+                      </li>
+                    </ul>
+                    <ul class="social-link">
+                      <li>
+                        <span>Find Us:</span>
+                      </li>
+                      <li>
+                        <a href="https://www.facebook.com/" target="_blank"
+                          ><i class="fab fa-facebook-f"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="https://www.instagram.com/" target="_blank"
+                          ><i class="fab fa-instagram"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="https://in.linkedin.com/" target="_blank"
+                          ><i class="fab fa-linkedin-in"></i
+                        ></a>
+                      </li>
+                      <li>
+                        <a href="https://x.com/" target="_blank"
+                          ><i class="fab fa-twitter"></i
+                        ></a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 col-sm-6">
+                <div
+                  class="footer-widget footer-nav-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-delay="15"
+                  data-aos-duration="1200"
+                >
+                  <div class="widget-content">
+                    <h4 class="widget-title">Customer Services</h4>
+                    <ul class="widget-menu">
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Collections & Delivery</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Returns & Refunds</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Terms & Conditions</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Delivery Return</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Store Locations</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6 col-sm-6">
+                <div
+                  class="footer-widget footer-nav-widget mb-40"
+                  data-aos="fade-up"
+                  data-aos-delay="20"
+                  data-aos-duration="1400"
+                >
+                  <div class="widget-content">
+                    <h4 class="widget-title">Quick Link</h4>
+                    <ul class="widget-menu">
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Privacy Policy</a>
+                      </li>
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Terms Of Use</a>
+                      </li>
+
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="faq.html">FAQ</a>
+                      </li>
+
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="contact.html">Contact</a>
+                      </li>
+
+                      <li>
+                        <img
+                          src="assets/images/icon/star-3.svg"
+                          alt="star icon"
+                        /><a href="shops.html">Login / Register</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xl-3 col-sm-6">
+                <div
+                  class="footer-widget footer-recent-post-widget"
+                  data-aos="fade-up"
+                  data-aos-delay="25"
+                  data-aos-duration="1600"
+                >
+                  <h4 class="widget-title">Recent Post</h4>
+                  <div class="widget-content" id="recent-posts-container"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="copyright-area">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-lg-6">
+                <div class="copyright-text">
+                  <p>
+                    &copy; 2025. All rights reserved by <span>Pixelfit</span>
+                  </p>
+                </div>
+
+                <script>
+                  document.addEventListener("DOMContentLoaded", () => {
+                    const p = document.querySelector(".copyright-text p");
+                    if (!p) return;
+                    p.innerHTML = p.innerHTML.replace(
+                      /\b\d{4}\b/,
+                      new Date().getFullYear()
+                    );
+                  });
+                </script>
+              </div>
+              <div class="col-lg-6">
+                <div class="payment-method text-lg-end">
+                  <a href="#"
+                    ><img
+                      src="assets/images/footer/payment-method.png"
+                      alt="payment-method"
+                  /></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        let posts;
+        try {
+          const res = await fetch("/blogpostdata");
+          if (!res.ok) throw new Error("Network error");
+          posts = await res.json();
+        } catch (err) {
+          console.error("Failed to load blog posts:", err);
+          return;
+        }
+
+        if (posts[0]) {
+          const big = posts[0];
+          const bigEl = document.querySelector(".blog-post-item.style-one");
+          const fmtDate = (iso) =>
+            new Date(iso).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+          const thumbContainer = bigEl.querySelector(".post-thumbnails");
+          thumbContainer.innerHTML = `
+            <a href="blog-details.html?id=${big.id}" class="w-100 h-100">
+              <img src="/uploads/${big.image}" alt="${big.name}">
+            </a>
+          `;
+
+          const bigLink = bigEl.querySelector(".title a");
+          bigLink.href = `blog-details.html?id=${big.id}`;
+          const titleWords = big.name.split(" ");
+          bigLink.textContent =
+            titleWords.slice(0, 8).join(" ") +
+            (titleWords.length > 8 ? "…" : "");
+
+          const previewWords = big.description.split(/\s+/);
+          bigEl.querySelector(".post-content p").textContent =
+            previewWords.length > 48
+              ? previewWords.slice(0, 48).join(" ") + "…"
+              : big.description;
+        }
+
+        const smallContainer = document.querySelector(".col-lg-6 > .row");
+        const smallTemplate = smallContainer.querySelector(".col-sm-6");
+        if (smallTemplate && posts.length > 1) {
+          const fmtDate = (iso) =>
+            new Date(iso).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          const templateClone = smallTemplate.cloneNode(true);
+          smallContainer.innerHTML = "";
+
+          posts.slice(1, 5).forEach((data) => {
+            const card = templateClone.cloneNode(true);
+
+            const thumbDiv = card.querySelector(".post-thumbnail");
+            thumbDiv.innerHTML = `
+              <a href="blog-details.html?id=${data.id}">
+                <img src="/uploads/${data.image}" alt="${data.name}">
+              </a>
+            `;
+
+            const linkWords = data.name.split(" ");
+            const linkElem = card.querySelector(".title a");
+            linkElem.href = `blog-details.html?id=${data.id}`;
+            linkElem.textContent =
+              linkWords.slice(0, 6).join(" ") +
+              (linkWords.length > 6 ? "…" : "");
+
+            const oldMeta = card.querySelector(".post-meta");
+            if (oldMeta) oldMeta.remove();
+            const meta = document.createElement("div");
+            meta.className = "post-meta";
+            meta.innerHTML = `
+              <span><a href="blog-details.html?id=${data.id}">${
+              data.author_name || ""
+            }</a></span>
+              <span><a href="blog-details.html?id=${data.id}">${fmtDate(
+              data.date
+            )}</a></span>
+            `;
+            card.querySelector(".post-content").appendChild(meta);
+
+            smallContainer.appendChild(card);
+          });
+
+          if (window.AOS && typeof AOS.init === "function") {
+            AOS.init({
+              once: false,
+              duration: 1000,
+              easing: "ease-in-out",
+              mirror: true,
+            });
+          }
+        }
+
+        try {
+          const resp2 = await fetch("/blogpostdata");
+          if (!resp2.ok) throw new Error("Failed to fetch blog data.");
+          const sorted = (await resp2.json()).sort(
+            (a, b) => new Date(b.date) - new Date(a.date)
+          );
+          const topPosts = sorted.slice(0, 3);
+          const container = document.getElementById("recent-posts-container");
+
+          function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          }
+
+          topPosts.forEach((post) => {
+            const html = `
+              <div class="recent-post-item">
+                <div class="thumb">
+                  <a href="blog-details.html?id=${post.id}" class="w-100 h-100">
+                    <img src="/uploads/${post.image}" alt="${post.name}">
+                  </a>
+                </div>
+                <div class="content">
+                  <h4><a href="blog-details.html?id=${post.id}">${
+              post.name
+            }</a></h4>
+                  <span>
+                    <a href="blog-details.html?id=${post.id}">
+                      ${formatDate(post.date)}
+                    </a>
+                  </span>
+                </div>
+              </div>
+            `;
+            container.insertAdjacentHTML("beforeend", html);
+          });
+        } catch (error) {
+          console.error("Error loading recent posts:", error);
+        }
+
+        const extras = posts.slice(5);
+        const perPage = 3;
+        const totalPages = Math.ceil(extras.length / perPage);
+        let currentPage = 1;
+
+        const fourEls = document.querySelectorAll(".blog-post-item.style-four");
+        const pagUl = document.querySelector(".pesco-pagination ul");
+
+        const fmtDate2 = (iso) =>
+          new Date(iso).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+        function renderPage(page) {
+          const start = (page - 1) * perPage;
+          fourEls.forEach((el, idx) => {
+            const data = extras[start + idx];
+            if (!data) {
+              el.style.display = "none";
+              return;
+            }
+            el.style.display = "";
+
+            const thumb = el.querySelector(".post-thumbnail");
+            thumb.innerHTML = `
+              <a href="blog-details.html?id=${data.id}">
+                <img src="/uploads/${data.image}" alt="${data.name}">
+              </a>
+            `;
+
+            const link = el.querySelector(".title a");
+            link.href = `blog-details.html?id=${data.id}`;
+            link.textContent = data.name;
+
+            const w = data.description.split(/\s+/);
+            el.querySelector(".post-content p").textContent =
+              w.length > 36 ? w.slice(0, 36).join(" ") + "…" : data.description;
+
+            const spans = el.querySelectorAll(".post-meta span a");
+            if (spans.length >= 2) {
+              spans[0].textContent = data.tags || data.categories || "";
+              spans[1].textContent = fmtDate2(data.date);
+            }
+          });
+        }
+
+        function buildPager() {
+          pagUl.innerHTML = `
+            <li><a href="#" data-page="${currentPage - 1}">
+              <i class="far fa-angle-left"></i>
+            </a></li>
+          `;
+          for (let i = 1; i <= totalPages; i++) {
+            pagUl.insertAdjacentHTML(
+              "beforeend",
+              `<li>
+                 <a href="#" data-page="${i}"${
+                i === currentPage ? ' class="active"' : ""
+              }>
+                   ${i}
+                 </a>
+               </li>`
+            );
+          }
+          pagUl.insertAdjacentHTML(
+            "beforeend",
+            `<li><a href="#" data-page="${currentPage + 1}">
+               <i class="far fa-angle-right"></i>
+             </a></li>`
+          );
+        }
+
+        renderPage(currentPage);
+        buildPager();
+
+        pagUl.parentElement.addEventListener("click", (e) => {
+          e.preventDefault();
+          const a = e.target.closest("a[data-page]");
+          if (!a) return;
+          const pg = +a.dataset.page;
+          if (pg < 1 || pg > totalPages || pg === currentPage) return;
+          currentPage = pg;
+          renderPage(pg);
+          buildPager();
+          if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchForm = document.querySelector(
+          ".product-search-category form"
+        );
+        const searchInput = searchForm.querySelector('input[type="text"]');
+
+        const dropdown = document.createElement("div");
+        dropdown.className = "header-search-autocomplete";
+        Object.assign(dropdown.style, {
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          right: 0,
+          background: "#fff",
+          border: "1px solid #ddd",
+          zIndex: 1000,
+          maxHeight: "300px",
+          overflowY: "auto",
+          display: "none",
+        });
+        searchForm.style.position = "relative";
+        searchForm.appendChild(dropdown);
+
+        let timer;
+        searchInput.addEventListener("input", () => {
+          clearTimeout(timer);
+          const q = searchInput.value.trim();
+          if (q.length < 2) {
+            dropdown.style.display = "none";
+            return;
+          }
+          timer = setTimeout(() => {
+            fetch("/productpagedata")
+              .then((r) => r.json())
+              .then((products) => {
+                const matches = products
+                  .filter((p) => p.name.toLowerCase().includes(q.toLowerCase()))
+                  .slice(0, 5);
+
+                if (!matches.length) {
+                  dropdown.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                } else {
+                  dropdown.innerHTML =
+                    matches
+                      .map((p) => {
+                        const priceHTML = p.price_sale
+                          ? `<strong style="color:#000">${p.price_sale}</strong> <del style="color:#999" class="text-secondary fw-bold ms-2">${p.price}</del>`
+                          : `<strong class="text-secondary fw-bold" style="color:#000">${p.price}</strong>`;
+
+                        return `
+                <div class="autocomplete-item" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
+                  <img src="/uploads/${p.image}" 
+                      alt="${p.name}" 
+                      style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                  <div>
+                    <div style="font-weight:600;color:#333" class="text-dark fw-bold">${p.name}</div>
+                    <div style="font-size:0.85em;margin-top:4px;">${priceHTML}</div>
+                  </div>
+                </div>
+              `;
+                      })
+                      .join("") +
+                    `<div class="autocomplete-show-all" style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer">
+              Show all results
+            </div>`;
+                }
+                dropdown.style.display = "block";
+              })
+              .catch(() => {
+                dropdown.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                dropdown.style.display = "block";
+              });
+          }, 300);
+        });
+
+        dropdown.addEventListener("click", (e) => {
+          const item = e.target.closest(".autocomplete-item");
+          if (item) {
+            const name = item.querySelector("div > div").textContent;
+            window.location.href = `shops-grid.html?search=${encodeURIComponent(
+              name
+            )}`;
+            return;
+          }
+          if (e.target.closest(".autocomplete-show-all")) {
+            const q = searchInput.value.trim();
+            window.location.href = `shops-grid.html?search=${encodeURIComponent(
+              q
+            )}`;
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!searchForm.contains(e.target)) {
+            dropdown.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <div class="back-to-top"><i class="far fa-angle-up"></i></div>
+    <script src="assets/vendor/jquery-3.7.1.min.js"></script>
+    <script src="assets/vendor/popper/popper.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/vendor/slick/slick.min.js"></script>
+    <script src="assets/vendor/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
+    <script src="assets/vendor/nice-select/js/jquery.nice-select.min.js"></script>
+    <script src="assets/vendor/jquery-ui/jquery-ui.min.js"></script>
+    <script src="assets/vendor/simplyCountdown.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+  </body>
+</html>

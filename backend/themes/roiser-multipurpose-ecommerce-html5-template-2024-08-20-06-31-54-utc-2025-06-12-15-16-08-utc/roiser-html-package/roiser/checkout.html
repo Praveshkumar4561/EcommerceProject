@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Complete your purchase securely with our fast and safe checkout process. Enjoy hassle-free payments and quick order processing at Roiser"
+    />
+    <title>Roiser – Secure Checkout - Complete Your Purchase</title>
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="assets/img/favicon.png"
+    />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="assets/css/nice-select.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .querySelectorAll("a[href$='.html']:not(.lang-btn)")
+          .forEach((a) => {
+            const href = a.getAttribute("href");
+            const page = href.replace(/\.html$/, "");
+            if (page === "index" || page === "") {
+              a.setAttribute("href", "http://srv689968.hstgr.cloud//");
+            } else {
+              a.setAttribute("href", `http://srv689968.hstgr.cloud//${page}`);
+            }
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              if (page === "index" || page === "") {
+                window.parent.location.href = "http://srv689968.hstgr.cloud//";
+              } else {
+                window.parent.location.href = `http://srv689968.hstgr.cloud//${page}`;
+              }
+            });
+          });
+        document.querySelectorAll('a[href="#"]').forEach((a) => {
+          a.addEventListener("click", (e) => e.preventDefault());
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <header class="header sticky-active">
+      <div class="top-bar">
+        <div class="container">
+          <div class="top-bar-inner">
+            <div class="top-bar-left">
+              <ul class="top-left-list">
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">My Account</a></li>
+                <li><a href="wishlist.html">Wishlist</a></li>
+                <li><a href="checkout.html">Checkout</a></li>
+              </ul>
+            </div>
+
+            <div class="top-bar-middle">
+              <span
+                id="announcement-text"
+                style="
+                  display: inline-block;
+                  transition: transform 0.5s ease;
+                  white-space: nowrap;
+                "
+              ></span>
+            </div>
+
+            <div class="top-bar-right">
+              <ul class="top-right-list">
+                <li><a href="contact.html">Store Location</a></li>
+                <li>
+                  <div class="nice-select select-control country1" tabindex="0">
+                    <span class="current">Language</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Language
+                      </li>
+                      <li data-value="vdt" class="option">English</li>
+                      <li data-value="can" class="option">Bangla</li>
+                      <li data-value="uk" class="option">Arabic</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div
+                    class="nice-select select-control select-2 country"
+                    tabindex="0"
+                  >
+                    <span class="current">Currency</span>
+                    <ul class="list">
+                      <li data-value="" class="option selected focus">
+                        Currency
+                      </li>
+                      <li data-value="vdt" class="option">Doller</li>
+                      <li data-value="can" class="option">Rupee</li>
+                      <li data-value="uk" class="option">Taka</li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-middle">
+        <div class="container">
+          <div class="header-middle-inner">
+            <div class="header-middle-left">
+              <div class="header-logo d-lg-block">
+                <a href="index.html">
+                  <img
+                    src="assets/img/logo/logo-1.png"
+                    alt="Logo"
+                    id="site-logo"
+                  />
+                </a>
+              </div>
+              <div class="category-form-wrap">
+                <div class="nice-select select-control country" tabindex="0">
+                  <span class="current">ALL Categories</span>
+                  <ul class="list">
+                    <li data-value="" class="option selected focus">
+                      ALL Categories
+                    </li>
+                    <li data-value="vdt" class="option">Fashion</li>
+                    <li data-value="can" class="option">Organic</li>
+                    <li data-value="uk" class="option">Furniture</li>
+                  </ul>
+                </div>
+
+                <form class="header-form">
+                  <input
+                    class="form-control"
+                    type="text"
+                    name="search"
+                    placeholder="Search here..."
+                    required
+                  />
+                  <button class="submit rr-primary-btn" type="submit">
+                    Search here
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="header-middle-right">
+              <ul class="contact-item-list">
+                <li>
+                  <div class="content">
+                    <span>Call Us Now:</span>
+                    <a class="number" href="tel:+25821592159"
+                      >+(258) 2159-2159</a
+                    >
+                  </div>
+                  <a href="tel:+25821592159" class="icon">
+                    <i class="fa-regular fa-phone"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="wishlist.html" class="icon">
+                    <i class="fa-sharp fa-regular fa-heart"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="cart.html" class="icon">
+                    <i class="fa-light fa-bag-shopping"></i>
+                    <span>0</span>
+                  </a>
+                  <div class="content">
+                    <span>Your cart,</span>
+                    <h5 class="number">$0.00</h5>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="primary-header">
+        <div class="container">
+          <div class="primary-header-inner">
+            <div class="header-logo mobile-logo">
+              <a href="index.html">
+                <img src="assets/img/logo/logo-1.png" alt="Logo" />
+              </a>
+            </div>
+            <div class="header-menu-wrap">
+              <div class="mobile-menu-items">
+                <ul>
+                  <li class="menu-item-has-children active">
+                    <a href="index.html">Home</a>
+                    <ul>
+                      <li><a href="index.html">Fashion Home</a></li>
+                      <li><a href="index-2.html">Grocery Home</a></li>
+                      <li><a href="index-3.html">Furniture</a></li>
+                    </ul>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="shop.html">Shop</a>
+                    <ul>
+                      <li><a href="shop.html">Shop</a></li>
+                      <li><a href="shop-grid.html">Shop Grid</a></li>
+                      <li><a href="shop-details.html">Shop Details</a></li>
+                      <li><a href="cart.html">Cart</a></li>
+                      <li><a href="wishlist.html">Wishlist</a></li>
+                      <li><a href="checkout.html">Checkout</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">Women</a>
+                  </li>
+                  <li>
+                    <a href="shop-grid.html">men</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#">Pages</a>
+                    <ul>
+                      <li><a href="about.html">About</a></li>
+                      <li><a href="login.html">Login</a></li>
+                      <li><a href="register.html">Register</a></li>
+                      <li><a href="faq.html">Faq</a></li>
+                      <li><a href="error.html">404 Error</a></li>
+                    </ul>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="blog-grid.html">Blog</a>
+                    <ul>
+                      <li><a href="blog-grid.html">Blog Grid</a></li>
+                      <li><a href="blog-list.html">Blog list</a></li>
+                      <li><a href="blog-details.html">Blog Details</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="contact.html">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="header-right-wrap">
+              <div class="header-right">
+                <span>Get 30% Discount Now <span>Sale</span></span>
+                <div class="header-right-item">
+                  <a href="javascript:void(0)" class="mobile-side-menu-toggle"
+                    ><i class="fa-sharp fa-solid fa-bars"></i
+                  ></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let selectedCurrency = localStorage.getItem("currency") || "vdt";
+
+        const currencyRates = {
+          vdt: { symbol: "$", rate: 1 },
+          can: { symbol: "₹", rate: 83 },
+          uk: { symbol: "৳", rate: 108 },
+        };
+
+        const currentCurrency = currencyRates[selectedCurrency];
+        if (currentCurrency) {
+          const selectedOption = document.querySelector(
+            `.nice-select.country .option[data-value="${selectedCurrency}"]`
+          );
+          if (selectedOption) {
+            document.querySelector(
+              ".nice-select.country .current"
+            ).textContent = selectedOption.textContent;
+          }
+        }
+
+        document
+          .querySelectorAll(".nice-select.country .option")
+          .forEach((opt) => {
+            opt.addEventListener("click", () => {
+              const code = opt.dataset.value;
+              if (currencyRates[code]) {
+                selectedCurrency = code;
+                localStorage.setItem("currency", selectedCurrency);
+                document.querySelector(
+                  ".nice-select.country .current"
+                ).textContent = opt.textContent;
+              }
+            });
+          });
+
+        function formatPrice(raw) {
+          const n = parseFloat(raw.replace(/[^0-9.]/g, "")) || 0;
+          const { symbol, rate } = currencyRates[selectedCurrency];
+          return symbol + (n * rate).toFixed(2);
+        }
+
+        const wrapper = document.querySelector(".category-form-wrap");
+        wrapper.style.position = "relative";
+
+        const resultBox = document.createElement("div");
+        resultBox.classList.add("search-result-dropdown");
+        Object.assign(resultBox.style, {
+          position: "absolute",
+          top: "100%",
+          left: "0%",
+          width: "100%",
+          background: "#fff",
+          border: "1px solid #ddd",
+          zIndex: "1000",
+          maxHeight: "300px",
+          overflowY: "auto",
+          display: "none",
+        });
+        wrapper.appendChild(resultBox);
+
+        const searchInput = wrapper.querySelector('input[name="search"]');
+        let timeout;
+
+        searchInput.addEventListener("input", () => {
+          const q = searchInput.value.trim();
+          clearTimeout(timeout);
+
+          if (q.length < 2) {
+            resultBox.style.display = "none";
+            resultBox.innerHTML = "";
+            return;
+          }
+
+          timeout = setTimeout(() => {
+            fetch("/productpagedata")
+              .then((r) => r.json())
+              .then((products) => {
+                const matches = products
+                  .filter((p) => p.name.toLowerCase().includes(q.toLowerCase()))
+                  .slice(0, 5);
+
+                if (!matches.length) {
+                  resultBox.innerHTML = `<div style="padding:10px;color:#666">No products found.</div>`;
+                } else {
+                  resultBox.innerHTML =
+                    matches
+                      .map((p) => {
+                        const img = (p.image || "").split(",")[0].trim();
+                        const mainPrice = formatPrice(p.price);
+                        const salePrice = p.price_sale
+                          ? `<strong class="text-dark me-2">${formatPrice(
+                              p.price_sale
+                            )}</strong>
+                              <s class="fw-bold text-danger">${formatPrice(
+                                p.price
+                              )}</s>`
+                          : `<strong class="fw-bold text-dark">${formatPrice(
+                              p.price
+                            )}</strong>`;
+
+                        return `
+                        <div
+                          onclick="window.location.href='shop.html?search=${encodeURIComponent(
+                            q
+                          )}'"
+                          style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
+                        >
+                          <img src="/uploads/${img}" alt="${p.name}"
+                              style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                          <div>
+                            <div class="fw-bold text-dark">${p.name}</div>
+                            <div style="font-size:0.85em;color:#999;">
+                              ${salePrice}
+                            </div>
+                          </div>
+                        </div>
+                      `;
+                      })
+                      .join("") +
+                    `
+                      <div
+                        onclick="window.location.href='shop.html?search=${encodeURIComponent(
+                          q
+                        )}'"
+                        style="padding:10px;text-align:center;color:#e74c3c;font-weight:600;cursor:pointer;"
+                      >
+                        Show all results
+                      </div>
+                    `;
+                }
+
+                resultBox.style.display = "block";
+              })
+              .catch((err) => {
+                console.error("Error fetching products:", err);
+                resultBox.innerHTML = `<div style="padding:10px;color:red;">Error loading results.</div>`;
+                resultBox.style.display = "block";
+              });
+          }, 300);
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!wrapper.contains(e.target)) {
+            resultBox.style.display = "none";
+          }
+        });
+      });
+    </script>
+
+    <div id="popup-search-box">
+      <div class="box-inner-wrap d-flex align-items-center">
+        <form id="form" action="#" method="get" role="search">
+          <input
+            id="popup-search"
+            type="text"
+            name="search"
+            placeholder="Type keywords here..."
+          />
+        </form>
+        <div class="search-close">
+          <i class="fa-sharp fa-regular fa-xmark"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-side-menu">
+      <div class="side-menu-content">
+        <div class="side-menu-head">
+          <a href="index.html"
+            ><img src="assets/img/logo/logo-1.png" alt="logo"
+          /></a>
+          <button class="mobile-side-menu-close">
+            <i class="fa-regular fa-xmark"></i>
+          </button>
+        </div>
+        <div class="side-menu-wrap"></div>
+        <ul class="side-menu-list">
+          <li>
+            <i class="fa-light fa-location-dot"></i>Address :
+            <span>Amsterdam, 109-74</span>
+          </li>
+          <li>
+            <i class="fa-light fa-phone"></i>Phone :
+            <a href="tel:+01569896654">+01 569 896 654</a>
+          </li>
+          <li>
+            <i class="fa-light fa-envelope"></i>Email :
+            <a href="mailto:info@example.com">info@example.com</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="preloader">
+      <div class="preloader-close">X</div>
+      <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
+      </div>
+    </div>
+
+    <section class="page-header">
+      <div class="shape">
+        <img src="assets/img/shapes/page-header-shape.png" alt="shape" />
+      </div>
+      <div class="container">
+        <div class="page-header-content">
+          <h1 class="title">Checkout</h1>
+          <h4 class="sub-title">
+            <span class="home">
+              <a href="index.html">
+                <span>Home</span>
+              </a>
+            </span>
+            <span class="icon"><i class="fa-solid fa-angle-right"></i></span>
+            <span class="inner">
+              <span>Checkout</span>
+            </span>
+          </h4>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const res = await fetch("/get-theme-breadcrumb");
+          const config = await res.json();
+
+          const section = document.querySelector(".page-header");
+          const content = section.querySelector(".page-header-content");
+          const titleEl = content.querySelector(".title");
+          const crumbEl = content.querySelector(".sub-title");
+          const imgEl = section.querySelector(".shape img");
+
+          if (config.enable_breadcrumb === "no") {
+            titleEl.style.display = "none";
+            crumbEl.style.display = "none";
+          } else {
+            titleEl.style.display = "";
+            crumbEl.style.display = "";
+          }
+
+          if (config.breadcrumb_height) {
+            section.style.height = config.breadcrumb_height + "px";
+          }
+
+          if (config.background_color) {
+            section.style.backgroundColor = config.background_color;
+          }
+
+          if (config.background_image && config.background_image.trim()) {
+            const bg = config.background_image.trim();
+            imgEl.src = bg.startsWith("http") ? bg : `/uploads/${bg}`;
+          }
+
+          if (
+            config.enable_breadcrumb === "yes" &&
+            config.hide_title === "yes"
+          ) {
+            titleEl.style.display = "none";
+          }
+
+          if (config.enable_breadcrumb === "yes") {
+            switch (config.breadcrumb_style) {
+              case "none":
+                crumbEl.style.display = "none";
+                break;
+              case "align center":
+                content.style.textAlign = "center";
+                break;
+              default:
+                content.style.textAlign = "start";
+            }
+          }
+        } catch (e) {
+          console.error("Breadcrumb config failed to load:", e);
+        }
+      });
+    </script>
+
+    <section class="checkout-section pt-100 pb-100">
+      <div class="container">
+        <div class="checkout-top">
+          <div class="coupon-list">
+            <div class="verify-item mb-30">
+              <h4 class="title">
+                Returning customers?<button
+                  type="button"
+                  class="rr-checkout-login-form-reveal-btn"
+                >
+                  Click here
+                </button>
+                to login
+              </h4>
+              <div id="rrReturnCustomerLoginForm" class="login-form">
+                <form action="#">
+                  <input
+                    type="text"
+                    id="fullname"
+                    name="fullname"
+                    class="form-control"
+                    placeholder="Your Name"
+                  />
+                  <input
+                    type="text"
+                    id="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Password"
+                  />
+                </form>
+                <div class="checkbox-wrap">
+                  <div class="checkbox-item">
+                    <input
+                      type="checkbox"
+                      id="vehicle3"
+                      name="vehicle3"
+                      value="Boat"
+                    />
+                    <label for="vehicle3">Remember Me</label>
+                  </div>
+                  <a href="#" class="forgot">Forgot Password?</a>
+                </div>
+                <button class="rr-primary-btn">Login</button>
+              </div>
+            </div>
+            <div class="verify-item">
+              <h4 class="title">
+                Returning customers?<button
+                  type="button"
+                  class="rr-checkout-coupon-form-reveal-btn"
+                >
+                  Click here
+                </button>
+                to login
+              </h4>
+              <div id="rrCheckoutCouponForm" class="login-form">
+                <form action="#">
+                  <input
+                    type="text"
+                    id="code"
+                    name="code"
+                    class="form-control"
+                    placeholder="Coupon Code"
+                  />
+                </form>
+                <button class="rr-primary-btn">Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="checkout-feedback"
+          style="
+            display: none;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+          "
+        >
+          <span id="checkout-feedback-msg"></span>
+        </div>
+
+        <form id="checkout-form">
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <div class="checkout-left">
+                <h3 class="form-header">Billing Details</h3>
+                <div class="checkout-form-wrap">
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Email Address*</h4>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-6">
+                      <div class="form-item name">
+                        <h4 class="form-title">First Name*</h4>
+                        <input
+                          type="text"
+                          id="first_name"
+                          name="first_name"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-item">
+                        <h4 class="form-title">Last Name*</h4>
+                        <input
+                          type="text"
+                          id="last_name"
+                          name="last_name"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Company Name (Optional)*</h4>
+                        <input
+                          type="text"
+                          id="company"
+                          name="company"
+                          class="form-control"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Country / Region*</h4>
+                        <input
+                          type="text"
+                          id="country"
+                          name="country"
+                          class="form-control"
+                          placeholder="United States (US)"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Street Address*</h4>
+                        <input
+                          type="text"
+                          id="address"
+                          name="address"
+                          class="form-control street-control"
+                          placeholder="House number and street number"
+                          required
+                        />
+                        <input
+                          type="text"
+                          id="apartment"
+                          name="apartment"
+                          class="form-control street-control-2"
+                          placeholder="Apartment, suite, unit, etc. (optional)"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Town / City*</h4>
+                        <input
+                          type="text"
+                          id="town"
+                          name="town"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">State*</h4>
+
+                        <div
+                          class="nice-select select-control form-control country open"
+                          tabindex="0"
+                        >
+                          <span class="current">California</span>
+                          <ul class="list">
+                            <label
+                              htmlfor="state"
+                              class="option selected focus"
+                            >
+                              California
+                            </label>
+                            <option value="New Work" class="px-3">
+                              New Work
+                            </option>
+                            <option value="Paris" class="px-3">Paris</option>
+                            <option value="Dhaka" class="px-3 pb-2">
+                              Dhaka
+                            </option>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Zip Code*</h4>
+                        <input
+                          type="text"
+                          id="pincode"
+                          name="pincode"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Phone*</h4>
+                        <input
+                          type="text"
+                          id="phone_number"
+                          name="phone_number"
+                          class="form-control"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <div class="form-item">
+                        <h4 class="form-title">Order Notes*</h4>
+                        <textarea
+                          id="notes"
+                          name="notes"
+                          cols="30"
+                          rows="5"
+                          class="form-control address"
+                          required
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <input type="hidden" id="cart-json" name="cart" value="[]" />
+
+            <div class="col-lg-6 col-md-12">
+              <div class="checkout-right">
+                <h3 class="form-header">Your Order</h3>
+                <div class="order-box">
+                  <div class="order-items">
+                    <div class="order-item item-1">
+                      <div class="order-left">
+                        <span class="product">Product</span>
+                      </div>
+
+                      <div class="order-right">
+                        <span class="price">Price</span>
+                      </div>
+                    </div>
+
+                    <div class="order-item item-1">
+                      <div class="order-left">
+                        <span class="left-title">Subtotal</span>
+                      </div>
+                      <div class="order-right">
+                        <span class="right-title">$00.00</span>
+                      </div>
+                    </div>
+
+                    <div class="order-item item-1">
+                      <div class="order-left">
+                        <span class="left-title">Subtotal</span>
+                      </div>
+                      <div class="order-right">
+                        <span class="right-title">$00.00</span>
+                      </div>
+                    </div>
+
+                    <div class="order-item item-1">
+                      <div class="order-left">
+                        <span class="left-title">Shipping</span>
+                      </div>
+                      <div class="order-right">
+                        <span class="right-title"
+                          ><span>Flat rate:</span>$00.00</span
+                        >
+                      </div>
+                    </div>
+
+                    <div class="order-item item-1">
+                      <div class="order-left">
+                        <span class="left-title">Total Price:</span>
+                      </div>
+                      <div class="order-right">
+                        <span class="right-title title-2">$00.00</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="payment-option-wrap">
+                    <div class="payment-option">
+                      <div class="shipping-option">
+                        <div class="options">
+                          <input id="flat_rate" type="radio" name="shipping" />
+                          <label for="flat_rate">Direct Bank Transfer</label>
+                        </div>
+                        <p class="mb-0">
+                          Make your payment directly into our bank account.
+                          Please use your Order ID as the payment reference.
+                          Your order will not be shipped until the funds have
+                          cleared in our account.
+                        </p>
+                      </div>
+                      <div class="shipping-option">
+                        <input id="local_pickup" type="radio" name="shipping" />
+                        <label for="local_pickup">Check Payments</label>
+                      </div>
+                      <div class="shipping-option">
+                        <input
+                          id="free_shipping"
+                          type="radio"
+                          name="shipping"
+                        />
+                        <label for="free_shipping">Cash On Delivery</label>
+                      </div>
+                      <div class="shipping-option">
+                        <input id="paypal" type="radio" name="shipping" />
+                        <label for="paypal">Paypal</label>
+                      </div>
+                    </div>
+                    <p class="desc">
+                      Your personal data will be used to process your order,
+                      support your experience throughout this website, and for
+                      other purposes described in our
+                      <span>privacy policy.</span>
+                    </p>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="flexCheckDefault"
+                      />
+                      <label class="form-check-label" for="flexCheckDefault">
+                        I have read and agree terms and conditions *
+                      </label>
+                    </div>
+                    <button type="submit" class="rr-primary-btn order-btn">
+                      Place Your Order
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user_id = localStorage.getItem("user_id");
+        const wrapper = document.querySelector(".order-items");
+        if (!wrapper) return;
+
+        const footerIndex = Array.from(wrapper.children).findIndex((r) =>
+          r.querySelector(".left-title")?.textContent.includes("Subtotal")
+        );
+
+        const form = document.getElementById("checkout-form");
+        const hiddenInp = document.getElementById("cart-json");
+        const fb = document.getElementById("checkout-feedback");
+        const fbMsg = document.getElementById("checkout-feedback-msg");
+
+        let cartData = [];
+        let totalsObj = { subtotal: 0, discount: 0, shipping: 0, total: 0 };
+        let subtotal = 0;
+
+        function round2(n) {
+          return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
+        }
+
+        function clearProductsUI() {
+          Array.from(wrapper.children).forEach((c, i) => {
+            if (i > 0 && i < footerIndex && !c.classList.contains("item-1")) {
+              wrapper.removeChild(c);
+            }
+          });
+
+          const footers = wrapper.querySelectorAll(".order-item.item-1");
+          if (footers && footers.length >= 5) {
+            footers[1].querySelector(".right-title").textContent = `$0.00`;
+            footers[2].querySelector(".right-title").textContent = `$0.00`;
+            footers[3].querySelector(
+              ".right-title"
+            ).innerHTML = `<span>Flat rate:</span>$0.00`;
+            footers[4].querySelector(
+              ".right-title.title-2"
+            ).textContent = `$0.00`;
+          }
+        }
+
+        function renderOrderItemsFromArray(itemsArray, totals) {
+          Array.from(wrapper.children).forEach((c, i) => {
+            if (i > 0 && i < footerIndex && !c.classList.contains("item-1")) {
+              wrapper.removeChild(c);
+            }
+          });
+
+          itemsArray.forEach((it) => {
+            const lineTotal = round2(
+              it.subtotal_after_discount ??
+                it.subtotal ??
+                it.unit_price * it.quantity
+            );
+            const row = document.createElement("div");
+            row.className = "order-item";
+            const safeName = (it.name || "").replace(/"/g, "");
+            row.innerHTML = `
+              <div class="order-left">
+                <div class="order-img">
+                  <img src="/uploads/${it.image}" alt="${safeName}" />
+                </div>
+              </div>
+              <div class="order-right">
+                <div class="content">
+                  <h4 class="title">${safeName} × ${it.quantity}</h4>
+                </div>
+                <span class="price">$${lineTotal.toFixed(2)}</span>
+              </div>`;
+            wrapper.insertBefore(row, wrapper.children[footerIndex]);
+          });
+
+          const footers = wrapper.querySelectorAll(".order-item.item-1");
+          if (footers && footers.length >= 5) {
+            footers[1].querySelector(".right-title").textContent = `$${round2(
+              totals.subtotal
+            ).toFixed(2)}`;
+            footers[2].querySelector(".right-title").textContent = `$${round2(
+              totals.subtotal
+            ).toFixed(2)}`;
+            footers[3].querySelector(
+              ".right-title"
+            ).innerHTML = `<span>Flat rate:</span>$${round2(
+              totals.shipping
+            ).toFixed(2)}`;
+            footers[4].querySelector(
+              ".right-title.title-2"
+            ).textContent = `$${round2(totals.total).toFixed(2)}`;
+          }
+        }
+
+        function aggregateStoredItems(rawItems) {
+          const map = Object.create(null);
+          rawItems.forEach((it) => {
+            const name = (it.name || "").trim();
+            if (!name) return;
+
+            const imgSrc = String(it.image || "");
+            const filename = imgSrc.split("/").pop() || imgSrc;
+
+            const qty = Number(it.quantity) || 1;
+            const rawSubtotal =
+              Number(
+                it.subtotal_after_discount ??
+                  it.subtotal ??
+                  Number(it.unit_price || it.unit_price_after_discount || 0) *
+                    qty
+              ) || 0;
+            const unitPrice =
+              Number(
+                it.unit_price_after_discount ??
+                  it.unit_price ??
+                  rawSubtotal / Math.max(qty, 1)
+              ) || 0;
+
+            if (!map[name]) {
+              map[name] = {
+                image: filename,
+                name,
+                quantity: qty,
+                subtotal_after_discount: round2(rawSubtotal),
+                unit_price_after_discount: round2(unitPrice),
+              };
+            } else {
+              map[name].quantity += qty;
+              map[name].subtotal_after_discount = round2(
+                map[name].subtotal_after_discount + rawSubtotal
+              );
+              map[name].unit_price_after_discount = round2(
+                map[name].subtotal_after_discount / map[name].quantity
+              );
+            }
+          });
+
+          return Object.values(map);
+        }
+
+        function loadFromLocalStorageOnly() {
+          const raw = localStorage.getItem("checkout_cart");
+          if (!raw) {
+            cartData = [];
+            totalsObj = { subtotal: 0, discount: 0, shipping: 0, total: 0 };
+            subtotal = 0;
+            clearProductsUI();
+            if (hiddenInp) hiddenInp.value = "";
+            return Promise.resolve();
+          }
+
+          try {
+            const payload = JSON.parse(raw);
+            const storedItems = payload.items || [];
+            const aggregated = aggregateStoredItems(storedItems);
+
+            let totals =
+              payload.totals && typeof payload.totals === "object"
+                ? {
+                    subtotal: Number(payload.totals.subtotal || 0),
+                    discount: Number(payload.totals.discount || 0),
+                    shipping: Number(payload.totals.shipping || 0),
+                    total: Number(payload.totals.total || 0),
+                  }
+                : { subtotal: 0, discount: 0, shipping: 0, total: 0 };
+
+            if ((!totals || totals.subtotal === 0) && aggregated.length > 0) {
+              totals.subtotal = round2(
+                aggregated.reduce(
+                  (s, it) => s + Number(it.subtotal_after_discount || 0),
+                  0
+                )
+              );
+              totals.discount = Number(payload.totals?.discount || 0);
+              totals.shipping = Number(payload.totals?.shipping || 0);
+              totals.total = round2(
+                totals.subtotal -
+                  (totals.discount || 0) +
+                  (totals.shipping || 0)
+              );
+            }
+
+            cartData = aggregated.map((it) => ({
+              image: it.image,
+              name: it.name,
+              quantity: it.quantity,
+              price: round2(
+                it.unit_price_after_discount || it.unit_price || 0
+              ).toFixed(2),
+              subtotal: `$${round2(
+                it.subtotal_after_discount || it.subtotal || 0
+              ).toFixed(2)}`,
+              tax: "0.00",
+              store: "default",
+            }));
+
+            totalsObj = totals;
+            subtotal = totalsObj.subtotal;
+
+            const renderArray = aggregated.map((it) => ({
+              image: it.image,
+              name: it.name,
+              quantity: it.quantity,
+              subtotal_after_discount: it.subtotal_after_discount,
+              unit_price: it.unit_price_after_discount,
+            }));
+
+            renderOrderItemsFromArray(renderArray, totalsObj);
+
+            if (hiddenInp) hiddenInp.value = JSON.stringify(cartData);
+            return Promise.resolve();
+          } catch (err) {
+            console.warn(
+              "Invalid checkout_cart JSON — clearing UI and aborting render:",
+              err
+            );
+            cartData = [];
+            totalsObj = { subtotal: 0, discount: 0, shipping: 0, total: 0 };
+            subtotal = 0;
+            clearProductsUI();
+            if (hiddenInp) hiddenInp.value = "";
+            return Promise.resolve();
+          }
+        }
+
+        function clearCheckoutCartUI() {
+          try {
+            localStorage.removeItem("checkout_cart");
+          } catch (e) {
+            console.warn(e);
+          }
+
+          Array.from(wrapper.children).forEach((c, i) => {
+            if (i > 0 && i < footerIndex && !c.classList.contains("item-1")) {
+              wrapper.removeChild(c);
+            }
+          });
+
+          const footers = wrapper.querySelectorAll(".order-item.item-1");
+          if (footers && footers.length >= 5) {
+            footers[1].querySelector(".right-title").textContent = `$0.00`;
+            footers[2].querySelector(".right-title").textContent = `$0.00`;
+            footers[3].querySelector(
+              ".right-title"
+            ).innerHTML = `<span>Flat rate:</span>$0.00`;
+            footers[4].querySelector(
+              ".right-title.title-2"
+            ).textContent = `$0.00`;
+          }
+
+          if (hiddenInp) hiddenInp.value = "";
+          cartData = [];
+          totalsObj = { subtotal: 0, discount: 0, shipping: 0, total: 0 };
+          subtotal = 0;
+        }
+
+        loadFromLocalStorageOnly().then(() => {});
+
+        form?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const f = e.target;
+
+          const rawSaved = localStorage.getItem("checkout_cart");
+          if (rawSaved) {
+            try {
+              const parsed = JSON.parse(rawSaved);
+              if (parsed.totals) {
+                totalsObj = {
+                  subtotal: Number(parsed.totals.subtotal || 0),
+                  discount: Number(parsed.totals.discount || 0),
+                  shipping: Number(parsed.totals.shipping || 0),
+                  total: Number(parsed.totals.total || 0),
+                };
+              }
+            } catch (err) {
+              console.warn(
+                "Could not parse checkout_cart totals on submit:",
+                err
+              );
+            }
+          } else {
+            const computedSubtotal = (cartData || []).reduce((s, it) => {
+              const n = Number(
+                String(it.subtotal || "0").replace(/[^0-9.]/g, "")
+              );
+              return s + (isNaN(n) ? 0 : n);
+            }, 0);
+            totalsObj = {
+              subtotal: round2(computedSubtotal),
+              discount: 0,
+              shipping: 0,
+              total: round2(computedSubtotal),
+            };
+          }
+
+          const payload = {
+            user_id: user_id || null,
+            email: f.email.value,
+            phone_number: f.phone_number.value,
+            first_name: f.first_name.value,
+            last_name: f.last_name.value,
+            address: f.address.value,
+            apartment: f.apartment.value,
+            country: f.country.value,
+            pincode: f.pincode.value,
+            date: new Date().toISOString().slice(0, 19).replace("T", " "),
+            cart: cartData,
+            subtotal: totalsObj.subtotal.toFixed(2),
+            discount: (totalsObj.discount || 0).toFixed(2),
+            tax: "0.00",
+            shippingFee: (totalsObj.shipping || 0).toFixed(2),
+            total: totalsObj.total.toFixed(2),
+            payment:
+              document.querySelector('input[name="shipping"]:checked')?.id ||
+              "none",
+            payment_status: "unpaid",
+            company: f.company.value,
+            town: f.town.value,
+            state:
+              document.querySelector(".nice-select .current")?.textContent ||
+              "",
+            notes: f.notes.value,
+            status: "pending",
+          };
+
+          try {
+            const res = await fetch("/checkout", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            const json = await res.json();
+
+            if (res.ok) {
+              fbMsg.textContent = `✅ Order placed! Order Number: ${
+                json.orderNumber || json.order_id || "N/A"
+              }`;
+              fb.style.background = "#d4edda";
+              fb.style.color = "#155724";
+              fb.style.display = "block";
+
+              clearCheckoutCartUI();
+            } else {
+              fbMsg.textContent = `❌ ${json.error || "Could not place order"}`;
+              fb.style.background = "#f8d7da";
+              fb.style.color = "#721c24";
+              fb.style.display = "block";
+            }
+          } catch (err) {
+            console.error(err);
+            fbMsg.textContent = "❌ Network error, please try again";
+            fb.style.background = "#f8d7da";
+            fb.style.color = "#721c24";
+            fb.style.display = "block";
+          }
+        });
+      });
+    </script>
+
+    <script>
+      const userId = localStorage.getItem("user_id");
+
+      function updateCartIcon() {
+        if (!userId) return;
+
+        fetch(`/allcartdata?user_id=${userId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            const grouped = data.reduce((map, item) => {
+              const name = item.name;
+              const qty = parseInt(item.quantity || 1, 10);
+              const price =
+                parseFloat((item.price || "").replace(/[^0-9.]/g, "")) || 0;
+
+              if (!map[name]) {
+                map[name] = { quantity: qty, lineTotal: qty * price };
+              } else {
+                map[name].quantity += qty;
+                map[name].lineTotal += qty * price;
+              }
+              return map;
+            }, {});
+
+            const distinctNames = Object.keys(grouped);
+            const totalItems = distinctNames.length;
+            const totalAmount = distinctNames.reduce(
+              (sum, name) => sum + grouped[name].lineTotal,
+              0
+            );
+
+            const iconCount = document.querySelector(".icon span");
+            const amountText = document.querySelector(".content h5.number");
+
+            if (iconCount) iconCount.innerText = totalItems;
+            if (amountText) amountText.innerText = `$${totalAmount.toFixed(2)}`;
+          })
+          .catch((err) => {
+            console.error("Error updating cart info:", err);
+          });
+      }
+
+      setInterval(updateCartIcon, 1000);
+      updateCartIcon();
+    </script>
+
+    <footer class="footer-section bg-grey pt-60">
+      <div class="container">
+        <div class="footer-items">
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-1.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Shipping</h4>
+              <span>Free shipping on orders over $65.00</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-2.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Free Returns</h4>
+              <span>30-days free return policy</span>
+            </div>
+          </div>
+          <div class="footer-item">
+            <div class="icon">
+              <img src="assets/img/icon/footer-3.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Secured Payments</h4>
+              <span>We accept all major credit card</span>
+            </div>
+          </div>
+          <div class="footer-item item-2">
+            <div class="icon">
+              <img src="assets/img/icon/footer-4.png" alt="icon" />
+            </div>
+            <div class="content">
+              <h4 class="title">Customer Service</h4>
+              <span>Top notch customer service</span>
+            </div>
+          </div>
+        </div>
+        <div class="row footer-widget-wrap pb-60">
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">About Store</h3>
+              </div>
+              <div class="footer-contact">
+                <div class="icon">
+                  <i class="fa-sharp fa-solid fa-phone-rotary"></i>
+                </div>
+                <div class="content">
+                  <span>Have Question? Call Us 24/7</span>
+                  <a href="tel:+25836922569">+258 3692 2569</a>
+                </div>
+              </div>
+              <ul class="schedule-list">
+                <li><span>Monday - Friday:</span>8:00am - 6:00pm</li>
+                <li><span>Saturday:</span>8:00am - 6:00pm</li>
+                <li><span>Sunday</span> Service Close</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Stores</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">New York</a></li>
+                <li><a href="contact.html">London SF</a></li>
+                <li><a href="contact.html">Los Angele</a></li>
+                <li><a href="contact.html">Chicago</a></li>
+                <li><a href="contact.html">Las Vegas</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Shop Categories</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">New Arrivals</a></li>
+                <li><a href="contact.html">Best Selling</a></li>
+                <li><a href="contact.html">Vegetables</a></li>
+                <li><a href="contact.html">Fresh Meat</a></li>
+                <li><a href="contact.html">Fresh Seafood</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Useful Links</h3>
+              </div>
+              <ul class="footer-list">
+                <li><a href="contact.html">Privacy Policy</a></li>
+                <li><a href="contact.html">Terms & Conditions</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+                <li><a href="contact.html">Latest News</a></li>
+                <li><a href="contact.html">Our Sitemaps</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <div class="footer-widget">
+              <div class="widget-header">
+                <h3 class="widget-title">Our Newsletter</h3>
+              </div>
+              <div class="news-form-wrap">
+                <p class="mb-20">
+                  Subscribe to the mailing list to receive updates one the new
+                  arrivals and other discounts
+                </p>
+                <div class="footer-form mb-20">
+                  <form action="#" class="rr-subscribe-form">
+                    <input
+                      class="form-control"
+                      type="email"
+                      name="email"
+                      placeholder="Email address"
+                      required
+                    />
+                    <input
+                      type="hidden"
+                      name="action"
+                      value="mailchimpsubscribe"
+                    />
+                    <button class="submit" type="submit">Subscribe</button>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+                <p class="mb-0">
+                  I would like to receive news and special offer
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <script>
+            document.addEventListener("DOMContentLoaded", () => {
+              const form = document.querySelector(".rr-subscribe-form");
+              if (!form) return;
+
+              function showBanner(msg, type = "success") {
+                const b = document.createElement("div");
+                b.className = `banner ${type}`;
+                b.textContent = msg;
+                Object.assign(b.style, {
+                  position: "fixed",
+                  top: "10px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  padding: "10px 20px",
+                  background: type === "success" ? "#4caf50" : "#f44336",
+                  color: "#fff",
+                  borderRadius: "4px",
+                  zIndex: 9999,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                });
+                document.body.appendChild(b);
+                setTimeout(() => b.remove(), 3000);
+              }
+
+              form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const input = form.querySelector('input[name="email"]');
+                const email = input.value.trim();
+                if (!email) {
+                  showBanner("Please enter a valid email.", "error");
+                  return;
+                }
+
+                try {
+                  const res = await fetch("/newsletterpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                  });
+                  const text = await res.text();
+
+                  if (res.ok) {
+                    showBanner("Subscribed successfully!", "success");
+                    form.reset();
+                  } else {
+                    showBanner(text || "Subscription failed.", "error");
+                  }
+                } catch (err) {
+                  console.error("Newsletter error:", err);
+                  showBanner("Network error, please try again.", "error");
+                }
+              });
+            });
+          </script>
+        </div>
+      </div>
+      <div class="copyright-area">
+        <div class="container">
+          <div class="row copyright-content">
+            <div class="col-lg-6">
+              <div class="footer-img-wrap">
+                <span>Payment System:</span>
+                <div class="footer-img">
+                  <a href="#"
+                    ><img src="assets/img/images/footer-img-1.png" alt="img"
+                  /></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <p>
+                Copyright & Design <span id="designYear">2024</span>
+                <span>©Roiser</span>. All Right Reserved
+              </p>
+            </div>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                const yearSpan = document.getElementById("designYear");
+                if (yearSpan) {
+                  yearSpan.textContent = new Date().getFullYear();
+                }
+              });
+            </script>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/get-font-settings")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network error");
+            return res.json();
+          })
+          .then((cfg) => {
+            const s = document.createElement("style");
+            s.type = "text/css";
+
+            s.textContent = `
+                            body {
+                font-family: ${cfg.font_family}, sans-serif !important;
+                font-size: ${cfg.body_font_size}px !important;
+              }
+              h1 { font-size: ${cfg.h1_font_size}px !important; }
+              h2 { font-size: ${cfg.h2_font_size}px !important; }
+              h3 { font-size: ${cfg.h3_font_size}px !important; }
+              h4 { font-size: ${cfg.h4_font_size}px !important; }
+              h5 { font-size: ${cfg.h5_font_size}px !important; }
+              h6 { font-size: ${cfg.h6_font_size}px !important; }
+            `;
+            document.head.appendChild(s);
+          })
+          .catch((err) => {
+            console.error("Could not load font settings:", err);
+          });
+      });
+    </script>
+
+    <div id="scroll-percentage"><span id="scroll-percentage-value"></span></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("/get-theme-logo")
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to load logo data");
+            return res.json();
+          })
+          .then((cfg) => {
+            const img = document.getElementById("site-logo");
+            if (!img) return;
+            if (cfg.logo_url) {
+              img.src = `/uploads/${cfg.logo_url}`;
+            }
+            if (cfg.logo_height) {
+              img.height = cfg.logo_height;
+            }
+          })
+          .catch((err) => {
+            console.error("Could not load theme logo:", err);
+          });
+
+        fetch("/themestylesdata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network error");
+            return res.json();
+          })
+          .then((cfg) => {
+            const topBg = cfg.headerBackgroundColor || "#ffffff";
+            const topBar = document.querySelector(".top-bar");
+            if (topBar) {
+              topBar.style.setProperty("background-color", topBg, "important");
+              topBar.querySelectorAll(
+                "a, span, li, .nice-select .current, .nice-select .option"
+              );
+            }
+
+            const midBg = cfg.headerMainColor || "#ffffff";
+            const midTxt = cfg.headerMainTextColor || "#000000";
+            const headerMid = document.querySelector(".header-middle");
+            if (headerMid) {
+              headerMid.style.setProperty(
+                "background-color",
+                midBg,
+                "important"
+              );
+              headerMid
+                .querySelectorAll(
+                  "a, span, li, .contact-item-list .content span, " +
+                    ".contact-item-list .content a, .contact-item-list .number, " +
+                    ".rr-primary-btn, .nice-select .current, .nice-select .option"
+                )
+                .forEach((el) => {
+                  el.style.setProperty("color", midTxt, "important");
+                });
+            }
+
+            const scrollPercentage =
+              document.getElementById("scroll-percentage");
+            if (scrollPercentage) {
+              if (cfg.backToTopButton === "no") {
+                scrollPercentage.style.display = "none";
+              } else {
+                scrollPercentage.style.display = "block";
+              }
+            }
+          })
+          .catch((err) => {
+            console.error("Could not load theme styles:", err);
+          });
+      });
+    </script>
+
+    <script src="assets/js/vendor/jquary-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/imagesloaded-pkgd.js"></script>
+    <script src="assets/js/vendor/waypoints.min.js"></script>
+    <script src="assets/js/vendor/venobox.min.js"></script>
+    <script src="assets/js/vendor/meanmenu.js"></script>
+    <script src="assets/js/vendor/swiper.min.js"></script>
+    <script src="assets/js/vendor/nice-select.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
+</html>
