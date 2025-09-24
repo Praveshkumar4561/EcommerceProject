@@ -27,6 +27,8 @@ export class ThemeIntegration {
 
   static async probeUrl(url) {
     try {
+      if (!url) return { ok: false, status: 0 };
+
       let res;
       try {
         res = await fetch(url, { method: "HEAD", cache: "no-cache" });
@@ -39,6 +41,7 @@ export class ThemeIntegration {
       }
       return { ok: !!res && res.ok, status: res ? res.status : 0 };
     } catch (err) {
+      console.warn(`[ThemeIntegration] probeUrl failed for ${url}:`, err);
       return { ok: false, status: 0 };
     }
   }
@@ -244,7 +247,9 @@ export class ThemeIntegration {
 
   static async detectThemeBase(folderName) {
     if (!folderName) return null;
-    const backendHostDirect = "http://147.93.45.171:1600";
+
+    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
+    const FRONTEND_BASE = process.env.PUBLIC_URL || "";
 
     const nameVariants = [
       folderName,
@@ -258,16 +263,16 @@ export class ThemeIntegration {
     for (const fn of nameVariants) {
       if (fn.toLowerCase().includes("roiser")) {
         allCandidates.push(
-          `http://147.93.45.171:1600/themes/static/${fn}/roiser-html-package/roiser`
+          `${BACKEND_URL}/themes/static/${fn}/roiser-html-package/roiser`
         );
-        allCandidates.push(`/themes/static/${fn}/roiser-html-package/roiser`);
+        allCandidates.push(`${FRONTEND_BASE}/themes/static/${fn}/roiser-html-package/roiser`);
         allCandidates.push(
-          `${backendHostDirect}/themes/static/${fn}/roiser-html-package/roiser/`
+          `${BACKEND_URL}/themes/static/${fn}/roiser-html-package/roiser/`
         );
       }
-      allCandidates.push(`http://147.93.45.171:1600/themes/static/${fn}`);
-      allCandidates.push(`/themes/static/${fn}`);
-      allCandidates.push(`${backendHostDirect}/themes/static/${fn}`);
+      allCandidates.push(`${BACKEND_URL}/themes/static/${fn}`);
+      allCandidates.push(`${FRONTEND_BASE}/themes/static/${fn}`);
+      allCandidates.push(`${BACKEND_URL}/themes/static/${fn}`);
     }
 
     for (const base of allCandidates) {
@@ -440,10 +445,15 @@ export class ThemeIntegration {
   // alternative flow: fetch asset lists directly from backend and apply them
   static async applyThemeToFrontend(themeId) {
     try {
+      if (!themeId) {
+        throw new Error("Theme ID is required");
+      }
+
       this.clearThemeAssets();
 
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
       const response = await axios.get(
-        `http://147.93.45.171:1600/themes/${themeId}/assets`
+        `${BACKEND_URL}/themes/${themeId}/assets`
       );
       const { css = [], js = [], html = null } = response.data || {};
 
@@ -470,31 +480,43 @@ export class ThemeIntegration {
       return { success: true, html };
     } catch (error) {
       console.error("Error applying theme:", error);
-      toast.error("Failed to apply theme. Please try again.");
+      const errorMessage = error.response?.data?.error || error.message || "Failed to apply theme";
+      toast.error(errorMessage);
       throw error;
     }
   }
 
   static async getThemeAssets(themeId) {
     try {
+      if (!themeId) {
+        throw new Error("Theme ID is required");
+      }
+
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
       const response = await axios.get(
-        `http://147.93.45.171:1600/themes/${themeId}`
+        `${BACKEND_URL}/themes/${themeId}`
       );
       return response.data;
     } catch (error) {
       console.error("Error getting theme assets:", error);
-      toast.error("Failed to load theme assets");
+      const errorMessage = error.response?.data?.error || error.message || "Failed to load theme assets";
+      toast.error(errorMessage);
       throw error;
     }
   }
 
   static async validateTheme(themeZip) {
     try {
+      if (!themeZip) {
+        throw new Error("Theme file is required");
+      }
+
       const formData = new FormData();
       formData.append("theme", themeZip);
 
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
       const response = await axios.post(
-        "http://147.93.45.171:1600/themes/validate",
+        `${BACKEND_URL}/themes/validate`,
         formData,
         {
           headers: {
@@ -511,7 +533,7 @@ export class ThemeIntegration {
     } catch (error) {
       console.error("Error validating theme:", error);
       const errorMessage =
-        error.response?.data?.error || "Failed to validate theme";
+        error.response?.data?.error || error.message || "Failed to validate theme";
       toast.error(errorMessage);
       throw new Error(errorMessage);
     }

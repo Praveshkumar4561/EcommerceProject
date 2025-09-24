@@ -170,8 +170,14 @@ function ThemePage() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
-      setCount5(response.data.length);
+      try {
+        const BACKEND_URL =
+          process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
+        let response = await axios.get(`${BACKEND_URL}/checkoutdata`);
+        setCount5(response.data.length);
+      } catch (error) {
+        console.error("Error fetching checkout data:", error);
+      }
     };
     orderdata();
   }, []);
