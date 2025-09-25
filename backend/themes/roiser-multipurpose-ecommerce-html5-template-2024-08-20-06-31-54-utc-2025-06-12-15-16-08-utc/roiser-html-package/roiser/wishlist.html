@@ -33,9 +33,9 @@
             a.addEventListener("click", (e) => {
               e.preventDefault();
               if (page === "index" || page === "") {
-                 window.parent.location.href = "http://srv689968.hstgr.cloud/";
+                window.parent.location.href = "http://srv689968.hstgr.cloud/";
               } else {
-               window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
               }
             });
           });
@@ -500,9 +500,7 @@
             tbody.querySelectorAll(".remove-wl").forEach((btn) => {
               btn.addEventListener("click", () => {
                 const id = btn.dataset.id;
-                fetch(`/wishlistdelete/${id}`, {
-                  method: "DELETE",
-                })
+                fetch(`/wishlistdelete/${id}`, { method: "DELETE" })
                   .then((res) => {
                     if (!res.ok) throw new Error("Delete failed");
                     btn.closest("tr").remove();

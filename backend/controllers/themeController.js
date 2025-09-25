@@ -358,17 +358,11 @@ exports.uploadTheme = async (req, res) => {
 exports.activateTheme = async (req, res) => {
   try {
     const { id } = req.params;
-
     await db.query(`UPDATE themes SET is_active = 0`);
-
     await db.query(`UPDATE themes SET is_active = 1 WHERE id = ?`, [id]);
-
     await db.query("UPDATE themes SET is_active = 0");
-
     await db.query("UPDATE themes SET is_active = 1 WHERE id = ?", [id]);
-
     const [[theme]] = await db.query(`SELECT * FROM themes WHERE id = ?`, [id]);
-
     if (!theme) {
       throw new Error("Theme not found after activation");
     }
