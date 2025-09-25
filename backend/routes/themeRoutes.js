@@ -62,7 +62,6 @@ router.use("/static", (req, res, next) => {
     const filePath = path.join(__dirname, "../themes", req.path);
     if (fs.existsSync(filePath)) {
       let content = fs.readFileSync(filePath, 'utf8');
-      // Replace window.parent.location.href with postMessage
       content = content.replace(
         /window\.parent\.location\.href\s*=\s*`http:\/\/localhost:5173\/\$\{page\}`/g,
         'window.parent.postMessage({ type: "navigate", path: `/${page}` }, "*")'
@@ -71,7 +70,6 @@ router.use("/static", (req, res, next) => {
         /window\.parent\.location\.href\s*=\s*"http:\/\/localhost:5173\/"/g,
         'window.parent.postMessage({ type: "navigate", path: "/" }, "*")'
       );
-      // Replace href attributes
       content = content.replace(
         /a\.setAttribute\("href", `http:\/\/localhost:5173\/\$\{page\}`\)/g,
         'a.setAttribute("href", "#")'

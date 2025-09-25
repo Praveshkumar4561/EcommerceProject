@@ -420,7 +420,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -828,7 +830,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -870,7 +872,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -1001,7 +1003,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1099,7 +1101,7 @@
         }
 
         try {
-          const res = await fetch("/productpagedata");
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
           if (!res.ok) throw new Error("Failed to fetch products");
           products = await res.json();
         } catch (err) {
@@ -1228,7 +1230,7 @@
               quantity: qty,
             };
             try {
-              const res = await fetch("/addcart", {
+              const res = await fetch("http://147.93.45.171:1600/addcart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -1282,7 +1284,7 @@
           fd.append("product_image", window.selectedProductImg);
 
           try {
-            const res = await fetch("/reviewdatasubmit", {
+            const res = await fetch("http://147.93.45.171:1600/reviewdatasubmit", {
               method: "POST",
               body: fd,
             });
@@ -1379,7 +1381,7 @@
         }
 
         try {
-          const res = await fetch("/productpagedata");
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
           if (!res.ok) throw new Error("Failed to fetch products");
           products = await res.json();
         } catch (err) {
@@ -1506,32 +1508,21 @@
             `;
           document.head.appendChild(style);
 
-          if (galleryMain) {
-            galleryMain.innerHTML = `
-                <div class="swiper-slide">
-                  <div class="gallary-item">
-                    <img src="/uploads/${p.image || ""}" alt="${(
-              p.name || ""
-            ).replace(/"/g, "")}"
-                        style="width:100%;height:100%;object-fit:cover"/>
-                  </div>
-                </div>`;
-          }
+          galleryMain.innerHTML = `
+            <div class="swiper-slide">
+              <div class="gallary-item">
+                <img src="/uploads/${p.image}" alt="${p.name}"
+                     style="width:100%;height:100%;object-fit:cover"/>
+              </div>
+            </div>`;
 
-          if (gallerySide) {
-            gallerySide.innerHTML = `
-                <div class="right-content">
-                  <div class="gallary-item">
-                    <img src="/uploads/${p.image || ""}" alt="${(
-              p.name || ""
-            ).replace(
-              /"/g,
-              ""
-            )}" style="width: 100%; height: 100%; object-fit: cover;" />
+          gallerySide.innerHTML = `
+            <div class="right-content"
+                    <div class="gallary-item">
+                      <img src="/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+                    </div>
                   </div>
-                </div>
-              `;
-          }
+                `;
 
           if (sizeBody) {
             sizeBody.innerHTML = "";
@@ -1611,7 +1602,7 @@
               quantity: qty,
             };
             try {
-              const res = await fetch("/addcart", {
+              const res = await fetch("http://147.93.45.171:1600/addcart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -1673,10 +1664,13 @@
             fd.append("product_name", window.selectedProductName || "");
             fd.append("product_image", window.selectedProductImg || "");
             try {
-              const res = await fetch("/reviewdatasubmit", {
-                method: "POST",
-                body: fd,
-              });
+              const res = await fetch(
+                "http://147.93.45.171:1600/reviewdatasubmit",
+                {
+                  method: "POST",
+                  body: fd,
+                }
+              );
               if (!res.ok) {
                 const t = await res.text();
                 throw new Error(t || res.statusText);
@@ -1755,7 +1749,7 @@
         }
 
         try {
-          const res = await fetch("/productpagedata");
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
           if (!res.ok) throw new Error("Failed to fetch products");
           products = await res.json();
         } catch (err) {
@@ -1890,7 +1884,7 @@
               quantity: qty,
             };
             try {
-              const res = await fetch("/addcart", {
+              const res = await fetch("http://147.93.45.171:1600/addcart", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -1944,7 +1938,7 @@
           fd.append("product_image", window.selectedProductImg);
 
           try {
-            const res = await fetch("/reviewdatasubmit", {
+            const res = await fetch("http://147.93.45.171:1600/reviewdatasubmit", {
               method: "POST",
               body: fd,
             });
@@ -1999,7 +1993,7 @@
         const reviewTab = document.querySelector(".contact-tabs");
 
         function loadReviews() {
-          fetch("/reviewdata")
+          fetch("http://147.93.45.171:1600/reviewdata")
             .then((res) => res.json())
             .then((reviews) => {
               container.innerHTML = "";
@@ -2253,11 +2247,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -2315,7 +2312,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -2348,7 +2345,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -2367,7 +2364,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

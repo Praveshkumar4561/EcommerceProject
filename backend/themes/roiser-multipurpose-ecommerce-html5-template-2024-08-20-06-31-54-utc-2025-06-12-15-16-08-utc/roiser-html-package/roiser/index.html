@@ -22,7 +22,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/themeoptionsdata")
+        fetch("http://147.93.45.171:1600/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -97,8 +97,10 @@
         }
 
         Promise.all([
-          fetch("/productpagedata").then((r) => r.json()),
-          fetch("/blogpostdata").then((r) => r.json()),
+          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
+            r.json()
+          ),
+          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
         ])
           .then(([products, blogs]) => {
             products = Array.isArray(products)
@@ -764,7 +766,7 @@
 
         const allowedStatuses = ["Published", "Draft"];
 
-        fetch("/productcatdata")
+        fetch("http://147.93.45.171:1600/productcatdata")
           .then((response) => response.json())
           .then((categories) => {
             const validCategories = categories.filter((cat) =>
@@ -820,7 +822,7 @@
             console.error("Error loading category data:", error);
           });
 
-        fetch("/productpagedata")
+        fetch("http://147.93.45.171:1600/productpagedata")
           .then((response) => response.json())
           .then((products) => {
             const validProducts = products.filter((prod) =>
@@ -957,8 +959,12 @@
         const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
 
         Promise.all([
-          fetch("/productcatdata").then((res) => res.json()),
-          fetch("/productpagedata").then((res) => res.json()),
+          fetch("http://147.93.45.171:1600/productcatdata").then((res) =>
+            res.json()
+          ),
+          fetch("http://147.93.45.171:1600/productpagedata").then((res) =>
+            res.json()
+          ),
         ])
           .then(([rawCats, rawProds]) => {
             const categories = Array.isArray(rawCats)
@@ -1192,7 +1198,7 @@
                     actionBtn.dataset.image || ""
                   );
                   const store = actionBtn.dataset.store || "default";
-                  fetch("/addcart", {
+                  fetch("http://147.93.45.171:1600/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1234,7 +1240,7 @@
                   const sku = actionBtn.dataset.sku || "";
                   const stockstatus =
                     actionBtn.dataset.stockstatus || "In Stock";
-                  fetch("/wishlistpost", {
+                  fetch("http://147.93.45.171:1600/wishlistpost", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1602,7 +1608,7 @@
         sponsorContainer.innerHTML = "";
 
         try {
-          const res = await fetch("/productpagedata");
+          const res = await fetch("http://147.93.45.171:1600/productpagedata");
           if (!res.ok) throw new Error("Network response was not ok");
           const data = await res.json();
           const products = (Array.isArray(data) ? data : []).slice(0, 10);
@@ -1751,7 +1757,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -2019,7 +2025,7 @@
           return Math.floor(Math.random() * 100) + 1;
         }
 
-        fetch("/flashsalesmaindata")
+        fetch("http://147.93.45.171:1600/flashsalesmaindata")
           .then((res) => res.json())
           .then((data) => {
             const dealWrapper = document.getElementById(
@@ -2151,7 +2157,7 @@
                   const user_id = getUserId();
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  fetch("/addcart", {
+                  fetch("http://147.93.45.171:1600/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -2181,7 +2187,7 @@
                   const user_id = getUserId();
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  fetch("/wishlistpost", {
+                  fetch("http://147.93.45.171:1600/wishlistpost", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -2250,7 +2256,7 @@
             .replace(/\-+/g, "-");
         }
 
-        fetch("/blogpostdata")
+        fetch("http://147.93.45.171:1600/blogpostdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network response not ok");
             return res.json();
@@ -2326,7 +2332,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -2368,7 +2374,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -2614,11 +2620,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -2676,7 +2685,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -2709,7 +2718,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -2728,7 +2737,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

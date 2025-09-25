@@ -338,7 +338,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -442,7 +444,7 @@
           return;
         }
 
-        fetch(`/wishlistdata?user_id=${user_id}`)
+        fetch(`http://147.93.45.171:1600/wishlistdata?user_id=${user_id}`)
           .then((res) => res.json())
           .then((items) => {
             const uniqueItems = items.filter(
@@ -500,7 +502,9 @@
             tbody.querySelectorAll(".remove-wl").forEach((btn) => {
               btn.addEventListener("click", () => {
                 const id = btn.dataset.id;
-                fetch(`/wishlistdelete/${id}`, { method: "DELETE" })
+                fetch(`http://147.93.45.171:1600/wishlistdelete/${id}`, {
+                  method: "DELETE",
+                })
                   .then((res) => {
                     if (!res.ok) throw new Error("Delete failed");
                     btn.closest("tr").remove();
@@ -515,7 +519,7 @@
 
             tbody.querySelectorAll(".add-from-wl").forEach((btn) => {
               btn.addEventListener("click", () => {
-                fetch("/addcart", {
+                fetch("http://147.93.45.171:1600/addcart", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
@@ -555,7 +559,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -597,7 +601,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -728,7 +732,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -974,11 +978,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1035,7 +1042,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1068,7 +1075,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1087,7 +1094,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

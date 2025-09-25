@@ -401,9 +401,10 @@
       async function fetchPageFromApi(slug) {
         if (!slug) return null;
         try {
-          const res = await fetch("/pages?slug=" + encodeURIComponent(slug), {
-            cache: "no-store",
-          });
+          const res = await fetch(
+            "http://147.93.45.171:1600/pages?slug=" + encodeURIComponent(slug),
+            { cache: "no-store" }
+          );
           if (!res.ok) return null;
           const json = await res.json();
           return json;
@@ -622,7 +623,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -684,7 +687,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -726,7 +729,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -857,7 +860,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -953,7 +956,11 @@
           return;
         }
 
-        fetch(`/pagesdata/${encodeURIComponent(slug.toLowerCase())}`)
+        fetch(
+          `http://147.93.45.171:1600/pagesdata/${encodeURIComponent(
+            slug.toLowerCase()
+          )}`
+        )
           .then((res) => {
             if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
             return res.json();
@@ -1175,11 +1182,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1236,7 +1246,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1269,7 +1279,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1288,7 +1298,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

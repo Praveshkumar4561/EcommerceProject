@@ -345,7 +345,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("/productpagedata")
+            fetch("http://147.93.45.171:1600/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -492,7 +492,9 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("/get-theme-breadcrumb");
+          const res = await fetch(
+            "http://147.93.45.171:1600/get-theme-breadcrumb"
+          );
           const config = await res.json();
 
           const section = document.querySelector(".page-header");
@@ -1079,7 +1081,7 @@
 
         let posts = [];
         try {
-          const res = await fetch("/blogpostdata");
+          const res = await fetch("http://147.93.45.171:1600/blogpostdata");
           if (!res.ok) throw new Error("Failed to fetch blog posts");
           const data = await res.json();
           posts = Array.isArray(data) ? data : data.items || [];
@@ -1262,7 +1264,7 @@
         let filteredPosts = [];
 
         function fetchAllPosts() {
-          return fetch("/blogpostdata")
+          return fetch("http://147.93.45.171:1600/blogpostdata")
             .then((res) => res.json())
             .then((data) => {
               allPosts = data.sort(
@@ -1404,7 +1406,7 @@
         }
 
         function loadTags() {
-          fetch("/blogalldata")
+          fetch("http://147.93.45.171:1600/blogalldata")
             .then((res) => res.json())
             .then((tags) => {
               tagsContainer.innerHTML = "";
@@ -1422,7 +1424,7 @@
         }
 
         function loadCategories() {
-          fetch("/allcategorydata")
+          fetch("http://147.93.45.171:1600/allcategorydata")
             .then((res) => res.json())
             .then((cats) => {
               categoryContainer.innerHTML = "";
@@ -1476,7 +1478,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`/allcartdata?user_id=${userId}`)
+          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -1518,7 +1520,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("/getannounce")
+          fetch("http://147.93.45.171:1600/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -1748,11 +1750,14 @@
                 }
 
                 try {
-                  const res = await fetch("/newsletterpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email }),
-                  });
+                  const res = await fetch(
+                    "http://147.93.45.171:1600/newsletterpost",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ email }),
+                    }
+                  );
                   const text = await res.text();
 
                   if (res.ok) {
@@ -1809,7 +1814,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-font-settings")
+        fetch("http://147.93.45.171:1600/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1842,7 +1847,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("/get-theme-logo")
+        fetch("http://147.93.45.171:1600/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1861,7 +1866,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("/themestylesdata")
+        fetch("http://147.93.45.171:1600/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1913,12 +1918,22 @@
     </script>
 
     <script src="assets/js/vendor/jquary-3.6.0.min.js"></script>
+    <script src="assets/js/vendor/bootstrap-bundle.js"></script>
     <script src="assets/js/vendor/imagesloaded-pkgd.js"></script>
     <script src="assets/js/vendor/waypoints.min.js"></script>
     <script src="assets/js/vendor/venobox.min.js"></script>
+    <script src="assets/js/vendor/odometer.min.js"></script>
     <script src="assets/js/vendor/meanmenu.js"></script>
+    <script src="assets/js/vendor/smooth-scroll.js"></script>
+    <script src="assets/js/vendor/jquery.isotope.js"></script>
+    <script src="assets/js/vendor/wow.min.js"></script>
     <script src="assets/js/vendor/swiper.min.js"></script>
+    <script src="assets/js/vendor/split-type.min.js"></script>
+    <script src="assets/js/vendor/gsap.min.js"></script>
+    <script src="assets/js/vendor/scroll-trigger.min.js"></script>
     <script src="assets/js/vendor/nice-select.js"></script>
+    <script src="assets/js/ajax-form.js"></script>
+    <script src="assets/js/contact.js"></script>
     <script src="assets/js/main.js"></script>
   </body>
 </html>
