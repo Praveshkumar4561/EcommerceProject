@@ -71,13 +71,10 @@ function OrderReturns() {
     "/admin/ecommerce/flash-sales": "# Ecommerce > Flash Sales",
     "/admin/ecommerce/discounts": "# Ecommerce > Discounts",
     "/admin/customers": "# Ecommerce > Customers",
-
     "/admin/blog/posts": "# Blog > Posts",
     "/admin/blog/categories": "# Blog > Categories",
     "/admin/blog/tags": "# Blog > Tags",
-
     "/admin/ads": "# Ads > Ads",
-
     "/admin/menus": "# Appearance > Menus",
     "/admin/widgets": "# Appearance > Widgets",
     "/admin/theme/custom-css": "# Appearance > Custom CSS",
@@ -85,7 +82,27 @@ function OrderReturns() {
     "/admin/theme/custom-html": "# Appearance > Custom HTML",
     "/admin/theme/robots-txt": "# Appearance > Robots.txt Editor",
     "/admin/theme/options": "# Appearance > Theme Options",
+    "/admin/payments/transactions": "# Payments > Transactions",
+    "/admin/payments/logs": "# Payments > Payment Logs",
+    "/admin/payments/methods": "# Payments > Payment Methods",
+    "/admin/system/users": "# Platform > System > Users",
   };
+
+  const [LogoData, setLogoData] = useState(null);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await axios.get(
+          "http://147.93.45.171:1600/get-theme-logo"
+        );
+        setLogoData(response.data);
+      } catch (error) {
+        console.error("Error fetching logo:", error);
+      }
+    };
+    fetchLogo();
+  }, []);
 
   const keys = Object.keys(routes);
   const duplicates = keys.filter((key, index) => keys.indexOf(key) !== index);
@@ -265,9 +282,18 @@ function OrderReturns() {
             />
             <Link to="/admin/welcome">
               <img
-                src={Logo}
+                src={
+                  LogoData
+                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    : Logo
+                }
                 alt="RxLYTE"
                 className="hamburger1 ms-3 mt-2 pt-0 pt-lg-1"
+                height={LogoData ? LogoData.logo_height : "50"}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = Logo;
+                }}
               />
             </Link>
           </ul>
