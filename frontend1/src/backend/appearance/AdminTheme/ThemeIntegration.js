@@ -8,7 +8,6 @@ const loadedAssets = {
 
 export class ThemeIntegration {
   static clearThemeAssets() {
-    // remove any elements we added and clear our caches
     try {
       document
         .querySelectorAll(
@@ -27,8 +26,6 @@ export class ThemeIntegration {
 
   static async probeUrl(url) {
     try {
-      if (!url) return { ok: false, status: 0 };
-
       let res;
       try {
         res = await fetch(url, { method: "HEAD", cache: "no-cache" });
@@ -36,12 +33,10 @@ export class ThemeIntegration {
           res = await fetch(url, { method: "GET", cache: "no-cache" });
         }
       } catch (e) {
-        // some servers may not accept HEAD — fall back to GET
         res = await fetch(url, { method: "GET", cache: "no-cache" });
       }
       return { ok: !!res && res.ok, status: res ? res.status : 0 };
     } catch (err) {
-      console.warn(`[ThemeIntegration] probeUrl failed for ${url}:`, err);
       return { ok: false, status: 0 };
     }
   }
@@ -61,7 +56,6 @@ export class ThemeIntegration {
       } else if (type === "js") {
         el = document.createElement("script");
         el.src = url;
-        // keep execution order deterministic for theme scripts
         el.async = false;
       } else {
         console.warn("[ThemeIntegration] Unsupported asset type:", type, url);
@@ -247,9 +241,7 @@ export class ThemeIntegration {
 
   static async detectThemeBase(folderName) {
     if (!folderName) return null;
-
-    const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
-    const FRONTEND_BASE = process.env.PUBLIC_URL || "";
+    const backendHostDirect = "http://147.93.45.171:1600";
 
     const nameVariants = [
       folderName,
@@ -263,16 +255,16 @@ export class ThemeIntegration {
     for (const fn of nameVariants) {
       if (fn.toLowerCase().includes("roiser")) {
         allCandidates.push(
-          `${BACKEND_URL}/themes/static/${fn}/roiser-html-package/roiser`
+          `http://147.93.45.171:1600/themes/static/${fn}/roiser-html-package/roiser`
         );
-        allCandidates.push(`${FRONTEND_BASE}/themes/static/${fn}/roiser-html-package/roiser`);
+        allCandidates.push(`/themes/static/${fn}/roiser-html-package/roiser`);
         allCandidates.push(
-          `${BACKEND_URL}/themes/static/${fn}/roiser-html-package/roiser/`
+          `${backendHostDirect}/themes/static/${fn}/roiser-html-package/roiser/`
         );
       }
-      allCandidates.push(`${BACKEND_URL}/themes/static/${fn}`);
-      allCandidates.push(`${FRONTEND_BASE}/themes/static/${fn}`);
-      allCandidates.push(`${BACKEND_URL}/themes/static/${fn}`);
+      allCandidates.push(`http://147.93.45.171:1600/themes/static/${fn}`);
+      allCandidates.push(`/themes/static/${fn}`);
+      allCandidates.push(`${backendHostDirect}/themes/static/${fn}`);
     }
 
     for (const base of allCandidates) {
@@ -442,18 +434,12 @@ export class ThemeIntegration {
     }
   }
 
-  // alternative flow: fetch asset lists directly from backend and apply them
   static async applyThemeToFrontend(themeId) {
     try {
-      if (!themeId) {
-        throw new Error("Theme ID is required");
-      }
-
       this.clearThemeAssets();
 
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
       const response = await axios.get(
-        `${BACKEND_URL}/themes/${themeId}/assets`
+        `http://147.93.45.171:1600/themes/${themeId}/assets`
       );
       const { css = [], js = [], html = null } = response.data || {};
 
@@ -480,43 +466,31 @@ export class ThemeIntegration {
       return { success: true, html };
     } catch (error) {
       console.error("Error applying theme:", error);
-      const errorMessage = error.response?.data?.error || error.message || "Failed to apply theme";
-      toast.error(errorMessage);
+      toast.error("Failed to apply theme. Please try again.");
       throw error;
     }
   }
 
   static async getThemeAssets(themeId) {
     try {
-      if (!themeId) {
-        throw new Error("Theme ID is required");
-      }
-
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
       const response = await axios.get(
-        `${BACKEND_URL}/themes/${themeId}`
+        `http://147.93.45.171:1600/themes/${themeId}`
       );
       return response.data;
     } catch (error) {
       console.error("Error getting theme assets:", error);
-      const errorMessage = error.response?.data?.error || error.message || "Failed to load theme assets";
-      toast.error(errorMessage);
+      toast.error("Failed to load theme assets");
       throw error;
     }
   }
 
   static async validateTheme(themeZip) {
     try {
-      if (!themeZip) {
-        throw new Error("Theme file is required");
-      }
-
       const formData = new FormData();
       formData.append("theme", themeZip);
 
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://147.93.45.171:1600";
       const response = await axios.post(
-        `${BACKEND_URL}/themes/validate`,
+        "http://147.93.45.171:1600/themes/validate",
         formData,
         {
           headers: {
@@ -533,7 +507,7 @@ export class ThemeIntegration {
     } catch (error) {
       console.error("Error validating theme:", error);
       const errorMessage =
-        error.response?.data?.error || error.message || "Failed to validate theme";
+        error.response?.data?.error || "Failed to validate theme";
       toast.error(errorMessage);
       throw new Error(errorMessage);
     }
