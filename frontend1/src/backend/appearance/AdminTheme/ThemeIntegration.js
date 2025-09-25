@@ -255,14 +255,14 @@ export class ThemeIntegration {
     for (const fn of nameVariants) {
       if (fn.toLowerCase().includes("roiser")) {
         allCandidates.push(
-          `http://147.93.45.171:1600/themes/static/${fn}/roiser-html-package/roiser`
+          `http://srv689968.hstgr.cloud/themes/static/${fn}/roiser-html-package/roiser`
         );
         allCandidates.push(`/themes/static/${fn}/roiser-html-package/roiser`);
         allCandidates.push(
           `${backendHostDirect}/themes/static/${fn}/roiser-html-package/roiser/`
         );
       }
-      allCandidates.push(`http://147.93.45.171:1600/themes/static/${fn}`);
+      allCandidates.push(`http://srv689968.hstgr.cloud/themes/static/${fn}`);
       allCandidates.push(`/themes/static/${fn}`);
       allCandidates.push(`${backendHostDirect}/themes/static/${fn}`);
     }

@@ -37,7 +37,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       /^(data:|blob:|mailto:|tel:|#)/.test(u);
     const isApiPath = (u = "") =>
       typeof u === "string" &&
-      (u.startsWith("http://147.93.45.171:1600/") || u.startsWith("api/"));
+      (u.startsWith("http://srv689968.hstgr.cloud/") || u.startsWith("api/"));
 
     const isRelativeForRewrite = (u = "") =>
       !!u &&
@@ -290,7 +290,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           if (
             action &&
             !isAbsoluteOrProtocol(action) &&
-            !action.startsWith("http://147.93.45.171:1600/")
+            !action.startsWith("http://srv689968.hstgr.cloud/")
           ) {
             e.preventDefault();
             const spa = normalizeSpaPath(action);
