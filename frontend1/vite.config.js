@@ -30,7 +30,7 @@ export default defineConfig({
       },
 
       "/themes": {
-        target: "http://147.93.45.171:1600",
+        target: "http://srv689968.hstgr.cloud",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/themes/, "/themes"),
       },
