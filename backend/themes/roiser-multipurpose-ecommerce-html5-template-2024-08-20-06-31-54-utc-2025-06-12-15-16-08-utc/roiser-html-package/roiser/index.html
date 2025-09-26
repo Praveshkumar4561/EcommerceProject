@@ -72,6 +72,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        /* Helper utilities */
         function makeAbsolute(u) {
           if (!u) return u;
           if (/^https?:\/\//i.test(u)) return u;
@@ -80,15 +81,17 @@
 
         function withUploads(u) {
           if (!u) return u;
+          // If it's already the uploads absolute URL from your backend, convert to site-absolute
           if (u.startsWith("http://147.93.45.171:1600/uploads/"))
             return makeAbsolute(u);
+          // If it's a relative filename, create the absolute uploads URL and then make site-absolute
           return makeAbsolute(
-            "http://147.93.45.171:1600/uploads/" + u.replace(/^\/+/, "")
+            "http://147.93.45.171:1600/uploads/" + String(u).replace(/^\/+/, "")
           );
         }
 
         function toSlug(str = "") {
-          return str
+          return String(str)
             .toLowerCase()
             .trim()
             .replace(/\s+/g, "-")
@@ -98,6 +101,30 @@
         function stripTags(str = "") {
           return String(str).replace(/<[^>]*>/g, "");
         }
+
+        /* Ensure .sr-only style exists (adds accessibility helper if not already present) */
+        (function ensureSrOnly() {
+          var id = "sr-only-generated-style";
+          if (!document.getElementById(id)) {
+            var style = document.createElement("style");
+            style.id = id;
+            style.textContent = `
+/* visually-hidden (screen-reader only) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+`;
+            document.head.appendChild(style);
+          }
+        })();
 
         Promise.all([
           fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
@@ -114,6 +141,7 @@
             const featuredProducts = products.slice(0, 10);
             const featuredBlogs = blogs.slice(0, 5);
 
+            /* Build Product schema (unchanged except helper use) */
             const productSchema = featuredProducts.map((p) => {
               const slug = p.slug
                 ? p.slug
@@ -152,16 +180,24 @@
               };
             });
 
-            const blogSchema = featuredBlogs.map((b) => ({
-              "@type": "BlogPosting",
-              headline: b.title || "",
-              image: withUploads(b.image || ""),
-              description: stripTags(b.excerpt || b.description || ""),
-              url: makeAbsolute(b.url || `/blog/${b.slug || b.id || ""}`),
-              datePublished: b.datePublished || b.published_at || undefined,
-              author: { "@type": "Person", name: b.author_name || "Admin" },
-            }));
+            /* Build BlogPosting schema — use /blog-details/ slug for URLs */
+            const blogSchema = featuredBlogs.map((b) => {
+              const slug = b.slug
+                ? b.slug
+                : toSlug(b.title || b.name || b.id || "");
+              const postUrl = makeAbsolute(`/blog-details/${slug}`);
+              return {
+                "@type": "BlogPosting",
+                headline: b.title || b.name || "",
+                image: withUploads(b.image || ""),
+                description: stripTags(b.excerpt || b.description || ""),
+                url: postUrl,
+                datePublished: b.datePublished || b.published_at || undefined,
+                author: { "@type": "Person", name: b.author_name || "Admin" },
+              };
+            });
 
+            /* Create JSON-LD graph and append to head */
             const schemaData = {
               "@context": "https://schema.org",
               "@graph": [
@@ -211,12 +247,82 @@
               ].filter(Boolean),
             };
 
-            const script = document.createElement("script");
-            script.type = "application/ld+json";
-            script.text = JSON.stringify(schemaData);
-            document.head.appendChild(script);
+            try {
+              const script = document.createElement("script");
+              script.type = "application/ld+json";
+              script.text = JSON.stringify(schemaData);
+              document.head.appendChild(script);
+            } catch (err) {
+              console.error("Schema error", err);
+            }
+
+            /* Optional: render featured blog cards into page if a container exists.
+           It creates accessible links: <a> with image, visible title and an sr-only
+           descriptive span so Lighthouse and screen readers see meaningful link text.
+           The selector checks for common container names; change as needed. */
+            const container =
+              document.querySelector(".featured-blogs") ||
+              document.querySelector(".blog-list") ||
+              document.getElementById("featured-blogs");
+
+            if (container && featuredBlogs.length) {
+              featuredBlogs.forEach((b) => {
+                const slug = b.slug
+                  ? b.slug
+                  : toSlug(b.title || b.name || b.id || "");
+                const postUrl = makeAbsolute(`/blog-details/${slug}`);
+                const titleText = stripTags(b.title || b.name || "Read blog");
+
+                // article wrapper
+                const article = document.createElement("article");
+                article.className = "blog-card";
+
+                // link with image
+                const link = document.createElement("a");
+                link.href = postUrl;
+                link.className = "blog-link";
+                link.setAttribute("data-id", b.id || "");
+                link.setAttribute("rel", "bookmark");
+                link.setAttribute("title", titleText);
+
+                const img = document.createElement("img");
+                img.src = withUploads(b.image || "");
+                img.alt = titleText;
+                img.loading = "lazy";
+                link.appendChild(img);
+
+                // sr-only descriptive text for the link (fixes "links do not have descriptive text")
+                const sr = document.createElement("span");
+                sr.className = "sr-only";
+                sr.textContent = `Read blog: ${titleText}`;
+                link.appendChild(sr);
+
+                // visible title below image
+                const h3 = document.createElement("h3");
+                h3.className = "blog-title";
+                h3.textContent = titleText;
+
+                // optional excerpt snippet
+                const excerptText = stripTags(b.excerpt || b.description || "");
+                const p = document.createElement("p");
+                p.className = "blog-excerpt";
+                p.textContent = excerptText
+                  ? excerptText.slice(0, 160).trim() +
+                    (excerptText.length > 160 ? "…" : "")
+                  : "";
+
+                // compose
+                article.appendChild(link);
+                article.appendChild(h3);
+                if (p.textContent) article.appendChild(p);
+
+                container.appendChild(article);
+              });
+            }
           })
-          .catch((err) => console.error("Schema error", err));
+          .catch((err) => {
+            console.error("Schema / fetch error", err);
+          });
       });
     </script>
 
@@ -2252,6 +2358,13 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        /* ====== CONFIG ====== */
+        const API_BASE = "http://147.93.45.171:1600";
+        const UPLOADS_BASE = API_BASE + "/uploads/"; // backend uploads base
+        const BLOG_API = API_BASE + "/blogpostdata";
+        const MAX_FEATURE = 3;
+
+        /* ====== HELPERS ====== */
         function slugify(str) {
           return String(str || "")
             .toLowerCase()
@@ -2261,72 +2374,189 @@
             .replace(/\-+/g, "-");
         }
 
-        fetch("http://147.93.45.171:1600/blogpostdata")
+        function makeAbsolute(u) {
+          if (!u) return "";
+          if (/^https?:\/\//i.test(u)) return u;
+          // if u starts with a slash, append to origin, else prefix slash
+          return window.location.origin + (u.startsWith("/") ? u : "/" + u);
+        }
+
+        function withUploads(u) {
+          if (!u) return "";
+          u = String(u);
+          // If backend provided a full uploads URL, use it; otherwise build it.
+          if (/^https?:\/\/.+\/uploads\//i.test(u)) return u;
+          return UPLOADS_BASE + u.replace(/^\/+/, "");
+        }
+
+        function stripTags(str) {
+          return String(str || "")
+            .replace(/<[^>]*>/g, "")
+            .trim();
+        }
+
+        function ensureSrOnlyStyle() {
+          if (document.getElementById("sr-only-generated-style")) return;
+          const s = document.createElement("style");
+          s.id = "sr-only-generated-style";
+          s.textContent = `
+/* visually-hidden (screen-reader only) */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+`;
+          document.head.appendChild(s);
+        }
+
+        /* ====== FETCH POSTS ====== */
+        fetch(BLOG_API)
           .then((res) => {
             if (!res.ok) throw new Error("Network response not ok");
             return res.json();
           })
-          .then((posts) => {
-            const top = posts.slice(0, 3);
-            const wrapper = document.getElementById("blog-wrapper");
-
-            wrapper.innerHTML = top
-              .map((p) => {
-                const slug = p.slug ? p.slug : slugify(p.name);
-                const postUrl = `/blog-details/${encodeURIComponent(slug)}`;
-                return `
-                    <div class="col-lg-4 col-md-6">
-                      <div class="post-card" data-id="${p.id}">
-                        <div class="post-thumb">
-                          <a href="${postUrl}" class="blog-link"
-                            data-id="${p.id}" aria-label="Read blog: ${p.name}">
-                            <img src="http://147.93.45.171:1600/uploads/${
-                              p.image
-                            }" alt="${p.name}" loading="lazy" />
-                          </a>
-                        </div>
-                        <div class="post-content-wrap">
-                          <div class="post-content">
-                            <ul class="post-meta">
-                              <li>
-                                <i class="fa-sharp fa-solid fa-calendar-days"></i>
-                                ${new Date(p.date).toLocaleDateString()}
-                              </li>
-                              <li><i class="fa-regular fa-tag"></i>${
-                                p.categories
-                              }</li>
-                            </ul>
-                            <h3 class="title">
-                              <a href="${postUrl}" class="blog-link" data-id="${
-                  p.id
-                }">
-                                ${p.name}
-                              </a>
-                            </h3>
-                          </div>
-                          <div class="post-bottom">
-                            <a href="${postUrl}" class="blog-link"
-                              data-id="${
-                                p.id
-                              }" aria-label="Read full blog post: ${p.name}">
-                              Read More <i class="fa-regular fa-arrow-right"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  `;
-              })
-              .join("");
-
-            wrapper.addEventListener("click", (e) => {
-              const link = e.target.closest(".blog-link");
-              if (!link) return;
-              const postId = link.dataset.id;
-              if (postId) sessionStorage.setItem("selectedPostId", postId);
-            });
+          .then((postsRaw) => {
+            const posts = Array.isArray(postsRaw)
+              ? postsRaw
+              : postsRaw.items || [];
+            const top = posts.slice(0, MAX_FEATURE);
+            renderPosts(top);
+            addJsonLd(top);
           })
-          .catch((err) => console.error("Failed to load blog posts:", err));
+          .catch((err) => {
+            console.error("Failed to load blog posts:", err);
+          });
+
+        /* ====== RENDERING ====== */
+        function renderPosts(posts) {
+          ensureSrOnlyStyle();
+          const wrapper = document.getElementById("blog-wrapper");
+          if (!wrapper) return;
+
+          // Build HTML safely, escaping titles/descriptions via stripTags
+          wrapper.innerHTML = posts
+            .map((p) => {
+              const rawTitle = p.title || p.name || "Blog post";
+              const title = stripTags(rawTitle);
+              const slug = p.slug ? p.slug : slugify(title);
+              const postUrl = "/blog-details/" + encodeURIComponent(slug);
+
+              const imgSrc = withUploads(p.image || "");
+              const dateVal = p.date || p.datePublished || p.published_at || "";
+              const formattedDate = dateVal
+                ? new Date(dateVal).toLocaleDateString()
+                : "";
+              const categories = Array.isArray(p.categories)
+                ? p.categories.join(", ")
+                : p.categories || "";
+              const excerptRaw = p.excerpt || p.description || "";
+              const excerpt = stripTags(excerptRaw).slice(0, 160).trim();
+              const readLabel = `Read: ${title}`;
+
+              return `
+<div class="col-lg-4 col-md-6">
+  <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting" data-id="${
+    p.id || ""
+  }">
+    <header class="post-thumb">
+      <a href="${postUrl}" class="blog-link" data-id="${
+                p.id || ""
+              }" rel="bookmark" title="${title}" aria-label="${readLabel}">
+        <img src="${imgSrc}" alt="${title}" loading="lazy" itemprop="image" />
+        <span class="sr-only">Read blog: ${title}</span>
+      </a>
+    </header>
+
+    <div class="post-content-wrap">
+      <div class="post-content">
+        <ul class="post-meta" aria-hidden="true">
+          <li><i class="fa-sharp fa-solid fa-calendar-days"></i> ${formattedDate}</li>
+          <li><i class="fa-regular fa-tag"></i> ${categories}</li>
+        </ul>
+
+        <h3 class="title" itemprop="headline">
+          <a href="${postUrl}" class="blog-link" data-id="${
+                p.id || ""
+              }" title="${title}">${title}</a>
+        </h3>
+
+        ${
+          excerpt
+            ? `<p class="excerpt" itemprop="description">${excerpt}${
+                excerpt.length >= 160 ? "…" : ""
+              }</p>`
+            : ""
+        }
+      </div>
+
+      <div class="post-bottom">
+        <!-- Descriptive read link (not generic "Read More") so Lighthouse and screen readers get context -->
+        <a href="${postUrl}" class="read-more blog-link" data-id="${
+                p.id || ""
+              }" title="Read full article: ${title}">${readLabel} <i class="fa-regular fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </article>
+</div>
+`.trim();
+            })
+            .join("");
+
+          // persist clicked post id for other pages (same as your original behavior)
+          wrapper.addEventListener("click", (e) => {
+            const link = e.target.closest(".blog-link");
+            if (!link) return;
+            const postId = link.dataset.id;
+            if (postId) sessionStorage.setItem("selectedPostId", postId);
+          });
+        }
+
+        /* ====== JSON-LD for the featured posts (uses same /blog-details/ URLs) ====== */
+        function addJsonLd(posts) {
+          if (!Array.isArray(posts) || posts.length === 0) return;
+
+          try {
+            const graph = posts.map((p) => {
+              const title = stripTags(p.title || p.name || "");
+              const slug = p.slug ? p.slug : slugify(title);
+              const postUrl = makeAbsolute(
+                "/blog-details/" + encodeURIComponent(slug)
+              );
+              const image = withUploads(p.image || "");
+              const description = stripTags(p.excerpt || p.description || "");
+              const datePublished =
+                p.datePublished || p.published_at || p.date || undefined;
+              return {
+                "@type": "BlogPosting",
+                headline: title,
+                image: image ? makeAbsolute(image) : undefined,
+                description: description || undefined,
+                url: postUrl,
+                datePublished: datePublished || undefined,
+                author: { "@type": "Person", name: p.author_name || "Admin" },
+              };
+            });
+
+            const schema = {
+              "@context": "https://schema.org",
+              "@graph": graph.filter(Boolean),
+            };
+
+            const s = document.createElement("script");
+            s.type = "application/ld+json";
+            s.text = JSON.stringify(schema);
+            document.head.appendChild(s);
+          } catch (err) {
+            console.error("Failed to add JSON-LD", err);
+          }
+        }
       });
     </script>
 
