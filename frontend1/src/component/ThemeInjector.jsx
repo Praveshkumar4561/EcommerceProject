@@ -13,8 +13,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     };
   }, []);
 
-  const slugify = (str = "") => {
-    return str
+  const slugify = (str = "") =>
+    str
       .toString()
       .trim()
       .toLowerCase()
@@ -22,22 +22,21 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       .replace(/[^a-z0-9\-]/g, "")
       .replace(/\-+/g, "-")
       .replace(/^\-+|\-+$/g, "");
-  };
 
   useEffect(() => {
     if (!pageUrl || !themeBaseUrl) return;
 
     let aborted = false;
-    let clickHandler = null;
     let submitHandler = null;
 
     const isAbsoluteOrProtocol = (u = "") =>
       /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
+
     const isDataOrBlobOrMail = (u = "") =>
       /^(data:|blob:|mailto:|tel:|#)/.test(u);
+
     const isApiPath = (u = "") =>
-      typeof u === "string" &&
-      (u.startsWith("http://srv689968.hstgr.cloud/") || u.startsWith("api/"));
+      typeof u === "string" && u.startsWith("http://147.93.45.171:1600/");
 
     const isRelativeForRewrite = (u = "") =>
       !!u &&
@@ -51,13 +50,10 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
       if (!url) return url;
       if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
-      if (url.startsWith("/")) {
-        const normalizedBase = themeBaseNormalized(base);
-        return normalizedBase + url.replace(/^\/+/, "");
-      }
+      if (url.startsWith("/"))
+        return themeBaseNormalized(base) + url.replace(/^\/+/, "");
       try {
-        const normalizedBase = themeBaseNormalized(base);
-        return new URL(url, normalizedBase).href;
+        return new URL(url, themeBaseNormalized(base)).href;
       } catch {
         return themeBaseNormalized(base) + url.replace(/^\.*\//, "");
       }
@@ -73,9 +69,14 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       if (p.length > 1) p = p.replace(/\/$/, "");
       if (!p.startsWith("/")) p = "/" + p;
       if (p === "/index") p = "/";
-
-      const parts = p.split("/").map((part) => slugify(part));
-      return "/" + parts.filter(Boolean).join("/");
+      return (
+        "/" +
+        p
+          .split("/")
+          .map((part) => slugify(part))
+          .filter(Boolean)
+          .join("/")
+      );
     };
 
     const routeViaSPA = (path, opts = {}) => {
@@ -96,16 +97,35 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     const rewriteInjectedLinks = (container) => {
       if (!container) return;
       container.querySelectorAll("a[href]").forEach((a) => {
-        const href = a.getAttribute("href");
+        let href = a.getAttribute("href");
+        if (!href) return;
         if (
-          href &&
-          !isAbsoluteOrProtocol(href) &&
-          !href.startsWith("#") &&
-          !href.startsWith("mailto:") &&
-          !href.startsWith("tel:")
-        ) {
-          const clean = normalizeSpaPath(href);
-          a.setAttribute("href", clean);
+          isAbsoluteOrProtocol(href) ||
+          href.startsWith("#") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:")
+        )
+          return;
+        // convert relative to SPA domain path
+        href = normalizeSpaPath(href);
+        a.setAttribute("href", href);
+      });
+    };
+
+    const rewriteInjectedAssets = (container, base) => {
+      if (!container) return;
+      container.querySelectorAll("img, source, [data-src]").forEach((el) => {
+        const attr =
+          el.tagName.toLowerCase() === "img"
+            ? "src"
+            : el.getAttribute("src")
+            ? "src"
+            : "data-src";
+        const val = el.getAttribute(attr);
+        if (!val) return;
+        if (isRelativeForRewrite(val) || val.startsWith("/")) {
+          const abs = makeAbsoluteUrl(val, base);
+          el.setAttribute(attr, abs);
         }
       });
     };
@@ -131,35 +151,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           resolve();
         }
       });
-
-    const moveStyleTagToHead = (styleEl) => {
-      try {
-        const newStyle = document.createElement("style");
-        newStyle.innerHTML = styleEl.innerHTML || "";
-        newStyle.dataset.themeInjected = "true";
-        document.head.appendChild(newStyle);
-      } catch {}
-    };
-
-    const rewriteInjectedAssets = (container, base) => {
-      if (!container) return;
-      container.querySelectorAll("img, source, [data-src]").forEach((el) => {
-        const attr =
-          el.tagName.toLowerCase() === "img"
-            ? "src"
-            : el.getAttribute("src")
-            ? "src"
-            : "data-src";
-        const val = el.getAttribute(attr);
-        if (val && isRelativeForRewrite(val)) {
-          const abs = makeAbsoluteUrl(val, base);
-          el.setAttribute(attr, abs);
-        } else if (val && val.startsWith("/")) {
-          const abs = makeAbsoluteUrl(val, base);
-          el.setAttribute(attr, abs);
-        }
-      });
-    };
 
     const executeScriptsSerial = async (doc) => {
       const scripts = Array.from(doc.querySelectorAll("script"));
@@ -237,13 +228,17 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
+        // ensure <base> uses domain, not IP
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
           base.setAttribute("data-theme-base", "true");
           document.head.appendChild(base);
         }
-        base.href = themeBaseNormalized(themeBaseUrl);
+        base.href = themeBaseNormalized(themeBaseUrl).replace(
+          "147.93.45.171:1600",
+          "srv689968.hstgr.cloud"
+        );
 
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
@@ -256,7 +251,12 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
           })
         );
-        styleNodes.forEach(moveStyleTagToHead);
+        styleNodes.forEach((s) => {
+          const newStyle = document.createElement("style");
+          newStyle.innerHTML = s.innerHTML || "";
+          newStyle.dataset.themeInjected = "true";
+          document.head.appendChild(newStyle);
+        });
 
         if (containerRef.current) {
           containerRef.current.innerHTML = doc.body.innerHTML;
@@ -287,11 +287,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             node = node.parentElement;
           if (!node || node.tagName !== "FORM") return;
           const action = node.getAttribute("action") || "";
-          if (
-            action &&
-            !isAbsoluteOrProtocol(action) &&
-            !action.startsWith("http://srv689968.hstgr.cloud/")
-          ) {
+          if (action && !isAbsoluteOrProtocol(action)) {
             e.preventDefault();
             const spa = normalizeSpaPath(action);
             routeViaSPA(spa || "/");
@@ -316,8 +312,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             submitHandler,
             true
           );
-        if (containerRef.current && clickHandler)
-          containerRef.current.removeEventListener("click", clickHandler, true);
       } catch {}
     };
   }, [pageUrl, themeBaseUrl, onNavigate]);
