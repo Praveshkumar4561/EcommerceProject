@@ -899,12 +899,12 @@
 
         function makeUploadsUrl(path) {
           if (!path) return "";
-          if (/^https?:\/\//i.test(path)) return path;
-          path = path.toString().trim();
-          if (!/^\/?uploads\//i.test(path))
-            path =
-              "http://147.93.45.171:1600/uploads/" + path.replace(/^\/+/, "");
-          return window.location.origin + path;
+          if (/^https?:\/\//i.test(path)) return path.trim();
+          const clean = path.toString().trim().replace(/^\/+/, "");
+          return (
+            "http://147.93.45.171:1600/uploads/" +
+            clean.replace(/^uploads\//i, "")
+          );
         }
 
         function safeText(html) {
@@ -934,16 +934,7 @@
           uk: { symbol: "৳", rate: 108 },
         };
 
-        function getEl(id) {
-          return document.getElementById(id);
-        }
-        function q(sel) {
-          try {
-            return document.querySelector(sel);
-          } catch {
-            return null;
-          }
-        }
+        const getEl = (id) => document.getElementById(id);
 
         function renderPagination(paginationEl) {
           if (!paginationEl) return;
@@ -988,9 +979,11 @@
               .map((i) => i.trim())
               .filter(Boolean);
             const img0 = imgs[0] || "";
+
             const shortName =
               (prod.name || "").split(/\s+/).slice(0, 6).join(" ") +
               ((prod.name || "").split(/\s+/).length > 6 ? "…" : "");
+
             const priceText = formatPriceWithCurrency(
               prod.price,
               currencyRates,
@@ -1003,99 +996,99 @@
                   selectedCurrency
                 )
               : "";
+
             const productSlug = slugify(
               prod.permalink || prod.name || prod.id || ""
             );
             const productHref =
               "/shop-details/" +
               encodeURIComponent(productSlug || String(prod.id || ""));
+
             const col = document.createElement("div");
             col.className = "col-xl-3 col-lg-4 col-md-6 roiser-theme-shop";
             col.innerHTML = `
-              <div class="shop-item border">
-                <div class="shop-thumb">
-                  <div class="overlay"></div>
-                  <a href="${productHref}" class="shop-link" data-id="${safeText(
-              prod.id
-            )}" data-slug="${safeText(productSlug)}">
-                    <img src="${makeUploadsUrl(img0)}" alt="${safeText(
-              prod.name
-            )}" class="img-fluid" />
+          <div class="shop-item border">
+            <div class="shop-thumb">
+              <div class="overlay"></div>
+              <a href="${productHref}" class="shop-link"
+                 data-id="${safeText(prod.id)}"
+                 data-slug="${safeText(productSlug)}">
+                <img src="${makeUploadsUrl(img0)}"
+                     alt="${safeText(prod.name)}"
+                     class="img-fluid" />
+              </a>
+              ${
+                prod.label
+                  ? `<span class="sale">${safeText(prod.label)}</span>`
+                  : ""
+              }
+              <ul class="shop-list">
+                <li>
+                  <a href="javascript:void(0)" class="add-to-cart"
+                     data-name="${safeText(prod.name)}"
+                     data-price="${safeText(prod.price)}"
+                     data-price_sale="${safeText(prod.price_sale)}"
+                     data-image="${safeText(img0)}"
+                     data-store="${safeText(prod.store || "default")}">
+                    <i class="fa-regular fa-cart-shopping"></i>
                   </a>
-                  ${
-                    prod.label
-                      ? `<span class="sale">${safeText(prod.label)}</span>`
-                      : ""
-                  }
-                  <ul class="shop-list">
-                    <li>
-                      <a href="javascript:void(0)" class="add-to-cart"
-                        data-name="${safeText(prod.name)}"
-                        data-price="${safeText(prod.price)}"
-                        data-price_sale="${safeText(prod.price_sale)}"
-                        data-image="${safeText(img0)}"
-                        data-store="${safeText(prod.store || "default")}">
-                        <i class="fa-regular fa-cart-shopping"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0)" class="add-to-wishlist"
-                        data-name="${safeText(prod.name)}"
-                        data-image="${safeText(img0)}"
-                        data-store="${safeText(prod.store || "default")}"
-                        data-price="${safeText(prod.price)}"
-                        data-price_sale="${safeText(prod.price_sale)}"
-                        data-sku="${safeText(prod.sku || "")}"
-                        data-stockstatus="${safeText(
-                          prod.stockstatus || "In Stock"
-                        )}">
-                        <i class="fa-light fa-heart"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="javascript:void(0)" class="view-lightbox" data-index="${
-                        start + idx
-                      }">
-                        <i class="fa-light fa-eye"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="shop-content mt-0 pt-0">
-                  <span class="category fw-bold mb-1">${safeText(
-                    (prod.brand || "").split(",")[0]
-                  )}</span>
-                  <h3 class="title">
-                    <a href="${productHref}" class="shop-link" data-id="${safeText(
-              prod.id
-            )}" data-slug="${safeText(productSlug)}">${safeText(shortName)}</a>
-                  </h3>
-                  <div class="review-wrap">
-                    <ul class="review">${renderStars(5)}</ul>
-                    <span>(${(prod.id || 0) * 3} Reviews)</span>
-                  </div>
-                  <div class="d-flex flex-row flex-nowrap">
-                    <span class="price">${safeText(priceText)}</span>
-                    ${
-                      priceSaleText
-                        ? `<span class="price text-secondary text-decoration-line-through ms-2">${safeText(
-                            priceSaleText
-                          )}</span>`
-                        : ""
-                    }
-                  </div>
-                </div>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" class="add-to-wishlist"
+                     data-name="${safeText(prod.name)}"
+                     data-image="${safeText(img0)}"
+                     data-store="${safeText(prod.store || "default")}">
+                    <i class="fa-light fa-heart"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="javascript:void(0)" class="view-lightbox" data-index="${
+                    start + idx
+                  }">
+                    <i class="fa-light fa-eye"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="shop-content mt-0 pt-0">
+              <span class="category fw-bold mb-1">${safeText(
+                (prod.brand || "").split(",")[0]
+              )}</span>
+              <h3 class="title">
+                <a href="${productHref}" class="shop-link"
+                   data-id="${safeText(prod.id)}"
+                   data-slug="${safeText(productSlug)}">${safeText(
+              shortName
+            )}</a>
+              </h3>
+              <div class="review-wrap">
+                <ul class="review">${renderStars(5)}</ul>
+                <span>(${(prod.id || 0) * 3} Reviews)</span>
               </div>
-            `;
+              <div class="d-flex flex-row flex-nowrap">
+                <span class="price">${safeText(priceText)}</span>
+                ${
+                  priceSaleText
+                    ? `<span class="price text-secondary text-decoration-line-through ms-2">${safeText(
+                        priceSaleText
+                      )}</span>`
+                    : ""
+                }
+              </div>
+            </div>
+          </div>
+        `;
 
             containerEl.appendChild(col);
 
-            const cartEl = col.querySelector(".add-to-cart");
-            const wishEl = col.querySelector(".add-to-wishlist");
+            col
+              .querySelector(".add-to-cart")
+              ?.addEventListener("click", cartHandler);
+            col
+              .querySelector(".add-to-wishlist")
+              ?.addEventListener("click", wishlistHandler);
             const viewEl = col.querySelector(".view-lightbox");
-            if (cartEl) cartEl.addEventListener("click", cartHandler);
-            if (wishEl) wishEl.addEventListener("click", wishlistHandler);
-            if (viewEl)
+            if (viewEl) {
               viewEl.addEventListener("click", (e) => {
                 e.preventDefault();
                 currentImages = productMainImages;
@@ -1103,12 +1096,8 @@
                 updateLightbox();
                 showLightbox();
               });
+            }
           });
-
-          if (!containerEl._shopBound) {
-            containerEl.addEventListener("click", containerClickHandler);
-            containerEl._shopBound = true;
-          }
 
           renderPagination(paginationEl);
         }
@@ -1124,7 +1113,7 @@
           const slug = a.dataset.slug || "";
           try {
             localStorage.setItem("selectedProductId", String(id || ""));
-          } catch (err) {}
+          } catch {}
 
           const href =
             a.getAttribute("href") ||
@@ -1132,7 +1121,7 @@
           try {
             history.pushState({}, "", href);
             window.dispatchEvent(new PopStateEvent("popstate"));
-          } catch (err) {
+          } catch {
             window.location.href = href;
           }
         }
@@ -1154,7 +1143,7 @@
             window._cachedProducts = arr;
             try {
               localStorage.setItem("_cachedProductsV1", JSON.stringify(arr));
-            } catch (e) {}
+            } catch {}
             return arr;
           } catch (err) {
             if (retries < MAX_RETRIES) {
@@ -1170,7 +1159,7 @@
                   return parsed;
                 }
               }
-            } catch (e) {}
+            } catch {}
             throw err;
           }
         }
@@ -1202,10 +1191,6 @@
           }
         }
 
-        try {
-          window.loadShopProducts = loadProducts;
-        } catch (e) {}
-
         function initCurrencySwitcher() {
           const opts = document.querySelectorAll(
             ".nice-select.country .option"
@@ -1228,21 +1213,19 @@
 
         let currentImages = [];
         let currentIndex = 0;
+
         function showLightbox() {
           const lightbox = getEl("image-lightbox");
-          if (!lightbox) return;
-          lightbox.style.display = "flex";
+          if (lightbox) lightbox.style.display = "flex";
         }
         function hideLightbox() {
           const lightbox = getEl("image-lightbox");
-          if (!lightbox) return;
-          lightbox.style.display = "none";
+          if (lightbox) lightbox.style.display = "none";
         }
         function updateLightbox() {
           const lightboxImg = getEl("lightbox-image");
           const counterEl = getEl("lightbox-counter");
-          if (!lightboxImg) return;
-          if (!currentImages || !currentImages.length) return;
+          if (!lightboxImg || !currentImages.length) return;
           currentIndex =
             ((currentIndex % currentImages.length) + currentImages.length) %
             currentImages.length;
@@ -1253,28 +1236,21 @@
             }`;
         }
         function initLightboxControls() {
-          const btnPrev = getEl("lightbox-prev");
-          const btnNext = getEl("lightbox-next");
-          const btnClose = getEl("lightbox-close");
+          getEl("lightbox-prev")?.addEventListener("click", () => {
+            currentIndex =
+              (currentIndex - 1 + currentImages.length) % currentImages.length;
+            updateLightbox();
+          });
+          getEl("lightbox-next")?.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            updateLightbox();
+          });
+          getEl("lightbox-close")?.addEventListener("click", () => {
+            hideLightbox();
+            currentImages = [];
+            currentIndex = 0;
+          });
           const imageLightbox = getEl("image-lightbox");
-          if (btnPrev)
-            btnPrev.addEventListener("click", () => {
-              currentIndex =
-                (currentIndex - 1 + currentImages.length) %
-                currentImages.length;
-              updateLightbox();
-            });
-          if (btnNext)
-            btnNext.addEventListener("click", () => {
-              currentIndex = (currentIndex + 1) % currentImages.length;
-              updateLightbox();
-            });
-          if (btnClose)
-            btnClose.addEventListener("click", () => {
-              hideLightbox();
-              currentImages = [];
-              currentIndex = 0;
-            });
           if (imageLightbox) {
             imageLightbox.addEventListener("click", (e) => {
               if (e.target === imageLightbox) hideLightbox();
@@ -1282,9 +1258,8 @@
           }
         }
 
-        function cleanPriceStr(str = "") {
-          return String(str || "").replace(/[^0-9.]/g, "");
-        }
+        const cleanPriceStr = (str = "") =>
+          String(str || "").replace(/[^0-9.]/g, "");
 
         function cartHandler(e) {
           e.preventDefault();
@@ -1375,6 +1350,7 @@
             .map(() => `<li><i class="fa-solid fa-star me-1"></i></li>`)
             .join("");
         }
+
         function showBanner(msg, type = "success") {
           const b = document.createElement("div");
           b.className = `banner ${type}`;
@@ -1392,11 +1368,7 @@
             boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
           });
           document.body.appendChild(b);
-          setTimeout(() => {
-            try {
-              b.remove();
-            } catch {}
-          }, 3000);
+          setTimeout(() => b.remove(), 3000);
         }
 
         function boot() {
@@ -1411,10 +1383,6 @@
           window.addEventListener("theme:contentloaded", loadProducts);
           window.addEventListener("popstate", () => {
             const p = (location.pathname || "").replace(/\/+$/, "");
-            const shopPaths = ["/shop", "/shop.html"].concat([
-              `/${CONTAINER_ID}`,
-              `/${PAGINATION_ID}`,
-            ]);
             if (
               p === "/shop" ||
               p === "/shop.html" ||
@@ -1434,7 +1402,7 @@
 
         try {
           window.reloadShopProducts = loadProducts;
-        } catch (e) {}
+        } catch {}
       })();
     </script>
 

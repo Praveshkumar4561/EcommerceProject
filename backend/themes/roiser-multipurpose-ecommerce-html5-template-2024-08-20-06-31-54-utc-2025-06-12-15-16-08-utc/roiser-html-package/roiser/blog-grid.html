@@ -758,6 +758,9 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        const FRONTEND_BASE = window.location.origin;
+        const API_BASE = "http://147.93.45.171:1600";
+
         const blogContainer = document.getElementById("blog-post-container");
         const paginationContainer = document.getElementById(
           "pagination-container"
@@ -775,12 +778,10 @@
 
         function makeUploadsUrl(path) {
           if (!path) return "";
-          if (/^https?:\/\//i.test(path)) return path;
-          path = path.toString().trim();
-          if (!/^\/?uploads\//i.test(path))
-            path =
-              "http://147.93.45.171:1600/uploads/" + path.replace(/^\/+/, "");
-          return window.location.origin + path;
+          const p = path.toString().trim();
+          if (/^https?:\/\//i.test(p)) return p;
+          const cleaned = p.replace(/^\/+/, "");
+          return `${API_BASE}/uploads/${cleaned}`;
         }
 
         function slugForLink(post) {
@@ -795,21 +796,21 @@
             .trim()
             .toLowerCase()
             .replace(/\s+/g, "-")
-            .replace(/[^\w-]+/g, "");
-          return raw || String(post.id || "");
+            .replace(/[^a-z0-9-']/g, "");
+          return encodeURIComponent(raw) || String(post.id || "");
         }
 
         function safeText(html) {
           if (!html) return "";
           try {
             return html.replace(/<[^>]*>/g, "").trim();
-          } catch (e) {
+          } catch {
             return String(html);
           }
         }
 
         function fetchAllPosts() {
-          return fetch("http://147.93.45.171:1600/blogpostdata")
+          return fetch(`${API_BASE}/blogpostdata`)
             .then((res) => {
               if (!res.ok)
                 throw new Error("Failed to fetch blog data: " + res.status);
@@ -828,54 +829,52 @@
           if (!blogContainer) return;
           blogContainer.innerHTML = "";
           if (!posts.length) {
-            blogContainer.innerHTML =
-              "<p>No matching blog posts found at this time.</p>";
+            blogContainer.innerHTML = "<p>No matching blog posts found.</p>";
             return;
           }
 
           posts.forEach((post) => {
             const permalinkSlug = slugForLink(post);
-            const linkHref = "/blog-details/" + permalinkSlug;
+            const linkHref = `${FRONTEND_BASE}/blog-details/${permalinkSlug}`;
             const imgUrl = makeUploadsUrl(post.image || "");
 
             const card = document.createElement("div");
             card.className = "post-card-2 inner-blog";
             card.innerHTML = `
-            <div class="post-thumb">
+        <div class="post-thumb">
+          <a href="${linkHref}" data-post-permalink="${permalinkSlug}" data-post-id="${
+              post.id
+            }">
+            <img src="${imgUrl}" alt="Read more about ${safeText(
+              post.name || post.title
+            )}" style="width:100%;height:auto;">
+          </a>
+        </div>
+        <div class="post-content-wrap">
+          <div class="post-content">
+            <ul class="post-meta">
+              <li><i class="fa-sharp fa-solid fa-clock"></i> ${new Date(
+                post.date
+              ).toLocaleDateString()}</li>
+              <li><i class="fa-sharp fa-solid fa-folder"></i> ${safeText(
+                post.tags || ""
+              )}</li>
+            </ul>
+            <h3 class="title">
               <a href="${linkHref}" data-post-permalink="${permalinkSlug}" data-post-id="${
               post.id
             }">
-                <img src="${imgUrl}" alt="Read more about ${safeText(
-              post.name || post.title
-            )}" style="width:100%;height:auto;">
+                ${safeText(post.name || post.title)}
               </a>
-            </div>
-            <div class="post-content-wrap">
-              <div class="post-content">
-                <ul class="post-meta">
-                  <li><i class="fa-sharp fa-solid fa-clock"></i> ${new Date(
-                    post.date
-                  ).toLocaleDateString()}</li>
-                  <li><i class="fa-sharp fa-solid fa-folder"></i> ${safeText(
-                    post.tags || ""
-                  )}</li>
-                </ul>
-                <h3 class="title">
-                  <a href="${linkHref}" data-post-permalink="${permalinkSlug}" data-post-id="${
+            </h3>
+            <p>${safeText(post.description || post.excerpt || "")}</p>
+            <a href="${linkHref}" class="blog-btn" data-post-permalink="${permalinkSlug}" data-post-id="${
               post.id
             }">
-                    ${safeText(post.name || post.title)}
-                  </a>
-                </h3>
-                <p>${safeText(post.description || post.excerpt || "")}</p>
-                <a href="${linkHref}" class="blog-btn" data-post-permalink="${permalinkSlug}" data-post-id="${
-              post.id
-            }">
-                  <i class="fa-sharp fa-regular fa-arrow-right"></i> Read more
-                </a>
-              </div>
-            </div>
-          `;
+              <i class="fa-sharp fa-regular fa-arrow-right"></i> Read more
+            </a>
+          </div>
+        </div>`;
             blogContainer.appendChild(card);
           });
         }
@@ -884,16 +883,14 @@
           const link = e.target.closest(
             "a[data-post-permalink], a[data-post-id]"
           );
-          if (!link) return;
-          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-          const permalinkSlug = link.dataset.postPermalink;
-          const id = link.dataset.postId;
+          if (!link || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          const { postPermalink, postId } = link.dataset;
           try {
-            if (permalinkSlug)
-              sessionStorage.setItem("selectedPostPermalink", permalinkSlug);
-            if (id) sessionStorage.setItem("selectedPostId", String(id));
-          } catch (err) {}
+            if (postPermalink)
+              sessionStorage.setItem("selectedPostPermalink", postPermalink);
+            if (postId)
+              sessionStorage.setItem("selectedPostId", String(postId));
+          } catch {}
           window.location.href = link.href;
         }
 
@@ -903,7 +900,7 @@
 
           if (currentPage > 1) {
             const prev = document.createElement("li");
-            prev.innerHTML = `<a href="#" aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i></a>`;
+            prev.innerHTML = `<a href="#" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></a>`;
             prev.addEventListener("click", (ev) => {
               ev.preventDefault();
               displayPage(currentPage - 1);
@@ -915,9 +912,7 @@
             const li = document.createElement("li");
             li.innerHTML = `<a href="#" class="${
               i === currentPage ? "active" : ""
-            }" aria-label="Page ${i}" ${
-              i === currentPage ? 'aria-current="page"' : ""
-            }>${i}</a>`;
+            }" ${i === currentPage ? 'aria-current="page"' : ""}>${i}</a>`;
             li.addEventListener("click", (ev) => {
               ev.preventDefault();
               displayPage(i);
@@ -927,7 +922,7 @@
 
           if (currentPage < totalPages) {
             const next = document.createElement("li");
-            next.innerHTML = `<a href="#" aria-label="Next page"><i class="fa-solid fa-chevron-right"></i></a>`;
+            next.innerHTML = `<a href="#" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></a>`;
             next.addEventListener("click", (ev) => {
               ev.preventDefault();
               displayPage(currentPage + 1);
@@ -937,14 +932,12 @@
         }
 
         function displayPage(page = 1) {
-          const totalPosts = filteredPosts.length;
           const totalPages = Math.max(
             1,
-            Math.ceil(totalPosts / POSTS_PER_PAGE)
+            Math.ceil(filteredPosts.length / POSTS_PER_PAGE)
           );
           const start = (page - 1) * POSTS_PER_PAGE;
-          const pagePosts = filteredPosts.slice(start, start + POSTS_PER_PAGE);
-          renderPosts(pagePosts);
+          renderPosts(filteredPosts.slice(start, start + POSTS_PER_PAGE));
           renderPagination(totalPages, page);
         }
 
@@ -953,51 +946,49 @@
           latestPostsContainer.innerHTML = `<h3 class="widget-title">Latest Post</h3>`;
           allPosts.slice(0, 3).forEach((post) => {
             const permalinkSlug = slugForLink(post);
-            const linkHref = "/blog-details/" + permalinkSlug;
+            const linkHref = `${FRONTEND_BASE}/blog-details/${permalinkSlug}`;
             const div = document.createElement("div");
             div.className = "sidebar-post";
             div.innerHTML = `
+        <a href="${linkHref}" data-post-permalink="${permalinkSlug}" data-post-id="${
+              post.id
+            }">
+          <img src="${makeUploadsUrl(
+            post.image
+          )}" alt="Image for blog post: ${safeText(post.name)}" />
+        </a>
+        <div class="post-content">
+          <ul class="post-meta">
+            <li><i class="fa-sharp fa-regular fa-clock"></i> ${new Date(
+              post.date
+            ).toLocaleDateString()}</li>
+          </ul>
+          <h3 class="title">
             <a href="${linkHref}" data-post-permalink="${permalinkSlug}" data-post-id="${
               post.id
             }">
-              <img src="${makeUploadsUrl(
-                post.image
-              )}" alt="Image for blog post: ${safeText(post.name)}" />
+              ${safeText(post.name)}
             </a>
-            <div class="post-content">
-              <ul class="post-meta">
-                <li><i class="fa-sharp fa-regular fa-clock"></i> ${new Date(
-                  post.date
-                ).toLocaleDateString()}</li>
-              </ul>
-              <h3 class="title">
-                <a href="${linkHref}" data-post-permalink="${permalinkSlug}" data-post-id="${
-              post.id
-            }">${safeText(post.name)}</a>
-              </h3>
-            </div>
-          `;
+          </h3>
+        </div>`;
             latestPostsContainer.appendChild(div);
           });
         }
 
-        function debounce(fn, ms) {
+        const debounce = (fn, ms) => {
           let t;
           return (...args) => {
             clearTimeout(t);
             t = setTimeout(() => fn(...args), ms);
           };
-        }
+        };
 
         function searchPosts(q) {
           if (!q) {
             filteredPosts = [...allPosts];
-            displayPage(1);
-            return;
+            return displayPage(1);
           }
-          fetch(
-            `http://147.93.45.171:1600/blogpostsearch/${encodeURIComponent(q)}`
-          )
+          fetch(`${API_BASE}/blogpostsearch/${encodeURIComponent(q)}`)
             .then((res) => res.json())
             .then((res) => {
               filteredPosts = Array.isArray(res)
@@ -1005,60 +996,61 @@
                 : [];
               displayPage(1);
             })
-            .catch(() => {
-              blogContainer.innerHTML = "<p>Error loading search results.</p>";
-            });
+            .catch(
+              () =>
+                (blogContainer.innerHTML =
+                  "<p>Error loading search results.</p>")
+            );
         }
 
         function loadTags() {
           if (!tagsContainer) return;
-          fetch("http://147.93.45.171:1600/blogalldata")
+          fetch(`${API_BASE}/blogalldata`)
             .then((res) => res.json())
             .then((tags) => {
               tagsContainer.innerHTML = "";
               (tags || []).slice(0, 8).forEach((t) => {
                 const li = document.createElement("li");
                 const a = document.createElement("a");
-                a.href = `/blog-grid?tag=${encodeURIComponent(
+                a.href = `${FRONTEND_BASE}/blog-grid?tag=${encodeURIComponent(
                   t.slug || t.name
                 )}`;
                 a.textContent = t.name || t.slug || t;
                 li.appendChild(a);
                 tagsContainer.appendChild(li);
               });
-            })
-            .catch(() => {});
+            });
         }
 
         function loadCategories() {
           if (!categoryContainer) return;
-          fetch("http://147.93.45.171:1600/allcategorydata")
+          fetch(`${API_BASE}/allcategorydata`)
             .then((res) => res.json())
             .then((cats) => {
               categoryContainer.innerHTML = "";
               (cats || []).slice(0, 5).forEach((cat, i) => {
                 const li = document.createElement("li");
                 const id = `category-${i + 1}`;
-                li.innerHTML = `<input type="checkbox" id="${id}" class="category-filter" value="${cat.name}"><label for="${id}">${cat.name}</label>`;
+                li.innerHTML = `<input type="checkbox" id="${id}" class="category-filter" value="${cat.name}">
+                          <label for="${id}">${cat.name}</label>`;
                 categoryContainer.appendChild(li);
               });
               categoryContainer.addEventListener("change", applyCategoryFilter);
-            })
-            .catch(() => {});
+            });
         }
 
         function applyCategoryFilter() {
           const selected = Array.from(
             categoryContainer.querySelectorAll(".category-filter:checked")
           ).map((cb) => cb.value);
-          if (!selected.length) filteredPosts = [...allPosts];
-          else
-            filteredPosts = allPosts.filter((post) => {
-              const cats = (post.categories || "")
-                .split(",")
-                .map((c) => c.trim());
-              return cats.some((c) => selected.includes(c));
-            });
+          filteredPosts = !selected.length
+            ? [...allPosts]
+            : allPosts.filter((post) => {
+                const cats = (post.categories || "")
+                  .split(",")
+                  .map((c) => c.trim());
+                return cats.some((c) => selected.includes(c));
+              });
           displayPage(1);
         }
 
@@ -1078,7 +1070,6 @@
 
         blogContainer?.addEventListener("click", handlePostClick);
         latestPostsContainer?.addEventListener("click", handlePostClick);
-
         searchInput?.addEventListener(
           "input",
           debounce((e) => searchPosts(e.target.value.trim()), 300)

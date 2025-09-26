@@ -823,20 +823,24 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
-        const slugify = (s) =>
-          String(s || "")
+        function slugify(s) {
+          return String(s || "")
             .toLowerCase()
             .trim()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-");
+            .replace(/&/g, "and")
+            .replace(/[^a-z0-9\s\-']/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-+|-+$/g, "");
+        }
 
-        const imageSrc = (img) => {
+        function imageSrc(img) {
           if (!img) return "";
           const str = String(img).trim();
           if (/^https?:\/\//i.test(str)) return str;
           if (str.startsWith("/")) return str;
           return "http://147.93.45.171:1600/uploads/" + encodeURIComponent(str);
-        };
+        }
 
         let posts;
         try {
@@ -862,19 +866,24 @@
             const thumbContainer = bigEl.querySelector(".post-thumbnails");
             if (thumbContainer) {
               thumbContainer.innerHTML = `
-            <a href="/blog-details/${slugify(big.name)}" class="w-100 h-100">
+            <a href="/blog-details/${encodeURIComponent(
+              slugify(big.name)
+            )}" class="w-100 h-100">
               <img src="${imageSrc(big.image)}" alt="${big.name || ""}">
             </a>
           `;
             }
 
             const titleA = bigEl.querySelector(".title a");
-            if (titleA) titleA.href = `/blog-details/${slugify(big.name)}`;
-            const wordsInTitle = (big.name || "").split(" ");
-            if (titleA)
+            if (titleA) {
+              titleA.href = `/blog-details/${encodeURIComponent(
+                slugify(big.name)
+              )}`;
+              const wordsInTitle = (big.name || "").split(" ");
               titleA.textContent =
                 wordsInTitle.slice(0, 8).join(" ") +
                 (wordsInTitle.length > 8 ? "…" : "");
+            }
 
             const words = (big.description || "").split(/\s+/);
             const preview =
@@ -905,32 +914,39 @@
             const thumbDiv = card.querySelector(".post-thumbnail");
             if (thumbDiv) {
               thumbDiv.innerHTML = `
-              <a href="/blog-details/${slugify(data.name)}">
-                <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
-              </a>
-            `;
+            <a href="/blog-details/${encodeURIComponent(slugify(data.name))}">
+              <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
+            </a>
+          `;
             }
 
             const a = card.querySelector(".title a");
-            if (a) a.href = `/blog-details/${slugify(data.name)}`;
-            const wordsInName = (data.name || "").split(" ");
-            if (a)
+            if (a) {
+              a.href = `/blog-details/${encodeURIComponent(
+                slugify(data.name)
+              )}`;
+              const wordsInName = (data.name || "").split(" ");
               a.textContent =
                 wordsInName.slice(0, 6).join(" ") +
                 (wordsInName.length > 6 ? "…" : "");
+            }
 
             const oldMeta = card.querySelector(".post-meta");
             if (oldMeta) oldMeta.remove();
             const m = document.createElement("div");
             m.className = "post-meta";
             m.innerHTML = `
-              <span><a href="/blog-details/${slugify(data.name)}">${
-              data.author_name || ""
-            }</a></span>
-              <span><a href="/blog-details/${slugify(data.name)}">${fmtDate(
-              data.date
-            )}</a></span>
-            `;
+          <span><a href="/blog-details/${encodeURIComponent(
+            slugify(data.name)
+          )}">
+            ${data.author_name || ""}
+          </a></span>
+          <span><a href="/blog-details/${encodeURIComponent(
+            slugify(data.name)
+          )}">
+            ${fmtDate(data.date)}
+          </a></span>
+        `;
             const postContent = card.querySelector(".post-content");
             if (postContent) postContent.appendChild(m);
 
@@ -970,23 +986,28 @@
             const thumb = el.querySelector(".post-thumbnail");
             if (thumb) {
               thumb.innerHTML = `
-              <a href="/blog-details/${slugify(data.name)}">
-                <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
-              </a>
-            `;
+            <a href="/blog-details/${encodeURIComponent(slugify(data.name))}">
+              <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
+            </a>
+          `;
             }
 
             const link = el.querySelector(".title a");
-            if (link) link.href = `/blog-details/${slugify(data.name)}`;
-            if (link) link.textContent = data.name || "";
+            if (link) {
+              link.href = `/blog-details/${encodeURIComponent(
+                slugify(data.name)
+              )}`;
+              link.textContent = data.name || "";
+            }
 
             const words = (data.description || "").split(/\s+/);
             const pc = el.querySelector(".post-content p");
-            if (pc)
+            if (pc) {
               pc.textContent =
                 words.length > 36
                   ? words.slice(0, 36).join(" ") + "…"
                   : data.description || "";
+            }
 
             const spans = el.querySelectorAll(".post-meta span a");
             if (spans.length >= 2) {
@@ -1002,26 +1023,24 @@
           pagUl.insertAdjacentHTML(
             "beforeend",
             `<li><a href="#" data-page="${currentPage - 1}">
-              <i class="far fa-angle-left"></i>
-            </a></li>`
+          <i class="far fa-angle-left"></i>
+        </a></li>`
           );
           for (let i = 1; i <= totalPages; i++) {
             pagUl.insertAdjacentHTML(
               "beforeend",
               `<li>
-                <a href="#" data-page="${i}"${
+            <a href="#" data-page="${i}"${
                 i === currentPage ? ' class="active"' : ""
-              }>
-                  ${i}
-                </a>
-              </li>`
+              }>${i}</a>
+          </li>`
             );
           }
           pagUl.insertAdjacentHTML(
             "beforeend",
             `<li><a href="#" data-page="${currentPage + 1}">
-              <i class="far fa-angle-right"></i>
-            </a></li>`
+          <i class="far fa-angle-right"></i>
+        </a></li>`
           );
         }
 
@@ -1533,72 +1552,23 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const slugify = (s) =>
-          String(s || "")
+        function slugify(s) {
+          return String(s || "")
             .toLowerCase()
             .trim()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-");
+            .replace(/&/g, "and")
+            .replace(/[^a-z0-9\s\-']/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-+|-+$/g, "");
+        }
 
-        const imageSrc = (img) => {
+        function imageSrc(img) {
           if (!img) return "";
           const str = String(img).trim();
           if (/^https?:\/\//i.test(str)) return str;
           if (str.startsWith("/")) return str;
           return "http://147.93.45.171:1600/uploads/" + encodeURIComponent(str);
-        };
-
-        fetch("http://147.93.45.171:1600/blogpostdata")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to fetch blog data.");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            if (!Array.isArray(data)) return;
-            data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const topPosts = data.slice(0, 3);
-
-            const container = document.getElementById("recent-posts-container");
-            if (!container) return;
-
-            topPosts.forEach((post) => {
-              const slug = slugify(post.name || "post-" + post.id);
-              const postHTML = `
-            <div class="recent-post-item">
-              <div class="thumb">
-                <a href="/blog-details/${slug}" class="w-100 h-100">
-                  <img src="${imageSrc(post.image)}" alt="${(
-                post.name || "post thumb"
-              ).replace(/"/g, "")}" />
-                </a>
-              </div>
-              <div class="content">
-                <h4>
-                  <a href="/blog-details/${slug}">${escapeHtml(
-                post.name || ""
-              )}</a>
-                </h4>
-                <span><a href="/blog-details/${slug}">${formatDate(
-                post.date
-              )}</a></span>
-              </div>
-            </div>
-          `;
-              container.insertAdjacentHTML("beforeend", postHTML);
-            });
-          })
-          .catch((error) => {
-            console.error("Error loading blog posts:", error);
-          });
-
-        function formatDate(dateStr) {
-          const date = new Date(dateStr);
-          if (Number.isNaN(date.getTime())) return "";
-          const options = { year: "numeric", month: "long", day: "numeric" };
-          return date.toLocaleDateString("en-US", options);
         }
 
         function escapeHtml(str) {
@@ -1610,6 +1580,62 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
         }
+
+        function formatDate(dateStr) {
+          const date = new Date(dateStr);
+          if (Number.isNaN(date.getTime())) return "";
+          const opts = { year: "numeric", month: "long", day: "numeric" };
+          return date.toLocaleDateString("en-US", opts);
+        }
+
+        fetch("http://147.93.45.171:1600/blogpostdata")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch blog data.");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (!Array.isArray(data)) return;
+
+            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const topPosts = data.slice(0, 3);
+
+            const container = document.getElementById("recent-posts-container");
+            if (!container) return;
+
+            topPosts.forEach((post) => {
+              const rawName = post.name || "post-" + post.id;
+              const slug = slugify(rawName);
+              const href = "/blog-details/" + encodeURIComponent(slug);
+              const img = imageSrc(post.image);
+              const safeName = escapeHtml(rawName);
+              const safeDate = formatDate(post.date);
+
+              const postHTML = `
+            <div class="recent-post-item">
+              <div class="thumb">
+                <a href="${href}" class="w-100 h-100">
+                  <img src="${img}" alt="${safeName}" />
+                </a>
+              </div>
+              <div class="content">
+                <h4>
+                  <a href="${href}">${safeName}</a>
+                </h4>
+                <span>
+                  <a href="${href}">${safeDate}</a>
+                </span>
+              </div>
+            </div>
+          `;
+              container.insertAdjacentHTML("beforeend", postHTML);
+            });
+          })
+          .catch((error) => {
+            console.error("Error loading blog posts:", error);
+          });
       });
     </script>
 

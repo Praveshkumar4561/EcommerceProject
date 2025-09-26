@@ -74,7 +74,9 @@
             .toLowerCase()
             .trim()
             .replace(/&/g, "and")
-            .replace(/[\s\W_]+/g, "-")
+            .replace(/[^a-z0-9\s-']/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
             .replace(/^-+|-+$/g, "");
         }
 
@@ -101,7 +103,9 @@
                 .toString()
                 .trim();
               const safeSlug = slugify(rawSlug) || String(b.id || idx);
-              const url = makeAbsolute("/blog-details/" + safeSlug);
+              const url = makeAbsolute(
+                "/blog-details/" + encodeURIComponent(safeSlug)
+              );
               return {
                 "@type": "ListItem",
                 position: idx + 1,
@@ -121,14 +125,17 @@
                 .toString()
                 .trim();
               const safeSlug = slugify(rawSlug) || String(b.id || "");
-              const url = makeAbsolute("/blog-details/" + safeSlug);
+              const url = makeAbsolute(
+                "/blog-details/" + encodeURIComponent(safeSlug)
+              );
 
               let img = b.image || b.featured_image || "";
               if (img && !/^https?:\/\//i.test(img)) {
-                if (!/^\/?uploads\//i.test(img))
+                if (!/^\/?uploads\//i.test(img)) {
                   img =
                     "http://147.93.45.171:1600/uploads/" +
                     img.replace(/^\/+/, "");
+                }
               }
               img = img ? makeAbsolute(img) : undefined;
 
@@ -831,7 +838,7 @@
           .toString()
           .trim()
           .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/[^a-z0-9\s-']/g, "")
           .replace(/\s+/g, "-")
           .replace(/-+/g, "-");
       }
@@ -873,48 +880,48 @@
               const postCard = document.createElement("div");
               postCard.className = "col-lg-4 col-md-6";
               postCard.innerHTML = `
-                  <div class="post-card post-car1">
-                    <div class="post-thumb">
-                      <a href="/blog-details/${slug}" data-post-id="${
-                post.id
-              }" data-post-slug="${slug}">
-                        <img src="http://147.93.45.171:1600/uploads/${
-                          post.image
-                        }" 
-                            alt="Image for blog post titled ${post.name}" 
-                            style="width:100%;height:auto;" />
-                      </a>
-                    </div>
-                    <div class="post-content-wrap">
-                      <div class="post-content">
-                        <ul class="post-meta">
-                          <li><i class="fa-sharp fa-solid fa-calendar-days"></i> 
-                            ${new Date(post.date).toLocaleDateString()}
-                          </li>
-                          <li><i class="fa-regular fa-tag"></i> ${
-                            post.tags
-                          }</li>
-                        </ul>
-                        <h3 class="title">
-                          <a href="/blog-details/${slug}" data-post-id="${
-                post.id
-              }" data-post-slug="${slug}">
-                            ${post.name}
-                          </a>
-                        </h3>
-                      </div>
-                      <div class="post-bottom">
-                        <a href="/blog-details/${slug}" class="read-more" data-post-id="${
-                post.id
-              }" data-post-slug="${slug}">
-                          Read More
-                          <span class="sr-only"> about ${post.name}</span>
-                          <i class="fa-regular fa-arrow-right" aria-hidden="true"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                `;
+            <div class="post-card post-car1">
+              <div class="post-thumb">
+                <a href="/blog-details/${encodeURIComponent(slug)}"
+                   data-post-id="${post.id}"
+                   data-post-slug="${slug}">
+                  <img src="http://147.93.45.171:1600/uploads/${post.image}"
+                       alt="Image for blog post titled ${post.name}"
+                       style="width:100%;height:auto;" />
+                </a>
+              </div>
+              <div class="post-content-wrap">
+                <div class="post-content">
+                  <ul class="post-meta">
+                    <li>
+                      <i class="fa-sharp fa-solid fa-calendar-days"></i>
+                      ${new Date(post.date).toLocaleDateString()}
+                    </li>
+                    <li>
+                      <i class="fa-regular fa-tag"></i> ${post.tags}
+                    </li>
+                  </ul>
+                  <h3 class="title">
+                    <a href="/blog-details/${encodeURIComponent(slug)}"
+                       data-post-id="${post.id}"
+                       data-post-slug="${slug}">
+                      ${post.name}
+                    </a>
+                  </h3>
+                </div>
+                <div class="post-bottom">
+                  <a href="/blog-details/${encodeURIComponent(slug)}"
+                     class="read-more"
+                     data-post-id="${post.id}"
+                     data-post-slug="${slug}">
+                    Read More
+                    <span class="sr-only"> about ${post.name}</span>
+                    <i class="fa-regular fa-arrow-right" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
               container.appendChild(postCard);
             });
           })
