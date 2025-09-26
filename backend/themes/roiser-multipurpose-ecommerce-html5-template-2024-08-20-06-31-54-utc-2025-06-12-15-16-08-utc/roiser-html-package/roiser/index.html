@@ -72,7 +72,6 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        /* Helper utilities */
         function makeAbsolute(u) {
           if (!u) return u;
           if (/^https?:\/\//i.test(u)) return u;
@@ -81,10 +80,8 @@
 
         function withUploads(u) {
           if (!u) return u;
-          // If it's already the uploads absolute URL from your backend, convert to site-absolute
           if (u.startsWith("http://147.93.45.171:1600/uploads/"))
             return makeAbsolute(u);
-          // If it's a relative filename, create the absolute uploads URL and then make site-absolute
           return makeAbsolute(
             "http://147.93.45.171:1600/uploads/" + String(u).replace(/^\/+/, "")
           );
@@ -102,7 +99,6 @@
           return String(str).replace(/<[^>]*>/g, "");
         }
 
-        /* Ensure .sr-only style exists (adds accessibility helper if not already present) */
         (function ensureSrOnly() {
           var id = "sr-only-generated-style";
           if (!document.getElementById(id)) {
@@ -141,7 +137,6 @@
             const featuredProducts = products.slice(0, 10);
             const featuredBlogs = blogs.slice(0, 5);
 
-            /* Build Product schema (unchanged except helper use) */
             const productSchema = featuredProducts.map((p) => {
               const slug = p.slug
                 ? p.slug
@@ -180,7 +175,6 @@
               };
             });
 
-            /* Build BlogPosting schema — use /blog-details/ slug for URLs */
             const blogSchema = featuredBlogs.map((b) => {
               const slug = b.slug
                 ? b.slug
@@ -197,7 +191,6 @@
               };
             });
 
-            /* Create JSON-LD graph and append to head */
             const schemaData = {
               "@context": "https://schema.org",
               "@graph": [
@@ -256,10 +249,6 @@
               console.error("Schema error", err);
             }
 
-            /* Optional: render featured blog cards into page if a container exists.
-           It creates accessible links: <a> with image, visible title and an sr-only
-           descriptive span so Lighthouse and screen readers see meaningful link text.
-           The selector checks for common container names; change as needed. */
             const container =
               document.querySelector(".featured-blogs") ||
               document.querySelector(".blog-list") ||
@@ -273,11 +262,9 @@
                 const postUrl = makeAbsolute(`/blog-details/${slug}`);
                 const titleText = stripTags(b.title || b.name || "Read blog");
 
-                // article wrapper
                 const article = document.createElement("article");
                 article.className = "blog-card";
 
-                // link with image
                 const link = document.createElement("a");
                 link.href = postUrl;
                 link.className = "blog-link";
@@ -291,18 +278,15 @@
                 img.loading = "lazy";
                 link.appendChild(img);
 
-                // sr-only descriptive text for the link (fixes "links do not have descriptive text")
                 const sr = document.createElement("span");
                 sr.className = "sr-only";
                 sr.textContent = `Read blog: ${titleText}`;
                 link.appendChild(sr);
 
-                // visible title below image
                 const h3 = document.createElement("h3");
                 h3.className = "blog-title";
                 h3.textContent = titleText;
 
-                // optional excerpt snippet
                 const excerptText = stripTags(b.excerpt || b.description || "");
                 const p = document.createElement("p");
                 p.className = "blog-excerpt";
@@ -311,7 +295,6 @@
                     (excerptText.length > 160 ? "…" : "")
                   : "";
 
-                // compose
                 article.appendChild(link);
                 article.appendChild(h3);
                 if (p.textContent) article.appendChild(p);
@@ -1064,373 +1047,442 @@
     </section>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
+      document.addEventListener("DOMContentLoaded", function () {
+        function cleanPrice(str) {
+          return String(str || "").replace(/[^0-9.]/g, "");
+        }
+        function toSeoUrl(str) {
+          return String(str || "")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+        }
+        function makeUploadsUrl(filename) {
+          if (!filename) return "";
+          filename = String(filename);
+          if (/^https?:\/\//i.test(filename)) return filename;
+          return (
+            "http://147.93.45.171:1600/uploads/" + filename.replace(/^\/+/, "")
+          );
+        }
+        function getUserId() {
+          return localStorage.getItem("user_id") || null;
+        }
+        function showBanner(msg, type) {
+          var b = document.createElement("div");
+          b.className = "banner " + (type || "success");
+          b.textContent = msg;
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            background: type === "success" ? "#4caf50" : "#f44336",
+            color: "#fff",
+            borderRadius: "4px",
+            zIndex: 9999,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          });
+          document.body.appendChild(b);
+          setTimeout(function () {
+            b.remove();
+          }, 3000);
+        }
+        function formatPrice(price) {
+          var p = parseFloat(price);
+          return isNaN(p) ? "$0.01" : "$" + p.toFixed(2);
+        }
+        function getRandomStars() {
+          return Math.floor(Math.random() * 2) + 4;
+        }
+        function getRandomReviews() {
+          return Math.floor(Math.random() * 100) + 1;
+        }
+
+        var imageLightbox = document.getElementById("image-lightbox");
+        var lightboxImg = document.getElementById("lightbox-image");
+        var counterEl = document.getElementById("lightbox-counter");
+        var btnPrev = document.getElementById("lightbox-prev");
+        var btnNext = document.getElementById("lightbox-next");
+        var btnClose = document.getElementById("lightbox-close");
+        var currentImages = [];
+        var currentIndex = 0;
+        function openLightbox(index) {
+          if (!window.productMainImages || !window.productMainImages.length)
+            return;
+          currentImages = window.productMainImages.slice();
+          currentIndex = Math.max(
+            0,
+            Math.min(index || 0, currentImages.length - 1)
+          );
+          updateLightbox();
+          if (imageLightbox) imageLightbox.style.display = "flex";
+        }
+        function updateLightbox() {
+          if (!currentImages.length || !lightboxImg || !counterEl) return;
+          lightboxImg.src = makeUploadsUrl(currentImages[currentIndex]);
+          counterEl.textContent =
+            currentIndex + 1 + " of " + currentImages.length;
+        }
+        if (btnPrev && btnNext && btnClose) {
+          btnPrev.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (!currentImages.length) return;
+            currentIndex =
+              (currentIndex - 1 + currentImages.length) % currentImages.length;
+            updateLightbox();
+          });
+          btnNext.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            updateLightbox();
+          });
+          btnClose.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (imageLightbox) imageLightbox.style.display = "none";
+            currentImages = [];
+            currentIndex = 0;
+          });
+        }
 
         Promise.all([
-          fetch("http://147.93.45.171:1600/productcatdata").then((res) =>
-            res.json()
-          ),
-          fetch("http://147.93.45.171:1600/productpagedata").then((res) =>
-            res.json()
-          ),
+          fetch("http://147.93.45.171:1600/productcatdata").then(function (r) {
+            return r.json();
+          }),
+          fetch("http://147.93.45.171:1600/productpagedata").then(function (r) {
+            return r.json();
+          }),
         ])
-          .then(([rawCats, rawProds]) => {
-            const categories = Array.isArray(rawCats)
+          .then(function (_ref) {
+            var rawCats = _ref[0],
+              rawProds = _ref[1];
+            var categories = Array.isArray(rawCats)
               ? rawCats
               : rawCats.categories || rawCats.data || [];
-            let products = Array.isArray(rawProds)
+            var products = Array.isArray(rawProds)
               ? rawProds
               : rawProds.products || rawProds.data || [];
-
-            const count1El = document.getElementById("product-count1");
-            const count2El = document.getElementById("product-count2");
+            var count1El = document.getElementById("product-count1");
+            var count2El = document.getElementById("product-count2");
             if (count1El)
-              count1El.textContent = `${categories.length} categories`;
-            if (count2El) count2El.textContent = `${products.length} products`;
-
+              count1El.textContent = categories.length + " categories";
+            if (count2El) count2El.textContent = products.length + " products";
             products = products
-              .filter((p) => p && p.date && !isNaN(new Date(p.date)))
-              .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const productMainImages = products.map((p) => {
-              const imgs = (p && p.image ? String(p.image) : "")
+              .filter(function (p) {
+                return p && p.date && !isNaN(new Date(p.date));
+              })
+              .sort(function (a, b) {
+                return new Date(b.date) - new Date(a.date);
+              });
+            var productMainImages = products.map(function (p) {
+              var imgs = (p && p.image ? String(p.image) : "")
                 .split(",")
-                .map((i) => i.trim())
+                .map(function (i) {
+                  return i.trim();
+                })
                 .filter(Boolean);
               return imgs[0] || "";
             });
-
-            const imageLightbox = document.getElementById("image-lightbox");
-            const lightboxImg = document.getElementById("lightbox-image");
-            const counterEl = document.getElementById("lightbox-counter");
-            const btnPrev = document.getElementById("lightbox-prev");
-            const btnNext = document.getElementById("lightbox-next");
-            const btnClose = document.getElementById("lightbox-close");
-
-            let currentImages = [],
-              currentIndex = 0;
-            function openLightbox(idx) {
-              currentImages = productMainImages.slice();
-              currentIndex = Math.max(
-                0,
-                Math.min(idx, currentImages.length - 1)
-              );
-              updateLightbox();
-              if (imageLightbox) imageLightbox.style.display = "flex";
-            }
-            function updateLightbox() {
-              if (!currentImages.length || !lightboxImg || !counterEl) return;
-              lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
-              counterEl.textContent = `${currentIndex + 1} of ${
-                currentImages.length
-              }`;
-            }
-            [btnPrev, btnNext, btnClose].forEach((btn) => {
-              if (!btn) return;
-              btn.addEventListener("click", (e) => {
-                e.preventDefault();
-                if (btn === btnClose) {
-                  if (imageLightbox) imageLightbox.style.display = "none";
-                  currentImages = [];
-                  currentIndex = 0;
-                } else {
-                  currentIndex =
-                    btn === btnPrev
-                      ? (currentIndex - 1 + currentImages.length) %
-                        currentImages.length
-                      : (currentIndex + 1) % currentImages.length;
-                  updateLightbox();
-                }
-              });
-            });
-
-            function showBanner(msg, type = "success") {
-              const b = document.createElement("div");
-              b.className = `banner ${type}`;
-              b.textContent = msg;
-              Object.assign(b.style, {
-                position: "fixed",
-                top: "10px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                padding: "10px 20px",
-                background: type === "success" ? "#4caf50" : "#f44336",
-                color: "#fff",
-                borderRadius: "4px",
-                zIndex: 9999,
-                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-              });
-              document.body.appendChild(b);
-              setTimeout(() => b.remove(), 3000);
-            }
-
-            const wrapper = document.getElementById("product-wrapper");
-            if (!wrapper) {
-              console.warn("product-wrapper not found");
-              return;
-            }
+            window.productMainImages = productMainImages.slice();
+            var wrapper = document.getElementById("product-wrapper");
+            if (!wrapper) return;
             wrapper.innerHTML = "";
-
-            products.forEach((product, idx) => {
-              const slide = document.createElement("div");
+            products.forEach(function (product, idx) {
+              var slide = document.createElement("div");
               slide.className = "swiper-slide";
-              const img = productMainImages[idx] || "";
-              const safeName = product?.name
-                ? String(product.name).replace(/"/g, "&quot;")
-                : "";
-              const slug = (product.name || "")
+              var img = productMainImages[idx] || "";
+              var safeName =
+                product && product.name
+                  ? String(product.name).replace(/"/g, "&quot;")
+                  : "";
+              var slug = (product.name || "")
                 .toLowerCase()
                 .trim()
                 .replace(/\s+/g, "-")
                 .replace(/[^a-z0-9-]/g, "");
-
-              slide.innerHTML = `
-                  <div class="shop-item" data-product-id="${product.id}">
-                    <div class="shop-thumb">
-                      <div class="overlay"></div>
-
-                      <a href="/shop-details/${slug}" class="product-link"
-                        data-id="${product.id}"
-                        data-name="${encodeURIComponent(product.name || "")}"
-                        aria-label="View details of ${safeName}">
-                        <img src="http://147.93.45.171:1600/uploads/${img}" alt="${safeName}" loading="lazy"
-                            onerror="this.onerror=null;"/>
-                      </a>
-
-                      <span class="sale">${product.label || "New"}</span>
-                      <ul class="shop-list d-flex flex-column">
-                        <li>
-                          <a href="javascript:void(0)" data-action="add-to-cart" data-product-id="${
-                            product.id
-                          }"
-                            aria-label="Add ${safeName} to cart"
-                            data-name="${encodeURIComponent(
-                              product.name || ""
-                            )}"
-                            data-price="${product.price || ""}"
-                            data-price_sale="${product.price_sale || ""}"
-                            data-image="${encodeURIComponent(img || "")}"
-                            data-store="${product.store || "default"}">
-                            <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="javascript:void(0)" data-action="add-to-wishlist" data-product-id="${
-                            product.id
-                          }"
-                            aria-label="Add ${safeName} to wishlist"
-                            data-name="${encodeURIComponent(
-                              product.name || ""
-                            )}"
-                            data-image="${encodeURIComponent(img || "")}"
-                            data-store="${product.store || "default"}"
-                            data-price="${product.price || ""}"
-                            data-price_sale="${product.price_sale || ""}"
-                            data-sku="${product.sku || ""}"
-                            data-stockstatus="${
-                              product.stockstatus || "In Stock"
-                            }">
-                            <i class="fa-light fa-heart" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="javascript:void(0)" data-action="view-lightbox" data-product-id="${
-                            product.id
-                          }" data-index="${idx}"
-                            aria-label="View ${safeName} image preview">
-                            <i class="fa-light fa-eye" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="shop-content">
-                      <span class="category">${
-                        product.brand || "No Brand"
-                      }</span>
-                      <h3 class="title">
-                        <a href="/shop-details/${slug}" class="product-link"
-                          data-id="${product.id}"
-                          data-name="${encodeURIComponent(product.name || "")}"
-                          aria-label="View details of ${safeName}">
-                          ${safeName}
-                        </a>
-                      </h3>
-                      <div class="review-wrap">
-                        <ul class="review">
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                        </ul>
-                        <span>(${
-                          Math.floor(Math.random() * 100) + 1
-                        } Reviews)</span>
-                      </div>
-                      <div class="d-flex flex-row flex-nowrap">
-                        <span class="price">${product.price}</span>
-                        <span class="price_sale ms-2 text-decoration-line-through">
-                          ${product.price_sale}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                `;
+              slide.innerHTML =
+                "" +
+                '<div class="shop-item" data-product-id="' +
+                (product.id || "") +
+                '">' +
+                '  <div class="shop-thumb">' +
+                '    <div class="overlay"></div>' +
+                '    <a href="/shop-details/' +
+                encodeURIComponent(slug) +
+                '" class="product-link" data-id="' +
+                (product.id || "") +
+                '" data-name="' +
+                encodeURIComponent(product.name || "") +
+                '" aria-label="View details of ' +
+                safeName +
+                '">' +
+                '      <img src="' +
+                makeUploadsUrl(img) +
+                '" alt="' +
+                safeName +
+                '" loading="lazy" onerror="this.onerror=null;" />' +
+                "    </a>" +
+                '    <span class="sale">' +
+                (product.label || "New") +
+                "</span>" +
+                '    <ul class="shop-list d-flex flex-column">' +
+                "      <li>" +
+                '        <button type="button" class="action-btn add-to-cart" data-action="add-to-cart" data-product-id="' +
+                (product.id || "") +
+                '" aria-label="Add ' +
+                safeName +
+                ' to cart" data-name="' +
+                encodeURIComponent(product.name || "") +
+                '" data-price="' +
+                (product.price || "") +
+                '" data-price_sale="' +
+                (product.price_sale || "") +
+                '" data-image="' +
+                encodeURIComponent(img || "") +
+                '" data-store="' +
+                (product.store || "default") +
+                '">' +
+                '          <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>' +
+                "        </button>" +
+                "      </li>" +
+                "      <li>" +
+                '        <button type="button" class="action-btn add-to-wishlist" data-action="add-to-wishlist" data-product-id="' +
+                (product.id || "") +
+                '" aria-label="Add ' +
+                safeName +
+                ' to wishlist" data-name="' +
+                encodeURIComponent(product.name || "") +
+                '" data-image="' +
+                encodeURIComponent(img || "") +
+                '" data-store="' +
+                (product.store || "default") +
+                '" data-price="' +
+                (product.price || "") +
+                '" data-price_sale="' +
+                (product.price_sale || "") +
+                '" data-sku="' +
+                (product.sku || "") +
+                '" data-stockstatus="' +
+                (product.stockstatus || "In Stock") +
+                '">' +
+                '          <i class="fa-light fa-heart" aria-hidden="true"></i>' +
+                "        </button>" +
+                "      </li>" +
+                "      <li>" +
+                '        <a href="' +
+                makeUploadsUrl(img) +
+                '" class="view-lightbox" data-action="view-lightbox" data-product-id="' +
+                (product.id || "") +
+                '" data-index="' +
+                idx +
+                '" aria-label="View ' +
+                safeName +
+                ' image preview">' +
+                '          <i class="fa-light fa-eye" aria-hidden="true"></i>' +
+                "        </a>" +
+                "      </li>" +
+                "    </ul>" +
+                "  </div>" +
+                '  <div class="shop-content">' +
+                '    <span class="category">' +
+                (product.brand || "No Brand") +
+                "</span>" +
+                '    <h3 class="title">' +
+                '      <a href="/shop-details/' +
+                encodeURIComponent(slug) +
+                '" class="product-link" data-id="' +
+                (product.id || "") +
+                '" data-name="' +
+                encodeURIComponent(product.name || "") +
+                '" aria-label="View details of ' +
+                safeName +
+                '">' +
+                safeName +
+                "</a>" +
+                "    </h3>" +
+                '    <div class="review-wrap">' +
+                '      <ul class="review">' +
+                '        <li><i class="fa-solid fa-star"></i></li>' +
+                '        <li><i class="fa-solid fa-star"></i></li>' +
+                '        <li><i class="fa-solid fa-star"></i></li>' +
+                '        <li><i class="fa-solid fa-star"></i></li>' +
+                '        <li><i class="fa-solid fa-star"></i></li>' +
+                "      </ul>" +
+                "      <span>(" +
+                (Math.floor(Math.random() * 100) + 1) +
+                " Reviews)</span>" +
+                "    </div>" +
+                '    <div class="d-flex flex-row flex-nowrap">' +
+                '      <span class="price">' +
+                (product.price || "") +
+                "</span>" +
+                '      <span class="price_sale ms-2 text-decoration-line-through">' +
+                (product.price_sale || "") +
+                "</span>" +
+                "    </div>" +
+                "  </div>" +
+                "</div>";
               wrapper.appendChild(slide);
             });
 
-            wrapper.addEventListener("click", (e) => {
-              const actionBtn = e.target.closest("[data-action]");
+            wrapper.addEventListener("click", function (e) {
+              var actionBtn = e.target.closest("[data-action]");
               if (actionBtn) {
                 e.preventDefault();
-                const action = actionBtn.dataset.action;
-                const productId = actionBtn.dataset.productId;
+                var action = actionBtn.dataset.action;
+                var productId = actionBtn.dataset.productId;
                 function updateAllInstances(updater) {
                   document
                     .querySelectorAll(
-                      `[data-product-id="${productId}"] [data-action="${action}"]`
+                      '[data-product-id="' +
+                        productId +
+                        '"] [data-action="' +
+                        action +
+                        '"]'
                     )
                     .forEach(updater);
                 }
-
                 if (action === "add-to-cart") {
-                  const user_id = localStorage.getItem("user_id");
+                  var user_id = localStorage.getItem("user_id");
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  const name = decodeURIComponent(actionBtn.dataset.name || "");
-                  const price = cleanPrice(actionBtn.dataset.price || "");
-                  const price_sale = cleanPrice(
+                  var name = decodeURIComponent(actionBtn.dataset.name || "");
+                  var price = cleanPrice(actionBtn.dataset.price || "");
+                  var price_sale = cleanPrice(
                     actionBtn.dataset.price_sale || ""
                   );
-                  const image = decodeURIComponent(
-                    actionBtn.dataset.image || ""
-                  );
-                  const store = actionBtn.dataset.store || "default";
+                  var image = decodeURIComponent(actionBtn.dataset.image || "");
+                  var store = actionBtn.dataset.store || "default";
                   fetch("http://147.93.45.171:1600/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      name,
-                      price,
-                      price_sale,
-                      image,
-                      user_id,
-                      store,
+                      name: name,
+                      price: price,
+                      price_sale: price_sale,
+                      image: image,
+                      user_id: user_id,
+                      store: store,
                     }),
                   })
-                    .then((r) => {
+                    .then(function (r) {
                       if (!r.ok) throw Error();
                       return r.text();
                     })
-                    .then(() => {
-                      updateAllInstances(
-                        (el) =>
-                          (el.innerHTML = '<i class="fa-solid fa-check"></i>')
-                      );
+                    .then(function () {
+                      updateAllInstances(function (el) {
+                        el.innerHTML =
+                          '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+                      });
                       showBanner("Product added to cart!", "success");
                     })
-                    .catch(() => showBanner("Failed to add to cart", "error"));
+                    .catch(function () {
+                      showBanner("Failed to add to cart", "error");
+                    });
+                  return;
                 }
-
                 if (action === "add-to-wishlist") {
-                  const user_id = localStorage.getItem("user_id");
-                  if (!user_id)
+                  var user_id2 = localStorage.getItem("user_id");
+                  if (!user_id2)
                     return showBanner("Please log in first", "error");
-                  const name = decodeURIComponent(actionBtn.dataset.name || "");
-                  const image = decodeURIComponent(
+                  var name2 = decodeURIComponent(actionBtn.dataset.name || "");
+                  var image2 = decodeURIComponent(
                     actionBtn.dataset.image || ""
                   );
-                  const store = actionBtn.dataset.store || "default";
-                  const price = cleanPrice(actionBtn.dataset.price || "");
-                  const price_sale = cleanPrice(
+                  var store2 = actionBtn.dataset.store || "default";
+                  var price2 = cleanPrice(actionBtn.dataset.price || "");
+                  var price_sale2 = cleanPrice(
                     actionBtn.dataset.price_sale || ""
                   );
-                  const sku = actionBtn.dataset.sku || "";
-                  const stockstatus =
-                    actionBtn.dataset.stockstatus || "In Stock";
+                  var sku = actionBtn.dataset.sku || "";
+                  var stockstatus = actionBtn.dataset.stockstatus || "In Stock";
                   fetch("http://147.93.45.171:1600/wishlistpost", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                      user_id,
-                      product_name: name,
-                      image,
-                      store,
-                      price,
-                      price_sale,
-                      sku,
-                      stockstatus,
+                      user_id: user_id2,
+                      product_name: name2,
+                      image: image2,
+                      store: store2,
+                      price: price2,
+                      price_sale: price_sale2,
+                      sku: sku,
+                      stockstatus: stockstatus,
                     }),
                   })
-                    .then((r) => {
+                    .then(function (r) {
                       if (!r.ok) throw Error();
                       return r.text();
                     })
-                    .then(() => {
-                      updateAllInstances(
-                        (el) =>
-                          (el.innerHTML = '<i class="fa-solid fa-check"></i>')
-                      );
+                    .then(function () {
+                      updateAllInstances(function (el) {
+                        el.innerHTML =
+                          '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+                      });
                       showBanner("Added to wishlist!", "success");
                     })
-                    .catch(() =>
-                      showBanner("Failed to add to wishlist", "error")
-                    );
+                    .catch(function () {
+                      showBanner("Failed to add to wishlist", "error");
+                    });
+                  return;
                 }
-
                 if (action === "view-lightbox") {
-                  const idx = Number(actionBtn.dataset.index) || 0;
+                  var idx = Number(actionBtn.dataset.index) || 0;
                   openLightbox(idx);
+                  return;
                 }
                 return;
               }
-
-              const productLink = e.target.closest(".product-link");
+              var productLink = e.target.closest(".product-link");
               if (productLink) {
                 if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)
                   return;
                 e.preventDefault();
-                const pid = productLink.dataset.id;
-                const rawName = decodeURIComponent(
+                var pid = productLink.dataset.id;
+                var rawName = decodeURIComponent(
                   productLink.dataset.name || ""
                 );
-                const slug = rawName
+                var slug2 = rawName
                   .toLowerCase()
                   .trim()
                   .replace(/\s+/g, "-")
                   .replace(/[^a-z0-9-]/g, "");
                 if (pid) localStorage.setItem("selectedProductId", pid);
-                window.location.href = `/shop-details/${slug}`;
+                window.location.href = "/shop-details/" + slug2;
               }
             });
 
-            const currencyRates = {
+            var currencyRates = {
               vdt: { symbol: "$", rate: 1 },
               can: { symbol: "₹", rate: 83 },
               uk: { symbol: "৳", rate: 108 },
             };
-            const dropdown = document.querySelector(".nice-select.country");
+            var dropdown = document.querySelector(".nice-select.country");
             if (dropdown) {
-              const display = dropdown.querySelector(".current");
-              const options = Array.from(dropdown.querySelectorAll(".option"));
-              let selected = localStorage.getItem("currency") || "vdt";
+              var display = dropdown.querySelector(".current");
+              var options = Array.from(dropdown.querySelectorAll(".option"));
+              var selected = localStorage.getItem("currency") || "vdt";
               if (!currencyRates[selected]) selected = "vdt";
-              options.forEach((o) =>
-                o.classList.toggle("selected", o.dataset.value === selected)
-              );
+              options.forEach(function (o) {
+                o.classList.toggle("selected", o.dataset.value === selected);
+              });
               if (display)
                 display.textContent =
-                  (options.find((o) => o.dataset.value === selected) || {})
-                    .textContent || display.textContent;
-              const parsePrice = (txt) =>
-                parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
-              const formatPrice = (num, key) =>
-                currencyRates[key].symbol + num.toFixed(2);
+                  (
+                    options.find(function (o) {
+                      return o.dataset.value === selected;
+                    }) || {}
+                  ).textContent || display.textContent;
+              function parsePrice(txt) {
+                return parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
+              }
               function normalizePrices() {
                 document
                   .querySelectorAll(".price, .price_sale")
-                  .forEach((el) => {
+                  .forEach(function (el) {
                     if (!el.dataset.basePrice)
                       el.dataset.basePrice = parsePrice(el.textContent);
                   });
@@ -1438,21 +1490,24 @@
               function applyCurrency(key) {
                 document
                   .querySelectorAll(".price, .price_sale")
-                  .forEach((el) => {
-                    const base = +el.dataset.basePrice;
-                    const converted =
+                  .forEach(function (el) {
+                    var base = +el.dataset.basePrice;
+                    var converted =
                       base *
                       (currencyRates[key].rate / currencyRates["vdt"].rate);
-                    el.textContent = formatPrice(converted, key);
+                    el.textContent =
+                      currencyRates[key].symbol + converted.toFixed(2);
                   });
               }
               normalizePrices();
               applyCurrency(selected);
-              options.forEach((opt) => {
-                opt.addEventListener("click", () => {
-                  const key = opt.dataset.value;
+              options.forEach(function (opt) {
+                opt.addEventListener("click", function () {
+                  var key = opt.dataset.value;
                   if (!currencyRates[key]) return;
-                  options.forEach((o) => o.classList.remove("selected"));
+                  options.forEach(function (o) {
+                    o.classList.remove("selected");
+                  });
                   opt.classList.add("selected");
                   display.textContent = opt.textContent;
                   localStorage.setItem("currency", key);
@@ -1474,11 +1529,11 @@
                   1200: { slidesPerView: 4 },
                 },
               });
-            } else {
-              console.warn("Swiper not loaded");
             }
           })
-          .catch((err) => console.error("Error loading data:", err));
+          .catch(function (err) {
+            console.error("Error loading data:", err);
+          });
       });
     </script>
 
@@ -2045,62 +2100,26 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
+        const API_BASE = "http://147.93.45.171:1600";
+        const UPLOADS_BASE = API_BASE + "/uploads/";
+
         function getUserId() {
           return localStorage.getItem("user_id") || null;
         }
 
         function toSeoUrl(str) {
-          return str
+          return String(str || "")
             .toLowerCase()
+            .trim()
             .replace(/\s+/g, "-")
             .replace(/[^\w-]+/g, "");
         }
 
-        let currentImages = [];
-        let currentIndex = 0;
-
-        const imageLightbox = document.getElementById("image-lightbox");
-        const lightboxImg = document.getElementById("lightbox-image");
-        const counterEl = document.getElementById("lightbox-counter");
-        const btnPrev = document.getElementById("lightbox-prev");
-        const btnNext = document.getElementById("lightbox-next");
-        const btnClose = document.getElementById("lightbox-close");
-        const flashExpiryEl = document.getElementById("flash-expiry");
-
-        function openLightbox(index) {
-          if (!window.productMainImages || !window.productMainImages.length)
-            return;
-          currentImages = window.productMainImages.slice();
-          currentIndex = index;
-          updateLightbox();
-          if (imageLightbox) imageLightbox.style.display = "flex";
-        }
-
-        function updateLightbox() {
-          if (!currentImages.length || !lightboxImg || !counterEl) return;
-          lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
-          counterEl.textContent = `${currentIndex + 1} of ${
-            currentImages.length
-          }`;
-        }
-
-        if (btnPrev && btnNext && btnClose) {
-          btnPrev.addEventListener("click", () => {
-            if (!currentImages.length) return;
-            currentIndex =
-              (currentIndex - 1 + currentImages.length) % currentImages.length;
-            updateLightbox();
-          });
-          btnNext.addEventListener("click", () => {
-            if (!currentImages.length) return;
-            currentIndex = (currentIndex + 1) % currentImages.length;
-            updateLightbox();
-          });
-          btnClose.addEventListener("click", () => {
-            if (imageLightbox) imageLightbox.style.display = "none";
-            currentImages = [];
-            currentIndex = 0;
-          });
+        function makeUploadsUrl(filename) {
+          if (!filename) return "";
+          filename = String(filename);
+          if (/^https?:\/\//i.test(filename)) return filename;
+          return UPLOADS_BASE + filename.replace(/^\/+/, "");
         }
 
         function showBanner(msg, type = "success") {
@@ -2136,12 +2155,65 @@
           return Math.floor(Math.random() * 100) + 1;
         }
 
-        fetch("http://147.93.45.171:1600/flashsalesmaindata")
-          .then((res) => res.json())
+        let currentImages = [];
+        let currentIndex = 0;
+
+        const imageLightbox = document.getElementById("image-lightbox");
+        const lightboxImg = document.getElementById("lightbox-image");
+        const counterEl = document.getElementById("lightbox-counter");
+        const btnPrev = document.getElementById("lightbox-prev");
+        const btnNext = document.getElementById("lightbox-next");
+        const btnClose = document.getElementById("lightbox-close");
+
+        function openLightbox(index) {
+          if (!window.productMainImages || !window.productMainImages.length)
+            return;
+          currentImages = window.productMainImages.slice();
+          currentIndex = Math.max(
+            0,
+            Math.min(index || 0, currentImages.length - 1)
+          );
+          updateLightbox();
+          if (imageLightbox) imageLightbox.style.display = "flex";
+        }
+
+        function updateLightbox() {
+          if (!currentImages.length || !lightboxImg || !counterEl) return;
+          lightboxImg.src = makeUploadsUrl(currentImages[currentIndex]);
+          counterEl.textContent = `${currentIndex + 1} of ${
+            currentImages.length
+          }`;
+        }
+
+        if (btnPrev && btnNext && btnClose) {
+          btnPrev.addEventListener("click", () => {
+            if (!currentImages.length) return;
+            currentIndex =
+              (currentIndex - 1 + currentImages.length) % currentImages.length;
+            updateLightbox();
+          });
+          btnNext.addEventListener("click", () => {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            updateLightbox();
+          });
+          btnClose.addEventListener("click", () => {
+            if (imageLightbox) imageLightbox.style.display = "none";
+            currentImages = [];
+            currentIndex = 0;
+          });
+        }
+
+        fetch(API_BASE + "/flashsalesmaindata")
+          .then((res) => {
+            if (!res.ok) throw new Error("Network response not ok");
+            return res.json();
+          })
           .then((data) => {
             const dealWrapper = document.getElementById(
               "deal-products-wrapper"
             );
+            const flashExpiryEl = document.getElementById("flash-expiry");
             if (!dealWrapper) return;
 
             if (!Array.isArray(data) || data.length === 0) {
@@ -2167,7 +2239,13 @@
             const firstSaleId = saleIds[0];
             const products = grouped[firstSaleId].slice(0, 2);
 
-            const endDates = products.map((p) => new Date(p.end_date));
+            window.productMainImages = products.map(
+              (p) => p.image || "placeholder.jpg"
+            );
+
+            const endDates = products.map(
+              (p) => new Date(p.end_date || Date.now())
+            );
             const latestEndDate = new Date(Math.max(...endDates));
             if (flashExpiryEl) {
               const options = {
@@ -2193,21 +2271,31 @@
               }
             );
 
-            window.productMainImages = products.map(
-              (p) => p.image || "placeholder.jpg"
-            );
-
             products.forEach((prd, idx) => {
               const container = templateCard.cloneNode(true);
 
               const img = container.querySelector(".shop-thumb img");
               if (img) {
-                img.src = `http://147.93.45.171:1600/uploads/${prd.image}`;
+                img.src = makeUploadsUrl(prd.image || "");
                 img.alt = prd.product_name || "";
-                if (img.parentElement)
-                  img.parentElement.href = `/shop-details/${toSeoUrl(
-                    prd.product_name
-                  )}`;
+                const imgAnchor = img.closest("a");
+                const productPage =
+                  "/shop-details/" +
+                  encodeURIComponent(
+                    toSeoUrl(
+                      prd.product_name || prd.product_name || prd.id || ""
+                    )
+                  );
+                if (imgAnchor) {
+                  imgAnchor.href = productPage;
+                  imgAnchor.setAttribute(
+                    "aria-label",
+                    `View ${prd.product_name} product page`
+                  );
+                  imgAnchor.setAttribute("title", prd.product_name || "");
+                  imgAnchor.dataset.productId =
+                    prd.id || prd.product_id || prd.productId || "";
+                }
               }
 
               const badge = container.querySelector(".shop-thumb .sale");
@@ -2226,21 +2314,33 @@
               );
               if (titleLink) {
                 titleLink.textContent = prd.product_name || "";
-                titleLink.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
+                const productPage =
+                  "/shop-details/" +
+                  encodeURIComponent(
+                    toSeoUrl(prd.product_name || prd.id || "")
+                  );
+                titleLink.href = productPage;
+                titleLink.title = prd.product_name || "";
                 titleLink.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  window.location.href = `/shop-details/${toSeoUrl(
-                    prd.product_name
-                  )}`;
+                  try {
+                    if (titleLink.dataset && titleLink.dataset.id) {
+                      sessionStorage.setItem(
+                        "selectedPostId",
+                        titleLink.dataset.id
+                      );
+                    }
+                  } catch (err) {}
                 });
               }
 
               const priceEl = container.querySelector(".shop-content .price");
               if (priceEl) {
                 if (prd.price_sale && prd.price_sale !== prd.price) {
-                  priceEl.innerHTML = `<span class="offer">${prd.price}</span>`;
+                  priceEl.innerHTML = `<span class="offer">${formatPrice(
+                    prd.price_sale
+                  )}</span> <del>${formatPrice(prd.price)}</del>`;
                 } else {
-                  priceEl.textContent = prd.price;
+                  priceEl.textContent = formatPrice(prd.price);
                 }
               }
 
@@ -2254,84 +2354,135 @@
                 for (let i = 0; i < 5; i++) {
                   const iconClass =
                     i < stars ? "fa-solid fa-star" : "fa-regular fa-star";
-                  reviewStars.innerHTML += `<li><i class="${iconClass}"></i></li>`;
+                  const li = document.createElement("li");
+                  li.innerHTML = `<i class="${iconClass}" aria-hidden="true"></i>`;
+                  reviewStars.appendChild(li);
                 }
                 reviewCount.textContent = `(${getRandomReviews()} Reviews)`;
               }
 
-              const cartBtn = container
-                .querySelector("i.fa-cart-shopping")
-                ?.closest("a");
-              if (cartBtn) {
-                cartBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const user_id = getUserId();
-                  if (!user_id)
-                    return showBanner("Please log in first", "error");
-                  fetch("http://147.93.45.171:1600/addcart", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      name: prd.product_name,
-                      price: prd.price,
-                      price_sale: prd.price_sale,
-                      image: prd.image,
-                      user_id,
-                      store: "default",
-                    }),
-                  })
-                    .then((r) => r.text())
-                    .then(() => {
-                      cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                      showBanner("Product added to cart!", "success");
-                    })
-                    .catch(() => showBanner("Failed to add to cart", "error"));
-                });
+              function replaceAnchorWithButton(anchorEl, btnClass, ariaLabel) {
+                if (!anchorEl) return null;
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = anchorEl.className
+                  ? anchorEl.className + " " + (btnClass || "")
+                  : btnClass || "";
+                btn.innerHTML = anchorEl.innerHTML;
+                for (let k in anchorEl.dataset) {
+                  btn.dataset[k] = anchorEl.dataset[k];
+                }
+                if (ariaLabel) btn.setAttribute("aria-label", ariaLabel);
+                if (anchorEl.title) btn.title = anchorEl.title;
+                anchorEl.replaceWith(btn);
+                return btn;
               }
 
-              const heartBtn = container
-                .querySelector("i.fa-heart")
-                ?.closest("a");
-              if (heartBtn) {
-                heartBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const user_id = getUserId();
-                  if (!user_id)
-                    return showBanner("Please log in first", "error");
-                  fetch("http://147.93.45.171:1600/wishlistpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      user_id,
-                      product_name: prd.product_name,
-                      image: prd.image,
-                      store: "default",
-                      price: prd.price,
-                      price_sale: prd.price_sale,
-                      sku: prd.sku || prd.id || "",
-                      stockstatus: prd.stockstatus || true,
-                    }),
-                  })
-                    .then((r) => {
-                      if (!r.ok) throw Error();
-                      return r.text();
+              const cartAnchor = container.querySelector("i.fa-cart-shopping")
+                ? container.querySelector("i.fa-cart-shopping").closest("a")
+                : null;
+              if (cartAnchor) {
+                const cartBtn = replaceAnchorWithButton(
+                  cartAnchor,
+                  "btn-add-to-cart",
+                  `Add ${prd.product_name} to cart`
+                );
+                if (cartBtn) {
+                  cartBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const user_id = getUserId();
+                    if (!user_id)
+                      return showBanner("Please log in first", "error");
+                    fetch(API_BASE + "/addcart", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        name: prd.product_name,
+                        price: prd.price,
+                        price_sale: prd.price_sale,
+                        image: prd.image,
+                        user_id,
+                        store: "default",
+                      }),
                     })
-                    .then(() => {
-                      heartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                      showBanner("Added to wishlist!", "success");
-                    })
-                    .catch(() =>
-                      showBanner("Failed to add to wishlist", "error")
-                    );
-                });
+                      .then((r) => {
+                        if (!r.ok) throw new Error("Add cart failed");
+                        return r.text();
+                      })
+                      .then(() => {
+                        cartBtn.innerHTML =
+                          '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+                        showBanner("Product added to cart!", "success");
+                      })
+                      .catch(() =>
+                        showBanner("Failed to add to cart", "error")
+                      );
+                  });
+                }
               }
 
-              const eyeIcon = container.querySelector("a.view-lightbox");
-              if (eyeIcon) {
-                eyeIcon.dataset.index = idx;
-                eyeIcon.addEventListener("click", (e) => {
+              const heartAnchor = container.querySelector("i.fa-heart")
+                ? container.querySelector("i.fa-heart").closest("a")
+                : null;
+              if (heartAnchor) {
+                const heartBtn = replaceAnchorWithButton(
+                  heartAnchor,
+                  "btn-add-to-wishlist",
+                  `Add ${prd.product_name} to wishlist`
+                );
+                if (heartBtn) {
+                  heartBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const user_id = getUserId();
+                    if (!user_id)
+                      return showBanner("Please log in first", "error");
+                    fetch(API_BASE + "/wishlistpost", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        user_id,
+                        product_name: prd.product_name,
+                        image: prd.image,
+                        store: "default",
+                        price: prd.price,
+                        price_sale: prd.price_sale,
+                        sku: prd.sku || prd.id || "",
+                        stockstatus: prd.stockstatus || true,
+                      }),
+                    })
+                      .then((r) => {
+                        if (!r.ok) throw new Error("Wishlist failed");
+                        return r.text();
+                      })
+                      .then(() => {
+                        heartBtn.innerHTML =
+                          '<i class="fa-solid fa-check" aria-hidden="true"></i>';
+                        showBanner("Added to wishlist!", "success");
+                      })
+                      .catch(() =>
+                        showBanner("Failed to add to wishlist", "error")
+                      );
+                  });
+                }
+              }
+
+              const eyeAnchor = container.querySelector("a.view-lightbox");
+              if (eyeAnchor) {
+                const imageUrl = makeUploadsUrl(prd.image || "");
+                eyeAnchor.href =
+                  imageUrl ||
+                  "/shop-details/" +
+                    encodeURIComponent(toSeoUrl(prd.product_name || ""));
+                eyeAnchor.setAttribute(
+                  "aria-label",
+                  `View ${prd.product_name} image preview`
+                );
+                eyeAnchor.dataset.index = idx;
+                eyeAnchor.addEventListener("click", (e) => {
+                  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)
+                    return;
                   e.preventDefault();
-                  openLightbox(Number(eyeIcon.dataset.index));
+                  openLightbox(Number(eyeAnchor.dataset.index || 0));
                 });
               }
 
@@ -2358,13 +2509,11 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        /* ====== CONFIG ====== */
         const API_BASE = "http://147.93.45.171:1600";
-        const UPLOADS_BASE = API_BASE + "/uploads/"; // backend uploads base
+        const UPLOADS_BASE = API_BASE + "/uploads/";
         const BLOG_API = API_BASE + "/blogpostdata";
         const MAX_FEATURE = 3;
 
-        /* ====== HELPERS ====== */
         function slugify(str) {
           return String(str || "")
             .toLowerCase()
@@ -2377,14 +2526,12 @@
         function makeAbsolute(u) {
           if (!u) return "";
           if (/^https?:\/\//i.test(u)) return u;
-          // if u starts with a slash, append to origin, else prefix slash
           return window.location.origin + (u.startsWith("/") ? u : "/" + u);
         }
 
         function withUploads(u) {
           if (!u) return "";
           u = String(u);
-          // If backend provided a full uploads URL, use it; otherwise build it.
           if (/^https?:\/\/.+\/uploads\//i.test(u)) return u;
           return UPLOADS_BASE + u.replace(/^\/+/, "");
         }
@@ -2416,7 +2563,6 @@
           document.head.appendChild(s);
         }
 
-        /* ====== FETCH POSTS ====== */
         fetch(BLOG_API)
           .then((res) => {
             if (!res.ok) throw new Error("Network response not ok");
@@ -2434,13 +2580,11 @@
             console.error("Failed to load blog posts:", err);
           });
 
-        /* ====== RENDERING ====== */
         function renderPosts(posts) {
           ensureSrOnlyStyle();
           const wrapper = document.getElementById("blog-wrapper");
           if (!wrapper) return;
 
-          // Build HTML safely, escaping titles/descriptions via stripTags
           wrapper.innerHTML = posts
             .map((p) => {
               const rawTitle = p.title || p.name || "Blog post";
@@ -2458,7 +2602,9 @@
                 : p.categories || "";
               const excerptRaw = p.excerpt || p.description || "";
               const excerpt = stripTags(excerptRaw).slice(0, 160).trim();
-              const readLabel = `Read: ${title}`;
+
+              const visibleCta = "Read More";
+              const srText = `Read: ${title}`;
 
               return `
 <div class="col-lg-4 col-md-6">
@@ -2468,7 +2614,7 @@
     <header class="post-thumb">
       <a href="${postUrl}" class="blog-link" data-id="${
                 p.id || ""
-              }" rel="bookmark" title="${title}" aria-label="${readLabel}">
+              }" rel="bookmark" title="${title}" aria-label="${srText}">
         <img src="${imgSrc}" alt="${title}" loading="lazy" itemprop="image" />
         <span class="sr-only">Read blog: ${title}</span>
       </a>
@@ -2497,10 +2643,13 @@
       </div>
 
       <div class="post-bottom">
-        <!-- Descriptive read link (not generic "Read More") so Lighthouse and screen readers get context -->
+        <!-- Visible text is "Read More" only. The hidden .sr-only contains the descriptive text for accessibility and SEO -->
         <a href="${postUrl}" class="read-more blog-link" data-id="${
                 p.id || ""
-              }" title="Read full article: ${title}">${readLabel} <i class="fa-regular fa-arrow-right"></i></a>
+              }" title="${srText}" aria-label="${srText}">
+          <span class="sr-only">Read: ${title}</span>
+          ${visibleCta} <i class="fa-regular fa-arrow-right" aria-hidden="true"></i>
+        </a>
       </div>
     </div>
   </article>
@@ -2509,7 +2658,6 @@
             })
             .join("");
 
-          // persist clicked post id for other pages (same as your original behavior)
           wrapper.addEventListener("click", (e) => {
             const link = e.target.closest(".blog-link");
             if (!link) return;
@@ -2518,7 +2666,6 @@
           });
         }
 
-        /* ====== JSON-LD for the featured posts (uses same /blog-details/ URLs) ====== */
         function addJsonLd(posts) {
           if (!Array.isArray(posts) || posts.length === 0) return;
 
@@ -2887,7 +3034,11 @@
               <div class="footer-img-wrap">
                 <span>Payment System:</span>
                 <div class="footer-img">
-                  <a href="javascript:void(0)"
+                  <a
+                    href="/"
+                    aria-label="Go to homepage"
+                    title="Go to homepage"
+                  >
                     ><img
                       src="https://avatars.mds.yandex.net/i?id=bec5b0beccb70346fc778cdb735d787bcd15343d-12937823-images-thumbs&n=13"
                       alt="img"
