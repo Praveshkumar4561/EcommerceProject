@@ -1046,424 +1046,341 @@
       </div>
     </section>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
 
-        Promise.all([
-          fetch("http://147.93.45.171:1600/productcatdata").then((res) =>
-            res.json()
-          ),
-          fetch("http://147.93.45.171:1600/productpagedata").then((res) =>
-            res.json()
-          ),
-        ])
-          .then(([rawCats, rawProds]) => {
-            const categories = Array.isArray(rawCats)
-              ? rawCats
-              : rawCats.categories || rawCats.data || [];
-            let products = Array.isArray(rawProds)
-              ? rawProds
-              : rawProds.products || rawProds.data || [];
 
-            const count1El = document.getElementById("product-count1");
-            const count2El = document.getElementById("product-count2");
-            if (count1El)
-              count1El.textContent = `${categories.length} categories`;
-            if (count2El) count2El.textContent = `${products.length} products`;
 
-            products = products
-              .filter((p) => p && p.date && !isNaN(new Date(p.date)))
-              .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            const productMainImages = products.map((p) => {
-              const imgs = (p && p.image ? String(p.image) : "")
-                .split(",")
-                .map((i) => i.trim())
-                .filter(Boolean);
-              return imgs[0] || "";
-            });
 
-            const imageLightbox = document.getElementById("image-lightbox");
-            const lightboxImg = document.getElementById("lightbox-image");
-            const counterEl = document.getElementById("lightbox-counter");
-            const btnPrev = document.getElementById("lightbox-prev");
-            const btnNext = document.getElementById("lightbox-next");
-            const btnClose = document.getElementById("lightbox-close");
 
-            let currentImages = [],
-              currentIndex = 0;
-            function openLightbox(idx) {
-              currentImages = productMainImages.slice();
-              currentIndex = Math.max(
-                0,
-                Math.min(idx, currentImages.length - 1)
-              );
-              updateLightbox();
-              if (imageLightbox) imageLightbox.style.display = "flex";
-            }
-            function updateLightbox() {
-              if (!currentImages.length || !lightboxImg || !counterEl) return;
-              lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
-              counterEl.textContent = `${currentIndex + 1} of ${
-                currentImages.length
-              }`;
-            }
-            [btnPrev, btnNext, btnClose].forEach((btn) => {
-              if (!btn) return;
-              btn.addEventListener("click", (e) => {
-                e.preventDefault();
-                if (btn === btnClose) {
-                  if (imageLightbox) imageLightbox.style.display = "none";
-                  currentImages = [];
-                  currentIndex = 0;
-                } else {
-                  currentIndex =
-                    btn === btnPrev
-                      ? (currentIndex - 1 + currentImages.length) %
-                        currentImages.length
-                      : (currentIndex + 1) % currentImages.length;
-                  updateLightbox();
-                }
-              });
-            });
 
-            function showBanner(msg, type = "success") {
-              const b = document.createElement("div");
-              b.className = `banner ${type}`;
-              b.textContent = msg;
-              Object.assign(b.style, {
-                position: "fixed",
-                top: "10px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                padding: "10px 20px",
-                background: type === "success" ? "#4caf50" : "#f44336",
-                color: "#fff",
-                borderRadius: "4px",
-                zIndex: 9999,
-                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-              });
-              document.body.appendChild(b);
-              setTimeout(() => b.remove(), 3000);
-            }
 
-            const wrapper = document.getElementById("product-wrapper");
-            if (!wrapper) {
-              console.warn("product-wrapper not found");
-              return;
-            }
-            wrapper.innerHTML = "";
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
 
-            products.forEach((product, idx) => {
-              const slide = document.createElement("div");
-              slide.className = "swiper-slide";
-              const img = productMainImages[idx] || "";
-              const safeName = product?.name
-                ? String(product.name).replace(/"/g, "&quot;")
-                : "";
-              const slug = (product.name || "")
-                .toLowerCase()
-                .trim()
-                .replace(/\s+/g, "-")
-                .replace(/[^a-z0-9-]/g, "");
+  // Fetch categories and products concurrently
+  Promise.all([
+    fetch("http://147.93.45.171:1600/productcatdata").then((res) => res.json()),
+    fetch("http://147.93.45.171:1600/productpagedata").then((res) => res.json())
+  ])
+  .then(([rawCats, rawProds]) => {
+    const categories = Array.isArray(rawCats) ? rawCats : rawCats.categories || rawCats.data || [];
+    let products = Array.isArray(rawProds) ? rawProds : rawProds.products || rawProds.data || [];
 
-              slide.innerHTML = `
-                  <div class="shop-item" data-product-id="${product.id}">
-                    <div class="shop-thumb">
-                      <div class="overlay"></div>
+    // Update category and product counts
+    const count1El = document.getElementById("product-count1");
+    const count2El = document.getElementById("product-count2");
+    if (count1El) count1El.textContent = `${categories.length} categories`;
+    if (count2El) count2El.textContent = `${products.length} products`;
 
-                      <a href="/shop-details/${slug}" class="product-link"
-                        data-id="${product.id}"
-                        data-name="${encodeURIComponent(product.name || "")}"
-                        aria-label="View details of ${safeName}">
-                        <img src="http://147.93.45.171:1600/uploads/${img}" alt="${safeName}" loading="lazy"
-                            onerror="this.onerror=null;"/>
-                      </a>
+    // Sort products by date descending
+    products = products.filter((p) => p && p.date && !isNaN(new Date(p.date)))
+                       .sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                      <span class="sale">${product.label || "New"}</span>
-                      <ul class="shop-list d-flex flex-column">
-                        <li>
-                          <a href="javascript:void(0)" data-action="add-to-cart" data-product-id="${
-                            product.id
-                          }"
-                            aria-label="Add ${safeName} to cart"
-                            data-name="${encodeURIComponent(
-                              product.name || ""
-                            )}"
-                            data-price="${product.price || ""}"
-                            data-price_sale="${product.price_sale || ""}"
-                            data-image="${encodeURIComponent(img || "")}"
-                            data-store="${product.store || "default"}">
-                            <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="javascript:void(0)" data-action="add-to-wishlist" data-product-id="${
-                            product.id
-                          }"
-                            aria-label="Add ${safeName} to wishlist"
-                            data-name="${encodeURIComponent(
-                              product.name || ""
-                            )}"
-                            data-image="${encodeURIComponent(img || "")}"
-                            data-store="${product.store || "default"}"
-                            data-price="${product.price || ""}"
-                            data-price_sale="${product.price_sale || ""}"
-                            data-sku="${product.sku || ""}"
-                            data-stockstatus="${
-                              product.stockstatus || "In Stock"
-                            }">
-                            <i class="fa-light fa-heart" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="javascript:void(0)" data-action="view-lightbox" data-product-id="${
-                            product.id
-                          }" data-index="${idx}"
-                            aria-label="View ${safeName} image preview">
-                            <i class="fa-light fa-eye" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="shop-content">
-                      <span class="category">${
-                        product.brand || "No Brand"
-                      }</span>
-                      <h3 class="title">
-                        <a href="/shop-details/${slug}" class="product-link"
-                          data-id="${product.id}"
-                          data-name="${encodeURIComponent(product.name || "")}"
-                          aria-label="View details of ${safeName}">
-                          ${safeName}
-                        </a>
-                      </h3>
-                      <div class="review-wrap">
-                        <ul class="review">
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                        </ul>
-                        <span>(${
-                          Math.floor(Math.random() * 100) + 1
-                        } Reviews)</span>
-                      </div>
-                      <div class="d-flex flex-row flex-nowrap">
-                        <span class="price">${product.price}</span>
-                        <span class="price_sale ms-2 text-decoration-line-through">
-                          ${product.price_sale}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                `;
-              wrapper.appendChild(slide);
-            });
+    // Extract main images
+    const productMainImages = products.map((p) => {
+      const imgs = (p?.image ? String(p.image) : "").split(",").map(i => i.trim()).filter(Boolean);
+      return imgs[0] || "";
+    });
 
-            wrapper.addEventListener("click", (e) => {
-              const actionBtn = e.target.closest("[data-action]");
-              if (actionBtn) {
-                e.preventDefault();
-                const action = actionBtn.dataset.action;
-                const productId = actionBtn.dataset.productId;
-                function updateAllInstances(updater) {
-                  document
-                    .querySelectorAll(
-                      `[data-product-id="${productId}"] [data-action="${action}"]`
-                    )
-                    .forEach(updater);
-                }
+    // Lightbox setup
+    const imageLightbox = document.getElementById("image-lightbox");
+    const lightboxImg = document.getElementById("lightbox-image");
+    const counterEl = document.getElementById("lightbox-counter");
+    const btnPrev = document.getElementById("lightbox-prev");
+    const btnNext = document.getElementById("lightbox-next");
+    const btnClose = document.getElementById("lightbox-close");
 
-                if (action === "add-to-cart") {
-                  const user_id = localStorage.getItem("user_id");
-                  if (!user_id)
-                    return showBanner("Please log in first", "error");
-                  const name = decodeURIComponent(actionBtn.dataset.name || "");
-                  const price = cleanPrice(actionBtn.dataset.price || "");
-                  const price_sale = cleanPrice(
-                    actionBtn.dataset.price_sale || ""
-                  );
-                  const image = decodeURIComponent(
-                    actionBtn.dataset.image || ""
-                  );
-                  const store = actionBtn.dataset.store || "default";
-                  fetch("http://147.93.45.171:1600/addcart", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      name,
-                      price,
-                      price_sale,
-                      image,
-                      user_id,
-                      store,
-                    }),
-                  })
-                    .then((r) => {
-                      if (!r.ok) throw Error();
-                      return r.text();
-                    })
-                    .then(() => {
-                      updateAllInstances(
-                        (el) =>
-                          (el.innerHTML = '<i class="fa-solid fa-check"></i>')
-                      );
-                      showBanner("Product added to cart!", "success");
-                    })
-                    .catch(() => showBanner("Failed to add to cart", "error"));
-                }
+    let currentImages = [], currentIndex = 0;
+    function openLightbox(idx) {
+      currentImages = productMainImages.slice();
+      currentIndex = Math.max(0, Math.min(idx, currentImages.length - 1));
+      updateLightbox();
+      if (imageLightbox) imageLightbox.style.display = "flex";
+    }
+    function updateLightbox() {
+      if (!currentImages.length || !lightboxImg || !counterEl) return;
+      lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
+      counterEl.textContent = `${currentIndex + 1} of ${currentImages.length}`;
+    }
 
-                if (action === "add-to-wishlist") {
-                  const user_id = localStorage.getItem("user_id");
-                  if (!user_id)
-                    return showBanner("Please log in first", "error");
-                  const name = decodeURIComponent(actionBtn.dataset.name || "");
-                  const image = decodeURIComponent(
-                    actionBtn.dataset.image || ""
-                  );
-                  const store = actionBtn.dataset.store || "default";
-                  const price = cleanPrice(actionBtn.dataset.price || "");
-                  const price_sale = cleanPrice(
-                    actionBtn.dataset.price_sale || ""
-                  );
-                  const sku = actionBtn.dataset.sku || "";
-                  const stockstatus =
-                    actionBtn.dataset.stockstatus || "In Stock";
-                  fetch("http://147.93.45.171:1600/wishlistpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      user_id,
-                      product_name: name,
-                      image,
-                      store,
-                      price,
-                      price_sale,
-                      sku,
-                      stockstatus,
-                    }),
-                  })
-                    .then((r) => {
-                      if (!r.ok) throw Error();
-                      return r.text();
-                    })
-                    .then(() => {
-                      updateAllInstances(
-                        (el) =>
-                          (el.innerHTML = '<i class="fa-solid fa-check"></i>')
-                      );
-                      showBanner("Added to wishlist!", "success");
-                    })
-                    .catch(() =>
-                      showBanner("Failed to add to wishlist", "error")
-                    );
-                }
-
-                if (action === "view-lightbox") {
-                  const idx = Number(actionBtn.dataset.index) || 0;
-                  openLightbox(idx);
-                }
-                return;
-              }
-
-              const productLink = e.target.closest(".product-link");
-              if (productLink) {
-                if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1)
-                  return;
-                e.preventDefault();
-                const pid = productLink.dataset.id;
-                const rawName = decodeURIComponent(
-                  productLink.dataset.name || ""
-                );
-                const slug = rawName
-                  .toLowerCase()
-                  .trim()
-                  .replace(/\s+/g, "-")
-                  .replace(/[^a-z0-9-]/g, "");
-                if (pid) localStorage.setItem("selectedProductId", pid);
-                window.location.href = `/shop-details/${slug}`;
-              }
-            });
-
-            const currencyRates = {
-              vdt: { symbol: "$", rate: 1 },
-              can: { symbol: "₹", rate: 83 },
-              uk: { symbol: "৳", rate: 108 },
-            };
-            const dropdown = document.querySelector(".nice-select.country");
-            if (dropdown) {
-              const display = dropdown.querySelector(".current");
-              const options = Array.from(dropdown.querySelectorAll(".option"));
-              let selected = localStorage.getItem("currency") || "vdt";
-              if (!currencyRates[selected]) selected = "vdt";
-              options.forEach((o) =>
-                o.classList.toggle("selected", o.dataset.value === selected)
-              );
-              if (display)
-                display.textContent =
-                  (options.find((o) => o.dataset.value === selected) || {})
-                    .textContent || display.textContent;
-              const parsePrice = (txt) =>
-                parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
-              const formatPrice = (num, key) =>
-                currencyRates[key].symbol + num.toFixed(2);
-              function normalizePrices() {
-                document
-                  .querySelectorAll(".price, .price_sale")
-                  .forEach((el) => {
-                    if (!el.dataset.basePrice)
-                      el.dataset.basePrice = parsePrice(el.textContent);
-                  });
-              }
-              function applyCurrency(key) {
-                document
-                  .querySelectorAll(".price, .price_sale")
-                  .forEach((el) => {
-                    const base = +el.dataset.basePrice;
-                    const converted =
-                      base *
-                      (currencyRates[key].rate / currencyRates["vdt"].rate);
-                    el.textContent = formatPrice(converted, key);
-                  });
-              }
-              normalizePrices();
-              applyCurrency(selected);
-              options.forEach((opt) => {
-                opt.addEventListener("click", () => {
-                  const key = opt.dataset.value;
-                  if (!currencyRates[key]) return;
-                  options.forEach((o) => o.classList.remove("selected"));
-                  opt.classList.add("selected");
-                  display.textContent = opt.textContent;
-                  localStorage.setItem("currency", key);
-                  applyCurrency(key);
-                });
-              });
-            }
-
-            if (typeof Swiper !== "undefined") {
-              new Swiper(".shop-carousel", {
-                slidesPerView: 4,
-                spaceBetween: 30,
-                loop: true,
-                navigation: { prevEl: ".shop-prev", nextEl: ".shop-next" },
-                breakpoints: {
-                  0: { slidesPerView: 1 },
-                  768: { slidesPerView: 2 },
-                  992: { slidesPerView: 3 },
-                  1200: { slidesPerView: 4 },
-                },
-              });
-            } else {
-              console.warn("Swiper not loaded");
-            }
-          })
-          .catch((err) => console.error("Error loading data:", err));
+    [btnPrev, btnNext, btnClose].forEach((btn) => {
+      if (!btn) return;
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (btn === btnClose) {
+          if (imageLightbox) imageLightbox.style.display = "none";
+          currentImages = [];
+          currentIndex = 0;
+        } else {
+          currentIndex = btn === btnPrev ? (currentIndex - 1 + currentImages.length) % currentImages.length
+                                         : (currentIndex + 1) % currentImages.length;
+          updateLightbox();
+        }
       });
-    </script>
+    });
+
+    // Banner notifications
+    function showBanner(msg, type = "success") {
+      const b = document.createElement("div");
+      b.className = `banner ${type}`;
+      b.textContent = msg;
+      Object.assign(b.style, {
+        position: "fixed",
+        top: "10px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        padding: "10px 20px",
+        background: type === "success" ? "#4caf50" : "#f44336",
+        color: "#fff",
+        borderRadius: "4px",
+        zIndex: 9999,
+        boxShadow: "0 2px 6px rgba(0,0,0,0.3)"
+      });
+      document.body.appendChild(b);
+      setTimeout(() => b.remove(), 3000);
+    }
+
+    // Render products
+    const wrapper = document.getElementById("product-wrapper");
+    if (!wrapper) return console.warn("product-wrapper not found");
+    wrapper.innerHTML = "";
+
+    products.forEach((product, idx) => {
+      const slide = document.createElement("div");
+      slide.className = "swiper-slide";
+
+      const img = productMainImages[idx] || "";
+      const safeName = product?.name ? String(product.name).replace(/"/g, "&quot;") : "";
+      const slug = (product.name || "").toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+
+      slide.innerHTML = `
+        <div class="shop-item" data-product-id="${product.id}">
+          <div class="shop-thumb">
+            <div class="overlay"></div>
+
+            <a href="/shop-details/${slug}" class="product-link" 
+               data-id="${product.id}" 
+               data-name="${encodeURIComponent(product.name || "")}" 
+               aria-label="View details of ${safeName}">
+              <img src="http://147.93.45.171:1600/uploads/${img}" alt="${safeName}" loading="lazy"
+                onerror="this.onerror=null;">
+            </a>
+
+            <span class="sale">${product.label || "New"}</span>
+            <ul class="shop-list d-flex flex-column">
+              <li>
+                <a href="/shop-details/${slug}" data-action="add-to-cart" data-product-id="${product.id}"
+                   data-name="${encodeURIComponent(product.name || "")}" data-price="${product.price || ""}"
+                   data-price_sale="${product.price_sale || ""}" data-image="${encodeURIComponent(img || "")}"
+                   data-store="${product.store || "default"}">
+                  <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop-details/${slug}" data-action="add-to-wishlist" data-product-id="${product.id}"
+                   data-name="${encodeURIComponent(product.name || "")}" data-image="${encodeURIComponent(img || "")}"
+                   data-store="${product.store || "default"}" data-price="${product.price || ""}"
+                   data-price_sale="${product.price_sale || ""}" data-sku="${product.sku || ""}"
+                   data-stockstatus="${product.stockstatus || "In Stock"}">
+                  <i class="fa-light fa-heart" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="#" data-action="view-lightbox" data-product-id="${product.id}" data-index="${idx}"
+                   aria-label="View ${safeName} image preview">
+                  <i class="fa-light fa-eye" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="shop-content">
+            <span class="category">${product.brand || "No Brand"}</span>
+            <h3 class="title">
+              <a href="/shop-details/${slug}" class="product-link"
+                 data-id="${product.id}"
+                 data-name="${encodeURIComponent(product.name || "")}"
+                 aria-label="View details of ${safeName}">
+                ${safeName}
+              </a>
+            </h3>
+            <div class="review-wrap">
+              <ul class="review">
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+              </ul>
+              <span>(${Math.floor(Math.random() * 100) + 1} Reviews)</span>
+            </div>
+            <div class="d-flex flex-row flex-nowrap">
+              <span class="price">${product.price}</span>
+              <span class="price_sale ms-2 text-decoration-line-through">${product.price_sale}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      wrapper.appendChild(slide);
+    });
+
+    // Handle click actions (cart, wishlist, lightbox, product link)
+    wrapper.addEventListener("click", (e) => {
+      const actionBtn = e.target.closest("[data-action]");
+      if (actionBtn) {
+        e.preventDefault();
+        const action = actionBtn.dataset.action;
+        const productId = actionBtn.dataset.productId;
+
+        function updateAllInstances(updater) {
+          document.querySelectorAll(`[data-product-id="${productId}"] [data-action="${action}"]`)
+                  .forEach(updater);
+        }
+
+        const user_id = localStorage.getItem("user_id");
+
+        if (action === "add-to-cart") {
+          if (!user_id) return showBanner("Please log in first", "error");
+          const name = decodeURIComponent(actionBtn.dataset.name || "");
+          const price = cleanPrice(actionBtn.dataset.price || "");
+          const price_sale = cleanPrice(actionBtn.dataset.price_sale || "");
+          const image = decodeURIComponent(actionBtn.dataset.image || "");
+          const store = actionBtn.dataset.store || "default";
+
+          fetch("http://147.93.45.171:1600/addcart", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, price, price_sale, image, user_id, store })
+          })
+          .then(r => { if (!r.ok) throw Error(); return r.text(); })
+          .then(() => {
+            updateAllInstances(el => el.innerHTML = '<i class="fa-solid fa-check"></i>');
+            showBanner("Product added to cart!", "success");
+          })
+          .catch(() => showBanner("Failed to add to cart", "error"));
+        }
+
+        if (action === "add-to-wishlist") {
+          if (!user_id) return showBanner("Please log in first", "error");
+          const name = decodeURIComponent(actionBtn.dataset.name || "");
+          const image = decodeURIComponent(actionBtn.dataset.image || "");
+          const store = actionBtn.dataset.store || "default";
+          const price = cleanPrice(actionBtn.dataset.price || "");
+          const price_sale = cleanPrice(actionBtn.dataset.price_sale || "");
+          const sku = actionBtn.dataset.sku || "";
+          const stockstatus = actionBtn.dataset.stockstatus || "In Stock";
+
+          fetch("http://147.93.45.171:1600/wishlistpost", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id, product_name: name, image, store, price, price_sale, sku, stockstatus })
+          })
+          .then(r => { if (!r.ok) throw Error(); return r.text(); })
+          .then(() => {
+            updateAllInstances(el => el.innerHTML = '<i class="fa-solid fa-check"></i>');
+            showBanner("Added to wishlist!", "success");
+          })
+          .catch(() => showBanner("Failed to add to wishlist", "error"));
+        }
+
+        if (action === "view-lightbox") {
+          const idx = Number(actionBtn.dataset.index) || 0;
+          openLightbox(idx);
+        }
+        return;
+      }
+
+      const productLink = e.target.closest(".product-link");
+      if (productLink) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+        e.preventDefault();
+        const pid = productLink.dataset.id;
+        const rawName = decodeURIComponent(productLink.dataset.name || "");
+        const slug = rawName.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+        if (pid) localStorage.setItem("selectedProductId", pid);
+        window.location.href = `/shop-details/${slug}`;
+      }
+    });
+
+    // Currency dropdown
+    const currencyRates = { vdt: { symbol: "$", rate: 1 }, can: { symbol: "₹", rate: 83 }, uk: { symbol: "৳", rate: 108 } };
+    const dropdown = document.querySelector(".nice-select.country");
+    if (dropdown) {
+      const display = dropdown.querySelector(".current");
+      const options = Array.from(dropdown.querySelectorAll(".option"));
+      let selected = localStorage.getItem("currency") || "vdt";
+      if (!currencyRates[selected]) selected = "vdt";
+      options.forEach(o => o.classList.toggle("selected", o.dataset.value === selected));
+      if (display) display.textContent = (options.find(o => o.dataset.value === selected) || {}).textContent || display.textContent;
+
+      const parsePrice = (txt) => parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
+      const formatPrice = (num, key) => currencyRates[key].symbol + num.toFixed(2);
+
+      function normalizePrices() {
+        document.querySelectorAll(".price, .price_sale").forEach(el => {
+          if (!el.dataset.basePrice) el.dataset.basePrice = parsePrice(el.textContent);
+        });
+      }
+
+      function applyCurrency(key) {
+        document.querySelectorAll(".price, .price_sale").forEach(el => {
+          const base = +el.dataset.basePrice;
+          const converted = base * (currencyRates[key].rate / currencyRates["vdt"].rate);
+          el.textContent = formatPrice(converted, key);
+        });
+      }
+
+      normalizePrices();
+      applyCurrency(selected);
+
+      options.forEach(opt => {
+        opt.addEventListener("click", () => {
+          const key = opt.dataset.value;
+          if (!currencyRates[key]) return;
+          options.forEach(o => o.classList.remove("selected"));
+          opt.classList.add("selected");
+          display.textContent = opt.textContent;
+          localStorage.setItem("currency", key);
+          applyCurrency(key);
+        });
+      });
+    }
+
+    // Initialize Swiper
+    if (typeof Swiper !== "undefined") {
+      new Swiper(".shop-carousel", {
+        slidesPerView: 4,
+        spaceBetween: 30,
+        loop: true,
+        navigation: { prevEl: ".shop-prev", nextEl: ".shop-next" },
+        breakpoints: { 0: { slidesPerView: 1 }, 768: { slidesPerView: 2 }, 992: { slidesPerView: 3 }, 1200: { slidesPerView: 4 } }
+      });
+    } else {
+      console.warn("Swiper not loaded");
+    }
+
+  })
+  .catch((err) => console.error("Error loading data:", err));
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <div
       id="image-lightbox"
@@ -2026,306 +1943,310 @@
       </div>
     </section>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        function getUserId() {
-          return localStorage.getItem("user_id") || null;
-        }
 
-        function toSeoUrl(str) {
-          return str
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w-]+/g, "");
-        }
 
-        let currentImages = [];
-        let currentIndex = 0;
 
-        const imageLightbox = document.getElementById("image-lightbox");
-        const lightboxImg = document.getElementById("lightbox-image");
-        const counterEl = document.getElementById("lightbox-counter");
-        const btnPrev = document.getElementById("lightbox-prev");
-        const btnNext = document.getElementById("lightbox-next");
-        const btnClose = document.getElementById("lightbox-close");
-        const flashExpiryEl = document.getElementById("flash-expiry");
 
-        function openLightbox(index) {
-          if (!window.productMainImages || !window.productMainImages.length)
-            return;
-          currentImages = window.productMainImages.slice();
-          currentIndex = index;
-          updateLightbox();
-          if (imageLightbox) imageLightbox.style.display = "flex";
-        }
 
-        function updateLightbox() {
-          if (!currentImages.length || !lightboxImg || !counterEl) return;
-          lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
-          counterEl.textContent = `${currentIndex + 1} of ${
-            currentImages.length
-          }`;
-        }
 
-        if (btnPrev && btnNext && btnClose) {
-          btnPrev.addEventListener("click", () => {
-            if (!currentImages.length) return;
-            currentIndex =
-              (currentIndex - 1 + currentImages.length) % currentImages.length;
-            updateLightbox();
-          });
-          btnNext.addEventListener("click", () => {
-            if (!currentImages.length) return;
-            currentIndex = (currentIndex + 1) % currentImages.length;
-            updateLightbox();
-          });
-          btnClose.addEventListener("click", () => {
-            if (imageLightbox) imageLightbox.style.display = "none";
-            currentImages = [];
-            currentIndex = 0;
-          });
-        }
 
-        function showBanner(msg, type = "success") {
-          const b = document.createElement("div");
-          b.className = `banner ${type}`;
-          b.textContent = msg;
-          Object.assign(b.style, {
-            position: "fixed",
-            top: "10px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            padding: "10px 20px",
-            background: type === "success" ? "#4caf50" : "#f44336",
-            color: "#fff",
-            borderRadius: "4px",
-            zIndex: 9999,
-            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-          });
-          document.body.appendChild(b);
-          setTimeout(() => b.remove(), 3000);
-        }
 
-        function formatPrice(price) {
-          const p = parseFloat(price);
-          return isNaN(p) ? "$0.01" : `$${p.toFixed(2)}`;
-        }
 
-        function getRandomStars() {
-          return Math.floor(Math.random() * 2) + 4;
-        }
 
-        function getRandomReviews() {
-          return Math.floor(Math.random() * 100) + 1;
-        }
 
-        fetch("http://147.93.45.171:1600/flashsalesmaindata")
-          .then((res) => res.json())
-          .then((data) => {
-            const dealWrapper = document.getElementById(
-              "deal-products-wrapper"
-            );
-            if (!dealWrapper) return;
 
-            if (!Array.isArray(data) || data.length === 0) {
-              dealWrapper.innerHTML =
-                '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
-              return;
-            }
 
-            const grouped = data.reduce((acc, item) => {
-              (acc[item.flashsale_id] = acc[item.flashsale_id] || []).push(
-                item
-              );
-              return acc;
-            }, {});
 
-            const saleIds = Object.keys(grouped);
-            if (saleIds.length === 0) {
-              dealWrapper.innerHTML =
-                '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
-              return;
-            }
 
-            const firstSaleId = saleIds[0];
-            const products = grouped[firstSaleId].slice(0, 2);
 
-            const endDates = products.map((p) => new Date(p.end_date));
-            const latestEndDate = new Date(Math.max(...endDates));
-            if (flashExpiryEl) {
-              const options = {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              };
-              flashExpiryEl.innerHTML = `Limited Time offer. The Deal will expire <br />${latestEndDate.toLocaleDateString(
-                "en-US",
-                options
-              )}`;
-            }
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  function getUserId() {
+    return localStorage.getItem("user_id") || null;
+  }
 
-            const firstDealShop = dealWrapper.querySelector(".deal-shop");
-            if (!firstDealShop) return;
-            const templateCard =
-              firstDealShop.closest(".col-md-6") || firstDealShop.parentElement;
-            if (!templateCard) return;
+  function toSeoUrl(str) {
+    return str
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]+/g, "");
+  }
 
-            Array.from(dealWrapper.querySelectorAll(".col-md-6")).forEach(
-              (col) => {
-                if (col.querySelector(".deal-shop")) col.remove();
-              }
-            );
+  let currentImages = [];
+  let currentIndex = 0;
 
-            window.productMainImages = products.map(
-              (p) => p.image || "placeholder.jpg"
-            );
+  const imageLightbox = document.getElementById("image-lightbox");
+  const lightboxImg = document.getElementById("lightbox-image");
+  const counterEl = document.getElementById("lightbox-counter");
+  const btnPrev = document.getElementById("lightbox-prev");
+  const btnNext = document.getElementById("lightbox-next");
+  const btnClose = document.getElementById("lightbox-close");
+  const flashExpiryEl = document.getElementById("flash-expiry");
 
-            products.forEach((prd, idx) => {
-              const container = templateCard.cloneNode(true);
+  function openLightbox(index) {
+    if (!window.productMainImages || !window.productMainImages.length)
+      return;
+    currentImages = window.productMainImages.slice();
+    currentIndex = index;
+    updateLightbox();
+    if (imageLightbox) imageLightbox.style.display = "flex";
+  }
 
-              const img = container.querySelector(".shop-thumb img");
-              if (img) {
-                img.src = `http://147.93.45.171:1600/uploads/${prd.image}`;
-                img.alt = prd.product_name || "";
-                if (img.parentElement)
-                  img.parentElement.href = `/shop-details/${toSeoUrl(
-                    prd.product_name
-                  )}`;
-              }
+  function updateLightbox() {
+    if (!currentImages.length || !lightboxImg || !counterEl) return;
+    lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
+    counterEl.textContent = `${currentIndex + 1} of ${currentImages.length}`;
+  }
 
-              const badge = container.querySelector(".shop-thumb .sale");
-              if (badge)
-                badge.textContent = prd.price_sale
-                  ? prd.label || "Sale"
-                  : "New";
+  if (btnPrev && btnNext && btnClose) {
+    btnPrev.addEventListener("click", () => {
+      if (!currentImages.length) return;
+      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+      updateLightbox();
+    });
+    btnNext.addEventListener("click", () => {
+      if (!currentImages.length) return;
+      currentIndex = (currentIndex + 1) % currentImages.length;
+      updateLightbox();
+    });
+    btnClose.addEventListener("click", () => {
+      if (imageLightbox) imageLightbox.style.display = "none";
+      currentImages = [];
+      currentIndex = 0;
+    });
+  }
 
-              const categoryEl = container.querySelector(
-                ".shop-content .category"
-              );
-              if (categoryEl) categoryEl.textContent = prd.brand || "";
+  function showBanner(msg, type = "success") {
+    const b = document.createElement("div");
+    b.className = `banner ${type}`;
+    b.textContent = msg;
+    Object.assign(b.style, {
+      position: "fixed",
+      top: "10px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      padding: "10px 20px",
+      background: type === "success" ? "#4caf50" : "#f44336",
+      color: "#fff",
+      borderRadius: "4px",
+      zIndex: 9999,
+      boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+    });
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), 3000);
+  }
 
-              const titleLink = container.querySelector(
-                ".shop-content .title a"
-              );
-              if (titleLink) {
-                titleLink.textContent = prd.product_name || "";
-                titleLink.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
-                titleLink.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  window.location.href = `/shop-details/${toSeoUrl(
-                    prd.product_name
-                  )}`;
-                });
-              }
+  function formatPrice(price) {
+    const p = parseFloat(price);
+    return isNaN(p) ? "$0.01" : `$${p.toFixed(2)}`;
+  }
 
-              const priceEl = container.querySelector(".shop-content .price");
-              if (priceEl) {
-                if (prd.price_sale && prd.price_sale !== prd.price) {
-                  priceEl.innerHTML = `<span class="offer">${prd.price}</span>`;
-                } else {
-                  priceEl.textContent = prd.price;
-                }
-              }
+  function getRandomStars() {
+    return Math.floor(Math.random() * 2) + 4;
+  }
 
-              const reviewStars = container.querySelector(
-                ".review-wrap .review"
-              );
-              const reviewCount = container.querySelector("#review-count");
-              if (reviewStars && reviewCount) {
-                const stars = getRandomStars();
-                reviewStars.innerHTML = "";
-                for (let i = 0; i < 5; i++) {
-                  const iconClass =
-                    i < stars ? "fa-solid fa-star" : "fa-regular fa-star";
-                  reviewStars.innerHTML += `<li><i class="${iconClass}"></i></li>`;
-                }
-                reviewCount.textContent = `(${getRandomReviews()} Reviews)`;
-              }
+  function getRandomReviews() {
+    return Math.floor(Math.random() * 100) + 1;
+  }
 
-              const cartBtn = container
-                .querySelector("i.fa-cart-shopping")
-                ?.closest("a");
-              if (cartBtn) {
-                cartBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const user_id = getUserId();
-                  if (!user_id)
-                    return showBanner("Please log in first", "error");
-                  fetch("http://147.93.45.171:1600/addcart", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      name: prd.product_name,
-                      price: prd.price,
-                      price_sale: prd.price_sale,
-                      image: prd.image,
-                      user_id,
-                      store: "default",
-                    }),
-                  })
-                    .then((r) => r.text())
-                    .then(() => {
-                      cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                      showBanner("Product added to cart!", "success");
-                    })
-                    .catch(() => showBanner("Failed to add to cart", "error"));
-                });
-              }
+  fetch("http://147.93.45.171:1600/flashsalesmaindata")
+    .then((res) => res.json())
+    .then((data) => {
+      const dealWrapper = document.getElementById("deal-products-wrapper");
+      if (!dealWrapper) return;
 
-              const heartBtn = container
-                .querySelector("i.fa-heart")
-                ?.closest("a");
-              if (heartBtn) {
-                heartBtn.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  const user_id = getUserId();
-                  if (!user_id)
-                    return showBanner("Please log in first", "error");
-                  fetch("http://147.93.45.171:1600/wishlistpost", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      user_id,
-                      product_name: prd.product_name,
-                      image: prd.image,
-                      store: "default",
-                      price: prd.price,
-                      price_sale: prd.price_sale,
-                      sku: prd.sku || prd.id || "",
-                      stockstatus: prd.stockstatus || true,
-                    }),
-                  })
-                    .then((r) => {
-                      if (!r.ok) throw Error();
-                      return r.text();
-                    })
-                    .then(() => {
-                      heartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                      showBanner("Added to wishlist!", "success");
-                    })
-                    .catch(() =>
-                      showBanner("Failed to add to wishlist", "error")
-                    );
-                });
-              }
+      if (!Array.isArray(data) || data.length === 0) {
+        dealWrapper.innerHTML =
+          '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
+        return;
+      }
 
-              const eyeIcon = container.querySelector("a.view-lightbox");
-              if (eyeIcon) {
-                eyeIcon.dataset.index = idx;
-                eyeIcon.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  openLightbox(Number(eyeIcon.dataset.index));
-                });
-              }
+      const grouped = data.reduce((acc, item) => {
+        (acc[item.flashsale_id] = acc[item.flashsale_id] || []).push(item);
+        return acc;
+      }, {});
 
-              dealWrapper.appendChild(container);
-            });
-          })
-          .catch((err) => {
-            console.error("Error loading flash sale data:", err);
-          });
+      const saleIds = Object.keys(grouped);
+      if (saleIds.length === 0) {
+        dealWrapper.innerHTML =
+          '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
+        return;
+      }
+
+      const firstSaleId = saleIds[0];
+      const products = grouped[firstSaleId].slice(0, 2);
+
+      const endDates = products.map((p) => new Date(p.end_date));
+      const latestEndDate = new Date(Math.max(...endDates));
+      if (flashExpiryEl) {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        flashExpiryEl.innerHTML = `Limited Time offer. The Deal will expire <br />${latestEndDate.toLocaleDateString(
+          "en-US",
+          options
+        )}`;
+      }
+
+      const firstDealShop = dealWrapper.querySelector(".deal-shop");
+      if (!firstDealShop) return;
+      const templateCard = firstDealShop.closest(".col-md-6") || firstDealShop.parentElement;
+      if (!templateCard) return;
+
+      Array.from(dealWrapper.querySelectorAll(".col-md-6")).forEach((col) => {
+        if (col.querySelector(".deal-shop")) col.remove();
       });
-    </script>
+
+      window.productMainImages = products.map((p) => p.image || "placeholder.jpg");
+
+      products.forEach((prd, idx) => {
+        const container = templateCard.cloneNode(true);
+
+        const img = container.querySelector(".shop-thumb img");
+        if (img) {
+          img.src = `http://147.93.45.171:1600/uploads/${prd.image}`;
+          img.alt = prd.product_name || "";
+          if (img.parentElement) {
+            img.parentElement.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
+          }
+        }
+
+        const badge = container.querySelector(".shop-thumb .sale");
+        if (badge) badge.textContent = prd.price_sale ? prd.label || "Sale" : "New";
+
+        const categoryEl = container.querySelector(".shop-content .category");
+        if (categoryEl) categoryEl.textContent = prd.brand || "";
+
+        const titleLink = container.querySelector(".shop-content .title a");
+        if (titleLink) {
+          titleLink.textContent = prd.product_name || "";
+          titleLink.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
+          titleLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            window.location.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
+          });
+        }
+
+        const priceEl = container.querySelector(".shop-content .price");
+        if (priceEl) {
+          if (prd.price_sale && prd.price_sale !== prd.price) {
+            priceEl.innerHTML = `<span class="offer">${prd.price}</span>`;
+          } else {
+            priceEl.textContent = prd.price;
+          }
+        }
+
+        const reviewStars = container.querySelector(".review-wrap .review");
+        const reviewCount = container.querySelector("#review-count");
+        if (reviewStars && reviewCount) {
+          const stars = getRandomStars();
+          reviewStars.innerHTML = "";
+          for (let i = 0; i < 5; i++) {
+            const iconClass = i < stars ? "fa-solid fa-star" : "fa-regular fa-star";
+            reviewStars.innerHTML += `<li><i class="${iconClass}"></i></li>`;
+          }
+          reviewCount.textContent = `(${getRandomReviews()} Reviews)`;
+        }
+
+        const cartBtn = container.querySelector("i.fa-cart-shopping")?.closest("a");
+        if (cartBtn) {
+          cartBtn.href = `/shop-details/${toSeoUrl(prd.product_name)}#add-to-cart`;
+          cartBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const user_id = getUserId();
+            if (!user_id) return showBanner("Please log in first", "error");
+            fetch("http://147.93.45.171:1600/addcart", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: prd.product_name,
+                price: prd.price,
+                price_sale: prd.price_sale,
+                image: prd.image,
+                user_id,
+                store: "default",
+              }),
+            })
+              .then((r) => r.text())
+              .then(() => {
+                cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                showBanner("Product added to cart!", "success");
+              })
+              .catch(() => showBanner("Failed to add to cart", "error"));
+          });
+        }
+
+        const heartBtn = container.querySelector("i.fa-heart")?.closest("a");
+        if (heartBtn) {
+          heartBtn.href = `/shop-details/${toSeoUrl(prd.product_name)}#wishlist`;
+          heartBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const user_id = getUserId();
+            if (!user_id) return showBanner("Please log in first", "error");
+            fetch("http://147.93.45.171:1600/wishlistpost", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id,
+                product_name: prd.product_name,
+                image: prd.image,
+                store: "default",
+                price: prd.price,
+                price_sale: prd.price_sale,
+                sku: prd.sku || prd.id || "",
+                stockstatus: prd.stockstatus || true,
+              }),
+            })
+              .then((r) => {
+                if (!r.ok) throw Error();
+                return r.text();
+              })
+              .then(() => {
+                heartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                showBanner("Added to wishlist!", "success");
+              })
+              .catch(() => showBanner("Failed to add to wishlist", "error"));
+          });
+        }
+
+        const eyeIcon = container.querySelector("a.view-lightbox");
+        if (eyeIcon) {
+          // Use real image URL for SEO
+          eyeIcon.href = `/shop-details/${toSeoUrl(prd.product_name)}#image-${idx}`;
+          eyeIcon.dataset.index = idx;
+          eyeIcon.addEventListener("click", (e) => {
+            e.preventDefault();
+            openLightbox(Number(eyeIcon.dataset.index));
+          });
+        }
+
+        dealWrapper.appendChild(container);
+      });
+    })
+    .catch((err) => {
+      console.error("Error loading flash sale data:", err);
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <section class="blog-section pb-100">
       <div class="container">
