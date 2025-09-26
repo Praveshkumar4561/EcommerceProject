@@ -1020,9 +1020,8 @@
           if (!path) return "";
           if (/^https?:\/\//i.test(path)) return path;
           if (!/^\/?uploads\//i.test(path))
-            path =
-              "http://147.93.45.171:1600/uploads/" + path.replace(/^\/+/, "");
-          return window.location.origin + path;
+            path = "uploads/" + path.replace(/^\/+/, "");
+          return "http://147.93.45.171:1600/" + path.replace(/^\/+/, "");
         }
 
         function stripHtml(s) {
@@ -1042,6 +1041,7 @@
           const year = d.getFullYear();
           return `${day}${getOrdinal(day)} ${month}, ${year}`;
         }
+
         function getOrdinal(n) {
           if (n > 3 && n < 21) return "th";
           switch (n % 10) {
@@ -1056,15 +1056,13 @@
           }
         }
 
-        function getRequestedSlug() {
-          try {
-            const path = window.location.pathname || "";
-            const prefix = "/blog-details/";
-            if (path.toLowerCase().startsWith(prefix)) {
-              const raw = path.substring(prefix.length);
-              if (raw) return decodeURIComponent(raw.replace(/^\/+|\/+$/g, ""));
-            }
-          } catch (e) {}
+        function getRequestedSlugOrId() {
+          const path = window.location.pathname || "";
+          const prefix = "/blog-details/";
+          if (path.toLowerCase().startsWith(prefix)) {
+            const raw = path.substring(prefix.length).replace(/^\/+|\/+$/g, "");
+            if (raw) return decodeURIComponent(raw);
+          }
           try {
             const sp = sessionStorage.getItem("selectedPostPermalink");
             if (sp) {
@@ -1076,7 +1074,7 @@
             const id = sessionStorage.getItem("selectedPostId");
             if (id) {
               sessionStorage.removeItem("selectedPostId");
-              return String(id);
+              return id;
             }
           } catch (e) {}
           return null;
@@ -1094,52 +1092,43 @@
           return;
         }
 
-        const requested = getRequestedSlug();
+        const requested = getRequestedSlugOrId();
 
-        const findPost = (key) => {
+        function findPost(key) {
           if (!key) return null;
-          const rawLower = (key || "").toString().trim().toLowerCase();
-
-          if (/^\d+$/.test(rawLower)) {
-            const found = posts.find((p) => String(p.id) === rawLower);
-            if (found) return found;
+          const lower = key.toString().trim().toLowerCase();
+          if (/^\d+$/.test(lower)) {
+            const byId = posts.find((p) => String(p.id) === lower);
+            if (byId) return byId;
           }
-
           const byPermalink = posts.find((p) => {
-            const pPerm = (p.permalink || p.slug || "")
+            const slug = (p.permalink || p.slug || p.name || "")
               .toString()
               .trim()
               .toLowerCase();
-            if (pPerm && pPerm === rawLower) return true;
-            const normKey = rawLower.replace(/[-_\s%20]+/g, "");
-            const normPerm = (pPerm || "").replace(/[-_\s%20]+/g, "");
-            return normPerm && normPerm === normKey;
+            return (
+              slug === lower ||
+              slug.replace(/[-_\s%20]+/g, "") ===
+                lower.replace(/[-_\s%20]+/g, "")
+            );
           });
           if (byPermalink) return byPermalink;
-
           const byName = posts.find(
-            (p) => (p.name || "").toString().trim().toLowerCase() === rawLower
+            (p) => (p.name || "").toString().trim().toLowerCase() === lower
           );
           if (byName) return byName;
-
           return null;
-        };
-
-        let post = null;
-        if (requested) {
-          post = findPost(requested);
-        }
-        if (!post) {
-          post = posts[0] || null;
         }
 
+        let post = requested ? findPost(requested) : null;
+        if (!post) post = posts[0] || null; 
         if (!post) {
-          console.error("No blog posts available");
+          console.error("No blog post found");
           return;
         }
 
         const mainImg = document.querySelector(".blog-details-img img");
-        if (mainImg) mainImg.src = makeUploadsUrl(post.image || "");
+        if (mainImg) mainImg.src = makeUploadsUrl(post.image);
 
         const titleEl = document.querySelector(
           ".blog-details-content .details-title"
@@ -1159,16 +1148,11 @@
           }`;
 
         const tagListItems = document.querySelectorAll(".tag-list li");
-        if (tagListItems && tagListItems.length) {
+        if (tagListItems.length) {
           const tagText = post.tags || "";
-          if (tagListItems[1])
-            tagListItems[1].innerHTML = `<a href="/blog-grid?tag=${encodeURIComponent(
-              tagText
-            )}">${tagText}</a>`;
-          else if (tagListItems[0])
-            tagListItems[0].innerHTML = `<a href="/blog-grid?tag=${encodeURIComponent(
-              tagText
-            )}">${tagText}</a>`;
+          tagListItems[0].innerHTML = `<a href="/blog-grid?tag=${encodeURIComponent(
+            tagText
+          )}">${tagText}</a>`;
         }
 
         const contentWrap = document.querySelector(".blog-details-content");
@@ -1194,18 +1178,17 @@
 
         try {
           let canonical = document.head.querySelector('link[rel="canonical"]');
-          const canonicalHref =
-            window.location.origin +
-            "/blog-details/" +
-            encodeURIComponent(
-              post.permalink || post.slug || post.id || post.name
-            );
           if (!canonical) {
             canonical = document.createElement("link");
             canonical.rel = "canonical";
             document.head.appendChild(canonical);
           }
-          canonical.href = canonicalHref;
+          canonical.href =
+            window.location.origin +
+            "/blog-details/" +
+            encodeURIComponent(
+              post.permalink || post.slug || post.id || post.name
+            );
         } catch (e) {}
 
         try {
@@ -1234,7 +1217,6 @@
             },
             image: makeUploadsUrl(post.image || ""),
           };
-
           let schemaScript = document.getElementById("blogpost-schema");
           if (!schemaScript) {
             schemaScript = document.createElement("script");
