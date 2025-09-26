@@ -358,7 +358,9 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="/uploads/${p.image || ""}"
+                                <img src="http://147.93.45.171:1600/uploads/${
+                                  p.image || ""
+                                }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
                                     style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                                 <div>
@@ -653,7 +655,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="/uploads/${
+                      <img src="http://147.93.45.171:1600/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -724,7 +726,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("/uploads/", ""),
+                      .replace("http://147.93.45.171:1600/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1156,7 +1158,7 @@
                     <a href="#" class="remove" data-id="${item.id}">&times;</a>
                   </td>
                   <td class="product-thumbnail">
-                    <a href="/"><img width="57" height="70" src="/uploads/${
+                    <a href="/"><img width="57" height="70" src="http://147.93.45.171:1600/uploads/${
                       item.image
                     }" alt="${item.name}"></a>
                   </td>

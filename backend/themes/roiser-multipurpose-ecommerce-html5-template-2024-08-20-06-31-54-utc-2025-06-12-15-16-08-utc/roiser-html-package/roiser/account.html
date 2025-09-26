@@ -52,7 +52,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `/uploads/${
+            const url = `http://147.93.45.171:1600/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -80,8 +80,11 @@
 
         function withUploads(u) {
           if (!u) return u;
-          if (u.startsWith("/uploads/")) return makeAbsolute(u);
-          return makeAbsolute("/uploads/" + u.replace(/^\/+/, ""));
+          if (u.startsWith("http://147.93.45.171:1600/uploads/"))
+            return makeAbsolute(u);
+          return makeAbsolute(
+            "http://147.93.45.171:1600/uploads/" + u.replace(/^\/+/, "")
+          );
         }
 
         function toSlug(str = "") {

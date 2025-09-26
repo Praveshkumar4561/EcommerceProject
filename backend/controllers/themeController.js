@@ -432,8 +432,8 @@ exports.listThemes = async (_req, res) => {
   try {
     const [rows] = await db.query(`
       SELECT 
-        id, 
-        name, 
+        id,
+        name,
         folder_name as folderName,
         is_active as isActive,
         uploaded_at as createdAt,

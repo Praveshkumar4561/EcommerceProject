@@ -101,7 +101,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `/uploads/${
+            const url = `http://147.93.45.171:1600/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -129,8 +129,11 @@
 
         function withUploads(u) {
           if (!u) return u;
-          if (u.startsWith("/uploads/")) return makeAbsolute(u);
-          return makeAbsolute("/uploads/" + u.replace(/^\/+/, ""));
+          if (u.startsWith("http://147.93.45.171:1600/uploads/"))
+            return makeAbsolute(u);
+          return makeAbsolute(
+            "http://147.93.45.171:1600/uploads/" + u.replace(/^\/+/, "")
+          );
         }
 
         function toSlug(str = "") {
@@ -1192,7 +1195,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          const BASE_IMAGE_URL = "/uploads/";
+          const BASE_IMAGE_URL = "http://147.93.45.171:1600/uploads/";
 
           const sliderContainer = document.querySelector(
             ".category-slider-one"
@@ -1365,7 +1368,7 @@
                 }
 
                 const imgEl = slot.querySelector(".banner-img img");
-                imgEl.src = `/uploads/${item.image}`;
+                imgEl.src = `http://147.93.45.171:1600/uploads/${item.image}`;
                 imgEl.alt = item.product_name;
 
                 const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
@@ -1420,7 +1423,7 @@
           }
 
           const imgEl2 = document.querySelector(".deal-img img");
-          imgEl2.src = `/uploads/${sale.image}`;
+          imgEl2.src = `http://147.93.45.171:1600/uploads/${sale.image}`;
           imgEl2.alt = sale.product_name;
 
           const subHeading = document.querySelector(
@@ -1657,10 +1660,9 @@
       <div class="product-item style-one mb-40" data-aos="fade-up">
         <div class="product-thumbnail">
           <a href="/shop-details/${slug}" class="w-100 h-100">
-            <img src="/uploads/${p.image || ""}" alt="${(p.name || "").replace(
-              /"/g,
-              ""
-            )}">
+            <img src="http://147.93.45.171:1600/uploads/${
+              p.image || ""
+            }" alt="${(p.name || "").replace(/"/g, "")}">
           </a>
           <div class="discount">${p.label || ""}</div>
           <div class="hover-content">
@@ -1675,7 +1677,7 @@
               <i class="fa fa-heart"></i>
             </a>
 
-            <a href="javascript:void(0)" class="img-popup icon-btn" data-img="/uploads/${
+            <a href="javascript:void(0)" class="img-popup icon-btn" data-img="http://147.93.45.171:1600/uploads/${
               p.image || ""
             }">
               <i class="fa fa-eye"></i>
@@ -1811,7 +1813,9 @@
           }" data-price="${price}" data-qty="${qty}">
             <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
             <a href="/shop-details/${slug}">
-              <img src="/uploads/${item.image}" alt="${item.name}"/>
+              <img src="http://147.93.45.171:1600/uploads/${item.image}" alt="${
+                    item.name
+                  }"/>
               ${item.name}
             </a>
             <span class="quantity">
@@ -2475,7 +2479,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          const BASE_IMAGE_URL = "/uploads/";
+          const BASE_IMAGE_URL = "http://147.93.45.171:1600/uploads/";
 
           const sliderContainer = document.querySelector(
             ".testimonial-slider-one"
@@ -2995,7 +2999,7 @@
           const str = String(img).trim();
           if (/^https?:\/\//i.test(str)) return str;
           if (str.startsWith("/")) return str;
-          return "/uploads/" + encodeURIComponent(str);
+          return "http://147.93.45.171:1600/uploads/" + encodeURIComponent(str);
         };
 
         let posts;
@@ -3293,7 +3297,7 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="/uploads/${p.image}" 
+                  <img src="http://147.93.45.171:1600/uploads/${p.image}" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
@@ -3348,7 +3352,7 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const uploadPath = `/uploads/${logoUrl}`;
+          const uploadPath = `http://147.93.45.171:1600/uploads/${logoUrl}`;
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),

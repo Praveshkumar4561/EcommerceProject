@@ -24,7 +24,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://srv689968.hstgr.cloud/"],
+    origin: ["http://srv689968.hstgr.cloud","http://147.93.45.171:1600"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,

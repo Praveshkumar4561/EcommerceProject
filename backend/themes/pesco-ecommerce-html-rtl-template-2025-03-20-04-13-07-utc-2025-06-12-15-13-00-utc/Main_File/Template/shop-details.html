@@ -1068,7 +1068,7 @@
                       "beforeend",
                       `<div class="product-img">
                         <a href="#" class="img-popup">
-                          <img src="/uploads/${clean}" alt="${(
+                          <img src="http://147.93.45.171:1600/uploads/${clean}" alt="${(
                         currentProduct.name || ""
                       ).replace(/"/g, "&quot;")}">
                         </a>
@@ -1079,7 +1079,7 @@
                     thumbSlider.insertAdjacentHTML(
                       "beforeend",
                       `<div class="product-img">
-                        <img src="/uploads/${clean}" alt="${(
+                        <img src="http://147.93.45.171:1600/uploads/${clean}" alt="${(
                         currentProduct.name || ""
                       ).replace(/"/g, "&quot;")}">
                       </div>`
@@ -1459,7 +1459,7 @@
                     <div class="pesco-reviews-item">
                       <div class="author-thumb-info">
                         <div class="author-thumb">
-                          <img src="https://liccar.com/wp-content/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png" alt="Author">
+                          <img src="https://liccar.com/wp-contenthttp://147.93.45.171:1600/uploads/png-transparent-head-the-dummy-avatar-man-tie-jacket-user.png" alt="Author">
                         </div>
                         <div class="author-info">
                           <h5>${(r.user_name || "").replace(/</g, "&lt;")}</h5>
@@ -1519,7 +1519,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          const BASE_IMAGE_URL = "/uploads/";
+          const BASE_IMAGE_URL = "http://147.93.45.171:1600/uploads/";
           const sliderContainer = document.querySelector(
             ".releted-product-slider"
           );
@@ -2482,7 +2482,9 @@
                 <a href="/blog-details/${encodeURIComponent(
                   slug
                 )}" class="w-100 h-100">
-                  <img src="/uploads/${post.image}" alt="${post.name}" />
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    post.image
+                  }" alt="${post.name}" />
                 </a>
               </div>
               <div class="content">
@@ -2570,7 +2572,7 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="/uploads/${p.image}" 
+                  <img src="http://147.93.45.171:1600/uploads/${p.image}" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
@@ -2625,7 +2627,7 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const uploadPath = `/uploads/${logoUrl}`;
+          const uploadPath = `http://147.93.45.171:1600/uploads/${logoUrl}`;
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),

@@ -446,7 +446,9 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="/uploads/${p.image || ""}"
+                                <img src="http://147.93.45.171:1600/uploads/${
+                                  p.image || ""
+                                }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
                                     style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                                 <div>
@@ -740,7 +742,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="/uploads/${
+                      <img src="http://147.93.45.171:1600/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -811,7 +813,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("/uploads/", ""),
+                      .replace("http://147.93.45.171:1600/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1822,7 +1824,9 @@
               <div class="post-nav__item tx-post ul_li">
                 <div class="post-thumb">
                   <a href="">
-                    <img src="/uploads/${p.image}" alt="${p.name}">
+                    <img src="http://147.93.45.171:1600/uploads/${
+                      p.image
+                    }" alt="${p.name}">
                   </a>
                 </div>
                 <div class="post-content">
@@ -1832,7 +1836,9 @@
                   <div class="post-meta post-meta--2 ul_li mt-6">
                     <div class="post-meta__author ul_li">
                       <div class="avatar">
-                        <img src="/uploads/${p.image}" alt="${p.author_name}">
+                        <img src="http://147.93.45.171:1600/uploads/${
+                          p.image
+                        }" alt="${p.author_name}">
                       </div>
                       <span>${p.author_name}</span>
                     </div>
@@ -1985,7 +1991,7 @@
 
           document.querySelector(
             ".post-details .post-thumb img"
-          ).src = `/uploads/${post.image.trim()}`;
+          ).src = `http://147.93.45.171:1600/uploads/${post.image.trim()}`;
           document.querySelector(".post-details h2").textContent = post.name;
           document.querySelector(".radiosbcrumb-end span").textContent =
             post.name;

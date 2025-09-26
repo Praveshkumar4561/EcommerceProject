@@ -36,7 +36,9 @@
             const productSchema = products.map((p) => ({
               "@type": "Product",
               name: p.name || "",
-              image: makeAbsolute("/uploads/" + (p.image || "")),
+              image: makeAbsolute(
+                "http://147.93.45.171:1600/uploads/" + (p.image || "")
+              ),
               description: p.description
                 ? p.description.replace(/<[^>]+>/g, "")
                 : "",
@@ -472,7 +474,9 @@
 
           if (config.background_image && config.background_image.trim()) {
             const bg = config.background_image.trim();
-            imgEl.src = bg.startsWith("http") ? bg : `/uploads/${bg}`;
+            imgEl.src = bg.startsWith("http")
+              ? bg
+              : `http://147.93.45.171:1600/uploads/${bg}`;
           }
 
           if (
@@ -721,7 +725,7 @@
                               onclick="window.location.href='/shop'"
                               style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                             >
-                              <img src="/uploads/${img}" alt="${p.name}"
+                              <img src="http://147.93.45.171:1600/uploads/${img}" alt="${p.name}"
                                   style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                               <div>
                                 <div class="fw-bold text-dark">${p.name}</div>
@@ -898,7 +902,8 @@
           if (/^https?:\/\//i.test(path)) return path;
           path = path.toString().trim();
           if (!/^\/?uploads\//i.test(path))
-            path = "/uploads/" + path.replace(/^\/+/, "");
+            path =
+              "http://147.93.45.171:1600/uploads/" + path.replace(/^\/+/, "");
           return window.location.origin + path;
         }
 
@@ -1715,7 +1720,7 @@
             const img = document.getElementById("site-logo");
             if (!img) return;
             if (cfg.logo_url) {
-              img.src = `/uploads/${cfg.logo_url}`;
+              img.src = `http://147.93.45.171:1600/uploads/${cfg.logo_url}`;
             }
             if (cfg.logo_height) {
               img.height = cfg.logo_height;

@@ -449,7 +449,9 @@
 
           if (config.background_image && config.background_image.trim()) {
             const bg = config.background_image.trim();
-            imgEl.src = bg.startsWith("http") ? bg : `/uploads/${bg}`;
+            imgEl.src = bg.startsWith("http")
+              ? bg
+              : `http://147.93.45.171:1600/uploads/${bg}`;
           }
 
           if (
@@ -1035,7 +1037,7 @@
                      onclick="window.location.href='/shop-details/${p.slug}'"
                       style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                     >
-                      <img src="/uploads/${img}" alt="${p.name}"
+                      <img src="http://147.93.45.171:1600/uploads/${img}" alt="${p.name}"
                           style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                       <div>
                         <div class="fw-bold text-dark">${p.name}</div>
@@ -1166,7 +1168,7 @@
           galleryMain.innerHTML = `
             <div class="swiper-slide">
               <div class="gallary-item">
-                <img src="/uploads/${p.image}" alt="${p.name}"
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}"
                      style="width:100%;height:100%;object-fit:cover"/>
               </div>
             </div>`;
@@ -1174,7 +1176,7 @@
           gallerySide.innerHTML = `
             <div class="right-content"
                     <div class="gallary-item">
-                      <img src="/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+                      <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
                     </div>
                   </div>
                 `;
@@ -1208,7 +1210,7 @@
             d.className = "swiper-slide";
             d.innerHTML = `
         <div class="thumb-item">
-          <img src="/uploads/${p.image}" alt="${p.name}"/>
+          <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}"/>
         </div>`;
             d.addEventListener("click", () => renderDetails(p));
             thumbWrapper.appendChild(d);
@@ -1511,7 +1513,7 @@
           galleryMain.innerHTML = `
             <div class="swiper-slide">
               <div class="gallary-item">
-                <img src="/uploads/${p.image}" alt="${p.name}"
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}"
                      style="width:100%;height:100%;object-fit:cover"/>
               </div>
             </div>`;
@@ -1519,7 +1521,7 @@
           gallerySide.innerHTML = `
             <div class="right-content"
                     <div class="gallary-item">
-                      <img src="/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+                      <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
                     </div>
                   </div>
                 `;
@@ -1557,9 +1559,9 @@
             d.className = "swiper-slide";
             d.innerHTML = `
                 <div class="thumb-item">
-                  <img src="/uploads/${p.image || ""}" alt="${(
-              p.name || ""
-            ).replace(/"/g, "")}"/>
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    p.image || ""
+                  }" alt="${(p.name || "").replace(/"/g, "")}"/>
                 </div>`;
             d.addEventListener("click", () => {
               const previous = currentProduct && currentProduct.id;
@@ -1814,7 +1816,7 @@
           galleryMain.innerHTML = `
             <div class="swiper-slide">
               <div class="gallary-item">
-                <img src="/uploads/${p.image}" alt="${p.name}"
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}"
                      style="width:100%;height:100%;object-fit:cover"/>
               </div>
             </div>`;
@@ -1822,7 +1824,7 @@
           gallerySide.innerHTML = `
             <div class="right-content"
              <div class="gallary-item">
-             <img src="/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
+             <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" style="width: 100%; height: 100%; object-fit: cover;" />
             </div>
           </div>
         `;
@@ -1856,7 +1858,7 @@
             d.className = "swiper-slide";
             d.innerHTML = `
         <div class="thumb-item">
-          <img src="/uploads/${p.image}" alt="${p.name}"/>
+          <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}"/>
         </div>`;
             d.addEventListener("click", () => renderDetails(p));
             thumbWrapper.appendChild(d);
@@ -2354,7 +2356,7 @@
             const img = document.getElementById("site-logo");
             if (!img) return;
             if (cfg.logo_url) {
-              img.src = `/uploads/${cfg.logo_url}`;
+              img.src = `http://147.93.45.171:1600/uploads/${cfg.logo_url}`;
             }
             if (cfg.logo_height) {
               img.height = cfg.logo_height;

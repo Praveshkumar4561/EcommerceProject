@@ -82,7 +82,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `/uploads/${
+            const url = `http://147.93.45.171:1600/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -524,7 +524,7 @@
                   (item) => `
                   <div class="cart_item" data-id="${item.id}">
                   <div class="item_image">
-                    <img src="/uploads/${
+                    <img src="http://147.93.45.171:1600/uploads/${
                       item.image || "assets/img/product/default.png"
                     }" />
                   </div>
@@ -1144,7 +1144,9 @@
                         <div class="product__item style-2">
                           <div class="product__img text-center pos-rel">
                             <a href="${productUrl}">
-                              <img src="/uploads/${p.image}" alt="${p.name}" />
+                              <img src="http://147.93.45.171:1600/uploads/${
+                                p.image
+                              }" alt="${p.name}" />
                             </a>
                             <ul class="product__action style-2 ul_li">
                               <li>
@@ -1223,7 +1225,7 @@
 
                     lbIdx = index;
                     const prod = lightboxData[lbIdx];
-                    lightboxImg.src = `/uploads/${prod.image}`;
+                    lightboxImg.src = `http://147.93.45.171:1600/uploads/${prod.image}`;
                     counterEl.textContent = `${lbIdx + 1} of ${
                       lightboxData.length
                     }`;
@@ -1590,7 +1592,7 @@
         <div class="product__item style-2 h-100">
           <div class="product__img text-center pos-rel">
             <a href="${productUrl}">
-              <img src="/uploads/${p.image}" alt="${
+              <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${
                         (p.product_name || p.product_name) == null
                           ? ""
                           : p.product_name || p.name
@@ -1598,7 +1600,7 @@
             </a>
             <ul class="product__action style-2 ul_li">
               <li>
-                <a href="/uploads/${
+                <a href="http://147.93.45.171:1600/uploads/${
                   p.image
                 }" class="img-popup" data-index="${idx}">
                   <i class="far fa-compress-alt"></i>
@@ -1662,7 +1664,9 @@
                     });
 
                     const imageLinks = document.querySelectorAll(".img-popup");
-                    const images = products.map((p) => `/uploads/${p.image}`);
+                    const images = products.map(
+                      (p) => `http://147.93.45.171:1600/uploads/${p.image}`
+                    );
                     let currentIndex = 0;
 
                     function showLightbox(index) {
@@ -2047,7 +2051,7 @@
           <div class="tx-widget__product-item tx-product ul_li mb-3">
             <div class="thumb">
               <a href="${productUrl}">
-                <img src="/uploads/${p.image}" alt="${p.name}" class="border"/>
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" class="border"/>
               </a>
             </div>
             <div class="content">
@@ -2498,11 +2502,13 @@
               <div class="product__item style-2 h-100">
                 <div class="product__img text-center pos-rel">
                   <a href="${productUrl}">
-                    <img src="/uploads/${prod.image}" alt="${prod.name}" />
+                    <img src="http://147.93.45.171:1600/uploads/${
+                      prod.image
+                    }" alt="${prod.name}" />
                   </a>
                   <ul class="product__action style-2 ul_li">
                     <li>
-                      <a href="/uploads/${
+                      <a href="http://147.93.45.171:1600/uploads/${
                         prod.image
                       }" class="img-popup icon-btn">
                         <i class="far fa-compress-alt"></i>
@@ -2919,7 +2925,9 @@
             <div class="product__item style-2 h-100">
               <div class="product__img text-center pos-rel">
                 <a href="${productUrl}">
-                  <img src="/uploads/${p.image}" alt="${p.name || "Product"}" />
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    p.image
+                  }" alt="${p.name || "Product"}" />
                 </a>
               </div>
               <div class="product__content">
@@ -2955,7 +2963,9 @@
                 <ul class="product__action2">
                   <li>
                     <!-- lightbox still opens the raw upload image -->
-                    <a href="/uploads/${p.image}" class="img-popup icon-btn">
+                    <a href="http://147.93.45.171:1600/uploads/${
+                      p.image
+                    }" class="img-popup icon-btn">
                       <i class="far fa-compress-alt"></i>
                     </a>
                   </li>
@@ -3539,7 +3549,7 @@
           <div class="product__slider-item">
             <div class="product__slider-img">
               <a href="${productUrl}">
-                <img src="/uploads/${p.image}" alt="${p.name}" />
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" />
               </a>
               <div class="offer">
                 ${discountPct}%<br /><span>off</span>
@@ -3770,10 +3780,12 @@
           <div class="feature-product__single2 mt-15 tx-product">
             <div class="image text-center pos-rel">
               <a href="${centerUrl}">
-                <img src="/uploads/${center.image}" alt="${center.name}" />
+                <img src="http://147.93.45.171:1600/uploads/${
+                  center.image
+                }" alt="${center.name}" />
               </a>
               <ul class="product__action style-2 br-5 ul_li">
-                <li><a href="/uploads/${
+                <li><a href="http://147.93.45.171:1600/uploads/${
                   center.image
                 }" class="img-popup"><i class="far fa-compress-alt"></i></a></li>
                 <li><a href="javascript:void(0)" class="add-to-cart" data-id="${
@@ -3866,7 +3878,9 @@
           <div class="feature-product__product ul_li">
             <div class="image">
               <a href="${productUrl}">
-                <img src="/uploads/${product.image}" alt="${product.name}" />
+                <img src="http://147.93.45.171:1600/uploads/${
+                  product.image
+                }" alt="${product.name}" />
               </a>
             </div>
             <div class="content">
@@ -4317,7 +4331,7 @@
 
                 const img = item.querySelector(".news__thumb img");
                 if (img) {
-                  img.src = `/uploads/${blog.image}`;
+                  img.src = `http://147.93.45.171:1600/uploads/${blog.image}`;
                   img.alt = blog.name;
                 }
 
@@ -4688,9 +4702,9 @@
               li.innerHTML = `
           <div class="post-thumb">
             <a href="${postUrl}">
-              <img src="/uploads/${post.image}" alt="${(
-                post.name || ""
-              ).replace(/"/g, "&quot;")}" />
+              <img src="http://147.93.45.171:1600/uploads/${
+                post.image
+              }" alt="${(post.name || "").replace(/"/g, "&quot;")}" />
             </a>
             <span class="post-number">${String(idx + 1).padStart(2, "0")}</span>
           </div>

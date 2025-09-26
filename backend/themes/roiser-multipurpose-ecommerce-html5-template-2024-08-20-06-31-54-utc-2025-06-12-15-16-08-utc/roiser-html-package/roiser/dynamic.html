@@ -652,7 +652,9 @@
 
           if (config.background_image && config.background_image.trim()) {
             const bg = config.background_image.trim();
-            imgEl.src = bg.startsWith("http") ? bg : `/uploads/${bg}`;
+            imgEl.src = bg.startsWith("http")
+              ? bg
+              : `http://147.93.45.171:1600/uploads/${bg}`;
           }
 
           if (
@@ -891,7 +893,7 @@
                               onclick="window.location.href='/shop'"
                               style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                             >
-                              <img src="/uploads/${img}" alt="${p.name}"
+                              <img src="http://147.93.45.171:1600/uploads/${img}" alt="${p.name}"
                                   style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                               <div>
                                 <div class="fw-bold text-dark">${p.name}</div>
@@ -971,9 +973,9 @@
 
             const imageHTML = data.image
               ? `<div class="dynamic-image-wrapper">
-                    <img src="/uploads/${data.image}" alt="${
-                  data.name || ""
-                }" class="dynamic-image" />
+                    <img src="http://147.93.45.171:1600/uploads/${
+                      data.image
+                    }" alt="${data.name || ""}" class="dynamic-image" />
                   </div>`
               : "";
 
@@ -1288,7 +1290,7 @@
             const img = document.getElementById("site-logo");
             if (!img) return;
             if (cfg.logo_url) {
-              img.src = `/uploads/${cfg.logo_url}`;
+              img.src = `http://147.93.45.171:1600/uploads/${cfg.logo_url}`;
             }
             if (cfg.logo_height) {
               img.height = cfg.logo_height;

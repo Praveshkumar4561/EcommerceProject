@@ -835,7 +835,7 @@
           const str = String(img).trim();
           if (/^https?:\/\//i.test(str)) return str;
           if (str.startsWith("/")) return str;
-          return "/uploads/" + encodeURIComponent(str);
+          return "http://147.93.45.171:1600/uploads/" + encodeURIComponent(str);
         };
 
         let posts;
@@ -1103,9 +1103,9 @@
                 data-price="${price}"
                 data-qty="${qty}">
               <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-              <a href="#"><img src="/uploads/${item.image}" alt="${
-                    item.name
-                  }"/> ${item.name}</a>
+              <a href="#"><img src="http://147.93.45.171:1600/uploads/${
+                item.image
+              }" alt="${item.name}"/> ${item.name}</a>
               <span class="quantity">${qty} × $${price.toFixed(2)}</span>
             </li>
           `
@@ -1486,7 +1486,7 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="/uploads/${p.image}" 
+                  <img src="http://147.93.45.171:1600/uploads/${p.image}" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
@@ -1545,7 +1545,7 @@
           const str = String(img).trim();
           if (/^https?:\/\//i.test(str)) return str;
           if (str.startsWith("/")) return str;
-          return "/uploads/" + encodeURIComponent(str);
+          return "http://147.93.45.171:1600/uploads/" + encodeURIComponent(str);
         };
 
         fetch("http://147.93.45.171:1600/blogpostdata")
@@ -1623,7 +1623,7 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const uploadPath = `/uploads/${logoUrl}`;
+          const uploadPath = `http://147.93.45.171:1600/uploads/${logoUrl}`;
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),

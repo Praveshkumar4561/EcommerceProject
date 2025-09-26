@@ -55,7 +55,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `/uploads/${
+            const url = `http://147.93.45.171:1600/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -511,7 +511,9 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="/uploads/${p.image || ""}"
+                                <img src="http://147.93.45.171:1600/uploads/${
+                                  p.image || ""
+                                }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
                                     style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                                 <div>
@@ -810,7 +812,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="/uploads/${
+                      <img src="http://147.93.45.171:1600/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -881,7 +883,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("/uploads/", ""),
+                      .replace("http://147.93.45.171:1600/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1505,7 +1507,9 @@
                 <div class="tab-product__item tx-product text-center">
                   <div class="thumb">
                     <a href="/shop-single/${slug}">
-                      <img src="/uploads/${p.image}" alt="${p.name}" />
+                      <img src="http://147.93.45.171:1600/uploads/${
+                        p.image
+                      }" alt="${p.name}" />
                     </a>
                   </div>
                   <div class="content">
@@ -1534,7 +1538,9 @@
                   </div>
                   <ul class="product__action">
                     <li>
-                      <a href="/uploads/${p.image}" class="img-popup icon-btn">
+                      <a href="http://147.93.45.171:1600/uploads/${
+                        p.image
+                      }" class="img-popup icon-btn">
                         <i class="far fa-compress-alt"></i>
                       </a>
                     </li>
@@ -1758,7 +1764,9 @@
                 const slideItem = document.createElement("div");
                 slideItem.className = "rd-product__slide-item";
 
-                currentImages = hotProducts.map((p) => `/uploads/${p.image}`);
+                currentImages = hotProducts.map(
+                  (p) => `http://147.93.45.171:1600/uploads/${p.image}`
+                );
 
                 hotProducts.forEach((p, i) => {
                   const slug =
@@ -1770,7 +1778,9 @@
                   card.innerHTML = `
                     <div class="product__img product__img1 text-center border-top-0">
                       <a href="/shop-single/${slug}">
-                        <img src="/uploads/${p.image}" alt="${p.name}" />
+                        <img src="http://147.93.45.171:1600/uploads/${
+                          p.image
+                        }" alt="${p.name}" />
                       </a>
                     </div>
                     <div class="product__content">
@@ -1996,7 +2006,7 @@
               li.className = "cat-item-has-children";
               li.innerHTML = `
                 <a href="/shop">
-                  <img src="/uploads/${cat.image}" alt="${cat.name}" />
+                  <img src="http://147.93.45.171:1600/uploads/${cat.image}" alt="${cat.name}" />
                   ${cat.name}
                 </a>
               `;
@@ -2329,7 +2339,9 @@
                     }">
                       <div class="rd-product__img">
                         <a href="${slugUrl}">
-                          <img src="/uploads/${p.image}" alt="${p.name}" />
+                          <img src="http://147.93.45.171:1600/uploads/${
+                            p.image
+                          }" alt="${p.name}" />
                         </a>
                       </div>
                       <div class="content">
@@ -2651,7 +2663,9 @@
                 item.innerHTML = `
         <div class="thumb">
           <a href="${productLink}">
-            <img src="/uploads/${active.image}" alt="${active.product_name}" />
+            <img src="http://147.93.45.171:1600/uploads/${active.image}" alt="${
+                  active.product_name
+                }" />
           </a>
         </div>
         <div class="content">
@@ -2763,13 +2777,13 @@
                   <div class="feature-product__single2 mt-15 tx-product">
                     <div class="image text-center pos-rel">
                       <a href="/shop-single/${encodeURIComponent(centerSlug)}">
-                        <img src="/uploads/${center.image}" alt="${
-                  center.name
-                }" />
+                        <img src="http://147.93.45.171:1600/uploads/${
+                          center.image
+                        }" alt="${center.name}" />
                       </a>
                       <ul class="product__action style-2 br-5 ul_li">
                         <li>
-                          <a href="/uploads/${
+                          <a href="http://147.93.45.171:1600/uploads/${
                             center.image
                           }" class="img-popup"><i class="far fa-compress-alt"></i></a>
                         </li>
@@ -2831,7 +2845,9 @@
                 <div class="feature-product__product ul_li">
                   <div class="image">
                     <a href="/shop-single/${encodeURIComponent(slug)}">
-                      <img src="/uploads/${p.image}" alt="${p.name}" />
+                      <img src="http://147.93.45.171:1600/uploads/${
+                        p.image
+                      }" alt="${p.name}" />
                     </a>
                   </div>
                   <div class="content">
@@ -3654,14 +3670,14 @@
                   if (!cat) return;
 
                   block.querySelectorAll(".tab-pane img").forEach((img) => {
-                    img.src = `/uploads/${cat.image}`;
+                    img.src = `http://147.93.45.171:1600/uploads/${cat.image}`;
                     img.alt = cat.name;
                   });
 
                   block
                     .querySelectorAll(".product-cat__nav img")
                     .forEach((img) => {
-                      img.src = `/uploads/${cat.image}`;
+                      img.src = `http://147.93.45.171:1600/uploads/${cat.image}`;
                       img.alt = cat.name;
                     });
 
@@ -3796,7 +3812,9 @@
             <div class="recent-product__item tx-product ul_li mt-30 tab-content-2">
               <div class="thumb">
                 <a href="/shop-single/${slug}">
-                  <img src="/uploads/${p.image}" alt="${p.name}" />
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    p.image
+                  }" alt="${p.name}" />
                 </a>
               </div>
               <div class="recent-product__content">
@@ -3865,7 +3883,7 @@
               ).href = `/shop-single/${slug}`;
               banner.querySelector(
                 ".product-image"
-              ).src = `/uploads/${firstProduct.image}`;
+              ).src = `http://147.93.45.171:1600/uploads/${firstProduct.image}`;
             }
           });
         </script>
@@ -4043,7 +4061,8 @@
                         ".content p"
                       ).textContent = `${p1.label} • ${p1.price_sale}`;
                       const img1 = b1.querySelector(".thumb img");
-                      img1.src = "/uploads/" + p1.image;
+                      img1.src =
+                        "http://147.93.45.171:1600/uploads/" + p1.image;
                       img1.alt = p1.product_name;
                       b1.querySelector(
                         ".banner__btn a"
@@ -4063,7 +4082,8 @@
                         ".content p"
                       ).textContent = `${p2.label} • ${p2.price_sale}`;
                       const img2 = b2.querySelector(".thumb img");
-                      img2.src = "/uploads/" + p2.image;
+                      img2.src =
+                        "http://147.93.45.171:1600/uploads/" + p2.image;
                       img2.alt = p2.product_name;
                       b2.querySelector(
                         ".banner__btn a"
@@ -4108,7 +4128,7 @@
                   descEl.textContent = `${p1.label} – ${p1.price}`;
                   priceEl.textContent = p1.price_sale;
                   linkEl.href = `shop-single.html?id=${p1.product_id}`;
-                  imgEl.src = "/uploads/" + p1.image;
+                  imgEl.src = "http://147.93.45.171:1600/uploads/" + p1.image;
                   imgEl.alt = p1.product_name;
                 }
               }

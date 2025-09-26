@@ -100,7 +100,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `/uploads/${
+            const url = `http://147.93.45.171:1600/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -599,9 +599,9 @@
                     style="background-image: url('${bgImage}');"
                   >
                     <div class="banner-img">
-                      <img src="/uploads/${item.image}" alt="${
-                item.product_name
-              }" ${imageSize} />
+                      <img src="http://147.93.45.171:1600/uploads/${
+                        item.image
+                      }" alt="${item.product_name}" ${imageSize} />
                     </div>
                     <div class="banner-content">
                       <span>${item.label || "Offer"} - ${priceInfo}</span>
@@ -726,7 +726,9 @@
     >
       <div class="category-img category-man">
         <a href="/shops">
-          <img src="/uploads/${cat.image}" alt="${cat.name}" />
+          <img src="http://147.93.45.171:1600/uploads/${cat.image}" alt="${
+              cat.name
+            }" />
         </a>
       </div>
       <div class="category-content">
@@ -808,7 +810,9 @@
         }">
           <div class="product-thumbnail">
             <a href="/shop-details/${slug}" class="w-100 h-100">
-              <img src="/uploads/${p.image}" alt="${p.name}" />
+              <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${
+                p.name
+              }" />
             </a>
             ${discountBadge}
             <div class="hover-content">
@@ -834,7 +838,7 @@
                   <i class="far fa-shopping-basket"></i>
               </a>
 
-              <a href="/uploads/${
+              <a href="http://147.93.45.171:1600/uploads/${
                 p.image
               }" class="img-popup icon-btn"><i class="fa fa-eye"></i></a>
             </div>
@@ -1093,9 +1097,9 @@
                 data-price="${price}"
                 data-qty="${qty}">
               <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-              <a href="#"><img src="/uploads/${item.image}" alt="${
-                      item.name
-                    }"/> ${item.name}</a>
+              <a href="#"><img src="http://147.93.45.171:1600/uploads/${
+                item.image
+              }" alt="${item.name}"/> ${item.name}</a>
               <span class="quantity">${qty} × $${price.toFixed(2)}</span>
             </li>
           `
@@ -1272,7 +1276,9 @@
           const getImageSrc = (img) => {
             if (!img) return "../assets/images/products/deal-1.png";
             if (/^(https?:)?\/\//.test(img)) return img;
-            return `/uploads/${encodeURIComponent(img)}`;
+            return `http://147.93.45.171:1600/uploads/${encodeURIComponent(
+              img
+            )}`;
           };
 
           items.forEach((prod, idx) => {
@@ -1491,7 +1497,7 @@
             const productHTML = `
               <div class="product-item style-five mb-30">
                 <div class="product-thumbnail">
-                  <img src="/uploads/${item.image}" alt="${item.product_name}" 
+                  <img src="http://147.93.45.171:1600/uploads/${item.image}" alt="${item.product_name}" 
                     style="width: 336px; height: 400px; object-fit: cover;" 
                     onerror="this.src='assets/images/products/default.jpg'" />
                   <div class="hover-content">
@@ -1875,7 +1881,7 @@
               const brandItem = template.cloneNode(true);
               const img = brandItem.querySelector("img");
 
-              img.src = `/uploads/${brand.image}`;
+              img.src = `http://147.93.45.171:1600/uploads/${brand.image}`;
               img.alt = brand.name;
 
               const link = brandItem.querySelector("a");
@@ -1961,9 +1967,9 @@
                       <p class="mb-35">${t.content}</p>
                       <div class="author-item">
                         <div class="author-thumb">
-                          <img src="/uploads/${t.image}" alt="${
-                    t.name
-                  } image" />
+                          <img src="http://147.93.45.171:1600/uploads/${
+                            t.image
+                          }" alt="${t.name} image" />
                         </div>
                         <div class="author-info">
                           <h5>${t.name}</h5>
@@ -2055,7 +2061,9 @@
           const getImageSrc = (img) => {
             if (!img) return "../assets/images/blog/blog-1.jpg";
             if (/^(https?:)?\/\//.test(img)) return img;
-            return `/uploads/${encodeURIComponent(img)}`;
+            return `http://147.93.45.171:1600/uploads/${encodeURIComponent(
+              img
+            )}`;
           };
 
           try {
@@ -2560,7 +2568,9 @@
                 <a href="/blog-details/${encodeURIComponent(
                   slug
                 )}" class="w-100 h-100">
-                  <img src="/uploads/${post.image}" alt="${post.name}" />
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    post.image
+                  }" alt="${post.name}" />
                 </a>
               </div>
               <div class="content">
@@ -2648,7 +2658,7 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="/uploads/${p.image}" 
+                  <img src="http://147.93.45.171:1600/uploads/${p.image}" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
@@ -2703,7 +2713,7 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const uploadPath = `/uploads/${logoUrl}`;
+          const uploadPath = `http://147.93.45.171:1600/uploads/${logoUrl}`;
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
@@ -2741,8 +2751,11 @@
 
         function withUploads(u) {
           if (!u) return u;
-          if (u.startsWith("/uploads/")) return makeAbsolute(u);
-          return makeAbsolute("/uploads/" + u.replace(/^\/+/, ""));
+          if (u.startsWith("http://147.93.45.171:1600/uploads/"))
+            return makeAbsolute(u);
+          return makeAbsolute(
+            "http://147.93.45.171:1600/uploads/" + u.replace(/^\/+/, "")
+          );
         }
 
         function toSlug(str = "") {

@@ -82,7 +82,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `/uploads/${
+            const url = `http://147.93.45.171:1600/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -759,7 +759,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="/uploads/${
+                      <img src="http://147.93.45.171:1600/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -830,7 +830,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("/uploads/", ""),
+                      .replace("http://147.93.45.171:1600/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1034,9 +1034,9 @@
         <div class="banner-product__item ul_li bg_img" style="background-image: url('assets/img/bg/bg_08.jpg')">
           <div class="banner-product__img">
             <a href="${productUrl}">
-              <img src="/uploads/${product.image}" alt="${(
-                  product.product_name || ""
-                ).replace(
+              <img src="http://147.93.45.171:1600/uploads/${
+                product.image
+              }" alt="${(product.product_name || "").replace(
                   /"/g,
                   "&quot;"
                 )}" style="width: ${width}px !important; height: ${height}px !important;" />
@@ -1361,7 +1361,7 @@
                 h3span.innerHTML = `<a href="${productUrl}">${
                   product.price_sale || "0.00"
                 }</a>`;
-                img.src = `/uploads/${product.image}`;
+                img.src = `http://147.93.45.171:1600/uploads/${product.image}`;
                 img.alt = product.name || "";
                 img.parentElement.href = productUrl;
                 if (offerBox) {
@@ -1443,9 +1443,12 @@
                       <div class="tx-widget__product-item tx-product ul_li mb-4">
                         <div class="thumb">
                           <a href="${productUrl}">
-                            <img src="/uploads/${p.image}" alt="${(
-                    p.name || ""
-                  ).replace(/"/g, "&quot;")}" class="border"/>
+                            <img src="http://147.93.45.171:1600/uploads/${
+                              p.image
+                            }" alt="${(p.name || "").replace(
+                    /"/g,
+                    "&quot;"
+                  )}" class="border"/>
                           </a>
                         </div>
                         <div class="content">
@@ -1488,14 +1491,15 @@
           <div class="product__item style-2">
             <div class="product__img text-center pos-rel">
               <a href="${productUrl}">
-                <img src="/uploads/${p.image}" alt="${(p.name || "").replace(
-                /"/g,
-                "&quot;"
-              )}" />
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${(
+                p.name || ""
+              ).replace(/"/g, "&quot;")}" />
               </a>
               <ul class="product__action style-2 ul_li">
                 <li>
-                  <a href="/uploads/${p.image}" class="img-popup icon-btn">
+                  <a href="http://147.93.45.171:1600/uploads/${
+                    p.image
+                  }" class="img-popup icon-btn">
                     <i class="far fa-compress-alt"></i>
                   </a>
                 </li>
@@ -2107,7 +2111,7 @@
               if (shopLink) shopLink.href = productUrl;
 
               const img = banner.querySelector(".add-banner__img img");
-              if (img) img.src = `/uploads/${d.image}`;
+              if (img) img.src = `http://147.93.45.171:1600/uploads/${d.image}`;
               if (img) img.parentElement.href = productUrl;
             })(mainDeals[0]);
 
@@ -2117,24 +2121,26 @@
                 `#wp-tab-0${i + 1} .weekly-product__nav-img img`
               );
               if (paneImg) {
-                paneImg.src = `/uploads/${d.image}`;
+                paneImg.src = `http://147.93.45.171:1600/uploads/${d.image}`;
                 paneImg.parentElement.href = `/shop-single/${getSlugForDeal(
                   d
                 )}`;
               }
-              if (thumb) thumb.src = `/uploads/${d.image}`;
+              if (thumb)
+                thumb.src = `http://147.93.45.171:1600/uploads/${d.image}`;
             });
 
             sideDeals.forEach((d, i) => {
               const paneImg = document.querySelector(`#rds-0${i + 1} img`);
               const thumb = document.querySelector(`#rds-tab-0${i + 1} img`);
               if (paneImg) {
-                paneImg.src = `/uploads/${d.image}`;
+                paneImg.src = `http://147.93.45.171:1600/uploads/${d.image}`;
                 paneImg.parentElement.href = `/shop-single/${getSlugForDeal(
                   d
                 )}`;
               }
-              if (thumb) thumb.src = `/uploads/${d.image}`;
+              if (thumb)
+                thumb.src = `http://147.93.45.171:1600/uploads/${d.image}`;
             });
 
             document
@@ -2318,22 +2324,24 @@
                     ? tructorParts.slice(0, 6)
                     : products.slice(0, 6);
 
-                allImages = products.map((p) => `/uploads/${p.image}`);
+                allImages = products.map(
+                  (p) => `http://147.93.45.171:1600/uploads/${p.image}`
+                );
 
                 const productHTML = displayProducts
                   .map((product) => {
                     const slug = getSlugForProduct(product);
                     const productUrl = `/shop-single/${slug}`;
                     const imageIndex = allImages.indexOf(
-                      `/uploads/${product.image}`
+                      `http://147.93.45.171:1600/uploads/${product.image}`
                     );
                     return `
             <div class="tab-product__item tx-product text-center">
               <div class="thumb">
                 <a href="${productUrl}">
-                  <img src="/uploads/${product.image}" alt="${(
-                      product.name || ""
-                    ).replace(/"/g, "&quot;")}" />
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    product.image
+                  }" alt="${(product.name || "").replace(/"/g, "&quot;")}" />
                 </a>
                 <ul class="product__action style-2 ul_li">
                   <li>
@@ -2698,7 +2706,9 @@
                 return;
               }
 
-              currentImages = filtered.map((p) => `/uploads/${p.image}`);
+              currentImages = filtered.map(
+                (p) => `http://147.93.45.171:1600/uploads/${p.image}`
+              );
 
               filtered.forEach((p, i) => {
                 const slug = getSlugForProduct(p);
@@ -2710,14 +2720,13 @@
           <div class="product__item style-3">
             <div class="product__img text-center pos-rel">
               <a href="${productUrl}">
-                <img src="/uploads/${p.image}" alt="${(p.name || "").replace(
-                    /"/g,
-                    "&quot;"
-                  )}" />
+                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${(
+                    p.name || ""
+                  ).replace(/"/g, "&quot;")}" />
               </a>
               <ul class="product__action style-2 ul_li">
                 <li>
-                  <a href="/uploads/${
+                  <a href="http://147.93.45.171:1600/uploads/${
                     p.image
                   }" class="img-popup icon-btn" data-index="${i}">
                     <i class="far fa-compress-alt"></i>
@@ -3646,9 +3655,12 @@
           <div class="tx-widget__product-item style-2 tx-product ul_li">
             <div class="thumb">
               <a href="${productUrl}">
-                <img src="/uploads/${product.image}" alt="${(
-                          product.name || ""
-                        ).replace(/"/g, "&quot;")}" class="border"/>
+                <img src="http://147.93.45.171:1600/uploads/${
+                  product.image
+                }" alt="${(product.name || "").replace(
+                          /"/g,
+                          "&quot;"
+                        )}" class="border"/>
               </a>
             </div>
             <div class="content">
@@ -3803,7 +3815,7 @@
               document.querySelectorAll(".product-cat__item");
             featured.slice(0, featureItems.length).forEach((cat, idx) => {
               const item = featureItems[idx];
-              const imgUrl = `/uploads/${cat.image}`;
+              const imgUrl = `http://147.93.45.171:1600/uploads/${cat.image}`;
 
               item
                 .querySelectorAll(".product-cat__images .tab-pane img")

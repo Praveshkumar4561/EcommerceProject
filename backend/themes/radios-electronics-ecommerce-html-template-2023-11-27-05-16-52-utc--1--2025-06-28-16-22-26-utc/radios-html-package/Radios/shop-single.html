@@ -336,7 +336,9 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="/uploads/${p.image || ""}"
+                                <img src="http://147.93.45.171:1600/uploads/${
+                                  p.image || ""
+                                }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
                                     style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                                 <div>
@@ -630,7 +632,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="/uploads/${
+                      <img src="http://147.93.45.171:1600/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -701,7 +703,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("/uploads/", ""),
+                      .replace("http://147.93.45.171:1600/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1359,7 +1361,7 @@
                     tabPane.setAttribute("aria-labelledby", `${id}-tab`);
                     tabPane.innerHTML = `
                       <div class="pl_thumb">
-                        <img src="/uploads/${img}" alt="${product.name}" style="width:600px; height:380px;" />
+                        <img src="http://147.93.45.171:1600/uploads/${img}" alt="${product.name}" style="width:600px; height:380px;" />
                       </div>
                     `;
                     tabContent.appendChild(tabPane);
@@ -1377,7 +1379,9 @@
                         aria-controls="${id}"
                         aria-selected="${index === 0 ? "true" : "false"}"
                       >
-                        <img src="/uploads/${img}" alt="${product.name}" />
+                        <img src="http://147.93.45.171:1600/uploads/${img}" alt="${
+                      product.name
+                    }" />
                       </button>
                     `;
                     thumbnailList.appendChild(li);
@@ -1724,7 +1728,9 @@
             if (!res.ok) throw new Error("Failed to fetch product data");
             products = await res.json();
             urls = products.map(
-              (p) => new URL(`/uploads/${p.image}`, origin).href
+              (p) =>
+                new URL(`http://147.93.45.171:1600/uploads/${p.image}`, origin)
+                  .href
             );
           } catch (err) {
             console.error("Error fetching products:", err);
@@ -1734,7 +1740,10 @@
           relatedContainer.innerHTML = products
             .slice(0, 4)
             .map((p) => {
-              const thumbUrl = new URL(`/uploads/${p.image}`, origin).href;
+              const thumbUrl = new URL(
+                `http://147.93.45.171:1600/uploads/${p.image}`,
+                origin
+              ).href;
               const dummyRating = Math.floor(Math.random() * 5) + 1;
               const dummyReviews = Math.floor(Math.random() * 100) + 1;
               const stars = Array.from({ length: 5 }, (_, i) =>

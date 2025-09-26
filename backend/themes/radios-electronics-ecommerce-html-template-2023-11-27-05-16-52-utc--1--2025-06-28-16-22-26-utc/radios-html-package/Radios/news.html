@@ -424,7 +424,9 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="/uploads/${p.image || ""}"
+                                <img src="http://147.93.45.171:1600/uploads/${
+                                  p.image || ""
+                                }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
                                     style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                                 <div>
@@ -718,7 +720,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="/uploads/${
+                      <img src="http://147.93.45.171:1600/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -789,7 +791,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("/uploads/", ""),
+                      .replace("http://147.93.45.171:1600/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1393,7 +1395,7 @@
               art.innerHTML = `
     <div class="post-thumb">
       <a href="/news-single/${slug}">
-        <img src="/uploads/${post.image.trim()}" alt="Image">
+        <img src="http://147.93.45.171:1600/uploads/${post.image.trim()}" alt="Image">
       </a>
       <div class="post-date">
         ${new Date(post.date).getDate()}<br>

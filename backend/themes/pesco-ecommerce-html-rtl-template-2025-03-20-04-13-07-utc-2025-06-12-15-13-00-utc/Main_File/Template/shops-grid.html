@@ -701,7 +701,9 @@
                         data-image="${item.image}">
                       <a href="#" class="remove-cart"><i class="far fa-trash-alt"></i></a>
                       <a href="#">
-                        <img src="/uploads/${item.image}" alt="${item.name}" />
+                        <img src="http://147.93.45.171:1600/uploads/${
+                          item.image
+                        }" alt="${item.name}" />
                         ${item.name}
                       </a>
                       <span class="quantity">
@@ -860,7 +862,9 @@
                       <a href="/shop-details/${slug}" data-id="${
                 p.id
               }" class="w-100 h-100 product-link">
-                        <img src="/uploads/${p.image}" alt="${p.name}">
+                        <img src="http://147.93.45.171:1600/uploads/${
+                          p.image
+                        }" alt="${p.name}">
                       </a>
                       ${p.label ? `<div class="discount">${p.label}</div>` : ""}
                       <div class="hover-content">
@@ -876,7 +880,7 @@
               }">
                           <i class="fa fa-heart"></i>
                         </a>
-                        <a href="javascript:void(0)" class="img-popup icon-btn" data-img="/uploads/${
+                        <a href="javascript:void(0)" class="img-popup icon-btn" data-img="http://147.93.45.171:1600/uploads/${
                           p.image
                         }">
                           <i class="fa fa-eye"></i>
@@ -1623,7 +1627,7 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="/uploads/${p.image}" 
+                  <img src="http://147.93.45.171:1600/uploads/${p.image}" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
@@ -1709,7 +1713,9 @@
                 <a href="/blog-details/${encodeURIComponent(
                   slug
                 )}" class="w-100 h-100">
-                  <img src="/uploads/${post.image}" alt="${post.name}" />
+                  <img src="http://147.93.45.171:1600/uploads/${
+                    post.image
+                  }" alt="${post.name}" />
                 </a>
               </div>
               <div class="content">
@@ -1745,7 +1751,7 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const uploadPath = `/uploads/${logoUrl}`;
+          const uploadPath = `http://147.93.45.171:1600/uploads/${logoUrl}`;
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
