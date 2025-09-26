@@ -29,24 +29,20 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     let aborted = false;
     let submitHandler = null;
 
+    // ---------- helpers (unchanged) ----------
     const isAbsoluteOrProtocol = (u = "") =>
       /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
-
     const isDataOrBlobOrMail = (u = "") =>
       /^(data:|blob:|mailto:|tel:|#)/.test(u);
-
     const isApiPath = (u = "") =>
       typeof u === "string" && u.startsWith("http://147.93.45.171:1600/");
-
     const isRelativeForRewrite = (u = "") =>
       !!u &&
       !isAbsoluteOrProtocol(u) &&
       !isDataOrBlobOrMail(u) &&
       !isApiPath(u);
-
     const themeBaseNormalized = (b = themeBaseUrl) =>
       b.endsWith("/") ? b : b + "/";
-
     const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
       if (!url) return url;
       if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
@@ -69,14 +65,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       if (p.length > 1) p = p.replace(/\/$/, "");
       if (!p.startsWith("/")) p = "/" + p;
       if (p === "/index") p = "/";
-      return (
-        "/" +
-        p
-          .split("/")
-          .map((part) => slugify(part))
-          .filter(Boolean)
-          .join("/")
-      );
+      return "/" + p.split("/").map(slugify).filter(Boolean).join("/");
     };
 
     const routeViaSPA = (path, opts = {}) => {
@@ -86,7 +75,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           onNavigate(spa, opts);
           return;
         } catch (e) {
-          console.warn("[ThemeInjector] onNavigate threw:", e);
+          console.warn(e);
         }
       }
       if (opts.replace) history.replaceState({}, "", spa);
@@ -106,26 +95,18 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           href.startsWith("tel:")
         )
           return;
-        // convert relative to SPA domain path
-        href = normalizeSpaPath(href);
-        a.setAttribute("href", href);
+        a.setAttribute("href", normalizeSpaPath(href));
       });
     };
 
     const rewriteInjectedAssets = (container, base) => {
       if (!container) return;
       container.querySelectorAll("img, source, [data-src]").forEach((el) => {
-        const attr =
-          el.tagName.toLowerCase() === "img"
-            ? "src"
-            : el.getAttribute("src")
-            ? "src"
-            : "data-src";
+        const attr = el.getAttribute("src") ? "src" : "data-src";
         const val = el.getAttribute(attr);
         if (!val) return;
         if (isRelativeForRewrite(val) || val.startsWith("/")) {
-          const abs = makeAbsoluteUrl(val, base);
-          el.setAttribute(attr, abs);
+          el.setAttribute(attr, makeAbsoluteUrl(val, base));
         }
       });
     };
@@ -173,13 +154,11 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         } else {
           const content = s.textContent || "";
           if (/document\.write/.test(content)) continue;
-          try {
-            const el = document.createElement("script");
-            if (type) el.type = type;
-            el.text = content;
-            el.dataset.themeInjected = "true";
-            document.body.appendChild(el);
-          } catch {}
+          const el = document.createElement("script");
+          if (type) el.type = type;
+          el.text = content;
+          el.dataset.themeInjected = "true";
+          document.body.appendChild(el);
         }
       }
     };
@@ -187,20 +166,29 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     const tryFetchWithFallbacks = async (origUrl) => {
       let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
       if (res && res.ok) return res;
-
       if (!origUrl.match(/\.html$/i)) {
         const alt = origUrl.replace(/\/+$/, "") + ".html";
         res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
         if (res && res.ok) return res;
       }
+      return null;
+    };
 
+    // ---- ADDED: check pagesdata before loading theme ----
+    const checkPageExists = async (slug) => {
       try {
-        const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
-        res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
-      } catch {}
-
-      return res;
+        const r = await fetch("http://147.93.45.171:1600/pagesdata");
+        if (!r.ok) return false;
+        const arr = await r.json();
+        const lower = slugify(slug);
+        return arr.find(
+          (p) =>
+            slugify(p.permalink) === lower &&
+            String(p.status).toLowerCase() === "published"
+        );
+      } catch {
+        return false;
+      }
     };
 
     const loadTheme = async () => {
@@ -217,18 +205,44 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       if (containerRef.current) containerRef.current.innerHTML = "";
 
       try {
-        const res = await tryFetchWithFallbacks(pageUrl);
-        if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
+        const spaPath = normalizeSpaPath(pageUrl);
+        const slug = spaPath.replace(/^\/+/, "");
+        const found = await checkPageExists(slug);
+
+        // If no page found, force dynamic.html and fetch Page Not Found record
+        let targetUrl = pageUrl;
+        let pageNotFoundData = null;
+        if (!found) {
+          targetUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
+          // find the special "Page Not Found" record
+          try {
+            const r = await fetch("http://147.93.45.171:1600/pagesdata");
+            const arr = await r.json();
+            pageNotFoundData = arr.find(
+              (p) => slugify(p.permalink) === "page-not-found"
+            );
+          } catch {}
+        }
+
+        const res = await tryFetchWithFallbacks(targetUrl);
+        if (!res || !res.ok) throw new Error(`Failed to fetch ${targetUrl}`);
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
-        const newTitle = doc.querySelector("title")?.textContent?.trim();
-        if (newTitle) document.title = newTitle;
+        // update title if fallback
+        if (!found && pageNotFoundData) {
+          document.title = pageNotFoundData.name || "Page Not Found";
+          const holder = doc.querySelector("#dynamic-content");
+          if (holder)
+            holder.innerHTML = `<h1>${pageNotFoundData.name}</h1><p>${pageNotFoundData.description}</p>`;
+        } else {
+          const newTitle = doc.querySelector("title")?.textContent?.trim();
+          if (newTitle) document.title = newTitle;
+        }
 
-        // ensure <base> uses domain, not IP
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
@@ -247,15 +261,16 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
-            if (!rawHref) return;
-            return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
+            return (
+              rawHref && loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl))
+            );
           })
         );
         styleNodes.forEach((s) => {
-          const newStyle = document.createElement("style");
-          newStyle.innerHTML = s.innerHTML || "";
-          newStyle.dataset.themeInjected = "true";
-          document.head.appendChild(newStyle);
+          const st = document.createElement("style");
+          st.innerHTML = s.innerHTML || "";
+          st.dataset.themeInjected = "true";
+          document.head.appendChild(st);
         });
 
         if (containerRef.current) {
@@ -267,13 +282,11 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         await executeScriptsSerial(doc);
 
         setTimeout(() => {
-          try {
-            document.dispatchEvent(
-              new Event("DOMContentLoaded", { bubbles: true })
-            );
-            window.dispatchEvent(new Event("load", { bubbles: true }));
-            window.dispatchEvent(new Event("pageshow", { bubbles: true }));
-          } catch {}
+          document.dispatchEvent(
+            new Event("DOMContentLoaded", { bubbles: true })
+          );
+          window.dispatchEvent(new Event("load", { bubbles: true }));
+          window.dispatchEvent(new Event("pageshow", { bubbles: true }));
         }, 300);
 
         submitHandler = (e) => {
@@ -305,14 +318,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     return () => {
       aborted = true;
-      try {
-        if (containerRef.current && submitHandler)
-          containerRef.current.removeEventListener(
-            "submit",
-            submitHandler,
-            true
-          );
-      } catch {}
+      if (containerRef.current && submitHandler)
+        containerRef.current.removeEventListener("submit", submitHandler, true);
     };
   }, [pageUrl, themeBaseUrl, onNavigate]);
 
