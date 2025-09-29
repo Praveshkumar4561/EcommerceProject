@@ -24,7 +24,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://srv689968.hstgr.cloud","http://147.93.45.171:1600"],
+    origin: ["http://demo.webriefly.com", "http://147.93.45.171:1600"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -299,7 +299,7 @@ app.get("/sitemap.xml", async (req, res, next) => {
   try {
     res.header("Content-Type", "application/xml");
     const smStream = new SitemapStream({
-      hostname: "http://srv689968.hstgr.cloud",
+      hostname: "http://demo.webriefly.com",
     });
     links.forEach((link) => smStream.write(link));
     smStream.end();

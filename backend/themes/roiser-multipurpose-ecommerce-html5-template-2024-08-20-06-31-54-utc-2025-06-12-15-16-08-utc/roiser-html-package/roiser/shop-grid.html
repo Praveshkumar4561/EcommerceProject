@@ -96,16 +96,16 @@
             const href = a.getAttribute("href");
             const page = href.replace(/\.html$/, "");
             if (page === "index" || page === "") {
-              a.setAttribute("href", "http://srv689968.hstgr.cloud/");
+              a.setAttribute("href", "http://demo.webriefly.com/");
             } else {
-              a.setAttribute("href", `http://srv689968.hstgr.cloud/${page}`);
+              a.setAttribute("href", `http://demo.webriefly.com/${page}`);
             }
             a.addEventListener("click", (e) => {
               e.preventDefault();
               if (page === "index" || page === "") {
-                window.parent.location.href = "http://srv689968.hstgr.cloud/";
+                window.parent.location.href = "http://demo.webriefly.com/";
               } else {
-                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+                window.parent.location.href = `http://demo.webriefly.com/${page}`;
               }
             });
           });

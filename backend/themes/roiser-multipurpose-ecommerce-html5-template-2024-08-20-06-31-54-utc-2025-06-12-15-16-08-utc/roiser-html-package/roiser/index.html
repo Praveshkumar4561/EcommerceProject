@@ -317,16 +317,16 @@
             const href = a.getAttribute("href");
             const page = href.replace(/\.html$/, "");
             if (page === "index" || page === "") {
-              a.setAttribute("href", "http://srv689968.hstgr.cloud/");
+              a.setAttribute("href", "http://demo.webriefly.com/");
             } else {
-              a.setAttribute("href", `http://srv689968.hstgr.cloud/${page}`);
+              a.setAttribute("href", `http://demo.webriefly.com/${page}`);
             }
             a.addEventListener("click", (e) => {
               e.preventDefault();
               if (page === "index" || page === "") {
-                window.parent.location.href = "http://srv689968.hstgr.cloud/";
+                window.parent.location.href = "http://demo.webriefly.com/";
               } else {
-                window.parent.location.href = `http://srv689968.hstgr.cloud/${page}`;
+                window.parent.location.href = `http://demo.webriefly.com/${page}`;
               }
             });
           });
@@ -1046,14 +1046,6 @@
       </div>
     </section>
 
-
-
-
-
-
-
-    
-
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
@@ -1472,23 +1464,6 @@
           .catch((err) => console.error("Error loading data:", err));
       });
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <div
       id="image-lightbox"
@@ -2051,310 +2026,317 @@
       </div>
     </section>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        function getUserId() {
+          return localStorage.getItem("user_id") || null;
+        }
 
+        function toSeoUrl(str) {
+          return str
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
+        }
 
+        let currentImages = [];
+        let currentIndex = 0;
 
+        const imageLightbox = document.getElementById("image-lightbox");
+        const lightboxImg = document.getElementById("lightbox-image");
+        const counterEl = document.getElementById("lightbox-counter");
+        const btnPrev = document.getElementById("lightbox-prev");
+        const btnNext = document.getElementById("lightbox-next");
+        const btnClose = document.getElementById("lightbox-close");
+        const flashExpiryEl = document.getElementById("flash-expiry");
 
+        function openLightbox(index) {
+          if (!window.productMainImages || !window.productMainImages.length)
+            return;
+          currentImages = window.productMainImages.slice();
+          currentIndex = index;
+          updateLightbox();
+          if (imageLightbox) imageLightbox.style.display = "flex";
+        }
 
+        function updateLightbox() {
+          if (!currentImages.length || !lightboxImg || !counterEl) return;
+          lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
+          counterEl.textContent = `${currentIndex + 1} of ${
+            currentImages.length
+          }`;
+        }
 
+        if (btnPrev && btnNext && btnClose) {
+          btnPrev.addEventListener("click", () => {
+            if (!currentImages.length) return;
+            currentIndex =
+              (currentIndex - 1 + currentImages.length) % currentImages.length;
+            updateLightbox();
+          });
+          btnNext.addEventListener("click", () => {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            updateLightbox();
+          });
+          btnClose.addEventListener("click", () => {
+            if (imageLightbox) imageLightbox.style.display = "none";
+            currentImages = [];
+            currentIndex = 0;
+          });
+        }
 
+        function showBanner(msg, type = "success") {
+          const b = document.createElement("div");
+          b.className = `banner ${type}`;
+          b.textContent = msg;
+          Object.assign(b.style, {
+            position: "fixed",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            padding: "10px 20px",
+            background: type === "success" ? "#4caf50" : "#f44336",
+            color: "#fff",
+            borderRadius: "4px",
+            zIndex: 9999,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          });
+          document.body.appendChild(b);
+          setTimeout(() => b.remove(), 3000);
+        }
 
+        function formatPrice(price) {
+          const p = parseFloat(price);
+          return isNaN(p) ? "$0.01" : `$${p.toFixed(2)}`;
+        }
 
+        function getRandomStars() {
+          return Math.floor(Math.random() * 2) + 4;
+        }
 
+        function getRandomReviews() {
+          return Math.floor(Math.random() * 100) + 1;
+        }
 
+        fetch("http://147.93.45.171:1600/flashsalesmaindata")
+          .then((res) => res.json())
+          .then((data) => {
+            const dealWrapper = document.getElementById(
+              "deal-products-wrapper"
+            );
+            if (!dealWrapper) return;
 
+            if (!Array.isArray(data) || data.length === 0) {
+              dealWrapper.innerHTML =
+                '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
+              return;
+            }
 
+            const grouped = data.reduce((acc, item) => {
+              (acc[item.flashsale_id] = acc[item.flashsale_id] || []).push(
+                item
+              );
+              return acc;
+            }, {});
 
+            const saleIds = Object.keys(grouped);
+            if (saleIds.length === 0) {
+              dealWrapper.innerHTML =
+                '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
+              return;
+            }
 
+            const firstSaleId = saleIds[0];
+            const products = grouped[firstSaleId].slice(0, 2);
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  function getUserId() {
-    return localStorage.getItem("user_id") || null;
-  }
+            const endDates = products.map((p) => new Date(p.end_date));
+            const latestEndDate = new Date(Math.max(...endDates));
+            if (flashExpiryEl) {
+              const options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              };
+              flashExpiryEl.innerHTML = `Limited Time offer. The Deal will expire <br />${latestEndDate.toLocaleDateString(
+                "en-US",
+                options
+              )}`;
+            }
 
-  function toSeoUrl(str) {
-    return str
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]+/g, "");
-  }
+            const firstDealShop = dealWrapper.querySelector(".deal-shop");
+            if (!firstDealShop) return;
+            const templateCard =
+              firstDealShop.closest(".col-md-6") || firstDealShop.parentElement;
+            if (!templateCard) return;
 
-  let currentImages = [];
-  let currentIndex = 0;
+            Array.from(dealWrapper.querySelectorAll(".col-md-6")).forEach(
+              (col) => {
+                if (col.querySelector(".deal-shop")) col.remove();
+              }
+            );
 
-  const imageLightbox = document.getElementById("image-lightbox");
-  const lightboxImg = document.getElementById("lightbox-image");
-  const counterEl = document.getElementById("lightbox-counter");
-  const btnPrev = document.getElementById("lightbox-prev");
-  const btnNext = document.getElementById("lightbox-next");
-  const btnClose = document.getElementById("lightbox-close");
-  const flashExpiryEl = document.getElementById("flash-expiry");
+            window.productMainImages = products.map(
+              (p) => p.image || "placeholder.jpg"
+            );
 
-  function openLightbox(index) {
-    if (!window.productMainImages || !window.productMainImages.length)
-      return;
-    currentImages = window.productMainImages.slice();
-    currentIndex = index;
-    updateLightbox();
-    if (imageLightbox) imageLightbox.style.display = "flex";
-  }
+            products.forEach((prd, idx) => {
+              const container = templateCard.cloneNode(true);
 
-  function updateLightbox() {
-    if (!currentImages.length || !lightboxImg || !counterEl) return;
-    lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
-    counterEl.textContent = `${currentIndex + 1} of ${currentImages.length}`;
-  }
+              const img = container.querySelector(".shop-thumb img");
+              if (img) {
+                img.src = `http://147.93.45.171:1600/uploads/${prd.image}`;
+                img.alt = prd.product_name || "";
+                if (img.parentElement) {
+                  img.parentElement.href = `/shop-details/${toSeoUrl(
+                    prd.product_name
+                  )}`;
+                }
+              }
 
-  if (btnPrev && btnNext && btnClose) {
-    btnPrev.addEventListener("click", () => {
-      if (!currentImages.length) return;
-      currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-      updateLightbox();
-    });
-    btnNext.addEventListener("click", () => {
-      if (!currentImages.length) return;
-      currentIndex = (currentIndex + 1) % currentImages.length;
-      updateLightbox();
-    });
-    btnClose.addEventListener("click", () => {
-      if (imageLightbox) imageLightbox.style.display = "none";
-      currentImages = [];
-      currentIndex = 0;
-    });
-  }
+              const badge = container.querySelector(".shop-thumb .sale");
+              if (badge)
+                badge.textContent = prd.price_sale
+                  ? prd.label || "Sale"
+                  : "New";
 
-  function showBanner(msg, type = "success") {
-    const b = document.createElement("div");
-    b.className = `banner ${type}`;
-    b.textContent = msg;
-    Object.assign(b.style, {
-      position: "fixed",
-      top: "10px",
-      left: "50%",
-      transform: "translateX(-50%)",
-      padding: "10px 20px",
-      background: type === "success" ? "#4caf50" : "#f44336",
-      color: "#fff",
-      borderRadius: "4px",
-      zIndex: 9999,
-      boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-    });
-    document.body.appendChild(b);
-    setTimeout(() => b.remove(), 3000);
-  }
+              const categoryEl = container.querySelector(
+                ".shop-content .category"
+              );
+              if (categoryEl) categoryEl.textContent = prd.brand || "";
 
-  function formatPrice(price) {
-    const p = parseFloat(price);
-    return isNaN(p) ? "$0.01" : `$${p.toFixed(2)}`;
-  }
+              const titleLink = container.querySelector(
+                ".shop-content .title a"
+              );
+              if (titleLink) {
+                titleLink.textContent = prd.product_name || "";
+                titleLink.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
+                titleLink.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  window.location.href = `/shop-details/${toSeoUrl(
+                    prd.product_name
+                  )}`;
+                });
+              }
 
-  function getRandomStars() {
-    return Math.floor(Math.random() * 2) + 4;
-  }
+              const priceEl = container.querySelector(".shop-content .price");
+              if (priceEl) {
+                if (prd.price_sale && prd.price_sale !== prd.price) {
+                  priceEl.innerHTML = `<span class="offer">${prd.price}</span>`;
+                } else {
+                  priceEl.textContent = prd.price;
+                }
+              }
 
-  function getRandomReviews() {
-    return Math.floor(Math.random() * 100) + 1;
-  }
+              const reviewStars = container.querySelector(
+                ".review-wrap .review"
+              );
+              const reviewCount = container.querySelector("#review-count");
+              if (reviewStars && reviewCount) {
+                const stars = getRandomStars();
+                reviewStars.innerHTML = "";
+                for (let i = 0; i < 5; i++) {
+                  const iconClass =
+                    i < stars ? "fa-solid fa-star" : "fa-regular fa-star";
+                  reviewStars.innerHTML += `<li><i class="${iconClass}"></i></li>`;
+                }
+                reviewCount.textContent = `(${getRandomReviews()} Reviews)`;
+              }
 
-  fetch("http://147.93.45.171:1600/flashsalesmaindata")
-    .then((res) => res.json())
-    .then((data) => {
-      const dealWrapper = document.getElementById("deal-products-wrapper");
-      if (!dealWrapper) return;
+              const cartBtn = container
+                .querySelector("i.fa-cart-shopping")
+                ?.closest("a");
+              if (cartBtn) {
+                cartBtn.href = `/shop-details/${toSeoUrl(
+                  prd.product_name
+                )}#add-to-cart`;
+                cartBtn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  const user_id = getUserId();
+                  if (!user_id)
+                    return showBanner("Please log in first", "error");
+                  fetch("http://147.93.45.171:1600/addcart", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      name: prd.product_name,
+                      price: prd.price,
+                      price_sale: prd.price_sale,
+                      image: prd.image,
+                      user_id,
+                      store: "default",
+                    }),
+                  })
+                    .then((r) => r.text())
+                    .then(() => {
+                      cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      showBanner("Product added to cart!", "success");
+                    })
+                    .catch(() => showBanner("Failed to add to cart", "error"));
+                });
+              }
 
-      if (!Array.isArray(data) || data.length === 0) {
-        dealWrapper.innerHTML =
-          '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
-        return;
-      }
+              const heartBtn = container
+                .querySelector("i.fa-heart")
+                ?.closest("a");
+              if (heartBtn) {
+                heartBtn.href = `/shop-details/${toSeoUrl(
+                  prd.product_name
+                )}#wishlist`;
+                heartBtn.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  const user_id = getUserId();
+                  if (!user_id)
+                    return showBanner("Please log in first", "error");
+                  fetch("http://147.93.45.171:1600/wishlistpost", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      user_id,
+                      product_name: prd.product_name,
+                      image: prd.image,
+                      store: "default",
+                      price: prd.price,
+                      price_sale: prd.price_sale,
+                      sku: prd.sku || prd.id || "",
+                      stockstatus: prd.stockstatus || true,
+                    }),
+                  })
+                    .then((r) => {
+                      if (!r.ok) throw Error();
+                      return r.text();
+                    })
+                    .then(() => {
+                      heartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                      showBanner("Added to wishlist!", "success");
+                    })
+                    .catch(() =>
+                      showBanner("Failed to add to wishlist", "error")
+                    );
+                });
+              }
 
-      const grouped = data.reduce((acc, item) => {
-        (acc[item.flashsale_id] = acc[item.flashsale_id] || []).push(item);
-        return acc;
-      }, {});
+              const eyeIcon = container.querySelector("a.view-lightbox");
+              if (eyeIcon) {
+                // Use real image URL for SEO
+                eyeIcon.href = `/shop-details/${toSeoUrl(
+                  prd.product_name
+                )}#image-${idx}`;
+                eyeIcon.dataset.index = idx;
+                eyeIcon.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  openLightbox(Number(eyeIcon.dataset.index));
+                });
+              }
 
-      const saleIds = Object.keys(grouped);
-      if (saleIds.length === 0) {
-        dealWrapper.innerHTML =
-          '<div class="col-md-12 text-center text-danger fw-bold">No deal products available at the moment.</div>';
-        return;
-      }
-
-      const firstSaleId = saleIds[0];
-      const products = grouped[firstSaleId].slice(0, 2);
-
-      const endDates = products.map((p) => new Date(p.end_date));
-      const latestEndDate = new Date(Math.max(...endDates));
-      if (flashExpiryEl) {
-        const options = { year: "numeric", month: "long", day: "numeric" };
-        flashExpiryEl.innerHTML = `Limited Time offer. The Deal will expire <br />${latestEndDate.toLocaleDateString(
-          "en-US",
-          options
-        )}`;
-      }
-
-      const firstDealShop = dealWrapper.querySelector(".deal-shop");
-      if (!firstDealShop) return;
-      const templateCard = firstDealShop.closest(".col-md-6") || firstDealShop.parentElement;
-      if (!templateCard) return;
-
-      Array.from(dealWrapper.querySelectorAll(".col-md-6")).forEach((col) => {
-        if (col.querySelector(".deal-shop")) col.remove();
+              dealWrapper.appendChild(container);
+            });
+          })
+          .catch((err) => {
+            console.error("Error loading flash sale data:", err);
+          });
       });
-
-      window.productMainImages = products.map((p) => p.image || "placeholder.jpg");
-
-      products.forEach((prd, idx) => {
-        const container = templateCard.cloneNode(true);
-
-        const img = container.querySelector(".shop-thumb img");
-        if (img) {
-          img.src = `http://147.93.45.171:1600/uploads/${prd.image}`;
-          img.alt = prd.product_name || "";
-          if (img.parentElement) {
-            img.parentElement.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
-          }
-        }
-
-        const badge = container.querySelector(".shop-thumb .sale");
-        if (badge) badge.textContent = prd.price_sale ? prd.label || "Sale" : "New";
-
-        const categoryEl = container.querySelector(".shop-content .category");
-        if (categoryEl) categoryEl.textContent = prd.brand || "";
-
-        const titleLink = container.querySelector(".shop-content .title a");
-        if (titleLink) {
-          titleLink.textContent = prd.product_name || "";
-          titleLink.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
-          titleLink.addEventListener("click", (e) => {
-            e.preventDefault();
-            window.location.href = `/shop-details/${toSeoUrl(prd.product_name)}`;
-          });
-        }
-
-        const priceEl = container.querySelector(".shop-content .price");
-        if (priceEl) {
-          if (prd.price_sale && prd.price_sale !== prd.price) {
-            priceEl.innerHTML = `<span class="offer">${prd.price}</span>`;
-          } else {
-            priceEl.textContent = prd.price;
-          }
-        }
-
-        const reviewStars = container.querySelector(".review-wrap .review");
-        const reviewCount = container.querySelector("#review-count");
-        if (reviewStars && reviewCount) {
-          const stars = getRandomStars();
-          reviewStars.innerHTML = "";
-          for (let i = 0; i < 5; i++) {
-            const iconClass = i < stars ? "fa-solid fa-star" : "fa-regular fa-star";
-            reviewStars.innerHTML += `<li><i class="${iconClass}"></i></li>`;
-          }
-          reviewCount.textContent = `(${getRandomReviews()} Reviews)`;
-        }
-
-        const cartBtn = container.querySelector("i.fa-cart-shopping")?.closest("a");
-        if (cartBtn) {
-          cartBtn.href = `/shop-details/${toSeoUrl(prd.product_name)}#add-to-cart`;
-          cartBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const user_id = getUserId();
-            if (!user_id) return showBanner("Please log in first", "error");
-            fetch("http://147.93.45.171:1600/addcart", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: prd.product_name,
-                price: prd.price,
-                price_sale: prd.price_sale,
-                image: prd.image,
-                user_id,
-                store: "default",
-              }),
-            })
-              .then((r) => r.text())
-              .then(() => {
-                cartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                showBanner("Product added to cart!", "success");
-              })
-              .catch(() => showBanner("Failed to add to cart", "error"));
-          });
-        }
-
-        const heartBtn = container.querySelector("i.fa-heart")?.closest("a");
-        if (heartBtn) {
-          heartBtn.href = `/shop-details/${toSeoUrl(prd.product_name)}#wishlist`;
-          heartBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const user_id = getUserId();
-            if (!user_id) return showBanner("Please log in first", "error");
-            fetch("http://147.93.45.171:1600/wishlistpost", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                user_id,
-                product_name: prd.product_name,
-                image: prd.image,
-                store: "default",
-                price: prd.price,
-                price_sale: prd.price_sale,
-                sku: prd.sku || prd.id || "",
-                stockstatus: prd.stockstatus || true,
-              }),
-            })
-              .then((r) => {
-                if (!r.ok) throw Error();
-                return r.text();
-              })
-              .then(() => {
-                heartBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                showBanner("Added to wishlist!", "success");
-              })
-              .catch(() => showBanner("Failed to add to wishlist", "error"));
-          });
-        }
-
-        const eyeIcon = container.querySelector("a.view-lightbox");
-        if (eyeIcon) {
-          // Use real image URL for SEO
-          eyeIcon.href = `/shop-details/${toSeoUrl(prd.product_name)}#image-${idx}`;
-          eyeIcon.dataset.index = idx;
-          eyeIcon.addEventListener("click", (e) => {
-            e.preventDefault();
-            openLightbox(Number(eyeIcon.dataset.index));
-          });
-        }
-
-        dealWrapper.appendChild(container);
-      });
-    })
-    .catch((err) => {
-      console.error("Error loading flash sale data:", err);
-    });
-});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    </script>
 
     <section class="blog-section pb-100">
       <div class="container">
