@@ -297,6 +297,6 @@ input[type="search"] {
 
 @media (min-width: 1600px) and (max-width: 1800px) {
   .customer-page {
-    margin-left: 8%;
+    margin-left: 13% !important;
   }
 }

@@ -274,6 +274,7 @@ input[type="search"] {
   .testimonial-page {
     width: 100%;
     max-width: 95%;
+    margin-left: 14%;
   }
 }
 
