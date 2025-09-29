@@ -402,7 +402,7 @@ function CustomerDashEdit() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv689968.hstgr.cloud/user/address/edit"
+          href="http://demo.webriefly.com/user/address/edit"
         />
       </Helmet>
 

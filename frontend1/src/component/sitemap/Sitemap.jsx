@@ -299,7 +299,7 @@ function Sitemap() {
           content="Explore the Sitemap of YourSiteName to easily navigate our website. This page is optimized for SEO and is fully indexable."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/sitemap" />
+        <link rel="canonical" href="http://demo.webriefly.com/sitemap" />
       </Helmet>
 
       <script type="application/ld+json">
@@ -308,22 +308,22 @@ function Sitemap() {
               "@context": "https://schema.org",
               "@type": "SiteNavigationElement",
               "name": "Sitemap",
-              "url": "http://srv689968.hstgr.cloud/sitemap",
+              "url": "http://demo.webriefly.com/sitemap",
               "hasPart": [
-                {"@type": "SiteNavigationElement", "name": "Home", "url": "http://srv689968.hstgr.cloud/"},
-                {"@type": "SiteNavigationElement", "name": "About", "url": "http://srv689968.hstgr.cloud/about"},
-                {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://srv689968.hstgr.cloud/shop"},
-                {"@type": "SiteNavigationElement", "name": "Blog", "url": "http://srv689968.hstgr.cloud/blog"},
-                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://srv689968.hstgr.cloud/product-details"},
-                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "http://srv689968.hstgr.cloud/product-categories"},
-                {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://srv689968.hstgr.cloud/cart"},
-                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://srv689968.hstgr.cloud/wishlist"},
-                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://srv689968.hstgr.cloud/contact-us"},
-                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "http://srv689968.hstgr.cloud/faqs"},
-                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "http://srv689968.hstgr.cloud/privacy-policy"},
-                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "http://srv689968.hstgr.cloud/medicine-policy"},
-                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "http://srv689968.hstgr.cloud/terms-condition"},
-                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "http://srv689968.hstgr.cloud/sitemap"}
+                {"@type": "SiteNavigationElement", "name": "Home", "url": "http://demo.webriefly.com/"},
+                {"@type": "SiteNavigationElement", "name": "About", "url": "http://demo.webriefly.com/about"},
+                {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://demo.webriefly.com/shop"},
+                {"@type": "SiteNavigationElement", "name": "Blog", "url": "http://demo.webriefly.com/blog"},
+                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://demo.webriefly.com/product-details"},
+                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "http://demo.webriefly.com/product-categories"},
+                {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://demo.webriefly.com/cart"},
+                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://demo.webriefly.com/wishlist"},
+                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://demo.webriefly.com/contact-us"},
+                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "http://demo.webriefly.com/faqs"},
+                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "http://demo.webriefly.com/privacy-policy"},
+                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "http://demo.webriefly.com/medicine-policy"},
+                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "http://demo.webriefly.com/terms-condition"},
+                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "http://demo.webriefly.com/sitemap"}
               ]
             }
           `}

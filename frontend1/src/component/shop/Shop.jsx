@@ -258,13 +258,13 @@ function Shop() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv689968.hstgr.cloud/",
+            item: "http://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Shop",
-            item: "http://srv689968.hstgr.cloud/shop",
+            item: "http://demo.webriefly.com/shop",
           },
         ],
       },
@@ -538,7 +538,7 @@ function Shop() {
           content="Explore our latest collection and shop online for the best deals on top-quality products. Fast shipping & secure checkout available."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/shop" />
+        <link rel="canonical" href="http://demo.webriefly.com/shop" />
       </Helmet>
 
       <div className="container-fluid">

@@ -158,7 +158,7 @@ function BlogPage() {
       {
         "@type": "WebSite",
         name: "RxLyte",
-        url: "http://srv689968.hstgr.cloud/",
+        url: "http://demo.webriefly.com/",
         description:
           "RxLyte is a modern ecommerce platform offering a wide range of premium healthcare products.",
         keywords:
@@ -185,13 +185,13 @@ function BlogPage() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv689968.hstgr.cloud/",
+            item: "http://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Blog",
-            item: "http://srv689968.hstgr.cloud/blog",
+            item: "http://demo.webriefly.com/blog",
           },
         ],
       },
@@ -328,7 +328,7 @@ function BlogPage() {
           content="Stay updated with the latest shopping trends, expert tips, and exclusive insights. Read our blog for guides, reviews, and industry news."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/blog" />
+        <link rel="canonical" href="http://demo.webriefly.com/blog" />
       </Helmet>
 
       <div className="container-fluid">

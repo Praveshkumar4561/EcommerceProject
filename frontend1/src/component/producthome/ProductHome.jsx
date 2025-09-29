@@ -515,7 +515,7 @@ function ProductHome() {
           content="Explore detailed information about our top-quality products. Buy online with secure checkout and fast delivery at Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/products" />
+        <link rel="canonical" href="http://demo.webriefly.com/products" />
       </Helmet>
 
       <div

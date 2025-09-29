@@ -95,7 +95,7 @@ function AdminLogin() {
   };
 
   const location = useLocation();
-  const baseUrl = "http://srv689968.hstgr.cloud";
+  const baseUrl = "http://demo.webriefly.com";
 
   return (
     <>

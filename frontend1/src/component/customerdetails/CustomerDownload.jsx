@@ -341,7 +341,7 @@ function CustomerDownload() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv689968.hstgr.cloud/user/product-reviews"
+          href="http://demo.webriefly.com/user/product-reviews"
         />
       </Helmet>
 

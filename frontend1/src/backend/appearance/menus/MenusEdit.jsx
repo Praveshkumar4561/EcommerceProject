@@ -246,12 +246,12 @@ function MenusEdit() {
 
         <link
           rel="shortcut icon"
-          href="http://srv689968.hstgr.cloud/assets/Tonic.svg"
+          href="http://demo.webriefly.com/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://srv689968.hstgr.cloud/assets/Tonic.svg"
+          content="http://demo.webriefly.com/assets/Tonic.svg"
         />
 
         <meta
@@ -264,10 +264,10 @@ function MenusEdit() {
         />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://srv689968.hstgr.cloud/" />
+        <meta property="og:url" content="http://demo.webriefly.com/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/" />
+        <link rel="canonical" href="http://demo.webriefly.com/" />
       </Helmet>
 
       <div

@@ -890,13 +890,13 @@ function ProductDetail() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://srv689968.hstgr.cloud/",
+            item: "http://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Products",
-            item: "http://srv689968.hstgr.cloud/product/details",
+            item: "http://demo.webriefly.com/product/details",
           },
         ],
       },
@@ -1109,7 +1109,7 @@ function ProductDetail() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv689968.hstgr.cloud/product-details"
+          href="http://demo.webriefly.com/product-details"
         />
       </Helmet>
 

@@ -329,7 +329,7 @@ function Login() {
           content="Sign in to your Rxlyte account for a seamless shopping experience. Access your orders, wishlist, and exclusive deals securely."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/login" />
+        <link rel="canonical" href="http://demo.webriefly.com/login" />
       </Helmet>
 
       <div

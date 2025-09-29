@@ -341,7 +341,7 @@ function CustomerRequest() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv689968.hstgr.cloud/user/order-returns"
+          href="http://demo.webriefly.com/user/order-returns"
         />
       </Helmet>
 

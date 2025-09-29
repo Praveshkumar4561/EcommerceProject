@@ -220,10 +220,7 @@ function Privacy() {
           content="Read our Privacy Policy to understand how we collect, use, and protect your personal information at Rxlyte. Your data security is our top priority."
         />
         <meta name="robots" content="index, follow" />
-        <link
-          rel="canonical"
-          href="http://srv689968.hstgr.cloud/privacy-policy"
-        />
+        <link rel="canonical" href="http://demo.webriefly.com/privacy-policy" />
       </Helmet>
 
       <div

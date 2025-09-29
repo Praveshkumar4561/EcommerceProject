@@ -223,7 +223,7 @@ const DynamicPage = () => {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href={`http://srv689968.hstgr.cloud/product-details/${productId}`}
+          href={`http://demo.webriefly.com/product-details/${productId}`}
         />
       </Helmet>
 

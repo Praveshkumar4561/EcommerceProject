@@ -242,7 +242,7 @@ function ErrorPage() {
           content="The page you are looking for does not exist or may have been moved. Return to the homepage or explore more on Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/error" />
+        <link rel="canonical" href="http://demo.webriefly.com/error" />
       </Helmet>
 
       <div

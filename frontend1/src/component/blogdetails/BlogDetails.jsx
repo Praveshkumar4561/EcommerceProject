@@ -255,10 +255,7 @@ function BlogDetails() {
           content="Explore in-depth articles, expert tips, and industry insights. Stay updated with the latest blogs on health, wellness, and shopping trends at Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link
-          rel="canonical"
-          href="http://srv689968.hstgr.cloud/blog-details"
-        />
+        <link rel="canonical" href="http://demo.webriefly.com/blog-details" />
       </Helmet>
 
       <div

@@ -464,7 +464,7 @@ function Cart() {
           content="Review the items in your cart and proceed to secure checkout at Rxlyte. Enjoy a seamless shopping experience with safe payments and fast delivery."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/cart" />
+        <link rel="canonical" href="http://demo.webriefly.com/cart" />
       </Helmet>
 
       <div

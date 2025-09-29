@@ -314,7 +314,7 @@ function Wishlist() {
           content="Keep track of your favorite products in your wishlist at Rxlyte. Save items for later and shop when you're ready. Fast checkout & best deals!"
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://srv689968.hstgr.cloud/wishlist" />
+        <link rel="canonical" href="http://demo.webriefly.com/wishlist" />
       </Helmet>
 
       <div

@@ -379,7 +379,7 @@ function CustomerAddressCreate() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://srv689968.hstgr.cloud/user/address/create"
+          href="http://demo.webriefly.com/user/address/create"
         />
       </Helmet>
 
