@@ -375,7 +375,7 @@ input[type="search"] {
   .content-reports {
     margin-left: 270px;
     width: 100%;
-    max-width: 70%;
+    max-width: 68%;
   }
   body {
     display: inline;
@@ -396,7 +396,7 @@ input[type="search"] {
   .content-reports {
     margin-left: 270px;
     width: 100%;
-    max-width: 75%;
+    max-width: 73%;
   }
   body {
     display: inline;
@@ -418,7 +418,7 @@ input[type="search"] {
   .content-reports {
     margin-left: 220px;
     width: 100%;
-    max-width: 84%;
+    max-width: 82%;
   }
   body {
     display: inline;
@@ -431,9 +431,9 @@ input[type="search"] {
 }
 @media (min-width: 1400px) and (max-width: 1800px) {
   .content-reports {
-    margin-left: 130px;
+    margin-left: 153px;
     width: 100%;
-    max-width: 99%;
+    max-width: 92%;
   }
   .content-reports2 {
     margin-left: 144px;
