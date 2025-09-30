@@ -1613,7 +1613,7 @@
                 const text = await res.text();
                 try {
                   return JSON.parse(text);
-                } catch (parseErr) {
+                } catch {
                   throw new Error("Invalid JSON: " + text.slice(0, 200));
                 }
               } catch (err) {
@@ -1639,7 +1639,6 @@
                 row = document.createElement("div");
                 row.className = "row justify-content-center";
                 cat.appendChild(row);
-                console.debug("Created missing row for", catSelector);
               }
             }
             return row;
@@ -1654,68 +1653,79 @@
               parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) ||
               0;
             const slug = makeSlug(p.name);
+
             const col = document.createElement("div");
             col.className = "col-xl-3 col-lg-4 col-sm-6";
             col.innerHTML = `
-      <div class="product-item style-one mb-40" data-aos="fade-up">
-        <div class="product-thumbnail">
-          <a href="/shop-details/${slug}" class="w-100 h-100">
-            <img src="http://147.93.45.171:1600/uploads/${
-              p.image || ""
-            }" alt="${(p.name || "").replace(/"/g, "")}">
-          </a>
-          <div class="discount">${p.label || ""}</div>
-          <div class="hover-content">
-            <a href="javascript:void(0)" class="icon-btn add-to-wishlist"
-              data-name="${(p.name || "").replace(/"/g, "")}"
-              data-store="${(p.store || "").replace(/"/g, "")}"
-              data-image="${(p.image || "").replace(/"/g, "")}"
-              data-price="${price}"
-              data-price_sale="${sale}"
-              data-sku="${(p.sku || "").replace(/"/g, "")}"
-              data-stockstatus="${(p.stockstatus || "").replace(/"/g, "")}">
-              <i class="fa fa-heart"></i>
-            </a>
-
-            <a href="javascript:void(0)" class="img-popup icon-btn" data-img="http://147.93.45.171:1600/uploads/${
-              p.image || ""
-            }">
-              <i class="fa fa-eye"></i>
-            </a>
-          </div>
-          <div class="cart-button">
-            <a href="javascript:void(0)" class="cart-btn add-to-cart"
-              data-name="${(p.name || "").replace(/"/g, "")}"
-              data-store="${(p.store || "").replace(/"/g, "")}"
-              data-image="${(p.image || "").replace(/"/g, "")}"
-              data-price="${price}"
-              data-price_sale="${sale}"
-              data-quantity="1">
-              <i class="far fa-shopping-basket"></i>
-              <span class="text">Add To Cart</span>
-            </a>
-          </div>
-        </div>
-        <div class="product-info-wrap">
-          <div class="product-info">
-            <ul class="ratings rating5">
-              ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
-              <li><a href="#">(${Math.floor(Math.random() * 100)})</a></li>
-            </ul>
-            <h4 class="title"><a href="/shop-details/${slug}">${(
+  <div class="product-item style-one mb-40" data-aos="fade-up">
+    <div class="product-thumbnail">
+      <!-- Product image: real link -->
+      <a href="/shop-details/${slug}" class="w-100 h-100">
+        <img src="http://147.93.45.171:1600/uploads/${p.image || ""}" alt="${(
               p.name || ""
-            ).replace(/</g, "")}</a></h4>
-          </div>
-          <div class="product-price">
-            <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
-              2
-            )}</span>
-            <span class="price new-price"><span class="currency"></span>$${price.toFixed(
-              2
-            )}</span>
-          </div>
-        </div>
-      </div>`;
+            ).replace(/"/g, "")}">
+      </a>
+
+      <div class="discount">${p.label || ""}</div>
+      <div class="hover-content">
+        <!-- Wishlist: crawlable link while JS still works -->
+        <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist" 
+          data-name="${(p.name || "").replace(/"/g, "")}" 
+          data-store="${(p.store || "").replace(/"/g, "")}" 
+          data-image="${(p.image || "").replace(/"/g, "")}" 
+          data-price="${price}" 
+          data-price_sale="${sale}" 
+          data-sku="${(p.sku || "").replace(/"/g, "")}" 
+          data-stockstatus="${(p.stockstatus || "").replace(/"/g, "")}">
+          <i class="fa fa-heart"></i>
+        </a>
+
+        <!-- Quick-view: now links to product detail page -->
+        <a href="/shop-details/${slug}" class="img-popup icon-btn">
+          <i class="fa fa-eye"></i>
+        </a>
+      </div>
+
+      <div class="cart-button">
+        <!-- Add-to-cart: still JS, keep as javascript:void(0) -->
+        <a href="javascript:void(0)" class="cart-btn add-to-cart" 
+          data-name="${(p.name || "").replace(/"/g, "")}" 
+          data-store="${(p.store || "").replace(/"/g, "")}" 
+          data-image="${(p.image || "").replace(/"/g, "")}" 
+          data-price="${price}" 
+          data-price_sale="${sale}" 
+          data-quantity="1">
+          <i class="far fa-shopping-basket"></i>
+          <span class="text">Add To Cart</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="product-info-wrap">
+      <div class="product-info">
+        <ul class="ratings rating5">
+          ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
+          <li><a href="/shop-details/${slug}">(${Math.floor(
+              Math.random() * 100
+            )})</a></li>
+        </ul>
+        <h4 class="title">
+          <a href="/shop-details/${slug}">${(p.name || "").replace(
+              /</g,
+              ""
+            )}</a>
+        </h4>
+      </div>
+      <div class="product-price">
+        <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
+          2
+        )}</span>
+        <span class="price new-price"><span class="currency"></span>$${price.toFixed(
+          2
+        )}</span>
+      </div>
+    </div>
+  </div>`;
             return col;
           }
 
@@ -1725,7 +1735,6 @@
           async function loadFeatureProducts() {
             if (renderInProgress) return;
             renderInProgress = true;
-            console.debug("loadFeatureProducts start");
 
             const bestRow = ensureRow("#cat1");
             const newRow = ensureRow("#cat2");
@@ -1743,10 +1752,6 @@
                 300
               );
               if (!Array.isArray(products) || products.length === 0) {
-                console.debug(
-                  "productpagedata returned empty/invalid array",
-                  products
-                );
                 renderInProgress = false;
                 return;
               }
@@ -1757,11 +1762,9 @@
                   (p.label === "New" && newRow) ||
                   bestRow;
                 if (target) target.appendChild(makeCard(p));
-                else console.debug("No target row available for product", p);
               });
 
               productsRendered = true;
-              console.debug("Products rendered:", products.length);
               if (typeof AOS !== "undefined") AOS.refresh();
             } catch (err) {
               console.error("Failed to load products:", err.message || err);
@@ -1785,16 +1788,11 @@
                 return true;
               });
 
-              if (!listEl) {
-                console.debug("listEl missing");
-                return;
-              }
+              if (!listEl) return;
+
               listEl.innerHTML = "";
               if (!unique.length) {
-                listEl.innerHTML = `
-          <li class="sidebar-cart-item sidebar-cart-empty">
-            Your cart is empty.
-          </li>`;
+                listEl.innerHTML = `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
                 if (subtotalEl) subtotalEl.textContent = "$0.00";
                 return;
               }
@@ -1808,22 +1806,22 @@
                 listEl.insertAdjacentHTML(
                   "beforeend",
                   `
-          <li class="sidebar-cart-item" data-id="${
-            item.id
-          }" data-price="${price}" data-qty="${qty}">
-            <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-            <a href="/shop-details/${slug}">
-              <img src="http://147.93.45.171:1600/uploads/${item.image}" alt="${
-                    item.name
-                  }"/>
-              ${item.name}
-            </a>
-            <span class="quantity">
-              ${qty} × <span><span class="currency">$</span>${price.toFixed(
+                <li class="sidebar-cart-item" data-id="${
+                  item.id
+                }" data-price="${price}" data-qty="${qty}">
+                  <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+                  <a href="/shop-details/${slug}">
+                    <img src="http://147.93.45.171:1600/uploads/${
+                      item.image
+                    }" alt="${item.name}"/>
+                    ${item.name}
+                  </a>
+                  <span class="quantity">
+                    ${qty} × <span><span class="currency">$</span>${price.toFixed(
                     2
                   )}</span>
-            </span>
-          </li>`
+                  </span>
+                </li>`
                 );
               });
 
@@ -1924,14 +1922,13 @@
             e.preventDefault();
 
             const userId = localStorage.getItem("user_id");
-            if (!userId) {
+            if (!userId)
               return showBanner(
                 wishBtn
                   ? "Please log in to add to wishlist."
                   : "Please log in to add to cart.",
                 "error"
               );
-            }
 
             try {
               const url = cartBtn
@@ -1963,7 +1960,6 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
               });
-
               const text = await res.text();
               if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
 
@@ -2000,20 +1996,17 @@
             }
           }
           startWhenReady();
-
           loadSidebarCart().catch((e) =>
             console.debug("Initial loadSidebarCart failed:", e)
           );
           updateCounts().catch((e) =>
             console.debug("Initial updateCounts failed:", e)
           );
-
           setInterval(updateCounts, 5000);
 
-          window.addEventListener("pageshow", function (event) {
-            if (event.persisted || performance.navigation.type === 2) {
+          window.addEventListener("pageshow", (event) => {
+            if (event.persisted || performance.navigation.type === 2)
               loadFeatureProducts();
-            }
           });
 
           window.addEventListener("load", () => {
@@ -2044,14 +2037,8 @@
               }
               if (sawContainer) break;
             }
-            if (sawContainer) {
-              console.debug(
-                "MutationObserver detected product container; attempting to render products."
-              );
-              loadFeatureProducts();
-            }
+            if (sawContainer) loadFeatureProducts();
           });
-
           observer.observe(document.body, { childList: true, subtree: true });
 
           const checkoutBtn = document.querySelector(
@@ -2082,10 +2069,8 @@
                     lineTotal: price * quantity,
                   };
                 });
-
               const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
               const total = subtotal;
-
               localStorage.setItem(
                 "checkout_cart",
                 JSON.stringify({ items, subtotal, total })

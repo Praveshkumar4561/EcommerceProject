@@ -43,20 +43,20 @@ START: Template Default CSS
   --rr-fs-h4: 20px;
   --rr-fs-h5: 16px;
   --rr-fs-h6: 14px;
-  --rr-color-common-white: #ffffff;
+  --rr-color-common-white: #f5f5f5;
   --rr-color-common-black: #000000;
-  --rr-color-common-dark: #141414;
-  --rr-color-heading-primary: #141414;
-  --rr-color-text-body: #74787c;
-  --rr-color-theme-primary: #e53e3e;
-  --rr-color-theme-secondary: #885b3a;
-  --rr-color-theme-green: #67b02e;
-  --rr-color-theme-third: #885b3a;
+  --rr-color-common-dark: #1a1a1a;
+  --rr-color-heading-primary: #000000;
+  --rr-color-text-body: #4a4a4a;
+  --rr-color-theme-primary: #b22222;
+  --rr-color-theme-secondary: #8b5e3c;
+  --rr-color-theme-green: #4a8c23;
+  --rr-color-theme-third: #8b5e3c;
   --rr-color-bg-1: #11151c;
   --rr-color-grey-1: #f6f6f7;
-  --rr-color-grey-2: #e3e3e3;
+  --rr-color-grey-2: #e0e0e0;
   --rr-color-grey-3: #f3f0e8;
-  --rr-color-border-1: #e8e8e8;
+  --rr-color-border-1: #dcdcdc;
 }
 
 * {
@@ -10085,7 +10085,7 @@ START: Footer CSS
 }
 
 .form-header-name {
-  font-size: 0.90rem !important;
+  font-size: 0.9rem !important;
   font-weight: bold;
   margin-bottom: 8px;
   display: block;
