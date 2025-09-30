@@ -501,6 +501,18 @@
       height: 180px;
       padding: 50px 50px;
     }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   </style>
 
   <body>
@@ -752,8 +764,9 @@
           <a href="index.html"
             ><img src="assets/img/logo/logo-1.png" alt="logo" loading="lazy"
           /></a>
-          <button class="mobile-side-menu-close">
+          <button class="mobile-side-menu-close" aria-label="Close menu">
             <i class="fa-regular fa-xmark"></i>
+            <span class="visually-hidden">Close menu</span>
           </button>
         </div>
         <div class="side-menu-wrap"></div>
@@ -1093,6 +1106,7 @@
 
             let currentImages = [],
               currentIndex = 0;
+
             function openLightbox(idx) {
               currentImages = productMainImages.slice();
               currentIndex = Math.max(
@@ -1102,6 +1116,7 @@
               updateLightbox();
               if (imageLightbox) imageLightbox.style.display = "flex";
             }
+
             function updateLightbox() {
               if (!currentImages.length || !lightboxImg || !counterEl) return;
               lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
@@ -1109,6 +1124,7 @@
                 currentImages.length
               }`;
             }
+
             [btnPrev, btnNext, btnClose].forEach((btn) => {
               if (!btn) return;
               btn.addEventListener("click", (e) => {
@@ -1169,106 +1185,98 @@
                 .replace(/[^a-z0-9-]/g, "");
 
               slide.innerHTML = `
-                  <div class="shop-item" data-product-id="${product.id}">
-                    <div class="shop-thumb">
-                      <div class="overlay"></div>
+        <div class="shop-item" data-product-id="${product.id}">
+          <div class="shop-thumb">
+            <div class="overlay"></div>
 
-                      <a href="/shop-details/${slug}" class="product-link"
-                        data-id="${product.id}"
-                        data-name="${encodeURIComponent(product.name || "")}"
-                        aria-label="View details of ${safeName}">
-                        <img src="http://147.93.45.171:1600/uploads/${img}" alt="${safeName}" loading="lazy"
-                            onerror="this.onerror=null;"/>
-                      </a>
+            <a href="/shop-details/${slug}" class="product-link"
+              data-id="${product.id}"
+              data-name="${encodeURIComponent(product.name || "")}"
+              aria-label="View details of ${safeName}">
+              <img src="http://147.93.45.171:1600/uploads/${img}" alt="${safeName}" loading="lazy"
+                   onerror="this.onerror=null;"/>
+            </a>
 
-                      <span class="sale">${product.label || "New"}</span>
-                      <ul class="shop-list d-flex flex-column">
-                        <li>
-                          <a href="javascript:void(0)" data-action="add-to-cart" data-product-id="${
-                            product.id
-                          }"
-                            aria-label="Add ${safeName} to cart"
-                            data-name="${encodeURIComponent(
-                              product.name || ""
-                            )}"
-                            data-price="${product.price || ""}"
-                            data-price_sale="${product.price_sale || ""}"
-                            data-image="${encodeURIComponent(img || "")}"
-                            data-store="${product.store || "default"}">
-                            <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="javascript:void(0)" data-action="add-to-wishlist" data-product-id="${
-                            product.id
-                          }"
-                            aria-label="Add ${safeName} to wishlist"
-                            data-name="${encodeURIComponent(
-                              product.name || ""
-                            )}"
-                            data-image="${encodeURIComponent(img || "")}"
-                            data-store="${product.store || "default"}"
-                            data-price="${product.price || ""}"
-                            data-price_sale="${product.price_sale || ""}"
-                            data-sku="${product.sku || ""}"
-                            data-stockstatus="${
-                              product.stockstatus || "In Stock"
-                            }">
-                            <i class="fa-light fa-heart" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="javascript:void(0)" data-action="view-lightbox" data-product-id="${
-                            product.id
-                          }" data-index="${idx}"
-                            aria-label="View ${safeName} image preview">
-                            <i class="fa-light fa-eye" aria-hidden="true"></i>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                    <div class="shop-content">
-                      <span class="category">${
-                        product.brand || "No Brand"
-                      }</span>
-                      <h3 class="title">
-                        <a href="/shop-details/${slug}" class="product-link"
-                          data-id="${product.id}"
-                          data-name="${encodeURIComponent(product.name || "")}"
-                          aria-label="View details of ${safeName}">
-                          ${safeName}
-                        </a>
-                      </h3>
-                      <div class="review-wrap">
-                        <ul class="review">
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                          <li><i class="fa-solid fa-star"></i></li>
-                        </ul>
-                        <span>(${
-                          Math.floor(Math.random() * 100) + 1
-                        } Reviews)</span>
-                      </div>
-                      <div class="d-flex flex-row flex-nowrap">
-                        <span class="price">${product.price}</span>
-                        <span class="price_sale ms-2 text-decoration-line-through">
-                          ${product.price_sale}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                `;
+            <span class="sale">${product.label || "New"}</span>
+            <ul class="shop-list d-flex flex-column">
+              <li>
+                <a href="/shop-details/${slug}" role="button" data-action="add-to-cart" data-product-id="${
+                product.id
+              }"
+                  aria-label="Add ${safeName} to cart"
+                  data-name="${encodeURIComponent(product.name || "")}"
+                  data-price="${product.price || ""}"
+                  data-price_sale="${product.price_sale || ""}"
+                  data-image="${encodeURIComponent(img || "")}"
+                  data-store="${product.store || "default"}">
+                  <i class="fa-regular fa-cart-shopping" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop-details/${slug}" role="button" data-action="add-to-wishlist" data-product-id="${
+                product.id
+              }"
+                  aria-label="Add ${safeName} to wishlist"
+                  data-name="${encodeURIComponent(product.name || "")}"
+                  data-image="${encodeURIComponent(img || "")}"
+                  data-store="${product.store || "default"}"
+                  data-price="${product.price || ""}"
+                  data-price_sale="${product.price_sale || ""}"
+                  data-sku="${product.sku || ""}"
+                  data-stockstatus="${product.stockstatus || "In Stock"}">
+                  <i class="fa-light fa-heart" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="/shop-details/${slug}" role="button" data-action="view-lightbox" data-product-id="${
+                product.id
+              }" data-index="${idx}"
+                  aria-label="View ${safeName} image preview">
+                  <i class="fa-light fa-eye" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="shop-content">
+            <span class="category">${product.brand || "No Brand"}</span>
+            <h3 class="title">
+              <a href="/shop-details/${slug}" class="product-link"
+                 data-id="${product.id}"
+                 data-name="${encodeURIComponent(product.name || "")}"
+                 aria-label="View details of ${safeName}">
+                 ${safeName}
+              </a>
+            </h3>
+            <div class="review-wrap">
+              <ul class="review">
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+                <li><i class="fa-solid fa-star"></i></li>
+              </ul>
+              <span>(${Math.floor(Math.random() * 100) + 1} Reviews)</span>
+            </div>
+            <div class="d-flex flex-row flex-nowrap">
+              <span class="price">${product.price}</span>
+              <span class="price_sale ms-2 text-decoration-line-through">${
+                product.price_sale
+              }</span>
+            </div>
+          </div>
+        </div>
+      `;
               wrapper.appendChild(slide);
             });
 
+            // --- Click handling ---
             wrapper.addEventListener("click", (e) => {
               const actionBtn = e.target.closest("[data-action]");
               if (actionBtn) {
                 e.preventDefault();
                 const action = actionBtn.dataset.action;
                 const productId = actionBtn.dataset.productId;
+
                 function updateAllInstances(updater) {
                   document
                     .querySelectorAll(
@@ -1388,6 +1396,7 @@
               }
             });
 
+            // --- Currency conversion ---
             const currencyRates = {
               vdt: { symbol: "$", rate: 1 },
               can: { symbol: "₹", rate: 83 },
@@ -1406,6 +1415,7 @@
                 display.textContent =
                   (options.find((o) => o.dataset.value === selected) || {})
                     .textContent || display.textContent;
+
               const parsePrice = (txt) =>
                 parseFloat(txt.replace(/[^0-9.]/g, "")) || 0;
               const formatPrice = (num, key) =>
@@ -1444,6 +1454,7 @@
               });
             }
 
+            // --- Swiper carousel ---
             if (typeof Swiper !== "undefined") {
               new Swiper(".shop-carousel", {
                 slidesPerView: 4,
@@ -1975,7 +1986,7 @@
                     <span class="sale">New</span>
                     <ul class="shop-list">
                       <li>
-                        <a href="javascript:void(0)"
+                        <a href="/shop-details"
                           ><i
                             class="fa-regular fa-cart-shopping"
                             aria-hidden="true"
@@ -1983,13 +1994,13 @@
                         ></a>
                       </li>
                       <li>
-                        <a href="javascript:void(0)"
+                        <a href="/shop-details"
                           ><i class="fa-light fa-heart"></i
                         ></a>
                       </li>
                       <li>
                         <a
-                          href="javascript:void(0)"
+                          href="/shop-details"
                           class="view-lightbox"
                           aria-label="View ${product.name} image preview"
                           data-index="${idx}"
@@ -2390,19 +2401,19 @@
           const s = document.createElement("style");
           s.id = "sr-only-generated-style";
           s.textContent = `
-/* visually-hidden (screen-reader only) */
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-`;
+          /* visually-hidden (screen-reader only) */
+          .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+          }
+          `;
           document.head.appendChild(s);
         }
 
