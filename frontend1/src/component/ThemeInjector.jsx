@@ -106,6 +106,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           href.startsWith("tel:")
         )
           return;
+        // convert relative to SPA domain path
         href = normalizeSpaPath(href);
         a.setAttribute("href", href);
       });
@@ -151,50 +152,64 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
       });
 
-    const executeScriptsParallel = async (doc) => {
-      const scripts = Array.from(doc.querySelectorAll("script[src]"));
-      await Promise.all(
-        scripts.map(
-          (s) =>
-            new Promise((resolve) => {
-              const el = document.createElement("script");
-              el.src = makeAbsoluteUrl(s.src, themeBaseUrl);
-              el.async = true;
-              el.dataset.themeInjected = "true";
-              el.onload = resolve;
-              el.onerror = resolve;
-              document.body.appendChild(el);
-            })
-        )
-      );
-      // inline scripts
-      doc.querySelectorAll("script:not([src])").forEach((s) => {
-        const content = s.textContent || "";
-        if (/document\.write/.test(content)) return;
-        try {
-          const el = document.createElement("script");
-          el.text = content;
-          el.dataset.themeInjected = "true";
-          document.body.appendChild(el);
-        } catch {}
-      });
+    const executeScriptsSerial = async (doc) => {
+      const scripts = Array.from(doc.querySelectorAll("script"));
+      for (const s of scripts) {
+        if (aborted || !mountedRef.current) break;
+        const src = s.getAttribute("src");
+        const type = s.getAttribute("type") || "";
+        if (src) {
+          const abs = makeAbsoluteUrl(src, themeBaseUrl);
+          await new Promise((resolve) => {
+            const el = document.createElement("script");
+            if (type) el.type = type;
+            el.src = abs;
+            el.async = false;
+            el.dataset.themeInjected = "true";
+            el.onload = resolve;
+            el.onerror = resolve;
+            document.body.appendChild(el);
+          });
+        } else {
+          const content = s.textContent || "";
+          if (/document\.write/.test(content)) continue;
+          try {
+            const el = document.createElement("script");
+            if (type) el.type = type;
+            el.text = content;
+            el.dataset.themeInjected = "true";
+            document.body.appendChild(el);
+          } catch {}
+        }
+      }
     };
 
-    const tryFetchPrimary = async (url) => {
+    const tryFetchWithFallbacks = async (origUrl) => {
+      let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
+      if (res && res.ok) return res;
+
+      if (!origUrl.match(/\.html$/i)) {
+        const alt = origUrl.replace(/\/+$/, "") + ".html";
+        res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
+        if (res && res.ok) return res;
+      }
+
       try {
-        const res = await fetch(url, { cache: "no-cache" });
-        if (res.ok) return res;
+        const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
+        res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
+        if (res && res.ok) return res;
       } catch {}
-      return null;
+
+      return res;
     };
 
     const loadTheme = async () => {
       setLoading(true);
-
       document.head
-        .querySelectorAll(
-          'link[data-theme-injected="true"], style[data-theme-injected="true"]'
-        )
+        .querySelectorAll('link[data-theme-injected="true"]')
+        .forEach((el) => el.remove());
+      document.head
+        .querySelectorAll('style[data-theme-injected="true"]')
         .forEach((el) => el.remove());
       document.body
         .querySelectorAll('script[data-theme-injected="true"]')
@@ -202,8 +217,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       if (containerRef.current) containerRef.current.innerHTML = "";
 
       try {
-        const res = await tryFetchPrimary(pageUrl);
-        if (!res) throw new Error(`Failed to fetch ${pageUrl}`);
+        const res = await tryFetchWithFallbacks(pageUrl);
+        if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
@@ -213,6 +228,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
+        // ensure <base> uses domain, not IP
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
@@ -228,7 +244,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const styleNodes = Array.from(doc.querySelectorAll("style"));
-
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
@@ -236,7 +251,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
           })
         );
-
         styleNodes.forEach((s) => {
           const newStyle = document.createElement("style");
           newStyle.innerHTML = s.innerHTML || "";
@@ -250,7 +264,17 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           rewriteInjectedLinks(containerRef.current);
         }
 
-        await executeScriptsParallel(doc);
+        await executeScriptsSerial(doc);
+
+        setTimeout(() => {
+          try {
+            document.dispatchEvent(
+              new Event("DOMContentLoaded", { bubbles: true })
+            );
+            window.dispatchEvent(new Event("load", { bubbles: true }));
+            window.dispatchEvent(new Event("pageshow", { bubbles: true }));
+          } catch {}
+        }, 300);
 
         submitHandler = (e) => {
           if (!containerRef.current) return;
@@ -294,7 +318,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
   return (
     <div className="theme-wrapper" style={{ width: "100%", height: "100%" }}>
-      {loading && <div className="loader">Loading...</div>}
       <div
         ref={containerRef}
         className="theme-container"
