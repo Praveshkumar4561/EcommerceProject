@@ -116,11 +116,22 @@
       <div class="search-header-main">
         <div class="container">
           <div class="search-header-inner">
-            <div class="site-branding">
-              <a href="index.html" class="brand-logo"
-                ><img src="assets/images/logo/logo-main.png" alt="Logo"
-              /></a>
-            </div>
+           <div class="site-branding">
+  <a href="index.html" class="brand-logo">
+    <img
+      src="assets/images/logo/logo-main.png"
+      alt="Logo"
+      width="216"
+      height="66"
+      style="width: auto; height: auto; max-width: 100%;"
+      srcset="
+        assets/images/logo/logo-main.png 1x,
+        assets/images/logo/logo-main@2x.png 2x
+      "
+    />
+  </a>
+</div>
+
             <div class="product-search-category">
               <form action="#">
                 <select class="wide">
@@ -2285,25 +2296,24 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const uploadPath = `http://147.93.45.171:1600/uploads/${logoUrl}`;
+          const highResLogo = `http://147.93.45.171:1600/uploads/${logoUrl}`;
+          const retinaLogo = highResLogo.replace(/(\.\w+)$/, "@2x$1");
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
             ...document.querySelectorAll(".site-branding .brand-logo img"),
-            ...document.querySelectorAll(
-              ".site-branding.d-lg-none .brand-logo img"
-            ),
             ...document.querySelectorAll(".footer-logo img"),
           ];
 
           logoImgs.forEach((img) => {
-            img.src = uploadPath;
-            img.width = 144;
-            img.height = 44;
+            img.src = highResLogo;
+            img.srcset = `${highResLogo} 1x, ${retinaLogo} 2x`;
+            img.style.width = "auto";
+            img.style.height = "auto";
             img.alt = data.alt_text || "Logo";
 
             img.addEventListener("error", () => {
-              console.warn("Logo image failed to load:", uploadPath);
+              console.warn("Logo image failed to load:", highResLogo);
               img.src = "assets/images/logo/logo-main.png";
             });
           });
