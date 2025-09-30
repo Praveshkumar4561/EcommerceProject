@@ -1564,145 +1564,521 @@
         </div>
       </section>
 
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const listEl = document.querySelector(".pesco-mini-cart-list");
-      const badgeEl = document.querySelector("#pro-counts");
-      const wishlistEl = document.querySelector("#pro-counts1");
-      const subtotalEl = document.querySelector(".cart-mini-total .amount");
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const listEl = document.querySelector(".pesco-mini-cart-list");
+          const badgeEl = document.querySelector("#pro-counts");
+          const wishlistEl = document.querySelector("#pro-counts1");
+          const subtotalEl = document.querySelector(".cart-mini-total .amount");
 
-      function showBanner(msg, type = "success") {
-        const b = document.createElement("div");
-        b.className = `banner ${type}`;
-        b.textContent = msg;
-        Object.assign(b.style, {
-          position: "fixed",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          padding: "10px 20px",
-          background: type === "success" ? "#4caf50" : "#f44336",
-          color: "#fff",
-          borderRadius: "4px",
-          zIndex: 9999,
-          boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+          function showBanner(msg, type = "success") {
+            const b = document.createElement("div");
+            b.className = `banner ${type}`;
+            b.textContent = msg;
+            Object.assign(b.style, {
+              position: "fixed",
+              top: "10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              padding: "10px 20px",
+              background: type === "success" ? "#4caf50" : "#f44336",
+              color: "#fff",
+              borderRadius: "4px",
+              zIndex: 9999,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+            });
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 3000);
+          }
+
+          function makeSlug(name = "product") {
+            return String(name)
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[^\w-]+/g, "");
+          }
+
+          async function fetchWithRetries(
+            url,
+            opts = {},
+            maxRetries = 4,
+            baseDelay = 300
+          ) {
+            for (let attempt = 0; attempt <= maxRetries; attempt++) {
+              try {
+                const cacheBust = `_=${Date.now()}`;
+                const sep = url.includes("?") ? "&" : "?";
+                const res = await fetch(url + sep + cacheBust, opts);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const text = await res.text();
+                try {
+                  return JSON.parse(text);
+                } catch {
+                  throw new Error("Invalid JSON: " + text.slice(0, 200));
+                }
+              } catch (err) {
+                console.debug(
+                  `fetchWithRetries attempt ${attempt} failed:`,
+                  err.message || err
+                );
+                if (attempt === maxRetries) throw err;
+                await new Promise((r) =>
+                  setTimeout(r, baseDelay * Math.pow(2, attempt))
+                );
+              }
+            }
+          }
+
+          function ensureRow(catSelector) {
+            let row = document.querySelector(
+              catSelector + " .row.justify-content-center"
+            );
+            if (!row) {
+              const cat = document.querySelector(catSelector);
+              if (cat) {
+                row = document.createElement("div");
+                row.className = "row justify-content-center";
+                cat.appendChild(row);
+              }
+            }
+            return row;
+          }
+
+          function makeCard(p) {
+            const price =
+              parseFloat(
+                String(p.price || p.price_sale || 0).replace(/[^0-9.]/g, "")
+              ) || 0;
+            const sale =
+              parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) ||
+              0;
+            const slug = makeSlug(p.name);
+
+            const col = document.createElement("div");
+            col.className = "col-xl-3 col-lg-4 col-sm-6";
+            col.innerHTML = `
+  <div class="product-item style-one mb-40" data-aos="fade-up">
+    <div class="product-thumbnail">
+      <!-- Product image: real link -->
+      <a href="/shop-details/${slug}" class="w-100 h-100">
+        <img src="http://147.93.45.171:1600/uploads/${p.image || ""}" alt="${(
+              p.name || ""
+            ).replace(/"/g, "")}">
+      </a>
+
+      <div class="discount">${p.label || ""}</div>
+      <div class="hover-content">
+        <!-- Wishlist: crawlable link while JS still works -->
+        <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist" 
+          data-name="${(p.name || "").replace(/"/g, "")}" 
+          data-store="${(p.store || "").replace(/"/g, "")}" 
+          data-image="${(p.image || "").replace(/"/g, "")}" 
+          data-price="${price}" 
+          data-price_sale="${sale}" 
+          data-sku="${(p.sku || "").replace(/"/g, "")}" 
+          data-stockstatus="${(p.stockstatus || "").replace(/"/g, "")}">
+          <i class="fa fa-heart"></i>
+        </a>
+
+        <!-- Quick-view: now links to product detail page -->
+        <a href="/shop-details/${slug}" class="img-popup icon-btn">
+          <i class="fa fa-eye"></i>
+        </a>
+      </div>
+
+      <div class="cart-button">
+        <a href="javascript:void(0)" class="cart-btn add-to-cart" 
+          data-name="${(p.name || "").replace(/"/g, "")}" 
+          data-store="${(p.store || "").replace(/"/g, "")}" 
+          data-image="${(p.image || "").replace(/"/g, "")}" 
+          data-price="${price}" 
+          data-price_sale="${sale}" 
+          data-quantity="1">
+          <i class="far fa-shopping-basket"></i>
+          <span class="text">Add To Cart</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="product-info-wrap">
+      <div class="product-info">
+        <ul class="ratings rating5">
+          ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
+          <li><a href="/shop-details/${slug}">(${Math.floor(
+              Math.random() * 100
+            )})</a></li>
+        </ul>
+        <h4 class="title">
+          <a href="/shop-details/${slug}">${(p.name || "").replace(
+              /</g,
+              ""
+            )}</a>
+        </h4>
+      </div>
+      <div class="product-price">
+        <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
+          2
+        )}</span>
+        <span class="price new-price"><span class="currency"></span>$${price.toFixed(
+          2
+        )}</span>
+      </div>
+    </div>
+  </div>`;
+            return col;
+          }
+
+          let productsRendered = false;
+          let renderInProgress = false;
+
+          async function loadFeatureProducts() {
+            if (renderInProgress) return;
+            renderInProgress = true;
+
+            const bestRow = ensureRow("#cat1");
+            const newRow = ensureRow("#cat2");
+            const saleRow = ensureRow("#cat3");
+
+            if (bestRow) bestRow.innerHTML = "";
+            if (newRow) newRow.innerHTML = "";
+            if (saleRow) saleRow.innerHTML = "";
+
+            try {
+              const products = await fetchWithRetries(
+                "http://147.93.45.171:1600/productpagedata",
+                {},
+                5,
+                300
+              );
+              if (!Array.isArray(products) || products.length === 0) {
+                renderInProgress = false;
+                return;
+              }
+
+              products.forEach((p) => {
+                const target =
+                  (p.label === "Sale" && saleRow) ||
+                  (p.label === "New" && newRow) ||
+                  bestRow;
+                if (target) target.appendChild(makeCard(p));
+              });
+
+              productsRendered = true;
+              if (typeof AOS !== "undefined") AOS.refresh();
+            } catch (err) {
+              console.error("Failed to load products:", err.message || err);
+            } finally {
+              renderInProgress = false;
+            }
+          }
+
+          async function loadSidebarCart() {
+            try {
+              const items = await fetchWithRetries(
+                "http://147.93.45.171:1600/allcartdata",
+                {},
+                3,
+                200
+              );
+              const seen = new Set();
+              const unique = (items || []).filter((i) => {
+                if (seen.has(i.name)) return false;
+                seen.add(i.name);
+                return true;
+              });
+
+              if (!listEl) return;
+
+              listEl.innerHTML = "";
+              if (!unique.length) {
+                listEl.innerHTML = `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
+                if (subtotalEl) subtotalEl.textContent = "$0.00";
+                return;
+              }
+
+              let total = 0;
+              unique.forEach((item) => {
+                const price = parseFloat(item.price_sale) || 0;
+                const qty = parseInt(item.quantity || 1, 10);
+                total += price * qty;
+                const slug = makeSlug(item.name);
+                listEl.insertAdjacentHTML(
+                  "beforeend",
+                  `
+                <li class="sidebar-cart-item" data-id="${
+                  item.id
+                }" data-price="${price}" data-qty="${qty}">
+                  <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+                  <a href="/shop-details/${slug}">
+                    <img src="http://147.93.45.171:1600/uploads/${
+                      item.image
+                    }" alt="${item.name}"/>
+                    ${item.name}
+                  </a>
+                  <span class="quantity">
+                    ${qty} × <span><span class="currency">$</span>${price.toFixed(
+                    2
+                  )}</span>
+                  </span>
+                </li>`
+                );
+              });
+
+              if (subtotalEl) subtotalEl.textContent = `$${total.toFixed(2)}`;
+            } catch (err) {
+              console.error("Sidebar load error:", err);
+            }
+          }
+
+          async function updateCounts() {
+            try {
+              const items = await fetchWithRetries(
+                "http://147.93.45.171:1600/allcartdata",
+                {},
+                3,
+                200
+              );
+              const seen = new Set();
+              const unique = (items || []).filter((i) => {
+                if (seen.has(i.name)) return false;
+                seen.add(i.name);
+                return true;
+              });
+              if (badgeEl)
+                badgeEl.textContent = String(unique.length).padStart(2, "0");
+            } catch {
+              if (badgeEl) badgeEl.textContent = "00";
+            }
+
+            try {
+              const items2 = await fetchWithRetries(
+                "http://147.93.45.171:1600/wishlistdata",
+                {},
+                3,
+                200
+              );
+              const seen2 = new Set();
+              const unique2 = (items2 || []).filter((i) => {
+                if (seen2.has(i.product_name)) return false;
+                seen2.add(i.product_name);
+                return true;
+              });
+              if (wishlistEl)
+                wishlistEl.textContent = String(unique2.length).padStart(
+                  2,
+                  "0"
+                );
+            } catch {
+              if (wishlistEl) wishlistEl.textContent = "00";
+            }
+          }
+
+          if (listEl) {
+            listEl.addEventListener("click", (e) => {
+              const rem = e.target.closest(".remove-cart");
+              if (!rem) return;
+              e.preventDefault();
+              const li = rem.closest(".sidebar-cart-item");
+              const id = li.dataset.id;
+              if (!id) return console.error("Missing data-id");
+
+              fetch(`http://147.93.45.171:1600/deletecart/${id}`, {
+                method: "DELETE",
+              })
+                .then((res) =>
+                  res.json().then((body) => ({ ok: res.ok, body }))
+                )
+                .then(({ ok, body }) => {
+                  if (!ok || !body.success)
+                    throw new Error(body.message || "Delete failed");
+                  li.remove();
+                  let newTotal = 0;
+                  listEl
+                    .querySelectorAll(
+                      "li.sidebar-cart-item:not(.sidebar-cart-empty)"
+                    )
+                    .forEach((itemLi) => {
+                      const price = parseFloat(itemLi.dataset.price) || 0;
+                      const qty = parseInt(itemLi.dataset.qty || "1", 10);
+                      newTotal += price * qty;
+                    });
+                  if (subtotalEl)
+                    subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
+                  showBanner("Product removed from cart.", "success");
+                  updateCounts();
+                })
+                .catch((err) => {
+                  console.error("Delete error:", err);
+                  showBanner("Could not remove item.", "error");
+                });
+            });
+          }
+
+          document.body.addEventListener("click", async (e) => {
+            const cartBtn = e.target.closest(".add-to-cart");
+            const wishBtn = e.target.closest(".add-to-wishlist");
+            if (!cartBtn && !wishBtn) return;
+            e.preventDefault();
+
+            const userId = localStorage.getItem("user_id");
+            if (!userId)
+              return showBanner(
+                wishBtn
+                  ? "Please log in to add to wishlist."
+                  : "Please log in to add to cart.",
+                "error"
+              );
+
+            try {
+              const url = cartBtn
+                ? "http://147.93.45.171:1600/addcart"
+                : "http://147.93.45.171:1600/wishlistpost";
+              const payload = cartBtn
+                ? {
+                    user_id: parseInt(userId, 10),
+                    name: cartBtn.dataset.name,
+                    store: cartBtn.dataset.store,
+                    image: cartBtn.dataset.image,
+                    price: parseFloat(cartBtn.dataset.price) || 0,
+                    price_sale: parseFloat(cartBtn.dataset.price_sale) || 0,
+                    quantity: parseInt(cartBtn.dataset.quantity || "1", 10),
+                  }
+                : {
+                    user_id: parseInt(userId, 10),
+                    product_name: wishBtn.dataset.name,
+                    store: wishBtn.dataset.store,
+                    image: wishBtn.dataset.image,
+                    price: parseFloat(wishBtn.dataset.price) || 0,
+                    price_sale: parseFloat(wishBtn.dataset.price_sale) || 0,
+                    sku: wishBtn.dataset.sku,
+                    stockstatus: wishBtn.dataset.stockstatus,
+                  };
+
+              const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              const text = await res.text();
+              if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+
+              showBanner(
+                cartBtn
+                  ? "Product added to cart!"
+                  : "Product added to wishlist!",
+                "success"
+              );
+              if (cartBtn) loadSidebarCart();
+              updateCounts();
+            } catch (err) {
+              console.error("Error:", err);
+              showBanner(
+                (cartBtn
+                  ? "Add to cart failed: "
+                  : "Add to wishlist failed: ") + err.message,
+                "error"
+              );
+            }
+          });
+
+          function startWhenReady() {
+            if (
+              document.querySelector("#cat1") &&
+              document.querySelector("#cat2") &&
+              document.querySelector("#cat3")
+            ) {
+              loadFeatureProducts().catch((e) =>
+                console.debug("Initial loadFeatureProducts failed:", e)
+              );
+            } else {
+              setTimeout(startWhenReady, 150);
+            }
+          }
+          startWhenReady();
+          loadSidebarCart().catch((e) =>
+            console.debug("Initial loadSidebarCart failed:", e)
+          );
+          updateCounts().catch((e) =>
+            console.debug("Initial updateCounts failed:", e)
+          );
+          setInterval(updateCounts, 5000);
+
+          window.addEventListener("pageshow", (event) => {
+            if (event.persisted || performance.navigation.type === 2)
+              loadFeatureProducts();
+          });
+
+          window.addEventListener("load", () => {
+            if (!productsRendered) loadFeatureProducts();
+          });
+
+          const observer = new MutationObserver((mutations) => {
+            if (productsRendered || renderInProgress) return;
+            let sawContainer = false;
+            for (const m of mutations) {
+              if (m.addedNodes && m.addedNodes.length) {
+                for (const n of m.addedNodes) {
+                  if (!(n instanceof HTMLElement)) continue;
+                  if (
+                    n.matches &&
+                    (n.matches("#cat1") ||
+                      n.matches("#cat2") ||
+                      n.matches("#cat3") ||
+                      (n.querySelector &&
+                        (n.querySelector("#cat1") ||
+                          n.querySelector("#cat2") ||
+                          n.querySelector("#cat3"))))
+                  ) {
+                    sawContainer = true;
+                    break;
+                  }
+                }
+              }
+              if (sawContainer) break;
+            }
+            if (sawContainer) loadFeatureProducts();
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+
+          const checkoutBtn = document.querySelector(
+            ".cart-button-box a[href*='checkout.html']"
+          );
+          if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              const items = Array.from(
+                listEl.querySelectorAll("li.sidebar-cart-item")
+              )
+                .filter((li) => !li.classList.contains("sidebar-cart-empty"))
+                .map((li) => {
+                  const price = parseFloat(li.dataset.price) || 0;
+                  const quantity = parseInt(li.dataset.qty || "1", 10);
+                  const rawSrc =
+                    li.querySelector("img")?.getAttribute("src") || "";
+                  const image = rawSrc.split("/").pop() || "";
+                  return {
+                    id: li.dataset.id,
+                    name:
+                      li
+                        .querySelector("a[href^='/shop-details']")
+                        ?.textContent.trim() || "",
+                    image,
+                    price,
+                    quantity,
+                    lineTotal: price * quantity,
+                  };
+                });
+              const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
+              const total = subtotal;
+              localStorage.setItem(
+                "checkout_cart",
+                JSON.stringify({ items, subtotal, total })
+              );
+              window.location.href = checkoutBtn.href;
+            });
+          }
         });
-        document.body.appendChild(b);
-        setTimeout(() => b.remove(), 3000);
-      }
-
-      function makeSlug(name = "product") {
-        return String(name)
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^\w-]+/g, "");
-      }
-
-      async function fetchWithRetries(url, opts = {}, maxRetries = 4, baseDelay = 300) {
-        for (let attempt = 0; attempt <= maxRetries; attempt++) {
-          try {
-            const cacheBust = `_=${Date.now()}`;
-            const sep = url.includes("?") ? "&" : "?";
-            const res = await fetch(url + sep + cacheBust, opts);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const text = await res.text();
-            try { return JSON.parse(text); } 
-            catch { throw new Error("Invalid JSON: " + text.slice(0, 200)); }
-          } catch (err) {
-            console.debug(`fetchWithRetries attempt ${attempt} failed:`, err.message || err);
-            if (attempt === maxRetries) throw err;
-            await new Promise(r => setTimeout(r, baseDelay * Math.pow(2, attempt)));
-          }
-        }
-      }
-
-      function ensureRow(catSelector) {
-        let row = document.querySelector(catSelector + " .row.justify-content-center");
-        if (!row) {
-          const cat = document.querySelector(catSelector);
-          if (cat) {
-            row = document.createElement("div");
-            row.className = "row justify-content-center";
-            cat.appendChild(row);
-          }
-        }
-        return row;
-      }
-
-      function makeCard(p) {
-        const price = parseFloat(String(p.price || p.price_sale || 0).replace(/[^0-9.]/g, "")) || 0;
-        const sale = parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) || 0;
-        const slug = makeSlug(p.name);
-
-        const col = document.createElement("div");
-        col.className = "col-xl-3 col-lg-4 col-sm-6";
-        col.innerHTML = `
-          <div class="product-item style-one mb-40" data-aos="fade-up">
-            <div class="product-thumbnail">
-              <!-- Product image: real link -->
-              <a href="/shop-details/${slug}" class="w-100 h-100">
-                <img src="http://147.93.45.171:1600/uploads/${p.image || ''}" alt="${(p.name || '').replace(/"/g, '')}">
-              </a>
-
-              <div class="discount">${p.label || ''}</div>
-              <div class="hover-content">
-                <!-- Wishlist: crawlable link while JS still works -->
-                <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist" 
-                  data-name="${(p.name || '').replace(/"/g, '')}" 
-                  data-store="${(p.store || '').replace(/"/g, '')}" 
-                  data-image="${(p.image || '').replace(/"/g, '')}" 
-                  data-price="${price}" 
-                  data-price_sale="${sale}" 
-                  data-sku="${(p.sku || '').replace(/"/g, '')}" 
-                  data-stockstatus="${(p.stockstatus || '').replace(/"/g, '')}">
-                  <i class="fa fa-heart"></i>
-                </a>
-
-                <!-- Quick-view: crawlable link -->
-                <a href="/shop-details/${slug}" class="img-popup icon-btn">
-                  <i class="fa fa-eye"></i>
-                </a>
-              </div>
-
-              <div class="cart-button">
-                <!-- Add-to-cart remains JS -->
-                <a href="/shop-details/${slug}" class="cart-btn add-to-cart" 
-                  data-name="${(p.name || '').replace(/"/g, '')}" 
-                  data-store="${(p.store || '').replace(/"/g, '')}" 
-                  data-image="${(p.image || '').replace(/"/g, '')}" 
-                  data-price="${price}" 
-                  data-price_sale="${sale}" 
-                  data-quantity="1">
-                  <i class="far fa-shopping-basket"></i>
-                  <span class="text">Add To Cart</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="product-info-wrap">
-              <div class="product-info">
-                <ul class="ratings rating5">
-                  ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
-                  <li><a href="/shop-details/${slug}">(${Math.floor(Math.random() * 100)})</a></li>
-                </ul>
-                <h4 class="title">
-                  <a href="/shop-details/${slug}">${(p.name || '').replace(/</g, '')}</a>
-                </h4>
-              </div>
-              <div class="product-price">
-                <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(2)}</span>
-                <span class="price new-price"><span class="currency"></span>$${price.toFixed(2)}</span>
-              </div>
-            </div>
-          </div>`;
-        return col;
-      }
-
-      // The rest of your DOM manipulation, cart, wishlist, and updateCounts logic remains the same
-      // because all product links are now crawlable
-    });
-    </script>
-
+      </script>
 
       <div
         id="image-lightbox"
