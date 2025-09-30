@@ -1564,178 +1564,145 @@
         </div>
       </section>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const listEl = document.querySelector(".pesco-mini-cart-list");
-          const badgeEl = document.querySelector("#pro-counts");
-          const wishlistEl = document.querySelector("#pro-counts1");
-          const subtotalEl = document.querySelector(".cart-mini-total .amount");
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const listEl = document.querySelector(".pesco-mini-cart-list");
+      const badgeEl = document.querySelector("#pro-counts");
+      const wishlistEl = document.querySelector("#pro-counts1");
+      const subtotalEl = document.querySelector(".cart-mini-total .amount");
 
-          function showBanner(msg, type = "success") {
-            const b = document.createElement("div");
-            b.className = `banner ${type}`;
-            b.textContent = msg;
-            Object.assign(b.style, {
-              position: "fixed",
-              top: "10px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              padding: "10px 20px",
-              background: type === "success" ? "#4caf50" : "#f44336",
-              color: "#fff",
-              borderRadius: "4px",
-              zIndex: 9999,
-              boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-            });
-            document.body.appendChild(b);
-            setTimeout(() => b.remove(), 3000);
+      function showBanner(msg, type = "success") {
+        const b = document.createElement("div");
+        b.className = `banner ${type}`;
+        b.textContent = msg;
+        Object.assign(b.style, {
+          position: "fixed",
+          top: "10px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          padding: "10px 20px",
+          background: type === "success" ? "#4caf50" : "#f44336",
+          color: "#fff",
+          borderRadius: "4px",
+          zIndex: 9999,
+          boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+        });
+        document.body.appendChild(b);
+        setTimeout(() => b.remove(), 3000);
+      }
+
+      function makeSlug(name = "product") {
+        return String(name)
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\w-]+/g, "");
+      }
+
+      async function fetchWithRetries(url, opts = {}, maxRetries = 4, baseDelay = 300) {
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+          try {
+            const cacheBust = `_=${Date.now()}`;
+            const sep = url.includes("?") ? "&" : "?";
+            const res = await fetch(url + sep + cacheBust, opts);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const text = await res.text();
+            try { return JSON.parse(text); } 
+            catch { throw new Error("Invalid JSON: " + text.slice(0, 200)); }
+          } catch (err) {
+            console.debug(`fetchWithRetries attempt ${attempt} failed:`, err.message || err);
+            if (attempt === maxRetries) throw err;
+            await new Promise(r => setTimeout(r, baseDelay * Math.pow(2, attempt)));
           }
+        }
+      }
 
-          function makeSlug(name = "product") {
-            return String(name)
-              .toLowerCase()
-              .replace(/\s+/g, "-")
-              .replace(/[^\w-]+/g, "");
+      function ensureRow(catSelector) {
+        let row = document.querySelector(catSelector + " .row.justify-content-center");
+        if (!row) {
+          const cat = document.querySelector(catSelector);
+          if (cat) {
+            row = document.createElement("div");
+            row.className = "row justify-content-center";
+            cat.appendChild(row);
           }
+        }
+        return row;
+      }
 
-          async function fetchWithRetries(
-            url,
-            opts = {},
-            maxRetries = 4,
-            baseDelay = 300
-          ) {
-            for (let attempt = 0; attempt <= maxRetries; attempt++) {
-              try {
-                const cacheBust = `_=${Date.now()}`;
-                const sep = url.includes("?") ? "&" : "?";
-                const res = await fetch(url + sep + cacheBust, opts);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const text = await res.text();
-                try {
-                  return JSON.parse(text);
-                } catch {
-                  throw new Error("Invalid JSON: " + text.slice(0, 200));
-                }
-              } catch (err) {
-                console.debug(
-                  `fetchWithRetries attempt ${attempt} failed:`,
-                  err.message || err
-                );
-                if (attempt === maxRetries) throw err;
-                await new Promise((r) =>
-                  setTimeout(r, baseDelay * Math.pow(2, attempt))
-                );
-              }
-            }
-          }
+      function makeCard(p) {
+        const price = parseFloat(String(p.price || p.price_sale || 0).replace(/[^0-9.]/g, "")) || 0;
+        const sale = parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) || 0;
+        const slug = makeSlug(p.name);
 
-          function ensureRow(catSelector) {
-            let row = document.querySelector(
-              catSelector + " .row.justify-content-center"
-            );
-            if (!row) {
-              const cat = document.querySelector(catSelector);
-              if (cat) {
-                row = document.createElement("div");
-                row.className = "row justify-content-center";
-                cat.appendChild(row);
-              }
-            }
-            return row;
-          }
+        const col = document.createElement("div");
+        col.className = "col-xl-3 col-lg-4 col-sm-6";
+        col.innerHTML = `
+          <div class="product-item style-one mb-40" data-aos="fade-up">
+            <div class="product-thumbnail">
+              <!-- Product image: real link -->
+              <a href="/shop-details/${slug}" class="w-100 h-100">
+                <img src="http://147.93.45.171:1600/uploads/${p.image || ''}" alt="${(p.name || '').replace(/"/g, '')}">
+              </a>
 
-          function makeCard(p) {
-            const price =
-              parseFloat(
-                String(p.price || p.price_sale || 0).replace(/[^0-9.]/g, "")
-              ) || 0;
-            const sale =
-              parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) ||
-              0;
-            const slug = makeSlug(p.name);
-
-            const col = document.createElement("div");
-            col.className = "col-xl-3 col-lg-4 col-sm-6";
-            col.innerHTML = `
-            <div class="product-item style-one mb-40" data-aos="fade-up">
-              <div class="product-thumbnail">
-                <!-- Product image: real link -->
-                <a href="/shop-details/${slug}" class="w-100 h-100">
-                  <img src="http://147.93.45.171:1600/uploads/${
-                    p.image || ""
-                  }" alt="${(p.name || "").replace(/"/g, "")}">
+              <div class="discount">${p.label || ''}</div>
+              <div class="hover-content">
+                <!-- Wishlist: crawlable link while JS still works -->
+                <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist" 
+                  data-name="${(p.name || '').replace(/"/g, '')}" 
+                  data-store="${(p.store || '').replace(/"/g, '')}" 
+                  data-image="${(p.image || '').replace(/"/g, '')}" 
+                  data-price="${price}" 
+                  data-price_sale="${sale}" 
+                  data-sku="${(p.sku || '').replace(/"/g, '')}" 
+                  data-stockstatus="${(p.stockstatus || '').replace(/"/g, '')}">
+                  <i class="fa fa-heart"></i>
                 </a>
 
-                <div class="discount">${p.label || ""}</div>
-                <div class="hover-content">
-                  <!-- Wishlist: crawlable link while JS still works -->
-                  <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist" 
-                    data-name="${(p.name || "").replace(/"/g, "")}" 
-                    data-store="${(p.store || "").replace(/"/g, "")}" 
-                    data-image="${(p.image || "").replace(/"/g, "")}" 
-                    data-price="${price}" 
-                    data-price_sale="${sale}" 
-                    data-sku="${(p.sku || "").replace(/"/g, "")}" 
-                    data-stockstatus="${(p.stockstatus || "").replace(
-                      /"/g,
-                      ""
-                    )}">
-                    <i class="fa fa-heart"></i>
-                  </a>
-
-                  <!-- Quick-view: crawlable link -->
-                  <a href="/shop-details/${slug}" class="img-popup icon-btn">
-                    <i class="fa fa-eye"></i>
-                  </a>
-                </div>
-
-                <div class="cart-button">
-                  <!-- Add-to-cart remains JS -->
-                  <a href="/shop-details/${slug}" class="cart-btn add-to-cart" 
-                    data-name="${(p.name || "").replace(/"/g, "")}" 
-                    data-store="${(p.store || "").replace(/"/g, "")}" 
-                    data-image="${(p.image || "").replace(/"/g, "")}" 
-                    data-price="${price}" 
-                    data-price_sale="${sale}" 
-                    data-quantity="1">
-                    <i class="far fa-shopping-basket"></i>
-                    <span class="text">Add To Cart</span>
-                  </a>
-                </div>
+                <!-- Quick-view: crawlable link -->
+                <a href="/shop-details/${slug}" class="img-popup icon-btn">
+                  <i class="fa fa-eye"></i>
+                </a>
               </div>
 
-              <div class="product-info-wrap">
-                <div class="product-info">
-                  <ul class="ratings rating5">
-                    ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
-                    <li><a href="/shop-details/${slug}">(${Math.floor(
-              Math.random() * 100
-            )})</a></li>
-                  </ul>
-                  <h4 class="title">
-                    <a href="/shop-details/${slug}">${(p.name || "").replace(
-              /</g,
-              ""
-            )}</a>
-                  </h4>
-                </div>
-                <div class="product-price">
-                  <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
-                    2
-                  )}</span>
-                  <span class="price new-price"><span class="currency"></span>$${price.toFixed(
-                    2
-                  )}</span>
-                </div>
+              <div class="cart-button">
+                <!-- Add-to-cart remains JS -->
+                <a href="/shop-details/${slug}" class="cart-btn add-to-cart" 
+                  data-name="${(p.name || '').replace(/"/g, '')}" 
+                  data-store="${(p.store || '').replace(/"/g, '')}" 
+                  data-image="${(p.image || '').replace(/"/g, '')}" 
+                  data-price="${price}" 
+                  data-price_sale="${sale}" 
+                  data-quantity="1">
+                  <i class="far fa-shopping-basket"></i>
+                  <span class="text">Add To Cart</span>
+                </a>
               </div>
-            </div>`;
-            return col;
-          }
+            </div>
 
-          // The rest of your DOM manipulation, cart, wishlist, and updateCounts logic remains the same
-          // because all product links are now crawlable
-        });
-      </script>
+            <div class="product-info-wrap">
+              <div class="product-info">
+                <ul class="ratings rating5">
+                  ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
+                  <li><a href="/shop-details/${slug}">(${Math.floor(Math.random() * 100)})</a></li>
+                </ul>
+                <h4 class="title">
+                  <a href="/shop-details/${slug}">${(p.name || '').replace(/</g, '')}</a>
+                </h4>
+              </div>
+              <div class="product-price">
+                <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(2)}</span>
+                <span class="price new-price"><span class="currency"></span>$${price.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>`;
+        return col;
+      }
+
+      // The rest of your DOM manipulation, cart, wishlist, and updateCounts logic remains the same
+      // because all product links are now crawlable
+    });
+    </script>
+
 
       <div
         id="image-lightbox"
