@@ -581,6 +581,14 @@
                     </div>
                   </div>
                   <div class="pesco-tabs style-three d-block d-lg-none">
+
+
+
+
+
+
+
+
                     <ul class="nav nav-tabs mb-30" role="tablist">
                       <li>
                         <button
@@ -603,6 +611,14 @@
                         </button>
                       </li>
                     </ul>
+
+
+
+
+
+
+
+
                     <div class="tab-content">
                       <div class="tab-pane fade show active" id="nav1">
                         <nav class="main-menu">
@@ -1446,9 +1462,10 @@
 
           if (Array.isArray(sales)) {
             const today = new Date();
-            const valid = sales.filter(
-              (item) => new Date(item.end_date + "T23:59:59") >= today
-            );
+            const valid = sales.filter((item) => {
+              const end = new Date(item.end_date + "T23:59:59");
+              return end >= today;
+            });
 
             if (valid.length === 0) {
               row.innerHTML =
@@ -1475,9 +1492,6 @@
                 const imgEl = slot.querySelector(".banner-img img");
                 imgEl.src = `http://147.93.45.171:1600/uploads/${item.image}`;
                 imgEl.alt = item.product_name;
-                imgEl.style.width = "100%";
-                imgEl.style.height = "auto";
-                imgEl.style.objectFit = "contain";
 
                 const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
                 const sale = parseFloat(
@@ -1505,13 +1519,13 @@
             const data = await res.json();
             if (!Array.isArray(data) || data.length === 0) {
               section.innerHTML = `
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12 text-center py-5">
-                    <h3>No offers available.</h3>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 text-center py-5">
+                      <h3>No offers available.</h3>
+                    </div>
                   </div>
-                </div>
-              </div>`;
+                </div>`;
               if (window.AOS) AOS.refresh();
               return;
             }
@@ -1519,13 +1533,13 @@
           } catch (err) {
             console.error(err);
             section.innerHTML = `
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-12 text-center py-5">
-                  <h3>No offers available.</h3>
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 text-center py-5">
+                    <h3>No offers available.</h3>
+                  </div>
                 </div>
-              </div>
-            </div>`;
+              </div>`;
             if (window.AOS) AOS.refresh();
             return;
           }
@@ -1533,9 +1547,6 @@
           const imgEl2 = document.querySelector(".deal-img img");
           imgEl2.src = `http://147.93.45.171:1600/uploads/${sale.image}`;
           imgEl2.alt = sale.product_name;
-          imgEl2.style.width = "100%";
-          imgEl2.style.height = "auto";
-          imgEl2.style.objectFit = "contain";
 
           const subHeading = document.querySelector(
             ".deal-content .sub-heading"
@@ -1550,13 +1561,13 @@
             const diff = endDate - new Date();
             if (diff < 0) {
               section.innerHTML = `
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12 text-center py-5">
-                    <h3>No offers available.</h3>
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 text-center py-5">
+                      <h3>No offers available.</h3>
+                    </div>
                   </div>
-                </div>
-              </div>`;
+                </div>`;
               clearInterval(interval);
               return;
             }
@@ -1566,22 +1577,22 @@
             const seconds = Math.floor((diff / 1000) % 60);
 
             countdownEl.innerHTML = `
-            <div class="countdown-section">
-              <span class="countdown-amount">${days}</span>
-              <span class="countdown-label">day</span>
-            </div>
-            <div class="countdown-section">
-              <span class="countdown-amount">${hours}</span>
-              <span class="countdown-label">hour</span>
-            </div>
-            <div class="countdown-section">
-              <span class="countdown-amount">${minutes}</span>
-              <span class="countdown-label">minute</span>
-            </div>
-            <div class="countdown-section">
-              <span class="countdown-amount">${seconds}</span>
-              <span class="countdown-label">second</span>
-            </div>`;
+              <div class="countdown-section">
+                <span class="countdown-amount">${days}</span>
+                <span class="countdown-label">day</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${hours}</span>
+                <span class="countdown-label">hour</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${minutes}</span>
+                <span class="countdown-label">minute</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${seconds}</span>
+                <span class="countdown-label">second</span>
+              </div>`;
             if (window.AOS) AOS.refresh();
           }
 
