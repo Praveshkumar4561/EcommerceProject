@@ -358,41 +358,6 @@
       width: 338px;
       height: 357px;
     }
-
-    .price-amount {
-      margin: 0;
-      font-size: 40px;
-      font-weight: 600;
-      color: inherit;
-    }
-
-    .feature-title {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .banner-title {
-      margin: 0;
-      font-size: 1.125rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 1.125rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .feature-title {
-      margin: 0;
-      font-size: 0.875rem;
-      font-weight: 600;
-      line-height: 1.2;
-    }
   </style>
 
   <body>
@@ -466,9 +431,8 @@
                     placeholder="Enter Search Products"
                     required
                   />
-                  <button class="search-btn" type="button">
-                    <i class="far fa-search" aria-hidden="true"></i>
-                    <span class="visually-hidden">Search</span>
+                  <button class="search-btn">
+                    <i class="far fa-search"></i>
                   </button>
                 </div>
               </form>
@@ -588,9 +552,8 @@
                         placeholder="Search Here"
                         name="search"
                       />
-                      <button class="search-btn" type="button">
-                        <i class="far fa-search" aria-hidden="true"></i>
-                        <span class="visually-hidden">Search</span>
+                      <button class="search-btn">
+                        <i class="far fa-search"></i>
                       </button>
                     </div>
                   </div>
@@ -837,15 +800,10 @@
                       <ul>
                         <li>
                           <div class="price-box">
-                            <div class="currency" aria-hidden="true">$</div>
-
+                            <div class="currency">$</div>
                             <div class="text">
                               <span class="discount">Discount Price</span>
-
-                              <p class="price-amount">
-                                <span class="visually-hidden">Price: </span>
-                                <span class="amount">140.00</span>
-                              </p>
+                              <h3>140.00</h3>
                             </div>
                           </div>
                         </li>
@@ -912,19 +870,13 @@
                       <ul>
                         <li>
                           <div class="price-box">
-                            <div class="currency" aria-hidden="true">$</div>
-
+                            <div class="currency">$</div>
                             <div class="text">
                               <span class="discount">Discount Price</span>
-
-                              <p class="price-amount">
-                                <span class="visually-hidden">Price: </span>
-                                <span class="amount">140.00</span>
-                              </p>
+                              <h3>140.00</h3>
                             </div>
                           </div>
                         </li>
-
                         <li>
                           <img
                             src="assets/images/hero/line-1.png"
@@ -987,18 +939,13 @@
                       <ul>
                         <li>
                           <div class="price-box">
-                            <div class="currency" aria-hidden="true">$</div>
-
+                            <div class="currency">$</div>
                             <div class="text">
                               <span class="discount">Discount Price</span>
-                              <p class="price-amount">
-                                <span class="visually-hidden">Price: </span>
-                                <span class="amount">140.00</span>
-                              </p>
+                              <h3>140.00</h3>
                             </div>
                           </div>
                         </li>
-
                         <li>
                           <img
                             src="assets/images/hero/line-1.png"
@@ -1140,7 +1087,7 @@
                     <i class="fas fa-shipping-fast"></i>
                   </div>
                   <div class="content">
-                    <h3 class="feature-title">Free Shipping</h3>
+                    <h5>Free Shipping</h5>
                     <p>You get your items delivered without any extra cost.</p>
                   </div>
                 </div>
@@ -1307,197 +1254,93 @@
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const BASE_IMAGE_URL = "http://147.93.45.171:1600/uploads/";
-          const sliderRoot =
-            document.querySelector("#category-slider") ||
-            document.querySelector(".category-slider-one");
-          if (!sliderRoot) return;
 
-          function escapeText(s) {
-            return String(s == null ? "" : s)
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#39;");
-          }
-
-          let listEl = sliderRoot.querySelector(".category-slider-list");
-          if (!listEl) {
-            listEl = document.createElement("ul");
-            listEl.className = "category-slider-list";
-            listEl.setAttribute("role", "list");
-            sliderRoot.innerHTML = "";
-            sliderRoot.appendChild(listEl);
-          }
+          const sliderContainer = document.querySelector(
+            ".category-slider-one"
+          );
+          if (!sliderContainer) return;
 
           function createCategoryItem(item) {
-            const li = document.createElement("li");
-            li.className = "category-item";
-            li.setAttribute("role", "listitem");
+            const wrap = document.createElement("div");
+            wrap.className = "category-item style-one text-center";
 
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
-
             const img = document.createElement("img");
-            const name =
-              item && item.name ? String(item.name).trim() : "Category";
-            const imageFilename =
-              item && item.image ? String(item.image).trim() : "default.png";
-            img.alt = escapeText(name);
-            img.loading = "lazy";
-            img.decoding = "async";
-
-            if (item && item.width && item.height) {
-              img.width = parseInt(item.width, 10) || null;
-              img.height = parseInt(item.height, 10) || null;
-            }
-
-            img.src = BASE_IMAGE_URL + imageFilename;
-
+            img.alt = item.name || "category image";
+            img.src = item.image
+              ? BASE_IMAGE_URL + item.image
+              : BASE_IMAGE_URL + "default.png";
             imgWrap.appendChild(img);
 
             const content = document.createElement("div");
             content.className = "category-content";
-
             const link = document.createElement("a");
             link.className = "category-btn";
             link.href = "/shop";
-            link.textContent = name;
-            link.setAttribute("aria-label", `Browse ${name} category`);
+            link.textContent = item.name || "Category";
 
             content.appendChild(link);
 
-            li.appendChild(imgWrap);
-            li.appendChild(content);
+            wrap.appendChild(imgWrap);
+            wrap.appendChild(content);
 
-            return li;
+            return wrap;
           }
 
-          function loadCategories() {
-            fetch("http://147.93.45.171:1600/productcatdata", {
-              cache: "no-store",
+          fetch("http://147.93.45.171:1600/productcatdata")
+            .then(function (res) {
+              if (!res.ok) throw new Error("Network response was not ok");
+              return res.json();
             })
-              .then(function (res) {
-                if (!res.ok) throw new Error("Network response was not ok");
-                return res.json();
-              })
-              .then(function (data) {
-                if (!Array.isArray(data)) return;
+            .then(function (data) {
+              if (!Array.isArray(data)) return;
 
-                listEl.innerHTML = "";
+              sliderContainer.innerHTML = "";
 
-                const categories = data.filter(function (c) {
-                  const published =
-                    String(c.status || "").toLowerCase() === "published";
-                  const featured =
-                    String(c.is_featured || "").toLowerCase() === "yes";
-                  return published && featured;
-                });
-
-                const toRender = categories.length
-                  ? categories
-                  : data.filter(function (c) {
-                      return (
-                        String(c.status || "").toLowerCase() === "published"
-                      );
-                    });
-
-                toRender.forEach(function (cat) {
-                  listEl.appendChild(createCategoryItem(cat));
-                });
-
-                const live = document.getElementById("site-live-announcer");
-                if (live) {
-                  live.textContent = `${toRender.length} categories loaded.`;
-                }
-
-                try {
-                  if (typeof initCategorySlider === "function") {
-                    initCategorySlider();
-                  } else if (
-                    window.jQuery &&
-                    typeof jQuery === "function" &&
-                    jQuery.fn &&
-                    jQuery.fn.slick
-                  ) {
-                    const $el = jQuery(
-                      ".category-slider-one .category-slider-list"
-                    );
-                    if ($el.hasClass("slick-initialized")) {
-                      $el.slick("refresh");
-                    } else {
-                      $el.slick({
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                        responsive: [
-                          { breakpoint: 1200, settings: { slidesToShow: 3 } },
-                          { breakpoint: 900, settings: { slidesToShow: 2 } },
-                          { breakpoint: 600, settings: { slidesToShow: 1 } },
-                        ],
-                        accessibility: true,
-                        dots: false,
-                        arrows: true,
-                      });
-                    }
-                  } else if (window.Swiper) {
-                    if (
-                      sliderRoot.swiper &&
-                      typeof sliderRoot.swiper.update === "function"
-                    ) {
-                      sliderRoot.swiper.update();
-                    } else {
-                      new Swiper(sliderRoot, {
-                        slidesPerView: 4,
-                        spaceBetween: 16,
-                        breakpoints: {
-                          1200: { slidesPerView: 4 },
-                          900: { slidesPerView: 3 },
-                          600: { slidesPerView: 2 },
-                          0: { slidesPerView: 1 },
-                        },
-                        a11y: true,
-                        keyboard: { enabled: true, onlyInViewport: true },
-                        navigation: {
-                          nextEl: ".swiper-button-next",
-                          prevEl: ".swiper-button-prev",
-                        },
-                      });
-                    }
-                  }
-                } catch (err) {
-                  console.warn("Could not auto-refresh slider:", err);
-                }
-              })
-              .catch(function (err) {
-                console.error("Failed to load category data:", err);
-                const live = document.getElementById("site-live-announcer");
-                if (live) live.textContent = "Failed to load categories.";
+              const categories = data.filter((c) => {
+                const published =
+                  String(c.status || "").toLowerCase() === "published";
+                const featured =
+                  String(c.is_featured || "").toLowerCase() === "yes";
+                return published && featured;
               });
-          }
 
-          if (!document.getElementById("site-live-announcer")) {
-            const live = document.createElement("div");
-            live.id = "site-live-announcer";
-            live.setAttribute("role", "status");
-            live.setAttribute("aria-live", "polite");
-            live.className = "visually-hidden";
-            document.body.appendChild(live);
-          }
+              const toRender = categories.length
+                ? categories
+                : data.filter(
+                    (c) => String(c.status || "").toLowerCase() === "published"
+                  );
 
-          loadCategories();
+              toRender.forEach(function (cat) {
+                sliderContainer.appendChild(createCategoryItem(cat));
+              });
 
-          const observer = new MutationObserver(function (mutations) {
-            for (const m of mutations) {
-              for (const n of m.addedNodes) {
-                if (!(n instanceof HTMLElement)) continue;
-                if (n === sliderRoot || n.contains(sliderRoot)) {
-                  loadCategories();
-                  return;
+              try {
+                if (typeof initCategorySlider === "function") {
+                  initCategorySlider();
+                } else if (
+                  window.jQuery &&
+                  typeof jQuery === "function" &&
+                  jQuery.fn &&
+                  jQuery.fn.slick
+                ) {
+                  const $el = jQuery(".category-slider-one");
+                  if ($el.hasClass("slick-initialized")) {
+                    $el.slick("refresh");
+                  } else {
+                    $el.slick();
+                  }
+                } else if (window.Swiper && sliderContainer.swiper) {
+                  sliderContainer.swiper.update();
                 }
+              } catch (err) {
+                console.warn("Could not auto-refresh slider:", err);
               }
-            }
-          });
-          observer.observe(document.body, { childList: true, subtree: true });
+            })
+            .catch(function (err) {
+              console.error("Failed to load category data:", err);
+            });
         });
       </script>
 
@@ -1537,314 +1380,160 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
-          const API_BASE = "http://147.93.45.171:1600";
-          const ROW_ID = "flash-row";
-          const row = document.getElementById(ROW_ID);
-          if (!row) return;
-
+          const row = document.getElementById("flash-row");
           const template = row.querySelector(".banner-flashes");
-          if (!template) {
-            console.warn("Missing .banner-flashes template inside #" + ROW_ID);
-            return;
-          }
 
-          let live = document.getElementById("site-live-announcer");
-          if (!live) {
-            live = document.createElement("div");
-            live.id = "site-live-announcer";
-            live.setAttribute("role", "status");
-            live.setAttribute("aria-live", "polite");
-            live.className = "visually-hidden";
-            document.body.appendChild(live);
-          }
-
-          function parseMoney(val) {
-            if (!val && val !== 0) return NaN;
-            try {
-              return parseFloat(String(val).replace(/[^0-9.]/g, "")) || NaN;
-            } catch {
-              return NaN;
-            }
-          }
-
-          async function fetchFlashSales() {
-            const url = API_BASE + "/flashsalesmaindata";
-            const res = await fetch(url, { cache: "no-store" });
+          let sales;
+          try {
+            const res = await fetch(
+              "http://147.93.45.171:1600/flashsalesmaindata"
+            );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            return data;
+            sales = await res.json();
+          } catch (err) {
+            console.error(err);
+            row.innerHTML =
+              '<div class="col-12 text-center"><p>No offers available.</p></div>';
           }
 
-          function showNoOffers(targetEl) {
-            if (!targetEl) return;
-            targetEl.innerHTML =
-              '<div class="col-12 text-center"><p>No offers available.</p></div>';
-            live.textContent = "No flash offers available.";
+          if (Array.isArray(sales)) {
+            const today = new Date();
+            const valid = sales.filter((item) => {
+              const end = new Date(item.end_date + "T23:59:59");
+              return end >= today;
+            });
+
+            if (valid.length === 0) {
+              row.innerHTML =
+                '<div class="col-12 text-center"><p>No offers available.</p></div>';
+            } else {
+              row.innerHTML = "";
+
+              valid.slice(0, 2).forEach((item, idx) => {
+                const slotWrapper = document.createElement("div");
+                slotWrapper.innerHTML = template.outerHTML;
+                const slot = slotWrapper.firstElementChild;
+
+                const bannerItem = slot.querySelector(".banner-item");
+                if (idx === 0) {
+                  bannerItem.classList.replace("bg-two", "bg-one");
+                  bannerItem.setAttribute("data-aos-delay", "10");
+                  bannerItem.setAttribute("data-aos-duration", "900");
+                } else {
+                  bannerItem.classList.replace("bg-one", "bg-two");
+                  bannerItem.setAttribute("data-aos-delay", "20");
+                  bannerItem.setAttribute("data-aos-duration", "1100");
+                }
+
+                const imgEl = slot.querySelector(".banner-img img");
+                imgEl.src = `http://147.93.45.171:1600/uploads/${item.image}`;
+                imgEl.alt = item.product_name;
+
+                const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
+                const sale = parseFloat(
+                  item.price_sale.replace(/[^0-9.]/g, "")
+                );
+                const pct = Math.round(((orig - sale) / orig) * 100);
+
+                slot.querySelector(".off").textContent = pct + "%";
+                slot.querySelector("h4").textContent = item.product_name;
+
+                row.appendChild(slot);
+              });
+            }
+
             if (window.AOS) AOS.refresh();
           }
 
-          try {
-            let sales = [];
-            try {
-              sales = await fetchFlashSales();
-            } catch (err) {
-              console.error("Failed to fetch flash sales:", err);
-              showNoOffers(row);
-              sales = [];
-            }
-
-            if (!Array.isArray(sales) || sales.length === 0) {
-              showNoOffers(row);
-            } else {
-              const today = new Date();
-              const valid = sales.filter((item) => {
-                if (!item || !item.end_date) return false;
-                const end = new Date(item.end_date + "T23:59:59");
-                return !isNaN(end) && end >= today;
-              });
-
-              if (valid.length === 0) {
-                showNoOffers(row);
-              } else {
-                row.innerHTML = "";
-                valid.slice(0, 2).forEach((item, idx) => {
-                  const slot = template.cloneNode(true);
-                  if (slot.id) slot.removeAttribute("id");
-
-                  const bannerItem = slot.querySelector(".banner-item");
-                  if (bannerItem) {
-                    if (idx === 0) {
-                      bannerItem.classList.remove("bg-two");
-                      bannerItem.classList.add("bg-one");
-                      bannerItem.setAttribute("data-aos-delay", "10");
-                      bannerItem.setAttribute("data-aos-duration", "900");
-                    } else {
-                      bannerItem.classList.remove("bg-one");
-                      bannerItem.classList.add("bg-two");
-                      bannerItem.setAttribute("data-aos-delay", "20");
-                      bannerItem.setAttribute("data-aos-duration", "1100");
-                    }
-                  }
-
-                  const imgEl = slot.querySelector(".banner-img img");
-                  if (imgEl) {
-                    const filename =
-                      item && item.image ? String(item.image).trim() : "";
-                    imgEl.src = filename
-                      ? `${API_BASE}/uploads/${filename}`
-                      : "";
-                    imgEl.alt =
-                      item && item.product_name
-                        ? String(item.product_name)
-                        : "Flash offer image";
-                    imgEl.loading = "lazy";
-                    imgEl.decoding = "async";
-                    if (item && item.width && item.height) {
-                      const w = parseInt(item.width, 10);
-                      const h = parseInt(item.height, 10);
-                      if (!isNaN(w) && !isNaN(h)) {
-                        imgEl.width = w;
-                        imgEl.height = h;
-                      }
-                    }
-                  }
-
-                  const orig = parseMoney(item && item.price);
-                  const sale = parseMoney(item && item.price_sale);
-                  let pct = 0;
-                  if (!isNaN(orig) && !isNaN(sale) && orig > 0) {
-                    pct = Math.round(((orig - sale) / orig) * 100);
-                  } else {
-                    pct = 0;
-                  }
-                  const offEl = slot.querySelector(".off");
-                  if (offEl) {
-                    offEl.textContent = pct + "%";
-                    offEl.setAttribute("aria-label", `Discount ${pct} percent`);
-                  }
-
-                  const titleEl =
-                    slot.querySelector(".banner-title") ||
-                    slot.querySelector("h4");
-                  if (titleEl) {
-                    titleEl.textContent =
-                      item && item.product_name
-                        ? String(item.product_name)
-                        : "Product";
-                    const nodeName = titleEl.nodeName.toLowerCase();
-                    if (
-                      nodeName !== "h1" &&
-                      nodeName !== "h2" &&
-                      nodeName !== "h3" &&
-                      nodeName !== "h4" &&
-                      nodeName !== "h5" &&
-                      nodeName !== "h6"
-                    ) {
-                      titleEl.setAttribute("role", "heading");
-                      titleEl.setAttribute("aria-level", "3");
-                    }
-                  }
-
-                  row.appendChild(slot);
-                });
-
-                live.textContent = `${Math.min(
-                  valid.length,
-                  2
-                )} flash offer(s) loaded.`;
-                if (window.AOS) AOS.refresh();
-              }
-            }
-          } catch (err) {
-            console.error("Rendering error:", err);
-            showNoOffers(row);
-          }
-
           const section = document.getElementById("best-deal");
-          if (!section) return;
-
           let sale;
           try {
-            const data = await fetchFlashSales();
+            const res = await fetch(
+              "http://147.93.45.171:1600/flashsalesmaindata"
+            );
+            if (!res.ok) throw new Error("Network error");
+            const data = await res.json();
             if (!Array.isArray(data) || data.length === 0) {
               section.innerHTML = `
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12 text-center py-5">
-              <p>No offers available.</p>
-            </div>
-          </div>
-        </div>`;
-              live.textContent = "No best-deal offers available.";
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 text-center py-5">
+                      <h3>No offers available.</h3>
+                    </div>
+                  </div>
+                </div>`;
               if (window.AOS) AOS.refresh();
               return;
             }
             sale = data[0];
           } catch (err) {
-            console.error("Best-deal fetch error:", err);
+            console.error(err);
             section.innerHTML = `
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 text-center py-5">
-            <p>No offers available.</p>
-          </div>
-        </div>
-      </div>`;
-            live.textContent = "No best-deal offers available.";
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 text-center py-5">
+                    <h3>No offers available.</h3>
+                  </div>
+                </div>
+              </div>`;
             if (window.AOS) AOS.refresh();
             return;
           }
 
           const imgEl2 = document.querySelector(".deal-img img");
-          if (imgEl2) {
-            const filename =
-              sale && sale.image ? String(sale.image).trim() : "";
-            imgEl2.src = filename ? `${API_BASE}/uploads/${filename}` : "";
-            imgEl2.alt =
-              sale && sale.product_name
-                ? String(sale.product_name)
-                : "Deal image";
-            imgEl2.loading = "lazy";
-            imgEl2.decoding = "async";
-            if (sale && sale.width && sale.height) {
-              const w = parseInt(sale.width, 10);
-              const h = parseInt(sale.height, 10);
-              if (!isNaN(w) && !isNaN(h)) {
-                imgEl2.width = w;
-                imgEl2.height = h;
-              }
-            }
-          }
+          imgEl2.src = `http://147.93.45.171:1600/uploads/${sale.image}`;
+          imgEl2.alt = sale.product_name;
 
           const subHeading = document.querySelector(
             ".deal-content .sub-heading"
           );
-          if (subHeading) {
-            subHeading.innerHTML = "";
-            const icon = document.createElement("i");
-            icon.className = "fas fa-tags";
-            icon.setAttribute("aria-hidden", "true");
-            subHeading.appendChild(icon);
-            const textNode = document.createTextNode(
-              "Deal of the " + (sale && sale.name ? sale.name : "")
-            );
-            subHeading.appendChild(textNode);
-          }
+          subHeading.innerHTML = `<i class="fas fa-tags"></i>Deal of the ${sale.name}`;
 
           const countdownEl = document.getElementById("flashsale-countdown");
-          if (!countdownEl || !sale || !sale.end_date) {
-            if (countdownEl) countdownEl.textContent = "";
-            return;
-          }
-
-          countdownEl.setAttribute("role", "status");
-          countdownEl.setAttribute("aria-live", "polite");
-
           const endDate = new Date(sale.end_date + "T23:59:59");
-          if (isNaN(endDate)) {
-            countdownEl.textContent = "";
-            return;
-          }
-
-          let intervalId = null;
-          function plural(n, singular) {
-            return n === 1 ? singular : singular + "s";
-          }
+          let interval;
 
           function updateCountdown() {
             const diff = endDate - new Date();
             if (diff < 0) {
               section.innerHTML = `
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12 text-center py-5">
-              <p>No offers available.</p>
-            </div>
-          </div>
-        </div>`;
-              live.textContent = "Flash sale ended.";
-              if (intervalId) clearInterval(intervalId);
-              if (window.AOS) AOS.refresh();
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12 text-center py-5">
+                      <h3>No offers available.</h3>
+                    </div>
+                  </div>
+                </div>`;
+              clearInterval(interval);
               return;
             }
-
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
-            countdownEl.innerHTML = "";
-            const parts = [
-              { n: days, label: plural(days, "day") },
-              { n: hours, label: plural(hours, "hour") },
-              { n: minutes, label: plural(minutes, "minute") },
-              { n: seconds, label: plural(seconds, "second") },
-            ];
-
-            parts.forEach((part) => {
-              const sec = document.createElement("div");
-              sec.className = "countdown-section";
-              const amt = document.createElement("span");
-              amt.className = "countdown-amount";
-              amt.textContent = String(part.n);
-              const lbl = document.createElement("span");
-              lbl.className = "countdown-label";
-              lbl.textContent = part.label;
-              sec.appendChild(amt);
-              sec.appendChild(lbl);
-              countdownEl.appendChild(sec);
-            });
-
-            live.textContent = `Flash sale ends in ${days} day${
-              days !== 1 ? "s" : ""
-            }, ${hours} hour${hours !== 1 ? "s" : ""}, ${minutes} minute${
-              minutes !== 1 ? "s" : ""
-            }.`;
+            countdownEl.innerHTML = `
+              <div class="countdown-section">
+                <span class="countdown-amount">${days}</span>
+                <span class="countdown-label">day</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${hours}</span>
+                <span class="countdown-label">hour</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${minutes}</span>
+                <span class="countdown-label">minute</span>
+              </div>
+              <div class="countdown-section">
+                <span class="countdown-amount">${seconds}</span>
+                <span class="countdown-label">second</span>
+              </div>`;
             if (window.AOS) AOS.refresh();
           }
 
           updateCountdown();
-          intervalId = setInterval(updateCountdown, 1000);
+          interval = setInterval(updateCountdown, 1000);
         });
       </script>
 
@@ -1874,44 +1563,32 @@
                 data-aos-duration="1200"
               >
                 <ul class="nav nav-tabs" role="tablist">
-                  <li class="nav-item" role="presentation">
+                  <li>
                     <button
                       class="nav-link active"
-                      id="tab-best-sellers"
                       data-bs-toggle="tab"
                       data-bs-target="#cat1"
-                      type="button"
                       role="tab"
-                      aria-controls="cat1"
-                      aria-selected="true"
                     >
                       Best Sellers
                     </button>
                   </li>
-                  <li class="nav-item" role="presentation">
+                  <li>
                     <button
                       class="nav-link"
-                      id="tab-new-products"
                       data-bs-toggle="tab"
                       data-bs-target="#cat2"
-                      type="button"
                       role="tab"
-                      aria-controls="cat2"
-                      aria-selected="false"
                     >
                       New Products
                     </button>
                   </li>
-                  <li class="nav-item" role="presentation">
+                  <li>
                     <button
                       class="nav-link"
-                      id="tab-sale-products"
                       data-bs-toggle="tab"
                       data-bs-target="#cat3"
-                      type="button"
                       role="tab"
-                      aria-controls="cat3"
-                      aria-selected="false"
                     >
                       Sale Products
                     </button>
@@ -1947,28 +1624,10 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", () => {
-          function escapeHTML(str) {
-            return String(str || "")
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#39;");
-          }
-
-          let liveRegion = document.getElementById("site-live-announcer");
-          if (!liveRegion) {
-            liveRegion = document.createElement("div");
-            liveRegion.id = "site-live-announcer";
-            liveRegion.setAttribute("role", "status");
-            liveRegion.setAttribute("aria-live", "polite");
-            liveRegion.className = "visually-hidden";
-            document.body.appendChild(liveRegion);
-          }
-          function announce(text) {
-            liveRegion.textContent = "";
-            setTimeout(() => (liveRegion.textContent = text), 50);
-          }
+          const listEl = document.querySelector(".pesco-mini-cart-list");
+          const badgeEl = document.querySelector("#pro-counts");
+          const wishlistEl = document.querySelector("#pro-counts1");
+          const subtotalEl = document.querySelector(".cart-mini-total .amount");
 
           function showBanner(msg, type = "success") {
             const b = document.createElement("div");
@@ -1988,6 +1647,13 @@
             });
             document.body.appendChild(b);
             setTimeout(() => b.remove(), 3000);
+          }
+
+          function makeSlug(name = "product") {
+            return String(name)
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .replace(/[^\w-]+/g, "");
           }
 
           async function fetchWithRetries(
@@ -2021,137 +1687,6 @@
             }
           }
 
-          async function postJson(url, payload = {}) {
-            const res = await fetch(url, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            const text = await res.text();
-            if (!res.ok) {
-              try {
-                const body = JSON.parse(text);
-                throw new Error(body.message || JSON.stringify(body));
-              } catch {
-                throw new Error(text || `HTTP ${res.status}`);
-              }
-            }
-            try {
-              return JSON.parse(text);
-            } catch {
-              return text;
-            }
-          }
-
-          function makeSlug(name = "product") {
-            return String(name)
-              .toLowerCase()
-              .replace(/\s+/g, "-")
-              .replace(/[^\w-]+/g, "");
-          }
-
-          const listEl = document.querySelector(".pesco-mini-cart-list");
-          const badgeEl = document.querySelector("#pro-counts");
-          const wishlistEl = document.querySelector("#pro-counts1");
-          const subtotalEl = document.querySelector(".cart-mini-total .amount");
-
-          function makeCard(p = {}) {
-            const price =
-              parseFloat(
-                String(p.price || p.price_sale || 0).replace(/[^0-9.]/g, "")
-              ) || 0;
-            const sale =
-              parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) ||
-              0;
-            const slug = makeSlug(p.name);
-            const safeName = escapeHTML(p.name || "");
-            const safeStore = escapeHTML(p.store || "");
-            const safeImage = escapeHTML(p.image || "");
-            const safeSku = escapeHTML(p.sku || "");
-            const safeStock = escapeHTML(p.stockstatus || "");
-            const ariaNameForAddToWish = `Add ${safeName} to wishlist`;
-            const ariaNameForQuickView = `View details for ${safeName}`;
-            const ariaNameForAddToCart = `Add ${safeName} to cart`;
-
-            const col = document.createElement("div");
-            col.className = "col-xl-3 col-lg-4 col-sm-6";
-            col.innerHTML = `
-      <div class="product-item style-one mb-40" data-aos="fade-up">
-        <div class="product-thumbnail">
-          <a href="/shop-details/${slug}" class="w-100 h-100" aria-label="Open ${safeName} details">
-            <img src="http://147.93.45.171:1600/uploads/${safeImage}" alt="${safeName}">
-          </a>
-
-          <div class="discount">${escapeHTML(p.label || "")}</div>
-
-          <div class="hover-content">
-            <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist"
-               data-name="${safeName}"
-               data-store="${safeStore}"
-               data-image="${safeImage}"
-               data-price="${price}"
-               data-price_sale="${sale}"
-               data-sku="${safeSku}"
-               data-stockstatus="${safeStock}"
-               aria-label="${ariaNameForAddToWish}"
-               role="button">
-              <i class="fa fa-heart" aria-hidden="true"></i>
-            </a>
-
-            <a href="/shop-details/${slug}" class="img-popup icon-btn"
-               aria-label="${ariaNameForQuickView}">
-              <i class="fa fa-eye" aria-hidden="true"></i>
-            </a>
-          </div>
-
-          <div class="cart-button">
-            <a href="/shop-details/${slug}" class="cart-btn add-to-cart"
-               data-name="${safeName}"
-               data-store="${safeStore}"
-               data-image="${safeImage}"
-               data-price="${price}"
-               data-price_sale="${sale}"
-               data-quantity="1"
-               aria-label="${ariaNameForAddToCart}"
-               role="button">
-              <i class="far fa-shopping-basket" aria-hidden="true"></i>
-              <span class="text">Add To Cart</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="product-info-wrap">
-          <div class="product-info">
-            <ul class="ratings rating5" aria-hidden="true">
-              ${'<li><i class="fas fa-star" aria-hidden="true"></i></li>'.repeat(
-                5
-              )}
-              <li><a href="/shop-details/${slug}">(${Math.floor(
-              Math.random() * 100
-            )})</a></li>
-            </ul>
-            <h3 class="title">
-              <a href="/shop-details/${slug}" aria-label="Open ${safeName} details">${safeName}</a>
-            </h3>
-          </div>
-
-          <div class="product-price">
-            <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
-              2
-            )}</span>
-            <span class="price new-price"><span class="currency"></span>$${price.toFixed(
-              2
-            )}</span>
-          </div>
-        </div>
-     </div>`;
-
-            return col;
-          }
-
-          let productsRendered = false;
-          let renderInProgress = false;
-
           function ensureRow(catSelector) {
             let row = document.querySelector(
               catSelector + " .row.justify-content-center"
@@ -2166,6 +1701,93 @@
             }
             return row;
           }
+
+          function makeCard(p) {
+            const price =
+              parseFloat(
+                String(p.price || p.price_sale || 0).replace(/[^0-9.]/g, "")
+              ) || 0;
+            const sale =
+              parseFloat(String(p.price_sale || 0).replace(/[^0-9.]/g, "")) ||
+              0;
+            const slug = makeSlug(p.name);
+
+            const col = document.createElement("div");
+            col.className = "col-xl-3 col-lg-4 col-sm-6";
+            col.innerHTML = `
+  <div class="product-item style-one mb-40" data-aos="fade-up">
+    <div class="product-thumbnail">
+      <!-- Product image: real link -->
+      <a href="/shop-details/${slug}" class="w-100 h-100">
+        <img src="http://147.93.45.171:1600/uploads/${p.image || ""}" alt="${(
+              p.name || ""
+            ).replace(/"/g, "")}">
+      </a>
+
+      <div class="discount">${p.label || ""}</div>
+      <div class="hover-content">
+        <!-- Wishlist: crawlable link while JS still works -->
+        <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist" 
+          data-name="${(p.name || "").replace(/"/g, "")}" 
+          data-store="${(p.store || "").replace(/"/g, "")}" 
+          data-image="${(p.image || "").replace(/"/g, "")}" 
+          data-price="${price}" 
+          data-price_sale="${sale}" 
+          data-sku="${(p.sku || "").replace(/"/g, "")}" 
+          data-stockstatus="${(p.stockstatus || "").replace(/"/g, "")}">
+          <i class="fa fa-heart"></i>
+        </a>
+
+        <!-- Quick-view: now links to product detail page -->
+        <a href="/shop-details/${slug}" class="img-popup icon-btn">
+          <i class="fa fa-eye"></i>
+        </a>
+      </div>
+
+      <div class="cart-button">
+        <a href="/shop-details/${slug}" class="cart-btn add-to-cart" 
+          data-name="${(p.name || "").replace(/"/g, "")}" 
+          data-store="${(p.store || "").replace(/"/g, "")}" 
+          data-image="${(p.image || "").replace(/"/g, "")}" 
+          data-price="${price}" 
+          data-price_sale="${sale}" 
+          data-quantity="1">
+          <i class="far fa-shopping-basket"></i>
+          <span class="text">Add To Cart</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="product-info-wrap">
+      <div class="product-info">
+        <ul class="ratings rating5">
+          ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
+          <li><a href="/shop-details/${slug}">(${Math.floor(
+              Math.random() * 100
+            )})</a></li>
+        </ul>
+        <h4 class="title">
+          <a href="/shop-details/${slug}">${(p.name || "").replace(
+              /</g,
+              ""
+            )}</a>
+        </h4>
+      </div>
+      <div class="product-price">
+        <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
+          2
+        )}</span>
+        <span class="price new-price"><span class="currency"></span>$${price.toFixed(
+          2
+        )}</span>
+      </div>
+    </div>
+  </div>`;
+            return col;
+          }
+
+          let productsRendered = false;
+          let renderInProgress = false;
 
           async function loadFeatureProducts() {
             if (renderInProgress) return;
@@ -2190,6 +1812,7 @@
                 renderInProgress = false;
                 return;
               }
+
               products.forEach((p) => {
                 const target =
                   (p.label === "Sale" && saleRow) ||
@@ -2197,11 +1820,11 @@
                   bestRow;
                 if (target) target.appendChild(makeCard(p));
               });
+
               productsRendered = true;
               if (typeof AOS !== "undefined") AOS.refresh();
             } catch (err) {
               console.error("Failed to load products:", err.message || err);
-              announce("Failed to load featured products.");
             } finally {
               renderInProgress = false;
             }
@@ -2228,7 +1851,6 @@
               if (!unique.length) {
                 listEl.innerHTML = `<li class="sidebar-cart-item sidebar-cart-empty">Your cart is empty.</li>`;
                 if (subtotalEl) subtotalEl.textContent = "$0.00";
-                announce("Your cart is empty.");
                 return;
               }
 
@@ -2238,39 +1860,31 @@
                 const qty = parseInt(item.quantity || 1, 10);
                 total += price * qty;
                 const slug = makeSlug(item.name);
-                const safeName = escapeHTML(item.name);
-                const safeImage = escapeHTML(item.image);
                 listEl.insertAdjacentHTML(
                   "beforeend",
                   `
-            <li class="sidebar-cart-item" data-id="${
-              item.id || ""
-            }" data-price="${price}" data-qty="${qty}">
-              <a class="remove-cart" href="#" aria-label="Remove ${safeName} from cart" role="button">
-                <i class="far fa-trash-alt" aria-hidden="true"></i>
-              </a>
-              <a href="/shop-details/${slug}" aria-label="Open ${safeName} details">
-                <img src="http://147.93.45.171:1600/uploads/${safeImage}" alt="${safeName}"/>
-                ${safeName}
-              </a>
-              <span class="quantity">
-                ${qty} × <span><span class="currency">$</span>${price.toFixed(
+                <li class="sidebar-cart-item" data-id="${
+                  item.id
+                }" data-price="${price}" data-qty="${qty}">
+                  <a href="/shop-details/${slug}" class="remove-cart"><i class="far fa-trash-alt"></i></a>
+                  <a href="/shop-details/${slug}">
+                    <img src="http://147.93.45.171:1600/uploads/${
+                      item.image
+                    }" alt="${item.name}"/>
+                    ${item.name}
+                  </a>
+                  <span class="quantity">
+                    ${qty} × <span><span class="currency">$</span>${price.toFixed(
                     2
                   )}</span>
-              </span>
-            </li>`
+                  </span>
+                </li>`
                 );
               });
 
               if (subtotalEl) subtotalEl.textContent = `$${total.toFixed(2)}`;
-              announce(
-                `${unique.length} items in cart, total ${total.toFixed(
-                  2
-                )} dollars.`
-              );
             } catch (err) {
               console.error("Sidebar load error:", err);
-              announce("Could not load cart.");
             }
           }
 
@@ -2317,160 +1931,113 @@
             }
           }
 
-          document.body.addEventListener("click", async (e) => {
-            const rem = e.target.closest(".remove-cart");
-            if (rem) {
+          if (listEl) {
+            listEl.addEventListener("click", (e) => {
+              const rem = e.target.closest(".remove-cart");
+              if (!rem) return;
               e.preventDefault();
               const li = rem.closest(".sidebar-cart-item");
-              const id = li?.dataset?.id;
-              const name =
-                li
-                  ?.querySelector("a[href^='/shop-details']")
-                  ?.textContent?.trim() || "product";
-              if (!id) {
-                showBanner("Could not remove item: missing id.", "error");
-                announce("Could not remove item.");
-                return;
-              }
-              try {
-                const res = await fetch(
-                  `http://147.93.45.171:1600/deletecart/${id}`,
-                  { method: "DELETE" }
-                );
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                const body = await res.json().catch(() => ({}));
-                if (body && body.success === false)
-                  throw new Error(body.message || "Delete failed");
-                li.remove();
-                let newTotal = 0;
-                listEl
-                  .querySelectorAll(
-                    "li.sidebar-cart-item:not(.sidebar-cart-empty)"
-                  )
-                  .forEach((itemLi) => {
-                    const price = parseFloat(itemLi.dataset.price) || 0;
-                    const qty = parseInt(itemLi.dataset.qty || "1", 10);
-                    newTotal += price * qty;
-                  });
-                if (subtotalEl)
-                  subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
-                showBanner("Product removed from cart.", "success");
-                announce(`${name} removed from cart.`);
-                updateCounts().catch(() => {});
-              } catch (err) {
-                console.error("Delete error:", err);
-                showBanner("Could not remove item.", "error");
-                announce("Could not remove item from cart.");
-              }
-              return;
-            }
+              const id = li.dataset.id;
+              if (!id) return console.error("Missing data-id");
 
+              fetch(`http://147.93.45.171:1600/deletecart/${id}`, {
+                method: "DELETE",
+              })
+                .then((res) =>
+                  res.json().then((body) => ({ ok: res.ok, body }))
+                )
+                .then(({ ok, body }) => {
+                  if (!ok || !body.success)
+                    throw new Error(body.message || "Delete failed");
+                  li.remove();
+                  let newTotal = 0;
+                  listEl
+                    .querySelectorAll(
+                      "li.sidebar-cart-item:not(.sidebar-cart-empty)"
+                    )
+                    .forEach((itemLi) => {
+                      const price = parseFloat(itemLi.dataset.price) || 0;
+                      const qty = parseInt(itemLi.dataset.qty || "1", 10);
+                      newTotal += price * qty;
+                    });
+                  if (subtotalEl)
+                    subtotalEl.textContent = `$${newTotal.toFixed(2)}`;
+                  showBanner("Product removed from cart.", "success");
+                  updateCounts();
+                })
+                .catch((err) => {
+                  console.error("Delete error:", err);
+                  showBanner("Could not remove item.", "error");
+                });
+            });
+          }
+
+          document.body.addEventListener("click", async (e) => {
             const cartBtn = e.target.closest(".add-to-cart");
             const wishBtn = e.target.closest(".add-to-wishlist");
-
             if (!cartBtn && !wishBtn) return;
-
             e.preventDefault();
 
             const userId = localStorage.getItem("user_id");
-            if (!userId) {
-              const message = wishBtn
-                ? "Please log in to add to wishlist."
-                : "Please log in to add to cart.";
-              showBanner(message, "error");
-              announce(message);
-              return;
-            }
+            if (!userId)
+              return showBanner(
+                wishBtn
+                  ? "Please log in to add to wishlist."
+                  : "Please log in to add to cart.",
+                "error"
+              );
 
             try {
-              if (cartBtn) {
-                const payload = {
-                  user_id: parseInt(userId, 10),
-                  name: cartBtn.dataset.name,
-                  store: cartBtn.dataset.store,
-                  image: cartBtn.dataset.image,
-                  price: parseFloat(cartBtn.dataset.price) || 0,
-                  price_sale: parseFloat(cartBtn.dataset.price_sale) || 0,
-                  quantity: parseInt(cartBtn.dataset.quantity || "1", 10),
-                };
-                await postJson("http://147.93.45.171:1600/addcart", payload);
-                showBanner("Product added to cart!", "success");
-                announce(`${payload.name} added to cart.`);
-                loadSidebarCart().catch((e) =>
-                  console.debug("loadSidebarCart failed:", e)
-                );
-                updateCounts().catch((e) =>
-                  console.debug("updateCounts failed:", e)
-                );
-              } else if (wishBtn) {
-                const payload = {
-                  user_id: parseInt(userId, 10),
-                  product_name: wishBtn.dataset.name,
-                  store: wishBtn.dataset.store,
-                  image: wishBtn.dataset.image,
-                  price: parseFloat(wishBtn.dataset.price) || 0,
-                  price_sale: parseFloat(wishBtn.dataset.price_sale) || 0,
-                  sku: wishBtn.dataset.sku,
-                  stockstatus: wishBtn.dataset.stockstatus,
-                };
-                await postJson(
-                  "http://147.93.45.171:1600/wishlistpost",
-                  payload
-                );
-                showBanner("Product added to wishlist!", "success");
-                announce(`${payload.product_name} added to wishlist.`);
-                updateCounts().catch((e) =>
-                  console.debug("updateCounts failed:", e)
-                );
-              }
+              const url = cartBtn
+                ? "http://147.93.45.171:1600/addcart"
+                : "http://147.93.45.171:1600/wishlistpost";
+              const payload = cartBtn
+                ? {
+                    user_id: parseInt(userId, 10),
+                    name: cartBtn.dataset.name,
+                    store: cartBtn.dataset.store,
+                    image: cartBtn.dataset.image,
+                    price: parseFloat(cartBtn.dataset.price) || 0,
+                    price_sale: parseFloat(cartBtn.dataset.price_sale) || 0,
+                    quantity: parseInt(cartBtn.dataset.quantity || "1", 10),
+                  }
+                : {
+                    user_id: parseInt(userId, 10),
+                    product_name: wishBtn.dataset.name,
+                    store: wishBtn.dataset.store,
+                    image: wishBtn.dataset.image,
+                    price: parseFloat(wishBtn.dataset.price) || 0,
+                    price_sale: parseFloat(wishBtn.dataset.price_sale) || 0,
+                    sku: wishBtn.dataset.sku,
+                    stockstatus: wishBtn.dataset.stockstatus,
+                  };
+
+              const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+              const text = await res.text();
+              if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+
+              showBanner(
+                cartBtn
+                  ? "Product added to cart!"
+                  : "Product added to wishlist!",
+                "success"
+              );
+              if (cartBtn) loadSidebarCart();
+              updateCounts();
             } catch (err) {
               console.error("Error:", err);
-              const msg =
+              showBanner(
                 (cartBtn
                   ? "Add to cart failed: "
-                  : "Add to wishlist failed: ") + (err.message || err);
-              showBanner(msg, "error");
-              announce(msg);
+                  : "Add to wishlist failed: ") + err.message,
+                "error"
+              );
             }
           });
-
-          const checkoutBtn = document.querySelector(
-            ".cart-button-box a[href*='checkout.html']"
-          );
-          if (checkoutBtn && listEl) {
-            checkoutBtn.addEventListener("click", (e) => {
-              e.preventDefault();
-              const items = Array.from(
-                listEl.querySelectorAll("li.sidebar-cart-item")
-              )
-                .filter((li) => !li.classList.contains("sidebar-cart-empty"))
-                .map((li) => {
-                  const price = parseFloat(li.dataset.price) || 0;
-                  const quantity = parseInt(li.dataset.qty || "1", 10);
-                  const rawSrc =
-                    li.querySelector("img")?.getAttribute("src") || "";
-                  const image = rawSrc.split("/").pop() || "";
-                  return {
-                    id: li.dataset.id,
-                    name:
-                      li
-                        .querySelector("a[href^='/shop-details']")
-                        ?.textContent.trim() || "",
-                    image,
-                    price,
-                    quantity,
-                    lineTotal: price * quantity,
-                  };
-                });
-              const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
-              const total = subtotal;
-              localStorage.setItem(
-                "checkout_cart",
-                JSON.stringify({ items, subtotal, total })
-              );
-              window.location.href = checkoutBtn.href;
-            });
-          }
 
           function startWhenReady() {
             if (
@@ -2531,8 +2098,43 @@
           });
           observer.observe(document.body, { childList: true, subtree: true });
 
-          window.__pesco_reloadCart = loadSidebarCart;
-          window.__pesco_reloadCounts = updateCounts;
+          const checkoutBtn = document.querySelector(
+            ".cart-button-box a[href*='checkout.html']"
+          );
+          if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              const items = Array.from(
+                listEl.querySelectorAll("li.sidebar-cart-item")
+              )
+                .filter((li) => !li.classList.contains("sidebar-cart-empty"))
+                .map((li) => {
+                  const price = parseFloat(li.dataset.price) || 0;
+                  const quantity = parseInt(li.dataset.qty || "1", 10);
+                  const rawSrc =
+                    li.querySelector("img")?.getAttribute("src") || "";
+                  const image = rawSrc.split("/").pop() || "";
+                  return {
+                    id: li.dataset.id,
+                    name:
+                      li
+                        .querySelector("a[href^='/shop-details']")
+                        ?.textContent.trim() || "",
+                    image,
+                    price,
+                    quantity,
+                    lineTotal: price * quantity,
+                  };
+                });
+              const subtotal = items.reduce((sum, it) => sum + it.lineTotal, 0);
+              const total = subtotal;
+              localStorage.setItem(
+                "checkout_cart",
+                JSON.stringify({ items, subtotal, total })
+              );
+              window.location.href = checkoutBtn.href;
+            });
+          }
         });
       </script>
 
@@ -2762,14 +2364,8 @@
                 <div class="icon">
                   <i class="flaticon-searching"></i>
                 </div>
-                <div
-                  class="content"
-                  role="region"
-                  aria-labelledby="heading-browsing-choosing"
-                >
-                  <h3 id="heading-browsing-choosing" class="feature-title">
-                    Browsing &amp; Choosing
-                  </h3>
+                <div class="content">
+                  <h6>Browsing & Choosing</h6>
                   <p>
                     This is where customers visit your online store, browse your
                     products.
