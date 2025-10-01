@@ -358,6 +358,28 @@
       width: 338px;
       height: 357px;
     }
+
+    .price-amount {
+      margin: 0;
+      font-size: 40px !important;
+      font-weight: 800 !important;
+      line-height: 2.5rem !important;
+    }
+
+    .feature-title {
+      font-size: 1.125rem !important;
+      line-height: 26px !important;
+    }
+
+    .feature-title1 {
+      font-size: 1.125rem !important;
+      line-height: 30px !important;
+    }
+
+    .title-name {
+      font-size: 16px !important;
+      line-height: 26px !important;
+    }
   </style>
 
   <body>
@@ -431,8 +453,9 @@
                     placeholder="Enter Search Products"
                     required
                   />
-                  <button class="search-btn">
-                    <i class="far fa-search"></i>
+                  <button class="search-btn" type="button">
+                    <i class="far fa-search" aria-hidden="true"></i>
+                    <span class="visually-hidden">Search</span>
                   </button>
                 </div>
               </form>
@@ -800,10 +823,18 @@
                       <ul>
                         <li>
                           <div class="price-box">
-                            <div class="currency">$</div>
+                            <div class="currency" aria-hidden="true">$</div>
+
                             <div class="text">
                               <span class="discount">Discount Price</span>
-                              <h3>140.00</h3>
+
+                              <p
+                                class="price-amount"
+                                aria-label="Price: $140.00"
+                              >
+                                <span class="visually-hidden">Price: </span>
+                                <span class="amount">140.00</span>
+                              </p>
                             </div>
                           </div>
                         </li>
@@ -870,10 +901,18 @@
                       <ul>
                         <li>
                           <div class="price-box">
-                            <div class="currency">$</div>
+                            <div class="currency" aria-hidden="true">$</div>
+
                             <div class="text">
                               <span class="discount">Discount Price</span>
-                              <h3>140.00</h3>
+
+                              <p
+                                class="price-amount"
+                                aria-label="Price: $140.00"
+                              >
+                                <span class="visually-hidden">Price: </span>
+                                <span class="amount">140.00</span>
+                              </p>
                             </div>
                           </div>
                         </li>
@@ -939,10 +978,18 @@
                       <ul>
                         <li>
                           <div class="price-box">
-                            <div class="currency">$</div>
+                            <div class="currency" aria-hidden="true">$</div>
+
                             <div class="text">
                               <span class="discount">Discount Price</span>
-                              <h3>140.00</h3>
+
+                              <p
+                                class="price-amount"
+                                aria-label="Price: $140.00"
+                              >
+                                <span class="visually-hidden">Price: </span>
+                                <span class="amount">140.00</span>
+                              </p>
                             </div>
                           </div>
                         </li>
@@ -1086,8 +1133,9 @@
                   <div class="icon">
                     <i class="fas fa-shipping-fast"></i>
                   </div>
+
                   <div class="content">
-                    <h5>Free Shipping</h5>
+                    <h3 class="feature-title">Free Shipping</h3>
                     <p>You get your items delivered without any extra cost.</p>
                   </div>
                 </div>
@@ -1099,7 +1147,7 @@
                     <i class="fas fa-microphone"></i>
                   </div>
                   <div class="content">
-                    <h5>Great Support 24/7</h5>
+                    <h3 class="feature-title">Great Support 24/7</h3>
                     <p>
                       Our customer support team is available around the clock
                     </p>
@@ -1113,7 +1161,7 @@
                     <i class="far fa-handshake"></i>
                   </div>
                   <div class="content">
-                    <h5>Return Available</h5>
+                    <h3 class="feature-title">Return Available</h3>
                     <p>
                       Making it easy to return any items if you're not
                       satisfied.
@@ -1128,7 +1176,7 @@
                     <i class="fas fa-sack-dollar"></i>
                   </div>
                   <div class="content">
-                    <h5>Secure Payment</h5>
+                    <h3 class="feature-title">Secure Payment</h3>
                     <p>Shop with confidence knowing that our secure payment</p>
                   </div>
                 </div>
@@ -1398,10 +1446,9 @@
 
           if (Array.isArray(sales)) {
             const today = new Date();
-            const valid = sales.filter((item) => {
-              const end = new Date(item.end_date + "T23:59:59");
-              return end >= today;
-            });
+            const valid = sales.filter(
+              (item) => new Date(item.end_date + "T23:59:59") >= today
+            );
 
             if (valid.length === 0) {
               row.innerHTML =
@@ -1428,6 +1475,9 @@
                 const imgEl = slot.querySelector(".banner-img img");
                 imgEl.src = `http://147.93.45.171:1600/uploads/${item.image}`;
                 imgEl.alt = item.product_name;
+                imgEl.style.width = "100%";
+                imgEl.style.height = "auto";
+                imgEl.style.objectFit = "contain";
 
                 const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
                 const sale = parseFloat(
@@ -1455,20 +1505,6 @@
             const data = await res.json();
             if (!Array.isArray(data) || data.length === 0) {
               section.innerHTML = `
-                <div class="container">
-                  <div class="row">
-                    <div class="col-lg-12 text-center py-5">
-                      <h3>No offers available.</h3>
-                    </div>
-                  </div>
-                </div>`;
-              if (window.AOS) AOS.refresh();
-              return;
-            }
-            sale = data[0];
-          } catch (err) {
-            console.error(err);
-            section.innerHTML = `
               <div class="container">
                 <div class="row">
                   <div class="col-lg-12 text-center py-5">
@@ -1476,6 +1512,20 @@
                   </div>
                 </div>
               </div>`;
+              if (window.AOS) AOS.refresh();
+              return;
+            }
+            sale = data[0];
+          } catch (err) {
+            console.error(err);
+            section.innerHTML = `
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-12 text-center py-5">
+                  <h3>No offers available.</h3>
+                </div>
+              </div>
+            </div>`;
             if (window.AOS) AOS.refresh();
             return;
           }
@@ -1483,6 +1533,9 @@
           const imgEl2 = document.querySelector(".deal-img img");
           imgEl2.src = `http://147.93.45.171:1600/uploads/${sale.image}`;
           imgEl2.alt = sale.product_name;
+          imgEl2.style.width = "100%";
+          imgEl2.style.height = "auto";
+          imgEl2.style.objectFit = "contain";
 
           const subHeading = document.querySelector(
             ".deal-content .sub-heading"
@@ -1497,13 +1550,13 @@
             const diff = endDate - new Date();
             if (diff < 0) {
               section.innerHTML = `
-                <div class="container">
-                  <div class="row">
-                    <div class="col-lg-12 text-center py-5">
-                      <h3>No offers available.</h3>
-                    </div>
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 text-center py-5">
+                    <h3>No offers available.</h3>
                   </div>
-                </div>`;
+                </div>
+              </div>`;
               clearInterval(interval);
               return;
             }
@@ -1513,22 +1566,22 @@
             const seconds = Math.floor((diff / 1000) % 60);
 
             countdownEl.innerHTML = `
-              <div class="countdown-section">
-                <span class="countdown-amount">${days}</span>
-                <span class="countdown-label">day</span>
-              </div>
-              <div class="countdown-section">
-                <span class="countdown-amount">${hours}</span>
-                <span class="countdown-label">hour</span>
-              </div>
-              <div class="countdown-section">
-                <span class="countdown-amount">${minutes}</span>
-                <span class="countdown-label">minute</span>
-              </div>
-              <div class="countdown-section">
-                <span class="countdown-amount">${seconds}</span>
-                <span class="countdown-label">second</span>
-              </div>`;
+            <div class="countdown-section">
+              <span class="countdown-amount">${days}</span>
+              <span class="countdown-label">day</span>
+            </div>
+            <div class="countdown-section">
+              <span class="countdown-amount">${hours}</span>
+              <span class="countdown-label">hour</span>
+            </div>
+            <div class="countdown-section">
+              <span class="countdown-amount">${minutes}</span>
+              <span class="countdown-label">minute</span>
+            </div>
+            <div class="countdown-section">
+              <span class="countdown-amount">${seconds}</span>
+              <span class="countdown-label">second</span>
+            </div>`;
             if (window.AOS) AOS.refresh();
           }
 
@@ -1563,32 +1616,44 @@
                 data-aos-duration="1200"
               >
                 <ul class="nav nav-tabs" role="tablist">
-                  <li>
+                  <li role="presentation">
                     <button
                       class="nav-link active"
+                      id="tab-best-sellers"
                       data-bs-toggle="tab"
                       data-bs-target="#cat1"
+                      type="button"
                       role="tab"
+                      aria-controls="cat1"
+                      aria-selected="true"
                     >
                       Best Sellers
                     </button>
                   </li>
-                  <li>
+                  <li role="presentation">
                     <button
                       class="nav-link"
+                      id="tab-new-products"
                       data-bs-toggle="tab"
                       data-bs-target="#cat2"
+                      type="button"
                       role="tab"
+                      aria-controls="cat2"
+                      aria-selected="false"
                     >
                       New Products
                     </button>
                   </li>
-                  <li>
+                  <li role="presentation">
                     <button
                       class="nav-link"
+                      id="tab-sale-products"
                       data-bs-toggle="tab"
                       data-bs-target="#cat3"
+                      type="button"
                       role="tab"
+                      aria-controls="cat3"
+                      aria-selected="false"
                     >
                       Sale Products
                     </button>
@@ -1766,12 +1831,9 @@
               Math.random() * 100
             )})</a></li>
         </ul>
-        <h4 class="title">
-          <a href="/shop-details/${slug}">${(p.name || "").replace(
-              /</g,
-              ""
-            )}</a>
-        </h4>
+       <h3 class="title title-name"><a href="/shop-details/${slug}">${(
+              p.name || ""
+            ).replace(/</g, "")}</a></h3>
       </div>
       <div class="product-price">
         <span class="price prev-price"><span class="currency"></span>$${sale.toFixed(
@@ -2365,10 +2427,10 @@
                   <i class="flaticon-searching"></i>
                 </div>
                 <div class="content">
-                  <h6>Browsing & Choosing</h6>
+                  <h3 class="feature-title1">Browsing & Choosing</h3>
                   <p>
-                    This is where customers visit your online store, browse your
-                    products.
+                    This is where customers visit your online store and browse
+                    your products.
                   </p>
                 </div>
               </div>
@@ -2384,7 +2446,7 @@
                   <i class="flaticon-payment-method"></i>
                 </div>
                 <div class="content">
-                  <h6>Checkout & Payment</h6>
+                  <h3 class="feature-title1">Checkout & Payment</h3>
                   <p>
                     Once they have picked their items, customers proceed to
                     checkout.
@@ -2403,7 +2465,7 @@
                   <i class="flaticon-currency"></i>
                 </div>
                 <div class="content">
-                  <h6>Order Fulfillment</h6>
+                  <h3 class="feature-title1">Order Fulfillment</h3>
                   <p>
                     After the order is placed, it's sent to your fulfillment
                     team.
@@ -2422,7 +2484,7 @@
                   <i class="flaticon-delivery"></i>
                 </div>
                 <div class="content">
-                  <h6>Delivery to Customer</h6>
+                  <h3 class="feature-title1">Delivery to Customer</h3>
                   <p>
                     The packed order is then sent off with a shipping carrier
                   </p>
