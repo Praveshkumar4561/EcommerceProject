@@ -3131,110 +3131,92 @@
           return;
         }
 
-        if (!Array.isArray(posts) || posts.length === 0) {
-          console.warn("No blog posts available.");
-          return;
-        }
-
         if (posts[0]) {
           const big = posts[0];
           const bigEl = document.querySelector(".blog-post-item.style-one");
-          if (bigEl) {
-            const fmtDate = (iso) =>
-              new Date(iso).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              });
+          const fmtDate = (iso) =>
+            new Date(iso).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
 
-            const thumbContainer = bigEl.querySelector(".post-thumbnails");
-            if (thumbContainer) {
-              thumbContainer.innerHTML = `
-          <a href="/blog-details/${slugify(big.name)}" class="w-100 h-100">
-            <img src="${imageSrc(big.image)}" alt="${big.name || ""}">
-          </a>
-        `;
-            }
+          const thumbContainer = bigEl.querySelector(".post-thumbnails");
+          thumbContainer.innerHTML = `
+                <a href="/blog-details/${slugify(
+                  big.name
+                )}" class="w-100 h-100">
+                  <img src="${imageSrc(big.image)}" alt="${big.name}">
+                </a>
+              `;
 
-            const bigLink = bigEl.querySelector(".title a");
-            if (bigLink) {
-              bigLink.href = `/blog-details/${slugify(big.name)}`;
-              const titleWords = (big.name || "").split(/\s+/);
-              bigLink.textContent =
-                titleWords.slice(0, 8).join(" ") +
-                (titleWords.length > 8 ? "…" : "");
-            }
+          const bigLink = bigEl.querySelector(".title a");
+          bigLink.href = `/blog-details/${slugify(big.name)}`;
+          const titleWords = big.name.split(" ");
+          bigLink.textContent =
+            titleWords.slice(0, 8).join(" ") +
+            (titleWords.length > 8 ? "…" : "");
 
-            const postContentP = bigEl.querySelector(".post-content p");
-            if (postContentP) {
-              const previewWords = String(big.description || "").split(/\s+/);
-              postContentP.textContent =
-                previewWords.length > 48
-                  ? previewWords.slice(0, 48).join(" ") + "…"
-                  : String(big.description || "");
-            }
-          }
+          const previewWords = big.description.split(/\s+/);
+          bigEl.querySelector(".post-content p").textContent =
+            previewWords.length > 48
+              ? previewWords.slice(0, 48).join(" ") + "…"
+              : big.description;
         }
 
         const smallContainer = document.querySelector(".col-lg-6 > .row");
-        if (smallContainer) {
-          const smallTemplate = smallContainer.querySelector(".col-sm-6");
-          if (smallTemplate && posts.length > 1) {
-            const fmtDate = (iso) =>
-              new Date(iso).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              });
-            const templateClone = smallTemplate.cloneNode(true);
-            smallContainer.innerHTML = "";
-
-            posts.slice(1, 5).forEach((data) => {
-              const card = templateClone.cloneNode(true);
-
-              const thumbDiv = card.querySelector(".post-thumbnail");
-              if (thumbDiv)
-                thumbDiv.innerHTML = `
-            <a href="/blog-details/${slugify(data.name)}">
-              <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
-            </a>
-          `;
-
-              const linkWords = String(data.name || "").split(/\s+/);
-              const linkElem = card.querySelector(".title a");
-              if (linkElem) {
-                linkElem.href = `/blog-details/${slugify(data.name)}`;
-                linkElem.textContent =
-                  linkWords.slice(0, 6).join(" ") +
-                  (linkWords.length > 6 ? "…" : "");
-              }
-
-              const oldMeta = card.querySelector(".post-meta");
-              if (oldMeta) oldMeta.remove();
-              const meta = document.createElement("div");
-              meta.className = "post-meta";
-              meta.innerHTML = `
-          <span><a href="/blog-details/${slugify(data.name)}">${
-                data.author_name || ""
-              }</a></span>
-          <span><a href="/blog-details/${slugify(data.name)}">${fmtDate(
-                data.date
-              )}</a></span>
-        `;
-              const postContent = card.querySelector(".post-content");
-              if (postContent) postContent.appendChild(meta);
-
-              smallContainer.appendChild(card);
+        const smallTemplate = smallContainer.querySelector(".col-sm-6");
+        if (smallTemplate && posts.length > 1) {
+          const fmtDate = (iso) =>
+            new Date(iso).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             });
+          const templateClone = smallTemplate.cloneNode(true);
+          smallContainer.innerHTML = "";
 
-            if (window.AOS && typeof AOS.init === "function") {
-              AOS.init({
-                once: false,
-                duration: 1000,
-                easing: "ease-in-out",
-                mirror: true,
-              });
-            }
+          posts.slice(1, 5).forEach((data) => {
+            const card = templateClone.cloneNode(true);
+
+            const thumbDiv = card.querySelector(".post-thumbnail");
+            thumbDiv.innerHTML = `
+                  <a href="/blog-details/${slugify(data.name)}">
+                    <img src="${imageSrc(data.image)}" alt="${data.name}">
+                  </a>
+                `;
+
+            const linkWords = data.name.split(" ");
+            const linkElem = card.querySelector(".title a");
+            linkElem.href = `/blog-details/${slugify(data.name)}`;
+            linkElem.textContent =
+              linkWords.slice(0, 6).join(" ") +
+              (linkWords.length > 6 ? "…" : "");
+
+            const oldMeta = card.querySelector(".post-meta");
+            if (oldMeta) oldMeta.remove();
+            const meta = document.createElement("div");
+            meta.className = "post-meta";
+            meta.innerHTML = `
+                  <span><a href="/blog-details/${slugify(data.name)}">${
+              data.author_name || ""
+            }</a></span>
+                  <span><a href="/blog-details/${slugify(data.name)}">${fmtDate(
+              data.date
+            )}</a></span>
+                `;
+            card.querySelector(".post-content").appendChild(meta);
+
+            smallContainer.appendChild(card);
+          });
+
+          if (window.AOS && typeof AOS.init === "function") {
+            AOS.init({
+              once: false,
+              duration: 1000,
+              easing: "ease-in-out",
+              mirror: true,
+            });
           }
         }
 
@@ -3244,43 +3226,44 @@
           );
           const topPosts = sorted.slice(0, 3);
           const container = document.getElementById("recent-posts-container");
-          if (container) {
-            function formatDate(dateStr) {
-              return new Date(dateStr).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              });
-            }
 
-            topPosts.forEach((post) => {
-              const html = `
-          <div class="recent-post-item">
-            <div class="thumb">
-              <a href="/blog-details/${slugify(post.name)}" class="w-100 h-100">
-                <img src="${imageSrc(post.image)}" alt="${post.name || ""}">
-              </a>
-            </div>
-            <div class="content">
-              <h4><a href="/blog-details/${slugify(post.name)}">${
-                post.name || ""
-              }</a></h4>
-              <span>
-                <a href="/blog-details/${slugify(post.name)}">
-                  ${formatDate(post.date)}
-                </a>
-              </span>
-            </div>
-          </div>
-        `;
-              container.insertAdjacentHTML("beforeend", html);
+          function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             });
           }
+
+          topPosts.forEach((post) => {
+            const html = `
+                  <div class="recent-post-item">
+                    <div class="thumb">
+                      <a href="/blog-details/${slugify(
+                        post.name
+                      )}" class="w-100 h-100">
+                        <img src="${imageSrc(post.image)}" alt="${post.name}">
+                      </a>
+                    </div>
+                    <div class="content">
+                      <h4><a href="/blog-details/${slugify(post.name)}">${
+              post.name
+            }</a></h4>
+                      <span>
+                        <a href="/blog-details/${slugify(post.name)}">
+                          ${formatDate(post.date)}
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                `;
+            container.insertAdjacentHTML("beforeend", html);
+          });
         } catch (error) {
           console.error("Error loading recent posts:", error);
         }
 
-        const extras = Array.isArray(posts) ? posts.slice(5) : [];
+        const extras = posts.slice(5);
         const perPage = 3;
         const totalPages = Math.ceil(extras.length / perPage);
         let currentPage = 1;
@@ -3306,26 +3289,19 @@
             el.style.display = "";
 
             const thumb = el.querySelector(".post-thumbnail");
-            if (thumb)
-              thumb.innerHTML = `
-          <a href="/blog-details/${slugify(data.name)}">
-            <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
-          </a>
-        `;
+            thumb.innerHTML = `
+                  <a href="/blog-details/${slugify(data.name)}">
+                    <img src="${imageSrc(data.image)}" alt="${data.name}">
+                  </a>
+                `;
 
             const link = el.querySelector(".title a");
-            if (link) {
-              link.href = `/blog-details/${slugify(data.name)}`;
-              link.textContent = data.name || "";
-            }
+            link.href = `/blog-details/${slugify(data.name)}`;
+            link.textContent = data.name;
 
-            const w = String(data.description || "").split(/\s+/);
-            const p = el.querySelector(".post-content p");
-            if (p)
-              p.textContent =
-                w.length > 36
-                  ? w.slice(0, 36).join(" ") + "…"
-                  : data.description || "";
+            const w = data.description.split(/\s+/);
+            el.querySelector(".post-content p").textContent =
+              w.length > 36 ? w.slice(0, 36).join(" ") + "…" : data.description;
 
             const spans = el.querySelectorAll(".post-meta span a");
             if (spans.length >= 2) {
@@ -3336,75 +3312,45 @@
         }
 
         function buildPager() {
-          if (!pagUl) {
-            return;
-          }
-
-          if (totalPages <= 0) {
-            pagUl.innerHTML = "";
-            return;
-          }
-
-          if (currentPage < 1) currentPage = 1;
-          if (currentPage > totalPages) currentPage = totalPages;
-
-          const prevPage = Math.max(1, currentPage - 1);
           pagUl.innerHTML = `
-      <li><a href="#" data-page="${prevPage}">
-        <i class="far fa-angle-left"></i>
-      </a></li>
-    `;
-
+                <li><a href="#" data-page="${currentPage - 1}">
+                  <i class="far fa-angle-left"></i>
+                </a></li>
+              `;
           for (let i = 1; i <= totalPages; i++) {
             pagUl.insertAdjacentHTML(
               "beforeend",
               `<li>
-          <a href="#" data-page="${i}"${
+                    <a href="#" data-page="${i}"${
                 i === currentPage ? ' class="active"' : ""
               }>
-            ${i}
-          </a>
-        </li>`
+                      ${i}
+                    </a>
+                  </li>`
             );
           }
-
-          const nextPage = Math.min(totalPages, currentPage + 1);
           pagUl.insertAdjacentHTML(
             "beforeend",
-            `<li><a href="#" data-page="${nextPage}">
-        <i class="far fa-angle-right"></i>
-      </a></li>`
+            `<li><a href="#" data-page="${currentPage + 1}">
+                  <i class="far fa-angle-right"></i>
+                </a></li>`
           );
         }
 
-        if (totalPages > 0) {
-          if (currentPage < 1) currentPage = 1;
-          if (currentPage > totalPages) currentPage = totalPages;
+        renderPage(currentPage);
+        buildPager();
 
-          renderPage(currentPage);
+        pagUl.parentElement.addEventListener("click", (e) => {
+          e.preventDefault();
+          const a = e.target.closest("a[data-page]");
+          if (!a) return;
+          const pg = +a.dataset.page;
+          if (pg < 1 || pg > totalPages || pg === currentPage) return;
+          currentPage = pg;
+          renderPage(pg);
           buildPager();
-
-          if (pagUl && pagUl.parentElement) {
-            pagUl.parentElement.addEventListener("click", (e) => {
-              const a = e.target.closest("a[data-page]");
-              if (!a) return;
-              e.preventDefault();
-
-              const pg = Number(a.dataset.page) || 1;
-              if (pg < 1 || pg > totalPages || pg === currentPage) return;
-              currentPage = pg;
-              renderPage(pg);
-              buildPager();
-              if (window.AOS && typeof AOS.refresh === "function")
-                AOS.refresh();
-            });
-          }
-        } else {
-          fourEls.forEach((el) => {
-            el.style.display = "none";
-          });
-          if (pagUl) pagUl.innerHTML = "";
-        }
+          if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+        });
       });
     </script>
 
