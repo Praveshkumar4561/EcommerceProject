@@ -3469,10 +3469,8 @@
 
           const data = await res.json();
           const logoUrl = data.logo_url;
-          if (!logoUrl) throw new Error("Logo URL not found in API response");
-
-          const highResLogo = `http://147.93.45.171:1600/uploads/${logoUrl}`;
-          const retinaLogo = highResLogo.replace(/(\.\w+)$/, "@2x$1");
+          const retinaLogo = logoUrl.replace(/(\.\w+)$/, "@2x$1");
+          const logoHeight = data.logo_height || "auto";
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
@@ -3483,10 +3481,10 @@
           const preload = new Image();
           preload.onload = () => {
             logoImgs.forEach((img) => {
-              img.src = highResLogo;
-              img.srcset = `${highResLogo} 1x, ${retinaLogo} 2x`;
+              img.src = `http://147.93.45.171:1600/uploads/${logoUrl}`;
+              img.srcset = `http://147.93.45.171:1600/uploads/${logoUrl} 1x, http://147.93.45.171:1600/uploads/${retinaLogo} 2x`;
               img.style.width = "auto";
-              img.style.height = "auto";
+              img.style.height = `${logoHeight}px`;
               img.alt = data.alt_text || "Logo";
             });
           };
@@ -3497,17 +3495,9 @@
             });
           };
 
-          preload.src = highResLogo;
-
-          logoImgs.forEach((img) => {
-            img.addEventListener("error", () => {
-              console.warn("Logo image failed to load:", highResLogo);
-              img.src = "assets/images/logo/logo-main.png";
-            });
-          });
+          preload.src = `http://147.93.45.171:1600/uploads/${logoUrl}`;
         } catch (error) {
           console.error("Logo load error:", error);
-
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
             ...document.querySelectorAll(".site-branding .brand-logo img"),
