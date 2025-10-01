@@ -119,8 +119,11 @@
             </div>
 
             <div class="product-search-category">
-              <form action="#">
-                <select class="wide">
+              <form action="#" role="search" aria-label="Product Search">
+                <label for="search-category" class="visually-hidden"
+                  >Select Category</label
+                >
+                <select id="search-category" class="wide">
                   <option>All Categories</option>
                   <option>Man Shirts</option>
                   <option>Denim Jeans</option>
@@ -129,13 +132,25 @@
                   <option>Sweaters</option>
                   <option>Jackets</option>
                 </select>
+
                 <div class="form-group">
+                  <label for="search-products" class="visually-hidden"
+                    >Search Products</label
+                  >
                   <input
+                    id="search-products"
                     type="text"
                     placeholder="Enter Search Products"
                     required
+                    size="30"
                   />
-                  <button class="search-btn" type="button">
+
+                  <button
+                    class="search-btn"
+                    type="submit"
+                    aria-label="Search"
+                    style="min-width: 48px; min-height: 48px"
+                  >
                     <i class="far fa-search" aria-hidden="true"></i>
                     <span class="visually-hidden">Search</span>
                   </button>
