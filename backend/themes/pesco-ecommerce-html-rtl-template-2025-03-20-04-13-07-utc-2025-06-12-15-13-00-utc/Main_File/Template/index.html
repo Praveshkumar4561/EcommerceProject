@@ -1510,18 +1510,13 @@
                 '<div class="col-12 text-center"><p>No offers available.</p></div>';
             } else {
               row.innerHTML = "";
+
               valid.slice(0, 2).forEach((item, idx) => {
                 const slotWrapper = document.createElement("div");
                 slotWrapper.innerHTML = template.outerHTML;
                 const slot = slotWrapper.firstElementChild;
 
                 const bannerItem = slot.querySelector(".banner-item");
-                bannerItem.setAttribute("role", "region");
-                bannerItem.setAttribute(
-                  "aria-label",
-                  `Flash sale for ${item.product_name}`
-                );
-
                 if (idx === 0) {
                   bannerItem.classList.replace("bg-two", "bg-one");
                   bannerItem.setAttribute("data-aos-delay", "10");
@@ -1535,6 +1530,9 @@
                 const imgEl = slot.querySelector(".banner-img img");
                 imgEl.src = `http://147.93.45.171:1600/uploads/${item.image}`;
                 imgEl.alt = item.product_name;
+                imgEl.style.width = "100%";
+                imgEl.style.height = "auto";
+                imgEl.style.objectFit = "contain";
 
                 const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
                 const sale = parseFloat(
@@ -1543,13 +1541,12 @@
                 const pct = Math.round(((orig - sale) / orig) * 100);
 
                 slot.querySelector(".off").textContent = pct + "%";
-                slot.querySelector(
-                  "h4"
-                ).outerHTML = `<h3>${item.product_name}</h3>`;
+                slot.querySelector("h4").textContent = item.product_name;
 
                 row.appendChild(slot);
               });
             }
+
             if (window.AOS) AOS.refresh();
           }
 
@@ -1563,13 +1560,13 @@
             const data = await res.json();
             if (!Array.isArray(data) || data.length === 0) {
               section.innerHTML = `
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12 text-center py-5">
-              <h3>No offers available.</h3>
-            </div>
-          </div>
-        </div>`;
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 text-center py-5">
+                    <h3>No offers available.</h3>
+                  </div>
+                </div>
+              </div>`;
               if (window.AOS) AOS.refresh();
               return;
             }
@@ -1577,13 +1574,13 @@
           } catch (err) {
             console.error(err);
             section.innerHTML = `
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12 text-center py-5">
-            <h3>No offers available.</h3>
-          </div>
-        </div>
-      </div>`;
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-12 text-center py-5">
+                  <h3>No offers available.</h3>
+                </div>
+              </div>
+            </div>`;
             if (window.AOS) AOS.refresh();
             return;
           }
@@ -1591,11 +1588,14 @@
           const imgEl2 = document.querySelector(".deal-img img");
           imgEl2.src = `http://147.93.45.171:1600/uploads/${sale.image}`;
           imgEl2.alt = sale.product_name;
+          imgEl2.style.width = "100%";
+          imgEl2.style.height = "auto";
+          imgEl2.style.objectFit = "contain";
 
           const subHeading = document.querySelector(
             ".deal-content .sub-heading"
           );
-          subHeading.innerHTML = `<i class="fas fa-tags" aria-hidden="true"></i> Deal of the ${sale.name}`;
+          subHeading.innerHTML = `<i class="fas fa-tags"></i>Deal of the ${sale.name}`;
 
           const countdownEl = document.getElementById("flashsale-countdown");
           const endDate = new Date(sale.end_date + "T23:59:59");
@@ -1605,13 +1605,13 @@
             const diff = endDate - new Date();
             if (diff < 0) {
               section.innerHTML = `
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12 text-center py-5">
-              <h3>No offers available.</h3>
-            </div>
-          </div>
-        </div>`;
+              <div class="container">
+                <div class="row">
+                  <div class="col-lg-12 text-center py-5">
+                    <h3>No offers available.</h3>
+                  </div>
+                </div>
+              </div>`;
               clearInterval(interval);
               return;
             }
@@ -1621,22 +1621,22 @@
             const seconds = Math.floor((diff / 1000) % 60);
 
             countdownEl.innerHTML = `
-      <div class="countdown-section" role="timer" aria-label="Days remaining">
-        <span class="countdown-amount">${days}</span>
-        <span class="countdown-label">day${days !== 1 ? "s" : ""}</span>
-      </div>
-      <div class="countdown-section" role="timer" aria-label="Hours remaining">
-        <span class="countdown-amount">${hours}</span>
-        <span class="countdown-label">hour${hours !== 1 ? "s" : ""}</span>
-      </div>
-      <div class="countdown-section" role="timer" aria-label="Minutes remaining">
-        <span class="countdown-amount">${minutes}</span>
-        <span class="countdown-label">minute${minutes !== 1 ? "s" : ""}</span>
-      </div>
-      <div class="countdown-section" role="timer" aria-label="Seconds remaining">
-        <span class="countdown-amount">${seconds}</span>
-        <span class="countdown-label">second${seconds !== 1 ? "s" : ""}</span>
-      </div>`;
+            <div class="countdown-section">
+              <span class="countdown-amount">${days}</span>
+              <span class="countdown-label">day</span>
+            </div>
+            <div class="countdown-section">
+              <span class="countdown-amount">${hours}</span>
+              <span class="countdown-label">hour</span>
+            </div>
+            <div class="countdown-section">
+              <span class="countdown-amount">${minutes}</span>
+              <span class="countdown-label">minute</span>
+            </div>
+            <div class="countdown-section">
+              <span class="countdown-amount">${seconds}</span>
+              <span class="countdown-label">second</span>
+            </div>`;
             if (window.AOS) AOS.refresh();
           }
 
