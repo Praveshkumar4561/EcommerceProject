@@ -433,10 +433,7 @@
                   width="216"
                   height="66"
                   style="width: auto; height: auto; max-width: 100%"
-                  srcset="
-                    assets/images/logo/logo-main.png    1x,
-                    assets/images/logo/logo-main@2x.png 2x
-                  "
+                  loading="lazy"
                 />
               </a>
             </div>
@@ -484,14 +481,11 @@
               <a href="index.html" class="brand-logo">
                 <img
                   src="assets/images/logo/logo-main.png"
-                  srcset="
-                    assets/images/logo/logo-main.png    1x,
-                    assets/images/logo/logo-main@2x.png 2x
-                  "
                   alt="Logo"
                   width="216"
                   height="66"
                   style="width: auto; height: auto; max-width: 100%"
+                  loading="lazy"
                 />
               </a>
             </div>
@@ -866,14 +860,11 @@
                         <li>
                           <img
                             src="assets/images/hero/line-1.png"
-                            srcset="
-                              assets/images/hero/line-1.png    1x,
-                              assets/images/hero/line-1@2x.png 2x
-                            "
                             alt="Hero Line"
                             width="284"
                             height="44"
                             style="width: auto; height: auto; max-width: 100%"
+                            loading="lazy"
                           />
                         </li>
 
@@ -943,14 +934,11 @@
                         <li>
                           <img
                             src="assets/images/hero/line-1.png"
-                            srcset="
-                              assets/images/hero/line-1.png    1x,
-                              assets/images/hero/line-1@2x.png 2x
-                            "
                             alt="Hero Line"
                             width="284"
                             height="44"
                             style="width: auto; height: auto; max-width: 100%"
+                            loading="lazy"
                           />
                         </li>
 
@@ -1020,14 +1008,11 @@
                         <li>
                           <img
                             src="assets/images/hero/line-1.png"
-                            srcset="
-                              assets/images/hero/line-1.png    1x,
-                              assets/images/hero/line-1@2x.png 2x
-                            "
                             alt="Hero Line"
                             width="284"
                             height="44"
                             style="width: auto; height: auto; max-width: 100%"
+                            loading="lazy"
                           />
                         </li>
 
@@ -1261,6 +1246,7 @@
             </div>
           </div>
         </div>
+
         <div
           class="category-slider-one"
           data-aos="fade-up"
@@ -1271,73 +1257,107 @@
             <div class="category-img">
               <img
                 src="assets/images/category/category-1.png"
-                alt="category image"
+                alt="Man Shirts"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
               <a href="index.html" class="category-btn">Man Shirts</a>
             </div>
           </div>
+
           <div class="category-item style-one text-center">
             <div class="category-img">
               <img
                 src="assets/images/category/category-2.png"
-                alt="category image"
+                alt="Denim Jeans"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
               <a href="index.html" class="category-btn">Denim Jeans</a>
             </div>
           </div>
+
           <div class="category-item style-one text-center">
             <div class="category-img">
               <img
                 src="assets/images/category/category-3.png"
-                alt="category image"
+                alt="Casual Suit"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
               <a href="index.html" class="category-btn">Casual Suit</a>
             </div>
           </div>
+
           <div class="category-item style-one text-center">
             <div class="category-img">
               <img
                 src="assets/images/category/category-4.png"
-                alt="category image"
+                alt="Summer Dress"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
               <a href="index.html" class="category-btn">Summer Dress</a>
             </div>
           </div>
+
           <div class="category-item style-one text-center">
             <div class="category-img">
               <img
                 src="assets/images/category/category-5.png"
-                alt="category image"
+                alt="Sweaters"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
               <a href="index.html" class="category-btn">Sweaters</a>
             </div>
           </div>
+
           <div class="category-item style-one text-center">
             <div class="category-img">
               <img
                 src="assets/images/category/category-6.png"
-                alt="category image"
+                alt="Jackets"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
               <a href="index.html" class="category-btn">Jackets</a>
             </div>
           </div>
+
           <div class="category-item style-one text-center">
             <div class="category-img">
               <img
                 src="assets/images/category/category-4.png"
-                alt="category image"
+                alt="Summer Dress"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
               />
             </div>
             <div class="category-content">
@@ -1839,7 +1859,6 @@
 
           <div class="discount">${p.label || ""}</div>
           <div class="hover-content">
-            <!-- Wishlist: accessible -->
             <a href="/shop-details/${slug}" class="icon-btn add-to-wishlist"
               aria-label="Add ${p.name} to wishlist"
               data-name="${(p.name || "").replace(/"/g, "")}" 
@@ -2485,14 +2504,19 @@
         >
           <div class="shape svg-shape1">
             <img
-              src="assets/images/testimonial/tl-svgTop.svg"
+              src="assets/images/testimonial/tl-svgBottom.svg"
               alt="svg shape"
+              style="width: auto; height: auto; max-width: 100%"
+              loading="lazy"
             />
           </div>
+
           <div class="shape svg-shape2">
             <img
               src="assets/images/testimonial/tl-svgBottom.svg"
               alt="svg shape"
+              style="width: auto; height: auto; max-width: 100%"
+              loading="lazy"
             />
           </div>
           <div class="container">
@@ -2527,7 +2551,6 @@
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const BASE_IMAGE_URL = "http://147.93.45.171:1600/uploads/";
-
           const sliderContainer = document.querySelector(
             ".testimonial-slider-one"
           );
@@ -2541,7 +2564,7 @@
             content.className = "testimonial-content";
 
             const p = document.createElement("p");
-            p.innerHTML = item.content || "";
+            p.textContent = item.content || ""; // use textContent for accessibility
             content.appendChild(p);
 
             const authorQuote = document.createElement("div");
@@ -2558,6 +2581,8 @@
             img.src = item.image
               ? BASE_IMAGE_URL + item.image
               : BASE_IMAGE_URL + "author-1.png";
+            img.style.width = "auto";
+            img.style.height = "auto"; // preserve aspect ratio
             authorThumb.appendChild(img);
 
             const authorInfo = document.createElement("div");
@@ -2572,7 +2597,7 @@
             ul.className = "ratings rating5";
             for (let i = 0; i < 5; i++) {
               const li = document.createElement("li");
-              li.innerHTML = '<i class="fas fa-star"></i>';
+              li.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>'; // mark decorative
               ul.appendChild(li);
             }
             authorInfo.appendChild(ul);
@@ -2583,7 +2608,7 @@
             const quoteIcon = document.createElement("div");
             quoteIcon.className = "quote-icon";
             quoteIcon.innerHTML =
-              '<i class="flaticon flaticon-right-quote"></i>';
+              '<i class="flaticon flaticon-right-quote" aria-hidden="true"></i>';
 
             authorQuote.appendChild(authorItem);
             authorQuote.appendChild(quoteIcon);
@@ -2591,15 +2616,22 @@
             content.appendChild(authorQuote);
             wrap.appendChild(content);
 
+            // Accessibility: prevent focus in hidden slides
+            wrap
+              .querySelectorAll("a, button, input, select, textarea")
+              .forEach((el) => {
+                el.setAttribute("tabindex", "-1");
+              });
+
             return wrap;
           }
 
           fetch("http://147.93.45.171:1600/gettestimonials")
-            .then(function (res) {
+            .then((res) => {
               if (!res.ok) throw new Error("Network response was not ok");
               return res.json();
             })
-            .then(function (data) {
+            .then((data) => {
               if (!Array.isArray(data)) return;
 
               sliderContainer.innerHTML = "";
@@ -2607,23 +2639,40 @@
               const visible = data.filter(
                 (t) => String(t.status || "").toLowerCase() === "published"
               );
-
               const toRender = visible.length ? visible : data;
 
-              toRender.forEach(function (t) {
-                sliderContainer.appendChild(createTestimonialItem(t));
-              });
+              toRender.forEach((t) =>
+                sliderContainer.appendChild(createTestimonialItem(t))
+              );
 
               try {
                 if (typeof initTestimonialSlider === "function") {
                   initTestimonialSlider();
+
+                  // Add focus management for Slick slider
+                  sliderContainer.addEventListener(
+                    "afterChange",
+                    function (event, slick, currentSlide) {
+                      slick.$slides.each((index, slide) => {
+                        const focusables = slide.querySelectorAll(
+                          "a, button, input, select, textarea"
+                        );
+                        if (index === currentSlide) {
+                          focusables.forEach((el) =>
+                            el.removeAttribute("tabindex")
+                          );
+                        } else {
+                          focusables.forEach((el) =>
+                            el.setAttribute("tabindex", "-1")
+                          );
+                        }
+                      });
+                    }
+                  );
                 } else if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
                   const $el = jQuery(".testimonial-slider-one");
-                  if ($el.hasClass("slick-initialized")) {
-                    $el.slick("refresh");
-                  } else {
-                    $el.slick();
-                  }
+                  if ($el.hasClass("slick-initialized")) $el.slick("refresh");
+                  else $el.slick();
                 } else if (window.Swiper && sliderContainer.swiper) {
                   sliderContainer.swiper.update();
                 }
@@ -2631,9 +2680,7 @@
                 console.warn("Could not refresh testimonial slider:", err);
               }
             })
-            .catch(function (err) {
-              console.error("Failed to load testimonials:", err);
-            });
+            .catch((err) => console.error("Failed to load testimonials:", err));
         });
       </script>
 
