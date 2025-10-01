@@ -1374,11 +1374,9 @@
             ".category-slider-one"
           );
           if (!sliderContainer) return;
-
           function createCategoryItem(item) {
             const wrap = document.createElement("div");
             wrap.className = "category-item style-one text-center";
-
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
             const img = document.createElement("img");
@@ -1386,65 +1384,56 @@
             img.src = item.image
               ? BASE_IMAGE_URL + item.image
               : BASE_IMAGE_URL + "default.png";
-
-            img.style.width = "100%";
-            img.style.height = "auto";
-            img.style.objectFit = "cover";
-
-            if (item.width && item.height) {
-              img.width = item.width;
-              img.height = item.height;
-            }
-
             imgWrap.appendChild(img);
-
             const content = document.createElement("div");
             content.className = "category-content";
             const link = document.createElement("a");
             link.className = "category-btn";
             link.href = "/shop";
             link.textContent = item.name || "Category";
-            link.setAttribute("aria-label", `Shop ${item.name || "category"}`);
-
             content.appendChild(link);
             wrap.appendChild(imgWrap);
             wrap.appendChild(content);
-
             return wrap;
           }
-
           fetch("http://147.93.45.171:1600/productcatdata")
-            .then((res) => {
+            .then(function (res) {
               if (!res.ok) throw new Error("Network response was not ok");
               return res.json();
             })
-            .then((data) => {
+            .then(function (data) {
               if (!Array.isArray(data)) return;
-
               sliderContainer.innerHTML = "";
-
-              const categories = data.filter(
-                (c) =>
-                  String(c.status || "").toLowerCase() === "published" &&
-                  String(c.is_featured || "").toLowerCase() === "yes"
-              );
+              const categories = data.filter((c) => {
+                const published =
+                  String(c.status || "").toLowerCase() === "published";
+                const featured =
+                  String(c.is_featured || "").toLowerCase() === "yes";
+                return published && featured;
+              });
               const toRender = categories.length
                 ? categories
                 : data.filter(
                     (c) => String(c.status || "").toLowerCase() === "published"
                   );
-
-              toRender.forEach((cat) =>
-                sliderContainer.appendChild(createCategoryItem(cat))
-              );
-
+              toRender.forEach(function (cat) {
+                sliderContainer.appendChild(createCategoryItem(cat));
+              });
               try {
                 if (typeof initCategorySlider === "function") {
                   initCategorySlider();
-                } else if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
+                } else if (
+                  window.jQuery &&
+                  typeof jQuery === "function" &&
+                  jQuery.fn &&
+                  jQuery.fn.slick
+                ) {
                   const $el = jQuery(".category-slider-one");
-                  if ($el.hasClass("slick-initialized")) $el.slick("refresh");
-                  else $el.slick();
+                  if ($el.hasClass("slick-initialized")) {
+                    $el.slick("refresh");
+                  } else {
+                    $el.slick();
+                  }
                 } else if (window.Swiper && sliderContainer.swiper) {
                   sliderContainer.swiper.update();
                 }
@@ -1452,9 +1441,9 @@
                 console.warn("Could not auto-refresh slider:", err);
               }
             })
-            .catch((err) =>
-              console.error("Failed to load category data:", err)
-            );
+            .catch(function (err) {
+              console.error("Failed to load category data:", err);
+            });
         });
       </script>
 
