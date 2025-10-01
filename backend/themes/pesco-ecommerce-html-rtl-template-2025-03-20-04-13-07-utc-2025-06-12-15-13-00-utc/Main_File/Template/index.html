@@ -1485,8 +1485,8 @@
         document.addEventListener("DOMContentLoaded", async () => {
           const row = document.getElementById("flash-row");
           const template = row.querySelector(".banner-flashes");
-
           let sales;
+
           try {
             const res = await fetch(
               "http://147.93.45.171:1600/flashsalesmaindata"
@@ -1501,16 +1501,16 @@
 
           if (Array.isArray(sales)) {
             const today = new Date();
-            const valid = sales.filter(
-              (item) => new Date(item.end_date + "T23:59:59") >= today
-            );
+            const valid = sales.filter((item) => {
+              const end = new Date(item.end_date + "T23:59:59");
+              return end >= today;
+            });
 
             if (valid.length === 0) {
               row.innerHTML =
                 '<div class="col-12 text-center"><p>No offers available.</p></div>';
             } else {
               row.innerHTML = "";
-
               valid.slice(0, 2).forEach((item, idx) => {
                 const slotWrapper = document.createElement("div");
                 slotWrapper.innerHTML = template.outerHTML;
@@ -1530,9 +1530,6 @@
                 const imgEl = slot.querySelector(".banner-img img");
                 imgEl.src = `http://147.93.45.171:1600/uploads/${item.image}`;
                 imgEl.alt = item.product_name;
-                imgEl.style.width = "100%";
-                imgEl.style.height = "auto";
-                imgEl.style.objectFit = "contain";
 
                 const orig = parseFloat(item.price.replace(/[^0-9.]/g, ""));
                 const sale = parseFloat(
@@ -1546,27 +1543,29 @@
                 row.appendChild(slot);
               });
             }
-
-            if (window.AOS) AOS.refresh();
           }
+
+          if (window.AOS) AOS.refresh();
 
           const section = document.getElementById("best-deal");
           let sale;
+
           try {
             const res = await fetch(
               "http://147.93.45.171:1600/flashsalesmaindata"
             );
             if (!res.ok) throw new Error("Network error");
             const data = await res.json();
+
             if (!Array.isArray(data) || data.length === 0) {
               section.innerHTML = `
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12 text-center py-5">
-                    <h3>No offers available.</h3>
-                  </div>
-                </div>
-              </div>`;
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12 text-center py-5">
+              <h3>No offers available.</h3>
+            </div>
+          </div>
+        </div>`;
               if (window.AOS) AOS.refresh();
               return;
             }
@@ -1574,13 +1573,13 @@
           } catch (err) {
             console.error(err);
             section.innerHTML = `
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-12 text-center py-5">
-                  <h3>No offers available.</h3>
-                </div>
-              </div>
-            </div>`;
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center py-5">
+            <h3>No offers available.</h3>
+          </div>
+        </div>
+      </div>`;
             if (window.AOS) AOS.refresh();
             return;
           }
@@ -1588,14 +1587,11 @@
           const imgEl2 = document.querySelector(".deal-img img");
           imgEl2.src = `http://147.93.45.171:1600/uploads/${sale.image}`;
           imgEl2.alt = sale.product_name;
-          imgEl2.style.width = "100%";
-          imgEl2.style.height = "auto";
-          imgEl2.style.objectFit = "contain";
 
           const subHeading = document.querySelector(
             ".deal-content .sub-heading"
           );
-          subHeading.innerHTML = `<i class="fas fa-tags"></i>Deal of the ${sale.name}`;
+          subHeading.innerHTML = `<i class="fas fa-tags"></i> Deal of the ${sale.name}`;
 
           const countdownEl = document.getElementById("flashsale-countdown");
           const endDate = new Date(sale.end_date + "T23:59:59");
@@ -1605,38 +1601,40 @@
             const diff = endDate - new Date();
             if (diff < 0) {
               section.innerHTML = `
-              <div class="container">
-                <div class="row">
-                  <div class="col-lg-12 text-center py-5">
-                    <h3>No offers available.</h3>
-                  </div>
-                </div>
-              </div>`;
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-12 text-center py-5">
+              <h3>No offers available.</h3>
+            </div>
+          </div>
+        </div>`;
               clearInterval(interval);
               return;
             }
+
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
 
             countdownEl.innerHTML = `
-            <div class="countdown-section">
-              <span class="countdown-amount">${days}</span>
-              <span class="countdown-label">day</span>
-            </div>
-            <div class="countdown-section">
-              <span class="countdown-amount">${hours}</span>
-              <span class="countdown-label">hour</span>
-            </div>
-            <div class="countdown-section">
-              <span class="countdown-amount">${minutes}</span>
-              <span class="countdown-label">minute</span>
-            </div>
-            <div class="countdown-section">
-              <span class="countdown-amount">${seconds}</span>
-              <span class="countdown-label">second</span>
-            </div>`;
+      <div class="countdown-section">
+        <span class="countdown-amount">${days}</span>
+        <span class="countdown-label">day</span>
+      </div>
+      <div class="countdown-section">
+        <span class="countdown-amount">${hours}</span>
+        <span class="countdown-label">hour</span>
+      </div>
+      <div class="countdown-section">
+        <span class="countdown-amount">${minutes}</span>
+        <span class="countdown-label">minute</span>
+      </div>
+      <div class="countdown-section">
+        <span class="countdown-amount">${seconds}</span>
+        <span class="countdown-label">second</span>
+      </div>`;
+
             if (window.AOS) AOS.refresh();
           }
 
@@ -2553,7 +2551,7 @@
             content.className = "testimonial-content";
 
             const p = document.createElement("p");
-            p.textContent = item.content || ""; // use textContent for accessibility
+            p.textContent = item.content || "";
             content.appendChild(p);
 
             const authorQuote = document.createElement("div");
@@ -2571,7 +2569,7 @@
               ? BASE_IMAGE_URL + item.image
               : BASE_IMAGE_URL + "author-1.png";
             img.style.width = "auto";
-            img.style.height = "auto"; // preserve aspect ratio
+            img.style.height = "auto";
             authorThumb.appendChild(img);
 
             const authorInfo = document.createElement("div");
@@ -2586,7 +2584,7 @@
             ul.className = "ratings rating5";
             for (let i = 0; i < 5; i++) {
               const li = document.createElement("li");
-              li.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>'; // mark decorative
+              li.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>';
               ul.appendChild(li);
             }
             authorInfo.appendChild(ul);
@@ -2605,7 +2603,6 @@
             content.appendChild(authorQuote);
             wrap.appendChild(content);
 
-            // Accessibility: prevent focus in hidden slides
             wrap
               .querySelectorAll("a, button, input, select, textarea")
               .forEach((el) => {
@@ -2638,7 +2635,6 @@
                 if (typeof initTestimonialSlider === "function") {
                   initTestimonialSlider();
 
-                  // Add focus management for Slick slider
                   sliderContainer.addEventListener(
                     "afterChange",
                     function (event, slick, currentSlide) {
