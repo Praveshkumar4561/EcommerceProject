@@ -1584,7 +1584,6 @@
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
           const highResLogo = `http://147.93.45.171:1600/uploads/${logoUrl}`;
-          const retinaLogo = highResLogo.replace(/(\.\w+)$/, "@2x$1");
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
@@ -1592,20 +1591,46 @@
             ...document.querySelectorAll(".footer-logo img"),
           ];
 
-          logoImgs.forEach((img) => {
-            img.src = highResLogo;
-            img.srcset = `${highResLogo} 1x, ${retinaLogo} 2x`;
-            img.style.width = "auto";
-            img.style.height = "auto";
-            img.alt = data.alt_text || "Logo";
+          const preload = new Image();
+          preload.onload = () => {
+            logoImgs.forEach((img) => {
+              img.src = highResLogo;
+              img.alt = data.alt_text || "Logo";
 
-            img.addEventListener("error", () => {
-              console.warn("Logo image failed to load:", highResLogo);
-              img.src = "assets/images/logo/logo-main.png";
+              img.removeAttribute("width");
+              img.removeAttribute("height");
+              img.removeAttribute("style");
+              img.removeAttribute("srcset");
             });
-          });
+          };
+
+          preload.onerror = () => {
+            logoImgs.forEach((img) => {
+              img.src = "assets/images/logo/logo-main.png";
+              img.alt = "Logo";
+              img.removeAttribute("width");
+              img.removeAttribute("height");
+              img.removeAttribute("style");
+              img.removeAttribute("srcset");
+            });
+          };
+
+          preload.src = highResLogo;
         } catch (error) {
           console.error("Logo load error:", error);
+          const logoImgs = [
+            ...document.querySelectorAll(".brand-logo img"),
+            ...document.querySelectorAll(".site-branding .brand-logo img"),
+            ...document.querySelectorAll(".footer-logo img"),
+          ];
+          logoImgs.forEach((img) => {
+            img.src = "assets/images/logo/logo-main.png";
+            img.alt = "Logo";
+            img.removeAttribute("width");
+            img.removeAttribute("height");
+            img.removeAttribute("style");
+            img.removeAttribute("srcset");
+          });
         }
       });
     </script>
