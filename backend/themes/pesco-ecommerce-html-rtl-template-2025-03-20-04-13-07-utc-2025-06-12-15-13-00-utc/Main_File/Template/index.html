@@ -436,9 +436,6 @@
                 <img
                   src="assets/images/logo/logo-main.png"
                   alt="Logo"
-                  width="216"
-                  height="66"
-                  style="width: auto; height: auto; max-width: 100%"
                   loading="lazy"
                 />
               </a>
@@ -504,9 +501,6 @@
                 <img
                   src="assets/images/logo/logo-main.png"
                   alt="Logo"
-                  width="216"
-                  height="66"
-                  style="width: auto; height: auto; max-width: 100%"
                   loading="lazy"
                 />
               </a>
@@ -3462,9 +3456,22 @@
       });
     </script>
 
+    <div class="site-branding">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo/logo-main.png" alt="Logo" loading="lazy" />
+      </a>
+    </div>
+
+    <div class="site-branding d-lg-none d-block">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo/logo-main.png" alt="Logo" loading="lazy" />
+      </a>
+    </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
+          // Step 1: Fetch logo data from backend
           const res = await fetch("http://147.93.45.171:1600/get-theme-logo");
           if (!res.ok) throw new Error("Failed to fetch logo data");
 
@@ -3472,31 +3479,40 @@
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const logoHeight = data.logo_height || "auto";
-
+          // Step 2: Minimal attributes only
           const highResLogo = `http://147.93.45.171:1600/uploads/${logoUrl}`;
-          const retinaLogo = highResLogo.replace(/(\.\w+)$/, "@2x$1");
 
+          // Step 3: Select all logo images
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),
             ...document.querySelectorAll(".site-branding .brand-logo img"),
             ...document.querySelectorAll(".footer-logo img"),
           ];
 
+          // Step 4: Preload image
           const preload = new Image();
           preload.onload = () => {
             logoImgs.forEach((img) => {
               img.src = highResLogo;
-              img.srcset = `${highResLogo} 1x, ${retinaLogo} 2x`;
-              img.style.width = "auto";
-              img.style.height = `${logoHeight}px`;
               img.alt = data.alt_text || "Logo";
+
+              // Remove all extra attributes
+              img.removeAttribute("width");
+              img.removeAttribute("height");
+              img.removeAttribute("style");
+              img.removeAttribute("srcset");
             });
           };
 
           preload.onerror = () => {
+            // Fallback if logo fails
             logoImgs.forEach((img) => {
               img.src = "assets/images/logo/logo-main.png";
+              img.alt = "Logo";
+              img.removeAttribute("width");
+              img.removeAttribute("height");
+              img.removeAttribute("style");
+              img.removeAttribute("srcset");
             });
           };
 
@@ -3510,6 +3526,11 @@
           ];
           logoImgs.forEach((img) => {
             img.src = "assets/images/logo/logo-main.png";
+            img.alt = "Logo";
+            img.removeAttribute("width");
+            img.removeAttribute("height");
+            img.removeAttribute("style");
+            img.removeAttribute("srcset");
           });
         }
       });
