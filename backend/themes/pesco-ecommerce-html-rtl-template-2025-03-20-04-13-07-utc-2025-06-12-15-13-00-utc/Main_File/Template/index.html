@@ -3480,13 +3480,26 @@
             ...document.querySelectorAll(".footer-logo img"),
           ];
 
-          logoImgs.forEach((img) => {
-            img.src = highResLogo;
-            img.srcset = `${highResLogo} 1x, ${retinaLogo} 2x`;
-            img.style.width = "auto";
-            img.style.height = "auto";
-            img.alt = data.alt_text || "Logo";
+          const preload = new Image();
+          preload.onload = () => {
+            logoImgs.forEach((img) => {
+              img.src = highResLogo;
+              img.srcset = `${highResLogo} 1x, ${retinaLogo} 2x`;
+              img.style.width = "auto";
+              img.style.height = "auto";
+              img.alt = data.alt_text || "Logo";
+            });
+          };
 
+          preload.onerror = () => {
+            logoImgs.forEach((img) => {
+              img.src = "assets/images/logo/logo-main.png";
+            });
+          };
+
+          preload.src = highResLogo;
+
+          logoImgs.forEach((img) => {
             img.addEventListener("error", () => {
               console.warn("Logo image failed to load:", highResLogo);
               img.src = "assets/images/logo/logo-main.png";
@@ -3494,6 +3507,15 @@
           });
         } catch (error) {
           console.error("Logo load error:", error);
+
+          const logoImgs = [
+            ...document.querySelectorAll(".brand-logo img"),
+            ...document.querySelectorAll(".site-branding .brand-logo img"),
+            ...document.querySelectorAll(".footer-logo img"),
+          ];
+          logoImgs.forEach((img) => {
+            img.src = "assets/images/logo/logo-main.png";
+          });
         }
       });
     </script>
