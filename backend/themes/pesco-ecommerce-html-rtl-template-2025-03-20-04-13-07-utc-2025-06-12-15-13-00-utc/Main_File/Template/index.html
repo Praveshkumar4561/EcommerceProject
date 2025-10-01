@@ -385,6 +385,11 @@
       font-size: 24px !important;
       line-height: 36px;
     }
+
+    .name-flash {
+      font-size: 24px !important;
+      line-height: 36px !important;
+    }
   </style>
 
   <body>
@@ -1472,7 +1477,7 @@
                 </div>
                 <div class="banner-content">
                   <span>UP TO <span class="off"></span></span>
-                  <h4></h4>
+                  <h3 class="name-flash"></h3>
                   <a href="shops.html" class="theme-btn style-one">Shop Now</a>
                 </div>
               </div>
@@ -1538,7 +1543,7 @@
                 const pct = Math.round(((orig - sale) / orig) * 100);
 
                 slot.querySelector(".off").textContent = pct + "%";
-                slot.querySelector("h4").textContent = item.product_name;
+                slot.querySelector("h3").textContent = item.product_name;
 
                 row.appendChild(slot);
               });
@@ -2551,7 +2556,7 @@
             content.className = "testimonial-content";
 
             const p = document.createElement("p");
-            p.textContent = item.content || "";
+            p.innerHTML = item.content || "";
             content.appendChild(p);
 
             const authorQuote = document.createElement("div");
