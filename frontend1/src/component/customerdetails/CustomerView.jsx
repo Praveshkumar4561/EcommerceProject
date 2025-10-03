@@ -669,7 +669,7 @@ function CustomerView() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://demo.webriefly.com/user/orders/view"
+          href="https://demo.webriefly.com/user/orders/view"
         />
       </Helmet>
 

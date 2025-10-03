@@ -470,8 +470,8 @@ function HomePage() {
       {
         "@type": "Organization",
         name: "RxLYTE",
-        url: "http://demo.webriefly.com/",
-        logo: "http://demo.webriefly.com/Tonic.svg",
+        url: "https://demo.webriefly.com/",
+        logo: "https://demo.webriefly.com/Tonic.svg",
         description:
           "RxLyte is a leading eCommerce platform offering a premium selection of healthcare and wellness products, ensuring high-quality and affordable solutions for customers.",
         contactPoint: {
@@ -485,7 +485,7 @@ function HomePage() {
       {
         "@type": "WebSite",
         name: "RxLYTE",
-        url: "http://demo.webriefly.com/",
+        url: "https://demo.webriefly.com/",
         description:
           "Shop the latest healthcare products at RxLyte, your trusted online pharmacy for premium wellness essentials.",
         keywords:
@@ -494,8 +494,8 @@ function HomePage() {
       {
         "@type": "LocalBusiness",
         name: "RxLYTE Healthcare Store",
-        url: "http://demo.webriefly.com/",
-        image: "http://demo.webriefly.com/Tonic.svg",
+        url: "https://demo.webriefly.com/",
+        image: "https://demo.webriefly.com/Tonic.svg",
         description:
           "RxLyte's physical store provides top-tier healthcare and wellness products, ensuring convenient access for all customers.",
         address: {
@@ -686,7 +686,7 @@ function HomePage() {
     setLetter({ ...letter, [e.target.name]: e.target.value });
   };
 
-  const domain = "http://demo.webriefly.com/";
+  const domain = "https://demo.webriefly.com/";
 
   let [home, setHome] = useState(null);
 

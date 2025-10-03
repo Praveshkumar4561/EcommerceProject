@@ -222,7 +222,7 @@ function TermsCondition() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://demo.webriefly.com/terms-conditions"
+          href="https://demo.webriefly.com/terms-conditions"
         />
       </Helmet>
 

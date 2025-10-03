@@ -260,13 +260,13 @@ function Shop() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://demo.webriefly.com/",
+            item: "https://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Shop",
-            item: "http://demo.webriefly.com/shop",
+            item: "https://demo.webriefly.com/shop",
           },
         ],
       },
@@ -542,7 +542,7 @@ function Shop() {
           content="Explore our latest collection and shop online for the best deals on top-quality products. Fast shipping & secure checkout available."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/shop" />
+        <link rel="canonical" href="https://demo.webriefly.com/shop" />
       </Helmet>
 
       <div className="container-fluid">

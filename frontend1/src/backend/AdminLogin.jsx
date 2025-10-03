@@ -95,7 +95,7 @@ function AdminLogin() {
   };
 
   const location = useLocation();
-  const baseUrl = "http://demo.webriefly.com";
+  const baseUrl = "https://demo.webriefly.com";
 
   return (
     <>

@@ -392,7 +392,7 @@ function CustomerOrder() {
           content="View your order history, track shipments, and manage your purchases easily. Stay updated with real-time order status on Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/user/orders" />
+        <link rel="canonical" href="https://demo.webriefly.com/user/orders" />
       </Helmet>
 
       <div

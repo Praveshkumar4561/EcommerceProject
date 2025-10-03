@@ -892,13 +892,13 @@ function ProductDetail() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://demo.webriefly.com/",
+            item: "https://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Products",
-            item: "http://demo.webriefly.com/product/details",
+            item: "https://demo.webriefly.com/product/details",
           },
         ],
       },
@@ -1113,7 +1113,7 @@ function ProductDetail() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://demo.webriefly.com/product-details"
+          href="https://demo.webriefly.com/product-details"
         />
       </Helmet>
 

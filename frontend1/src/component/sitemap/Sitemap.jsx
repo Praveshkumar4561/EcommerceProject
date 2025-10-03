@@ -299,7 +299,7 @@ function Sitemap() {
           content="Explore the Sitemap of YourSiteName to easily navigate our website. This page is optimized for SEO and is fully indexable."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/sitemap" />
+        <link rel="canonical" href="https://demo.webriefly.com/sitemap" />
       </Helmet>
 
       <script type="application/ld+json">
@@ -308,22 +308,22 @@ function Sitemap() {
               "@context": "https://schema.org",
               "@type": "SiteNavigationElement",
               "name": "Sitemap",
-              "url": "http://demo.webriefly.com/sitemap",
+              "url": "https://demo.webriefly.com/sitemap",
               "hasPart": [
-                {"@type": "SiteNavigationElement", "name": "Home", "url": "http://demo.webriefly.com/"},
-                {"@type": "SiteNavigationElement", "name": "About", "url": "http://demo.webriefly.com/about"},
-                {"@type": "SiteNavigationElement", "name": "Shop", "url": "http://demo.webriefly.com/shop"},
-                {"@type": "SiteNavigationElement", "name": "Blog", "url": "http://demo.webriefly.com/blog"},
-                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "http://demo.webriefly.com/product-details"},
-                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "http://demo.webriefly.com/product-categories"},
-                {"@type": "SiteNavigationElement", "name": "Cart", "url": "http://demo.webriefly.com/cart"},
-                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "http://demo.webriefly.com/wishlist"},
-                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "http://demo.webriefly.com/contact-us"},
-                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "http://demo.webriefly.com/faqs"},
-                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "http://demo.webriefly.com/privacy-policy"},
-                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "http://demo.webriefly.com/medicine-policy"},
-                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "http://demo.webriefly.com/terms-condition"},
-                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "http://demo.webriefly.com/sitemap"}
+                {"@type": "SiteNavigationElement", "name": "Home", "url": "https://demo.webriefly.com/"},
+                {"@type": "SiteNavigationElement", "name": "About", "url": "https://demo.webriefly.com/about"},
+                {"@type": "SiteNavigationElement", "name": "Shop", "url": "https://demo.webriefly.com/shop"},
+                {"@type": "SiteNavigationElement", "name": "Blog", "url": "https://demo.webriefly.com/blog"},
+                {"@type": "SiteNavigationElement", "name": "Product Details", "url": "https://demo.webriefly.com/product-details"},
+                {"@type": "SiteNavigationElement", "name": "Product Categories", "url": "https://demo.webriefly.com/product-categories"},
+                {"@type": "SiteNavigationElement", "name": "Cart", "url": "https://demo.webriefly.com/cart"},
+                {"@type": "SiteNavigationElement", "name": "Wishlist", "url": "https://demo.webriefly.com/wishlist"},
+                {"@type": "SiteNavigationElement", "name": "Contact Us", "url": "https://demo.webriefly.com/contact-us"},
+                {"@type": "SiteNavigationElement", "name": "FAQs", "url": "https://demo.webriefly.com/faqs"},
+                {"@type": "SiteNavigationElement", "name": "Privacy Policy", "url": "https://demo.webriefly.com/privacy-policy"},
+                {"@type": "SiteNavigationElement", "name": "Medicine Policy", "url": "https://demo.webriefly.com/medicine-policy"},
+                {"@type": "SiteNavigationElement", "name": "Terms & Conditions", "url": "https://demo.webriefly.com/terms-condition"},
+                {"@type": "SiteNavigationElement", "name": "Sitemap", "url": "https://demo.webriefly.com/sitemap"}
               ]
             }
           `}

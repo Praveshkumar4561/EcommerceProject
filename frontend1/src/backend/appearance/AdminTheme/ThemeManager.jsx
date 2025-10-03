@@ -96,7 +96,7 @@ const ThemeManager = () => {
 
         try {
           await ThemeIntegration.applyThemeToFrontend(themeId);
-          window.location.href = `http://demo.webriefly.com/theme/${
+          window.location.href = `https://demo.webriefly.com/theme/${
             themeData.folder_name || themeData.name || themeId
           }`;
         } catch (themeError) {

@@ -438,7 +438,7 @@ function CustomerPassword() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://demo.webriefly.com/user/change-password"
+          href="https://demo.webriefly.com/user/change-password"
         />
       </Helmet>
 

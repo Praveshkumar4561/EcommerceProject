@@ -321,7 +321,7 @@ function Faqs() {
           content="Find answers to common questions about orders, payments, shipping, and more. Explore our FAQs section for quick solutions at Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/faqs" />
+        <link rel="canonical" href="https://demo.webriefly.com/faqs" />
       </Helmet>
 
       <div

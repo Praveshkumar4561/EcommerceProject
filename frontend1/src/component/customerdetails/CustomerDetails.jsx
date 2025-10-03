@@ -344,7 +344,10 @@ function CustomerDetails() {
           content="Access your personalized dashboard to manage orders, track shipments, and update account details. Enjoy a seamless shopping experience with Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/user/dashboard" />
+        <link
+          rel="canonical"
+          href="https://demo.webriefly.com/user/dashboard"
+        />
       </Helmet>
 
       <div

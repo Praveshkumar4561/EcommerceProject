@@ -254,14 +254,14 @@ function ContactUs() {
       {
         "@type": "ContactPage",
         name: "RxLyte",
-        url: "http://demo.webriefly.com/about",
+        url: "https://demo.webriefly.com/about",
         description:
           "RxLyte is a modern ecommerce platform offering premium healthcare products.",
         mainEntity: {
           "@type": "Organization",
           name: "RxLyte",
-          url: "http://demo.webriefly.com/",
-          logo: "http://demo.webriefly.com/Tonic.svg",
+          url: "https://demo.webriefly.com/",
+          logo: "https://demo.webriefly.com/Tonic.svg",
           description:
             "RxLyte is a trusted ecommerce store providing high-quality healthcare products.",
           contactPoint: {
@@ -281,13 +281,13 @@ function ContactUs() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://demo.webriefly.com/",
+            item: "https://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "Contact Us",
-            item: "http://demo.webriefly.com/contact-us",
+            item: "https://demo.webriefly.com/contact-us",
           },
         ],
       },
@@ -333,7 +333,7 @@ function ContactUs() {
           content="Have questions or need assistance? Contact Rxlyte's support team for quick responses. We’re here to help with orders, inquiries, and more."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/contact-us" />
+        <link rel="canonical" href="https://demo.webriefly.com/contact-us" />
       </Helmet>
 
       <div

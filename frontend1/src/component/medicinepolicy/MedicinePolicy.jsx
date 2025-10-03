@@ -222,7 +222,7 @@ function MedicinePolicy() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://demo.webriefly.com/medicine-policy"
+          href="https://demo.webriefly.com/medicine-policy"
         />
       </Helmet>
 

@@ -352,7 +352,7 @@ function CustomerAccount() {
         <meta name="robots" content="index, follow" />
         <link
           rel="canonical"
-          href="http://demo.webriefly.com/user/edit-account"
+          href="https://demo.webriefly.com/user/edit-account"
         />
       </Helmet>
 

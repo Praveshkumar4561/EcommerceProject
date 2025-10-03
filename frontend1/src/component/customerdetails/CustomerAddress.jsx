@@ -381,7 +381,7 @@ function CustomerAddress() {
           content="Save, update, and manage your shipping and billing addresses securely. Ensure a smooth and fast checkout experience on Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/user/address" />
+        <link rel="canonical" href="https://demo.webriefly.com/user/address" />
       </Helmet>
 
       <div

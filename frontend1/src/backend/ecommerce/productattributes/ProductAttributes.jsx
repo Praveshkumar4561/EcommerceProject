@@ -271,12 +271,12 @@ function ProductAttributes() {
 
         <link
           rel="shortcut icon"
-          href="http://demo.webriefly.com/assets/Tonic.svg"
+          href="https://demo.webriefly.com/assets/Tonic.svg"
           type="image/svg+xml"
         />
         <meta
           property="og:image"
-          content="http://demo.webriefly.com/assets/Tonic.svg"
+          content="https://demo.webriefly.com/assets/Tonic.svg"
         />
 
         <meta
@@ -289,10 +289,10 @@ function ProductAttributes() {
         />
         <meta property="og:title" content="Product attributes | RxLYTE" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://demo.webriefly.com/" />
+        <meta property="og:url" content="https://demo.webriefly.com/" />
 
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/" />
+        <link rel="canonical" href="https://demo.webriefly.com/" />
       </Helmet>
 
       <div

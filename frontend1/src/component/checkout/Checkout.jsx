@@ -521,7 +521,7 @@ function Checkout() {
           content="Complete your purchase securely with our fast and safe checkout process. Enjoy hassle-free payments and quick order processing at Rxlyte."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/checkout" />
+        <link rel="canonical" href="https://demo.webriefly.com/checkout" />
       </Helmet>
 
       <div

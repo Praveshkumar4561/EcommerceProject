@@ -173,14 +173,14 @@ function AboutUsPage() {
       {
         "@type": "AboutPage",
         name: "About RxLyte",
-        url: "http://demo.webriefly.com/about",
+        url: "https://demo.webriefly.com/about",
         description:
           "Learn more about RxLyte, a modern ecommerce platform offering premium healthcare products.",
         mainEntity: {
           "@type": "Organization",
           name: "RxLyte",
-          url: "http://demo.webriefly.com/",
-          logo: "http://demo.webriefly.com/Tonic.svg",
+          url: "https://demo.webriefly.com/",
+          logo: "https://demo.webriefly.com/Tonic.svg",
           description:
             "RxLyte is a trusted ecommerce store providing high-quality healthcare products.",
           contactPoint: {
@@ -200,13 +200,13 @@ function AboutUsPage() {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "http://demo.webriefly.com/",
+            item: "https://demo.webriefly.com/",
           },
           {
             "@type": "ListItem",
             position: 2,
             name: "About",
-            item: "http://demo.webriefly.com/about",
+            item: "https://demo.webriefly.com/about",
           },
         ],
       },
@@ -307,7 +307,7 @@ function AboutUsPage() {
           content="Discover our story, mission, and values at RxLYTE. We are committed to providing top-quality products and exceptional customer service."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="http://demo.webriefly.com/about" />
+        <link rel="canonical" href="https://demo.webriefly.com/about" />
       </Helmet>
 
       <div
