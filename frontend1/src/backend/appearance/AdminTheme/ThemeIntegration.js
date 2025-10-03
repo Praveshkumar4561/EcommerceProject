@@ -241,7 +241,7 @@ export class ThemeIntegration {
 
   static async detectThemeBase(folderName) {
     if (!folderName) return null;
-    const backendHostDirect = "http://147.93.45.171:1600";
+    const backendHostDirect = "https://demo.webriefly.com/api";
 
     const nameVariants = [
       folderName,
