@@ -18,7 +18,7 @@ const router = express.Router();
 
 router.use(
   cors({
-    origin: ["https://demo.webriefly.com", "http://147.93.45.171:1600"],
+    origin: ["https://demo.webriefly.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
