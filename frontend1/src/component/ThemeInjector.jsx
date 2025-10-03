@@ -236,7 +236,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           document.head.appendChild(base);
         }
         base.href = themeBaseNormalized(themeBaseUrl).replace(
-          "147.93.45.171:1600",
+          "https://demo.webriefly.com",
           "demo.webriefly.com"
         );
 
