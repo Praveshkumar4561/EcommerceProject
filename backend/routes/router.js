@@ -1,176 +1,41 @@
 require("dotenv").config();
 const express = require("express");
-const router = express.Router();
 const path = require("path");
-const compression = require("compression");
 const { SitemapStream, streamToPromise } = require("sitemap");
 const db = require("../db");
-const geoip = require("geoip-lite");
 const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
-const ExcelJS = require("exceljs");
-const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const webpush = require("web-push");
-const themeRoutes = require("./routes/themeRoutes");
-const { initThemesTable } = require("./controllers/themeController");
-const router = require("./routes/router");
-const salt = 10;
-const saltRounds = 10;
-const app = express();
+const { initThemesTable } = require("../controllers/themeController");
+const themeRoutes = require("./themeRoutes");
 
-router.use(
-  cors({
-    origin: ["https://demo.webriefly.com", "http://147.93.45.171:1600"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: "Content-Type, Authorization",
-    credentials: true,
-  })
-);
+const router = express.Router();
 
+router.use(cors({ origin: ["http://demo.webriefly.com", "http://147.93.45.171:1600"], methods: ["GET","POST","PUT","DELETE"], allowedHeaders: "Content-Type, Authorization", credentials: true }));
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
-router.use("/api", router);
-
-// router.use("/api/themes", themeRoutes);
-router.set("view engine", "ejs");
-
-router.use("/uploads", express.static(path.join(__dirname, "src/image")));
-
-router.set(
-  "views",
-  path.join(
-    __dirname,
-    "themes/roiser-multipurpose-ecommerce-html5-template-2024-08-20-06-31-54-utc-2025-06-12-15-16-08-utc/roiser-html-package/roiser"
-  )
-);
-
-router.use(
-  "/themes",
-  express.static(path.join(__dirname, "themes"), {
-    extensions: ["html"],
-  })
-);
-
-router.get("/", async (req, res) => {
-  try {
-    const [[active]] = await db.query(
-      "SELECT folder_name FROM themes WHERE is_active = 1 LIMIT 1"
-    );
-    if (active) {
-      res.redirect(`/api/themes/${active.folder_name}/index.html`);
-    } else {
-      res.sendFile(path.join(__dirname, "../frontend1/index.html"));
-    }
-  } catch (err) {
-    console.error("Error redirecting to active theme:", err);
-    res.sendFile(path.join(__dirname, "../frontend1/index.html"));
-  }
-});
-
-router.use("/themes", themeRoutes);
-router.set("view engine", "ejs");
-router.set("views", path.join(__dirname, "themes"));
-router.set("views", path.join(__dirname, "themes/roiser-html-package/roiser"));
-
-router.use(
-  "/themes/static",
-  (req, res, next) => {
-    try {
-      let requestedPath = (req.path || req.url || "").split("?")[0];
-      requestedPath = decodeURIComponent(requestedPath).replace(/^\/+/, "");
-
-      const basePath = path.join(__dirname, "themes");
-      const fullPath = path.normalize(path.join(basePath, requestedPath));
-
-      if (!fullPath.startsWith(path.normalize(basePath + path.sep))) {
-        return res.status(403).send("Access denied");
-      }
-
-      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isDirectory()) {
-        const indexHtml = path.join(fullPath, "index.html");
-        if (fs.existsSync(indexHtml)) return res.sendFile(indexHtml);
-      }
-
-      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-        return res.sendFile(fullPath);
-      }
-
-      const maybeHtml = fullPath.endsWith(".html")
-        ? fullPath
-        : `${fullPath}.html`;
-      if (fs.existsSync(maybeHtml) && fs.statSync(maybeHtml).isFile()) {
-        return res.sendFile(maybeHtml);
-      }
-
-      return next();
-    } catch (err) {
-      console.error("Error serving static file (themes/static):", err);
-      return next(err);
-    }
-  },
-  express.static(path.join(__dirname, "themes"), { index: false })
-);
-
-router.use(
-  "/api/themes/static",
-  (req, res, next) => {
-    req.url = req.url.replace(/^\/+/, "");
-    next();
-  },
-  express.static(path.join(__dirname, "themes"), { index: false })
-);
-
-initThemesTable();
-const themesDir = path.join(__dirname, "themes");
-if (!fs.existsSync(themesDir)) {
-  fs.mkdirSync(themesDir, { recursive: true });
-}
-
-router.use(express.urlencoded({ extended: true }));
-router.use(compression());
 router.use(cookieParser());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
-router.use("/src/image", express.static(path.join(__dirname, "src/image")));
-router.set("trust proxy", true);
 
-// router.set("views", path.join(__dirname, "themes"));
-
-router.post("/update-robots", (req, res) => {
-  const { content } = req.body;
-  const robotsPath = path.join(__dirname, "../frontend1/public/robots.txt");
-  fs.writeFile(robotsPath, content, (err) => {
-    if (err) {
-      console.error("Error writing robots.txt", err);
-      return res.status(500).json({ message: "Error saving robots.txt" });
-    }
-    res.json({ message: "robots.txt updated successfully" });
-  });
-});
+const uploadDir = path.join(__dirname, "../src/image");
+const publicFolder = path.join(__dirname, "../frontend1/public");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder, { recursive: true });
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
+  destination: (req, file, cb) => cb(null, uploadDir),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
-
 const upload = multer({ storage: storage });
 
-// custom upload zip code
+initThemesTable();
 
-// const upload = multer({ dest: 'uploads/' });
-
-const uploadDir = path.join(__dirname, "src/image");
-const publicFolder = path.join(__dirname, "../frontend1/public");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -191,51 +56,19 @@ const adsStorage = multer.diskStorage({
 const adsUpload = multer({ storage: adsStorage });
 
 router.use("/uploads", express.static(uploadDir));
-
-router.post("/upload", upload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
-  const fileUrl = `/images/${req.file.filename}`;
-  res.json({ url: fileUrl });
-});
 router.use("/images", express.static(uploadDir));
-
-router.get("/get-homepage", (req, res) => {
-  res.status(200).json({ homepageSettings });
-});
-
-router.use(
-  "/get-theme-logo/src/image",
-  express.static(path.join(__dirname, "src/image"))
-);
-
-router.use(
-  "/productpagedata/src/image",
-  express.static(path.join(__dirname, "src/image"))
-);
-
-router.use(
-  "/customersdata/src/image",
-  express.static(path.join(__dirname, "src/image"))
-);
-
-router.use(
-  "/blogpostdata/src/image",
-  express.static(path.join(__dirname, "src/image"))
-);
-
+router.use("/src/image", express.static(uploadDir));
+router.use("/get-theme-logo/src/image", express.static(uploadDir));
+router.use("/productpagedata/src/image", express.static(uploadDir));
+router.use("/customersdata/src/image", express.static(uploadDir));
+router.use("/blogpostdata/src/image", express.static(uploadDir));
 router.use(express.static(path.join(__dirname, "../frontend1/public")));
+router.use("/themes", express.static(path.join(__dirname, "../themes"), { extensions: ["html"] }));
 
-const publicVapidKey =
-  "BPJVSJMYeYgCD13-Sv8ziP9m6ecOBSc8KfIJ055G9wsCmE80aYWKPEUKkamseWpIkorpD3-Vs3NLBmBLvXEASGI";
+const publicVapidKey = "BPJVSJMYeYgCD13-Sv8ziP9m6ecOBSc8KfIJ055G9wsCmE80aYWKPEUKkamseWpIkorpD3-Vs3NLBmBLvXEASGI";
 const privateVapidKey = "h2r9X6cwNN1GxczN_e9N2Ggh0Ap3jcrmfBhWmW9xNX8";
+webpush.setVapidDetails("mailto:your-email@example.com", publicVapidKey, privateVapidKey);
 
-webpush.setVapidDetails(
-  "mailto:your-email@example.com",
-  publicVapidKey,
-  privateVapidKey
-);
 
 router.get("/sw.js", (req, res) => {
   res.set("Content-Type", "application/javascript");
@@ -244,82 +77,84 @@ router.get("/sw.js", (req, res) => {
 
 router.get("/themes/:themeName/:page", (req, res) => {
   const { themeName, page } = req.params;
+  const htmlFilePath = path.join(__dirname, "../themes", themeName, `${page}.html`);
+  res.sendFile(htmlFilePath, (err) => { if (err) res.status(404).send("Page not found"); });
+});
 
-  const htmlFilePath = path.join(
-    __dirname,
-    "themes",
-    themeName,
-    `${page}.html`
-  );
+router.post("/update-robots", (req, res) => {
+  const { content } = req.body;
+  const robotsPath = path.join(__dirname, "../frontend1/public/robots.txt");
+  fs.writeFile(robotsPath, content, (err) => { if (err) return res.status(500).json({ message: "Error saving robots.txt" }); res.json({ message: "robots.txt updated successfully" }); });
+});
 
-  res.sendFile(htmlFilePath, (err) => {
-    if (err) {
-      res.status(404).send("Page not found");
-    }
-  });
+router.post("/upload", upload.single("image"), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+  res.json({ url: `/images/${req.file.filename}` });
+});
+
+let homepageSettings = { homepage:"", aboutpage:"", shop:"", blog:"", contactus:"", faqs:"" };
+router.get("/get-homepage", (req, res) => res.json({ homepageSettings }));
+router.post("/save-homepage", (req, res) => {
+  const { homepage, aboutpage, shop, blog, contactus } = req.body;
+  homepageSettings = { homepage: homepage||homepageSettings.homepage, aboutpage: aboutpage||homepageSettings.aboutpage, shop: shop||homepageSettings.shop, blog: blog||homepageSettings.blog, contactus: contactus||homepageSettings.contactus };
+  res.json({ message:"Homepage settings saved successfully", homepageSettings });
+});
+
+function authenticateUser(req,res,next){
+  const token=req.cookies.token;
+  if(!token) return res.redirect("/login");
+  jwt.verify(token,"jwt-secret-key",(err,decoded)=>{ if(err) return res.redirect("/login"); req.user=decoded; next(); });
+}
+const verifyUser = (req,res,next) => {
+  const token = req.cookies.token;
+  if (!token) return res.json({Error:"You are not authenticated"});
+  jwt.verify(token,"jwt-secret-key",(err,decoded)=>{ if(err) return res.json({Error:"token is not correct"}); req.name=decoded.name; next(); });
+};
+
+router.get("/", async (req,res)=>{
+  try{
+    const [[active]] = await db.query("SELECT folder_name FROM themes WHERE is_active = 1 LIMIT 1");
+    if(active) res.redirect(`/api/themes/${active.folder_name}/index.html`);
+    else res.sendFile(path.join(__dirname,"../frontend1/index.html"));
+  }catch(err){ console.error(err); res.sendFile(path.join(__dirname,"../frontend1/index.html")); }
 });
 
 const getCurrentLastMod = () => new Date().toISOString();
-
-function authenticateUser(req, res, next) {
-  const token = req.cookies.token;
-  if (!token) return res.redirect("/login");
-
-  jwt.verify(token, "jwt-secret-key", (err, decoded) => {
-    if (err) return res.redirect("/login");
-    req.user = decoded;
-    next();
-  });
-}
-
-router.get("/", authenticateUser, (req, res) => {
-  res.render("/", { user: req.user });
-});
-
 const links = [
-  { url: "/", lastmodISO: getCurrentLastMod(), priority: 1.0 },
-  { url: "/about", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/shop", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/blog", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/product-details", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  {
-    url: "/product-categories",
-    lastmodISO: getCurrentLastMod(),
-    priority: 0.9,
-  },
-  { url: "/cart", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/wishlist", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/contact-us", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/faqs", lastmodISO: getCurrentLastMod(), priority: 0.9 },
-  { url: "/privacy-policy", lastmodISO: getCurrentLastMod(), priority: 0.8 },
-  { url: "/medicine-policy", lastmodISO: getCurrentLastMod(), priority: 0.8 },
-  { url: "/terms-condition", lastmodISO: getCurrentLastMod(), priority: 0.8 },
-  { url: "/sitemap", lastmodISO: getCurrentLastMod(), priority: 1.0 },
+  { url:"/", lastmodISO:getCurrentLastMod(), priority:1.0 },
+  { url:"/about", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/shop", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/blog", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/product-details", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/product-categories", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/cart", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/wishlist", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/contact-us", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/faqs", lastmodISO:getCurrentLastMod(), priority:0.9 },
+  { url:"/privacy-policy", lastmodISO:getCurrentLastMod(), priority:0.8 },
+  { url:"/medicine-policy", lastmodISO:getCurrentLastMod(), priority:0.8 },
+  { url:"/terms-condition", lastmodISO:getCurrentLastMod(), priority:0.8 },
+  { url:"/sitemap", lastmodISO:getCurrentLastMod(), priority:1.0 }
 ];
-
-router.get("/sitemap.xml", async (req, res, next) => {
-  try {
-    res.header("Content-Type", "application/xml");
-    const smStream = new SitemapStream({
-      hostname: "http://demo.webriefly.com",
-    });
-    links.forEach((link) => smStream.write(link));
+router.get("/sitemap.xml", async (req,res,next)=>{
+  try{
+    res.header("Content-Type","application/xml");
+    const smStream = new SitemapStream({ hostname:"http://demo.webriefly.com" });
+    links.forEach(link=>smStream.write(link));
     smStream.end();
     const sitemapOutput = await streamToPromise(smStream);
     res.send(sitemapOutput.toString());
-  } catch (err) {
-    next(err);
-  }
+  }catch(err){ next(err); }
 });
 
-let homepageSettings = {
-  homepage: "",
-  aboutpage: "",
-  shop: "",
-  blog: "",
-  contactus: "",
-  faqs: "",
-};
+// let homepageSettings = {
+//   homepage: "",
+//   aboutpage: "",
+//   shop: "",
+//   blog: "",
+//   contactus: "",
+//   faqs: "",
+// };
 
 router.post("/save-homepage", (req, res) => {
   const { homepage, aboutpage, shop, blog, contactus } = req.body;
@@ -336,21 +171,21 @@ router.post("/save-homepage", (req, res) => {
   });
 });
 
-const verifyUser = (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.json({ Error: "You are not authenticated" });
-  } else {
-    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
-      if (err) {
-        return res.json({ Error: "token is not correct" });
-      } else {
-        req.name = decoded.name;
-        next();
-      }
-    });
-  }
-};
+// const verifyUser = (req, res, next) => {
+//   const token = req.cookies.token;
+//   if (!token) {
+//     return res.json({ Error: "You are not authenticated" });
+//   } else {
+//     jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+//       if (err) {
+//         return res.json({ Error: "token is not correct" });
+//       } else {
+//         req.name = decoded.name;
+//         next();
+//       }
+//     });
+//   }
+// };
 
 router.get("/", verifyUser, (req, res) => {
   return res.json({ Status: "Success", name: req.name });
@@ -6009,5 +5844,6 @@ router.get("/allthemesdata", (req, res) => {
     res.json(results);
   });
 });
+
 
 module.exports = router;
