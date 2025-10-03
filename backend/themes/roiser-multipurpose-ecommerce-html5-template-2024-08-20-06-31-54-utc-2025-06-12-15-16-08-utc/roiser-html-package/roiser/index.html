@@ -320,16 +320,16 @@
             const href = a.getAttribute("href");
             const page = href.replace(/\.html$/, "");
             if (page === "index" || page === "") {
-              a.setAttribute("href", "http://demo.webriefly.com/");
+              a.setAttribute("href", "https://demo.webriefly.com/");
             } else {
-              a.setAttribute("href", `http://demo.webriefly.com/${page}`);
+              a.setAttribute("href", `https://demo.webriefly.com/${page}`);
             }
             a.addEventListener("click", (e) => {
               e.preventDefault();
               if (page === "index" || page === "") {
-                window.parent.location.href = "http://demo.webriefly.com/";
+                window.parent.location.href = "https://demo.webriefly.com/";
               } else {
-                window.parent.location.href = `http://demo.webriefly.com/${page}`;
+                window.parent.location.href = `https://demo.webriefly.com/${page}`;
               }
             });
           });
