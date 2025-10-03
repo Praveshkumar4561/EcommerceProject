@@ -16,7 +16,14 @@ const themeRoutes = require("./themeRoutes");
 
 const router = express.Router();
 
-router.use(cors({ origin: ["http://demo.webriefly.com", "http://147.93.45.171:1600"], methods: ["GET","POST","PUT","DELETE"], allowedHeaders: "Content-Type, Authorization", credentials: true }));
+router.use(
+  cors({
+    origin: ["https://demo.webriefly.com", "http://147.93.45.171:1600"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: "Content-Type, Authorization",
+    credentials: true,
+  })
+);
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 router.use(cookieParser());
@@ -26,7 +33,8 @@ router.use(bodyParser.json());
 const uploadDir = path.join(__dirname, "../src/image");
 const publicFolder = path.join(__dirname, "../frontend1/public");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-if (!fs.existsSync(publicFolder)) fs.mkdirSync(publicFolder, { recursive: true });
+if (!fs.existsSync(publicFolder))
+  fs.mkdirSync(publicFolder, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
@@ -35,7 +43,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 initThemesTable();
-
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -63,12 +70,19 @@ router.use("/productpagedata/src/image", express.static(uploadDir));
 router.use("/customersdata/src/image", express.static(uploadDir));
 router.use("/blogpostdata/src/image", express.static(uploadDir));
 router.use(express.static(path.join(__dirname, "../frontend1/public")));
-router.use("/themes", express.static(path.join(__dirname, "../themes"), { extensions: ["html"] }));
+router.use(
+  "/themes",
+  express.static(path.join(__dirname, "../themes"), { extensions: ["html"] })
+);
 
-const publicVapidKey = "BPJVSJMYeYgCD13-Sv8ziP9m6ecOBSc8KfIJ055G9wsCmE80aYWKPEUKkamseWpIkorpD3-Vs3NLBmBLvXEASGI";
+const publicVapidKey =
+  "BPJVSJMYeYgCD13-Sv8ziP9m6ecOBSc8KfIJ055G9wsCmE80aYWKPEUKkamseWpIkorpD3-Vs3NLBmBLvXEASGI";
 const privateVapidKey = "h2r9X6cwNN1GxczN_e9N2Ggh0Ap3jcrmfBhWmW9xNX8";
-webpush.setVapidDetails("mailto:your-email@example.com", publicVapidKey, privateVapidKey);
-
+webpush.setVapidDetails(
+  "mailto:your-email@example.com",
+  publicVapidKey,
+  privateVapidKey
+);
 
 router.get("/sw.js", (req, res) => {
   res.set("Content-Type", "application/javascript");
@@ -77,14 +91,25 @@ router.get("/sw.js", (req, res) => {
 
 router.get("/themes/:themeName/:page", (req, res) => {
   const { themeName, page } = req.params;
-  const htmlFilePath = path.join(__dirname, "../themes", themeName, `${page}.html`);
-  res.sendFile(htmlFilePath, (err) => { if (err) res.status(404).send("Page not found"); });
+  const htmlFilePath = path.join(
+    __dirname,
+    "../themes",
+    themeName,
+    `${page}.html`
+  );
+  res.sendFile(htmlFilePath, (err) => {
+    if (err) res.status(404).send("Page not found");
+  });
 });
 
 router.post("/update-robots", (req, res) => {
   const { content } = req.body;
   const robotsPath = path.join(__dirname, "../frontend1/public/robots.txt");
-  fs.writeFile(robotsPath, content, (err) => { if (err) return res.status(500).json({ message: "Error saving robots.txt" }); res.json({ message: "robots.txt updated successfully" }); });
+  fs.writeFile(robotsPath, content, (err) => {
+    if (err)
+      return res.status(500).json({ message: "Error saving robots.txt" });
+    res.json({ message: "robots.txt updated successfully" });
+  });
 });
 
 router.post("/upload", upload.single("image"), (req, res) => {
@@ -92,59 +117,96 @@ router.post("/upload", upload.single("image"), (req, res) => {
   res.json({ url: `/images/${req.file.filename}` });
 });
 
-let homepageSettings = { homepage:"", aboutpage:"", shop:"", blog:"", contactus:"", faqs:"" };
+let homepageSettings = {
+  homepage: "",
+  aboutpage: "",
+  shop: "",
+  blog: "",
+  contactus: "",
+  faqs: "",
+};
 router.get("/get-homepage", (req, res) => res.json({ homepageSettings }));
 router.post("/save-homepage", (req, res) => {
   const { homepage, aboutpage, shop, blog, contactus } = req.body;
-  homepageSettings = { homepage: homepage||homepageSettings.homepage, aboutpage: aboutpage||homepageSettings.aboutpage, shop: shop||homepageSettings.shop, blog: blog||homepageSettings.blog, contactus: contactus||homepageSettings.contactus };
-  res.json({ message:"Homepage settings saved successfully", homepageSettings });
+  homepageSettings = {
+    homepage: homepage || homepageSettings.homepage,
+    aboutpage: aboutpage || homepageSettings.aboutpage,
+    shop: shop || homepageSettings.shop,
+    blog: blog || homepageSettings.blog,
+    contactus: contactus || homepageSettings.contactus,
+  };
+  res.json({
+    message: "Homepage settings saved successfully",
+    homepageSettings,
+  });
 });
 
-function authenticateUser(req,res,next){
-  const token=req.cookies.token;
-  if(!token) return res.redirect("/login");
-  jwt.verify(token,"jwt-secret-key",(err,decoded)=>{ if(err) return res.redirect("/login"); req.user=decoded; next(); });
-}
-const verifyUser = (req,res,next) => {
+function authenticateUser(req, res, next) {
   const token = req.cookies.token;
-  if (!token) return res.json({Error:"You are not authenticated"});
-  jwt.verify(token,"jwt-secret-key",(err,decoded)=>{ if(err) return res.json({Error:"token is not correct"}); req.name=decoded.name; next(); });
+  if (!token) return res.redirect("/login");
+  jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+    if (err) return res.redirect("/login");
+    req.user = decoded;
+    next();
+  });
+}
+const verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return res.json({ Error: "You are not authenticated" });
+  jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+    if (err) return res.json({ Error: "token is not correct" });
+    req.name = decoded.name;
+    next();
+  });
 };
 
-router.get("/", async (req,res)=>{
-  try{
-    const [[active]] = await db.query("SELECT folder_name FROM themes WHERE is_active = 1 LIMIT 1");
-    if(active) res.redirect(`/api/themes/${active.folder_name}/index.html`);
-    else res.sendFile(path.join(__dirname,"../frontend1/index.html"));
-  }catch(err){ console.error(err); res.sendFile(path.join(__dirname,"../frontend1/index.html")); }
+router.get("/", async (req, res) => {
+  try {
+    const [[active]] = await db.query(
+      "SELECT folder_name FROM themes WHERE is_active = 1 LIMIT 1"
+    );
+    if (active) res.redirect(`/api/themes/${active.folder_name}/index.html`);
+    else res.sendFile(path.join(__dirname, "../frontend1/index.html"));
+  } catch (err) {
+    console.error(err);
+    res.sendFile(path.join(__dirname, "../frontend1/index.html"));
+  }
 });
 
 const getCurrentLastMod = () => new Date().toISOString();
 const links = [
-  { url:"/", lastmodISO:getCurrentLastMod(), priority:1.0 },
-  { url:"/about", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/shop", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/blog", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/product-details", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/product-categories", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/cart", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/wishlist", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/contact-us", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/faqs", lastmodISO:getCurrentLastMod(), priority:0.9 },
-  { url:"/privacy-policy", lastmodISO:getCurrentLastMod(), priority:0.8 },
-  { url:"/medicine-policy", lastmodISO:getCurrentLastMod(), priority:0.8 },
-  { url:"/terms-condition", lastmodISO:getCurrentLastMod(), priority:0.8 },
-  { url:"/sitemap", lastmodISO:getCurrentLastMod(), priority:1.0 }
+  { url: "/", lastmodISO: getCurrentLastMod(), priority: 1.0 },
+  { url: "/about", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/shop", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/blog", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/product-details", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  {
+    url: "/product-categories",
+    lastmodISO: getCurrentLastMod(),
+    priority: 0.9,
+  },
+  { url: "/cart", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/wishlist", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/contact-us", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/faqs", lastmodISO: getCurrentLastMod(), priority: 0.9 },
+  { url: "/privacy-policy", lastmodISO: getCurrentLastMod(), priority: 0.8 },
+  { url: "/medicine-policy", lastmodISO: getCurrentLastMod(), priority: 0.8 },
+  { url: "/terms-condition", lastmodISO: getCurrentLastMod(), priority: 0.8 },
+  { url: "/sitemap", lastmodISO: getCurrentLastMod(), priority: 1.0 },
 ];
-router.get("/sitemap.xml", async (req,res,next)=>{
-  try{
-    res.header("Content-Type","application/xml");
-    const smStream = new SitemapStream({ hostname:"http://demo.webriefly.com" });
-    links.forEach(link=>smStream.write(link));
+router.get("/sitemap.xml", async (req, res, next) => {
+  try {
+    res.header("Content-Type", "application/xml");
+    const smStream = new SitemapStream({
+      hostname: "http://demo.webriefly.com",
+    });
+    links.forEach((link) => smStream.write(link));
     smStream.end();
     const sitemapOutput = await streamToPromise(smStream);
     res.send(sitemapOutput.toString());
-  }catch(err){ next(err); }
+  } catch (err) {
+    next(err);
+  }
 });
 
 // let homepageSettings = {
@@ -5844,6 +5906,5 @@ router.get("/allthemesdata", (req, res) => {
     res.json(results);
   });
 });
-
 
 module.exports = router;
