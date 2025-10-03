@@ -37,7 +37,7 @@ function ProductDetail() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -76,7 +76,7 @@ function ProductDetail() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -139,7 +139,7 @@ function ProductDetail() {
 
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/reviewdatasubmit",
+        "https://demo.webriefly.com/api/reviewdatasubmit",
         formData
       );
       if (response.status === 200) {
@@ -227,7 +227,9 @@ function ProductDetail() {
 
   useEffect(() => {
     let reviewdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/reviewdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/reviewdata"
+      );
       setReviews(response.data);
     };
     reviewdata();
@@ -554,7 +556,7 @@ function ProductDetail() {
                         .map((data, key) => (
                           <img
                             key={key}
-                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                            src={`https://demo.webriefly.com/uploads/${data.image}`}
                             alt="Customer Upload"
                             className="img-thumbnail"
                             style={{
@@ -590,7 +592,7 @@ function ProductDetail() {
                           <img
                             src={
                               selectedImage ||
-                              `http://147.93.45.171:1600/src/image/${detail[0].image}`
+                              `https://demo.webriefly.com/uploads/${detail[0].image}`
                             }
                             alt="Product"
                             className="img-fluid"
@@ -616,7 +618,7 @@ function ProductDetail() {
     const detailsdata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productpagedata"
+          "https://demo.webriefly.com/api/productpagedata"
         );
         const filteredData = response.data.filter(
           (detail) => detail.status === "Published" || detail.status === "Draft"
@@ -635,7 +637,7 @@ function ProductDetail() {
     const shopdata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productpagedata"
+          "https://demo.webriefly.com/api/productpagedata"
         );
         const filteredData = response.data.filter(
           (shop) => shop.status === "Published" || shop.status === "Draft"
@@ -707,7 +709,7 @@ function ProductDetail() {
 
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/addcart",
+        "https://demo.webriefly.com/api/addcart",
         formData
       );
       if (response.status === 200) {
@@ -766,7 +768,7 @@ function ProductDetail() {
 
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/wishlistpost",
+        "https://demo.webriefly.com/api/wishlistpost",
         formData
       );
       setCount6((prevCount) => prevCount + 1);
@@ -786,7 +788,7 @@ function ProductDetail() {
     const tagdata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/producttagdata"
+          "https://demo.webriefly.com/api/producttagdata"
         );
         const filteredData = response.data.filter(
           (user) => user.status === "Published" || user.status === "Draft"
@@ -805,7 +807,7 @@ function ProductDetail() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productlabelsdata"
+          "https://demo.webriefly.com/api/productlabelsdata"
         );
         const filteredData = response.data.filter(
           (label) => label.status === "Published" || label.status === "Draft"
@@ -852,11 +854,11 @@ function ProductDetail() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -870,7 +872,7 @@ function ProductDetail() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setBread(response.data);
       } catch (error) {
@@ -932,7 +934,9 @@ function ProductDetail() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://147.93.45.171:1600/adsdata");
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/adsdata"
+        );
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -946,7 +950,7 @@ function ProductDetail() {
   useEffect(() => {
     let attribues = async () => {
       let response = await axios.get(
-        "http://147.93.45.171:1600/attributesdata1"
+        "https://demo.webriefly.com/api/attributesdata1"
       );
       setAttribute(response.data);
     };
@@ -964,7 +968,7 @@ function ProductDetail() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/cookiesalldata"
+          "https://demo.webriefly.com/api/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -1011,7 +1015,7 @@ function ProductDetail() {
       return;
     }
     try {
-      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
+      await axios.post("https://demo.webriefly.com/api/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -1049,7 +1053,7 @@ function ProductDetail() {
     const fetchFlashSales = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allflashdata"
+          "https://demo.webriefly.com/api/allflashdata"
         );
         const data = response.data;
         setFlash(data);
@@ -1121,7 +1125,7 @@ function ProductDetail() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1346,17 +1350,17 @@ function ProductDetail() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                           loading="lazy"
@@ -1403,7 +1407,7 @@ function ProductDetail() {
                           key={key}
                           onClick={() =>
                             applyImage(
-                              `http://147.93.45.171:1600/src/image/${data.image}`,
+                              `https://demo.webriefly.com/uploads/${data.image}`,
                               data.name,
                               data.description,
                               data.price,
@@ -1413,7 +1417,7 @@ function ProductDetail() {
                           }
                         >
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                            src={`https://demo.webriefly.com/uploads/${data.image}`}
                             alt="RxLYTE"
                             className="border"
                             loading="lazy"
@@ -1429,7 +1433,7 @@ function ProductDetail() {
                   <img
                     src={
                       selectedImage ||
-                      `http://147.93.45.171:1600/src/image/${shop[0]?.image}`
+                      `https://demo.webriefly.com/uploads/${shop[0]?.image}`
                     }
                     alt={`${shop[0]?.name || "RxLYTE"} product shot`}
                     className="head-image"
@@ -1651,8 +1655,8 @@ function ProductDetail() {
                     ? productLabel.color
                     : "green";
                   const imageUrl = data.image
-                    ? `http://147.93.45.171:1600/src/image/${data.image}`
-                    : "http://147.93.45.171:1600/src/image/default-image.jpg";
+                    ? `https://demo.webriefly.com/uploads/${data.image}`
+                    : "https://demo.webriefly.com/uploads/default-image.jpg";
                   const getFormattedName = (name, index) => {
                     const words = name.split(" ");
                     if (index === 0) return words.slice(0, 4).join(" ");
@@ -1843,7 +1847,7 @@ function ProductDetail() {
                           </button>
 
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${
+                            src={`https://demo.webriefly.com/uploads/${
                               data.image || "default-image.jpg"
                             }`}
                             alt={
@@ -1996,17 +2000,17 @@ function ProductDetail() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                           loading="lazy"
@@ -2171,17 +2175,17 @@ function ProductDetail() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                           loading="lazy"

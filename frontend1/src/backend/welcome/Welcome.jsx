@@ -101,7 +101,7 @@ function Welcome() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -213,14 +213,16 @@ function Welcome() {
   let [count1, setCount1] = useState(0);
 
   let alldata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/alldata");
+    let response = await axios.get("https://demo.webriefly.com/api/alldata");
     setCount1(response.data.length);
   };
 
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/productpagedata"
+    );
     setCount2(response.data.length);
   };
   showdata();
@@ -228,7 +230,7 @@ function Welcome() {
   let [count4, setCount4] = useState(0);
 
   let reviews = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/reviewdata");
+    let response = await axios.get("https://demo.webriefly.com/api/reviewdata");
     setCount4(response.data.length);
   };
   reviews();
@@ -237,7 +239,9 @@ function Welcome() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -257,7 +261,7 @@ function Welcome() {
     const blogpostdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/blogpostdata"
+          "https://demo.webriefly.com/api/blogpostdata"
         );
         setUser(response.data);
       } catch (error) {
@@ -363,7 +367,9 @@ function Welcome() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://147.93.45.171:1600/analytics");
+      const response = await axios.get(
+        "https://demo.webriefly.com/api/analytics"
+      );
       const responseData = response.data;
       const labels = [];
       const visitors = [];
@@ -403,7 +409,9 @@ function Welcome() {
 
   const fetchSummary = async () => {
     try {
-      const response = await axios.get("http://147.93.45.171:1600/summary");
+      const response = await axios.get(
+        "https://demo.webriefly.com/api/summary"
+      );
       setSummary(response.data);
     } catch (error) {
       console.error("Error fetching summary", error);
@@ -412,7 +420,7 @@ function Welcome() {
 
   const fetchCountryVisitors = async () => {
     try {
-      const res = await fetch("http://147.93.45.171:1600/country-visits");
+      const res = await fetch("https://demo.webriefly.com/api/country-visits");
       const data = await res.json();
       setVisitorData(data);
     } catch (error) {
@@ -501,7 +509,7 @@ function Welcome() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

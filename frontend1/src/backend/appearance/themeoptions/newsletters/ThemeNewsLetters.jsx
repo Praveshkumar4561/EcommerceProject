@@ -88,7 +88,7 @@ function ThemeNewsLetters() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -214,7 +214,9 @@ function ThemeNewsLetters() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -254,7 +256,10 @@ function ThemeNewsLetters() {
       formdata.append("deleteImage", "true");
     }
     try {
-      await axios.post("http://147.93.45.171:1600/themenewspost", formdata);
+      await axios.post(
+        "https://demo.webriefly.com/api/themenewspost",
+        formdata
+      );
       toast.success("Newsletter successfully created", {
         position: "bottom-right",
         autoClose: 1000,
@@ -302,7 +307,7 @@ function ThemeNewsLetters() {
     const fetchNewsletterData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/themenewsdata"
+          "https://demo.webriefly.com/api/themenewsdata"
         );
         if (response.data) {
           setUser((prevUser) => ({
@@ -393,7 +398,7 @@ function ThemeNewsLetters() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2726,7 +2731,7 @@ function ThemeNewsLetters() {
                       />
                     ) : user.image ? (
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${user.image}`}
+                        src={`https://demo.webriefly.com/uploads/${user.image}`}
                         alt="Uploaded preview"
                         className="img-fluid w-100 h-100 rounded-2"
                       />

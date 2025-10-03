@@ -24,7 +24,9 @@ function SpecificationAttributeCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -87,7 +89,7 @@ function SpecificationAttributeCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -227,7 +229,7 @@ function SpecificationAttributeCreate() {
     }
     try {
       await axios.post(
-        "http://147.93.45.171:1600/specificationattribute",
+        "https://demo.webriefly.com/api/specificationattribute",
         user
       );
       navigate("/admin/ecommerce/specification-attributes");
@@ -244,7 +246,7 @@ function SpecificationAttributeCreate() {
 
   const alldata = async () => {
     let response = await axios.get(
-      "http://147.93.45.171:1600/spceficationdata"
+      "https://demo.webriefly.com/api/spceficationdata"
     );
     setList(response.data);
   };
@@ -254,7 +256,7 @@ function SpecificationAttributeCreate() {
 
   const allatributedata = async () => {
     let response = await axios.get(
-      "http://147.93.45.171:1600/spceficationdata"
+      "https://demo.webriefly.com/api/spceficationdata"
     );
     setCreates(response.data);
   };
@@ -342,7 +344,7 @@ function SpecificationAttributeCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

@@ -23,7 +23,7 @@ export default function IframeLoader() {
     let rawPath = location.pathname.replace(/^\//, "");
     if (rawPath === "") rawPath = "index.html";
     const cleanPath = rawPath.replace(/[^a-zA-Z0-9_\-/.]/g, "");
-    const url = `http://147.93.45.171:1600/themes/static/${folder}/${cleanPath}`;
+    const url = `https://demo.webriefly.com/api/themes/static/${folder}/${cleanPath}`;
 
     fetch(url, { method: "HEAD" })
       .then((res) => {

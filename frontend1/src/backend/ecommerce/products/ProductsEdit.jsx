@@ -132,7 +132,7 @@ function ProductsEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -304,7 +304,7 @@ function ProductsEdit() {
 
     try {
       const response = await axios.put(
-        `http://147.93.45.171:1600/productupdate/${id}`,
+        `https://demo.webriefly.com/api/productupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -479,9 +479,9 @@ function ProductsEdit() {
       try {
         const [{ data: defs }, { data: prodArr }, { data: allFaqs }] =
           await Promise.all([
-            axios.get("http://147.93.45.171:1600/attributesdata"),
-            axios.get(`http://147.93.45.171:1600/productsomedata/${id}`),
-            axios.get("http://147.93.45.171:1600/pagesdatafaqs"),
+            axios.get("https://demo.webriefly.com/api/attributesdata"),
+            axios.get(`https://demo.webriefly.com/api/productsomedata/${id}`),
+            axios.get("https://demo.webriefly.com/api/pagesdatafaqs"),
           ]);
         setCreate(defs || []);
         const publishedFaqs = (allFaqs || []).filter(
@@ -603,7 +603,7 @@ function ProductsEdit() {
     const attributedata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/attributesdata"
+          "https://demo.webriefly.com/api/attributesdata"
         );
         setCreate(response.data);
       } catch (error) {
@@ -861,7 +861,7 @@ function ProductsEdit() {
   useEffect(() => {
     const tagsdata = async () => {
       let response = await axios.get(
-        "http://147.93.45.171:1600/producttagdata"
+        "https://demo.webriefly.com/api/producttagdata"
       );
       setTag1(response.data);
     };
@@ -1014,7 +1014,7 @@ function ProductsEdit() {
   useEffect(() => {
     const globaldata = async () => {
       const response = await axios.get(
-        "http://147.93.45.171:1600/productoptiondata"
+        "https://demo.webriefly.com/api/productoptiondata"
       );
       setGlobal(response.data);
     };
@@ -1127,7 +1127,9 @@ function ProductsEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -1148,7 +1150,7 @@ function ProductsEdit() {
     const load = async () => {
       try {
         const { data } = await axios.get(
-          "http://147.93.45.171:1600/pagesdatafaqs"
+          "https://demo.webriefly.com/api/pagesdatafaqs"
         );
         setPages(
           data.filter((p) => p.status === "published" || p.status === "default")
@@ -1203,7 +1205,7 @@ function ProductsEdit() {
   const attributedata = async () => {
     try {
       let response = await axios.get(
-        "http://147.93.45.171:1600/attributesdata"
+        "https://demo.webriefly.com/api/attributesdata"
       );
       setCreate(response.data);
     } catch (error) {
@@ -1246,7 +1248,7 @@ function ProductsEdit() {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://147.93.45.171:1600/productpagedata?search=${search}`
+          `https://demo.webriefly.com/api/productpagedata?search=${search}`
         );
         setProducts(response.data);
       } catch (error) {
@@ -1275,7 +1277,7 @@ function ProductsEdit() {
       try {
         setLoading1(true);
         const response = await axios.get(
-          `http://147.93.45.171:1600/productpagedata?search=${search}`
+          `https://demo.webriefly.com/api/productpagedata?search=${search}`
         );
         setProducts1(response.data);
       } catch (error) {
@@ -1295,7 +1297,7 @@ function ProductsEdit() {
     const fetchCollections = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/collectionsdata"
+          "https://demo.webriefly.com/api/collectionsdata"
         );
         setCollections(response.data);
       } catch (error) {
@@ -1326,7 +1328,7 @@ function ProductsEdit() {
     const labelsdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/productlabelsdata"
+          "https://demo.webriefly.com/api/productlabelsdata"
         );
         setLabels(response.data);
       } catch (error) {
@@ -1349,7 +1351,9 @@ function ProductsEdit() {
   useEffect(() => {
     let brandsdata = async () => {
       try {
-        let response = await axios.get("http://147.93.45.171:1600/brandsdata");
+        let response = await axios.get(
+          "https://demo.webriefly.com/api/brandsdata"
+        );
         setBrands(response.data);
       } catch (error) {
         console.error("error", error);
@@ -1415,7 +1419,7 @@ function ProductsEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -4810,7 +4814,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products.length > 0 ? (
                       products.slice(0, 5).map((product) => {
-                        const imageUrl = `http://147.93.45.171:1600/src/image/${product.image}`;
+                        const imageUrl = `https://demo.webriefly.com/uploads/${product.image}`;
                         return (
                           <div
                             key={product.id}
@@ -4825,7 +4829,7 @@ function ProductsEdit() {
                                 alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
+                                    "https://demo.webriefly.com/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -4869,7 +4873,7 @@ function ProductsEdit() {
                   <div className="product-list">
                     {products1.length > 0 ? (
                       products1.slice(0, 5).map((product2) => {
-                        const imageUrl = `http://147.93.45.171:1600/src/image/${product2.image}`;
+                        const imageUrl = `https://demo.webriefly.com/uploads/${product2.image}`;
                         return (
                           <div
                             key={product2.id}
@@ -4884,7 +4888,7 @@ function ProductsEdit() {
                                 alt="RxLYTE"
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
+                                    "https://demo.webriefly.com/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -5390,7 +5394,7 @@ function ProductsEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
+                      src={`https://demo.webriefly.com/uploads/${user.image}`}
                       alt="Background"
                       className="w-100 h-100 rounded"
                       onClick={() =>

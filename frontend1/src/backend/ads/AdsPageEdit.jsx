@@ -95,7 +95,7 @@ function AdsEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -261,7 +261,7 @@ function AdsEdit() {
     }
     try {
       const response = await axios.put(
-        `http://147.93.45.171:1600/adsupdate/${id}`,
+        `https://demo.webriefly.com/api/adsupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -331,7 +331,7 @@ function AdsEdit() {
     const editData = async () => {
       try {
         let response = await axios.get(
-          `http://147.93.45.171:1600/adsomedataads/${id}`
+          `https://demo.webriefly.com/api/adsomedataads/${id}`
         );
         setUser(response.data[0]);
       } catch (error) {
@@ -345,7 +345,9 @@ function AdsEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -408,7 +410,7 @@ function AdsEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2555,7 +2557,7 @@ function AdsEdit() {
                             <img
                               src={
                                 userImage
-                                  ? `http://147.93.45.171:1600/src/image/${userImage}`
+                                  ? `https://demo.webriefly.com/uploads/${userImage}`
                                   : Cutting
                               }
                               className="w-100 h-100 rounded"
@@ -2634,7 +2636,7 @@ function AdsEdit() {
                           />
                         ) : !removeTabletImage && userTabletImage ? (
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${userTabletImage}`}
+                            src={`https://demo.webriefly.com/uploads/${userTabletImage}`}
                             className="w-100 h-100 rounded"
                             alt="Tablet"
                           />
@@ -2713,7 +2715,7 @@ function AdsEdit() {
                             <img
                               src={
                                 userMobileImage
-                                  ? `http://147.93.45.171:1600/src/image/${userMobileImage}`
+                                  ? `https://demo.webriefly.com/uploads/${userMobileImage}`
                                   : Cutting
                               }
                               className="w-100 h-100 rounded"

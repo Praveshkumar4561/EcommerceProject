@@ -93,7 +93,7 @@ function ProductPrices() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -146,7 +146,9 @@ function ProductPrices() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -204,7 +206,7 @@ function ProductPrices() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://147.93.45.171:1600/productsearch/${search}`,
+        `https://demo.webriefly.com/api/productsearch/${search}`,
         user
       );
       setPrice(response.data);
@@ -217,7 +219,9 @@ function ProductPrices() {
   const [price, setPrice] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/productpagedata"
+    );
     setPrice(response.data);
   };
 
@@ -254,11 +258,14 @@ function ProductPrices() {
       return;
     }
     try {
-      await axios.put(`http://147.93.45.171:1600/productpriceupdate/${id}`, {
-        cost,
-        price: productPrice,
-        price_sale,
-      });
+      await axios.put(
+        `https://demo.webriefly.com/api/productpriceupdate/${id}`,
+        {
+          cost,
+          price: productPrice,
+          price_sale,
+        }
+      );
       toast.success("Price successfully updated", {
         position: "bottom-right",
         autoClose: 1000,
@@ -336,7 +343,7 @@ function ProductPrices() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2298,7 +2305,7 @@ function ProductPrices() {
 
                         <td>
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                            src={`https://demo.webriefly.com/uploads/${data.image}`}
                             className="img-thumbnail rounded-1 image-price"
                           />
                         </td>

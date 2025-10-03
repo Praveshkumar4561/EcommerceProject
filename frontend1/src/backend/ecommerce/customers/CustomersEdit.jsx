@@ -77,7 +77,7 @@ function CustomerEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -197,7 +197,7 @@ function CustomerEdit() {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(
-          `http://147.93.45.171:1600/somecustomerdata/${id}`
+          `https://demo.webriefly.com/api/somecustomerdata/${id}`
         );
         setUser(response.data[0]);
       } catch (error) {
@@ -264,7 +264,7 @@ function CustomerEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://147.93.45.171:1600/userupdate/${id}`,
+        `https://demo.webriefly.com/api/userupdate/${id}`,
         formData
       );
       if (response.status === 200) {
@@ -336,7 +336,9 @@ function CustomerEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -399,7 +401,7 @@ function CustomerEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2484,7 +2486,7 @@ function CustomerEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
+                      src={`https://demo.webriefly.com/uploads/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

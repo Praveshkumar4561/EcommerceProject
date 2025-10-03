@@ -111,7 +111,10 @@ function ThemeContact() {
     setErrors({});
 
     try {
-      const res = await axios.post("http://147.93.45.171:1600/contact", user);
+      const res = await axios.post(
+        "https://demo.webriefly.com/api/contact",
+        user
+      );
       if (res.status === 200) {
         setUser({ name: "", email: "", subject: "", content: "" });
         toast.success("Contact details successfully submitted", {

@@ -45,7 +45,9 @@ function BlogPostCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -113,7 +115,7 @@ function BlogPostCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -259,7 +261,7 @@ function BlogPostCreate() {
 
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/blogpostsubmit",
+        "https://demo.webriefly.com/api/blogpostsubmit",
         formData
       );
       if (response.status === 200) {
@@ -341,7 +343,9 @@ function BlogPostCreate() {
 
   useEffect(() => {
     const tagsdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/blogalldata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/blogalldata"
+      );
       setTag1(response.data);
     };
     tagsdata();
@@ -459,7 +463,7 @@ function BlogPostCreate() {
   useEffect(() => {
     let categorydata = async () => {
       let response = await axios.get(
-        "http://147.93.45.171:1600/allcategorydata"
+        "https://demo.webriefly.com/api/allcategorydata"
       );
       setCates(response.data);
     };
@@ -524,7 +528,7 @@ function BlogPostCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

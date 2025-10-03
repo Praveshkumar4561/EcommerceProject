@@ -23,7 +23,7 @@ function Login() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -66,7 +66,7 @@ function Login() {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       const passwordToSend = storedUser?.password || user.password;
       const response = await axios.post(
-        "http://147.93.45.171:1600/login",
+        "https://demo.webriefly.com/api/login",
         { email: user.email, password: passwordToSend },
         { withCredentials: true }
       );
@@ -120,7 +120,7 @@ function Login() {
     }
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/submit",
+        "https://demo.webriefly.com/api/submit",
         registerUser
       );
       localStorage.removeItem("cart");
@@ -248,11 +248,11 @@ function Login() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -266,7 +266,7 @@ function Login() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -282,7 +282,7 @@ function Login() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -303,7 +303,7 @@ function Login() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/cookiesalldata"
+          "https://demo.webriefly.com/api/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -340,7 +340,7 @@ function Login() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${cart.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",

@@ -45,7 +45,9 @@ function Wishlist() {
 
   useEffect(() => {
     const cartdata = async () => {
-      const response = await axios.get("http://147.93.45.171:1600/allcartdata");
+      const response = await axios.get(
+        "https://demo.webriefly.com/api/allcartdata"
+      );
       setUser(response.data);
       setCount(response.data.length);
     };
@@ -56,7 +58,7 @@ function Wishlist() {
     const allwishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         const updatedData = response.data.map((item) => ({
           ...item,
@@ -72,7 +74,7 @@ function Wishlist() {
 
   const deletedata = async (id) => {
     try {
-      await axios.delete(`http://147.93.45.171:1600/wishlistdelete/${id}`);
+      await axios.delete(`https://demo.webriefly.com/api/wishlistdelete/${id}`);
       const updatedUser = user.filter((item) => item.id !== id);
       setUser(updatedUser);
       setCount6(updatedUser.length);
@@ -149,7 +151,7 @@ function Wishlist() {
     }
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/addcart",
+        "https://demo.webriefly.com/api/addcart",
         formData
       );
       setCount((prevCount) => prevCount + 1);
@@ -178,11 +180,11 @@ function Wishlist() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -196,7 +198,7 @@ function Wishlist() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -212,7 +214,7 @@ function Wishlist() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -233,7 +235,7 @@ function Wishlist() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/cookiesalldata"
+          "https://demo.webriefly.com/api/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -280,7 +282,7 @@ function Wishlist() {
       return;
     }
     try {
-      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
+      await axios.post("https://demo.webriefly.com/api/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -325,7 +327,7 @@ function Wishlist() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${cart.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -551,7 +553,7 @@ function Wishlist() {
                                   style={{ width: "150px", height: "70px" }}
                                 >
                                   <img
-                                    src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                                    src={`https://demo.webriefly.com/uploads/${data.image}`}
                                     alt="Product"
                                     className="img-fluid"
                                     style={{

@@ -86,7 +86,7 @@ function ReviewsView() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -173,7 +173,7 @@ function ReviewsView() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/reviewsomedata/${id}`
+      `https://demo.webriefly.com/api/reviewsomedata/${id}`
     );
     setUser(response.data[0]);
   };
@@ -200,7 +200,9 @@ function ReviewsView() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -263,7 +265,7 @@ function ReviewsView() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2187,7 +2189,7 @@ function ReviewsView() {
                           .map((img, index) => (
                             <img
                               key={index}
-                              src={`http://147.93.45.171:1600/src/image/${img.trim()}`}
+                              src={`https://demo.webriefly.com/uploads/${img.trim()}`}
                               alt={`RxLYTE-${index}`}
                               className="img-thumbnail"
                               style={{ width: "110px", height: "auto" }}

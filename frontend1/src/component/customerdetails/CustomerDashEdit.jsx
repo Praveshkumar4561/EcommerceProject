@@ -37,7 +37,7 @@ function CustomerDashEdit() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -78,7 +78,7 @@ function CustomerDashEdit() {
     if (validateForm()) {
       try {
         const response = await axios.put(
-          `http://147.93.45.171:1600/dashboardedit/${id}`,
+          `https://demo.webriefly.com/api/dashboardedit/${id}`,
           user
         );
         setUser(response.data);
@@ -95,7 +95,7 @@ function CustomerDashEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/dashboardsome/${id}`,
+      `https://demo.webriefly.com/api/dashboardsome/${id}`,
       user
     );
     setUser(response.data[0]);
@@ -159,7 +159,7 @@ function CustomerDashEdit() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/getannounce"
+          "https://demo.webriefly.com/api/getannounce"
         );
         setEdit(response.data);
       } catch (error) {
@@ -204,7 +204,7 @@ function CustomerDashEdit() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://147.93.45.171:1600/logout")
+      .get("https://demo.webriefly.com/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           localStorage.removeItem("token");
@@ -285,11 +285,11 @@ function CustomerDashEdit() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -326,7 +326,7 @@ function CustomerDashEdit() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -351,7 +351,7 @@ function CustomerDashEdit() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/productsearch/${search}`
+      `https://demo.webriefly.com/api/productsearch/${search}`
     );
     setSearch1(response.data);
   };
@@ -359,7 +359,7 @@ function CustomerDashEdit() {
   const homedata = async () => {
     try {
       let response = await axios.get(
-        "http://147.93.45.171:1600/productpagedata"
+        "https://demo.webriefly.com/api/productpagedata"
       );
       const filteredData = response.data.filter(
         (product) =>
@@ -414,7 +414,7 @@ function CustomerDashEdit() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -865,7 +865,7 @@ function CustomerDashEdit() {
                           >
                             <div className="search-result-item d-flex align-items-center p-2 border-bottom">
                               <img
-                                src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                                src={`https://demo.webriefly.com/uploads/${product.image}`}
                                 alt={product.name}
                                 className="ms-2 img-thumbnail"
                                 style={{

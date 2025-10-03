@@ -88,7 +88,7 @@ function BreadCrumb() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -187,7 +187,9 @@ function BreadCrumb() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -239,7 +241,7 @@ function BreadCrumb() {
     }
     try {
       await axios.post(
-        "http://147.93.45.171:1600/breadcrumb-settings",
+        "https://demo.webriefly.com/api/breadcrumb-settings",
         formdata
       );
       toast.success("breadcrumb successfully updated?", {
@@ -271,7 +273,7 @@ function BreadCrumb() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-breadcrumb")
+      .get("https://demo.webriefly.com/api/get-theme-breadcrumb")
       .then((response) => setUser(response.data))
       .catch((error) => console.error("Error fetching font settings:", error));
   }, []);
@@ -373,7 +375,7 @@ function BreadCrumb() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2791,7 +2793,7 @@ function BreadCrumb() {
                     <img
                       src={
                         user.background_image
-                          ? `http://147.93.45.171:1600/src/image/${user.background_image}`
+                          ? `https://demo.webriefly.com/uploads/${user.background_image}`
                           : Cutting
                       }
                       alt="Background"

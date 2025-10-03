@@ -40,7 +40,7 @@ function CustomerView() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -58,7 +58,7 @@ function CustomerView() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/getannounce"
+          "https://demo.webriefly.com/api/getannounce"
         );
         setUser(response.data);
       } catch (error) {
@@ -187,7 +187,7 @@ function CustomerView() {
     if (!valid) return;
 
     try {
-      await axios.delete(`http://147.93.45.171:1600/deleteorder1/${id}`);
+      await axios.delete(`https://demo.webriefly.com/api/deleteorder1/${id}`);
       toast.success("Order cancelled successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -215,7 +215,7 @@ function CustomerView() {
   let handleDelete = () => {
     axios.defaults.withCredentials = true;
     axios
-      .get("http://147.93.45.171:1600/logout")
+      .get("https://demo.webriefly.com/api/logout")
       .then((res) => {
         if (res.data.Status === "Success") {
           localStorage.removeItem("token");
@@ -292,11 +292,11 @@ function CustomerView() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -310,7 +310,7 @@ function CustomerView() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -373,7 +373,7 @@ function CustomerView() {
       return;
     }
     try {
-      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
+      await axios.post("https://demo.webriefly.com/api/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -413,7 +413,7 @@ function CustomerView() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/productsearch/${search}`
+      `https://demo.webriefly.com/api/productsearch/${search}`
     );
     setSearch1(response.data);
   };
@@ -421,7 +421,7 @@ function CustomerView() {
   const homedata = async () => {
     try {
       let response = await axios.get(
-        "http://147.93.45.171:1600/productpagedata"
+        "https://demo.webriefly.com/api/productpagedata"
       );
       const filteredData = response.data.filter(
         (product) =>
@@ -681,7 +681,7 @@ function CustomerView() {
             user?.background_color ||
             (user?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: user?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${user.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -1129,7 +1129,7 @@ function CustomerView() {
                           >
                             <div className="search-result-item d-flex align-items-center p-2 border-bottom">
                               <img
-                                src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                                src={`https://demo.webriefly.com/uploads/${product.image}`}
                                 alt={product.name}
                                 className="ms-2 img-thumbnail"
                                 style={{
@@ -1624,7 +1624,7 @@ function CustomerView() {
                           <td className="text-start">{data.id}</td>
                           <td className="text-start">
                             <img
-                              src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                              src={`https://demo.webriefly.com/uploads/${data.image}`}
                               alt="RxLYTE"
                               className="img-thumbnail view-orders"
                             />

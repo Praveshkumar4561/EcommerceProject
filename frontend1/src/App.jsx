@@ -201,7 +201,9 @@ function App() {
   useEffect(() => {
     const fetchPageSettings = async () => {
       try {
-        const response = await fetch("http://147.93.45.171:1600/get-homepage");
+        const response = await fetch(
+          "https://demo.webriefly.com/api/get-homepage"
+        );
         const data = await response.json();
         if (data.homepageSettings) {
           setPageSettings(data.homepageSettings);
@@ -244,7 +246,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data && response.data.favicon_url) {
           updateFavicon(response.data.favicon_url);
@@ -260,7 +262,7 @@ function App() {
       favicon.rel = "icon";
       document.head.appendChild(favicon);
     }
-    favicon.href = `http://147.93.45.171:1600/src/image/${faviconUrl}`;
+    favicon.href = `https://demo.webriefly.com/uploads/${faviconUrl}`;
     favicon.setAttribute("sizes", "200x200");
   };
 

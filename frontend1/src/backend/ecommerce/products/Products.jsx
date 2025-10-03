@@ -97,7 +97,7 @@ function Products() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -196,13 +196,15 @@ function Products() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/productsearch/${search}`
+      `https://demo.webriefly.com/api/productsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/productpagedata"
+    );
     setUser(response.data);
   };
 
@@ -216,7 +218,7 @@ function Products() {
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://147.93.45.171:1600/deleteproductsdata/${id}`,
+      `https://demo.webriefly.com/api/deleteproductsdata/${id}`,
       user
     );
     const updatedData = user.filter((item) => item.id !== id);
@@ -249,7 +251,7 @@ function Products() {
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://147.93.45.171:1600/exportexcel-productdata",
+        "https://demo.webriefly.com/api/exportexcel-productdata",
         {
           responseType: "blob",
         }
@@ -275,7 +277,9 @@ function Products() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -343,7 +347,7 @@ function Products() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2465,7 +2469,7 @@ function Products() {
 
                         <td>
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                            src={`https://demo.webriefly.com/uploads/${data.image}`}
                             className="img-thumbnail rounded-1"
                             style={{ width: "100px" }}
                           />

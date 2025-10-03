@@ -94,7 +94,7 @@ function CustomHtml() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -187,7 +187,9 @@ function CustomHtml() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -217,7 +219,7 @@ function CustomHtml() {
     };
     try {
       await axios.post(
-        "http://147.93.45.171:1600/save-custom-code",
+        "https://demo.webriefly.com/api/save-custom-code",
         customHTMLData
       );
       toast.success("Custom HTML applied successfully", {
@@ -240,7 +242,7 @@ function CustomHtml() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-custom-code"
+          "https://demo.webriefly.com/api/get-custom-code"
         );
         if (response.data.header_html) {
           setHeaderHtml(response.data.header_html);
@@ -318,7 +320,7 @@ function CustomHtml() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

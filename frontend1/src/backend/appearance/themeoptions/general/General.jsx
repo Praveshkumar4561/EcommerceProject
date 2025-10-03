@@ -93,7 +93,7 @@ function General() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -186,7 +186,9 @@ function General() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -253,9 +255,13 @@ function General() {
       formData.append("lazyPlaceholderImage", user.lazy_placeholder_image_url);
     }
     try {
-      await axios.post("http://147.93.45.171:1600/theme-options", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post(
+        "https://demo.webriefly.com/api/theme-options",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       toast.success("General updated successfully!", {
         position: "bottom-right",
         autoClose: 1000,
@@ -337,7 +343,7 @@ function General() {
     const generaldata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/themeoptionsdata"
+          "https://demo.webriefly.com/api/themeoptionsdata"
         );
         setUser(response.data);
       } catch (error) {
@@ -405,7 +411,7 @@ function General() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2810,7 +2816,7 @@ function General() {
                     user.seo_og_image_url
                       ? user.seo_og_image_url.startsWith("blob:")
                         ? user.seo_og_image_url
-                        : `http://147.93.45.171:1600/src/image/${user.seo_og_image_url}`
+                        : `https://demo.webriefly.com/uploads/${user.seo_og_image_url}`
                       : Cutting
                   }
                   width="100"
@@ -2936,9 +2942,9 @@ function General() {
                     user.lazy_placeholder_image_url
                       ? user.lazy_placeholder_image_url.startsWith("blob:")
                         ? user.lazy_placeholder_image_url
-                        : `http://147.93.45.171:1600/src/image/${user.lazy_placeholder_image_url}`
+                        : `https://demo.webriefly.com/uploads/${user.lazy_placeholder_image_url}`
                       : user.lazy_placeholder_image
-                      ? `http://147.93.45.171:1600/src/image/${user.lazy_placeholder_image}`
+                      ? `https://demo.webriefly.com/uploads/${user.lazy_placeholder_image}`
                       : Cutting
                   }
                   width="100"

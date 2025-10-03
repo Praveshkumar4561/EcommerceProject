@@ -21,7 +21,7 @@ function BlogPage() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -60,7 +60,7 @@ function BlogPage() {
     const alldata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/blogpostdata"
+          "https://demo.webriefly.com/api/blogpostdata"
         );
         const filteredData = response.data.filter(
           (blog) =>
@@ -108,11 +108,11 @@ function BlogPage() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -126,7 +126,7 @@ function BlogPage() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setCart(response.data);
       } catch (error) {
@@ -142,7 +142,7 @@ function BlogPage() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -226,7 +226,9 @@ function BlogPage() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://147.93.45.171:1600/adsdata");
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/adsdata"
+        );
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -246,7 +248,7 @@ function BlogPage() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/cookiesalldata"
+          "https://demo.webriefly.com/api/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -293,7 +295,7 @@ function BlogPage() {
       return;
     }
     try {
-      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
+      await axios.post("https://demo.webriefly.com/api/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -348,17 +350,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                        src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />
@@ -391,7 +393,7 @@ function BlogPage() {
             cart?.background_color ||
             (cart?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: cart?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${cart.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${cart.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -600,17 +602,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                        src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />
@@ -647,7 +649,7 @@ function BlogPage() {
                 >
                   <div className="image-page">
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${blog.image}`}
+                      src={`https://demo.webriefly.com/uploads/${blog.image}`}
                       alt={
                         blog.name
                           ? `Image for ${blog.name}`
@@ -778,17 +780,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                        src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />
@@ -945,17 +947,17 @@ function BlogPage() {
                       {footerAd.mobileImage && (
                         <source
                           media="(max-width: 767px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                         />
                       )}
                       {footerAd.desktopImage && (
                         <source
                           media="(min-width: 768px) and (max-width: 991px)"
-                          srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                          srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                         />
                       )}
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                        src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                         alt="Advertisement"
                         className="ad-img"
                       />

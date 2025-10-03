@@ -103,7 +103,7 @@ const FrontendThemeLoader = ({ children }) => {
       ThemeIntegration.clearThemeAssets();
 
       const { data } = await axios.get(
-        "http://147.93.45.171:1600/themes/active"
+        "https://demo.webriefly.com/api/themes/active"
       );
       if (!data?.theme) throw new Error("No active theme configured");
       const themeData = data.theme;
@@ -121,7 +121,7 @@ const FrontendThemeLoader = ({ children }) => {
 
       // support special folder mapping (pesco, radios, etc.) but don't remove or alter roiser
       const resolvedFolder = resolveThemeBaseForSpecials(folderClean);
-      const prefix = "http://147.93.45.171:1600/themes/static/";
+      const prefix = "https://demo.webriefly.com/api/themes/static/";
       const folderForBase = resolvedFolder ?? folderClean;
       const themeBase = `${prefix}${normalizeNoSlash(folderForBase)}/`;
 
@@ -218,7 +218,7 @@ const FrontendThemeLoader = ({ children }) => {
       if (!location.pathname.includes("/admin")) {
         try {
           const { data } = await axios.get(
-            "http://147.93.45.171:1600/themes/active"
+            "https://demo.webriefly.com/api/themes/active"
           );
           if (data?.theme?.folder_name) {
             navigate(`/theme/${data.theme.folder_name}`, { replace: true });

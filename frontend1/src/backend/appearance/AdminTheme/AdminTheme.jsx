@@ -35,7 +35,9 @@ function AdminTheme() {
   useEffect(() => {
     const fetchThemes = async () => {
       try {
-        const response = await axios.get("http://147.93.45.171:1600/themes");
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/themes"
+        );
         if (response.data.themes) {
           const processedThemes = response.data.themes.map((theme) => ({
             ...theme,
@@ -56,7 +58,7 @@ function AdminTheme() {
     const orderData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/checkoutdata"
+          "https://demo.webriefly.com/api/checkoutdata"
         );
         setCount5(response.data.length);
       } catch (error) {
@@ -126,7 +128,7 @@ function AdminTheme() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -222,7 +224,7 @@ function AdminTheme() {
 
   const fetchThemes = useCallback(async () => {
     try {
-      const res = await axios.get("http://147.93.45.171:1600/themes");
+      const res = await axios.get("https://demo.webriefly.com/api/themes");
       if (res.data?.success) {
         setThemes(
           res.data.themes.map((t) => ({
@@ -258,7 +260,7 @@ function AdminTheme() {
     formData.append("theme", themeFile);
     try {
       const { data } = await axios.post(
-        "http://147.93.45.171:1600/themes/upload",
+        "https://demo.webriefly.com/api/themes/upload",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -303,7 +305,7 @@ function AdminTheme() {
 
     try {
       const { data } = await axios.put(
-        `http://147.93.45.171:1600/themes/deactivate/${themeId}`
+        `https://demo.webriefly.com/api/themes/deactivate/${themeId}`
       );
 
       if (data.success) {
@@ -364,7 +366,7 @@ function AdminTheme() {
 
     try {
       const { data } = await axios.put(
-        `http://147.93.45.171:1600/themes/activate/${themeId}`
+        `https://demo.webriefly.com/api/themes/activate/${themeId}`
       );
       if (data.success) {
         localStorage.setItem("active_theme", data.theme.folder_name);
@@ -457,7 +459,7 @@ function AdminTheme() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

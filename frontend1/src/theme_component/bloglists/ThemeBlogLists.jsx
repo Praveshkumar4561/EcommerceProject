@@ -94,7 +94,7 @@ function ThemeBlogLists() {
   const postsPerPage = 5;
 
   useEffect(() => {
-    axios.get("http://147.93.45.171:1600/blogpostdata").then((res) => {
+    axios.get("https://demo.webriefly.com/api/blogpostdata").then((res) => {
       const filterdata = res.data.filter(
         (b) =>
           ["Published", "Draft"].includes(b.status) &&
@@ -106,7 +106,7 @@ function ThemeBlogLists() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://147.93.45.171:1600/blogalldata").then((res) => {
+    axios.get("https://demo.webriefly.com/api/blogalldata").then((res) => {
       setTags(
         res.data.filter((t) => ["Published", "Draft"].includes(t.status))
       );
@@ -114,7 +114,7 @@ function ThemeBlogLists() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://147.93.45.171:1600/allcategorydata").then((res) => {
+    axios.get("https://demo.webriefly.com/api/allcategorydata").then((res) => {
       setCategoryList(
         res.data.filter((c) => ["Published", "Draft"].includes(c.status))
       );
@@ -548,7 +548,7 @@ function ThemeBlogLists() {
                   <div className="d-flex flex-row flex-md-nowrap flex-wrap ">
                     <div className="client-image1 ">
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                        src={`https://demo.webriefly.com/uploads/${data.image}`}
                         alt={
                           data.name
                             ? `Image for ${data.name}`
@@ -671,7 +671,7 @@ function ThemeBlogLists() {
                         key={data.id ?? idx}
                       >
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                          src={`https://demo.webriefly.com/uploads/${data.image}`}
                           alt={
                             data.name
                               ? `Image for ${data.name}`

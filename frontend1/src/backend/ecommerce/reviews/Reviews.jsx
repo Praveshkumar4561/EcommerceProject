@@ -98,7 +98,7 @@ function Reviews() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -197,13 +197,13 @@ function Reviews() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/reviewsearch/${search}`
+      `https://demo.webriefly.com/api/reviewsearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/reviewdata");
+    let response = await axios.get("https://demo.webriefly.com/api/reviewdata");
     setUser(response.data);
   };
 
@@ -216,7 +216,10 @@ function Reviews() {
   );
 
   let deletedata = async (id) => {
-    await axios.delete(`http://147.93.45.171:1600/reviewdelete/${id}`, user);
+    await axios.delete(
+      `https://demo.webriefly.com/api/reviewdelete/${id}`,
+      user
+    );
     try {
       toast.success("Data successfully updated", {
         position: "bottom-right",
@@ -243,7 +246,9 @@ function Reviews() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -307,7 +312,7 @@ function Reviews() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2351,7 +2356,7 @@ function Reviews() {
                             .map((img, index) => (
                               <img
                                 key={index}
-                                src={`http://147.93.45.171:1600/src/image/${img.trim()}`}
+                                src={`https://demo.webriefly.com/uploads/${img.trim()}`}
                                 className="me-2 mb-2"
                                 alt={`RxLYTE-${index}`}
                                 style={{ width: "100px", height: "100px" }}

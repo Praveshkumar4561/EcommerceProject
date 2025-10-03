@@ -19,7 +19,7 @@ const ThemeManager = () => {
   const loadThemes = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://147.93.45.171:1600/themes");
+      const response = await axios.get("https://demo.webriefly.com/api/themes");
       console.log("API Response:", response);
 
       let themesData = [];
@@ -58,7 +58,7 @@ const ThemeManager = () => {
 
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/themes/upload",
+        "https://demo.webriefly.com/api/themes/upload",
         formData,
         {
           headers: {
@@ -87,7 +87,7 @@ const ThemeManager = () => {
     try {
       setActivating(themeId);
       const response = await axios.post(
-        `http://147.93.45.171:1600/themes/${themeId}/activate`
+        `https://demo.webriefly.com/api/themes/${themeId}/activate`
       );
 
       if (response.data && response.data.success) {
@@ -120,7 +120,7 @@ const ThemeManager = () => {
       return;
     }
     window.open(
-      `http://147.93.45.171:1600/themes/${theme.folder_name}/index.html`,
+      `https://demo.webriefly.com/api/themes/${theme.folder_name}/index.html`,
       "_blank"
     );
   };

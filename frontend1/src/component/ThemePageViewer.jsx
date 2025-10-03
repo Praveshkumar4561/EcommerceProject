@@ -12,7 +12,9 @@ export default function ThemePageViewer() {
 
   useEffect(() => {
     fetch(
-      `http://147.93.45.171:1600/theme-page/${themeName}/${pageName || "index"}`
+      `https://demo.webriefly.com/api/theme-page/${themeName}/${
+        pageName || "index"
+      }`
     )
       .then((res) => {
         if (!res.ok) throw new Error("Page not found");

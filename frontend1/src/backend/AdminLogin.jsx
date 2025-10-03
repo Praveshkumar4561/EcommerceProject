@@ -54,7 +54,7 @@ function AdminLogin() {
 
     try {
       const { data } = await axios.post(
-        "http://147.93.45.171:1600/adminlogin",
+        "https://demo.webriefly.com/api/adminlogin",
         {
           username,
           password,

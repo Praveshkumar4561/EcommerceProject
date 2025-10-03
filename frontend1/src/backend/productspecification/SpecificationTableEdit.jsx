@@ -24,7 +24,9 @@ function SpecificationTableEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -88,7 +90,7 @@ function SpecificationTableEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -233,7 +235,7 @@ function SpecificationTableEdit() {
 
     try {
       await axios.put(
-        `http://147.93.45.171:1600/spceficationupdatetable/${id}`,
+        `https://demo.webriefly.com/api/spceficationupdatetable/${id}`,
         formData
       );
       setErrors({});
@@ -253,7 +255,7 @@ function SpecificationTableEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/spceficationdatasometable/${id}`
+      `https://demo.webriefly.com/api/spceficationdatasometable/${id}`
     );
     setUser(response.data[0]);
   };
@@ -277,7 +279,7 @@ function SpecificationTableEdit() {
   const alldata = async () => {
     try {
       const response = await axios.get(
-        `http://147.93.45.171:1600/spceficationdatasome/${id}`
+        `https://demo.webriefly.com/api/spceficationdatasome/${id}`
       );
       if (Array.isArray(response.data)) {
         setEdit(response.data);
@@ -296,7 +298,7 @@ function SpecificationTableEdit() {
 
   const alldata1 = async () => {
     let response = await axios.get(
-      "http://147.93.45.171:1600/spceficationdata"
+      "https://demo.webriefly.com/api/spceficationdata"
     );
     setList(response.data);
   };
@@ -363,7 +365,7 @@ function SpecificationTableEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

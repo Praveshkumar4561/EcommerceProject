@@ -101,7 +101,7 @@ function GalleryEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -156,7 +156,9 @@ function GalleryEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -233,7 +235,7 @@ function GalleryEdit() {
     formData.append("file", file);
     try {
       const response = await axios.put(
-        `http://147.93.45.171:1600/galleryupdates/${id}`,
+        `https://demo.webriefly.com/api/galleryupdates/${id}`,
         formData
       );
       toast.success("data sucessfully deleted", {
@@ -408,7 +410,7 @@ function GalleryEdit() {
 
   let gallerydata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/gallerytests/${id}`
+      `https://demo.webriefly.com/api/gallerytests/${id}`
     );
     setUser(response.data[0]);
   };
@@ -497,7 +499,7 @@ function GalleryEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2661,7 +2663,7 @@ function GalleryEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
+                      src={`https://demo.webriefly.com/uploads/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

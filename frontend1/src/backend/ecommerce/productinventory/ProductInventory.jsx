@@ -23,7 +23,9 @@ function ProductInventory() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -103,7 +105,7 @@ function ProductInventory() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -201,7 +203,7 @@ function ProductInventory() {
 
   const searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/productsearch/${search}`
+      `https://demo.webriefly.com/api/productsearch/${search}`
     );
     setUser(Array.isArray(response.data) ? response.data : []);
   };
@@ -209,7 +211,9 @@ function ProductInventory() {
   let [user, setUser] = useState([]);
 
   const alldata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/productpagedata"
+    );
     setUser(Array.isArray(response.data) ? response.data : []);
   };
 
@@ -241,7 +245,7 @@ function ProductInventory() {
     };
     try {
       const response = await axios.put(
-        `http://147.93.45.171:1600/productinventory/${id}`,
+        `https://demo.webriefly.com/api/productinventory/${id}`,
         updatedData
       );
       toast.success("Data updated successfully", {
@@ -321,7 +325,7 @@ function ProductInventory() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2274,7 +2278,7 @@ function ProductInventory() {
 
                         <td>
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                            src={`https://demo.webriefly.com/uploads/${data.image}`}
                             className="img-thumbnail rounded-1 image-price"
                           />
                         </td>

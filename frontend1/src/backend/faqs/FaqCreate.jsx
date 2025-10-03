@@ -31,7 +31,9 @@ function FaqCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -104,7 +106,7 @@ function FaqCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -180,7 +182,7 @@ function FaqCreate() {
   useEffect(() => {
     let categorydata = async () => {
       let response = await axios.get(
-        "http://147.93.45.171:1600/faqcategorydata"
+        "https://demo.webriefly.com/api/faqcategorydata"
       );
       setCat(response.data);
     };
@@ -224,7 +226,7 @@ function FaqCreate() {
     const updatedUser = { ...user, answer };
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/faqsubmit",
+        "https://demo.webriefly.com/api/faqsubmit",
         updatedUser
       );
       if (response.status === 200) {
@@ -341,7 +343,7 @@ function FaqCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

@@ -89,7 +89,7 @@ function ThemeFaqs() {
     const fetchFaqs = async () => {
       try {
         const { data } = await axios.get(
-          "http://147.93.45.171:1600/pagesdatafaqs"
+          "https://demo.webriefly.com/api/pagesdatafaqs"
         );
         const filtered = data.filter(
           (f) => f.status === "published" || f.status === "default"
@@ -119,7 +119,7 @@ function ThemeFaqs() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://147.93.45.171:1600/faqs", user);
+      await axios.post("https://demo.webriefly.com/api/faqs", user);
       toast.success("Faqs successfully submitted", {
         position: "bottom-right",
         autoClose: 1000,

@@ -39,7 +39,9 @@ function Testimonial() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -105,7 +107,7 @@ function Testimonial() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -186,13 +188,15 @@ function Testimonial() {
 
   let serachbar = async () => {
     const response = await axios.get(
-      `http://147.93.45.171:1600/testifilter/${search}`
+      `https://demo.webriefly.com/api/testifilter/${search}`
     );
     setUser(response.data);
   };
 
   let showdata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/gettestimonials");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/gettestimonials"
+    );
     setUser(response.data);
   };
 
@@ -206,7 +210,7 @@ function Testimonial() {
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://147.93.45.171:1600/deletetest/${id}`);
+      await axios.delete(`https://demo.webriefly.com/api/deletetest/${id}`);
       const updatedData = user.filter((item) => item.id !== id);
       const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
       if (currentPage > newTotalPages && newTotalPages > 0) {
@@ -307,7 +311,7 @@ function Testimonial() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2304,7 +2308,7 @@ function Testimonial() {
                         <td>{data.id}</td>
                         <td>
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                            src={`https://demo.webriefly.com/uploads/${data.image}`}
                             alt="RxLYTE"
                             className="rounded-2 image-test"
                             style={{ width: "140px" }}

@@ -95,7 +95,7 @@ function FlashSales() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -198,7 +198,7 @@ function FlashSales() {
   const searchbar = async () => {
     try {
       const response = await axios.get(
-        `http://147.93.45.171:1600/searchflash/${search}`
+        `https://demo.webriefly.com/api/searchflash/${search}`
       );
       const data = Array.isArray(response.data)
         ? response.data
@@ -213,7 +213,7 @@ function FlashSales() {
   const alldata = async () => {
     try {
       const response = await axios.get(
-        "http://147.93.45.171:1600/flashsalesdata"
+        "https://demo.webriefly.com/api/flashsalesdata"
       );
       const data = Array.isArray(response.data)
         ? response.data
@@ -234,7 +234,10 @@ function FlashSales() {
   );
 
   let deletedata = async (id) => {
-    await axios.delete(`http://147.93.45.171:1600/flashsaledelete/${id}`, user);
+    await axios.delete(
+      `https://demo.webriefly.com/api/flashsaledelete/${id}`,
+      user
+    );
     const updatedData = user.filter((item) => item.id !== id);
     const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
     if (currentPage > newTotalPages && newTotalPages > 0) {
@@ -257,7 +260,9 @@ function FlashSales() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -320,7 +325,7 @@ function FlashSales() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

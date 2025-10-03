@@ -88,7 +88,7 @@ function FlashSalesEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -187,7 +187,9 @@ function FlashSalesEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -208,7 +210,7 @@ function FlashSalesEdit() {
     try {
       const payload = { ...user, products: selectedProducts };
       const response = await axios.put(
-        `http://147.93.45.171:1600/updateflashsales/${id}`,
+        `https://demo.webriefly.com/api/updateflashsales/${id}`,
         payload
       );
       if (response.status === 200) {
@@ -230,7 +232,7 @@ function FlashSalesEdit() {
   let somedata = async () => {
     try {
       const response = await axios.get(
-        `http://147.93.45.171:1600/flashsalessome/${id}`
+        `https://demo.webriefly.com/api/flashsalessome/${id}`
       );
       const { name, start_date, status, end_date, products } = response.data;
       setUser({ name, start_date, status, end_date });
@@ -257,7 +259,7 @@ function FlashSalesEdit() {
         setLoading(true);
         setError("");
         const { data } = await axios.get(
-          `http://147.93.45.171:1600/productpagedata?search=${encodeURIComponent(
+          `https://demo.webriefly.com/api/productpagedata?search=${encodeURIComponent(
             search
           )}`
         );
@@ -367,7 +369,7 @@ function FlashSalesEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2366,7 +2368,7 @@ function FlashSalesEdit() {
                               onClick={() => handleSelected(prod)}
                             >
                               <img
-                                src={`http://147.93.45.171:1600/src/image/${prod.image}`}
+                                src={`https://demo.webriefly.com/uploads/${prod.image}`}
                                 alt={prod.name}
                                 className="flash-image img-thumbnail"
                               />
@@ -2398,7 +2400,7 @@ function FlashSalesEdit() {
                                 />
                                 <div className="d-flex flex-row align-items-center mb-2">
                                   <img
-                                    src={`http://147.93.45.171:1600/src/image/${prod.image}`}
+                                    src={`https://demo.webriefly.com/uploads/${prod.image}`}
                                     alt={prod.name}
                                     className="flash-image img-thumbnail"
                                   />

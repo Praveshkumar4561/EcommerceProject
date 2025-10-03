@@ -92,7 +92,7 @@ function AdsSettings() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -185,7 +185,9 @@ function AdsSettings() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -250,7 +252,7 @@ function AdsSettings() {
       formData.append("adsTxtFile", file);
 
       const response = await axios.post(
-        "http://147.93.45.171:1600/ads-settings",
+        "https://demo.webriefly.com/api/ads-settings",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -289,7 +291,7 @@ function AdsSettings() {
   const handleDeleteFile = async () => {
     try {
       const response = await axios.delete(
-        "http://147.93.45.171:1600/ads-settings"
+        "https://demo.webriefly.com/api/ads-settings"
       );
       toast.success(response.data.message || "File deleted successfully!", {
         position: "bottom-right",
@@ -376,7 +378,7 @@ function AdsSettings() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

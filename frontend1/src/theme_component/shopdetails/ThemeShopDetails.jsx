@@ -94,7 +94,7 @@ function ThemeShopDetails() {
     const productpagedata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productpagedata"
+          "https://demo.webriefly.com/api/productpagedata"
         );
         const filteredData = response.data.filter(
           (product) =>
@@ -113,7 +113,7 @@ function ThemeShopDetails() {
   useEffect(() => {
     let labelsdata = async () => {
       let response = await axios.get(
-        "http://147.93.45.171:1600/productlabelsdata"
+        "https://demo.webriefly.com/api/productlabelsdata"
       );
       setLabels(response.data);
     };
@@ -166,7 +166,7 @@ function ThemeShopDetails() {
 
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/reviewdatasubmit",
+        "https://demo.webriefly.com/api/reviewdatasubmit",
         formData
       );
       if (response.status === 200) {
@@ -593,7 +593,7 @@ function ThemeShopDetails() {
                           style={{ cursor: "pointer" }}
                         >
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${item.image}`}
+                            src={`https://demo.webriefly.com/uploads/${item.image}`}
                             alt={item.name}
                             className="img-fluid"
                           />
@@ -606,7 +606,7 @@ function ThemeShopDetails() {
                     className={`full-details-theme ms-0 ms-md-2 ms-lg-1 d-flex justify-content-lg-center align-items-center w-100 image-transition ${transitionDirection} position-relative`}
                   >
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                      src={`https://demo.webriefly.com/uploads/${data.image}`}
                       alt={data.name}
                       className="img-fluid"
                     />
@@ -753,7 +753,7 @@ function ThemeShopDetails() {
                 </div>
                 <div className="desciprion-div1 rounded">
                   <img
-                    src={`http://147.93.45.171:1600/src/image/${user[currentIndex].image}`}
+                    src={`https://demo.webriefly.com/uploads/${user[currentIndex].image}`}
                     alt="Image"
                     className="w-100 rounded border"
                   />

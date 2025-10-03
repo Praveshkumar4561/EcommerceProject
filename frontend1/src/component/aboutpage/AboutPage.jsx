@@ -25,7 +25,7 @@ function AboutUsPage() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -66,7 +66,7 @@ function AboutUsPage() {
     const showdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/gettestimonials"
+          "https://demo.webriefly.com/api/gettestimonials"
         );
         const filtered = response.data.filter(
           (testimonial) =>
@@ -123,11 +123,11 @@ function AboutUsPage() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -141,7 +141,7 @@ function AboutUsPage() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setAbout(response.data);
       } catch (error) {
@@ -157,7 +157,7 @@ function AboutUsPage() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -224,7 +224,7 @@ function AboutUsPage() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/cookiesalldata"
+          "https://demo.webriefly.com/api/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -271,7 +271,7 @@ function AboutUsPage() {
       return;
     }
     try {
-      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
+      await axios.post("https://demo.webriefly.com/api/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -318,7 +318,7 @@ function AboutUsPage() {
             about?.background_color ||
             (about?.background_image ? "transparent" : "#f2f5f7"),
           backgroundImage: about?.background_image
-            ? `url(http://147.93.45.171:1600/src/image/${about.background_image})`
+            ? `url(https://demo.webriefly.com/uploads/${about.background_image})`
             : "none",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -614,7 +614,7 @@ function AboutUsPage() {
                   id="column-div"
                 >
                   <img
-                    src={`http://147.93.45.171:1600/src/image/${user[index].image}`}
+                    src={`https://demo.webriefly.com/uploads/${user[index].image}`}
                     alt="RxLYTE"
                     className="mt-4 mb-1 about-name"
                   />

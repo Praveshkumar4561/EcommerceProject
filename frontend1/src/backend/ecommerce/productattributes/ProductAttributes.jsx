@@ -96,7 +96,7 @@ function ProductAttributes() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -194,13 +194,15 @@ function ProductAttributes() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/attributesearch/${search}`
+      `https://demo.webriefly.com/api/attributesearch/${search}`
     );
     setUser(response.data);
   };
 
   let alldata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/attributesdata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/attributesdata"
+    );
     setUser(response.data);
   };
 
@@ -215,7 +217,7 @@ function ProductAttributes() {
   let deletedata = async (id) => {
     try {
       await axios.delete(
-        `http://147.93.45.171:1600/attrubutedelete/${id}`,
+        `https://demo.webriefly.com/api/attrubutedelete/${id}`,
         user
       );
       const updatedData = user.filter((item) => item.id !== id);
@@ -248,7 +250,9 @@ function ProductAttributes() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -311,7 +315,7 @@ function ProductAttributes() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

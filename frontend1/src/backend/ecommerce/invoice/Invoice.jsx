@@ -50,7 +50,7 @@ function Invoice() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://147.93.45.171:1600/customerget/${search}`
+        `https://demo.webriefly.com/api/customerget/${search}`
       );
       setInvoice(response.data);
     } catch (error) {
@@ -59,7 +59,9 @@ function Invoice() {
   };
 
   let orderdata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/checkoutdata"
+    );
     setCount5(response.data.length);
     setInvoice(response.data);
   };
@@ -132,7 +134,7 @@ function Invoice() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -220,7 +222,7 @@ function Invoice() {
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://147.93.45.171:1600/deleteorder1/${id}`);
+      await axios.delete(`https://demo.webriefly.com/api/deleteorder1/${id}`);
       const updatedData = invoice.filter((item) => item.id !== id);
       const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
       if (currentPage > newTotalPages && newTotalPages > 0) {

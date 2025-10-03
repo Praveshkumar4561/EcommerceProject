@@ -25,7 +25,7 @@ function Shop() {
     const cartdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/allcartdata"
+          "https://demo.webriefly.com/api/allcartdata"
         );
         setCount(response.data.length);
       } catch (error) {
@@ -42,7 +42,9 @@ function Shop() {
   }, []);
 
   let productimage = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/productpagedata"
+    );
     setImage(response.data);
   };
 
@@ -52,7 +54,7 @@ function Shop() {
     const detailsdata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productpagedata"
+          "https://demo.webriefly.com/api/productpagedata"
         );
         const filteredData = response.data.filter(
           (detail) => detail.status === "Published" || detail.status === "Draft"
@@ -79,7 +81,7 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://147.93.45.171:1600/addcart", formData);
+      await axios.post("https://demo.webriefly.com/api/addcart", formData);
       setCount((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the cart", {
         position: "bottom-right",
@@ -107,7 +109,7 @@ function Shop() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productlabelsdata"
+          "https://demo.webriefly.com/api/productlabelsdata"
         );
         const filteredData = response.data.filter(
           (label) => label.status === "Published" || label.status === "Draft"
@@ -134,7 +136,7 @@ function Shop() {
       console.log("No image file available for this product.");
     }
     try {
-      await axios.post("http://147.93.45.171:1600/wishlistpost", formData);
+      await axios.post("https://demo.webriefly.com/api/wishlistpost", formData);
       setCount6((prevCount) => prevCount + 1);
       toast.success("Product successfully added on the wishlist", {
         position: "bottom-right",
@@ -190,11 +192,11 @@ function Shop() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -208,7 +210,7 @@ function Shop() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setUser(response.data);
       } catch (error) {
@@ -224,7 +226,7 @@ function Shop() {
     const wishlistdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/wishlistdata"
+          "https://demo.webriefly.com/api/wishlistdata"
         );
         setCount6(response.data.length);
       } catch (error) {
@@ -238,7 +240,7 @@ function Shop() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setUser(response.data);
       } catch (error) {
@@ -348,11 +350,11 @@ function Shop() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/get-theme-logo")
+      .get("https://demo.webriefly.com/api/get-theme-logo")
       .then((response) => {
         if (response.data) {
           setLogoUrl(
-            `http://147.93.45.171:1600/src/image/${response.data.logo_url}`
+            `https://demo.webriefly.com/uploads/${response.data.logo_url}`
           );
           setLogoHeight(response.data.logo_height || "45");
         }
@@ -364,7 +366,7 @@ function Shop() {
     const fetchBreadcrumbData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-breadcrumb"
+          "https://demo.webriefly.com/api/get-theme-breadcrumb"
         );
         setUser(response.data);
       } catch (error) {
@@ -376,7 +378,7 @@ function Shop() {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/themestylesdata")
+      .get("https://demo.webriefly.com/api/themestylesdata")
       .then((res) => setStyles(res.data))
       .catch((err) => console.error("Error fetching styles:", err));
   }, []);
@@ -386,7 +388,7 @@ function Shop() {
       user?.background_color ||
       (user?.background_image ? "transparent" : "#f2f5f7"),
     backgroundImage: user?.background_image
-      ? `url(http://147.93.45.171:1600/src/image/${user.background_image})`
+      ? `url(https://demo.webriefly.com/uploads/${user.background_image})`
       : "none",
     backgroundSize: "cover",
     backgroundPosition: "center",
@@ -435,7 +437,9 @@ function Shop() {
   useEffect(() => {
     const adspagedata = async () => {
       try {
-        const response = await axios.get("http://147.93.45.171:1600/adsdata");
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/adsdata"
+        );
         setAds(response.data);
       } catch (error) {
         console.error("error", error);
@@ -455,7 +459,7 @@ function Shop() {
     const cookiedata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/cookiesalldata"
+          "https://demo.webriefly.com/api/cookiesalldata"
         );
         setCookie([response.data]);
       } catch (error) {
@@ -502,7 +506,7 @@ function Shop() {
       return;
     }
     try {
-      await axios.post("http://147.93.45.171:1600/newsletterpost", letter);
+      await axios.post("https://demo.webriefly.com/api/newsletterpost", letter);
       toast.success("Newsletter subscribed successfully", {
         position: "bottom-right",
         autoClose: 1000,
@@ -566,17 +570,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -839,17 +843,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -890,12 +894,12 @@ function Shop() {
                     aria-label={`View details for ${data.image}`}
                   >
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                      src={`https://demo.webriefly.com/uploads/${data.image}`}
                       alt={`Product ${key + 1}: ${data.image}`}
                       srcSet={`
-                      http://147.93.45.171:1600/src/image/${data.image}?w=150&h=150&fit=cover 150w,
-                      http://147.93.45.171:1600/src/image/${data.image}?w=204&h=204&fit=cover 204w,
-                      http://147.93.45.171:1600/src/image/${data.image}?w=300&h=300&fit=cover 300w
+                      https://demo.webriefly.com/uploads/${data.image}?w=150&h=150&fit=cover 150w,
+                      https://demo.webriefly.com/uploads/${data.image}?w=204&h=204&fit=cover 204w,
+                      https://demo.webriefly.com/uploads/${data.image}?w=300&h=300&fit=cover 300w
                     `}
                       sizes="(max-width: 600px) 150px, (max-width: 1024px) 204px, 300px"
                     />
@@ -1036,7 +1040,7 @@ function Shop() {
                 );
                 const labelColor = productLabel ? productLabel.color : "green";
                 const productImage = data.image
-                  ? `http://147.93.45.171:1600/src/image/${data.image}`
+                  ? `https://demo.webriefly.com/uploads/${data.image}`
                   : "/path/to/default-image.jpg";
 
                 return (
@@ -1151,17 +1155,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />
@@ -1327,17 +1331,17 @@ function Shop() {
                         {footerAd.mobileImage && (
                           <source
                             media="(max-width: 767px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.mobileImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.mobileImage}`}
                           />
                         )}
                         {footerAd.desktopImage && (
                           <source
                             media="(min-width: 768px) and (max-width: 991px)"
-                            srcSet={`http://147.93.45.171:1600/src/image/${footerAd.desktopImage}`}
+                            srcSet={`https://demo.webriefly.com/uploads/${footerAd.desktopImage}`}
                           />
                         )}
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${footerAd.image}`}
+                          src={`https://demo.webriefly.com/uploads/${footerAd.image}`}
                           alt="Advertisement"
                           className="ad-img"
                         />

@@ -84,7 +84,7 @@ function SimpleSlidersEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -165,7 +165,7 @@ function SimpleSlidersEdit() {
   let { name, sliderkey, description, date, status } = user;
 
   let handleSubmit = async () => {
-    await axios.put(`http://147.93.45.171:1600/sliderupdate/${id}`, user);
+    await axios.put(`https://demo.webriefly.com/api/sliderupdate/${id}`, user);
     try {
       toast.success("Data successfully updated", {
         position: "bottom-right",
@@ -197,7 +197,7 @@ function SimpleSlidersEdit() {
 
   let sliderdata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/someslider/${id}`
+      `https://demo.webriefly.com/api/someslider/${id}`
     );
     setUser(response.data[0]);
   };
@@ -224,7 +224,9 @@ function SimpleSlidersEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -298,7 +300,7 @@ function SimpleSlidersEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

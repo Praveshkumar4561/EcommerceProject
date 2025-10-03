@@ -94,7 +94,7 @@ function ProductAttributesCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -226,7 +226,7 @@ function ProductAttributesCreate() {
     });
     try {
       const res = await axios.post(
-        "http://147.93.45.171:1600/productattributes",
+        "https://demo.webriefly.com/api/productattributes",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -299,7 +299,9 @@ function ProductAttributesCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -362,7 +364,7 @@ function ProductAttributesCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

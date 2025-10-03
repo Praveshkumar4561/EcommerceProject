@@ -97,7 +97,7 @@ function TestimonialEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -215,7 +215,9 @@ function TestimonialEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -225,7 +227,7 @@ function TestimonialEdit() {
     const fetchData = async () => {
       try {
         let response = await axios.get(
-          `http://147.93.45.171:1600/sometest/${id}`
+          `https://demo.webriefly.com/api/sometest/${id}`
         );
         const userData = response.data[0];
         setUser(userData);
@@ -396,7 +398,7 @@ function TestimonialEdit() {
     formData.append("file", user.file);
     try {
       const response = await axios.put(
-        `http://147.93.45.171:1600/updatetest/${id}`,
+        `https://demo.webriefly.com/api/updatetest/${id}`,
         formData
       );
       toast.success("Data successfully updated", {
@@ -481,7 +483,7 @@ function TestimonialEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2625,7 +2627,7 @@ function TestimonialEdit() {
                     />
                   ) : (
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${user.image}`}
+                      src={`https://demo.webriefly.com/uploads/${user.image}`}
                       className="w-100 h-100"
                     />
                   )}

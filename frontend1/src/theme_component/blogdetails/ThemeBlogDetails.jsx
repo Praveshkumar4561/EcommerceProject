@@ -103,7 +103,7 @@ function ThemeBlogDetails() {
 
   useEffect(() => {
     axios
-      .get(`http://147.93.45.171:1600/blogpostdata/${id}`)
+      .get(`https://demo.webriefly.com/api/blogpostdata/${id}`)
       .then((res) => setPost(res.data))
       .catch((err) => console.error(err));
   }, [id]);
@@ -112,7 +112,7 @@ function ThemeBlogDetails() {
     const latestpostdata = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/latestblogdata"
+          "https://demo.webriefly.com/api/latestblogdata"
         );
         setPost1(response.data);
       } catch (error) {
@@ -123,7 +123,7 @@ function ThemeBlogDetails() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://147.93.45.171:1600/blogalldata").then((res) => {
+    axios.get("https://demo.webriefly.com/api/blogalldata").then((res) => {
       setTags(
         res.data.filter((t) => ["Published", "Draft"].includes(t.status))
       );
@@ -131,7 +131,7 @@ function ThemeBlogDetails() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://147.93.45.171:1600/allcategorydata").then((res) => {
+    axios.get("https://demo.webriefly.com/api/allcategorydata").then((res) => {
       setCategoryList(
         res.data.filter((c) => ["Published", "Draft"].includes(c.status))
       );
@@ -179,7 +179,10 @@ function ThemeBlogDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://147.93.45.171:1600/commentpost/${id}`, comment);
+      await axios.post(
+        `https://demo.webriefly.com/api/commentpost/${id}`,
+        comment
+      );
       toast.success("Message successfully posted!", {
         position: "bottom-right",
         autoClose: 2000,
@@ -213,7 +216,7 @@ function ThemeBlogDetails() {
     let commentdata = async () => {
       try {
         const response = await axios.get(
-          `http://147.93.45.171:1600/commentsdatagets/${id}`
+          `https://demo.webriefly.com/api/commentsdatagets/${id}`
         );
         setComments(response.data);
       } catch (error) {
@@ -614,7 +617,7 @@ function ThemeBlogDetails() {
           <div className="col-12 col-sm-12 col-md-12 col-lg-8 blog-system text-start d-flex flex-column h-auto p-0 mb-3 bg-light">
             <div className="details-themex mb-0 w-100">
               <img
-                src={`http://147.93.45.171:1600/src/image/${post.image}`}
+                src={`https://demo.webriefly.com/uploads/${post.image}`}
                 alt={`Image for ${post.name ?? "blog post"}`}
                 className="img-fluid"
                 loading="lazy"
@@ -901,7 +904,7 @@ function ThemeBlogDetails() {
                   .map((data, idx) => (
                     <div className="d-flex flex-row mt-0" key={data.id ?? idx}>
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                        src={`https://demo.webriefly.com/uploads/${data.image}`}
                         alt={
                           data.name
                             ? `Image for ${data.name}`

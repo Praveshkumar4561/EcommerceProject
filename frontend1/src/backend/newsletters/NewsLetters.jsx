@@ -82,7 +82,7 @@ function NewsLetters() {
   const handleDownload = async () => {
     try {
       const response = await axios.get(
-        "http://147.93.45.171:1600/export-excel",
+        "https://demo.webriefly.com/api/export-excel",
         {
           responseType: "blob",
         }
@@ -108,7 +108,9 @@ function NewsLetters() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -166,7 +168,7 @@ function NewsLetters() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -231,7 +233,7 @@ function NewsLetters() {
   let serachbar = async () => {
     try {
       const response = await axios.get(
-        `http://147.93.45.171:1600/newsfilter/${search}`
+        `https://demo.webriefly.com/api/newsfilter/${search}`
       );
       setNews(response.data);
     } catch (error) {
@@ -242,7 +244,7 @@ function NewsLetters() {
   let newsdata = async () => {
     try {
       const response = await axios.get(
-        "http://147.93.45.171:1600/newsletterdata"
+        "https://demo.webriefly.com/api/newsletterdata"
       );
       setNews(response.data);
     } catch (error) {
@@ -260,7 +262,9 @@ function NewsLetters() {
 
   let deletedata = async (id) => {
     try {
-      await axios.delete(`http://147.93.45.171:1600/newsletterdelete/${id}`);
+      await axios.delete(
+        `https://demo.webriefly.com/api/newsletterdelete/${id}`
+      );
       const updatedData = news.filter((item) => item.id !== id);
       const newTotalPages = Math.ceil(updatedData.length / itemsPerPage);
       if (currentPage > newTotalPages && newTotalPages > 0) {
@@ -345,7 +349,7 @@ function NewsLetters() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

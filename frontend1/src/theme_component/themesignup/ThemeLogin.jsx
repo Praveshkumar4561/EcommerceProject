@@ -98,7 +98,7 @@ function ThemeLogin() {
       const passwordToSend = storedUser?.password || password;
 
       const response = await axios.post(
-        "http://147.93.45.171:1600/login",
+        "https://demo.webriefly.com/api/login",
         { email, password: passwordToSend },
         {
           withCredentials: true,

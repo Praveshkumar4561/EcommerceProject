@@ -87,7 +87,7 @@ function ThemePage() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -186,7 +186,9 @@ function ThemePage() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -206,7 +208,9 @@ function ThemePage() {
   useEffect(() => {
     const fetchPageSettings = async () => {
       try {
-        const response = await fetch("http://147.93.45.171:1600/get-homepage");
+        const response = await fetch(
+          "https://demo.webriefly.com/api/get-homepage"
+        );
         const data = await response.json();
         if (data.homepageSettings) {
           setPageSettings(data.homepageSettings);
@@ -244,11 +248,14 @@ function ThemePage() {
     }
     const previousHomepage = selectedHomepage;
     try {
-      const response = await fetch("http://147.93.45.171:1600/save-homepage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pageSettings),
-      });
+      const response = await fetch(
+        "https://demo.webriefly.com/api/save-homepage",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(pageSettings),
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to save page settings");
       }
@@ -331,7 +338,9 @@ function ThemePage() {
 
   useEffect(() => {
     let alldata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/pagesdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/pagesdata"
+      );
       setUser(response.data);
     };
     alldata();
@@ -395,7 +404,7 @@ function ThemePage() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

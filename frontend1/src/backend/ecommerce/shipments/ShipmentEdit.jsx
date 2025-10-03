@@ -43,7 +43,9 @@ function ShipmentEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -101,7 +103,7 @@ function ShipmentEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -201,7 +203,7 @@ function ShipmentEdit() {
 
   let alldata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/checkoutsome/${id}`
+      `https://demo.webriefly.com/api/checkoutsome/${id}`
     );
     setShipment(response.data[0]);
     setShipment1(response.data);
@@ -264,7 +266,7 @@ function ShipmentEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2173,7 +2175,7 @@ function ShipmentEdit() {
 
                   <div>
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                      src={`https://demo.webriefly.com/uploads/${data.image}`}
                       alt="RxLYTE"
                       className="img-thumbnail w-50"
                     />

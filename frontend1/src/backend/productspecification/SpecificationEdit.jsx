@@ -22,7 +22,9 @@ function SpecificationEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -85,7 +87,7 @@ function SpecificationEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -217,7 +219,7 @@ function SpecificationEdit() {
     }
     try {
       await axios.put(
-        `http://147.93.45.171:1600/spceficationupdate/${id}`,
+        `https://demo.webriefly.com/api/spceficationupdate/${id}`,
         user
       );
       setErrors({});
@@ -237,7 +239,7 @@ function SpecificationEdit() {
 
   let somedata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/spceficationdatasome/${id}`
+      `https://demo.webriefly.com/api/spceficationdatasome/${id}`
     );
     setUser(response.data[0]);
   };
@@ -302,7 +304,7 @@ function SpecificationEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

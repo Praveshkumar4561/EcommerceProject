@@ -9,7 +9,7 @@ function RootLayout() {
     if (pathname.startsWith("/admin")) {
       setThemeCssUrl(null);
     } else {
-      fetch("http://147.93.45.171:1600/themes/active")
+      fetch("https://demo.webriefly.com/api/themes/active")
         .then((r) => r.json())
         .then(({ folder_name }) => {
           if (folder_name) {

@@ -5,7 +5,7 @@ const CURRENT_THEME = "theme1";
 export default function HtmlPageViewer() {
   const { page } = useParams();
 
-  const src = `http://147.93.45.171:1600/themes/${CURRENT_THEME}/html/${page}.html`;
+  const src = `https://demo.webriefly.com/api/themes/${CURRENT_THEME}/html/${page}.html`;
 
   return (
     <iframe

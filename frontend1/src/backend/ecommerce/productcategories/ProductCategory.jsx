@@ -99,7 +99,7 @@ function ProductCategory() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -226,7 +226,9 @@ function ProductCategory() {
 
   const fetchCategories = async () => {
     try {
-      const res = await axios.get("http://147.93.45.171:1600/productcatdata");
+      const res = await axios.get(
+        "https://demo.webriefly.com/api/productcatdata"
+      );
       setCate(res.data);
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -289,7 +291,7 @@ function ProductCategory() {
       let response;
       if (editingId) {
         response = await axios.put(
-          `http://147.93.45.171:1600/categoriesupdate/${editingId}`,
+          `https://demo.webriefly.com/api/categoriesupdate/${editingId}`,
           formData,
           {
             headers: {
@@ -299,7 +301,7 @@ function ProductCategory() {
         );
       } else {
         response = await axios.post(
-          "http://147.93.45.171:1600/product-category",
+          "https://demo.webriefly.com/api/product-category",
           formData,
           {
             headers: {
@@ -318,7 +320,7 @@ function ProductCategory() {
           { position: "bottom-right", autoClose: 1000 }
         );
         const categoryRes = await axios.get(
-          "http://147.93.45.171:1600/productcatdata"
+          "https://demo.webriefly.com/api/productcatdata"
         );
         setCate(categoryRes.data);
         resetForm();
@@ -383,8 +385,8 @@ function ProductCategory() {
     async function fetchData() {
       try {
         const [catRes, prodRes] = await Promise.all([
-          axios.get("http://147.93.45.171:1600/productcatdata"),
-          axios.get("http://147.93.45.171:1600/productpagedata"),
+          axios.get("https://demo.webriefly.com/api/productcatdata"),
+          axios.get("https://demo.webriefly.com/api/productpagedata"),
         ]);
         setCate(catRes.data || []);
         setProduct(prodRes.data || []);
@@ -415,7 +417,9 @@ function ProductCategory() {
 
   const deletedata = async (id) => {
     try {
-      await axios.delete(`http://147.93.45.171:1600/categoriesdelete/${id}`);
+      await axios.delete(
+        `https://demo.webriefly.com/api/categoriesdelete/${id}`
+      );
       setCate((prev) => prev.filter((c) => c.id !== id));
       if (selectedId === id) setSelectedId(null);
       toast.success("Category deleted successfully", {
@@ -477,7 +481,9 @@ function ProductCategory() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -546,7 +552,7 @@ function ProductCategory() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

@@ -86,7 +86,7 @@ function Reports() {
 
   let searchbar = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/customerget/${search}`
+      `https://demo.webriefly.com/api/customerget/${search}`
     );
     setReport(response.data);
   };
@@ -143,7 +143,7 @@ function Reports() {
   const customerdata = async () => {
     try {
       const response = await axios.get(
-        "http://147.93.45.171:1600/checkoutdata"
+        "https://demo.webriefly.com/api/checkoutdata"
       );
       const fetchedData = response.data || [];
       setReport(fetchedData);
@@ -253,7 +253,7 @@ function Reports() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -348,7 +348,7 @@ function Reports() {
     let orderdata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/checkoutdata"
+          "https://demo.webriefly.com/api/checkoutdata"
         );
         setCount5(response.data.length);
       } catch (error) {
@@ -424,7 +424,9 @@ function Reports() {
   useEffect(() => {
     let fetchCustomerData = async () => {
       try {
-        const response = await axios.get("http://147.93.45.171:1600/alldata");
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/alldata"
+        );
         setCount1(response.data.length);
         const rawData = response.data;
         const data = rawData.map((item) => item.customers);
@@ -451,7 +453,9 @@ function Reports() {
   let [count2, setCount2] = useState(0);
 
   let showdata = async () => {
-    let response = await axios.get("http://147.93.45.171:1600/productpagedata");
+    let response = await axios.get(
+      "https://demo.webriefly.com/api/productpagedata"
+    );
     setCount2(response.data.length);
   };
   showdata();
@@ -502,7 +506,7 @@ function Reports() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/checkoutdata1"
+          "https://demo.webriefly.com/api/checkoutdata1"
         );
         const fetchedOrders = response.data;
 
@@ -541,7 +545,7 @@ function Reports() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/checkoutdata1"
+          "https://demo.webriefly.com/api/checkoutdata1"
         );
         const fetchedOrders = response.data;
         setChartData((prevData) => {
@@ -638,7 +642,7 @@ function Reports() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

@@ -86,7 +86,7 @@ function ThemeShop() {
     const detailsdata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productpagedata"
+          "https://demo.webriefly.com/api/productpagedata"
         );
         const filteredData = response.data.filter(
           (detail) => detail.status === "Published" || detail.status === "Draft"
@@ -105,7 +105,7 @@ function ThemeShop() {
     const labeldata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/productlabelsdata"
+          "https://demo.webriefly.com/api/productlabelsdata"
         );
         const filteredData = response.data.filter(
           (label) => label.status === "Published" || label.status === "Draft"
@@ -524,7 +524,7 @@ function ThemeShop() {
                 <div className="p-2 d-flex flex-column w-100">
                   <div className="position-relative w-100">
                     <img
-                      src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                      src={`https://demo.webriefly.com/uploads/${product.image}`}
                       alt={product.title}
                       className="img-fluid mb-2 w-100"
                     />

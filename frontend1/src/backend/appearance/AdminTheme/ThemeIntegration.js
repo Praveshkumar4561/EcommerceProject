@@ -255,14 +255,14 @@ export class ThemeIntegration {
     for (const fn of nameVariants) {
       if (fn.toLowerCase().includes("roiser")) {
         allCandidates.push(
-          `http://147.93.45.171:1600/themes/static/${fn}/roiser-html-package/roiser`
+          `https://demo.webriefly.com/api/themes/static/${fn}/roiser-html-package/roiser`
         );
         allCandidates.push(`/themes/static/${fn}/roiser-html-package/roiser`);
         allCandidates.push(
           `${backendHostDirect}/themes/static/${fn}/roiser-html-package/roiser/`
         );
       }
-      allCandidates.push(`http://147.93.45.171:1600/themes/static/${fn}`);
+      allCandidates.push(`https://demo.webriefly.com/api/themes/static/${fn}`);
       allCandidates.push(`/themes/static/${fn}`);
       allCandidates.push(`${backendHostDirect}/themes/static/${fn}`);
     }
@@ -439,7 +439,7 @@ export class ThemeIntegration {
       this.clearThemeAssets();
 
       const response = await axios.get(
-        `http://147.93.45.171:1600/themes/${themeId}/assets`
+        `https://demo.webriefly.com/api/themes/${themeId}/assets`
       );
       const { css = [], js = [], html = null } = response.data || {};
 
@@ -474,7 +474,7 @@ export class ThemeIntegration {
   static async getThemeAssets(themeId) {
     try {
       const response = await axios.get(
-        `http://147.93.45.171:1600/themes/${themeId}`
+        `https://demo.webriefly.com/api/themes/${themeId}`
       );
       return response.data;
     } catch (error) {
@@ -490,7 +490,7 @@ export class ThemeIntegration {
       formData.append("theme", themeZip);
 
       const response = await axios.post(
-        "http://147.93.45.171:1600/themes/validate",
+        "https://demo.webriefly.com/api/themes/validate",
         formData,
         {
           headers: {

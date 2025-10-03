@@ -90,7 +90,7 @@ function ReviewsCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -221,7 +221,9 @@ function ReviewsCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -260,7 +262,7 @@ function ReviewsCreate() {
     formData.append("file", file);
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/reviewdatasubmit",
+        "https://demo.webriefly.com/api/reviewdatasubmit",
         formData
       );
       if (response.status === 200) {
@@ -279,7 +281,7 @@ function ReviewsCreate() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/productpagedata"
+          "https://demo.webriefly.com/api/productpagedata"
         );
         setReview(response.data);
       } catch (error) {
@@ -292,7 +294,9 @@ function ReviewsCreate() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("http://147.93.45.171:1600/alldata");
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/alldata"
+        );
         setCustomerData(response.data);
       } catch (error) {
         console.error("Error fetching customers:", error);
@@ -404,7 +408,7 @@ function ReviewsCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

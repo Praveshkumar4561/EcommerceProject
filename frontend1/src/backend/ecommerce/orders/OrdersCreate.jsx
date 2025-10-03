@@ -38,7 +38,7 @@ function OrdersCreate() {
     (async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/checkoutdata"
+          "https://demo.webriefly.com/api/checkoutdata"
         );
         setCount5(response.data.length);
       } catch (err) {
@@ -56,7 +56,7 @@ function OrdersCreate() {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://147.93.45.171:1600/productpagedata?search=${encodeURIComponent(
+          `https://demo.webriefly.com/api/productpagedata?search=${encodeURIComponent(
             search
           )}`
         );
@@ -142,7 +142,7 @@ function OrdersCreate() {
       total: totalAmount,
     };
     try {
-      await axios.post("http://147.93.45.171:1600/checkout", orderData);
+      await axios.post("https://demo.webriefly.com/api/checkout", orderData);
       setCount5((c) => c + 1);
       toast.success("Order created successfully", { position: "bottom-right" });
       setSelectedProducts([]);
@@ -245,7 +245,7 @@ function OrdersCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -326,7 +326,9 @@ function OrdersCreate() {
 
   const customerData = async () => {
     try {
-      const response = await axios.get("http://147.93.45.171:1600/alldata");
+      const response = await axios.get(
+        "https://demo.webriefly.com/api/alldata"
+      );
       setCustomers(response.data);
     } catch (error) {
       console.error("Error fetching customer data:", error);
@@ -419,7 +421,7 @@ function OrdersCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2302,7 +2304,7 @@ function OrdersCreate() {
                           className="border rounded p-2 d-flex align-items-lg-center flex-row mt-2 position-relative"
                         >
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                            src={`https://demo.webriefly.com/uploads/${product.image}`}
                             alt={product.name}
                             className="product-image rounded img-thumbnail me-2"
                             style={{ width: "50px", height: "50px" }}
@@ -2341,7 +2343,7 @@ function OrdersCreate() {
                   <div className="product-list mt-3">
                     {!loading && products.length > 0 ? (
                       products.map((product) => {
-                        const imageUrl = `http://147.93.45.171:1600/src/image/${product.image}`;
+                        const imageUrl = `https://demo.webriefly.com/uploads/${product.image}`;
 
                         return (
                           <div
@@ -2355,7 +2357,7 @@ function OrdersCreate() {
                                 alt={product.name}
                                 onError={(e) =>
                                   (e.target.src =
-                                    "http://147.93.45.171:1600/path/to/fallback-image.jpg")
+                                    "https://demo.webriefly.com/api/path/to/fallback-image.jpg")
                                 }
                                 className="product-image img-thumbnail mt-2 ms-2 mb-2"
                               />
@@ -2561,7 +2563,7 @@ function OrdersCreate() {
                           className="border rounded p-2 d-flex align-items-lg-center flex-row mt-2 position-relative"
                         >
                           <img
-                            src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                            src={`https://demo.webriefly.com/uploads/${product.image}`}
                             alt={product.name}
                             className="product-image rounded img-thumbnail me-2"
                             style={{ width: 50, height: 50 }}
@@ -2602,11 +2604,11 @@ function OrdersCreate() {
                         >
                           <div className="d-flex flex-row">
                             <img
-                              src={`http://147.93.45.171:1600/src/image/${product.image}`}
+                              src={`https://demo.webriefly.com/uploads/${product.image}`}
                               alt={product.name}
                               onError={(e) =>
                                 (e.target.src =
-                                  "http://147.93.45.171:1600/path/to/fallback-image.jpg")
+                                  "https://demo.webriefly.com/api/path/to/fallback-image.jpg")
                               }
                               className="product-image img-thumbnail mt-2 ms-2 mb-2"
                             />
@@ -2763,7 +2765,7 @@ function OrdersCreate() {
                       className="border rounded p-2 d-flex flex-row align-items-lg-center mt-2"
                     >
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${customer.image}`}
+                        src={`https://demo.webriefly.com/uploads/${customer.image}`}
                         alt="RxLYTE"
                         className="customer-image rounded img-thumbnail me-2"
                         style={{ width: "50px", height: "50px" }}
@@ -2797,7 +2799,7 @@ function OrdersCreate() {
               <div className="customer-list mt-3 ">
                 {filteredCustomers.length > 0 ? (
                   filteredCustomers.map((customer) => {
-                    const imageUrl1 = `http://147.93.45.171:1600/src/image/${customer.image}`;
+                    const imageUrl1 = `https://demo.webriefly.com/uploads/${customer.image}`;
 
                     return (
                       <div

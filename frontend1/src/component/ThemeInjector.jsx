@@ -36,7 +36,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       /^(data:|blob:|mailto:|tel:|#)/.test(u);
 
     const isApiPath = (u = "") =>
-      typeof u === "string" && u.startsWith("http://147.93.45.171:1600/");
+      typeof u === "string" && u.startsWith("https://demo.webriefly.com/api/");
 
     const isRelativeForRewrite = (u = "") =>
       !!u &&

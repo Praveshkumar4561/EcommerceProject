@@ -8,7 +8,7 @@ const DynamicRoutes = () => {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/pagesdata")
+      .get("https://demo.webriefly.com/api/pagesdata")
       .then((res) => setRoutes(res.data.map((p) => p.name)))
       .catch(() => setRoutes([]));
   }, []);

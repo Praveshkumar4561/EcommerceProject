@@ -3,7 +3,7 @@ import axios from "axios";
 export const applyTypographyStyles = async () => {
   try {
     const response = await axios.get(
-      "http://147.93.45.171:1600/get-font-settings"
+      "https://demo.webriefly.com/api/get-font-settings"
     );
     const settings = response.data;
     document.documentElement.style.setProperty(

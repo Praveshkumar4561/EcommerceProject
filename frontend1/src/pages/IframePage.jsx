@@ -30,7 +30,7 @@ export default function IframePage({ page: propPage }) {
 
   useEffect(() => {
     axios
-      .get("http://147.93.45.171:1600/themes/active")
+      .get("https://demo.webriefly.com/api/themes/active")
       .then((res) => setActiveTheme(res.data.theme));
   }, []);
 
@@ -78,7 +78,7 @@ export default function IframePage({ page: propPage }) {
       pathFromLocation === "" ? "" : pathFromLocation.split("/")[0];
     const pageKey = normalize(pageKeyRaw || firstSegment || "index");
 
-    const API_BASE = `http://147.93.45.171:1600/themes/static/${THEME_FOLDER}/`;
+    const API_BASE = `https://demo.webriefly.com/api/themes/static/${THEME_FOLDER}/`;
     const NONAPI_BASE = `/themes/static/${THEME_FOLDER}/`;
 
     const buildCandidateForKey = (key) => {
@@ -123,7 +123,7 @@ export default function IframePage({ page: propPage }) {
 
     (async () => {
       try {
-        const res = await fetch("http://147.93.45.171:1600/pagesdata");
+        const res = await fetch("https://demo.webriefly.com/api/pagesdata");
         if (!res.ok) throw new Error("Failed to fetch pages data");
         const pages = await res.json();
         if (!Array.isArray(pages)) throw new Error("Invalid pages response");

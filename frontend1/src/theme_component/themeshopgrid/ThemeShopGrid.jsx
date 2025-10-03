@@ -102,7 +102,7 @@ function ThemeShopGrid() {
   useEffect(() => {
     let labelsdata = async () => {
       let response = await axios.get(
-        "http://147.93.45.171:1600/productlabelsdata"
+        "https://demo.webriefly.com/api/productlabelsdata"
       );
       setLabels(response.data);
     };
@@ -112,7 +112,7 @@ function ThemeShopGrid() {
   async function fetchFilteredProducts() {
     try {
       const { data } = await axios.post(
-        "http://147.93.45.171:1600/combinedfilter",
+        "https://demo.webriefly.com/api/combinedfilter",
         {
           sort: sortOption,
           brands: selectedBrands,
@@ -143,7 +143,7 @@ function ThemeShopGrid() {
   };
 
   useEffect(() => {
-    axios.get("http://147.93.45.171:1600/productcatdata").then((res) => {
+    axios.get("https://demo.webriefly.com/api/productcatdata").then((res) => {
       setCategoryList(
         res.data.filter((c) => ["Published", "Draft"].includes(c.status))
       );
@@ -186,7 +186,7 @@ function ThemeShopGrid() {
     async function fetchBrands() {
       try {
         const { data } = await axios.get(
-          "http://147.93.45.171:1600/brandsdata"
+          "https://demo.webriefly.com/api/brandsdata"
         );
         setBrands(data);
       } catch (err) {
@@ -752,7 +752,7 @@ function ThemeShopGrid() {
                     >
                       <div className="list-image flex-shrink-0 position-relative">
                         <img
-                          src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                          src={`https://demo.webriefly.com/uploads/${data.image}`}
                           alt={data.name}
                           className="img-fluid w-100"
                           loading="lazy"
@@ -952,7 +952,7 @@ function ThemeShopGrid() {
                   items.slice(0, 3).map((data, idx) => (
                     <div className="d-flex flex-row mt-0" key={data.id ?? idx}>
                       <img
-                        src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                        src={`https://demo.webriefly.com/uploads/${data.image}`}
                         alt={
                           data.name
                             ? `Image for ${data.name}`

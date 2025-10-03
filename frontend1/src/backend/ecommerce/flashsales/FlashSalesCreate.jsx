@@ -30,7 +30,9 @@ function FlashSalesCreate() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -96,7 +98,7 @@ function FlashSalesCreate() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -234,7 +236,7 @@ function FlashSalesCreate() {
       };
 
       const response = await axios.post(
-        "http://147.93.45.171:1600/flashsales",
+        "https://demo.webriefly.com/api/flashsales",
         payload
       );
       if (response.status === 200) {
@@ -260,7 +262,7 @@ function FlashSalesCreate() {
         setLoading(true);
         setError("");
         const { data } = await axios.get(
-          `http://147.93.45.171:1600/productpagedata?search=${encodeURIComponent(
+          `https://demo.webriefly.com/api/productpagedata?search=${encodeURIComponent(
             search
           )}`
         );
@@ -370,7 +372,7 @@ function FlashSalesCreate() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2102,7 +2104,7 @@ function FlashSalesCreate() {
                               onClick={() => handleSelected(prod)}
                             >
                               <img
-                                src={`http://147.93.45.171:1600/src/image/${prod.image}`}
+                                src={`https://demo.webriefly.com/uploads/${prod.image}`}
                                 alt={prod.name}
                                 className="flash-image img-thumbnail"
                               />
@@ -2137,7 +2139,7 @@ function FlashSalesCreate() {
                                 />
                                 <div className="d-flex flex-row align-items-center mb-2">
                                   <img
-                                    src={`http://147.93.45.171:1600/src/image/${prod.image}`}
+                                    src={`https://demo.webriefly.com/uploads/${prod.image}`}
                                     alt={prod.name}
                                     className="flash-image img-thumbnail"
                                   />

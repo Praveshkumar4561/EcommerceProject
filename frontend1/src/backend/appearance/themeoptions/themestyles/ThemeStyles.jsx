@@ -91,7 +91,7 @@ function ThemeStyles() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -184,7 +184,9 @@ function ThemeStyles() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -285,7 +287,7 @@ function ThemeStyles() {
     formData.append("headerStyle", headerStyle);
 
     try {
-      await axios.post("http://147.93.45.171:1600/updateSettings", user, {
+      await axios.post("https://demo.webriefly.com/api/updateSettings", user, {
         headers: { "Content-Type": "application/json" },
       });
       toast.success("styles successfully updated", {
@@ -303,7 +305,7 @@ function ThemeStyles() {
   useEffect(() => {
     let themedata = async () => {
       const response = await axios.get(
-        "http://147.93.45.171:1600/themestylesdata"
+        "https://demo.webriefly.com/api/themestylesdata"
       );
       setUser(response.data);
     };

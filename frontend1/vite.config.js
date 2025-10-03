@@ -24,19 +24,19 @@ export default defineConfig({
 
     proxy: {
       "/api": {
-        target: "http://147.93.45.171:1600",
+        target: "https://demo.webriefly.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
 
       "/themes": {
-        target: "http://147.93.45.171:1600",
+        target: "https://demo.webriefly.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/themes/, "/themes"),
       },
 
       "/upload": {
-        target: "http://147.93.45.171:1600",
+        target: "https://demo.webriefly.com",
         changeOrigin: true,
       },
     },

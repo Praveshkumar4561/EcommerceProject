@@ -13,7 +13,9 @@ export default function ThemePages() {
       setError(null);
 
       try {
-        const resp = await fetch("http://147.93.45.171:1600/themes/active");
+        const resp = await fetch(
+          "https://demo.webriefly.com/api/themes/active"
+        );
         if (!resp.ok) throw new Error(`Status ${resp.status}`);
         const { folder_name } = await resp.json();
         if (!folder_name) throw new Error("No active theme found.");

@@ -34,7 +34,9 @@ function InvoiceEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -100,7 +102,7 @@ function InvoiceEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -196,7 +198,7 @@ function InvoiceEdit() {
   useEffect(() => {
     let alldata = async () => {
       let response = await axios.get(
-        `http://147.93.45.171:1600/checkoutsome/${id}`
+        `https://demo.webriefly.com/api/checkoutsome/${id}`
       );
       setInvoice(response.data);
     };
@@ -267,7 +269,7 @@ function InvoiceEdit() {
       if (data.image) {
         try {
           const b64 = await fetchImageAsBase64(
-            `http://147.93.45.171:1600/src/image/${data.image}`
+            `https://demo.webriefly.com/uploads/${data.image}`
           );
           const imgBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
           const jpg = await pdfDoc.embedJpg(imgBytes);
@@ -300,7 +302,7 @@ function InvoiceEdit() {
           if (item.image) {
             try {
               const b64 = await fetchImageAsBase64(
-                `http://147.93.45.171:1600/src/image/${item.image}`
+                `https://demo.webriefly.com/uploads/${item.image}`
               );
               const imgBytes = Uint8Array.from(atob(b64), (c) =>
                 c.charCodeAt(0)
@@ -428,7 +430,7 @@ function InvoiceEdit() {
       if (data.image) {
         try {
           const b64 = await fetchImageAsBase64(
-            `http://147.93.45.171:1600/src/image/${data.image}`
+            `https://demo.webriefly.com/uploads/${data.image}`
           );
           const imgBytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
           const jpg = await pdfDoc.embedJpg(imgBytes);
@@ -460,7 +462,7 @@ function InvoiceEdit() {
           if (item.image) {
             try {
               const b64 = await fetchImageAsBase64(
-                `http://147.93.45.171:1600/src/image/${item.image}`
+                `https://demo.webriefly.com/uploads/${item.image}`
               );
               const imgBytes = Uint8Array.from(atob(b64), (c) =>
                 c.charCodeAt(0)
@@ -581,7 +583,7 @@ function InvoiceEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"
@@ -2597,7 +2599,7 @@ function InvoiceEdit() {
                           <td>{data.id}</td>
                           <td>
                             <img
-                              src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                              src={`https://demo.webriefly.com/uploads/${data.image}`}
                               alt="RxLYTE"
                               className="w-25 img-thumbnail"
                             />

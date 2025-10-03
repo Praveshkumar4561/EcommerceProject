@@ -91,7 +91,7 @@ function ContactsEdit() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -170,7 +170,7 @@ function ContactsEdit() {
 
   let contactdata = async () => {
     let response = await axios.get(
-      `http://147.93.45.171:1600/contactsomedata/${id}`
+      `https://demo.webriefly.com/api/contactsomedata/${id}`
     );
     setUser(response.data[0]);
     console.log(response.data);
@@ -198,7 +198,9 @@ function ContactsEdit() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -237,7 +239,7 @@ function ContactsEdit() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

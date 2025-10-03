@@ -37,7 +37,9 @@ function SpecificationTable() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -103,7 +105,7 @@ function SpecificationTable() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -206,7 +208,7 @@ function SpecificationTable() {
   const searchbar = async () => {
     try {
       let response = await axios.get(
-        `http://147.93.45.171:1600/specificationtablesearch/${search}`,
+        `https://demo.webriefly.com/api/specificationtablesearch/${search}`,
         user
       );
       setUser(response.data);
@@ -217,7 +219,7 @@ function SpecificationTable() {
 
   const alldata = async () => {
     let response = await axios.get(
-      "http://147.93.45.171:1600/spceficationtabledata"
+      "https://demo.webriefly.com/api/spceficationtabledata"
     );
     setUser(response.data);
   };
@@ -232,7 +234,7 @@ function SpecificationTable() {
 
   let deletedata = async (id) => {
     await axios.delete(
-      `http://147.93.45.171:1600/specificationdeletetable/${id}`,
+      `https://demo.webriefly.com/api/specificationdeletetable/${id}`,
       user
     );
     const updatedData = user.filter((item) => item.id !== id);
@@ -320,7 +322,7 @@ function SpecificationTable() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

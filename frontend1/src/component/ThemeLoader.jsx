@@ -9,7 +9,7 @@ const ThemeLoader = () => {
     const loadActiveTheme = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/themes/active"
+          "https://demo.webriefly.com/api/themes/active"
         );
         if (response.data) {
           setTheme(response.data);

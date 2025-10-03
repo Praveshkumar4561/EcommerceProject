@@ -39,7 +39,9 @@ function BlogCategory() {
 
   useEffect(() => {
     let orderdata = async () => {
-      let response = await axios.get("http://147.93.45.171:1600/checkoutdata");
+      let response = await axios.get(
+        "https://demo.webriefly.com/api/checkoutdata"
+      );
       setCount5(response.data.length);
     };
     orderdata();
@@ -105,7 +107,7 @@ function BlogCategory() {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://147.93.45.171:1600/get-theme-logo"
+          "https://demo.webriefly.com/api/get-theme-logo"
         );
         setLogoData(response.data);
       } catch (error) {
@@ -270,7 +272,7 @@ function BlogCategory() {
     try {
       if (editingId) {
         await axios.put(
-          `http://147.93.45.171:1600/categoryupdate/${editingId}`,
+          `https://demo.webriefly.com/api/categoryupdate/${editingId}`,
           category
         );
         toast.success("Category updated successfully", {
@@ -279,7 +281,7 @@ function BlogCategory() {
         });
       } else {
         await axios.post(
-          "http://147.93.45.171:1600/blogcategorypost",
+          "https://demo.webriefly.com/api/blogcategorypost",
           category
         );
         toast.success("Category created successfully", {
@@ -288,7 +290,7 @@ function BlogCategory() {
         });
       }
       const categoryRes = await axios.get(
-        "http://147.93.45.171:1600/allcategorydata"
+        "https://demo.webriefly.com/api/allcategorydata"
       );
       setCates(categoryRes.data || []);
       setCategory({
@@ -338,7 +340,7 @@ function BlogCategory() {
   let deletedata = async (id) => {
     try {
       await axios.delete(
-        `http://147.93.45.171:1600/categoriesdelete/${id}`,
+        `https://demo.webriefly.com/api/categoriesdelete/${id}`,
         cates
       );
       setCates((prev) => prev.filter((item) => item.id !== id));
@@ -369,8 +371,8 @@ function BlogCategory() {
     const fetchData = async () => {
       try {
         const [categoryRes, blogRes] = await Promise.all([
-          axios.get("http://147.93.45.171:1600/allcategorydata"),
-          axios.get("http://147.93.45.171:1600/blogpostdata"),
+          axios.get("https://demo.webriefly.com/api/allcategorydata"),
+          axios.get("https://demo.webriefly.com/api/blogpostdata"),
         ]);
         setCates(categoryRes.data || []);
         setBlogs(blogRes.data || []);
@@ -439,7 +441,7 @@ function BlogCategory() {
               <img
                 src={
                   LogoData
-                    ? `http://147.93.45.171:1600/src/image/${LogoData.logo_url}`
+                    ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
                     : Logo
                 }
                 alt="RxLYTE"

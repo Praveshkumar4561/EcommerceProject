@@ -18,8 +18,8 @@ export default function Account() {
       "radios-electronics-ecommerce-html-template-2023-11-27-05-16-52-utc--1--2025-06-28-16-22-26-utc/radios-html-package/Radios";
   }
 
-  const pageUrl = `http://147.93.45.171:1600/themes/static/${themeFolder}/account.html`;
-  const themeBaseUrl = `http://147.93.45.171:1600/themes/static/${themeFolder}/`;
+  const pageUrl = `https://demo.webriefly.com/api/themes/static/${themeFolder}/account.html`;
+  const themeBaseUrl = `https://demo.webriefly.com/api/themes/static/${themeFolder}/`;
 
   const onNavigate = (path) => {
     if (path === "/") navigate("/", { replace: false });

@@ -10,7 +10,7 @@ export default function useActiveTheme() {
     let mounted = true;
     setLoading(true);
     axios
-      .get("http://147.93.45.171:1600/themes/active")
+      .get("https://demo.webriefly.com/api/themes/active")
       .then((res) => {
         if (!mounted) return;
         const folder = res.data?.theme?.folder_name || null;

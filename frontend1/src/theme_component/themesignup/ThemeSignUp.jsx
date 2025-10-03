@@ -108,7 +108,7 @@ function ThemeSignUp() {
     }
     try {
       const response = await axios.post(
-        "http://147.93.45.171:1600/submit",
+        "https://demo.webriefly.com/api/submit",
         registerUser
       );
       localStorage.removeItem("cart");

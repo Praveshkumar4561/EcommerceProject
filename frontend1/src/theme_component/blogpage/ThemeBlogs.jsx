@@ -88,7 +88,7 @@ function ThemeBlogs() {
     const alldata = async () => {
       try {
         let response = await axios.get(
-          "http://147.93.45.171:1600/blogpostdata"
+          "https://demo.webriefly.com/api/blogpostdata"
         );
         const filteredData = response.data.filter(
           (blog) =>
@@ -493,7 +493,7 @@ function ThemeBlogs() {
               >
                 <div className="post-thumb">
                   <img
-                    src={`http://147.93.45.171:1600/src/image/${data.image}`}
+                    src={`https://demo.webriefly.com/uploads/${data.image}`}
                     alt={
                       data.name
                         ? `Image for ${data.name}`
