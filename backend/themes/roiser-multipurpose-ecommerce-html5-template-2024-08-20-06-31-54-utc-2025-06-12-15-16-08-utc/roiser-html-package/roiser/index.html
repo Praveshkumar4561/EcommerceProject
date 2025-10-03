@@ -22,7 +22,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/themeoptionsdata")
+        fetch("https://demo.webriefly.com/api/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -52,7 +52,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `http://147.93.45.171:1600/uploads/${
+            const url = `https://demo.webriefly.com/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -80,10 +80,11 @@
 
         function withUploads(u) {
           if (!u) return u;
-          if (u.startsWith("http://147.93.45.171:1600/uploads/"))
+          if (u.startsWith("https://demo.webriefly.com/uploads/"))
             return makeAbsolute(u);
           return makeAbsolute(
-            "http://147.93.45.171:1600/uploads/" + String(u).replace(/^\/+/, "")
+            "https://demo.webriefly.com/uploads/" +
+              String(u).replace(/^\/+/, "")
           );
         }
 
@@ -123,10 +124,12 @@
         })();
 
         Promise.all([
-          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
+          fetch("https://demo.webriefly.com/api/productpagedata").then((r) =>
             r.json()
           ),
-          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
+          fetch("https://demo.webriefly.com/api/blogpostdata").then((r) =>
+            r.json()
+          ),
         ])
           .then(([products, blogs]) => {
             products = Array.isArray(products)
@@ -871,7 +874,7 @@
 
         const allowedStatuses = ["Published", "Draft"];
 
-        fetch("http://147.93.45.171:1600/productcatdata")
+        fetch("https://demo.webriefly.com/api/productcatdata")
           .then((response) => response.json())
           .then((categories) => {
             const validCategories = categories.filter((cat) =>
@@ -892,7 +895,7 @@
                 <div class="category-item">
                   <div class="category-img">
                     <a href="/shop">
-                      <img src="http://147.93.45.171:1600/uploads/${category.image}" alt="${category.name}" loading="lazy"/>
+                      <img src="https://demo.webriefly.com/uploads/${category.image}" alt="${category.name}" loading="lazy"/>
                     </a>
                   </div>
                   <h3 class="title">
@@ -927,7 +930,7 @@
             console.error("Error loading category data:", error);
           });
 
-        fetch("http://147.93.45.171:1600/productpagedata")
+        fetch("https://demo.webriefly.com/api/productpagedata")
           .then((response) => response.json())
           .then((products) => {
             const validProducts = products.filter((prod) =>
@@ -1064,10 +1067,10 @@
         const cleanPrice = (str = "") => String(str).replace(/[^0-9.]/g, "");
 
         Promise.all([
-          fetch("http://147.93.45.171:1600/productcatdata").then((res) =>
+          fetch("https://demo.webriefly.com/api/productcatdata").then((res) =>
             res.json()
           ),
-          fetch("http://147.93.45.171:1600/productpagedata").then((res) =>
+          fetch("https://demo.webriefly.com/api/productpagedata").then((res) =>
             res.json()
           ),
         ])
@@ -1119,7 +1122,7 @@
 
             function updateLightbox() {
               if (!currentImages.length || !lightboxImg || !counterEl) return;
-              lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
+              lightboxImg.src = `https://demo.webriefly.com/uploads/${currentImages[currentIndex]}`;
               counterEl.textContent = `${currentIndex + 1} of ${
                 currentImages.length
               }`;
@@ -1193,7 +1196,7 @@
               data-id="${product.id}"
               data-name="${encodeURIComponent(product.name || "")}"
               aria-label="View details of ${safeName}">
-              <img src="http://147.93.45.171:1600/uploads/${img}" alt="${safeName}" loading="lazy"
+              <img src="https://demo.webriefly.com/uploads/${img}" alt="${safeName}" loading="lazy"
                    onerror="this.onerror=null;"/>
             </a>
 
@@ -1298,7 +1301,7 @@
                     actionBtn.dataset.image || ""
                   );
                   const store = actionBtn.dataset.store || "default";
-                  fetch("http://147.93.45.171:1600/addcart", {
+                  fetch("https://demo.webriefly.com/api/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1340,7 +1343,7 @@
                   const sku = actionBtn.dataset.sku || "";
                   const stockstatus =
                     actionBtn.dataset.stockstatus || "In Stock";
-                  fetch("http://147.93.45.171:1600/wishlistpost", {
+                  fetch("https://demo.webriefly.com/api/wishlistpost", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -1711,7 +1714,9 @@
         sponsorContainer.innerHTML = "";
 
         try {
-          const res = await fetch("http://147.93.45.171:1600/productpagedata");
+          const res = await fetch(
+            "https://demo.webriefly.com/api/productpagedata"
+          );
           if (!res.ok) throw new Error("Network response was not ok");
           const data = await res.json();
           const products = (Array.isArray(data) ? data : []).slice(0, 10);
@@ -1740,7 +1745,7 @@
             if (product.slug) itemDiv.dataset.slug = product.slug;
 
             const img = document.createElement("img");
-            img.src = `http://147.93.45.171:1600/uploads/${
+            img.src = `https://demo.webriefly.com/uploads/${
               product.image || ""
             }`;
             img.alt = product.name || "Product Image";
@@ -1862,7 +1867,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("http://147.93.45.171:1600/productpagedata")
+            fetch("https://demo.webriefly.com/api/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1893,7 +1898,7 @@
                           onclick="window.location.href='/shop'"
                           style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                         >
-                          <img src="http://147.93.45.171:1600/uploads/${img}" alt="${p.name}" loading="lazy"
+                          <img src="https://demo.webriefly.com/uploads/${img}" alt="${p.name}" loading="lazy"
                               style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                           <div>
                             <div class="fw-bold text-dark">${p.name}</div>
@@ -2072,7 +2077,7 @@
 
         function updateLightbox() {
           if (!currentImages.length || !lightboxImg || !counterEl) return;
-          lightboxImg.src = `http://147.93.45.171:1600/uploads/${currentImages[currentIndex]}`;
+          lightboxImg.src = `https://demo.webriefly.com/uploads/${currentImages[currentIndex]}`;
           counterEl.textContent = `${currentIndex + 1} of ${
             currentImages.length
           }`;
@@ -2130,7 +2135,7 @@
           return Math.floor(Math.random() * 100) + 1;
         }
 
-        fetch("http://147.93.45.171:1600/flashsalesmaindata")
+        fetch("https://demo.webriefly.com/api/flashsalesmaindata")
           .then((res) => res.json())
           .then((data) => {
             const dealWrapper = document.getElementById(
@@ -2196,7 +2201,7 @@
 
               const img = container.querySelector(".shop-thumb img");
               if (img) {
-                img.src = `http://147.93.45.171:1600/uploads/${prd.image}`;
+                img.src = `https://demo.webriefly.com/uploads/${prd.image}`;
                 img.alt = prd.product_name || "";
                 if (img.parentElement) {
                   img.parentElement.href = `/shop-details/${toSeoUrl(
@@ -2266,7 +2271,7 @@
                   const user_id = getUserId();
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  fetch("http://147.93.45.171:1600/addcart", {
+                  fetch("https://demo.webriefly.com/api/addcart", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -2299,7 +2304,7 @@
                   const user_id = getUserId();
                   if (!user_id)
                     return showBanner("Please log in first", "error");
-                  fetch("http://147.93.45.171:1600/wishlistpost", {
+                  fetch("https://demo.webriefly.com/api/wishlistpost", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -2570,7 +2575,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
+          fetch(`https://demo.webriefly.com/api/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -2612,7 +2617,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("http://147.93.45.171:1600/getannounce")
+          fetch("https://demo.webriefly.com/api/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -2859,7 +2864,7 @@
 
                 try {
                   const res = await fetch(
-                    "http://147.93.45.171:1600/newsletterpost",
+                    "https://demo.webriefly.com/api/newsletterpost",
                     {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
@@ -2927,7 +2932,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-font-settings")
+        fetch("https://demo.webriefly.com/api/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -2960,7 +2965,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-theme-logo")
+        fetch("https://demo.webriefly.com/api/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -2969,7 +2974,7 @@
             const img = document.getElementById("site-logo");
             if (!img) return;
             if (cfg.logo_url) {
-              img.src = `http://147.93.45.171:1600/uploads/${cfg.logo_url}`;
+              img.src = `https://demo.webriefly.com/uploads/${cfg.logo_url}`;
             }
             if (cfg.logo_height) {
               img.height = cfg.logo_height;
@@ -2979,7 +2984,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("http://147.93.45.171:1600/themestylesdata")
+        fetch("https://demo.webriefly.com/api/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

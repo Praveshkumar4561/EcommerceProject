@@ -2273,7 +2273,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("http://147.93.45.171:1600/productpagedata")
+            fetch("https://demo.webriefly.com/api/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -2304,7 +2304,7 @@
                           onclick="window.location.href='/shop'"
                           style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                         >
-                          <img src="http://147.93.45.171:1600/uploads/${img}" alt="${p.name}"
+                          <img src="https://demo.webriefly.com/uploads/${img}" alt="${p.name}"
                               style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                           <div>
                             <div class="fw-bold text-dark">${p.name}</div>
@@ -2523,7 +2523,7 @@
 
                 try {
                   const res = await fetch(
-                    "http://147.93.45.171:1600/newsletterpost",
+                    "https://demo.webriefly.com/api/newsletterpost",
                     {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
@@ -2590,7 +2590,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-font-settings")
+        fetch("https://demo.webriefly.com/api/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

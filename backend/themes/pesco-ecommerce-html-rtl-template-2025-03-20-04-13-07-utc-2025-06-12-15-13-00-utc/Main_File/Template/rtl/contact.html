@@ -934,7 +934,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        fetch("http://147.93.45.171:1600/blogpostdata")
+        fetch("https://demo.webriefly.com/api/blogpostdata")
           .then((response) => {
             if (!response.ok) {
               throw new Error("Failed to fetch blog data.");
@@ -955,7 +955,7 @@
                       <a href="blog-details.html?id=${
                         post.id
                       }" class="w-100 h-100">
-                      <img src="http://147.93.45.171:1600/uploads/${
+                      <img src="https://demo.webriefly.com/uploads/${
                         post.image
                       }" alt="post thumb" />
                       </a>

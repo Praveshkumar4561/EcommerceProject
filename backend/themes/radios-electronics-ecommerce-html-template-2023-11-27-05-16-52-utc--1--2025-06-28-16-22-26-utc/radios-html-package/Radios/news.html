@@ -304,7 +304,7 @@
                 const catsMap = {};
                 try {
                   const res = await fetch(
-                    "http://147.93.45.171:1600/productcatdata"
+                    "https://demo.webriefly.com/api/productcatdata"
                   );
                   if (!res.ok) throw new Error("failed to load categories");
                   const cats = await res.json();
@@ -385,7 +385,7 @@
                   timer = setTimeout(async () => {
                     try {
                       const r = await fetch(
-                        "http://147.93.45.171:1600/productpagedata"
+                        "https://demo.webriefly.com/api/productpagedata"
                       );
                       if (!r.ok) throw new Error("failed to load products");
                       const products = await r.json();
@@ -424,7 +424,7 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="http://147.93.45.171:1600/uploads/${
+                                <img src="https://demo.webriefly.com/uploads/${
                                   p.image || ""
                                 }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
@@ -680,7 +680,7 @@
             async function loadWishlist() {
               try {
                 const res = await fetch(
-                  "http://147.93.45.171:1600/wishlistdata"
+                  "https://demo.webriefly.com/api/wishlistdata"
                 );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
@@ -698,7 +698,7 @@
             async function loadCart() {
               try {
                 const res = await fetch(
-                  "http://147.93.45.171:1600/allcartdata"
+                  "https://demo.webriefly.com/api/allcartdata"
                 );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
@@ -720,7 +720,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="http://147.93.45.171:1600/uploads/${
+                      <img src="https://demo.webriefly.com/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -754,7 +754,7 @@
 
               try {
                 const res = await fetch(
-                  `http://147.93.45.171:1600/deletecart/${id}`,
+                  `https://demo.webriefly.com/api/deletecart/${id}`,
                   {
                     method: "DELETE",
                   }
@@ -791,7 +791,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("http://147.93.45.171:1600/uploads/", ""),
+                      .replace("https://demo.webriefly.com/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1304,7 +1304,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", () => {
-          const POSTS_URL = "http://147.93.45.171:1600/blogpostdata";
+          const POSTS_URL = "https://demo.webriefly.com/api/blogpostdata";
           const POSTS_PER_PAGE = 4;
 
           let allPosts = [],
@@ -1395,7 +1395,7 @@
               art.innerHTML = `
     <div class="post-thumb">
       <a href="/news-single/${slug}">
-        <img src="http://147.93.45.171:1600/uploads/${post.image.trim()}" alt="Image">
+        <img src="https://demo.webriefly.com/uploads/${post.image.trim()}" alt="Image">
       </a>
       <div class="post-date">
         ${new Date(post.date).getDate()}<br>
@@ -1506,7 +1506,7 @@
           const list = document.querySelector(".widget__category");
           try {
             const res = await fetch(
-              "http://147.93.45.171:1600/allcategorydata"
+              "https://demo.webriefly.com/api/allcategorydata"
             );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
@@ -1540,7 +1540,9 @@
         document.addEventListener("DOMContentLoaded", async () => {
           const container = document.querySelector(".tagcloud");
           try {
-            const res = await fetch("http://147.93.45.171:1600/blogalldata");
+            const res = await fetch(
+              "https://demo.webriefly.com/api/blogalldata"
+            );
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
 
@@ -1731,7 +1733,7 @@
 
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/newsletterpost",
+                "https://demo.webriefly.com/api/newsletterpost",
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

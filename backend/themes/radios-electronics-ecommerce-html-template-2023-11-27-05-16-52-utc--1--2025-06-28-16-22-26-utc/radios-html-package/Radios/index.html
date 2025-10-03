@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="assets/css/main.css" />
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/themeoptionsdata")
+        fetch("https://demo.webriefly.com/api/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -55,7 +55,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `http://147.93.45.171:1600/uploads/${
+            const url = `https://demo.webriefly.com/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -391,7 +391,7 @@
                 const catsMap = {};
                 try {
                   const res = await fetch(
-                    "http://147.93.45.171:1600/productcatdata"
+                    "https://demo.webriefly.com/api/productcatdata"
                   );
                   if (!res.ok) throw new Error("failed to load categories");
                   const cats = await res.json();
@@ -472,7 +472,7 @@
                   timer = setTimeout(async () => {
                     try {
                       const r = await fetch(
-                        "http://147.93.45.171:1600/productpagedata"
+                        "https://demo.webriefly.com/api/productpagedata"
                       );
                       if (!r.ok) throw new Error("failed to load products");
                       const products = await r.json();
@@ -511,7 +511,7 @@
                                   data-name="${encodeURIComponent(
                                     p.name || ""
                                   )}">
-                                <img src="http://147.93.45.171:1600/uploads/${
+                                <img src="https://demo.webriefly.com/uploads/${
                                   p.image || ""
                                 }"
                                     alt="${(p.name || "").replace(/"/g, "")}"
@@ -772,7 +772,7 @@
             async function loadWishlist() {
               try {
                 const res = await fetch(
-                  "http://147.93.45.171:1600/wishlistdata"
+                  "https://demo.webriefly.com/api/wishlistdata"
                 );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
@@ -790,7 +790,7 @@
             async function loadCart() {
               try {
                 const res = await fetch(
-                  "http://147.93.45.171:1600/allcartdata"
+                  "https://demo.webriefly.com/api/allcartdata"
                 );
                 const data = await res.json();
                 if (!Array.isArray(data)) return;
@@ -812,7 +812,7 @@
                     (item) => `
                   <div class="cart_item" data-id="${item.id}">
                     <div class="item_image">
-                      <img src="http://147.93.45.171:1600/uploads/${
+                      <img src="https://demo.webriefly.com/uploads/${
                         item.image || "assets/img/product/default.png"
                       }" />
                     </div>
@@ -846,7 +846,7 @@
 
               try {
                 const res = await fetch(
-                  `http://147.93.45.171:1600/deletecart/${id}`,
+                  `https://demo.webriefly.com/api/deletecart/${id}`,
                   {
                     method: "DELETE",
                   }
@@ -883,7 +883,7 @@
                     image: el
                       .querySelector("img")
                       .getAttribute("src")
-                      .replace("http://147.93.45.171:1600/uploads/", ""),
+                      .replace("https://demo.webriefly.com/uploads/", ""),
                   };
                 });
                 const subtotal = parseFloat(subtotalEl.textContent) || 0;
@@ -1436,7 +1436,7 @@
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
             const res = await fetch(
-              "http://147.93.45.171:1600/productpagedata"
+              "https://demo.webriefly.com/api/productpagedata"
             );
             const prods = await res.json();
             if (!Array.isArray(prods)) return;
@@ -1507,7 +1507,7 @@
                 <div class="tab-product__item tx-product text-center">
                   <div class="thumb">
                     <a href="/shop-single/${slug}">
-                      <img src="http://147.93.45.171:1600/uploads/${
+                      <img src="https://demo.webriefly.com/uploads/${
                         p.image
                       }" alt="${p.name}" />
                     </a>
@@ -1538,7 +1538,7 @@
                   </div>
                   <ul class="product__action">
                     <li>
-                      <a href="http://147.93.45.171:1600/uploads/${
+                      <a href="https://demo.webriefly.com/uploads/${
                         p.image
                       }" class="img-popup icon-btn">
                         <i class="far fa-compress-alt"></i>
@@ -1749,7 +1749,7 @@
                 .replace(/^-+|-+$/g, "");
             }
 
-            fetch("http://147.93.45.171:1600/productpagedata")
+            fetch("https://demo.webriefly.com/api/productpagedata")
               .then((res) => res.json())
               .then((data) => {
                 const hotProducts = data
@@ -1765,7 +1765,7 @@
                 slideItem.className = "rd-product__slide-item";
 
                 currentImages = hotProducts.map(
-                  (p) => `http://147.93.45.171:1600/uploads/${p.image}`
+                  (p) => `https://demo.webriefly.com/uploads/${p.image}`
                 );
 
                 hotProducts.forEach((p, i) => {
@@ -1778,7 +1778,7 @@
                   card.innerHTML = `
                     <div class="product__img product__img1 text-center border-top-0">
                       <a href="/shop-single/${slug}">
-                        <img src="http://147.93.45.171:1600/uploads/${
+                        <img src="https://demo.webriefly.com/uploads/${
                           p.image
                         }" alt="${p.name}" />
                       </a>
@@ -1901,19 +1901,22 @@
 
               if (cartBtn) {
                 try {
-                  const res = await fetch("http://147.93.45.171:1600/addcart", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      user_id: +userId,
-                      name: cartBtn.dataset.name,
-                      store: cartBtn.dataset.store,
-                      price: cartBtn.dataset.price,
-                      price_sale: cartBtn.dataset.price_sale,
-                      image: cartBtn.dataset.image,
-                      quantity: 1,
-                    }),
-                  });
+                  const res = await fetch(
+                    "https://demo.webriefly.com/api/addcart",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        user_id: +userId,
+                        name: cartBtn.dataset.name,
+                        store: cartBtn.dataset.store,
+                        price: cartBtn.dataset.price,
+                        price_sale: cartBtn.dataset.price_sale,
+                        image: cartBtn.dataset.image,
+                        quantity: 1,
+                      }),
+                    }
+                  );
                   if (res.ok) {
                     showBanner("Product added to cart!", "success");
                     if (typeof loadSidebarCart === "function")
@@ -1932,7 +1935,7 @@
               if (wishBtn) {
                 try {
                   const res = await fetch(
-                    "http://147.93.45.171:1600/wishlistpost",
+                    "https://demo.webriefly.com/api/wishlistpost",
                     {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
@@ -1987,7 +1990,7 @@
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
             const catRes = await fetch(
-              "http://147.93.45.171:1600/productcatdata"
+              "https://demo.webriefly.com/api/productcatdata"
             );
             let cats = await catRes.json();
 
@@ -2006,7 +2009,7 @@
               li.className = "cat-item-has-children";
               li.innerHTML = `
                 <a href="/shop">
-                  <img src="http://147.93.45.171:1600/uploads/${cat.image}" alt="${cat.name}" />
+                  <img src="https://demo.webriefly.com/uploads/${cat.image}" alt="${cat.name}" />
                   ${cat.name}
                 </a>
               `;
@@ -2283,7 +2286,7 @@
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
             const res = await fetch(
-              "http://147.93.45.171:1600/productpagedata"
+              "https://demo.webriefly.com/api/productpagedata"
             );
             let prods = await res.json();
             if (!Array.isArray(prods)) return;
@@ -2339,7 +2342,7 @@
                     }">
                       <div class="rd-product__img">
                         <a href="${slugUrl}">
-                          <img src="http://147.93.45.171:1600/uploads/${
+                          <img src="https://demo.webriefly.com/uploads/${
                             p.image
                           }" alt="${p.name}" />
                         </a>
@@ -2635,7 +2638,7 @@
               return ctr;
             }
 
-            fetch("http://147.93.45.171:1600/flashsalesmaindata")
+            fetch("https://demo.webriefly.com/api/flashsalesmaindata")
               .then((r) => r.json())
               .then((deals) => {
                 const now = Date.now();
@@ -2663,9 +2666,9 @@
                 item.innerHTML = `
         <div class="thumb">
           <a href="${productLink}">
-            <img src="http://147.93.45.171:1600/uploads/${active.image}" alt="${
-                  active.product_name
-                }" />
+            <img src="https://demo.webriefly.com/uploads/${
+              active.image
+            }" alt="${active.product_name}" />
           </a>
         </div>
         <div class="content">
@@ -2731,7 +2734,7 @@
 
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/productpagedata"
+                "https://demo.webriefly.com/api/productpagedata"
               );
               allProducts = await res.json();
             } catch (err) {
@@ -2777,13 +2780,13 @@
                   <div class="feature-product__single2 mt-15 tx-product">
                     <div class="image text-center pos-rel">
                       <a href="/shop-single/${encodeURIComponent(centerSlug)}">
-                        <img src="http://147.93.45.171:1600/uploads/${
+                        <img src="https://demo.webriefly.com/uploads/${
                           center.image
                         }" alt="${center.name}" />
                       </a>
                       <ul class="product__action style-2 br-5 ul_li">
                         <li>
-                          <a href="http://147.93.45.171:1600/uploads/${
+                          <a href="https://demo.webriefly.com/uploads/${
                             center.image
                           }" class="img-popup"><i class="far fa-compress-alt"></i></a>
                         </li>
@@ -2845,7 +2848,7 @@
                 <div class="feature-product__product ul_li">
                   <div class="image">
                     <a href="/shop-single/${encodeURIComponent(slug)}">
-                      <img src="http://147.93.45.171:1600/uploads/${
+                      <img src="https://demo.webriefly.com/uploads/${
                         p.image
                       }" alt="${p.name}" />
                     </a>
@@ -3657,7 +3660,7 @@
           document.addEventListener("DOMContentLoaded", async () => {
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/productcatdata"
+                "https://demo.webriefly.com/api/productcatdata"
               );
               let cats = await res.json();
               if (!Array.isArray(cats)) return;
@@ -3670,14 +3673,14 @@
                   if (!cat) return;
 
                   block.querySelectorAll(".tab-pane img").forEach((img) => {
-                    img.src = `http://147.93.45.171:1600/uploads/${cat.image}`;
+                    img.src = `https://demo.webriefly.com/uploads/${cat.image}`;
                     img.alt = cat.name;
                   });
 
                   block
                     .querySelectorAll(".product-cat__nav img")
                     .forEach((img) => {
-                      img.src = `http://147.93.45.171:1600/uploads/${cat.image}`;
+                      img.src = `https://demo.webriefly.com/uploads/${cat.image}`;
                       img.alt = cat.name;
                     });
 
@@ -3743,11 +3746,11 @@
               prods = [];
             try {
               [cats, prods] = await Promise.all([
-                fetch("http://147.93.45.171:1600/productcatdata").then((r) =>
-                  r.json()
+                fetch("https://demo.webriefly.com/api/productcatdata").then(
+                  (r) => r.json()
                 ),
-                fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
-                  r.json()
+                fetch("https://demo.webriefly.com/api/productpagedata").then(
+                  (r) => r.json()
                 ),
               ]);
             } catch (e) {
@@ -3812,7 +3815,7 @@
             <div class="recent-product__item tx-product ul_li mt-30 tab-content-2">
               <div class="thumb">
                 <a href="/shop-single/${slug}">
-                  <img src="http://147.93.45.171:1600/uploads/${
+                  <img src="https://demo.webriefly.com/uploads/${
                     p.image
                   }" alt="${p.name}" />
                 </a>
@@ -3883,7 +3886,7 @@
               ).href = `/shop-single/${slug}`;
               banner.querySelector(
                 ".product-image"
-              ).src = `http://147.93.45.171:1600/uploads/${firstProduct.image}`;
+              ).src = `https://demo.webriefly.com/uploads/${firstProduct.image}`;
             }
           });
         </script>
@@ -4029,7 +4032,7 @@
           document.addEventListener("DOMContentLoaded", async () => {
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/flashsalesmaindata"
+                "https://demo.webriefly.com/api/flashsalesmaindata"
               );
               const data = await res.json();
               if (!Array.isArray(data) || data.length === 0) return;
@@ -4062,7 +4065,7 @@
                       ).textContent = `${p1.label} • ${p1.price_sale}`;
                       const img1 = b1.querySelector(".thumb img");
                       img1.src =
-                        "http://147.93.45.171:1600/uploads/" + p1.image;
+                        "https://demo.webriefly.com/uploads/" + p1.image;
                       img1.alt = p1.product_name;
                       b1.querySelector(
                         ".banner__btn a"
@@ -4083,7 +4086,7 @@
                       ).textContent = `${p2.label} • ${p2.price_sale}`;
                       const img2 = b2.querySelector(".thumb img");
                       img2.src =
-                        "http://147.93.45.171:1600/uploads/" + p2.image;
+                        "https://demo.webriefly.com/uploads/" + p2.image;
                       img2.alt = p2.product_name;
                       b2.querySelector(
                         ".banner__btn a"
@@ -4128,7 +4131,7 @@
                   descEl.textContent = `${p1.label} – ${p1.price}`;
                   priceEl.textContent = p1.price_sale;
                   linkEl.href = `shop-single.html?id=${p1.product_id}`;
-                  imgEl.src = "http://147.93.45.171:1600/uploads/" + p1.image;
+                  imgEl.src = "https://demo.webriefly.com/uploads/" + p1.image;
                   imgEl.alt = p1.product_name;
                 }
               }
@@ -4349,7 +4352,7 @@
 
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/newsletterpost",
+                "https://demo.webriefly.com/api/newsletterpost",
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

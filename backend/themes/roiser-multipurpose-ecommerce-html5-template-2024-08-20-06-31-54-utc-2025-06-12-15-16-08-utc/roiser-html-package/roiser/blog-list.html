@@ -80,7 +80,7 @@
             .replace(/^-+|-+$/g, "");
         }
 
-        fetch("http://147.93.45.171:1600/blogpostdata")
+        fetch("https://demo.webriefly.com/api/blogpostdata")
           .then(function (res) {
             if (!res.ok)
               throw new Error("Failed to fetch blog data: " + res.status);
@@ -133,7 +133,7 @@
               if (img && !/^https?:\/\//i.test(img)) {
                 if (!/^\/?uploads\//i.test(img)) {
                   img =
-                    "http://147.93.45.171:1600/uploads/" +
+                    "https://demo.webriefly.com/uploads/" +
                     img.replace(/^\/+/, "");
                 }
               }
@@ -517,7 +517,7 @@
       document.addEventListener("DOMContentLoaded", async () => {
         try {
           const res = await fetch(
-            "http://147.93.45.171:1600/get-theme-breadcrumb"
+            "https://demo.webriefly.com/api/get-theme-breadcrumb"
           );
           const config = await res.json();
 
@@ -547,7 +547,7 @@
             const bg = config.background_image.trim();
             imgEl.src = bg.startsWith("http")
               ? bg
-              : `http://147.93.45.171:1600/uploads/${bg}`;
+              : `https://demo.webriefly.com/uploads/${bg}`;
           }
 
           if (
@@ -588,7 +588,7 @@
         function updateCartIcon() {
           if (!userId) return;
 
-          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
+          fetch(`https://demo.webriefly.com/api/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               let totalItems = 0;
@@ -630,7 +630,7 @@
         }
 
         function updateAnnouncements() {
-          fetch("http://147.93.45.171:1600/getannounce")
+          fetch("https://demo.webriefly.com/api/getannounce")
             .then((res) => res.json())
             .then((data) => {
               if (!data || !data.length) return;
@@ -761,7 +761,7 @@
           }
 
           timeout = setTimeout(() => {
-            fetch("http://147.93.45.171:1600/productpagedata")
+            fetch("https://demo.webriefly.com/api/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -792,7 +792,7 @@
                       onclick="window.location.href='/shop'"
                       style="cursor:pointer;display:flex;align-items:center;padding:8px 10px;border-bottom:1px solid #eee;"
                     >
-                      <img src="http://147.93.45.171:1600/uploads/${img}" alt="${p.name}"
+                      <img src="https://demo.webriefly.com/uploads/${img}" alt="${p.name}"
                           style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                       <div>
                         <div class="fw-bold text-dark">${p.name}</div>
@@ -868,7 +868,7 @@
 
         container.innerHTML = "Loading blogs...";
 
-        fetch("http://147.93.45.171:1600/blogpostdata")
+        fetch("https://demo.webriefly.com/api/blogpostdata")
           .then((res) => res.json())
           .then((posts) => {
             container.innerHTML = "";
@@ -885,7 +885,7 @@
                 <a href="/blog-details/${encodeURIComponent(slug)}"
                    data-post-id="${post.id}"
                    data-post-slug="${slug}">
-                  <img src="http://147.93.45.171:1600/uploads/${post.image}"
+                  <img src="https://demo.webriefly.com/uploads/${post.image}"
                        alt="Image for blog post titled ${post.name}"
                        style="width:100%;height:auto;" />
                 </a>
@@ -1112,7 +1112,7 @@
 
                 try {
                   const res = await fetch(
-                    "http://147.93.45.171:1600/newsletterpost",
+                    "https://demo.webriefly.com/api/newsletterpost",
                     {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
@@ -1179,7 +1179,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-font-settings")
+        fetch("https://demo.webriefly.com/api/get-font-settings")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();
@@ -1212,7 +1212,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/get-theme-logo")
+        fetch("https://demo.webriefly.com/api/get-theme-logo")
           .then((res) => {
             if (!res.ok) throw new Error("Failed to load logo data");
             return res.json();
@@ -1221,7 +1221,7 @@
             const img = document.getElementById("site-logo");
             if (!img) return;
             if (cfg.logo_url) {
-              img.src = `http://147.93.45.171:1600/uploads/${cfg.logo_url}`;
+              img.src = `https://demo.webriefly.com/uploads/${cfg.logo_url}`;
             }
             if (cfg.logo_height) {
               img.height = cfg.logo_height;
@@ -1231,7 +1231,7 @@
             console.error("Could not load theme logo:", err);
           });
 
-        fetch("http://147.93.45.171:1600/themestylesdata")
+        fetch("https://demo.webriefly.com/api/themestylesdata")
           .then((res) => {
             if (!res.ok) throw new Error("Network error");
             return res.json();

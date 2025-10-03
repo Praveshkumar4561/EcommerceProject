@@ -52,7 +52,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/themeoptionsdata")
+        fetch("https://demo.webriefly.com/api/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -82,7 +82,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `http://147.93.45.171:1600/uploads/${
+            const url = `https://demo.webriefly.com/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -487,7 +487,9 @@
 
           async function loadWishlist() {
             try {
-              const res = await fetch("http://147.93.45.171:1600/wishlistdata");
+              const res = await fetch(
+                "https://demo.webriefly.com/api/wishlistdata"
+              );
               const data = await res.json();
               if (!Array.isArray(data)) return;
 
@@ -503,7 +505,9 @@
 
           async function loadCart() {
             try {
-              const res = await fetch("http://147.93.45.171:1600/allcartdata");
+              const res = await fetch(
+                "https://demo.webriefly.com/api/allcartdata"
+              );
               const data = await res.json();
               if (!Array.isArray(data)) return;
 
@@ -524,7 +528,7 @@
                   (item) => `
                   <div class="cart_item" data-id="${item.id}">
                   <div class="item_image">
-                    <img src="http://147.93.45.171:1600/uploads/${
+                    <img src="https://demo.webriefly.com/uploads/${
                       item.image || "assets/img/product/default.png"
                     }" />
                   </div>
@@ -558,7 +562,7 @@
 
             try {
               const res = await fetch(
-                `http://147.93.45.171:1600/deletecart/${id}`,
+                `https://demo.webriefly.com/api/deletecart/${id}`,
                 {
                   method: "DELETE",
                 }
@@ -1071,7 +1075,7 @@
 
                   try {
                     const res = await fetch(
-                      "http://147.93.45.171:1600/productpagedata"
+                      "https://demo.webriefly.com/api/productpagedata"
                     );
                     if (!res.ok) throw new Error("Failed to fetch products");
                     allProducts = await res.json();
@@ -1144,7 +1148,7 @@
                         <div class="product__item style-2">
                           <div class="product__img text-center pos-rel">
                             <a href="${productUrl}">
-                              <img src="http://147.93.45.171:1600/uploads/${
+                              <img src="https://demo.webriefly.com/uploads/${
                                 p.image
                               }" alt="${p.name}" />
                             </a>
@@ -1225,7 +1229,7 @@
 
                     lbIdx = index;
                     const prod = lightboxData[lbIdx];
-                    lightboxImg.src = `http://147.93.45.171:1600/uploads/${prod.image}`;
+                    lightboxImg.src = `https://demo.webriefly.com/uploads/${prod.image}`;
                     counterEl.textContent = `${lbIdx + 1} of ${
                       lightboxData.length
                     }`;
@@ -1503,7 +1507,7 @@
 
                   try {
                     const res = await fetch(
-                      "http://147.93.45.171:1600/flashsalesmaindata"
+                      "https://demo.webriefly.com/api/flashsalesmaindata"
                     );
                     if (!res.ok) throw new Error("Network error");
                     flashData = await res.json();
@@ -1592,7 +1596,7 @@
         <div class="product__item style-2 h-100">
           <div class="product__img text-center pos-rel">
             <a href="${productUrl}">
-              <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${
+              <img src="https://demo.webriefly.com/uploads/${p.image}" alt="${
                         (p.product_name || p.product_name) == null
                           ? ""
                           : p.product_name || p.name
@@ -1600,7 +1604,7 @@
             </a>
             <ul class="product__action style-2 ul_li">
               <li>
-                <a href="http://147.93.45.171:1600/uploads/${
+                <a href="https://demo.webriefly.com/uploads/${
                   p.image
                 }" class="img-popup" data-index="${idx}">
                   <i class="far fa-compress-alt"></i>
@@ -1665,7 +1669,7 @@
 
                     const imageLinks = document.querySelectorAll(".img-popup");
                     const images = products.map(
-                      (p) => `http://147.93.45.171:1600/uploads/${p.image}`
+                      (p) => `https://demo.webriefly.com/uploads/${p.image}`
                     );
                     let currentIndex = 0;
 
@@ -1721,7 +1725,7 @@
                     if (cartBtn) {
                       try {
                         const res = await fetch(
-                          "http://147.93.45.171:1600/addcart",
+                          "https://demo.webriefly.com/api/addcart",
                           {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -1745,7 +1749,7 @@
                     if (wishBtn) {
                       try {
                         const res = await fetch(
-                          "http://147.93.45.171:1600/wishlistpost",
+                          "https://demo.webriefly.com/api/wishlistpost",
                           {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -1994,7 +1998,7 @@
                 document.addEventListener("DOMContentLoaded", async () => {
                   try {
                     const res = await fetch(
-                      "http://147.93.45.171:1600/productpagedata"
+                      "https://demo.webriefly.com/api/productpagedata"
                     );
                     if (!res.ok) throw new Error("Failed to fetch data");
 
@@ -2051,7 +2055,7 @@
           <div class="tx-widget__product-item tx-product ul_li mb-3">
             <div class="thumb">
               <a href="${productUrl}">
-                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" class="border"/>
+                <img src="https://demo.webriefly.com/uploads/${p.image}" alt="${p.name}" class="border"/>
               </a>
             </div>
             <div class="content">
@@ -2407,7 +2411,7 @@
 
                 let allProducts = [];
 
-                fetch("http://147.93.45.171:1600/productpagedata")
+                fetch("https://demo.webriefly.com/api/productpagedata")
                   .then((res) => res.json())
                   .then((data) => {
                     allProducts = data;
@@ -2502,13 +2506,13 @@
               <div class="product__item style-2 h-100">
                 <div class="product__img text-center pos-rel">
                   <a href="${productUrl}">
-                    <img src="http://147.93.45.171:1600/uploads/${
+                    <img src="https://demo.webriefly.com/uploads/${
                       prod.image
                     }" alt="${prod.name}" />
                   </a>
                   <ul class="product__action style-2 ul_li">
                     <li>
-                      <a href="http://147.93.45.171:1600/uploads/${
+                      <a href="https://demo.webriefly.com/uploads/${
                         prod.image
                       }" class="img-popup icon-btn">
                         <i class="far fa-compress-alt"></i>
@@ -2661,7 +2665,7 @@
                 document.addEventListener("DOMContentLoaded", async () => {
                   try {
                     const res = await fetch(
-                      "http://147.93.45.171:1600/productcatdata"
+                      "https://demo.webriefly.com/api/productcatdata"
                     );
                     if (!res.ok) throw new Error("Failed to fetch categories");
 
@@ -2873,7 +2877,7 @@
               if (productsData.length) return;
               try {
                 const res = await fetch(
-                  "http://147.93.45.171:1600/productpagedata"
+                  "https://demo.webriefly.com/api/productpagedata"
                 );
                 productsData = await res.json();
               } catch (err) {
@@ -2925,7 +2929,7 @@
             <div class="product__item style-2 h-100">
               <div class="product__img text-center pos-rel">
                 <a href="${productUrl}">
-                  <img src="http://147.93.45.171:1600/uploads/${
+                  <img src="https://demo.webriefly.com/uploads/${
                     p.image
                   }" alt="${p.name || "Product"}" />
                 </a>
@@ -2963,7 +2967,7 @@
                 <ul class="product__action2">
                   <li>
                     <!-- lightbox still opens the raw upload image -->
-                    <a href="http://147.93.45.171:1600/uploads/${
+                    <a href="https://demo.webriefly.com/uploads/${
                       p.image
                     }" class="img-popup icon-btn">
                       <i class="far fa-compress-alt"></i>
@@ -3470,7 +3474,7 @@
                           let products = [];
                           try {
                             const res = await fetch(
-                              "http://147.93.45.171:1600/productpagedata"
+                              "https://demo.webriefly.com/api/productpagedata"
                             );
                             if (!res.ok) throw new Error(`HTTP ${res.status}`);
                             products = await res.json();
@@ -3549,7 +3553,7 @@
           <div class="product__slider-item">
             <div class="product__slider-img">
               <a href="${productUrl}">
-                <img src="http://147.93.45.171:1600/uploads/${p.image}" alt="${p.name}" />
+                <img src="https://demo.webriefly.com/uploads/${p.image}" alt="${p.name}" />
               </a>
               <div class="offer">
                 ${discountPct}%<br /><span>off</span>
@@ -3692,7 +3696,7 @@
 
                             try {
                               const res = await fetch(
-                                "http://147.93.45.171:1600/productpagedata"
+                                "https://demo.webriefly.com/api/productpagedata"
                               );
                               allProducts = await res.json();
                             } catch (error) {
@@ -3780,12 +3784,12 @@
           <div class="feature-product__single2 mt-15 tx-product">
             <div class="image text-center pos-rel">
               <a href="${centerUrl}">
-                <img src="http://147.93.45.171:1600/uploads/${
+                <img src="https://demo.webriefly.com/uploads/${
                   center.image
                 }" alt="${center.name}" />
               </a>
               <ul class="product__action style-2 br-5 ul_li">
-                <li><a href="http://147.93.45.171:1600/uploads/${
+                <li><a href="https://demo.webriefly.com/uploads/${
                   center.image
                 }" class="img-popup"><i class="far fa-compress-alt"></i></a></li>
                 <li><a href="javascript:void(0)" class="add-to-cart" data-id="${
@@ -3878,7 +3882,7 @@
           <div class="feature-product__product ul_li">
             <div class="image">
               <a href="${productUrl}">
-                <img src="http://147.93.45.171:1600/uploads/${
+                <img src="https://demo.webriefly.com/uploads/${
                   product.image
                 }" alt="${product.name}" />
               </a>
@@ -4292,7 +4296,9 @@
         <script>
           document.addEventListener("DOMContentLoaded", async () => {
             try {
-              const res = await fetch("http://147.93.45.171:1600/blogpostdata");
+              const res = await fetch(
+                "https://demo.webriefly.com/api/blogpostdata"
+              );
               if (!res.ok) throw new Error("Failed to fetch blog data");
 
               const blogs = await res.json();
@@ -4331,7 +4337,7 @@
 
                 const img = item.querySelector(".news__thumb img");
                 if (img) {
-                  img.src = `http://147.93.45.171:1600/uploads/${blog.image}`;
+                  img.src = `https://demo.webriefly.com/uploads/${blog.image}`;
                   img.alt = blog.name;
                 }
 
@@ -4387,7 +4393,7 @@
           document.addEventListener("DOMContentLoaded", async () => {
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/producttagdata"
+                "https://demo.webriefly.com/api/producttagdata"
               );
               if (!res.ok) throw new Error("Failed to load tags");
               const tags = await res.json();
@@ -4643,7 +4649,9 @@
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           try {
-            const res = await fetch("http://147.93.45.171:1600/blogpostdata");
+            const res = await fetch(
+              "https://demo.webriefly.com/api/blogpostdata"
+            );
             if (!res.ok) {
               console.error("Failed to fetch blog posts");
               return;
@@ -4702,7 +4710,7 @@
               li.innerHTML = `
           <div class="post-thumb">
             <a href="${postUrl}">
-              <img src="http://147.93.45.171:1600/uploads/${
+              <img src="https://demo.webriefly.com/uploads/${
                 post.image
               }" alt="${(post.name || "").replace(/"/g, "&quot;")}" />
             </a>
@@ -4762,7 +4770,7 @@
 
             try {
               const res = await fetch(
-                "http://147.93.45.171:1600/newsletterpost",
+                "https://demo.webriefly.com/api/newsletterpost",
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },

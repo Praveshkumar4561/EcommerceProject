@@ -22,7 +22,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("http://147.93.45.171:1600/themeoptionsdata")
+        fetch("https://demo.webriefly.com/api/themeoptionsdata")
           .then((res) => {
             if (!res.ok) throw new Error("Fetch failed");
             return res.json();
@@ -52,7 +52,7 @@
             }
             og.content = data.seo_og_image_url || "";
 
-            const url = `http://147.93.45.171:1600/uploads/${
+            const url = `https://demo.webriefly.com/uploads/${
               data.lazy_placeholder_image
             }?v=${Date.now()}`;
             const oldIcon = document.querySelector(
@@ -80,10 +80,10 @@
 
         function withUploads(u) {
           if (!u) return u;
-          if (u.startsWith("http://147.93.45.171:1600/uploads/"))
+          if (u.startsWith("https://demo.webriefly.com/uploads/"))
             return makeAbsolute(u);
           return makeAbsolute(
-            "http://147.93.45.171:1600/uploads/" + u.replace(/^\/+/, "")
+            "https://demo.webriefly.com/uploads/" + u.replace(/^\/+/, "")
           );
         }
 
@@ -100,10 +100,12 @@
         }
 
         Promise.all([
-          fetch("http://147.93.45.171:1600/productpagedata").then((r) =>
+          fetch("https://demo.webriefly.com/api/productpagedata").then((r) =>
             r.json()
           ),
-          fetch("http://147.93.45.171:1600/blogpostdata").then((r) => r.json()),
+          fetch("https://demo.webriefly.com/api/blogpostdata").then((r) =>
+            r.json()
+          ),
         ])
           .then(([products, blogs]) => {
             products = Array.isArray(products)
@@ -896,14 +898,17 @@
             }
 
             try {
-              const response = await fetch("http://147.93.45.171:1600/submit", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                },
-                body: JSON.stringify({ first_name: name, email, password }),
-              });
+              const response = await fetch(
+                "https://demo.webriefly.com/api/submit",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                  },
+                  body: JSON.stringify({ first_name: name, email, password }),
+                }
+              );
 
               const data = await response.json();
 
@@ -950,14 +955,17 @@
             }
 
             try {
-              const response = await fetch("http://147.93.45.171:1600/login", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-              });
+              const response = await fetch(
+                "https://demo.webriefly.com/api/login",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json",
+                  },
+                  body: JSON.stringify({ email, password }),
+                }
+              );
 
               if (response.status === 400) {
                 showAlert("Invalid email or password", "error", "login-alert");
@@ -995,7 +1003,7 @@
           const userId = localStorage.getItem("user_id");
           if (!userId) return;
 
-          fetch(`http://147.93.45.171:1600/allcartdata?user_id=${userId}`)
+          fetch(`https://demo.webriefly.com/api/allcartdata?user_id=${userId}`)
             .then((res) => res.json())
             .then((data) => {
               if (Array.isArray(data)) {

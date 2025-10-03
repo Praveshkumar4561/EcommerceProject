@@ -981,7 +981,7 @@
           };
 
           try {
-            const res = await fetch("http://147.93.45.171:1600/checkout", {
+            const res = await fetch("https://demo.webriefly.com/api/checkout", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
@@ -1037,7 +1037,7 @@
         }
 
         function loadSidebarCart() {
-          fetch(`http://147.93.45.171:1600/allcartdata`)
+          fetch(`https://demo.webriefly.com/api/allcartdata`)
             .then((res) => res.json())
             .then((items) => {
               const seen = new Set();
@@ -1067,7 +1067,7 @@
                 data-price="${price}"
                 data-qty="${qty}">
               <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-              <a href="#"><img src="http://147.93.45.171:1600/uploads/${
+              <a href="#"><img src="https://demo.webriefly.com/uploads/${
                 item.image
               }" alt="${item.name}"/> ${item.name}</a>
               <span class="quantity">${qty} × $${price.toFixed(2)}</span>
@@ -1084,7 +1084,7 @@
         }
 
         function updateCounts() {
-          fetch(`http://147.93.45.171:1600/allcartdata`)
+          fetch(`https://demo.webriefly.com/api/allcartdata`)
             .then((res) => res.json())
             .then((items) => {
               const names = new Set(items.map((i) => i.name.trim()));
@@ -1094,7 +1094,7 @@
               badgeEl.textContent = "00";
             });
 
-          fetch(`http://147.93.45.171:1600/wishlistdata`)
+          fetch(`https://demo.webriefly.com/api/wishlistdata`)
             .then((res) => res.json())
             .then((items) => {
               const names = new Set(items.map((i) => i.product_name.trim()));
@@ -1114,7 +1114,7 @@
           const id = li.dataset.id;
           if (!id) return console.error("Missing data-id");
 
-          fetch(`http://147.93.45.171:1600/deletecart/${id}`, {
+          fetch(`https://demo.webriefly.com/api/deletecart/${id}`, {
             method: "DELETE",
           })
             .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
@@ -1443,7 +1443,7 @@
             return;
           }
           timer = setTimeout(() => {
-            fetch("http://147.93.45.171:1600/productpagedata")
+            fetch("https://demo.webriefly.com/api/productpagedata")
               .then((r) => r.json())
               .then((products) => {
                 const matches = products
@@ -1467,7 +1467,7 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="http://147.93.45.171:1600/uploads/${p.image}" 
+                  <img src="https://demo.webriefly.com/uploads/${p.image}" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
                       style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
                   <div>
@@ -1531,7 +1531,7 @@
             .replace(/\s+/g, "-");
         }
 
-        fetch("http://147.93.45.171:1600/blogpostdata")
+        fetch("https://demo.webriefly.com/api/blogpostdata")
           .then((response) => {
             if (!response.ok) throw new Error("Failed to fetch blog data.");
             return response.json();
@@ -1553,7 +1553,7 @@
                 <a href="/blog-details/${encodeURIComponent(
                   slug
                 )}" class="w-100 h-100">
-                  <img src="http://147.93.45.171:1600/uploads/${
+                  <img src="https://demo.webriefly.com/uploads/${
                     post.image
                   }" alt="${post.name}" />
                 </a>
@@ -1584,14 +1584,16 @@
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         try {
-          const res = await fetch("http://147.93.45.171:1600/get-theme-logo");
+          const res = await fetch(
+            "https://demo.webriefly.com/api/get-theme-logo"
+          );
           if (!res.ok) throw new Error("Failed to fetch logo data");
 
           const data = await res.json();
           const logoUrl = data.logo_url;
           if (!logoUrl) throw new Error("Logo URL not found in API response");
 
-          const highResLogo = `http://147.93.45.171:1600/uploads/${logoUrl}`;
+          const highResLogo = `https://demo.webriefly.com/uploads/${logoUrl}`;
 
           const logoImgs = [
             ...document.querySelectorAll(".brand-logo img"),

@@ -334,8 +334,8 @@ exports.uploadTheme = async (req, res) => {
             ...assets,
             indexHtmlPath,
           },
-          preview_url: `http://147.93.45.171:1600/themes/preview/${safeFolderName}/${indexHtmlPath}`,
-          theme_path: `http://147.93.45.171:1600/themes/static/${safeFolderName}`,
+          preview_url: `https://demo.webriefly.com/api/themes/preview/${safeFolderName}/${indexHtmlPath}`,
+          theme_path: `https://demo.webriefly.com/api/themes/static/${safeFolderName}`,
           created_at: new Date().toISOString(),
         },
       });
@@ -494,13 +494,13 @@ exports.getActiveTheme = async (_req, res) => {
       name: active.name,
       folder_name: active.folder_name,
       is_active: active.is_active === 1,
-      preview_url: `http://147.93.45.171:1600/themes/preview/${active.folder_name}/index.html`,
+      preview_url: `https://demo.webriefly.com/api/themes/preview/${active.folder_name}/index.html`,
       assets: {
         js: assets.js || [],
         css: assets.css || [],
         folder: active.folder_name,
       },
-      theme_path: `http://147.93.45.171:1600/themes/static/${active.folder_name}`,
+      theme_path: `https://demo.webriefly.com/api/themes/static/${active.folder_name}`,
       base_url: "/",
     };
 
