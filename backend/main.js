@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/api/themes", themeRoutes);
 app.set("view engine", "ejs");
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "src/image")));
 
 app.set(
   "views",
