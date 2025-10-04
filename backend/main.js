@@ -24,7 +24,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://srv689968.hstgr.cloud/"],
+    origin: ["https://demo.webriefly.com/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: "Content-Type, Authorization",
     credentials: true,
@@ -147,7 +147,7 @@ app.set("trust proxy", true);
 
 // app.set("views", path.join(__dirname, "themes"));
 
-app.post("/update-robots", (req, res) => {
+app.post("/api/update-robots", (req, res) => {
   const { content } = req.body;
   const robotsPath = path.join(__dirname, "../frontend1/public/robots.txt");
   fs.writeFile(robotsPath, content, (err) => {
@@ -197,7 +197,7 @@ const adsUpload = multer({ storage: adsStorage });
 
 app.use("/uploads", express.static(uploadDir));
 
-app.post("/upload", upload.single("image"), (req, res) => {
+app.post("/api/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: "No file uploaded" });
   }
@@ -206,7 +206,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
 });
 app.use("/images", express.static(uploadDir));
 
-app.get("/get-homepage", (req, res) => {
+app.get("/api/get-homepage", (req, res) => {
   res.status(200).json({ homepageSettings });
 });
 
@@ -242,12 +242,12 @@ webpush.setVapidDetails(
   privateVapidKey
 );
 
-app.get("/sw.js", (req, res) => {
+app.get("/api/sw.js", (req, res) => {
   res.set("Content-Type", "application/javascript");
   res.sendFile(path.join(__dirname, "..", "frontend1", "public", "sw.js"));
 });
 
-app.get("/themes/:themeName/:page", (req, res) => {
+app.get("/api/themes/:themeName/:page", (req, res) => {
   const { themeName, page } = req.params;
 
   const htmlFilePath = path.join(
@@ -302,7 +302,7 @@ const links = [
   { url: "/sitemap", lastmodISO: getCurrentLastMod(), priority: 1.0 },
 ];
 
-app.get("/sitemap.xml", async (req, res, next) => {
+app.get("/api/sitemap.xml", async (req, res, next) => {
   try {
     res.header("Content-Type", "application/xml");
     const smStream = new SitemapStream({
@@ -326,7 +326,7 @@ let homepageSettings = {
   faqs: "",
 };
 
-app.post("/save-homepage", (req, res) => {
+app.post("/api/save-homepage", (req, res) => {
   const { homepage, aboutpage, shop, blog, contactus } = req.body;
   homepageSettings = {
     homepage: homepage || homepageSettings.homepage,
@@ -361,7 +361,7 @@ app.get("/", verifyUser, (req, res) => {
   return res.json({ Status: "Success", name: req.name });
 });
 
-app.post("/submit", (req, res) => {
+app.post("/api/submit", (req, res) => {
   let { first_name, last_name, phone_number, email, password } = req.body;
 
   last_name = last_name || null;
@@ -415,7 +415,7 @@ app.post("/submit", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post("/api/login", (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     return res
@@ -474,7 +474,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/logout", (req, res) => {
+app.get("/api/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -483,7 +483,7 @@ app.get("/logout", (req, res) => {
   return res.json({ Status: "Success", message: "Logged out successfully" });
 });
 
-app.get("/alldata", (req, res) => {
+app.get("/api/alldata", (req, res) => {
   const sql = "SELECT * from user";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -493,7 +493,7 @@ app.get("/alldata", (req, res) => {
   });
 });
 
-app.get("/allreviewdata", (req, res) => {
+app.get("/api/allreviewdata", (req, res) => {
   const sql = "select *from user order by id asc limit 4";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -503,7 +503,7 @@ app.get("/allreviewdata", (req, res) => {
   });
 });
 
-app.put("/passwordupdate", async (req, res) => {
+app.put("/api/passwordupdate", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
@@ -554,7 +554,7 @@ app.put("/passwordupdate", async (req, res) => {
   }
 });
 
-app.get("/check-auth", (req, res) => {
+app.get("/api/check-auth", (req, res) => {
   const sql = "SELECT * from user";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -564,7 +564,7 @@ app.get("/check-auth", (req, res) => {
   });
 });
 
-app.post("/checkout", (req, res) => {
+app.post("/api/checkout", (req, res) => {
   const {
     email,
     phone_number,
@@ -693,7 +693,7 @@ app.post("/checkout", (req, res) => {
   });
 });
 
-app.get("/checkoutsome/:id", (req, res) => {
+app.get("/api/checkoutsome/:id", (req, res) => {
   const id = req.params.id;
   const sql = `
     SELECT checkout.*, cart_items.*
@@ -712,7 +712,7 @@ app.get("/checkoutsome/:id", (req, res) => {
   });
 });
 
-app.get("/checkoutdata", (req, res) => {
+app.get("/api/checkoutdata", (req, res) => {
   const sql = `
     SELECT
       checkout.*,
@@ -757,7 +757,7 @@ app.get("/checkoutdata", (req, res) => {
   });
 });
 
-app.get("/checkoutdata1", (req, res) => {
+app.get("/api/checkoutdata1", (req, res) => {
   const query = `
     SELECT DATE(date) AS date, COUNT(*) AS orders
     FROM checkout
@@ -773,7 +773,7 @@ app.get("/checkoutdata1", (req, res) => {
   });
 });
 
-app.get("/customerget/:value", (req, res) => {
+app.get("/api/customerget/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM checkout WHERE first_name LIKE ? ";
   db.query(sql, [`%${data}%`, `%${data}%`], (err, result) => {
@@ -786,7 +786,7 @@ app.get("/customerget/:value", (req, res) => {
   });
 });
 
-app.delete("/deleteorder1/:id", (req, res) => {
+app.delete("/api/deleteorder1/:id", (req, res) => {
   const id = req.params.id;
 
   const sqlDeleteCartItems = "DELETE FROM cart_items WHERE checkout_id = ?";
@@ -843,7 +843,7 @@ app.delete("/deleteorder1/:id", (req, res) => {
   });
 });
 
-app.get("/searchorder/:value", (req, res) => {
+app.get("/api/searchorder/:value", (req, res) => {
   const data = req.params.value;
   const sql =
     "SELECT * FROM checkout WHERE first_name LIKE ? OR last_name LIKE ?";
@@ -856,7 +856,7 @@ app.get("/searchorder/:value", (req, res) => {
   });
 });
 
-app.post("/faqs", (req, res) => {
+app.post("/api/faqs", (req, res) => {
   const {
     name = null,
     email = null,
@@ -881,7 +881,7 @@ app.post("/faqs", (req, res) => {
   });
 });
 
-app.post("/contact", (req, res) => {
+app.post("/api/contact", (req, res) => {
   const {
     name,
     email,
@@ -912,7 +912,7 @@ app.post("/contact", (req, res) => {
   );
 });
 
-app.get("/contactreqdata", (req, res) => {
+app.get("/api/contactreqdata", (req, res) => {
   const sql = "SELECT * from contact";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -922,7 +922,7 @@ app.get("/contactreqdata", (req, res) => {
   });
 });
 
-app.get("/contactsomedata/:id", (req, res) => {
+app.get("/api/contactsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * from contact where id=?";
   db.query(sql, [id], (err, result) => {
@@ -933,7 +933,7 @@ app.get("/contactsomedata/:id", (req, res) => {
   });
 });
 
-app.delete("/contactdelete/:id", (req, res) => {
+app.delete("/api/contactdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from contact where id=?";
   db.query(sql, [id], (err, result) => {
@@ -944,7 +944,7 @@ app.delete("/contactdelete/:id", (req, res) => {
   });
 });
 
-app.post("/announce", (req, res) => {
+app.post("/api/announce", (req, res) => {
   const { name, content, start_date, end_date, active } = req.body;
   const value = [[name, content, start_date, end_date, active]];
   const sql =
@@ -957,7 +957,7 @@ app.post("/announce", (req, res) => {
   });
 });
 
-app.get("/getannounce", (req, res) => {
+app.get("/api/getannounce", (req, res) => {
   const sql = "SELECT * from announce";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -966,7 +966,7 @@ app.get("/getannounce", (req, res) => {
     }
   });
 });
-app.delete("/deleteannoune/:id", (req, res) => {
+app.delete("/api/deleteannoune/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from announce where id=?";
   db.query(sql, [id], (err, result) => {
@@ -977,7 +977,7 @@ app.delete("/deleteannoune/:id", (req, res) => {
   });
 });
 
-app.put("/updateannnounce/:id", (req, res) => {
+app.put("/api/updateannnounce/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
 
@@ -998,7 +998,7 @@ app.put("/updateannnounce/:id", (req, res) => {
   });
 });
 
-app.get("/getann/:id", (req, res) => {
+app.get("/api/getann/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * from announce where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1009,7 +1009,7 @@ app.get("/getann/:id", (req, res) => {
   });
 });
 
-app.get("/search/:value", (req, res) => {
+app.get("/api/search/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * from announce where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1020,7 +1020,7 @@ app.get("/search/:value", (req, res) => {
   });
 });
 
-app.post("/testimonials", upload.single("file"), (req, res) => {
+app.post("/api/testimonials", upload.single("file"), (req, res) => {
   const name = req.body.name;
   const company = req.body.company;
   const status = req.body.status;
@@ -1041,7 +1041,7 @@ app.post("/testimonials", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/gettestimonials", (req, res) => {
+app.get("/api/gettestimonials", (req, res) => {
   const sql = "SELECT * from testimonial";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1051,7 +1051,7 @@ app.get("/gettestimonials", (req, res) => {
   });
 });
 
-app.get("/testifilter/:value", (req, res) => {
+app.get("/api/testifilter/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * from testimonial where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1062,7 +1062,7 @@ app.get("/testifilter/:value", (req, res) => {
   });
 });
 
-app.delete("/deletetest/:id", (req, res) => {
+app.delete("/api/deletetest/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from testimonial where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1073,7 +1073,7 @@ app.delete("/deletetest/:id", (req, res) => {
   });
 });
 
-app.put("/updatetest/:id", upload.single("file"), (req, res) => {
+app.put("/api/updatetest/:id", upload.single("file"), (req, res) => {
   const { name, company, status, date, content } = req.body;
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
@@ -1094,7 +1094,7 @@ app.put("/updatetest/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/sometest/:id", (req, res) => {
+app.get("/api/sometest/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * from testimonial where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1105,7 +1105,7 @@ app.get("/sometest/:id", (req, res) => {
   });
 });
 
-app.post("/gallerypost", upload.single("file"), (req, res) => {
+app.post("/api/gallerypost", upload.single("file"), (req, res) => {
   const name = req.body.name;
   const permalink = req.body.permalink;
   const orders = req.body.orders;
@@ -1127,7 +1127,7 @@ app.post("/gallerypost", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/gallerydata", (req, res) => {
+app.get("/api/gallerydata", (req, res) => {
   const sql = "SELECT * from gallery";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1137,7 +1137,7 @@ app.get("/gallerydata", (req, res) => {
   });
 });
 
-app.get("/galleryfil/:value", (req, res) => {
+app.get("/api/galleryfil/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * from gallery where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1148,7 +1148,7 @@ app.get("/galleryfil/:value", (req, res) => {
   });
 });
 
-app.delete("/deletegallery/:id", (req, res) => {
+app.delete("/api/deletegallery/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from gallery where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1159,7 +1159,7 @@ app.delete("/deletegallery/:id", (req, res) => {
   });
 });
 
-app.put("/galleryupdates/:id", upload.single("file"), (req, res) => {
+app.put("/api/galleryupdates/:id", upload.single("file"), (req, res) => {
   const { name, permalink, orders, date, feature, description, status } =
     req.body;
   const id = req.params.id;
@@ -1181,7 +1181,7 @@ app.put("/galleryupdates/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/gallerytests/:id", (req, res) => {
+app.get("/api/gallerytests/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM gallery where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1192,7 +1192,7 @@ app.get("/gallerytests/:id", (req, res) => {
   });
 });
 
-app.post("/sliderspost", (req, res) => {
+app.post("/api/sliderspost", (req, res) => {
   const { name, sliderkey, description, date, status } = req.body;
   const value = [[name, sliderkey, description, date, status]];
   const sql =
@@ -1205,7 +1205,7 @@ app.post("/sliderspost", (req, res) => {
   });
 });
 
-app.get("/sliderdata", (req, res) => {
+app.get("/api/sliderdata", (req, res) => {
   const sql = "SELECT * FROM sliders";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1215,7 +1215,7 @@ app.get("/sliderdata", (req, res) => {
   });
 });
 
-app.delete("/slidersdelete/:id", (req, res) => {
+app.delete("/api/slidersdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from sliders where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1226,7 +1226,7 @@ app.delete("/slidersdelete/:id", (req, res) => {
   });
 });
 
-app.get("/searchslider/:value", (req, res) => {
+app.get("/api/searchslider/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM sliders where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1237,7 +1237,7 @@ app.get("/searchslider/:value", (req, res) => {
   });
 });
 
-app.put("/sliderupdate/:id", (req, res) => {
+app.put("/api/sliderupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update sliders set ? where id=?";
@@ -1249,7 +1249,7 @@ app.put("/sliderupdate/:id", (req, res) => {
   });
 });
 
-app.get("/someslider/:id", (req, res) => {
+app.get("/api/someslider/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM sliders where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1260,7 +1260,7 @@ app.get("/someslider/:id", (req, res) => {
   });
 });
 
-app.post("/newsletterpost", (req, res) => {
+app.post("/api/newsletterpost", (req, res) => {
   const { email, name } = req.body;
   const safeName = name ? name : null;
   const sql = "INSERT INTO newsletters (email, name) VALUES (?, ?)";
@@ -1273,7 +1273,7 @@ app.post("/newsletterpost", (req, res) => {
   });
 });
 
-app.get("/newsletterdata", (req, res) => {
+app.get("/api/newsletterdata", (req, res) => {
   const sql = "select *from newsletters";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1283,7 +1283,7 @@ app.get("/newsletterdata", (req, res) => {
   });
 });
 
-app.get("/newsfilter/:value", (req, res) => {
+app.get("/api/newsfilter/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * from newsletters where email like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1294,7 +1294,7 @@ app.get("/newsfilter/:value", (req, res) => {
   });
 });
 
-app.get("/export-excel", async (req, res) => {
+app.get("/api/export-excel", async (req, res) => {
   try {
     db.query("SELECT * FROM newsletters", async (err, results) => {
       if (err) {
@@ -1332,7 +1332,7 @@ app.get("/export-excel", async (req, res) => {
   }
 });
 
-app.delete("/newsletterdelete/:id", (req, res) => {
+app.delete("/api/newsletterdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from newsletters where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1343,7 +1343,7 @@ app.delete("/newsletterdelete/:id", (req, res) => {
   });
 });
 
-app.post("/contactdata", (req, res) => {
+app.post("/api/contactdata", (req, res) => {
   const {
     type,
     name,
@@ -1382,7 +1382,7 @@ app.post("/contactdata", (req, res) => {
   });
 });
 
-app.get("/allcontact", (req, res) => {
+app.get("/api/allcontact", (req, res) => {
   const sql = "SELECT * FROM contactus";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1392,7 +1392,7 @@ app.get("/allcontact", (req, res) => {
   });
 });
 
-app.get("/export-excelcontact", async (req, res) => {
+app.get("/api/export-excelcontact", async (req, res) => {
   try {
     db.query("SELECT * FROM contact", async (err, results) => {
       if (err) {
@@ -1426,7 +1426,7 @@ app.get("/export-excelcontact", async (req, res) => {
   }
 });
 
-app.put("/updatecontact/:id", (req, res) => {
+app.put("/api/updatecontact/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update contactus set ? where id=?";
@@ -1438,7 +1438,7 @@ app.put("/updatecontact/:id", (req, res) => {
   });
 });
 
-app.get("/contactusget/:id", (req, res) => {
+app.get("/api/contactusget/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM contactus where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1449,7 +1449,7 @@ app.get("/contactusget/:id", (req, res) => {
   });
 });
 
-app.get("/contactsearch/:value", (req, res) => {
+app.get("/api/contactsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM contact where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1460,7 +1460,7 @@ app.get("/contactsearch/:value", (req, res) => {
   });
 });
 
-app.delete("/deletecontact/:id", (req, res) => {
+app.delete("/api/deletecontact/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from contactus where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1471,7 +1471,7 @@ app.delete("/deletecontact/:id", (req, res) => {
   });
 });
 
-app.post("/pagespost", upload.single("file"), (req, res) => {
+app.post("/api/pagespost", upload.single("file"), (req, res) => {
   const {
     name,
     permalink,
@@ -1506,7 +1506,7 @@ app.post("/pagespost", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/pagesdata", (req, res) => {
+app.get("/api/pagesdata", (req, res) => {
   const sql = "SELECT * FROM pages";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1516,7 +1516,7 @@ app.get("/pagesdata", (req, res) => {
   });
 });
 
-app.get("/pagesdata/:slug", (req, res) => {
+app.get("/api/pagesdata/:slug", (req, res) => {
   const { slug } = req.params;
   db.query("SELECT * FROM pages WHERE name = ?", [slug], (err, result) => {
     if (err || result.length === 0)
@@ -1525,7 +1525,7 @@ app.get("/pagesdata/:slug", (req, res) => {
   });
 });
 
-app.delete("/pagesdelete/:id", (req, res) => {
+app.delete("/api/pagesdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from pages where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1536,7 +1536,7 @@ app.delete("/pagesdelete/:id", (req, res) => {
   });
 });
 
-app.put("/pageupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/pageupdate/:id", upload.single("file"), (req, res) => {
   const {
     name,
     permalink,
@@ -1575,7 +1575,7 @@ app.put("/pageupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/pagesomedata/:id", (req, res) => {
+app.get("/api/pagesomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM pages where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1586,7 +1586,7 @@ app.get("/pagesomedata/:id", (req, res) => {
   });
 });
 
-app.get("/pagesearch/:value", (req, res) => {
+app.get("/api/pagesearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM pages where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1597,7 +1597,7 @@ app.get("/pagesearch/:value", (req, res) => {
   });
 });
 
-app.post("/faqsubmit", (req, res) => {
+app.post("/api/faqsubmit", (req, res) => {
   const { category, question, answer, date, status } = req.body;
   const value = [[category, question, answer, date, status]];
   const sql =
@@ -1610,7 +1610,7 @@ app.post("/faqsubmit", (req, res) => {
   });
 });
 
-app.get("/pagesdatafaqs", (req, res) => {
+app.get("/api/pagesdatafaqs", (req, res) => {
   const sql =
     "SELECT * FROM faqback WHERE status = 'published' OR status = 'default'";
   db.query(sql, (err, result) => {
@@ -1623,7 +1623,7 @@ app.get("/pagesdatafaqs", (req, res) => {
   });
 });
 
-app.delete("/faqsdelete/:id", (req, res) => {
+app.delete("/api/faqsdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from faqback where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1634,7 +1634,7 @@ app.delete("/faqsdelete/:id", (req, res) => {
   });
 });
 
-app.put("/faqspageupdate/:id", (req, res) => {
+app.put("/api/faqspageupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update faqback set ? where id=?";
@@ -1646,7 +1646,7 @@ app.put("/faqspageupdate/:id", (req, res) => {
   });
 });
 
-app.get("/faqsomedata/:id", (req, res) => {
+app.get("/api/faqsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM faqback where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1657,7 +1657,7 @@ app.get("/faqsomedata/:id", (req, res) => {
   });
 });
 
-app.get("/faqsearch/:value", (req, res) => {
+app.get("/api/faqsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM faqback where question like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1668,7 +1668,7 @@ app.get("/faqsearch/:value", (req, res) => {
   });
 });
 
-app.post("/faqcategory", (req, res) => {
+app.post("/api/faqcategory", (req, res) => {
   const { name, description, orders, date, status } = req.body;
   const value = [[name, description, orders, date, status]];
   const sql =
@@ -1681,7 +1681,7 @@ app.post("/faqcategory", (req, res) => {
   });
 });
 
-app.get("/faqcategorydata", (req, res) => {
+app.get("/api/faqcategorydata", (req, res) => {
   const sql = "SELECT * FROM faqcategory";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1691,7 +1691,7 @@ app.get("/faqcategorydata", (req, res) => {
   });
 });
 
-app.delete("/faqcategorydelete/:id", (req, res) => {
+app.delete("/api/faqcategorydelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from faqcategory where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1702,7 +1702,7 @@ app.delete("/faqcategorydelete/:id", (req, res) => {
   });
 });
 
-app.put("/faqcategoryupdate/:id", (req, res) => {
+app.put("/api/faqcategoryupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update faqcategory set ? where id=?";
@@ -1714,7 +1714,7 @@ app.put("/faqcategoryupdate/:id", (req, res) => {
   });
 });
 
-app.get("/faqcategorysomedata/:id", (req, res) => {
+app.get("/api/faqcategorysomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM faqcategory where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1725,7 +1725,7 @@ app.get("/faqcategorysomedata/:id", (req, res) => {
   });
 });
 
-app.get("/faqsearchcategory/:value", (req, res) => {
+app.get("/api/faqsearchcategory/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM faqcategory where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1736,7 +1736,7 @@ app.get("/faqsearchcategory/:value", (req, res) => {
   });
 });
 
-app.post("/blogtagpost", (req, res) => {
+app.post("/api/blogtagpost", (req, res) => {
   const { name, permalink, description, date, status } = req.body;
   const value = [[name, permalink, description, date, status]];
   const sql =
@@ -1749,7 +1749,7 @@ app.post("/blogtagpost", (req, res) => {
   });
 });
 
-app.get("/blogalldata", (req, res) => {
+app.get("/api/blogalldata", (req, res) => {
   const sql = "SELECT * FROM blogtags";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1759,7 +1759,7 @@ app.get("/blogalldata", (req, res) => {
   });
 });
 
-app.delete("/blogtagsdelete/:id", (req, res) => {
+app.delete("/api/blogtagsdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from blogtags where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1770,7 +1770,7 @@ app.delete("/blogtagsdelete/:id", (req, res) => {
   });
 });
 
-app.put("/blogtagupdate/:id", (req, res) => {
+app.put("/api/blogtagupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update blogtags set ? where id=?";
@@ -1782,7 +1782,7 @@ app.put("/blogtagupdate/:id", (req, res) => {
   });
 });
 
-app.get("/blogtagdata/:id", (req, res) => {
+app.get("/api/blogtagdata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM blogtags where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1793,7 +1793,7 @@ app.get("/blogtagdata/:id", (req, res) => {
   });
 });
 
-app.get("/blogtagsearch/:value", (req, res) => {
+app.get("/api/blogtagsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM blogtags where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -1804,7 +1804,7 @@ app.get("/blogtagsearch/:value", (req, res) => {
   });
 });
 
-app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
+app.post("/api/blogpostsubmit", upload.single("file"), (req, res) => {
   const name = req.body.name;
   const author_name = req.body.author_name;
   const permalink = req.body.permalink;
@@ -1856,7 +1856,7 @@ app.post("/blogpostsubmit", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/blogpostdata", (req, res) => {
+app.get("/api/blogpostdata", (req, res) => {
   const sql = "SELECT * FROM blogpost ORDER BY id DESC;";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1866,7 +1866,7 @@ app.get("/blogpostdata", (req, res) => {
   });
 });
 
-app.get("/blogpostdata/:id", (req, res) => {
+app.get("/api/blogpostdata/:id", (req, res) => {
   const blogId = req.params.id;
   const sql = "SELECT * FROM blogpost WHERE id = ?";
   db.query(sql, [blogId], (err, result) => {
@@ -1881,7 +1881,7 @@ app.get("/blogpostdata/:id", (req, res) => {
   });
 });
 
-app.get("/latestblogdata", (req, res) => {
+app.get("/api/latestblogdata", (req, res) => {
   const sql = "select *from blogpost";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -1891,7 +1891,7 @@ app.get("/latestblogdata", (req, res) => {
   });
 });
 
-app.post("/commentpost/:id", (req, res) => {
+app.post("/api/commentpost/:id", (req, res) => {
   const blogId = req.params.id;
   const names = req.body.names ?? null;
   const email = req.body.email ?? null;
@@ -1917,7 +1917,7 @@ app.post("/commentpost/:id", (req, res) => {
   );
 });
 
-app.get("/commentsdatagets/:id", (req, res) => {
+app.get("/api/commentsdatagets/:id", (req, res) => {
   const blogId = req.params.id;
   const sql = "SELECT * FROM blog_comments WHERE blog_id = ?";
   db.query(sql, [blogId], (err, results) => {
@@ -1929,7 +1929,7 @@ app.get("/commentsdatagets/:id", (req, res) => {
   });
 });
 
-app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/blogpostupdate/:id", upload.single("file"), (req, res) => {
   const {
     name,
     author_name,
@@ -1972,7 +1972,7 @@ app.put("/blogpostupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/blogsomedata/:id", (req, res) => {
+app.get("/api/blogsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM blogpost where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1983,7 +1983,7 @@ app.get("/blogsomedata/:id", (req, res) => {
   });
 });
 
-app.delete("/deleteblogpost/:id", (req, res) => {
+app.delete("/api/deleteblogpost/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from blogpost where id=?";
   db.query(sql, [id], (err, result) => {
@@ -1994,7 +1994,7 @@ app.delete("/deleteblogpost/:id", (req, res) => {
   });
 });
 
-app.get("/blogpostsearch/:value", (req, res) => {
+app.get("/api/blogpostsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM blogpost where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2005,7 +2005,7 @@ app.get("/blogpostsearch/:value", (req, res) => {
   });
 });
 
-app.post("/blogcategorypost", (req, res) => {
+app.post("/api/blogcategorypost", (req, res) => {
   const { name, permalink, parent, description, is_featured, status } =
     req.body;
   const value = [[name, permalink, parent, description, is_featured, status]];
@@ -2019,7 +2019,7 @@ app.post("/blogcategorypost", (req, res) => {
   });
 });
 
-app.get("/allcategorydata", (req, res) => {
+app.get("/api/allcategorydata", (req, res) => {
   const sql = "select *from blog_category";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2029,7 +2029,7 @@ app.get("/allcategorydata", (req, res) => {
   });
 });
 
-app.delete("/categorydelete/:id", (req, res) => {
+app.delete("/api/categorydelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from blog_category where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2040,7 +2040,7 @@ app.delete("/categorydelete/:id", (req, res) => {
   });
 });
 
-app.put("/categoryupdate/:id", (req, res) => {
+app.put("/api/categoryupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "UPDATE blog_category SET ? WHERE id = ?";
@@ -2118,7 +2118,7 @@ app.post(
   }
 );
 
-app.get("/adsdata", (req, res) => {
+app.get("/api/adsdata", (req, res) => {
   const sql = "SELECT * FROM ads";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2209,7 +2209,7 @@ app.put(
   }
 );
 
-app.get("/adsomedataads/:id", (req, res) => {
+app.get("/api/adsomedataads/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM ads where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2220,7 +2220,7 @@ app.get("/adsomedataads/:id", (req, res) => {
   });
 });
 
-app.delete("/deleteads/:id", (req, res) => {
+app.delete("/api/deleteads/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from ads where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2231,7 +2231,7 @@ app.delete("/deleteads/:id", (req, res) => {
   });
 });
 
-app.get("/adsearch/:value", (req, res) => {
+app.get("/api/adsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM ads where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2242,7 +2242,7 @@ app.get("/adsearch/:value", (req, res) => {
   });
 });
 
-app.post("/producttags", (req, res) => {
+app.post("/api/producttags", (req, res) => {
   const { name, permalink, description, date, status } = req.body;
   const value = [[name, permalink, description, date, status]];
   const sql =
@@ -2255,7 +2255,7 @@ app.post("/producttags", (req, res) => {
   });
 });
 
-app.get("/producttagdata", (req, res) => {
+app.get("/api/producttagdata", (req, res) => {
   const sql = "SELECT * FROM producttags";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2265,7 +2265,7 @@ app.get("/producttagdata", (req, res) => {
   });
 });
 
-app.delete("/deletetags/:id", (req, res) => {
+app.delete("/api/deletetags/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from producttags where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2276,7 +2276,7 @@ app.delete("/deletetags/:id", (req, res) => {
   });
 });
 
-app.put("/updateproducttags/:id", (req, res) => {
+app.put("/api/updateproducttags/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update producttags set ? where id=?";
@@ -2288,7 +2288,7 @@ app.put("/updateproducttags/:id", (req, res) => {
   });
 });
 
-app.get("/productsometag/:id", (req, res) => {
+app.get("/api/productsometag/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM producttags where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2299,7 +2299,7 @@ app.get("/productsometag/:id", (req, res) => {
   });
 });
 
-app.get("/searchtags/:value", (req, res) => {
+app.get("/api/searchtags/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM producttags where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2310,7 +2310,7 @@ app.get("/searchtags/:value", (req, res) => {
   });
 });
 
-app.get("/export-returnsorder", async (req, res) => {
+app.get("/api/export-returnsorder", async (req, res) => {
   try {
     db.query("SELECT * FROM returnorder", async (err, results) => {
       if (err) {
@@ -2344,7 +2344,7 @@ app.get("/export-returnsorder", async (req, res) => {
   }
 });
 
-app.post("/productcollection", upload.single("file"), (req, res) => {
+app.post("/api/productcollection", upload.single("file"), (req, res) => {
   const { name, slug, description, status, feature, date } = req.body;
   const image = req.file.filename;
   const value = [[name, slug, description, status, feature, date, image]];
@@ -2358,7 +2358,7 @@ app.post("/productcollection", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/collectionsdata", (req, res) => {
+app.get("/api/collectionsdata", (req, res) => {
   const sql = "SELECT * FROM productcollection";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2368,7 +2368,7 @@ app.get("/collectionsdata", (req, res) => {
   });
 });
 
-app.delete("/collectiondelete/:id", (req, res) => {
+app.delete("/api/collectiondelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from productcollection where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2379,7 +2379,7 @@ app.delete("/collectiondelete/:id", (req, res) => {
   });
 });
 
-app.get("/searchcollections/:value", (req, res) => {
+app.get("/api/searchcollections/:value", (req, res) => {
   const data = req.params.value;
   if (!data) {
     return res.status(400).json({ error: "Search value is required" });
@@ -2394,7 +2394,7 @@ app.get("/searchcollections/:value", (req, res) => {
   });
 });
 
-app.put("/collectionupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/collectionupdate/:id", upload.single("file"), (req, res) => {
   const { name, slug, description, status, feature, date } = req.body;
   const id = req.params.id;
   const image = req.file ? req.file.filename : null;
@@ -2415,7 +2415,7 @@ app.put("/collectionupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/collectionsome/:id", (req, res) => {
+app.get("/api/collectionsome/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM productcollection where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2426,7 +2426,7 @@ app.get("/collectionsome/:id", (req, res) => {
   });
 });
 
-app.post("/productlabels", (req, res) => {
+app.post("/api/productlabels", (req, res) => {
   const { name, color, status, date } = req.body;
   const value = [[name, color, status, date]];
   const sql = "insert into productlabels(name, color, status, date)values ?";
@@ -2438,7 +2438,7 @@ app.post("/productlabels", (req, res) => {
   });
 });
 
-app.get("/productlabelsdata", (req, res) => {
+app.get("/api/productlabelsdata", (req, res) => {
   const sql = "SELECT * FROM productlabels";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2448,7 +2448,7 @@ app.get("/productlabelsdata", (req, res) => {
   });
 });
 
-app.delete("/deletelabels/:id", (req, res) => {
+app.delete("/api/deletelabels/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from productlabels where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2459,7 +2459,7 @@ app.delete("/deletelabels/:id", (req, res) => {
   });
 });
 
-app.put("/labelsupdate/:id", (req, res) => {
+app.put("/api/labelsupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update productlabels set ? where id=?";
@@ -2471,7 +2471,7 @@ app.put("/labelsupdate/:id", (req, res) => {
   });
 });
 
-app.get("/searchlabels/:value", (req, res) => {
+app.get("/api/searchlabels/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM productlabels where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2482,7 +2482,7 @@ app.get("/searchlabels/:value", (req, res) => {
   });
 });
 
-app.get("/productlabelsdata/:id", (req, res) => {
+app.get("/api/productlabelsdata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM productlabels where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2493,7 +2493,7 @@ app.get("/productlabelsdata/:id", (req, res) => {
   });
 });
 
-app.post("/brandsubmit", upload.single("file"), (req, res) => {
+app.post("/api/brandsubmit", upload.single("file"), (req, res) => {
   const {
     name,
     permalink,
@@ -2528,7 +2528,7 @@ app.post("/brandsubmit", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/brandsdata", (req, res) => {
+app.get("/api/brandsdata", (req, res) => {
   const sql = "SELECT * FROM brands";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2538,7 +2538,7 @@ app.get("/brandsdata", (req, res) => {
   });
 });
 
-app.delete("/deletebrands/:id", (req, res) => {
+app.delete("/api/deletebrands/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from brands where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2549,7 +2549,7 @@ app.delete("/deletebrands/:id", (req, res) => {
   });
 });
 
-app.get("/searchbrand/:value", (req, res) => {
+app.get("/api/searchbrand/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM brands where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2560,7 +2560,7 @@ app.get("/searchbrand/:value", (req, res) => {
   });
 });
 
-app.put("/brandupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/brandupdate/:id", upload.single("file"), (req, res) => {
   const {
     name,
     permalink,
@@ -2599,7 +2599,7 @@ app.put("/brandupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/brandssomedata/:id", (req, res) => {
+app.get("/api/brandssomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM brands where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2610,7 +2610,7 @@ app.get("/brandssomedata/:id", (req, res) => {
   });
 });
 
-app.post("/productoptions", (req, res) => {
+app.post("/api/productoptions", (req, res) => {
   let { name, date, status, featured, options } = req.body;
 
   if (!options || options === "null" || options.length === 0) {
@@ -2631,7 +2631,7 @@ app.post("/productoptions", (req, res) => {
   });
 });
 
-app.get("/productoptiondata", (req, res) => {
+app.get("/api/productoptiondata", (req, res) => {
   const sql = "SELECT * FROM productoptions";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2641,7 +2641,7 @@ app.get("/productoptiondata", (req, res) => {
   });
 });
 
-app.delete("/deleteproductoptions/:id", (req, res) => {
+app.delete("/api/deleteproductoptions/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from productoptions where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2652,7 +2652,7 @@ app.delete("/deleteproductoptions/:id", (req, res) => {
   });
 });
 
-app.get("/searchproductoption/:value", (req, res) => {
+app.get("/api/searchproductoption/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM productoptions where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2663,7 +2663,7 @@ app.get("/searchproductoption/:value", (req, res) => {
   });
 });
 
-app.put("/updateproductoptions/:id", (req, res) => {
+app.put("/api/updateproductoptions/:id", (req, res) => {
   const { name, date, status, featured, options } = req.body;
   const sql =
     "UPDATE productoptions SET name = ?, date = ?, status = ?, featured = ?, options = ? WHERE id = ?";
@@ -2680,7 +2680,7 @@ app.put("/updateproductoptions/:id", (req, res) => {
   );
 });
 
-app.get("/optionsomedata/:id", (req, res) => {
+app.get("/api/optionsomedata/:id", (req, res) => {
   const sql =
     "SELECT id, name, date, status, featured, options FROM productoptions WHERE id = ?";
   db.query(sql, [req.params.id], (err, results) => {
@@ -2747,7 +2747,7 @@ app.post(
   }
 );
 
-app.get("/attributesdata", (req, res) => {
+app.get("/api/attributesdata", (req, res) => {
   const sql = "SELECT * FROM productattribute order by id desc";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2757,7 +2757,7 @@ app.get("/attributesdata", (req, res) => {
   });
 });
 
-app.get("/attributesdata1", (req, res) => {
+app.get("/api/attributesdata1", (req, res) => {
   const sql = "SELECT * FROM productattribute order by id desc limit 5";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -2767,7 +2767,7 @@ app.get("/attributesdata1", (req, res) => {
   });
 });
 
-app.delete("/attrubutedelete/:id", (req, res) => {
+app.delete("/api/attrubutedelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from productattribute where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2778,7 +2778,7 @@ app.delete("/attrubutedelete/:id", (req, res) => {
   });
 });
 
-app.get("/attributesearch/:value", (req, res) => {
+app.get("/api/attributesearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM productattribute where title like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -2856,7 +2856,7 @@ app.put(
   }
 );
 
-app.get("/attributesomedata/:id", (req, res) => {
+app.get("/api/attributesomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM productattribute where id=?";
   db.query(sql, [id], (err, result) => {
@@ -2867,7 +2867,7 @@ app.get("/attributesomedata/:id", (req, res) => {
   });
 });
 
-app.post("/flashsales", (req, res) => {
+app.post("/api/flashsales", (req, res) => {
   const { name, start_date, end_date, status, products } = req.body;
 
   const saleSql = `
@@ -2920,7 +2920,7 @@ app.post("/flashsales", (req, res) => {
   });
 });
 
-app.get("/flashsalesdata", (req, res) => {
+app.get("/api/flashsalesdata", (req, res) => {
   const salesSql = "SELECT * FROM flashsales";
   db.query(salesSql, (err, results) => {
     if (err) {
@@ -2931,7 +2931,7 @@ app.get("/flashsalesdata", (req, res) => {
   });
 });
 
-app.delete("/flashsaledelete/:id", (req, res) => {
+app.delete("/api/flashsaledelete/:id", (req, res) => {
   const flashsaleId = req.params.id;
 
   db.getConnection((err, connection) => {
@@ -2995,7 +2995,7 @@ app.delete("/flashsaledelete/:id", (req, res) => {
   });
 });
 
-app.get("/flashsalesmaindata", (req, res) => {
+app.get("/api/flashsalesmaindata", (req, res) => {
   const sql = `
     SELECT 
       f.*, 
@@ -3014,7 +3014,7 @@ app.get("/flashsalesmaindata", (req, res) => {
   });
 });
 
-app.get("/searchflash/:value", (req, res) => {
+app.get("/api/searchflash/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM flashsales where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -3025,7 +3025,7 @@ app.get("/searchflash/:value", (req, res) => {
   });
 });
 
-app.put("/updateflashsales/:id", (req, res) => {
+app.put("/api/updateflashsales/:id", (req, res) => {
   const id = req.params.id;
   const { name, start_date, status, end_date, products } = req.body;
 
@@ -3082,7 +3082,7 @@ app.put("/updateflashsales/:id", (req, res) => {
   );
 });
 
-app.get("/flashsalessome/:id", (req, res) => {
+app.get("/api/flashsalessome/:id", (req, res) => {
   const id = req.params.id;
   const flashSaleSql = "SELECT * FROM flashsales WHERE id = ?";
   const productsSql =
@@ -3111,7 +3111,7 @@ app.get("/flashsalessome/:id", (req, res) => {
   });
 });
 
-app.get("/allflashdata", (req, res) => {
+app.get("/api/allflashdata", (req, res) => {
   const salesSql = "SELECT * FROM flashsales";
   const productsSql = "SELECT * FROM flashsale_products";
   db.query(salesSql, (err, sales) => {
@@ -3123,7 +3123,7 @@ app.get("/allflashdata", (req, res) => {
   });
 });
 
-app.post("/usersubmit", upload.single("file"), (req, res) => {
+app.post("/api/usersubmit", upload.single("file"), (req, res) => {
   const {
     first_name,
     last_name,
@@ -3166,7 +3166,7 @@ app.post("/usersubmit", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/customersdata", (req, res) => {
+app.get("/api/customersdata", (req, res) => {
   const sql = "SELECT * FROM customers";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -3176,7 +3176,7 @@ app.get("/customersdata", (req, res) => {
   });
 });
 
-app.get("/export-customerdata", async (req, res) => {
+app.get("/api/export-customerdata", async (req, res) => {
   try {
     db.query("select * from user", async (err, results) => {
       if (err) {
@@ -3216,7 +3216,7 @@ app.get("/export-customerdata", async (req, res) => {
   }
 });
 
-app.get("/customersearch/:value", (req, res) => {
+app.get("/api/customersearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM user where first_name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -3227,7 +3227,7 @@ app.get("/customersearch/:value", (req, res) => {
   });
 });
 
-app.delete("/customerdelete/:id", (req, res) => {
+app.delete("/api/customerdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from user where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3238,7 +3238,7 @@ app.delete("/customerdelete/:id", (req, res) => {
   });
 });
 
-app.put("/userupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/userupdate/:id", upload.single("file"), (req, res) => {
   const {
     first_name,
     last_name,
@@ -3316,7 +3316,7 @@ app.put("/userupdate/:id", upload.single("file"), (req, res) => {
   }
 });
 
-app.put("/passwordupdate", async (req, res) => {
+app.put("/api/passwordupdate", async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     console.log("Received Token:", token);
@@ -3375,7 +3375,7 @@ app.put("/passwordupdate", async (req, res) => {
   }
 });
 
-app.get("/somecustomerdata/:id", (req, res) => {
+app.get("/api/somecustomerdata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM user where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3386,7 +3386,7 @@ app.get("/somecustomerdata/:id", (req, res) => {
   });
 });
 
-app.post("/customerpopupsubmit", (req, res) => {
+app.post("/api/customerpopupsubmit", (req, res) => {
   const { name, phone, email, country, state, city, address } = req.body;
   const value = [[name, phone, email, country, state, city, address]];
   const sql =
@@ -3399,7 +3399,7 @@ app.post("/customerpopupsubmit", (req, res) => {
   });
 });
 
-app.get("/customerpopupdata", (req, res) => {
+app.get("/api/customerpopupdata", (req, res) => {
   const sql = "SELECT * FROM customerpopup";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -3409,7 +3409,7 @@ app.get("/customerpopupdata", (req, res) => {
   });
 });
 
-app.post("/reviewdatasubmit", (req, res) => {
+app.post("/api/reviewdatasubmit", (req, res) => {
   const contentType = req.headers["content-type"] || "";
   if (!contentType.includes("multipart/form-data")) {
     return res.status(400).send("Invalid content-type");
@@ -3462,7 +3462,7 @@ app.post("/reviewdatasubmit", (req, res) => {
   });
 });
 
-app.get("/reviewdata", (req, res) => {
+app.get("/api/reviewdata", (req, res) => {
   const sql = "SELECT * FROM reviews order by id desc";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -3472,7 +3472,7 @@ app.get("/reviewdata", (req, res) => {
   });
 });
 
-app.delete("/reviewdelete/:id", (req, res) => {
+app.delete("/api/reviewdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from reviews where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3483,7 +3483,7 @@ app.delete("/reviewdelete/:id", (req, res) => {
   });
 });
 
-app.get("/reviewsearch/:value", (req, res) => {
+app.get("/api/reviewsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM reviews where product_name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -3494,7 +3494,7 @@ app.get("/reviewsearch/:value", (req, res) => {
   });
 });
 
-app.get("/reviewsomedata/:id", (req, res) => {
+app.get("/api/reviewsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM reviews where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3505,7 +3505,7 @@ app.get("/reviewsomedata/:id", (req, res) => {
   });
 });
 
-app.delete("/deleteviewreview/:id", (req, res) => {
+app.delete("/api/deleteviewreview/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from reviews where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3516,7 +3516,7 @@ app.delete("/deleteviewreview/:id", (req, res) => {
   });
 });
 
-app.post("/discountsubmit", (req, res) => {
+app.post("/api/discountsubmit", (req, res) => {
   const {
     discounttype,
     couponcode,
@@ -3549,7 +3549,7 @@ app.post("/discountsubmit", (req, res) => {
   });
 });
 
-app.get("/discountdata", (req, res) => {
+app.get("/api/discountdata", (req, res) => {
   const sql = "SELECT * FROM discounts";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -3559,7 +3559,7 @@ app.get("/discountdata", (req, res) => {
   });
 });
 
-app.delete("/discountdelete/:id", (req, res) => {
+app.delete("/api/discountdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from discounts where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3570,7 +3570,7 @@ app.delete("/discountdelete/:id", (req, res) => {
   });
 });
 
-app.get("/discountsearch/:value", (req, res) => {
+app.get("/api/discountsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM discounts where couponcode like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -3581,7 +3581,7 @@ app.get("/discountsearch/:value", (req, res) => {
   });
 });
 
-app.put("/discountupdate/:id", (req, res) => {
+app.put("/api/discountupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update discounts set ? where id=?";
@@ -3593,7 +3593,7 @@ app.put("/discountupdate/:id", (req, res) => {
   });
 });
 
-app.get("/discountsomedata/:id", (req, res) => {
+app.get("/api/discountsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM discounts where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3604,7 +3604,7 @@ app.get("/discountsomedata/:id", (req, res) => {
   });
 });
 
-app.post("/productpage", upload.single("file"), (req, res) => {
+app.post("/api/productpage", upload.single("file"), (req, res) => {
   const {
     name,
     permalink,
@@ -3694,7 +3694,7 @@ app.post("/productpage", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/productpagedata", (req, res) => {
+app.get("/api/productpagedata", (req, res) => {
   const searchQuery = req.query.search ? req.query.search : "";
   const sql = "SELECT * FROM products WHERE name LIKE ?";
   db.query(sql, [`%${searchQuery}%`], (err, result) => {
@@ -3706,7 +3706,7 @@ app.get("/productpagedata", (req, res) => {
   });
 });
 
-app.post("/combinedfilter", (req, res) => {
+app.post("/api/combinedfilter", (req, res) => {
   const {
     brands,
     tags,
@@ -3803,7 +3803,7 @@ app.post("/combinedfilter", (req, res) => {
   });
 });
 
-app.delete("/deleteproductsdata/:id", (req, res) => {
+app.delete("/api/deleteproductsdata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from products where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3814,7 +3814,7 @@ app.delete("/deleteproductsdata/:id", (req, res) => {
   });
 });
 
-app.get("/productsearch/:value", (req, res) => {
+app.get("/api/productsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM products where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -3825,7 +3825,7 @@ app.get("/productsearch/:value", (req, res) => {
   });
 });
 
-app.put("/productupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/productupdate/:id", upload.single("file"), (req, res) => {
   const {
     name,
     permalink,
@@ -3912,7 +3912,7 @@ app.put("/productupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/productsomedata/:id", (req, res) => {
+app.get("/api/productsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM products where id=?";
   db.query(sql, [id], (err, result) => {
@@ -3923,7 +3923,7 @@ app.get("/productsomedata/:id", (req, res) => {
   });
 });
 
-app.put("/productpriceupdate/:id", (req, res) => {
+app.put("/api/productpriceupdate/:id", (req, res) => {
   const { cost, price, price_sale } = req.body;
   const { id } = req.params;
   if (cost === undefined || price === undefined || price_sale === undefined) {
@@ -3940,7 +3940,7 @@ app.put("/productpriceupdate/:id", (req, res) => {
   });
 });
 
-app.post("/product-category", upload.single("file"), async (req, res) => {
+app.post("/api/product-category", upload.single("file"), async (req, res) => {
   try {
     const payload = {};
     const fields = [
@@ -3984,7 +3984,7 @@ app.post("/product-category", upload.single("file"), async (req, res) => {
   }
 });
 
-app.get("/productcatdata", (req, res) => {
+app.get("/api/productcatdata", (req, res) => {
   const sql = "select *from product_category";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -3994,7 +3994,7 @@ app.get("/productcatdata", (req, res) => {
   });
 });
 
-app.delete("/categoriesdelete/:id", (req, res) => {
+app.delete("/api/categoriesdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from product_category where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4005,7 +4005,7 @@ app.delete("/categoriesdelete/:id", (req, res) => {
   });
 });
 
-app.put("/categoriesupdate/:id", upload.single("file"), (req, res) => {
+app.put("/api/categoriesupdate/:id", upload.single("file"), (req, res) => {
   const id = req.params.id;
   const {
     name,
@@ -4043,7 +4043,7 @@ app.put("/categoriesupdate/:id", upload.single("file"), (req, res) => {
   });
 });
 
-app.put("/productinventory/:id", (req, res) => {
+app.put("/api/productinventory/:id", (req, res) => {
   const { minimumorder } = req.body;
   const { id } = req.params;
   if (minimumorder === undefined) {
@@ -4065,7 +4065,7 @@ app.put("/productinventory/:id", (req, res) => {
   });
 });
 
-app.get("/exportexcel-productdata", async (req, res) => {
+app.get("/api/exportexcel-productdata", async (req, res) => {
   try {
     db.query("SELECT * FROM products", async (err, results) => {
       if (err) {
@@ -4106,7 +4106,7 @@ app.get("/exportexcel-productdata", async (req, res) => {
   }
 });
 
-app.post("/menusubmit", (req, res) => {
+app.post("/api/menusubmit", (req, res) => {
   const { name, locations, items, date, status } = req.body;
   const value = [[name, locations, items, date, status]];
   const sql = "insert into menus(name,locations,items,date,status)values ?";
@@ -4118,7 +4118,7 @@ app.post("/menusubmit", (req, res) => {
   });
 });
 
-app.get("/menusdata", (req, res) => {
+app.get("/api/menusdata", (req, res) => {
   const sql = "SELECT * FROM menus";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4128,7 +4128,7 @@ app.get("/menusdata", (req, res) => {
   });
 });
 
-app.get("/menusearch/:value", (req, res) => {
+app.get("/api/menusearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM menus where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -4139,7 +4139,7 @@ app.get("/menusearch/:value", (req, res) => {
   });
 });
 
-app.delete("/menusdelete/:id", (req, res) => {
+app.delete("/api/menusdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from menus where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4150,7 +4150,7 @@ app.delete("/menusdelete/:id", (req, res) => {
   });
 });
 
-app.get("/menusomedata/:id", (req, res) => {
+app.get("/api/menusomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM menus where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4161,7 +4161,7 @@ app.get("/menusomedata/:id", (req, res) => {
   });
 });
 
-app.put("/menusupdate/:id", (req, res) => {
+app.put("/api/menusupdate/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update menus set ? where id=?";
@@ -4173,7 +4173,7 @@ app.put("/menusupdate/:id", (req, res) => {
   });
 });
 
-app.get("/order-export", async (req, res) => {
+app.get("/api/order-export", async (req, res) => {
   try {
     db.query(
       `
@@ -4220,7 +4220,7 @@ app.get("/order-export", async (req, res) => {
   }
 });
 
-app.post("/userdashboard", (req, res) => {
+app.post("/api/userdashboard", (req, res) => {
   const { name, phone, email, country, state, city, address } = req.body;
   const value = [[name, phone, email, country, state, city, address]];
   const sql =
@@ -4233,7 +4233,7 @@ app.post("/userdashboard", (req, res) => {
   });
 });
 
-app.get("/userdashboarddata", (req, res) => {
+app.get("/api/userdashboarddata", (req, res) => {
   const sql = "SELECT * FROM dashboard";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4243,7 +4243,7 @@ app.get("/userdashboarddata", (req, res) => {
   });
 });
 
-app.delete("/deleteuser/:id", (req, res) => {
+app.delete("/api/deleteuser/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from dashboard where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4254,7 +4254,7 @@ app.delete("/deleteuser/:id", (req, res) => {
   });
 });
 
-app.put("/dashboardedit/:id", (req, res) => {
+app.put("/api/dashboardedit/:id", (req, res) => {
   const id = req.params.id;
   const data = req.body;
   const sql = "update dashboard set ? where id=?";
@@ -4266,7 +4266,7 @@ app.put("/dashboardedit/:id", (req, res) => {
   });
 });
 
-app.get("/dashboardsome/:id", (req, res) => {
+app.get("/api/dashboardsome/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM dashboard where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4277,7 +4277,7 @@ app.get("/dashboardsome/:id", (req, res) => {
   });
 });
 
-app.put("/userupdated/:id", (req, res) => {
+app.put("/api/userupdated/:id", (req, res) => {
   const { first_name, last_name, dob, phone_number } = req.body;
   if (!first_name || !last_name || !dob || !phone_number) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -4301,7 +4301,7 @@ app.put("/userupdated/:id", (req, res) => {
   );
 });
 
-app.put("/changepassword/:id", (req, res) => {
+app.put("/api/changepassword/:id", (req, res) => {
   const { currentPassword, password } = req.body;
   const userId = req.params.id;
   const sql = "SELECT * FROM user WHERE id = ?";
@@ -4330,7 +4330,7 @@ app.put("/changepassword/:id", (req, res) => {
   });
 });
 
-app.post("/vendorshop", (req, res) => {
+app.post("/api/vendorshop", (req, res) => {
   const { shop_name, shop_url, shop_phone } = req.body;
   const value = [[shop_name, shop_url, shop_phone]];
   const sql = "insert into vendor(shop_name, shop_url, shop_phone)values ?";
@@ -4342,7 +4342,7 @@ app.post("/vendorshop", (req, res) => {
   });
 });
 
-app.get("/vendordata", (req, res) => {
+app.get("/api/vendordata", (req, res) => {
   const sql = "SELECT * FROM dashboard";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4352,7 +4352,7 @@ app.get("/vendordata", (req, res) => {
   });
 });
 
-app.post("/addcart", (req, res) => {
+app.post("/api/addcart", (req, res) => {
   let { user_id, name, store, price, price_sale, image, quantity } = req.body;
 
   const qty = Math.max(1, parseInt(quantity, 10) || 1);
@@ -4438,7 +4438,7 @@ app.post("/addcart", (req, res) => {
   });
 });
 
-app.get("/allcartdata", (req, res) => {
+app.get("/api/allcartdata", (req, res) => {
   const sql = "SELECT * FROM cart";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4448,7 +4448,7 @@ app.get("/allcartdata", (req, res) => {
   });
 });
 
-app.get("/dashboardsome/:id", (req, res) => {
+app.get("/api/dashboardsome/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM cart";
   db.query(sql, [id], (err, result) => {
@@ -4459,7 +4459,7 @@ app.get("/dashboardsome/:id", (req, res) => {
   });
 });
 
-app.delete("/deletecart/:id", (req, res) => {
+app.delete("/api/deletecart/:id", (req, res) => {
   const id = req.params.id;
   const sql = "DELETE FROM cart WHERE id=?";
   db.query(sql, [id], (err, result) => {
@@ -4480,7 +4480,7 @@ app.delete("/deletecart/:id", (req, res) => {
   });
 });
 
-app.delete("/deleteorder", (req, res) => {
+app.delete("/api/deleteorder", (req, res) => {
   const sql = "DELETE FROM cart";
   db.query(sql, (err, result) => {
     if (err) {
@@ -4492,7 +4492,7 @@ app.delete("/deleteorder", (req, res) => {
   });
 });
 
-app.get("/customerdata/:id", (req, res) => {
+app.get("/api/customerdata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "SELECT * FROM cart where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4503,7 +4503,7 @@ app.get("/customerdata/:id", (req, res) => {
   });
 });
 
-app.get("/cartsearch/:value", (req, res) => {
+app.get("/api/cartsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM products where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -4514,7 +4514,7 @@ app.get("/cartsearch/:value", (req, res) => {
   });
 });
 
-app.post("/specification", (req, res) => {
+app.post("/api/specification", (req, res) => {
   const { name, description, date } = req.body;
   const value = [[name, description, date]];
   const sql = "insert into group1(name,description,date)values ?";
@@ -4526,7 +4526,7 @@ app.post("/specification", (req, res) => {
   });
 });
 
-app.get("/spceficationdata", (req, res) => {
+app.get("/api/spceficationdata", (req, res) => {
   const sql = "SELECT * FROM group1";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4536,7 +4536,7 @@ app.get("/spceficationdata", (req, res) => {
   });
 });
 
-app.delete("/specificationdelete/:id", (req, res) => {
+app.delete("/api/specificationdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from group1 where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4547,7 +4547,7 @@ app.delete("/specificationdelete/:id", (req, res) => {
   });
 });
 
-app.get("/specificationsearch/:value", (req, res) => {
+app.get("/api/specificationsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM group1 where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -4558,7 +4558,7 @@ app.get("/specificationsearch/:value", (req, res) => {
   });
 });
 
-app.get("/spceficationdatasome/:id", (req, res) => {
+app.get("/api/spceficationdatasome/:id", (req, res) => {
   let id = req.params.id;
   const sql = "SELECT * FROM group1 where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4569,7 +4569,7 @@ app.get("/spceficationdatasome/:id", (req, res) => {
   });
 });
 
-app.put("/spceficationupdate/:id", (req, res) => {
+app.put("/api/spceficationupdate/:id", (req, res) => {
   let id = req.params.id;
   const data = req.body;
   const sql = "UPDATE group1 set ? WHERE id=?";
@@ -4582,7 +4582,7 @@ app.put("/spceficationupdate/:id", (req, res) => {
   });
 });
 
-app.post("/specificationtable", (req, res) => {
+app.post("/api/specificationtable", (req, res) => {
   const { name, description, date, display } = req.body;
   const value = [[name, description, date, display]];
   const sql = "INSERT INTO group2 (name, description, date, display) VALUES ?";
@@ -4595,7 +4595,7 @@ app.post("/specificationtable", (req, res) => {
   });
 });
 
-app.get("/spceficationtabledata", (req, res) => {
+app.get("/api/spceficationtabledata", (req, res) => {
   const sql = "SELECT * FROM group2";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4605,7 +4605,7 @@ app.get("/spceficationtabledata", (req, res) => {
   });
 });
 
-app.delete("/specificationdeletetable/:id", (req, res) => {
+app.delete("/api/specificationdeletetable/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from group2 where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4616,7 +4616,7 @@ app.delete("/specificationdeletetable/:id", (req, res) => {
   });
 });
 
-app.get("/spceficationdatasometable/:id", (req, res) => {
+app.get("/api/spceficationdatasometable/:id", (req, res) => {
   let id = req.params.id;
   const sql = "SELECT * FROM group2 where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4627,7 +4627,7 @@ app.get("/spceficationdatasometable/:id", (req, res) => {
   });
 });
 
-app.put("/spceficationupdatetable/:id", (req, res) => {
+app.put("/api/spceficationupdatetable/:id", (req, res) => {
   let id = req.params.id;
   const data = req.body;
   const sql = "UPDATE group2 set ? WHERE id=?";
@@ -4640,7 +4640,7 @@ app.put("/spceficationupdatetable/:id", (req, res) => {
   });
 });
 
-app.get("/specificationtablesearch/:value", (req, res) => {
+app.get("/api/specificationtablesearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM group2 where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -4651,7 +4651,7 @@ app.get("/specificationtablesearch/:value", (req, res) => {
   });
 });
 
-app.post("/specificationattribute", (req, res) => {
+app.post("/api/specificationattribute", (req, res) => {
   const { groupname, name, fieldtype, valuegroup, date } = req.body;
   const value = [[groupname, name, fieldtype, valuegroup, date]];
   const sql =
@@ -4665,7 +4665,7 @@ app.post("/specificationattribute", (req, res) => {
   });
 });
 
-app.get("/spceficationattributedata", (req, res) => {
+app.get("/api/spceficationattributedata", (req, res) => {
   const sql = "SELECT * FROM group3";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4675,7 +4675,7 @@ app.get("/spceficationattributedata", (req, res) => {
   });
 });
 
-app.delete("/specificationdeleteattribute/:id", (req, res) => {
+app.delete("/api/specificationdeleteattribute/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from group3 where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4686,7 +4686,7 @@ app.delete("/specificationdeleteattribute/:id", (req, res) => {
   });
 });
 
-app.get("/spceficationdatasomeattribute/:id", (req, res) => {
+app.get("/api/spceficationdatasomeattribute/:id", (req, res) => {
   let id = req.params.id;
   const sql = "SELECT * FROM group3 where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4696,7 +4696,7 @@ app.get("/spceficationdatasomeattribute/:id", (req, res) => {
     }
   });
 });
-app.put("/spceficationupdateattribute/:id", (req, res) => {
+app.put("/api/spceficationupdateattribute/:id", (req, res) => {
   let id = req.params.id;
   const data = req.body;
   const sql = "UPDATE group3 set ? WHERE id=?";
@@ -4709,7 +4709,7 @@ app.put("/spceficationupdateattribute/:id", (req, res) => {
   });
 });
 
-app.get("/specificationattributesearch/:value", (req, res) => {
+app.get("/api/specificationattributesearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM group3 where name like ?";
   db.query(sql, ["%" + data + "%"], (err, result) => {
@@ -4720,7 +4720,7 @@ app.get("/specificationattributesearch/:value", (req, res) => {
   });
 });
 
-app.post("/wishlistpost", (req, res) => {
+app.post("/api/wishlistpost", (req, res) => {
   const {
     product_name,
     image,
@@ -4770,7 +4770,7 @@ app.post("/wishlistpost", (req, res) => {
   });
 });
 
-app.get("/wishlistdata", (req, res) => {
+app.get("/api/wishlistdata", (req, res) => {
   const sql = "SELECT * FROM wishlist";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4780,7 +4780,7 @@ app.get("/wishlistdata", (req, res) => {
   });
 });
 
-app.delete("/wishlistdelete/:id", (req, res) => {
+app.delete("/api/wishlistdelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from wishlist where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4791,7 +4791,7 @@ app.delete("/wishlistdelete/:id", (req, res) => {
   });
 });
 
-app.post("/adminlogin", (req, res) => {
+app.post("/api/adminlogin", (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res
@@ -4857,7 +4857,7 @@ app.post("/adminlogin", (req, res) => {
   });
 });
 
-app.post("/adminregister", async (req, res) => {
+app.post("/api/adminregister", async (req, res) => {
   const { first_name, last_name, email, role, username, password } = req.body;
 
   if (!first_name || !last_name || !email || !role || !username || !password) {
@@ -4893,7 +4893,7 @@ app.post("/adminregister", async (req, res) => {
   }
 });
 
-app.get("/alladmindata", (req, res) => {
+app.get("/api/alladmindata", (req, res) => {
   const sql = "select *from adminlogin";
   db.query(sql, (err, result) => {
     if (err) throw err;
@@ -4903,7 +4903,7 @@ app.get("/alladmindata", (req, res) => {
   });
 });
 
-app.delete("/admindelete/:id", (req, res) => {
+app.delete("/api/admindelete/:id", (req, res) => {
   const id = req.params.id;
   const sql = "delete from adminlogin where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4914,7 +4914,7 @@ app.delete("/admindelete/:id", (req, res) => {
   });
 });
 
-app.put("/adminupdate/:id", async (req, res) => {
+app.put("/api/adminupdate/:id", async (req, res) => {
   const id = req.params.id;
   const { currentPassword, confirmpassword, ...updateData } = req.body;
   db.query(
@@ -4954,7 +4954,7 @@ app.put("/adminupdate/:id", async (req, res) => {
   );
 });
 
-app.get("/adminsomedata/:id", (req, res) => {
+app.get("/api/adminsomedata/:id", (req, res) => {
   const id = req.params.id;
   const sql = "select * from adminlogin where id=?";
   db.query(sql, [id], (err, result) => {
@@ -4965,7 +4965,7 @@ app.get("/adminsomedata/:id", (req, res) => {
   });
 });
 
-app.get("/adminsearch/:value", (req, res) => {
+app.get("/api/adminsearch/:value", (req, res) => {
   const data = req.params.value;
   const sql = "SELECT * FROM adminlogin WHERE username LIKE ? OR email LIKE ?";
   db.query(sql, [`%${data}%`, `%${data}%`], (err, result) => {
@@ -5005,7 +5005,7 @@ function sendResetPasswordEmail(email, resetToken) {
   });
 }
 
-app.post("/forgot-password", (req, res) => {
+app.post("/api/forgot-password", (req, res) => {
   const { email } = req.body;
   const sql = "SELECT * FROM adminlogin WHERE username = ?";
   db.query(sql, [email], (err, result) => {
@@ -5031,7 +5031,7 @@ app.post("/forgot-password", (req, res) => {
   });
 });
 
-app.post("/reset-password", (req, res) => {
+app.post("/api/reset-password", (req, res) => {
   const { token, newPassword } = req.body;
   const sql =
     "SELECT * FROM adminlogin WHERE reset_token = ? AND reset_token_expiration > ?";
@@ -5061,7 +5061,7 @@ app.post("/reset-password", (req, res) => {
   });
 });
 
-app.get("/forgot-password", (req, res) => {
+app.get("/api/forgot-password", (req, res) => {
   const { username } = req.body;
   const sql = "SELECT * FROM adminlogin where username=?";
   db.query(sql, [username], (err, result) => {
@@ -5072,7 +5072,7 @@ app.get("/forgot-password", (req, res) => {
   });
 });
 
-app.get("/get-font-settings", (req, res) => {
+app.get("/api/get-font-settings", (req, res) => {
   db.query("SELECT * FROM settings LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5091,7 +5091,7 @@ app.get("/get-font-settings", (req, res) => {
   });
 });
 
-app.post("/update-font-settings", (req, res) => {
+app.post("/api/update-font-settings", (req, res) => {
   const {
     font_family,
     body_font_size,
@@ -5192,7 +5192,7 @@ app.post(
   }
 );
 
-app.get("/get-theme-logo", (req, res) => {
+app.get("/api/get-theme-logo", (req, res) => {
   db.query("SELECT * FROM logo LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5202,7 +5202,7 @@ app.get("/get-theme-logo", (req, res) => {
   });
 });
 
-app.post("/breadcrumb-settings", upload.single("file"), (req, res) => {
+app.post("/api/breadcrumb-settings", upload.single("file"), (req, res) => {
   let {
     enable_breadcrumb,
     breadcrumb_style,
@@ -5278,7 +5278,7 @@ app.post("/breadcrumb-settings", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/get-theme-breadcrumb", (req, res) => {
+app.get("/api/get-theme-breadcrumb", (req, res) => {
   db.query("SELECT * FROM breadcrumb LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5288,7 +5288,7 @@ app.get("/get-theme-breadcrumb", (req, res) => {
   });
 });
 
-app.post("/themenewspost", upload.single("file"), (req, res) => {
+app.post("/api/themenewspost", upload.single("file"), (req, res) => {
   let {
     news_popup,
     popup_title,
@@ -5337,7 +5337,7 @@ app.post("/themenewspost", upload.single("file"), (req, res) => {
   });
 });
 
-app.get("/themenewsdata", (req, res) => {
+app.get("/api/themenewsdata", (req, res) => {
   db.query("SELECT * FROM themenews LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5347,7 +5347,7 @@ app.get("/themenewsdata", (req, res) => {
   });
 });
 
-app.post("/subscribe", (req, res) => {
+app.post("/api/subscribe", (req, res) => {
   const subscription = req.body;
   const { endpoint, keys } = subscription;
   const ipAddress = req.headers["x-forwarded-for"]
@@ -5398,7 +5398,7 @@ function sendPushNotification(message) {
   });
 }
 
-app.get("/vapidPublicKey", (req, res) => {
+app.get("/api/vapidPublicKey", (req, res) => {
   res.set({
     "Content-Type": "text/plain; charset=utf-8",
     "Cache-Control": "no-store",
@@ -5447,7 +5447,7 @@ function sendPushNotification(message) {
 }
 module.exports = { sendPushNotification };
 
-app.post("/updateSettings", (req, res) => {
+app.post("/api/updateSettings", (req, res) => {
   const fieldsToUpdate = {};
   const allowedFields = [
     "stickyHeader",
@@ -5491,7 +5491,7 @@ app.post("/updateSettings", (req, res) => {
   });
 });
 
-app.get("/themestylesdata", (req, res) => {
+app.get("/api/themestylesdata", (req, res) => {
   db.query("SELECT * FROM header LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5596,7 +5596,7 @@ app.post(
   }
 );
 
-app.get("/themeoptionsdata", (req, res) => {
+app.get("/api/themeoptionsdata", (req, res) => {
   db.query("SELECT * FROM theme_options LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5606,7 +5606,7 @@ app.get("/themeoptionsdata", (req, res) => {
   });
 });
 
-app.post("/save-custom-code", (req, res) => {
+app.post("/api/save-custom-code", (req, res) => {
   const {
     custom_css,
     header_html,
@@ -5648,7 +5648,7 @@ app.post("/save-custom-code", (req, res) => {
   );
 });
 
-app.get("/get-custom-code", (req, res) => {
+app.get("/api/get-custom-code", (req, res) => {
   db.query("SELECT * FROM custom_code LIMIT 1", (err, results) => {
     if (err) return res.status(500).json(err);
     res.json(
@@ -5665,7 +5665,7 @@ app.get("/get-custom-code", (req, res) => {
   });
 });
 
-app.post("/ads-settings", adsUpload.single("adsTxtFile"), (req, res) => {
+app.post("/api/ads-settings", adsUpload.single("adsTxtFile"), (req, res) => {
   const snippet = req.body.googleAdsenseAutoAdsSnippet;
   const clientId = req.body.googleAdsenseUnitAdsClientID;
   const file = req.file;
@@ -5714,7 +5714,7 @@ app.post("/ads-settings", adsUpload.single("adsTxtFile"), (req, res) => {
   res.json({ message: "Ads settings saved successfully!", settings });
 });
 
-app.delete("/ads-settings", (req, res) => {
+app.delete("/api/ads-settings", (req, res) => {
   const settingsFilePath = path.join(__dirname, "ads-settings.json");
   if (!fs.existsSync(settingsFilePath)) {
     return res.status(404).json({ message: "No settings found." });
@@ -5740,7 +5740,7 @@ app.delete("/ads-settings", (req, res) => {
   });
 });
 
-app.get("/ads-settings", (req, res) => {
+app.get("/api/ads-settings", (req, res) => {
   const settingsFile = path.join(__dirname, "ads-settings.json");
 
   if (fs.existsSync(settingsFile)) {
@@ -5757,7 +5757,7 @@ app.get("/ads-settings", (req, res) => {
   }
 });
 
-app.post("/cookiepost", (req, res) => {
+app.post("/api/cookiepost", (req, res) => {
   const {
     cookie,
     style,
@@ -5832,7 +5832,7 @@ app.post("/cookiepost", (req, res) => {
   });
 });
 
-app.get("/cookiesalldata", (req, res) => {
+app.get("/api/cookiesalldata", (req, res) => {
   db.query("SELECT * FROM cookie LIMIT 1", (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
     if (result.length === 0) {
@@ -5842,7 +5842,7 @@ app.get("/cookiesalldata", (req, res) => {
   });
 });
 
-app.get("/track", (req, res) => {
+app.get("/api/track", (req, res) => {
   let ip =
     req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
 
@@ -5883,7 +5883,7 @@ app.get("/track", (req, res) => {
   });
 });
 
-app.get("/analytics", (req, res) => {
+app.get("/api/analytics", (req, res) => {
   const query = `
     WITH allHours AS (
       SELECT 0 AS hour
@@ -5920,7 +5920,7 @@ app.get("/analytics", (req, res) => {
   });
 });
 
-app.get("/summary", (req, res) => {
+app.get("/api/summary", (req, res) => {
   const query = `
     SELECT 
       COUNT(DISTINCT ip_address) AS totalVisitors,
@@ -5937,7 +5937,7 @@ app.get("/summary", (req, res) => {
   });
 });
 
-app.get("/country-visits", (req, res) => {
+app.get("/api/country-visits", (req, res) => {
   const query = `
     SELECT country_code, COUNT(*) AS visitors
     FROM visits
@@ -5970,7 +5970,7 @@ async function fetchTranslation(original, lang) {
   return (rows[0] && rows[0].translated_text) || original;
 }
 
-app.post("/translate", async (req, res) => {
+app.post("/api/translate", async (req, res) => {
   try {
     const { texts, lang } = req.body;
 
@@ -5996,7 +5996,7 @@ app.post("/translate", async (req, res) => {
   }
 });
 
-app.get("/allthemesdata", (req, res) => {
+app.get("/api/allthemesdata", (req, res) => {
   const sql = "select *from themes";
   db.query(sql, (err, results) => {
     if (err) {
