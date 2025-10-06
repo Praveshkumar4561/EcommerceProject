@@ -1410,8 +1410,7 @@
         document.addEventListener("DOMContentLoaded", function () {
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
           const THUMBS_BASE = "/uploads/thumbs/";
-          const DISPLAY_W = 358;
-          const DISPLAY_H = 246;
+
           const sliderContainer = document.querySelector(
             ".category-slider-one"
           );
@@ -1441,10 +1440,13 @@
             img.alt = escapeText(altText || "image");
             img.loading = "lazy";
             img.decoding = "async";
-            img.width = DISPLAY_W;
-            img.height = DISPLAY_H;
-
             img.src = preferredThumbUrl(imgName);
+
+            // Maintain aspect ratio using CSS
+            img.style.width = "100%";
+            img.style.height = "auto";
+            img.style.objectFit = "cover"; // or "contain" if you want full image inside box
+            img.style.display = "block";
 
             img.addEventListener("error", function onErr() {
               img.removeEventListener("error", onErr);
@@ -1460,6 +1462,9 @@
 
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
+            imgWrap.style.width = "100%"; // make container responsive
+            imgWrap.style.aspectRatio = "358/246"; // preserve your design ratio
+            imgWrap.style.overflow = "hidden";
 
             const imgEl = makeImgElement(
               item.image,
@@ -1476,7 +1481,6 @@
             link.textContent = item.name || "Category";
 
             content.appendChild(link);
-
             wrap.appendChild(imgWrap);
             wrap.appendChild(content);
 
@@ -1510,6 +1514,7 @@
                 sliderContainer.appendChild(createCategoryItem(cat));
               });
 
+              // Initialize / refresh slider safely
               try {
                 if (typeof initCategorySlider === "function") {
                   initCategorySlider();
@@ -3136,7 +3141,11 @@
                   data-aos-duration="1600"
                 >
                   <h4 class="widget-title">Recent Post</h4>
-                  <div class="widget-content" id="recent-posts-container"></div>
+                  <div class="widget-content" id="recent-posts-container">
+                    <div class="build-pagination d-none">
+                      <ul></ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3349,7 +3358,12 @@
         let currentPage = 1;
 
         const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-        const pagUl = document.querySelector(".pesco-pagination ul");
+        const pagContainer = document.querySelector(".pesco-pagination");
+        let pagUl = pagContainer ? pagContainer.querySelector("ul") : null;
+        if (pagContainer && !pagUl) {
+          pagUl = document.createElement("ul");
+          pagContainer.appendChild(pagUl);
+        }
 
         const fmtDate2 = (iso) =>
           new Date(iso).toLocaleDateString("en-US", {
@@ -3392,6 +3406,8 @@
         }
 
         function buildPager() {
+          if (!pagUl) return;
+
           pagUl.innerHTML = `
                 <li><a href="#" data-page="${currentPage - 1}">
                   <i class="far fa-angle-left"></i>
@@ -3422,17 +3438,19 @@
         renderPage(currentPage);
         buildPager();
 
-        pagUl.parentElement.addEventListener("click", (e) => {
-          e.preventDefault();
-          const a = e.target.closest("a[data-page]");
-          if (!a) return;
-          const pg = +a.dataset.page;
-          if (pg < 1 || pg > totalPages || pg === currentPage) return;
-          currentPage = pg;
-          renderPage(pg);
-          buildPager();
-          if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-        });
+        if (pagUl && pagUl.parentElement) {
+          pagUl.parentElement.addEventListener("click", (e) => {
+            e.preventDefault();
+            const a = e.target.closest("a[data-page]");
+            if (!a) return;
+            const pg = +a.dataset.page;
+            if (pg < 1 || pg > totalPages || pg === currentPage) return;
+            currentPage = pg;
+            renderPage(pg);
+            buildPager();
+            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+          });
+        }
       });
     </script>
 
