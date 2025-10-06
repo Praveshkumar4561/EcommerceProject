@@ -3,9 +3,13 @@ const express = require("express");
 const path = require("path");
 const { SitemapStream, streamToPromise } = require("sitemap");
 const db = require("../db");
-const cors = require("cors");
+const ExcelJS = require("exceljs");
+const crypto = require("crypto");
 const multer = require("multer");
 const fs = require("fs");
+const salt = 10;
+const saltRounds = 10;
+const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
@@ -13,22 +17,18 @@ const jwt = require("jsonwebtoken");
 const webpush = require("web-push");
 const { initThemesTable } = require("../controllers/themeController");
 const themeRoutes = require("./themeRoutes");
-
 const router = express.Router();
 
-router.use(
-  cors({
-    origin: ["https://demo.webriefly.com"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: "Content-Type, Authorization",
-    credentials: true,
-  })
-);
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 router.use(cookieParser());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
+router.use("/themes", themeRoutes);
+router.use(
+  "/themes",
+  express.static(path.join(__dirname, "../themes"), { extensions: ["html"] })
+);
 
 const uploadDir = path.join(__dirname, "../src/image");
 const publicFolder = path.join(__dirname, "../frontend1/public");
@@ -72,7 +72,46 @@ router.use("/blogpostdata/src/image", express.static(uploadDir));
 router.use(express.static(path.join(__dirname, "../frontend1/public")));
 router.use(
   "/themes",
-  express.static(path.join(__dirname, "../themes"), { extensions: ["html"] })
+  express.static(path.join(__dirname, "themes"), { extensions: ["html"] })
+);
+
+router.use(
+  "/themes/static",
+  (req, res, next) => {
+    try {
+      let requestedPath = (req.path || req.url || "").split("?")[0];
+      requestedPath = decodeURIComponent(requestedPath).replace(/^\/+/, "");
+
+      const basePath = path.join(__dirname, "themes");
+      const fullPath = path.normalize(path.join(basePath, requestedPath));
+
+      if (!fullPath.startsWith(path.normalize(basePath + path.sep))) {
+        return res.status(403).send("Access denied");
+      }
+
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isDirectory()) {
+        const indexHtml = path.join(fullPath, "index.html");
+        if (fs.existsSync(indexHtml)) return res.sendFile(indexHtml);
+      }
+
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+        return res.sendFile(fullPath);
+      }
+
+      const maybeHtml = fullPath.endsWith(".html")
+        ? fullPath
+        : `${fullPath}.html`;
+      if (fs.existsSync(maybeHtml) && fs.statSync(maybeHtml).isFile()) {
+        return res.sendFile(maybeHtml);
+      }
+
+      return next();
+    } catch (err) {
+      console.error("Error serving static file (themes/static):", err);
+      return next(err);
+    }
+  },
+  express.static(path.join(__dirname, "themes"), { index: false })
 );
 
 const publicVapidKey =
@@ -125,6 +164,7 @@ let homepageSettings = {
   contactus: "",
   faqs: "",
 };
+
 router.get("/get-homepage", (req, res) => res.json({ homepageSettings }));
 router.post("/save-homepage", (req, res) => {
   const { homepage, aboutpage, shop, blog, contactus } = req.body;
@@ -194,11 +234,12 @@ const links = [
   { url: "/terms-condition", lastmodISO: getCurrentLastMod(), priority: 0.8 },
   { url: "/sitemap", lastmodISO: getCurrentLastMod(), priority: 1.0 },
 ];
+
 router.get("/sitemap.xml", async (req, res, next) => {
   try {
     res.header("Content-Type", "application/xml");
     const smStream = new SitemapStream({
-      hostname: "http://demo.webriefly.com",
+      hostname: "https://demo.webriefly.com",
     });
     links.forEach((link) => smStream.write(link));
     smStream.end();
@@ -208,46 +249,6 @@ router.get("/sitemap.xml", async (req, res, next) => {
     next(err);
   }
 });
-
-// let homepageSettings = {
-//   homepage: "",
-//   aboutpage: "",
-//   shop: "",
-//   blog: "",
-//   contactus: "",
-//   faqs: "",
-// };
-
-router.post("/save-homepage", (req, res) => {
-  const { homepage, aboutpage, shop, blog, contactus } = req.body;
-  homepageSettings = {
-    homepage: homepage || homepageSettings.homepage,
-    aboutpage: aboutpage || homepageSettings.aboutpage,
-    shop: shop || homepageSettings.shop,
-    blog: blog || homepageSettings.blog,
-    contactus: contactus || homepageSettings.contactus,
-  };
-  res.status(200).json({
-    message: "Homepage settings saved successfully",
-    homepageSettings,
-  });
-});
-
-// const verifyUser = (req, res, next) => {
-//   const token = req.cookies.token;
-//   if (!token) {
-//     return res.json({ Error: "You are not authenticated" });
-//   } else {
-//     jwt.verify(token, "jwt-secret-key", (err, decoded) => {
-//       if (err) {
-//         return res.json({ Error: "token is not correct" });
-//       } else {
-//         req.name = decoded.name;
-//         next();
-//       }
-//     });
-//   }
-// };
 
 router.get("/", verifyUser, (req, res) => {
   return res.json({ Status: "Success", name: req.name });
