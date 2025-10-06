@@ -438,6 +438,9 @@
                 <img
                   src="assets/images/logo/logo-main.png"
                   alt="Logo"
+                  width="236"
+                  height="54"
+                  style="width: 157px; height: auto; display: block"
                   loading="lazy"
                 />
               </a>
@@ -503,6 +506,9 @@
                 <img
                   src="assets/images/logo/logo-main.png"
                   alt="Logo"
+                  width="236"
+                  height="54"
+                  style="width: 157px; height: auto; display: block"
                   loading="lazy"
                 />
               </a>
@@ -881,7 +887,12 @@
                             alt="Hero Line"
                             width="284"
                             height="44"
-                            style="width: auto; height: auto; max-width: 100%"
+                            style="
+                              max-width: 100%;
+                              height: auto;
+                              width: auto;
+                              display: block;
+                            "
                             loading="lazy"
                           />
                         </li>
@@ -955,7 +966,12 @@
                             alt="Hero Line"
                             width="284"
                             height="44"
-                            style="width: auto; height: auto; max-width: 100%"
+                            style="
+                              max-width: 100%;
+                              height: auto;
+                              width: auto;
+                              display: block;
+                            "
                             loading="lazy"
                           />
                         </li>
@@ -1029,7 +1045,12 @@
                             alt="Hero Line"
                             width="284"
                             height="44"
-                            style="width: auto; height: auto; max-width: 100%"
+                            style="
+                              max-width: 100%;
+                              height: auto;
+                              width: auto;
+                              display: block;
+                            "
                             loading="lazy"
                           />
                         </li>
@@ -2947,7 +2968,11 @@
                   data-aos-duration="1600"
                 >
                   <h4 class="widget-title">Recent Post</h4>
-                  <div class="widget-content" id="recent-posts-container"></div>
+                  <div class="widget-content" id="recent-posts-container">
+                    <div class="build-pagination d-none">
+                      <ul></ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3158,7 +3183,12 @@
         let currentPage = 1;
 
         const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-        const pagUl = document.querySelector(".pesco-pagination ul");
+        const pagContainer = document.querySelector(".pesco-pagination");
+        let pagUl = pagContainer ? pagContainer.querySelector("ul") : null;
+        if (pagContainer && !pagUl) {
+          pagUl = document.createElement("ul");
+          pagContainer.appendChild(pagUl);
+        }
 
         const fmtDate2 = (iso) =>
           new Date(iso).toLocaleDateString("en-US", {
@@ -3201,11 +3231,14 @@
         }
 
         function buildPager() {
+          if (!pagUl) return;
+
           pagUl.innerHTML = `
                 <li><a href="#" data-page="${currentPage - 1}">
                   <i class="far fa-angle-left"></i>
                 </a></li>
               `;
+
           for (let i = 1; i <= totalPages; i++) {
             pagUl.insertAdjacentHTML(
               "beforeend",
@@ -3218,6 +3251,7 @@
                   </li>`
             );
           }
+
           pagUl.insertAdjacentHTML(
             "beforeend",
             `<li><a href="#" data-page="${currentPage + 1}">
@@ -3229,17 +3263,19 @@
         renderPage(currentPage);
         buildPager();
 
-        pagUl.parentElement.addEventListener("click", (e) => {
-          e.preventDefault();
-          const a = e.target.closest("a[data-page]");
-          if (!a) return;
-          const pg = +a.dataset.page;
-          if (pg < 1 || pg > totalPages || pg === currentPage) return;
-          currentPage = pg;
-          renderPage(pg);
-          buildPager();
-          if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-        });
+        if (pagUl && pagUl.parentElement) {
+          pagUl.parentElement.addEventListener("click", (e) => {
+            e.preventDefault();
+            const a = e.target.closest("a[data-page]");
+            if (!a) return;
+            const pg = +a.dataset.page;
+            if (pg < 1 || pg > totalPages || pg === currentPage) return;
+            currentPage = pg;
+            renderPage(pg);
+            buildPager();
+            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+          });
+        }
       });
     </script>
 
@@ -3350,15 +3386,16 @@
       });
     </script>
 
-    <div class="site-branding">
-      <a href="index.html" class="brand-logo">
-        <img src="assets/images/logo/logo-main.png" alt="Logo" loading="lazy" />
-      </a>
-    </div>
-
     <div class="site-branding d-lg-none d-block">
       <a href="index.html" class="brand-logo">
-        <img src="assets/images/logo/logo-main.png" alt="Logo" loading="lazy" />
+        <img
+          src="assets/images/logo/logo-main.png"
+          alt="Logo"
+          width="236"
+          height="54"
+          style="width: 157px; height: auto; display: block"
+          loading="lazy"
+        />
       </a>
     </div>
 
