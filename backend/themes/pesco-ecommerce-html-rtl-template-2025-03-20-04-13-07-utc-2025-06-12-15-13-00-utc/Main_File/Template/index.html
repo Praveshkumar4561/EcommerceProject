@@ -1292,117 +1292,19 @@
           data-aos-delay="20"
           data-aos-duration="1200"
         >
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-1.png"
-                alt="Man Shirts"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Man Shirts</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-2.png"
-                alt="Denim Jeans"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Denim Jeans</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-3.png"
-                alt="Casual Suit"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Casual Suit</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-4.png"
-                alt="Summer Dress"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Summer Dress</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-5.png"
-                alt="Sweaters"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Sweaters</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-6.png"
-                alt="Jackets"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Jackets</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-4.png"
-                alt="Summer Dress"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Summer Dress</a>
-            </div>
-          </div>
+          <div class="category-item style-one text-center"></div>
         </div>
       </section>
 
@@ -1431,11 +1333,12 @@
             if (!img) return originalUrl(img);
             if (/^https?:\/\//i.test(img)) return img;
             const fname = img.split("/").pop();
+            const height = Math.round((DISPLAY_H / DISPLAY_W) * width);
             return (
               THUMBS_BASE +
               width +
               "x" +
-              Math.round((DISPLAY_H / DISPLAY_W) * width) +
+              height +
               "/" +
               encodeURIComponent(fname)
             );
@@ -1450,6 +1353,7 @@
             img.height = DISPLAY_H;
 
             img.src = preferredThumbUrl(imgName, DISPLAY_W);
+
             img.srcset = `
       ${preferredThumbUrl(imgName, 358)} 358w,
       ${preferredThumbUrl(imgName, 716)} 716w
