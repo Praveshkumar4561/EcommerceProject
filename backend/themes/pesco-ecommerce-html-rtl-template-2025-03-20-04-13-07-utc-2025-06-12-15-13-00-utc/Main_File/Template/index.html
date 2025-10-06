@@ -1410,7 +1410,8 @@
         document.addEventListener("DOMContentLoaded", function () {
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
           const THUMBS_BASE = "/uploads/thumbs/";
-
+          const DISPLAY_W = 358;
+          const DISPLAY_H = 246;
           const sliderContainer = document.querySelector(
             ".category-slider-one"
           );
@@ -1426,13 +1427,18 @@
             return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
           }
 
-          function preferredThumbUrl(img) {
+          function preferredThumbUrl(img, width = DISPLAY_W) {
             if (!img) return originalUrl(img);
             if (/^https?:\/\//i.test(img)) return img;
             const fname = img.split("/").pop();
-            const dpr = window.devicePixelRatio || 1;
-            const sizeDir = dpr >= 2 ? "716x492" : "358x246";
-            return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
+            return (
+              THUMBS_BASE +
+              width +
+              "x" +
+              Math.round((DISPLAY_H / DISPLAY_W) * width) +
+              "/" +
+              encodeURIComponent(fname)
+            );
           }
 
           function makeImgElement(imgName, altText) {
@@ -1440,13 +1446,15 @@
             img.alt = escapeText(altText || "image");
             img.loading = "lazy";
             img.decoding = "async";
-            img.src = preferredThumbUrl(imgName);
+            img.width = DISPLAY_W;
+            img.height = DISPLAY_H;
 
-            // Maintain aspect ratio using CSS
-            img.style.width = "100%";
-            img.style.height = "auto";
-            img.style.objectFit = "cover"; // or "contain" if you want full image inside box
-            img.style.display = "block";
+            img.src = preferredThumbUrl(imgName, DISPLAY_W);
+            img.srcset = `
+      ${preferredThumbUrl(imgName, 358)} 358w,
+      ${preferredThumbUrl(imgName, 716)} 716w
+    `;
+            img.sizes = "(max-width: 768px) 100vw, 358px";
 
             img.addEventListener("error", function onErr() {
               img.removeEventListener("error", onErr);
@@ -1462,9 +1470,6 @@
 
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
-            imgWrap.style.width = "100%"; // make container responsive
-            imgWrap.style.aspectRatio = "358/246"; // preserve your design ratio
-            imgWrap.style.overflow = "hidden";
 
             const imgEl = makeImgElement(
               item.image,
@@ -1514,7 +1519,6 @@
                 sliderContainer.appendChild(createCategoryItem(cat));
               });
 
-              // Initialize / refresh slider safely
               try {
                 if (typeof initCategorySlider === "function") {
                   initCategorySlider();
