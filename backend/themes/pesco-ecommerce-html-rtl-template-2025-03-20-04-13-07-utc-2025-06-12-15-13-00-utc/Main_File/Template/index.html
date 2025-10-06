@@ -1406,85 +1406,167 @@
         </div>
       </section>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
-          const sliderContainer = document.querySelector(
-            ".category-slider-one"
-          );
-          if (!sliderContainer) return;
-          function createCategoryItem(item) {
-            const wrap = document.createElement("div");
-            wrap.className = "category-item style-one text-center";
-            const imgWrap = document.createElement("div");
-            imgWrap.className = "category-img";
-            const img = document.createElement("img");
-            img.alt = item.name || "category image";
-            img.src = item.image
-              ? BASE_IMAGE_URL + item.image
-              : BASE_IMAGE_URL + "default.png";
-            imgWrap.appendChild(img);
-            const content = document.createElement("div");
-            content.className = "category-content";
-            const link = document.createElement("a");
-            link.className = "category-btn";
-            link.href = "/shop";
-            link.textContent = item.name || "Category";
-            content.appendChild(link);
-            wrap.appendChild(imgWrap);
-            wrap.appendChild(content);
-            return wrap;
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
+  const THUMBS_BASE = "/uploads/thumbs/"; // server path where thumbs are stored (optional)
+  const DISPLAY_W = 358;
+  const DISPLAY_H = 246;
+  const sliderContainer = document.querySelector(".category-slider-one");
+  if (!sliderContainer) return;
+
+  // Utility: safely escape small user-provided strings for attributes/text
+  function escapeText(s) {
+    return String(s == null ? "" : s);
+  }
+
+  // Build fallback-original URL (original uploads path)
+  function originalUrl(img) {
+    if (!img) return BASE_IMAGE_URL + "default.png";
+    if (/^https?:\/\//i.test(img)) return img;
+    // if img already a path like "folder/file.png" or "file.png", just append
+    return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
+  }
+
+  // Choose thumb path based on devicePixelRatio; if thumbs not present the onerror handler will fallback
+  function preferredThumbUrl(img) {
+    if (!img) return originalUrl(img);
+    if (/^https?:\/\//i.test(img)) return img; // external absolute URL => use as-is
+    const fname = img.split("/").pop(); // use filename only
+    const dpr = (window.devicePixelRatio || 1);
+    const sizeDir = dpr >= 2 ? "716x492" : "358x246";
+    return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
+  }
+
+  // Create an <img> element with width/height, lazy, decoding, and safe fallback
+  function makeImgElement(imgName, altText) {
+    const img = document.createElement("img");
+    img.alt = escapeText(altText || "image");
+    img.loading = "lazy";
+    img.decoding = "async";
+    // Set intrinsic size to displayed size so browser reserves layout
+    img.width = DISPLAY_W;
+    img.height = DISPLAY_H;
+
+    // Try preferred thumb first (fast on client), then fallback to original
+    img.src = preferredThumbUrl(imgName);
+
+    // If preferred thumb 404s or can't load, fallback to original upload
+    img.addEventListener("error", function onErr() {
+      // prevent infinite loop if original also errors
+      img.removeEventListener("error", onErr);
+      img.src = originalUrl(imgName);
+    });
+
+    return img;
+  }
+
+  // Build one category tile DOM (no css changes required)
+  function createCategoryItem(item) {
+    const wrap = document.createElement("div");
+    wrap.className = "category-item style-one text-center";
+
+    // image wrapper (structure preserved)
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "category-img";
+
+    const imgEl = makeImgElement(item.image, item.name || "category image");
+    // Append image inside wrapper
+    imgWrap.appendChild(imgEl);
+
+    // content area
+    const content = document.createElement("div");
+    content.className = "category-content";
+
+    const link = document.createElement("a");
+    link.className = "category-btn";
+    link.href = "/shop";
+    link.textContent = item.name || "Category";
+
+    content.appendChild(link);
+
+    wrap.appendChild(imgWrap);
+    wrap.appendChild(content);
+
+    return wrap;
+  }
+
+  // Fetch and render categories
+  fetch("https://demo.webriefly.com/api/productcatdata")
+    .then(function (res) {
+      if (!res.ok) throw new Error("Network response was not ok");
+      return res.json();
+    })
+    .then(function (data) {
+      if (!Array.isArray(data)) return;
+      sliderContainer.innerHTML = "";
+
+      const categories = data.filter((c) => {
+        const published = String(c.status || "").toLowerCase() === "published";
+        const featured = String(c.is_featured || "").toLowerCase() === "yes";
+        return published && featured;
+      });
+
+      const toRender = categories.length
+        ? categories
+        : data.filter((c) => String(c.status || "").toLowerCase() === "published");
+
+      toRender.forEach(function (cat) {
+        sliderContainer.appendChild(createCategoryItem(cat));
+      });
+
+      // Try to initialize/refresh sliders exactly like before
+      try {
+        if (typeof initCategorySlider === "function") {
+          initCategorySlider();
+        } else if (window.jQuery && typeof jQuery === "function" && jQuery.fn && jQuery.fn.slick) {
+          const $el = jQuery(".category-slider-one");
+          if ($el.hasClass("slick-initialized")) {
+            $el.slick("refresh");
+          } else {
+            $el.slick();
           }
-          fetch("https://demo.webriefly.com/api/productcatdata")
-            .then(function (res) {
-              if (!res.ok) throw new Error("Network response was not ok");
-              return res.json();
-            })
-            .then(function (data) {
-              if (!Array.isArray(data)) return;
-              sliderContainer.innerHTML = "";
-              const categories = data.filter((c) => {
-                const published =
-                  String(c.status || "").toLowerCase() === "published";
-                const featured =
-                  String(c.is_featured || "").toLowerCase() === "yes";
-                return published && featured;
-              });
-              const toRender = categories.length
-                ? categories
-                : data.filter(
-                    (c) => String(c.status || "").toLowerCase() === "published"
-                  );
-              toRender.forEach(function (cat) {
-                sliderContainer.appendChild(createCategoryItem(cat));
-              });
-              try {
-                if (typeof initCategorySlider === "function") {
-                  initCategorySlider();
-                } else if (
-                  window.jQuery &&
-                  typeof jQuery === "function" &&
-                  jQuery.fn &&
-                  jQuery.fn.slick
-                ) {
-                  const $el = jQuery(".category-slider-one");
-                  if ($el.hasClass("slick-initialized")) {
-                    $el.slick("refresh");
-                  } else {
-                    $el.slick();
-                  }
-                } else if (window.Swiper && sliderContainer.swiper) {
-                  sliderContainer.swiper.update();
-                }
-              } catch (err) {
-                console.warn("Could not auto-refresh slider:", err);
-              }
-            })
-            .catch(function (err) {
-              console.error("Failed to load category data:", err);
-            });
-        });
-      </script>
+        } else if (window.Swiper && sliderContainer.swiper) {
+          sliderContainer.swiper.update();
+        }
+      } catch (err) {
+        console.warn("Could not auto-refresh slider:", err);
+      }
+    })
+    .catch(function (err) {
+      console.error("Failed to load category data:", err);
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <section class="banner-section pt-130">
         <div class="container">
