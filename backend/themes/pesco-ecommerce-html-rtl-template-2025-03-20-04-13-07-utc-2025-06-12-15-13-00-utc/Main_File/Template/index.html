@@ -1291,169 +1291,139 @@
           data-aos="fade-up"
           data-aos-delay="20"
           data-aos-duration="1200"
-        >
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-1.png"
-                alt="Man Shirts"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Man Shirts</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-2.png"
-                alt="Denim Jeans"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Denim Jeans</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-3.png"
-                alt="Casual Suit"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Casual Suit</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-4.png"
-                alt="Summer Dress"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Summer Dress</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-5.png"
-                alt="Sweaters"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Sweaters</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-6.png"
-                alt="Jackets"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Jackets</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-4.png"
-                alt="Summer Dress"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Summer Dress</a>
-            </div>
-          </div>
-        </div>
+        ></div>
       </section>
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
+          // --- Config (keep your style values) ---
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
           const THUMBS_BASE = "/uploads/thumbs/";
-          const DISPLAY_W = 358;
-          const DISPLAY_H = 246;
+          const DISPLAY_W = 358; // preserved
+          const DISPLAY_H = 246; // preserved
+
           const sliderContainer = document.querySelector(
             ".category-slider-one"
           );
-          if (!sliderContainer) return;
+          if (!sliderContainer) return; // nothing to do if container missing
 
+          // --- Small helpers ---
           function escapeText(s) {
             return String(s == null ? "" : s);
           }
 
+          // Return canonical/original URL for an image name or absolute url
           function originalUrl(img) {
             if (!img) return BASE_IMAGE_URL + "default.png";
             if (/^https?:\/\//i.test(img)) return img;
             return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
           }
 
-          function preferredThumbUrl(img) {
+          // Build thumb URL if your server provides "WxH" thumb folders.
+          // Keep this, but we also fallback to original if a thumb 404s.
+          function thumbUrl(img, width) {
             if (!img) return originalUrl(img);
             if (/^https?:\/\//i.test(img)) return img;
             const fname = img.split("/").pop();
-            const dpr = window.devicePixelRatio || 1;
-            const sizeDir = dpr >= 2 ? "716x492" : "358x246";
-            return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
+            const height = Math.round((DISPLAY_H / DISPLAY_W) * width);
+            return (
+              THUMBS_BASE +
+              width +
+              "x" +
+              height +
+              "/" +
+              encodeURIComponent(fname)
+            );
           }
 
+          // Utility: set responsive srcset and sizes to help mobile download a smaller image
+          function setResponsiveAttrs(imgEl, imgName) {
+            // Provide two sizes: normal and 2x (for retina)
+            const smallW = DISPLAY_W; // 358
+            const doubleW = DISPLAY_W * 2; // 716
+            imgEl.src = thumbUrl(imgName, smallW);
+            imgEl.srcset = [
+              `${thumbUrl(imgName, smallW)} ${smallW}w`,
+              `${thumbUrl(imgName, doubleW)} ${doubleW}w`,
+              `${originalUrl(imgName)} 2000w`, // fallback big source
+            ].join(", ");
+            // Tell the browser: on narrow screens image can be full viewport width, otherwise fixed DISPLAY_W
+            imgEl.sizes = "(max-width: 768px) 100vw, " + DISPLAY_W + "px";
+          }
+
+          // Create <img> element while preserving your style attributes.
+          // We'll attach load event to read natural size and adjust mobile display ratio if needed.
           function makeImgElement(imgName, altText) {
             const img = document.createElement("img");
+
+            // preserve semantics & lazy loading
             img.alt = escapeText(altText || "image");
             img.loading = "lazy";
             img.decoding = "async";
+
+            // Preserve your desktop layout attributes (do not remove)
             img.width = DISPLAY_W;
             img.height = DISPLAY_H;
 
-            img.src = preferredThumbUrl(imgName);
+            // Keep the same visual behaviour as your template cards
+            // this matches inline styles you used: object-fit:cover; width:100%; height:auto
+            img.style.objectFit = "cover";
+            img.style.display = "block";
+            img.style.width = "100%";
+            img.style.height = "auto";
 
+            // Set responsive attributes (src, srcset, sizes)
+            setResponsiveAttrs(img, imgName);
+
+            // If the thumb 404s or fails, fall back to original image URL
             img.addEventListener("error", function onErr() {
               img.removeEventListener("error", onErr);
               img.src = originalUrl(imgName);
+              img.srcset = ""; // clear srcset to avoid repeated 404 for thumbs
+            });
+
+            // After image loads, detect its natural aspect ratio.
+            // If its natural ratio differs from our DISPLAY ratio, and the viewport is small (mobile),
+            // set an explicit aspect-ratio style on the img so displayed dimensions match the natural ratio.
+            img.addEventListener("load", function () {
+              try {
+                const natW = img.naturalWidth || 0;
+                const natH = img.naturalHeight || 0;
+                if (!natW || !natH) return;
+
+                const natRatio = +(natW / natH).toFixed(4);
+                const designRatio = +(DISPLAY_W / DISPLAY_H).toFixed(4);
+
+                // Only modify display on small viewports (mobile) to avoid changing desktop look.
+                const isMobile =
+                  window.matchMedia &&
+                  window.matchMedia("(max-width: 768px)").matches;
+
+                // If ratios differ meaningfully and viewport is mobile, apply natural aspect-ratio.
+                if (isMobile && Math.abs(natRatio - designRatio) > 0.02) {
+                  // Use CSS aspect-ratio when available (modern browsers).
+                  // This keeps width:100% while browser computes height based on natural ratio.
+                  // We do not remove width/height attributes (keeps layout stable on desktop).
+                  img.style.aspectRatio = natW + " / " + natH;
+                  // Some browsers use the width/height attributes as intrinsic ratio; ensure height:auto so CSS aspect-ratio applies visually:
+                  img.style.height = "auto";
+                } else {
+                  // Ensure desktop visuals remain exactly as before
+                  // keep height:auto and object-fit:cover (this preserves your original style)
+                  img.style.height = "auto";
+                  // remove aspectRatio if previously set (e.g., on orientation change)
+                  img.style.removeProperty("aspect-ratio");
+                }
+              } catch (e) {
+                // fail silently — do not break rendering
+                console.warn("img load handler error", e);
+              }
             });
 
             return img;
           }
 
+          // Build DOM node for a category card (keeps your markup & classes)
           function createCategoryItem(item) {
             const wrap = document.createElement("div");
             wrap.className = "category-item style-one text-center";
@@ -1476,13 +1446,13 @@
             link.textContent = item.name || "Category";
 
             content.appendChild(link);
-
             wrap.appendChild(imgWrap);
             wrap.appendChild(content);
 
             return wrap;
           }
 
+          // Fetch categories and render them (unchanged logic, just uses createCategoryItem)
           fetch("https://demo.webriefly.com/api/productcatdata")
             .then(function (res) {
               if (!res.ok) throw new Error("Network response was not ok");
@@ -1490,9 +1460,11 @@
             })
             .then(function (data) {
               if (!Array.isArray(data)) return;
+
+              // Remove any server-side static cards if present and render dynamic ones
               sliderContainer.innerHTML = "";
 
-              const categories = data.filter((c) => {
+              const categories = data.filter(function (c) {
                 const published =
                   String(c.status || "").toLowerCase() === "published";
                 const featured =
@@ -1502,14 +1474,15 @@
 
               const toRender = categories.length
                 ? categories
-                : data.filter(
-                    (c) => String(c.status || "").toLowerCase() === "published"
-                  );
+                : data.filter(function (c) {
+                    return String(c.status || "").toLowerCase() === "published";
+                  });
 
               toRender.forEach(function (cat) {
                 sliderContainer.appendChild(createCategoryItem(cat));
               });
 
+              // Re-init slider if needed (keeps your existing behavior)
               try {
                 if (typeof initCategorySlider === "function") {
                   initCategorySlider();
