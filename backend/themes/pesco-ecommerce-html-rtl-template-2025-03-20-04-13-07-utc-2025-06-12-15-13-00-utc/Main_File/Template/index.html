@@ -3340,6 +3340,7 @@
                   <i class="far fa-angle-left"></i>
                 </a></li>
               `;
+
           for (let i = 1; i <= totalPages; i++) {
             pagUl.insertAdjacentHTML(
               "beforeend",
@@ -3352,6 +3353,7 @@
                   </li>`
             );
           }
+
           pagUl.insertAdjacentHTML(
             "beforeend",
             `<li><a href="#" data-page="${currentPage + 1}">
@@ -3483,19 +3485,6 @@
         });
       });
     </script>
-
-    <div class="site-branding">
-      <a href="index.html" class="brand-logo">
-        <img
-          src="assets/images/logo/logo-main.png"
-          alt="Logo"
-          width="236"
-          height="54"
-          style="width: 157px; height: auto; display: block"
-          loading="lazy"
-        />
-      </a>
-    </div>
 
     <div class="site-branding d-lg-none d-block">
       <a href="index.html" class="brand-logo">
