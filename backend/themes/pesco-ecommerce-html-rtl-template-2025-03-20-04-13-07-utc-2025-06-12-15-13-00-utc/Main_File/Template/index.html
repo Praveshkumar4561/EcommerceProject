@@ -1296,7 +1296,7 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          // --- Config: preserve your behavior but match requested visual size ---
+          // --- Config: preserve your behavior and visual size ---
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
           const THUMBS_BASE = "/uploads/thumbs/";
           const CARD_W = 262; // card width you requested
@@ -1317,7 +1317,6 @@
             return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
           }
 
-          // Build a thumbnail URL (if your server provides thumbs); width parameter used to generate folder name.
           function thumbUrl(img, width) {
             if (!img) return originalUrl(img);
             if (/^https?:\/\//i.test(img)) return img;
@@ -1333,7 +1332,6 @@
             );
           }
 
-          // Add responsive src/srcset/sizes for performance while preserving visual size
           function setResponsiveAttrs(imgEl, imgName) {
             const w1 = CARD_W; // 262
             const w2 = CARD_W * 2; // retina
@@ -1343,31 +1341,28 @@
               `${thumbUrl(imgName, w2)} ${w2}w`,
               `${originalUrl(imgName)} 2000w`,
             ].join(", ");
-            // sizes: visual size is always CARD_W in layout; give browser hint.
             imgEl.sizes = `${CARD_W}px`;
           }
 
-          // Create image element that will exactly fill CARD_W x CARD_H
           function makeImgElement(imgName, altText) {
             const img = document.createElement("img");
             img.alt = escapeText(altText || "image");
+
+            // keep your lazy attribute for progressive rendering; we'll explicitly preload below
             img.loading = "lazy";
             img.decoding = "async";
 
-            // Set element attributes to match visual size (keeps layout stable).
+            // match exact visual size
             img.width = CARD_W;
             img.height = CARD_H;
 
-            // Inline CSS to force exact visual box and avoid ups/downs:
             img.style.width = CARD_W + "px";
             img.style.height = CARD_H + "px";
-            img.style.objectFit = "cover"; // fill box without distortion
+            img.style.objectFit = "cover";
             img.style.display = "block";
 
-            // Responsive sources (for efficiency)
             setResponsiveAttrs(img, imgName);
 
-            // Fallback to original image if thumb fails
             img.addEventListener("error", function onErr() {
               img.removeEventListener("error", onErr);
               img.src = originalUrl(imgName);
@@ -1377,19 +1372,16 @@
             return img;
           }
 
-          // Build category card while enforcing fixed card size for container and image
           function createCategoryItem(item) {
             const wrap = document.createElement("div");
             wrap.className = "category-item style-one text-center";
 
-            // Enforce card box size so cards never vary in height
+            // enforce fixed width to prevent ups/downs
             wrap.style.width = CARD_W + "px";
-            wrap.style.boxSizing = "border-box"; // avoid padding shifting size
+            wrap.style.boxSizing = "border-box";
 
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
-
-            // enforce image wrapper exact size as well (keeps everything steady)
             imgWrap.style.width = CARD_W + "px";
             imgWrap.style.height = CARD_H + "px";
             imgWrap.style.overflow = "hidden";
@@ -1409,14 +1401,59 @@
             link.textContent = item.name || "Category";
 
             content.appendChild(link);
-
             wrap.appendChild(imgWrap);
             wrap.appendChild(content);
 
             return wrap;
           }
 
-          // Fetch data, clear any server-side placeholders, render cards
+          // Preload helper: creates Image() objects for thumbs and originals so browser fetches them
+          function preloadImages(list) {
+            // list: array of {imgName}
+            if (!Array.isArray(list) || !list.length) return;
+            // throttle slightly to avoid locking network — load in small batches
+            const batchSize = 6;
+            let idx = 0;
+
+            function loadNextBatch() {
+              const batch = list.slice(idx, idx + batchSize);
+              idx += batchSize;
+              batch.forEach((it) => {
+                try {
+                  // create a new Image to preload thumb and original
+                  const i1 = new Image();
+                  i1.src = thumbUrl(it.image, CARD_W);
+                  // also set srcset for retina so browser can pick
+                  i1.srcset = `${thumbUrl(
+                    it.image,
+                    CARD_W
+                  )} ${CARD_W}w, ${thumbUrl(it.image, CARD_W * 2)} ${
+                    CARD_W * 2
+                  }w, ${originalUrl(it.image)} 2000w`;
+                  i1.sizes = `${CARD_W}px`;
+                  i1.onload = i1.onerror = function () {
+                    // nothing — just let browser cache it
+                  };
+
+                  // preload original as fallback
+                  const i2 = new Image();
+                  i2.src = originalUrl(it.image);
+                  i2.onload = i2.onerror = function () {};
+                } catch (e) {
+                  // ignore
+                }
+              });
+
+              if (idx < list.length) {
+                // small delay between batches to avoid blocking main thread/network
+                setTimeout(loadNextBatch, 150);
+              }
+            }
+
+            loadNextBatch();
+          }
+
+          // Fetch, render, then preload all images
           fetch("https://demo.webriefly.com/api/productcatdata")
             .then(function (res) {
               if (!res.ok) throw new Error("Network response was not ok");
@@ -1424,7 +1461,8 @@
             })
             .then(function (data) {
               if (!Array.isArray(data)) return;
-              // clear default cards (so nothing shows until JS appends)
+
+              // clear static cards
               sliderContainer.innerHTML = "";
 
               const categories = data.filter(function (c) {
@@ -1441,11 +1479,16 @@
                     return String(c.status || "").toLowerCase() === "published";
                   });
 
+              // render DOM
               toRender.forEach(function (cat) {
                 sliderContainer.appendChild(createCategoryItem(cat));
               });
 
-              // Re-init/refresh slider safely (your existing logic)
+              // Preload images so they are ready regardless of scroll
+              // Pass the actual items (we need image property)
+              preloadImages(toRender);
+
+              // Re-init slider safely (your existing logic)
               try {
                 if (typeof initCategorySlider === "function") {
                   initCategorySlider();
