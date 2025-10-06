@@ -928,6 +928,7 @@
                   </div>
                 </div>
               </div>
+
               <div class="single-hero-slider">
                 <div class="row align-items-center">
                   <div class="col-lg-6">
@@ -1296,164 +1297,65 @@
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
-          // --- Config: preserve your behavior and visual size ---
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
           const THUMBS_BASE = "/uploads/thumbs/";
-          const CARD_W = 262; // card width you requested
-          const CARD_H = 279; // card height you requested
-
+          const DISPLAY_W = 358;
+          const DISPLAY_H = 246;
           const sliderContainer = document.querySelector(
             ".category-slider-one"
           );
           if (!sliderContainer) return;
-
           function escapeText(s) {
             return String(s == null ? "" : s);
           }
-
           function originalUrl(img) {
             if (!img) return BASE_IMAGE_URL + "default.png";
             if (/^https?:\/\//i.test(img)) return img;
             return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
           }
-
-          function thumbUrl(img, width) {
+          function preferredThumbUrl(img) {
             if (!img) return originalUrl(img);
             if (/^https?:\/\//i.test(img)) return img;
             const fname = img.split("/").pop();
-            const height = Math.round((CARD_H / CARD_W) * width);
-            return (
-              THUMBS_BASE +
-              width +
-              "x" +
-              height +
-              "/" +
-              encodeURIComponent(fname)
-            );
+            const dpr = window.devicePixelRatio || 1;
+            const sizeDir = dpr >= 2 ? "716x492" : "358x246";
+            return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
           }
-
-          function setResponsiveAttrs(imgEl, imgName) {
-            const w1 = CARD_W; // 262
-            const w2 = CARD_W * 2; // retina
-            imgEl.src = thumbUrl(imgName, w1);
-            imgEl.srcset = [
-              `${thumbUrl(imgName, w1)} ${w1}w`,
-              `${thumbUrl(imgName, w2)} ${w2}w`,
-              `${originalUrl(imgName)} 2000w`,
-            ].join(", ");
-            imgEl.sizes = `${CARD_W}px`;
-          }
-
           function makeImgElement(imgName, altText) {
             const img = document.createElement("img");
             img.alt = escapeText(altText || "image");
-
-            // keep your lazy attribute for progressive rendering; we'll explicitly preload below
             img.loading = "lazy";
             img.decoding = "async";
-
-            // match exact visual size
-            img.width = CARD_W;
-            img.height = CARD_H;
-
-            img.style.width = CARD_W + "px";
-            img.style.height = CARD_H + "px";
-            img.style.objectFit = "cover";
-            img.style.display = "block";
-
-            setResponsiveAttrs(img, imgName);
-
+            img.width = DISPLAY_W;
+            img.height = DISPLAY_H;
+            img.src = preferredThumbUrl(imgName);
             img.addEventListener("error", function onErr() {
               img.removeEventListener("error", onErr);
               img.src = originalUrl(imgName);
-              img.srcset = "";
             });
-
             return img;
           }
-
           function createCategoryItem(item) {
             const wrap = document.createElement("div");
             wrap.className = "category-item style-one text-center";
-
-            // enforce fixed width to prevent ups/downs
-            wrap.style.width = CARD_W + "px";
-            wrap.style.boxSizing = "border-box";
-
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
-            imgWrap.style.width = CARD_W + "px";
-            imgWrap.style.height = CARD_H + "px";
-            imgWrap.style.overflow = "hidden";
-
             const imgEl = makeImgElement(
               item.image,
               item.name || "category image"
             );
             imgWrap.appendChild(imgEl);
-
             const content = document.createElement("div");
             content.className = "category-content";
-
             const link = document.createElement("a");
             link.className = "category-btn";
             link.href = "/shop";
             link.textContent = item.name || "Category";
-
             content.appendChild(link);
             wrap.appendChild(imgWrap);
             wrap.appendChild(content);
-
             return wrap;
           }
-
-          // Preload helper: creates Image() objects for thumbs and originals so browser fetches them
-          function preloadImages(list) {
-            // list: array of {imgName}
-            if (!Array.isArray(list) || !list.length) return;
-            // throttle slightly to avoid locking network — load in small batches
-            const batchSize = 6;
-            let idx = 0;
-
-            function loadNextBatch() {
-              const batch = list.slice(idx, idx + batchSize);
-              idx += batchSize;
-              batch.forEach((it) => {
-                try {
-                  // create a new Image to preload thumb and original
-                  const i1 = new Image();
-                  i1.src = thumbUrl(it.image, CARD_W);
-                  // also set srcset for retina so browser can pick
-                  i1.srcset = `${thumbUrl(
-                    it.image,
-                    CARD_W
-                  )} ${CARD_W}w, ${thumbUrl(it.image, CARD_W * 2)} ${
-                    CARD_W * 2
-                  }w, ${originalUrl(it.image)} 2000w`;
-                  i1.sizes = `${CARD_W}px`;
-                  i1.onload = i1.onerror = function () {
-                    // nothing — just let browser cache it
-                  };
-
-                  // preload original as fallback
-                  const i2 = new Image();
-                  i2.src = originalUrl(it.image);
-                  i2.onload = i2.onerror = function () {};
-                } catch (e) {
-                  // ignore
-                }
-              });
-
-              if (idx < list.length) {
-                // small delay between batches to avoid blocking main thread/network
-                setTimeout(loadNextBatch, 150);
-              }
-            }
-
-            loadNextBatch();
-          }
-
-          // Fetch, render, then preload all images
           fetch("https://demo.webriefly.com/api/productcatdata")
             .then(function (res) {
               if (!res.ok) throw new Error("Network response was not ok");
@@ -1461,34 +1363,22 @@
             })
             .then(function (data) {
               if (!Array.isArray(data)) return;
-
-              // clear static cards
               sliderContainer.innerHTML = "";
-
-              const categories = data.filter(function (c) {
+              const categories = data.filter((c) => {
                 const published =
                   String(c.status || "").toLowerCase() === "published";
                 const featured =
                   String(c.is_featured || "").toLowerCase() === "yes";
                 return published && featured;
               });
-
               const toRender = categories.length
                 ? categories
-                : data.filter(function (c) {
-                    return String(c.status || "").toLowerCase() === "published";
-                  });
-
-              // render DOM
+                : data.filter(
+                    (c) => String(c.status || "").toLowerCase() === "published"
+                  );
               toRender.forEach(function (cat) {
                 sliderContainer.appendChild(createCategoryItem(cat));
               });
-
-              // Preload images so they are ready regardless of scroll
-              // Pass the actual items (we need image property)
-              preloadImages(toRender);
-
-              // Re-init slider safely (your existing logic)
               try {
                 if (typeof initCategorySlider === "function") {
                   initCategorySlider();
