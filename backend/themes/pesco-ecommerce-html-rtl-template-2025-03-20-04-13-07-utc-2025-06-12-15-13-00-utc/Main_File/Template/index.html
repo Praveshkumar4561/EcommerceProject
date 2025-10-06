@@ -1286,257 +1286,201 @@
           </div>
         </div>
 
-        <div
-          class="category-slider-one"
-          data-aos="fade-up"
-          data-aos-delay="20"
-          data-aos-duration="1200"
-        >
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-1.png"
-                alt="Man Shirts"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Man Shirts</a>
-            </div>
-          </div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-2.png"
-                alt="Denim Jeans"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Denim Jeans</a>
-            </div>
-          </div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-3.png"
-                alt="Casual Suit"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Casual Suit</a>
-            </div>
-          </div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-4.png"
-                alt="Summer Dress"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Summer Dress</a>
-            </div>
-          </div>
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-5.png"
-                alt="Sweaters"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Sweaters</a>
-            </div>
-          </div>
+        
 
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-6.png"
-                alt="Jackets"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Jackets</a>
-            </div>
-          </div>
-
-          <div class="category-item style-one text-center">
-            <div class="category-img">
-              <img
-                src="assets/images/category/category-4.png"
-                alt="Summer Dress"
-                width="262"
-                height="279"
-                loading="lazy"
-                style="object-fit: cover; width: 100%; height: auto"
-              />
-            </div>
-            <div class="category-content">
-              <a href="index.html" class="category-btn">Summer Dress</a>
-            </div>
-          </div>
-        </div>
+    <div
+    class="category-slider-one"
+    data-aos="fade-up"
+    data-aos-delay="20"
+    data-aos-duration="1200"
+  >
+    <div class="category-item style-one text-center">
+      <div class="category-img">
+        <img
+          src="assets/images/category/category-1.png"
+          alt="Category"
+          width="262"
+          height="279"
+          loading="lazy"
+          style="object-fit: cover; width: 100%; height: auto"
+        />
+      </div>
+      <div class="category-content">
+        <a href="index.html" class="category-btn">Category</a>
+      </div>
+    </div>
+  </div>
       </section>
 
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
-          const THUMBS_BASE = "/uploads/thumbs/";
-          const DISPLAY_W = 358;
-          const DISPLAY_H = 246;
-          const sliderContainer = document.querySelector(
-            ".category-slider-one"
-          );
-          if (!sliderContainer) return;
 
-          function escapeText(s) {
-            return String(s == null ? "" : s);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
+     <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
+  const THUMBS_BASE = "/uploads/thumbs/";
+  const DISPLAY_W = 358;
+  const DISPLAY_H = 246;
+
+  const sliderContainer = document.querySelector(".category-slider-one");
+  if (!sliderContainer) return;
+
+  function escapeText(s) {
+    return String(s == null ? "" : s);
+  }
+
+  // Original URL fallback
+  function originalUrl(img) {
+    if (!img) return BASE_IMAGE_URL + "default.png";
+    if (/^https?:\/\//i.test(img)) return img;
+    return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
+  }
+
+  // Create image element dynamically, maintain object-fit, aspect ratio
+  function makeImgElement(imgName, altText) {
+    const img = document.createElement("img");
+    img.alt = escapeText(altText || "image");
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    // Keep your fixed width/height for layout
+    img.width = DISPLAY_W;
+    img.height = DISPLAY_H;
+
+    // Use natural aspect ratio to avoid distortion
+    const imgUrl = originalUrl(imgName);
+    img.src = imgUrl;
+    img.style.width = "100%";
+    img.style.height = "auto";
+    img.style.objectFit = "cover";
+
+    img.addEventListener("error", function onErr() {
+      img.removeEventListener("error", onErr);
+      img.src = BASE_IMAGE_URL + "default.png";
+    });
+
+    return img;
+  }
+
+  // Create single category item card
+  function createCategoryItem(item) {
+    const wrap = document.createElement("div");
+    wrap.className = "category-item style-one text-center";
+
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "category-img";
+
+    const imgEl = makeImgElement(item.image, item.name || "category image");
+    imgWrap.appendChild(imgEl);
+
+    const content = document.createElement("div");
+    content.className = "category-content";
+
+    const link = document.createElement("a");
+    link.className = "category-btn";
+    link.href = "/shop";
+    link.textContent = item.name || "Category";
+
+    content.appendChild(link);
+    wrap.appendChild(imgWrap);
+    wrap.appendChild(content);
+
+    return wrap;
+  }
+
+  // Fetch category data from API
+  fetch("https://demo.webriefly.com/api/productcatdata")
+    .then(function (res) {
+      if (!res.ok) throw new Error("Network response was not ok");
+      return res.json();
+    })
+    .then(function (data) {
+      if (!Array.isArray(data)) return;
+
+      sliderContainer.innerHTML = "";
+
+      // Filter published & featured categories
+      const categories = data.filter((c) => {
+        const published = String(c.status || "").toLowerCase() === "published";
+        const featured = String(c.is_featured || "").toLowerCase() === "yes";
+        return published && featured;
+      });
+
+      // If no featured categories, show all published
+      const toRender = categories.length
+        ? categories
+        : data.filter((c) => String(c.status || "").toLowerCase() === "published");
+
+      // Loop through categories and append cards
+      toRender.forEach(function (cat) {
+        sliderContainer.appendChild(createCategoryItem(cat));
+      });
+
+      // Initialize slider (Slick, Swiper, or custom)
+      try {
+        if (typeof initCategorySlider === "function") {
+          initCategorySlider();
+        } else if (
+          window.jQuery &&
+          typeof jQuery === "function" &&
+          jQuery.fn &&
+          jQuery.fn.slick
+        ) {
+          const $el = jQuery(".category-slider-one");
+          if ($el.hasClass("slick-initialized")) {
+            $el.slick("refresh");
+          } else {
+            $el.slick();
           }
+        } else if (window.Swiper && sliderContainer.swiper) {
+          sliderContainer.swiper.update();
+        }
+      } catch (err) {
+        console.warn("Could not auto-refresh slider:", err);
+      }
+    })
+    .catch(function (err) {
+      console.error("Failed to load category data:", err);
+    });
+});
+</script>
 
-          function originalUrl(img) {
-            if (!img) return BASE_IMAGE_URL + "default.png";
-            if (/^https?:\/\//i.test(img)) return img;
-            return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
-          }
 
-          function preferredThumbUrl(img) {
-            if (!img) return originalUrl(img);
-            if (/^https?:\/\//i.test(img)) return img;
-            const fname = img.split("/").pop();
-            const dpr = window.devicePixelRatio || 1;
-            const sizeDir = dpr >= 2 ? "716x492" : "358x246";
-            return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
-          }
 
-          function makeImgElement(imgName, altText) {
-            const img = document.createElement("img");
-            img.alt = escapeText(altText || "image");
-            img.loading = "lazy";
-            img.decoding = "async";
-            img.width = DISPLAY_W;
-            img.height = DISPLAY_H;
 
-            img.src = preferredThumbUrl(imgName);
 
-            img.addEventListener("error", function onErr() {
-              img.removeEventListener("error", onErr);
-              img.src = originalUrl(imgName);
-            });
 
-            return img;
-          }
 
-          function createCategoryItem(item) {
-            const wrap = document.createElement("div");
-            wrap.className = "category-item style-one text-center";
 
-            const imgWrap = document.createElement("div");
-            imgWrap.className = "category-img";
 
-            const imgEl = makeImgElement(
-              item.image,
-              item.name || "category image"
-            );
-            imgWrap.appendChild(imgEl);
 
-            const content = document.createElement("div");
-            content.className = "category-content";
 
-            const link = document.createElement("a");
-            link.className = "category-btn";
-            link.href = "/shop";
-            link.textContent = item.name || "Category";
 
-            content.appendChild(link);
 
-            wrap.appendChild(imgWrap);
-            wrap.appendChild(content);
 
-            return wrap;
-          }
 
-          fetch("https://demo.webriefly.com/api/productcatdata")
-            .then(function (res) {
-              if (!res.ok) throw new Error("Network response was not ok");
-              return res.json();
-            })
-            .then(function (data) {
-              if (!Array.isArray(data)) return;
-              sliderContainer.innerHTML = "";
 
-              const categories = data.filter((c) => {
-                const published =
-                  String(c.status || "").toLowerCase() === "published";
-                const featured =
-                  String(c.is_featured || "").toLowerCase() === "yes";
-                return published && featured;
-              });
 
-              const toRender = categories.length
-                ? categories
-                : data.filter(
-                    (c) => String(c.status || "").toLowerCase() === "published"
-                  );
 
-              toRender.forEach(function (cat) {
-                sliderContainer.appendChild(createCategoryItem(cat));
-              });
 
-              try {
-                if (typeof initCategorySlider === "function") {
-                  initCategorySlider();
-                } else if (
-                  window.jQuery &&
-                  typeof jQuery === "function" &&
-                  jQuery.fn &&
-                  jQuery.fn.slick
-                ) {
-                  const $el = jQuery(".category-slider-one");
-                  if ($el.hasClass("slick-initialized")) {
-                    $el.slick("refresh");
-                  } else {
-                    $el.slick();
-                  }
-                } else if (window.Swiper && sliderContainer.swiper) {
-                  sliderContainer.swiper.update();
-                }
-              } catch (err) {
-                console.warn("Could not auto-refresh slider:", err);
-              }
-            })
-            .catch(function (err) {
-              console.error("Failed to load category data:", err);
-            });
-        });
-      </script>
 
       <section class="banner-section pt-130">
         <div class="container">
