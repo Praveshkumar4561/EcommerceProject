@@ -1294,7 +1294,149 @@
         ></div>
       </section>
 
-      <script>
+
+
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
+          const THUMBS_BASE = "/uploads/thumbs/";
+          const CARD_W = 228; // your card width
+          const CARD_H = 250; // your card height
+
+          const sliderContainer = document.querySelector(".category-slider-one");
+          if (!sliderContainer) return;
+
+          // --- Helper to escape text ---
+          function escapeText(s) {
+            return String(s == null ? "" : s);
+          }
+
+          // --- Original URL fallback ---
+          function originalUrl(img) {
+            if (!img) return BASE_IMAGE_URL + "default.png";
+            if (/^https?:\/\//i.test(img)) return img;
+            return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
+          }
+
+          // --- Thumbnail URL for optimization (optional) ---
+          function thumbUrl(img) {
+            if (!img) return originalUrl(img);
+            if (/^https?:\/\//i.test(img)) return img;
+            const fname = img.split("/").pop();
+            return THUMBS_BASE + CARD_W + "x" + CARD_H + "/" + encodeURIComponent(fname);
+          }
+
+          // --- Create image element with proper aspect ratio ---
+          function makeImgElement(imgName, altText) {
+            const img = document.createElement("img");
+            img.alt = escapeText(altText || "category image");
+            img.loading = "lazy";
+            img.decoding = "async";
+            img.width = CARD_W;
+            img.height = CARD_H;
+
+            // Preserve your style exactly
+            img.style.width = CARD_W + "px";
+            img.style.height = CARD_H + "px";
+            img.style.objectFit = "cover";
+            img.style.display = "block";
+
+            img.src = thumbUrl(imgName);
+
+            // Fallback to original if thumbnail fails
+            img.addEventListener("error", function onErr() {
+              img.removeEventListener("error", onErr);
+              img.src = originalUrl(imgName);
+            });
+
+            return img;
+          }
+
+          // --- Create category card DOM ---
+          function createCategoryItem(item) {
+            const wrap = document.createElement("div");
+            wrap.className = "category-item style-one text-center";
+            wrap.style.width = CARD_W + "px"; // enforce card width
+            wrap.style.boxSizing = "border-box";
+
+            const imgWrap = document.createElement("div");
+            imgWrap.className = "category-img";
+            imgWrap.style.width = CARD_W + "px";
+            imgWrap.style.height = CARD_H + "px";
+            imgWrap.style.overflow = "hidden";
+
+            const imgEl = makeImgElement(item.image, item.name);
+            imgWrap.appendChild(imgEl);
+
+            const content = document.createElement("div");
+            content.className = "category-content";
+
+            const link = document.createElement("a");
+            link.className = "category-btn";
+            link.href = "/shop";
+            link.textContent = item.name || "Category";
+
+            content.appendChild(link);
+            wrap.appendChild(imgWrap);
+            wrap.appendChild(content);
+
+            return wrap;
+          }
+
+          // --- Fetch category data ---
+          fetch("https://demo.webriefly.com/api/productcatdata")
+            .then(function (res) {
+              if (!res.ok) throw new Error("Network response was not ok");
+              return res.json();
+            })
+            .then(function (data) {
+              if (!Array.isArray(data)) return;
+
+              // clear any existing static/default cards
+              sliderContainer.innerHTML = "";
+
+              // filter published & featured categories
+              const categories = data.filter((c) => {
+                return (
+                  String(c.status || "").toLowerCase() === "published" &&
+                  String(c.is_featured || "").toLowerCase() === "yes"
+                );
+              });
+
+              const toRender = categories.length
+                ? categories
+                : data.filter((c) => String(c.status || "").toLowerCase() === "published");
+
+              toRender.forEach((cat) => sliderContainer.appendChild(createCategoryItem(cat)));
+
+              // --- Re-init slider safely ---
+              try {
+                if (typeof initCategorySlider === "function") {
+                  initCategorySlider();
+                } else if (window.jQuery && typeof jQuery === "function" && jQuery.fn && jQuery.fn.slick) {
+                  const $el = jQuery(".category-slider-one");
+                  if ($el.hasClass("slick-initialized")) $el.slick("refresh");
+                  else $el.slick();
+                } else if (window.Swiper && sliderContainer.swiper) {
+                  sliderContainer.swiper.update();
+                }
+              } catch (err) {
+                console.warn("Could not auto-refresh slider:", err);
+              }
+            })
+            .catch((err) => console.error("Failed to load category data:", err));
+        });
+        </script>
+
+
+
+
+
+
+
+
+
+      <!-- <script>
         document.addEventListener("DOMContentLoaded", function () {
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
           const sliderContainer = document.querySelector(
@@ -1372,7 +1514,29 @@
               console.error("Failed to load category data:", err);
             });
         });
-      </script>
+      </script> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <section class="banner-section pt-130">
         <div class="container">
