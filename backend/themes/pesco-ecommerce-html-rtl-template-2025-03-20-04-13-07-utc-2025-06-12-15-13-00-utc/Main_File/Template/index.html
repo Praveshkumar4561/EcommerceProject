@@ -1406,167 +1406,171 @@
         </div>
       </section>
 
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
+          const THUMBS_BASE = "/uploads/thumbs/";
+          const DISPLAY_W = 358;
+          const DISPLAY_H = 246;
+          const sliderContainer = document.querySelector(
+            ".category-slider-one"
+          );
+          if (!sliderContainer) return;
 
-
-
-
-
-
-
-
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
-  const THUMBS_BASE = "/uploads/thumbs/"; // server path where thumbs are stored (optional)
-  const DISPLAY_W = 358;
-  const DISPLAY_H = 246;
-  const sliderContainer = document.querySelector(".category-slider-one");
-  if (!sliderContainer) return;
-
-  // Utility: safely escape small user-provided strings for attributes/text
-  function escapeText(s) {
-    return String(s == null ? "" : s);
-  }
-
-  // Build fallback-original URL (original uploads path)
-  function originalUrl(img) {
-    if (!img) return BASE_IMAGE_URL + "default.png";
-    if (/^https?:\/\//i.test(img)) return img;
-    // if img already a path like "folder/file.png" or "file.png", just append
-    return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
-  }
-
-  // Choose thumb path based on devicePixelRatio; if thumbs not present the onerror handler will fallback
-  function preferredThumbUrl(img) {
-    if (!img) return originalUrl(img);
-    if (/^https?:\/\//i.test(img)) return img; // external absolute URL => use as-is
-    const fname = img.split("/").pop(); // use filename only
-    const dpr = (window.devicePixelRatio || 1);
-    const sizeDir = dpr >= 2 ? "716x492" : "358x246";
-    return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
-  }
-
-  // Create an <img> element with width/height, lazy, decoding, and safe fallback
-  function makeImgElement(imgName, altText) {
-    const img = document.createElement("img");
-    img.alt = escapeText(altText || "image");
-    img.loading = "lazy";
-    img.decoding = "async";
-    // Set intrinsic size to displayed size so browser reserves layout
-    img.width = DISPLAY_W;
-    img.height = DISPLAY_H;
-
-    // Try preferred thumb first (fast on client), then fallback to original
-    img.src = preferredThumbUrl(imgName);
-
-    // If preferred thumb 404s or can't load, fallback to original upload
-    img.addEventListener("error", function onErr() {
-      // prevent infinite loop if original also errors
-      img.removeEventListener("error", onErr);
-      img.src = originalUrl(imgName);
-    });
-
-    return img;
-  }
-
-  // Build one category tile DOM (no css changes required)
-  function createCategoryItem(item) {
-    const wrap = document.createElement("div");
-    wrap.className = "category-item style-one text-center";
-
-    // image wrapper (structure preserved)
-    const imgWrap = document.createElement("div");
-    imgWrap.className = "category-img";
-
-    const imgEl = makeImgElement(item.image, item.name || "category image");
-    // Append image inside wrapper
-    imgWrap.appendChild(imgEl);
-
-    // content area
-    const content = document.createElement("div");
-    content.className = "category-content";
-
-    const link = document.createElement("a");
-    link.className = "category-btn";
-    link.href = "/shop";
-    link.textContent = item.name || "Category";
-
-    content.appendChild(link);
-
-    wrap.appendChild(imgWrap);
-    wrap.appendChild(content);
-
-    return wrap;
-  }
-
-  // Fetch and render categories
-  fetch("https://demo.webriefly.com/api/productcatdata")
-    .then(function (res) {
-      if (!res.ok) throw new Error("Network response was not ok");
-      return res.json();
-    })
-    .then(function (data) {
-      if (!Array.isArray(data)) return;
-      sliderContainer.innerHTML = "";
-
-      const categories = data.filter((c) => {
-        const published = String(c.status || "").toLowerCase() === "published";
-        const featured = String(c.is_featured || "").toLowerCase() === "yes";
-        return published && featured;
-      });
-
-      const toRender = categories.length
-        ? categories
-        : data.filter((c) => String(c.status || "").toLowerCase() === "published");
-
-      toRender.forEach(function (cat) {
-        sliderContainer.appendChild(createCategoryItem(cat));
-      });
-
-      // Try to initialize/refresh sliders exactly like before
-      try {
-        if (typeof initCategorySlider === "function") {
-          initCategorySlider();
-        } else if (window.jQuery && typeof jQuery === "function" && jQuery.fn && jQuery.fn.slick) {
-          const $el = jQuery(".category-slider-one");
-          if ($el.hasClass("slick-initialized")) {
-            $el.slick("refresh");
-          } else {
-            $el.slick();
+          function escapeText(s) {
+            return String(s == null ? "" : s);
           }
-        } else if (window.Swiper && sliderContainer.swiper) {
-          sliderContainer.swiper.update();
-        }
-      } catch (err) {
-        console.warn("Could not auto-refresh slider:", err);
-      }
-    })
-    .catch(function (err) {
-      console.error("Failed to load category data:", err);
-    });
-});
-</script>
 
+          function originalUrl(img) {
+            if (!img) return BASE_IMAGE_URL + "default.png";
+            if (/^https?:\/\//i.test(img)) return img;
+            return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
+          }
 
+          function preferredThumbUrl(img) {
+            if (!img) return originalUrl(img);
+            if (/^https?:\/\//i.test(img)) return img;
+            const fname = img.split("/").pop();
+            const dpr = window.devicePixelRatio || 1;
+            const sizeDir = dpr >= 2 ? "716x492" : "358x246";
+            return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
+          }
 
+          function makeImgElement(imgName, altText) {
+            const img = document.createElement("img");
+            img.alt = escapeText(altText || "image");
+            img.loading = "lazy";
+            img.decoding = "async";
 
+            // set a sensible fallback intrinsic size to reserve space (optional)
+            // we keep width attribute so layout reserves width; but we will override height after load
+            img.width = DISPLAY_W;
+            // do NOT set height attribute here (so browser can compute later)
+            // img.height = DISPLAY_H;
 
+            // start with preferred thumb (will fallback on error)
+            img.src = preferredThumbUrl(imgName);
 
+            // when image actually loads, fix the displayed height to match the natural aspect ratio
+            img.addEventListener("load", function onLoad() {
+              try {
+                const nw = img.naturalWidth || DISPLAY_W;
+                const nh = img.naturalHeight || DISPLAY_H;
 
+                // compute current displayed width (may be constrained by parent/layout)
+                const rect = img.getBoundingClientRect();
+                const displayedW = Math.round(rect.width) || DISPLAY_W;
 
+                // compute a height that preserves natural aspect ratio
+                const targetH =
+                  Math.round((displayedW * nh) / nw) ||
+                  Math.round((displayedW * DISPLAY_H) / DISPLAY_W);
 
+                // set explicit inline style height so displayed ratio matches natural ratio
+                img.style.height = targetH + "px";
+                // also set width style to the computed displayed width to be precise
+                img.style.width = displayedW + "px";
 
+                // update HTML width/height attributes to reflect intrinsic display size (helps Lighthouse)
+                img.setAttribute("width", String(displayedW));
+                img.setAttribute("height", String(targetH));
+              } catch (e) {
+                // ignore any calculation errors
+              }
+            });
 
+            // fallback: if thumb 404s, load original image
+            img.addEventListener("error", function onErr() {
+              img.removeEventListener("error", onErr);
+              img.src = originalUrl(imgName);
+            });
 
+            return img;
+          }
 
+          function createCategoryItem(item) {
+            const wrap = document.createElement("div");
+            wrap.className = "category-item style-one text-center";
 
+            const imgWrap = document.createElement("div");
+            imgWrap.className = "category-img";
 
+            const imgEl = makeImgElement(
+              item.image,
+              item.name || "category image"
+            );
+            imgWrap.appendChild(imgEl);
 
+            const content = document.createElement("div");
+            content.className = "category-content";
 
+            const link = document.createElement("a");
+            link.className = "category-btn";
+            link.href = "/shop";
+            link.textContent = item.name || "Category";
 
+            content.appendChild(link);
+
+            wrap.appendChild(imgWrap);
+            wrap.appendChild(content);
+
+            return wrap;
+          }
+
+          fetch("https://demo.webriefly.com/api/productcatdata")
+            .then(function (res) {
+              if (!res.ok) throw new Error("Network response was not ok");
+              return res.json();
+            })
+            .then(function (data) {
+              if (!Array.isArray(data)) return;
+              sliderContainer.innerHTML = "";
+
+              const categories = data.filter((c) => {
+                const published =
+                  String(c.status || "").toLowerCase() === "published";
+                const featured =
+                  String(c.is_featured || "").toLowerCase() === "yes";
+                return published && featured;
+              });
+
+              const toRender = categories.length
+                ? categories
+                : data.filter(
+                    (c) => String(c.status || "").toLowerCase() === "published"
+                  );
+
+              toRender.forEach(function (cat) {
+                sliderContainer.appendChild(createCategoryItem(cat));
+              });
+
+              try {
+                if (typeof initCategorySlider === "function") {
+                  initCategorySlider();
+                } else if (
+                  window.jQuery &&
+                  typeof jQuery === "function" &&
+                  jQuery.fn &&
+                  jQuery.fn.slick
+                ) {
+                  const $el = jQuery(".category-slider-one");
+                  if ($el.hasClass("slick-initialized")) {
+                    $el.slick("refresh");
+                  } else {
+                    $el.slick();
+                  }
+                } else if (window.Swiper && sliderContainer.swiper) {
+                  sliderContainer.swiper.update();
+                }
+              } catch (err) {
+                console.warn("Could not auto-refresh slider:", err);
+              }
+            })
+            .catch(function (err) {
+              console.error("Failed to load category data:", err);
+            });
+        });
+      </script>
 
       <section class="banner-section pt-130">
         <div class="container">
@@ -2911,7 +2915,10 @@ document.addEventListener("DOMContentLoaded", function () {
                   <img
                     src="https://avatars.mds.yandex.net/i?id=802770c3379c394673fcc33bea11d6b7952ceffd-4012107-images-thumbs&n=13"
                     alt="Image"
-                    style="width: 511px; height: 360px"
+                    width="480"
+                    height="320"
+                    style="max-width: 100%; height: auto; display: block"
+                    loading="lazy"
                   />
                 </div>
               </div>
@@ -3163,12 +3170,17 @@ document.addEventListener("DOMContentLoaded", function () {
                   data-aos-duration="1600"
                 >
                   <h4 class="widget-title">Recent Post</h4>
-                  <div class="widget-content" id="recent-posts-container"></div>
+                  <div class="widget-content" id="recent-posts-container">
+                    <div class="pesco-pagination">
+                      <ul></ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
         <div class="copyright-area">
           <div class="container">
             <div class="row align-items-center">
@@ -3190,6 +3202,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   });
                 </script>
               </div>
+
               <div class="col-lg-6">
                 <div class="payment-method text-lg-end">
                   <a href="#"
@@ -3236,152 +3249,182 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        if (posts[0]) {
+        if (posts && posts[0]) {
           const big = posts[0];
           const bigEl = document.querySelector(".blog-post-item.style-one");
-          const fmtDate = (iso) =>
-            new Date(iso).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
+          if (bigEl) {
+            const fmtDate = (iso) =>
+              new Date(iso).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
 
-          const thumbContainer = bigEl.querySelector(".post-thumbnails");
-          thumbContainer.innerHTML = `
-                <a href="/blog-details/${slugify(
-                  big.name
-                )}" class="w-100 h-100">
-                  <img src="${imageSrc(big.image)}" alt="${big.name}">
-                </a>
-              `;
+            const thumbContainer = bigEl.querySelector(".post-thumbnails");
+            if (thumbContainer) {
+              thumbContainer.innerHTML = `
+          <a href="/blog-details/${slugify(big.name)}" class="w-100 h-100">
+            <img src="${imageSrc(big.image)}" alt="${
+                big.name
+              }" loading="lazy" decoding="async" width="358" height="246">
+          </a>
+        `;
+            }
 
-          const bigLink = bigEl.querySelector(".title a");
-          bigLink.href = `/blog-details/${slugify(big.name)}`;
-          const titleWords = big.name.split(" ");
-          bigLink.textContent =
-            titleWords.slice(0, 8).join(" ") +
-            (titleWords.length > 8 ? "…" : "");
+            const bigLink = bigEl.querySelector(".title a");
+            if (bigLink) {
+              bigLink.href = `/blog-details/${slugify(big.name)}`;
+              const titleWords = big.name.split(" ");
+              bigLink.textContent =
+                titleWords.slice(0, 8).join(" ") +
+                (titleWords.length > 8 ? "…" : "");
+            }
 
-          const previewWords = big.description.split(/\s+/);
-          bigEl.querySelector(".post-content p").textContent =
-            previewWords.length > 48
-              ? previewWords.slice(0, 48).join(" ") + "…"
-              : big.description;
+            const previewP = bigEl.querySelector(".post-content p");
+            if (previewP) {
+              const previewWords = big.description.split(/\s+/);
+              previewP.textContent =
+                previewWords.length > 48
+                  ? previewWords.slice(0, 48).join(" ") + "…"
+                  : big.description;
+            }
+          }
         }
 
         const smallContainer = document.querySelector(".col-lg-6 > .row");
-        const smallTemplate = smallContainer.querySelector(".col-sm-6");
-        if (smallTemplate && posts.length > 1) {
-          const fmtDate = (iso) =>
-            new Date(iso).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
+        if (smallContainer) {
+          const smallTemplate = smallContainer.querySelector(".col-sm-6");
+          if (smallTemplate && posts && posts.length > 1) {
+            const fmtDate = (iso) =>
+              new Date(iso).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+            const templateClone = smallTemplate.cloneNode(true);
+            smallContainer.innerHTML = "";
+
+            posts.slice(1, 5).forEach((data) => {
+              const card = templateClone.cloneNode(true);
+
+              const thumbDiv = card.querySelector(".post-thumbnail");
+              if (thumbDiv) {
+                thumbDiv.innerHTML = `
+            <a href="/blog-details/${slugify(data.name)}">
+              <img src="${imageSrc(data.image)}" alt="${
+                  data.name
+                }" loading="lazy" decoding="async" width="358" height="246">
+            </a>
+          `;
+              }
+
+              const linkWords = data.name.split(" ");
+              const linkElem = card.querySelector(".title a");
+              if (linkElem) {
+                linkElem.href = `/blog-details/${slugify(data.name)}`;
+                linkElem.textContent =
+                  linkWords.slice(0, 6).join(" ") +
+                  (linkWords.length > 6 ? "…" : "");
+              }
+
+              const oldMeta = card.querySelector(".post-meta");
+              if (oldMeta) oldMeta.remove();
+              const meta = document.createElement("div");
+              meta.className = "post-meta";
+              meta.innerHTML = `
+          <span><a href="/blog-details/${slugify(data.name)}">${
+                data.author_name || ""
+              }</a></span>
+          <span><a href="/blog-details/${slugify(data.name)}">${fmtDate(
+                data.date
+              )}</a></span>
+        `;
+              card.querySelector(".post-content")?.appendChild(meta);
+
+              smallContainer.appendChild(card);
             });
-          const templateClone = smallTemplate.cloneNode(true);
-          smallContainer.innerHTML = "";
 
-          posts.slice(1, 5).forEach((data) => {
-            const card = templateClone.cloneNode(true);
-
-            const thumbDiv = card.querySelector(".post-thumbnail");
-            thumbDiv.innerHTML = `
-                  <a href="/blog-details/${slugify(data.name)}">
-                    <img src="${imageSrc(data.image)}" alt="${data.name}">
-                  </a>
-                `;
-
-            const linkWords = data.name.split(" ");
-            const linkElem = card.querySelector(".title a");
-            linkElem.href = `/blog-details/${slugify(data.name)}`;
-            linkElem.textContent =
-              linkWords.slice(0, 6).join(" ") +
-              (linkWords.length > 6 ? "…" : "");
-
-            const oldMeta = card.querySelector(".post-meta");
-            if (oldMeta) oldMeta.remove();
-            const meta = document.createElement("div");
-            meta.className = "post-meta";
-            meta.innerHTML = `
-                  <span><a href="/blog-details/${slugify(data.name)}">${
-              data.author_name || ""
-            }</a></span>
-                  <span><a href="/blog-details/${slugify(data.name)}">${fmtDate(
-              data.date
-            )}</a></span>
-                `;
-            card.querySelector(".post-content").appendChild(meta);
-
-            smallContainer.appendChild(card);
-          });
-
-          if (window.AOS && typeof AOS.init === "function") {
-            AOS.init({
-              once: false,
-              duration: 1000,
-              easing: "ease-in-out",
-              mirror: true,
-            });
+            if (window.AOS && typeof AOS.init === "function") {
+              AOS.init({
+                once: false,
+                duration: 1000,
+                easing: "ease-in-out",
+                mirror: true,
+              });
+            }
           }
         }
 
         try {
+          if (!Array.isArray(posts)) posts = [];
           const sorted = [...posts].sort(
             (a, b) => new Date(b.date) - new Date(a.date)
           );
           const topPosts = sorted.slice(0, 3);
           const container = document.getElementById("recent-posts-container");
+          if (container) {
+            function formatDate(dateStr) {
+              return new Date(dateStr).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              });
+            }
 
-          function formatDate(dateStr) {
-            return new Date(dateStr).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
+            topPosts.forEach((post) => {
+              const html = `
+          <div class="recent-post-item">
+            <div class="thumb">
+              <a href="/blog-details/${slugify(post.name)}" class="w-100 h-100">
+                <img src="${imageSrc(post.image)}" alt="${
+                post.name
+              }" loading="lazy" decoding="async" width="358" height="246">
+              </a>
+            </div>
+            <div class="content">
+              <h4><a href="/blog-details/${slugify(post.name)}">${
+                post.name
+              }</a></h4>
+              <span>
+                <a href="/blog-details/${slugify(post.name)}">${formatDate(
+                post.date
+              )}</a>
+              </span>
+            </div>
+          </div>
+        `;
+              container.insertAdjacentHTML("beforeend", html);
             });
           }
-
-          topPosts.forEach((post) => {
-            const html = `
-                  <div class="recent-post-item">
-                    <div class="thumb">
-                      <a href="/blog-details/${slugify(
-                        post.name
-                      )}" class="w-100 h-100">
-                        <img src="${imageSrc(post.image)}" alt="${post.name}">
-                      </a>
-                    </div>
-                    <div class="content">
-                      <h4><a href="/blog-details/${slugify(post.name)}">${
-              post.name
-            }</a></h4>
-                      <span>
-                        <a href="/blog-details/${slugify(post.name)}">
-                          ${formatDate(post.date)}
-                        </a>
-                      </span>
-                    </div>
-                  </div>
-                `;
-            container.insertAdjacentHTML("beforeend", html);
-          });
         } catch (error) {
           console.error("Error loading recent posts:", error);
         }
 
-        const extras = posts.slice(5);
+        const extras = Array.isArray(posts) ? posts.slice(5) : [];
         const perPage = 3;
-        const totalPages = Math.ceil(extras.length / perPage);
+        const totalPages = Math.ceil(extras.length / perPage) || 0;
         let currentPage = 1;
 
-        const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-        const pagUl = document.querySelector(".pesco-pagination ul");
+        const fourEls = Array.from(
+          document.querySelectorAll(".blog-post-item.style-four")
+        );
 
-        const fmtDate2 = (iso) =>
-          new Date(iso).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
+        let pagUl = document.querySelector(".pesco-pagination ul");
+        let pagContainer = document.querySelector(".pesco-pagination");
+
+        if (!pagUl) {
+          const afterRef = fourEls.length
+            ? fourEls[0].closest(".row") || fourEls[0].parentElement
+            : document.body;
+          pagContainer = document.createElement("div");
+          pagContainer.className = "pesco-pagination";
+          const newUl = document.createElement("ul");
+          pagContainer.appendChild(newUl);
+          afterRef && afterRef.appendChild
+            ? afterRef.appendChild(pagContainer)
+            : document.body.appendChild(pagContainer);
+          pagUl = newUl;
+        }
 
         function renderPage(page) {
           const start = (page - 1) * perPage;
@@ -3394,70 +3437,102 @@ document.addEventListener("DOMContentLoaded", function () {
             el.style.display = "";
 
             const thumb = el.querySelector(".post-thumbnail");
-            thumb.innerHTML = `
-                  <a href="/blog-details/${slugify(data.name)}">
-                    <img src="${imageSrc(data.image)}" alt="${data.name}">
-                  </a>
-                `;
+            if (thumb) {
+              thumb.innerHTML = `
+          <a href="/blog-details/${slugify(data.name)}">
+            <img src="${imageSrc(data.image)}" alt="${
+                data.name
+              }" loading="lazy" decoding="async" width="358" height="246">
+          </a>
+        `;
+            }
 
             const link = el.querySelector(".title a");
-            link.href = `/blog-details/${slugify(data.name)}`;
-            link.textContent = data.name;
+            if (link) {
+              link.href = `/blog-details/${slugify(data.name)}`;
+              link.textContent = data.name;
+            }
 
-            const w = data.description.split(/\s+/);
-            el.querySelector(".post-content p").textContent =
-              w.length > 36 ? w.slice(0, 36).join(" ") + "…" : data.description;
+            const w = String(data.description || "").split(/\s+/);
+            const para = el.querySelector(".post-content p");
+            if (para)
+              para.textContent =
+                w.length > 36
+                  ? w.slice(0, 36).join(" ") + "…"
+                  : data.description || "";
 
             const spans = el.querySelectorAll(".post-meta span a");
             if (spans.length >= 2) {
               spans[0].textContent = data.tags || data.categories || "";
-              spans[1].textContent = fmtDate2(data.date);
+              spans[1].textContent = new Date(data.date).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              );
             }
           });
         }
 
         function buildPager() {
-          pagUl.innerHTML = `
-                <li><a href="#" data-page="${currentPage - 1}">
-                  <i class="far fa-angle-left"></i>
-                </a></li>
-              `;
-
-          for (let i = 1; i <= totalPages; i++) {
-            pagUl.insertAdjacentHTML(
-              "beforeend",
-              `<li>
-                    <a href="#" data-page="${i}"${
-                i === currentPage ? ' class="active"' : ""
-              }>
-                      ${i}
-                    </a>
-                  </li>`
-            );
+          if (!pagUl) return;
+          if (totalPages <= 1) {
+            pagUl.innerHTML = "";
+            return;
           }
 
-          pagUl.insertAdjacentHTML(
-            "beforeend",
-            `<li><a href="#" data-page="${currentPage + 1}">
-                  <i class="far fa-angle-right"></i>
-                </a></li>`
-          );
+          if (currentPage < 1) currentPage = 1;
+          if (currentPage > totalPages) currentPage = totalPages;
+
+          pagUl.innerHTML = "";
+          const prevLi = document.createElement("li");
+          prevLi.innerHTML = `<a href="#" data-page="${Math.max(
+            1,
+            currentPage - 1
+          )}"><i class="far fa-angle-left"></i></a>`;
+          pagUl.appendChild(prevLi);
+
+          for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = "#";
+            a.dataset.page = String(i);
+            a.textContent = String(i);
+            if (i === currentPage) a.className = "active";
+            li.appendChild(a);
+            pagUl.appendChild(li);
+          }
+
+          const nextLi = document.createElement("li");
+          nextLi.innerHTML = `<a href="#" data-page="${Math.min(
+            totalPages,
+            currentPage + 1
+          )}"><i class="far fa-angle-right"></i></a>`;
+          pagUl.appendChild(nextLi);
         }
 
-        renderPage(currentPage);
-        buildPager();
-
-        pagUl.parentElement.addEventListener("click", (e) => {
-          e.preventDefault();
-          const a = e.target.closest("a[data-page]");
-          if (!a) return;
-          const pg = +a.dataset.page;
-          if (pg < 1 || pg > totalPages || pg === currentPage) return;
-          currentPage = pg;
-          renderPage(pg);
+        if (extras.length && fourEls.length) {
+          renderPage(currentPage);
           buildPager();
-          if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-        });
+        } else {
+          if (pagContainer) pagContainer.style.display = "none";
+        }
+
+        if (pagContainer) {
+          pagContainer.addEventListener("click", (e) => {
+            e.preventDefault();
+            const a = e.target.closest("a[data-page]");
+            if (!a) return;
+            const pg = Number(a.dataset.page) || 1;
+            if (pg < 1 || pg > totalPages || pg === currentPage) return;
+            currentPage = pg;
+            renderPage(pg);
+            buildPager();
+            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+          });
+        }
       });
     </script>
 
