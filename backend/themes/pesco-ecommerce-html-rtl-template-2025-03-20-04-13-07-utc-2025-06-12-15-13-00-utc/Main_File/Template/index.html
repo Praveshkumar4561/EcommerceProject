@@ -438,9 +438,6 @@
                 <img
                   src="assets/images/logo/logo-main.png"
                   alt="Logo"
-                  width="236"
-                  height="54"
-                  style="width: 157px; height: auto; display: block"
                   loading="lazy"
                 />
               </a>
@@ -506,9 +503,6 @@
                 <img
                   src="assets/images/logo/logo-main.png"
                   alt="Logo"
-                  width="236"
-                  height="54"
-                  style="width: 157px; height: auto; display: block"
                   loading="lazy"
                 />
               </a>
@@ -887,12 +881,7 @@
                             alt="Hero Line"
                             width="284"
                             height="44"
-                            style="
-                              max-width: 100%;
-                              height: auto;
-                              width: auto;
-                              display: block;
-                            "
+                            style="width: auto; height: auto; max-width: 100%"
                             loading="lazy"
                           />
                         </li>
@@ -928,7 +917,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="single-hero-slider">
                 <div class="row align-items-center">
                   <div class="col-lg-6">
@@ -967,12 +955,7 @@
                             alt="Hero Line"
                             width="284"
                             height="44"
-                            style="
-                              max-width: 100%;
-                              height: auto;
-                              width: auto;
-                              display: block;
-                            "
+                            style="width: auto; height: auto; max-width: 100%"
                             loading="lazy"
                           />
                         </li>
@@ -1046,12 +1029,7 @@
                             alt="Hero Line"
                             width="284"
                             height="44"
-                            style="
-                              max-width: 100%;
-                              height: auto;
-                              width: auto;
-                              display: block;
-                            "
+                            style="width: auto; height: auto; max-width: 100%"
                             loading="lazy"
                           />
                         </li>
@@ -1292,59 +1270,139 @@
           data-aos="fade-up"
           data-aos-delay="20"
           data-aos-duration="1200"
-        ></div>
+        >
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-1.png"
+                alt="Man Shirts"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Man Shirts</a>
+            </div>
+          </div>
+
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-2.png"
+                alt="Denim Jeans"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Denim Jeans</a>
+            </div>
+          </div>
+
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-3.png"
+                alt="Casual Suit"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Casual Suit</a>
+            </div>
+          </div>
+
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-4.png"
+                alt="Summer Dress"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Summer Dress</a>
+            </div>
+          </div>
+
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-5.png"
+                alt="Sweaters"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Sweaters</a>
+            </div>
+          </div>
+
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-6.png"
+                alt="Jackets"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Jackets</a>
+            </div>
+          </div>
+
+          <div class="category-item style-one text-center">
+            <div class="category-img">
+              <img
+                src="assets/images/category/category-4.png"
+                alt="Summer Dress"
+                width="262"
+                height="279"
+                loading="lazy"
+                style="object-fit: cover; width: 100%; height: auto"
+              />
+            </div>
+            <div class="category-content">
+              <a href="index.html" class="category-btn">Summer Dress</a>
+            </div>
+          </div>
+        </div>
       </section>
 
       <script>
         document.addEventListener("DOMContentLoaded", function () {
           const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
-          const THUMBS_BASE = "/uploads/thumbs/";
-          const DISPLAY_W = 358;
-          const DISPLAY_H = 246;
           const sliderContainer = document.querySelector(
             ".category-slider-one"
           );
           if (!sliderContainer) return;
-          function escapeText(s) {
-            return String(s == null ? "" : s);
-          }
-          function originalUrl(img) {
-            if (!img) return BASE_IMAGE_URL + "default.png";
-            if (/^https?:\/\//i.test(img)) return img;
-            return BASE_IMAGE_URL + encodeURIComponent(img.split("/").pop());
-          }
-          function preferredThumbUrl(img) {
-            if (!img) return originalUrl(img);
-            if (/^https?:\/\//i.test(img)) return img;
-            const fname = img.split("/").pop();
-            const dpr = window.devicePixelRatio || 1;
-            const sizeDir = dpr >= 2 ? "716x492" : "358x246";
-            return THUMBS_BASE + sizeDir + "/" + encodeURIComponent(fname);
-          }
-          function makeImgElement(imgName, altText) {
-            const img = document.createElement("img");
-            img.alt = escapeText(altText || "image");
-            img.loading = "lazy";
-            img.decoding = "async";
-            img.width = DISPLAY_W;
-            img.height = DISPLAY_H;
-            img.src = preferredThumbUrl(imgName);
-            img.addEventListener("error", function onErr() {
-              img.removeEventListener("error", onErr);
-              img.src = originalUrl(imgName);
-            });
-            return img;
-          }
           function createCategoryItem(item) {
             const wrap = document.createElement("div");
             wrap.className = "category-item style-one text-center";
             const imgWrap = document.createElement("div");
             imgWrap.className = "category-img";
-            const imgEl = makeImgElement(
-              item.image,
-              item.name || "category image"
-            );
-            imgWrap.appendChild(imgEl);
+            const img = document.createElement("img");
+            img.alt = item.name || "category image";
+            img.src = item.image
+              ? BASE_IMAGE_URL + item.image
+              : BASE_IMAGE_URL + "default.png";
+            imgWrap.appendChild(img);
             const content = document.createElement("div");
             content.className = "category-content";
             const link = document.createElement("a");
@@ -2750,10 +2808,7 @@
                   <img
                     src="https://avatars.mds.yandex.net/i?id=802770c3379c394673fcc33bea11d6b7952ceffd-4012107-images-thumbs&n=13"
                     alt="Image"
-                    width="480"
-                    height="320"
-                    style="max-width: 100%; height: auto; display: block"
-                    loading="lazy"
+                    style="width: 511px; height: 360px"
                   />
                 </div>
               </div>
@@ -2843,7 +2898,6 @@
                       ><img
                         src="assets/images/logo/logo-main.png"
                         alt="Brand Logo"
-                        loading="lazy"
                     /></a>
 
                     <p>
@@ -2864,7 +2918,7 @@
                       class="social-link"
                       aria-label="Find us on social media"
                     >
-                      <li class="social-label me-2">Find Us:</li>
+                      <li class="social-label">Find Us:</li>
                       <li>
                         <a
                           href="https://www.facebook.com/"
@@ -3005,17 +3059,12 @@
                   data-aos-duration="1600"
                 >
                   <h4 class="widget-title">Recent Post</h4>
-                  <div class="widget-content" id="recent-posts-container">
-                    <div class="build-pagination d-none">
-                      <ul></ul>
-                    </div>
-                  </div>
+                  <div class="widget-content" id="recent-posts-container"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
         <div class="copyright-area">
           <div class="container">
             <div class="row align-items-center">
@@ -3037,7 +3086,6 @@
                   });
                 </script>
               </div>
-
               <div class="col-lg-6">
                 <div class="payment-method text-lg-end">
                   <a href="#"
@@ -3222,12 +3270,7 @@
         let currentPage = 1;
 
         const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-        const pagContainer = document.querySelector(".pesco-pagination");
-        let pagUl = pagContainer ? pagContainer.querySelector("ul") : null;
-        if (pagContainer && !pagUl) {
-          pagUl = document.createElement("ul");
-          pagContainer.appendChild(pagUl);
-        }
+        const pagUl = document.querySelector(".pesco-pagination ul");
 
         const fmtDate2 = (iso) =>
           new Date(iso).toLocaleDateString("en-US", {
@@ -3270,14 +3313,11 @@
         }
 
         function buildPager() {
-          if (!pagUl) return;
-
           pagUl.innerHTML = `
                 <li><a href="#" data-page="${currentPage - 1}">
                   <i class="far fa-angle-left"></i>
                 </a></li>
               `;
-
           for (let i = 1; i <= totalPages; i++) {
             pagUl.insertAdjacentHTML(
               "beforeend",
@@ -3290,7 +3330,6 @@
                   </li>`
             );
           }
-
           pagUl.insertAdjacentHTML(
             "beforeend",
             `<li><a href="#" data-page="${currentPage + 1}">
@@ -3302,19 +3341,17 @@
         renderPage(currentPage);
         buildPager();
 
-        if (pagUl && pagUl.parentElement) {
-          pagUl.parentElement.addEventListener("click", (e) => {
-            e.preventDefault();
-            const a = e.target.closest("a[data-page]");
-            if (!a) return;
-            const pg = +a.dataset.page;
-            if (pg < 1 || pg > totalPages || pg === currentPage) return;
-            currentPage = pg;
-            renderPage(pg);
-            buildPager();
-            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-          });
-        }
+        pagUl.parentElement.addEventListener("click", (e) => {
+          e.preventDefault();
+          const a = e.target.closest("a[data-page]");
+          if (!a) return;
+          const pg = +a.dataset.page;
+          if (pg < 1 || pg > totalPages || pg === currentPage) return;
+          currentPage = pg;
+          renderPage(pg);
+          buildPager();
+          if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+        });
       });
     </script>
 
@@ -3425,16 +3462,15 @@
       });
     </script>
 
+    <div class="site-branding">
+      <a href="index.html" class="brand-logo">
+        <img src="assets/images/logo/logo-main.png" alt="Logo" loading="lazy" />
+      </a>
+    </div>
+
     <div class="site-branding d-lg-none d-block">
       <a href="index.html" class="brand-logo">
-        <img
-          src="assets/images/logo/logo-main.png"
-          alt="Logo"
-          width="236"
-          height="54"
-          style="width: 157px; height: auto; display: block"
-          loading="lazy"
-        />
+        <img src="assets/images/logo/logo-main.png" alt="Logo" loading="lazy" />
       </a>
     </div>
 
