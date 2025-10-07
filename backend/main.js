@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
 
+
 app.use("/frontend1", express.static(path.join(__dirname, "frontend1")));
 app.use("/themes", express.static(path.join(__dirname, "themes")));
 app.set("views", path.join(__dirname, "themes"));
