@@ -23,10 +23,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(compression());
-app.use(express.static(path.join(__dirname, "build"))); // new line of code
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend1/dist/index.html"));
-}); // new line of code
 
 app.use("/frontend1", express.static(path.join(__dirname, "frontend1")));
 app.use("/themes", express.static(path.join(__dirname, "themes")));
