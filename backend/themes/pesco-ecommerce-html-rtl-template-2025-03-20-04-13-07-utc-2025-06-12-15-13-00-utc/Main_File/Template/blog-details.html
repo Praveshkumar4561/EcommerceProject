@@ -1053,7 +1053,7 @@
             reviews = await res.json();
           } catch (err) {
             console.error("Failed to load reviews:", err);
-            heading.textContent = "Reviews unavailable";
+            heading.textContent = "Reviews unavailable of this blog";
             list.innerHTML = "";
             return;
           }
@@ -1816,10 +1816,11 @@
               </div>
               <div class="col-lg-6">
                 <div class="payment-method text-lg-end">
-                  <a href="#"
+                  <a href="javascript:void(0)"
                     ><img
                       src="assets/images/footer/payment-method.png"
                       alt="payment-method"
+                      loading="lazy"
                   /></a>
                 </div>
               </div>
