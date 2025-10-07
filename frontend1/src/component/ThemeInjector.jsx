@@ -325,9 +325,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           width: "100%",
           height: "100%",
           overflow: "auto",
-          display: "block",
-          opacity: loading ? 0 : 1,
-          transition: "opacity 0.3s ease",
+          display: loading ? "none" : "block",
         }}
       />
     </div>
