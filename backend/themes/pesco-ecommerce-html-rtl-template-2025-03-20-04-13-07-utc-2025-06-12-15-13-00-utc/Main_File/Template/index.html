@@ -2395,258 +2395,232 @@
         </div>
       </section>
 
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
+          const sliderContainer = document.querySelector(
+            ".testimonial-slider-one"
+          );
+          if (!sliderContainer) return;
 
+          const FOCUSABLE_SELECTOR =
+            'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable="true"]';
 
+          function createTestimonialItem(item) {
+            const wrap = document.createElement("div");
+            wrap.className = "testimonial-item style-one mb-40";
 
+            const content = document.createElement("div");
+            content.className = "testimonial-content";
 
+            const p = document.createElement("p");
+            p.innerHTML = item.content || "";
+            content.appendChild(p);
 
+            const authorQuote = document.createElement("div");
+            authorQuote.className =
+              "author-quote-item d-flex justify-content-between align-items-center";
 
+            const authorItem = document.createElement("div");
+            authorItem.className = "author-item";
 
+            const authorThumb = document.createElement("div");
+            authorThumb.className = "author-thumb";
+            const img = document.createElement("img");
+            img.alt = item.name ? item.name + " photo" : "author image";
+            img.src = item.image
+              ? BASE_IMAGE_URL + item.image
+              : BASE_IMAGE_URL + "author-1.png";
+            img.style.width = "auto";
+            img.style.height = "auto";
+            img.loading = "lazy";
+            authorThumb.appendChild(img);
 
+            const authorInfo = document.createElement("div");
+            authorInfo.className = "author-info";
+            const h3 = document.createElement("h3");
+            h3.textContent = item.name || "";
+            h3.style.fontSize = "20px";
+            h3.style.lineHeight = "35px";
+            authorInfo.appendChild(h3);
 
+            const ul = document.createElement("ul");
+            ul.className = "ratings rating5";
+            for (let i = 0; i < 5; i++) {
+              const li = document.createElement("li");
+              li.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>';
+              ul.appendChild(li);
+            }
+            authorInfo.appendChild(ul);
 
+            authorItem.appendChild(authorThumb);
+            authorItem.appendChild(authorInfo);
 
+            const quoteIcon = document.createElement("div");
+            quoteIcon.className = "quote-icon";
+            quoteIcon.innerHTML =
+              '<i class="flaticon flaticon-right-quote" aria-hidden="true"></i>';
 
+            authorQuote.appendChild(authorItem);
+            authorQuote.appendChild(quoteIcon);
 
+            content.appendChild(authorQuote);
+            wrap.appendChild(content);
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const BASE_IMAGE_URL = "https://demo.webriefly.com/uploads/";
-  const sliderContainer = document.querySelector(".testimonial-slider-one");
-  if (!sliderContainer) return;
+            wrap.querySelectorAll(FOCUSABLE_SELECTOR).forEach((el) => {
+              if (!el.hasAttribute("data-prev-tabindex")) {
+                const prev = el.getAttribute("tabindex");
+                el.setAttribute(
+                  "data-prev-tabindex",
+                  prev === null ? "none" : prev
+                );
+              }
+              el.setAttribute("tabindex", "-1");
+            });
 
-  // Helper: focusable selector (common controls)
-  const FOCUSABLE_SELECTOR =
-    'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, [tabindex], [contenteditable="true"]';
+            if (!wrap.hasAttribute("data-prev-tabindex")) {
+              const prev = wrap.getAttribute("tabindex");
+              wrap.setAttribute(
+                "data-prev-tabindex",
+                prev === null ? "none" : prev
+              );
+            }
+            wrap.setAttribute("tabindex", "-1");
 
-  function createTestimonialItem(item) {
-    const wrap = document.createElement("div");
-    wrap.className = "testimonial-item style-one mb-40";
-
-    const content = document.createElement("div");
-    content.className = "testimonial-content";
-
-    const p = document.createElement("p");
-    p.innerHTML = item.content || "";
-    content.appendChild(p);
-
-    const authorQuote = document.createElement("div");
-    authorQuote.className =
-      "author-quote-item d-flex justify-content-between align-items-center";
-
-    const authorItem = document.createElement("div");
-    authorItem.className = "author-item";
-
-    const authorThumb = document.createElement("div");
-    authorThumb.className = "author-thumb";
-    const img = document.createElement("img");
-    img.alt = item.name ? item.name + " photo" : "author image";
-    img.src = item.image ? BASE_IMAGE_URL + item.image : BASE_IMAGE_URL + "author-1.png";
-    img.style.width = "auto";
-    img.style.height = "auto";
-    img.loading = "lazy";
-    authorThumb.appendChild(img);
-
-    const authorInfo = document.createElement("div");
-    authorInfo.className = "author-info";
-    const h3 = document.createElement("h3");
-    h3.textContent = item.name || "";
-    h3.style.fontSize = "20px";
-    h3.style.lineHeight = "35px";
-    authorInfo.appendChild(h3);
-
-    const ul = document.createElement("ul");
-    ul.className = "ratings rating5";
-    for (let i = 0; i < 5; i++) {
-      const li = document.createElement("li");
-      li.innerHTML = '<i class="fas fa-star" aria-hidden="true"></i>';
-      ul.appendChild(li);
-    }
-    authorInfo.appendChild(ul);
-
-    authorItem.appendChild(authorThumb);
-    authorItem.appendChild(authorInfo);
-
-    const quoteIcon = document.createElement("div");
-    quoteIcon.className = "quote-icon";
-    quoteIcon.innerHTML =
-      '<i class="flaticon flaticon-right-quote" aria-hidden="true"></i>';
-
-    authorQuote.appendChild(authorItem);
-    authorQuote.appendChild(quoteIcon);
-
-    content.appendChild(authorQuote);
-    wrap.appendChild(content);
-
-    // Initially mark interactive descendants as non-focusable;
-    // slider init will restore focusability for the active slide.
-    wrap.querySelectorAll(FOCUSABLE_SELECTOR).forEach((el) => {
-      // record any existing tabindex so we can restore it later
-      if (!el.hasAttribute("data-prev-tabindex")) {
-        const prev = el.getAttribute("tabindex");
-        el.setAttribute("data-prev-tabindex", prev === null ? "none" : prev);
-      }
-      el.setAttribute("tabindex", "-1");
-    });
-
-    // Also ensure the slide itself is not accidentally focusable initially
-    if (!wrap.hasAttribute("data-prev-tabindex")) {
-      const prev = wrap.getAttribute("tabindex");
-      wrap.setAttribute("data-prev-tabindex", prev === null ? "none" : prev);
-    }
-    wrap.setAttribute("tabindex", "-1");
-
-    return wrap;
-  }
-
-  // Utility to set element non-focusable while saving previous tabindex
-  function makeNonFocusable(el) {
-    if (!el) return;
-    if (!el.hasAttribute("data-prev-tabindex")) {
-      const prev = el.getAttribute("tabindex");
-      el.setAttribute("data-prev-tabindex", prev === null ? "none" : prev);
-    }
-    el.setAttribute("tabindex", "-1");
-  }
-
-  // Utility to restore element's tabindex from data-prev-tabindex
-  function restoreFocusable(el) {
-    if (!el) return;
-    const prev = el.getAttribute("data-prev-tabindex");
-    if (prev === null) {
-      // no stored state -> if our attr is -1, remove it
-      if (el.getAttribute("tabindex") === "-1") el.removeAttribute("tabindex");
-    } else {
-      if (prev === "none") el.removeAttribute("tabindex");
-      else el.setAttribute("tabindex", prev);
-      el.removeAttribute("data-prev-tabindex");
-    }
-  }
-
-  // Sync slides: make sure aria-hidden slides have no focusable descendants
-  function syncSlidesFocus() {
-    // targets: slick clones use .slick-slide; our created ones have .testimonial-item
-    const slides = sliderContainer.querySelectorAll(".slick-slide, .testimonial-item");
-    slides.forEach((slide) => {
-      const ariaHidden = slide.getAttribute("aria-hidden");
-      const isHidden = ariaHidden === "true";
-      // If the slide itself is focusable (tabindex=0) and it's hidden -> make non-focusable
-      if (isHidden) {
-        makeNonFocusable(slide);
-      } else {
-        // visible slide -> make sure the slide is not trapping focus (remove tabindex if we set it)
-        restoreFocusable(slide);
-      }
-
-      const focusables = slide.querySelectorAll(FOCUSABLE_SELECTOR);
-      focusables.forEach((el) => {
-        if (isHidden) makeNonFocusable(el);
-        else restoreFocusable(el);
-      });
-    });
-  }
-
-  // Observe mutations inside the slider so we react when the slider library updates aria-hidden/class/tabindex
-  function observeSliderChanges() {
-    const observer = new MutationObserver((mutations) => {
-      let shouldSync = false;
-      for (const m of mutations) {
-        if (m.type === "attributes") {
-          if (m.attributeName === "aria-hidden" || m.attributeName === "class" || m.attributeName === "tabindex") {
-            shouldSync = true;
-            break;
+            return wrap;
           }
-        } else if (m.type === "childList") {
-          shouldSync = true;
-          break;
-        }
-      }
-      if (shouldSync) {
-        // small debounce to avoid thrashing for many quick mutations
-        if (window.__testimonial_sync_timeout) clearTimeout(window.__testimonial_sync_timeout);
-        window.__testimonial_sync_timeout = setTimeout(() => {
-          syncSlidesFocus();
-        }, 30);
-      }
-    });
 
-    observer.observe(sliderContainer, {
-      attributes: true,
-      childList: true,
-      subtree: true,
-      attributeFilter: ["aria-hidden", "class", "tabindex"],
-    });
+          function makeNonFocusable(el) {
+            if (!el) return;
+            if (!el.hasAttribute("data-prev-tabindex")) {
+              const prev = el.getAttribute("tabindex");
+              el.setAttribute(
+                "data-prev-tabindex",
+                prev === null ? "none" : prev
+              );
+            }
+            el.setAttribute("tabindex", "-1");
+          }
 
-    // return observer in case we want to disconnect later
-    return observer;
-  }
+          function restoreFocusable(el) {
+            if (!el) return;
+            const prev = el.getAttribute("data-prev-tabindex");
+            if (prev === null) {
+              if (el.getAttribute("tabindex") === "-1")
+                el.removeAttribute("tabindex");
+            } else {
+              if (prev === "none") el.removeAttribute("tabindex");
+              else el.setAttribute("tabindex", prev);
+              el.removeAttribute("data-prev-tabindex");
+            }
+          }
 
-  // fetch & render testimonials
-  fetch("https://demo.webriefly.com/api/gettestimonials")
-    .then((res) => {
-      if (!res.ok) throw new Error("Network response was not ok");
-      return res.json();
-    })
-    .then((data) => {
-      if (!Array.isArray(data)) return;
+          function syncSlidesFocus() {
+            const slides = sliderContainer.querySelectorAll(
+              ".slick-slide, .testimonial-item"
+            );
+            slides.forEach((slide) => {
+              const ariaHidden = slide.getAttribute("aria-hidden");
+              const isHidden = ariaHidden === "true";
+              if (isHidden) {
+                makeNonFocusable(slide);
+              } else {
+                restoreFocusable(slide);
+              }
 
-      sliderContainer.innerHTML = "";
+              const focusables = slide.querySelectorAll(FOCUSABLE_SELECTOR);
+              focusables.forEach((el) => {
+                if (isHidden) makeNonFocusable(el);
+                else restoreFocusable(el);
+              });
+            });
+          }
 
-      const visible = data.filter(
-        (t) => String(t.status || "").toLowerCase() === "published"
-      );
-      const toRender = visible.length ? visible : data;
+          function observeSliderChanges() {
+            const observer = new MutationObserver((mutations) => {
+              let shouldSync = false;
+              for (const m of mutations) {
+                if (m.type === "attributes") {
+                  if (
+                    m.attributeName === "aria-hidden" ||
+                    m.attributeName === "class" ||
+                    m.attributeName === "tabindex"
+                  ) {
+                    shouldSync = true;
+                    break;
+                  }
+                } else if (m.type === "childList") {
+                  shouldSync = true;
+                  break;
+                }
+              }
+              if (shouldSync) {
+                if (window.__testimonial_sync_timeout)
+                  clearTimeout(window.__testimonial_sync_timeout);
+                window.__testimonial_sync_timeout = setTimeout(() => {
+                  syncSlidesFocus();
+                }, 30);
+              }
+            });
 
-      toRender.forEach((t) => sliderContainer.appendChild(createTestimonialItem(t)));
+            observer.observe(sliderContainer, {
+              attributes: true,
+              childList: true,
+              subtree: true,
+              attributeFilter: ["aria-hidden", "class", "tabindex"],
+            });
 
-      try {
-        if (typeof initTestimonialSlider === "function") {
-          initTestimonialSlider();
-        } else if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
-          const $el = jQuery(".testimonial-slider-one");
-          if ($el.hasClass("slick-initialized")) $el.slick("refresh");
-          else $el.slick();
-        } else if (window.Swiper && sliderContainer.swiper) {
-          sliderContainer.swiper.update();
-        }
-      } catch (err) {
-        console.warn("Could not refresh testimonial slider:", err);
-      }
+            return observer;
+          }
 
-      // After slider init: sync focusability once and start observing for changes
-      // (small delay to give slider library time to add attributes)
-      setTimeout(() => {
-        syncSlidesFocus();
-        observeSliderChanges();
-      }, 50);
+          fetch("https://demo.webriefly.com/api/gettestimonials")
+            .then((res) => {
+              if (!res.ok) throw new Error("Network response was not ok");
+              return res.json();
+            })
+            .then((data) => {
+              if (!Array.isArray(data)) return;
 
-      // Also keep existing event binding for slick if available (extra safety)
-      if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
-        const $el = jQuery(".testimonial-slider-one");
-        $el.on("afterChange", function (event, slick, currentSlide) {
-          // give a moment for slick to set aria-hidden on slides and then sync
-          setTimeout(syncSlidesFocus, 10);
+              sliderContainer.innerHTML = "";
+
+              const visible = data.filter(
+                (t) => String(t.status || "").toLowerCase() === "published"
+              );
+              const toRender = visible.length ? visible : data;
+
+              toRender.forEach((t) =>
+                sliderContainer.appendChild(createTestimonialItem(t))
+              );
+
+              try {
+                if (typeof initTestimonialSlider === "function") {
+                  initTestimonialSlider();
+                } else if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
+                  const $el = jQuery(".testimonial-slider-one");
+                  if ($el.hasClass("slick-initialized")) $el.slick("refresh");
+                  else $el.slick();
+                } else if (window.Swiper && sliderContainer.swiper) {
+                  sliderContainer.swiper.update();
+                }
+              } catch (err) {
+                console.warn("Could not refresh testimonial slider:", err);
+              }
+
+              setTimeout(() => {
+                syncSlidesFocus();
+                observeSliderChanges();
+              }, 50);
+
+              if (window.jQuery && jQuery.fn && jQuery.fn.slick) {
+                const $el = jQuery(".testimonial-slider-one");
+                $el.on("afterChange", function (event, slick, currentSlide) {
+                  setTimeout(syncSlidesFocus, 10);
+                });
+              }
+            })
+            .catch((err) => console.error("Failed to load testimonials:", err));
         });
-      }
-    })
-    .catch((err) => console.error("Failed to load testimonials:", err));
-});
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      </script>
 
       <section class="blog-page-section pt-120 pb-95">
         <div class="container">
