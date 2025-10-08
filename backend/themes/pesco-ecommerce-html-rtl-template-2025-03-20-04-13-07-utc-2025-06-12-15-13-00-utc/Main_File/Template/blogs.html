@@ -873,20 +873,21 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
+  // Base domain for generated absolute links (change to window.location.origin if you prefer)
+  const BASE_URL = "https://demo.webriefly.com";
+
   // UTILS
   function slugify(input) {
     const s = String(input || "");
-    // Normalize unicode and remove diacritics, convert & => and
     const normalized = s
       .normalize("NFKD")
       .replace(/\p{Diacritic}/gu, "")
       .replace(/&/g, "and");
-    // Replace anything that's not a-z0-9 with hyphen, collapse multipledashes, trim
     return normalized
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-") // any non-alnum -> hyphen
-      .replace(/-+/g, "-") // collapse repeated hyphens
-      .replace(/^-+|-+$/g, ""); // trim leading/trailing hyphens
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
   }
 
   function imageSrc(img) {
@@ -894,14 +895,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     const str = String(img).trim();
     if (/^https?:\/\//i.test(str)) return str;
     if (str.startsWith("/")) return str;
-    // use encodeURI for path parts (keeps slashes if any)
-    return "https://demo.webriefly.com/uploads/" + encodeURI(str);
+    return BASE_URL + "/uploads/" + encodeURI(str);
+  }
+
+  // Escape helper
+  function escapeHtml(str) {
+    if (str == null) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
   // FETCH POSTS
   let posts = [];
   try {
-    const res = await fetch("https://demo.webriefly.com/api/blogpostdata");
+    const res = await fetch(BASE_URL + "/api/blogpostdata");
     if (!res.ok) throw new Error("Network error");
     posts = await res.json();
     if (!Array.isArray(posts)) posts = [];
@@ -910,31 +921,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // Helper to produce absolute blog-details url for a post
+  function detailsUrlFor(post) {
+    const slug = slugify(post.name || post.title || "");
+    return `${BASE_URL}/blog-details/${slug}`;
+  }
+
   // --- BIG FEATURED POST (first item) ---
   if (posts[0]) {
     const big = posts[0];
     const bigEl = document.querySelector(".blog-post-item.style-one");
 
     if (bigEl) {
-      // thumbnail
       const thumbContainer = bigEl.querySelector(".post-thumbnails");
-      const slug = slugify(big.name || big.title || "");
+      const url = detailsUrlFor(big);
       if (thumbContainer) {
         thumbContainer.innerHTML = `
-          <a href="/blog-details/${encodeURIComponent(slug)}" class="w-100 h-100">
-            <img src="${imageSrc(big.image)}" alt="${(big.name || big.title || "").replace(/"/g,'') }">
+          <a href="${url}" class="w-100 h-100">
+            <img src="${imageSrc(big.image)}" alt="${escapeHtml((big.name || big.title || "").replace(/"/g,''))}">
           </a>
         `;
       }
 
-      // title - show full title (no silent truncation)
       const titleA = bigEl.querySelector(".title a");
       if (titleA) {
-        titleA.href = `/blog-details/${encodeURIComponent(slug)}`;
+        titleA.href = url;
         titleA.textContent = big.name || big.title || "";
       }
 
-      // preview text - keep a short excerpt but don't change the title
       const words = (big.description || "").split(/\s+/).filter(Boolean);
       const preview = words.length > 48 ? words.slice(0, 48).join(" ") + "…" : big.description || "";
       const postContentP = bigEl.querySelector(".post-content p");
@@ -950,35 +964,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     posts.slice(1, 5).forEach((data) => {
       const card = smallTemplate.cloneNode(true);
 
-      const slug = slugify(data.name || data.title || "");
+      const url = detailsUrlFor(data);
 
       // thumbnail
       const thumbDiv = card.querySelector(".post-thumbnail");
       if (thumbDiv) {
         thumbDiv.innerHTML = `
-          <a href="/blog-details/${encodeURIComponent(slug)}">
-            <img src="${imageSrc(data.image)}" alt="${(data.name || data.title || "").replace(/"/g,'')}">
+          <a href="${url}">
+            <img src="${imageSrc(data.image)}" alt="${escapeHtml((data.name || data.title || "").replace(/"/g,''))}">
           </a>
         `;
       }
 
-      // title: full title kept
+      // title
       const a = card.querySelector(".title a");
       if (a) {
-        a.href = `/blog-details/${encodeURIComponent(slug)}`;
+        a.href = url;
         a.textContent = data.name || data.title || "";
       }
 
-      // keep post-meta but ensure date link goes to blog-details
+      // meta: author and date both link to blog-details (absolute)
       const oldMeta = card.querySelector(".post-meta");
       if (oldMeta) oldMeta.remove();
       const m = document.createElement("div");
       m.className = "post-meta";
-      // date link and author link both go to the blog-details page
       const publishedDate = data.date || data.published_at || "";
       m.innerHTML = `
-        <span><a href="/blog-details/${encodeURIComponent(slug)}">${escapeHtml(data.author_name || "")}</a></span>
-        <span><a href="/blog-details/${encodeURIComponent(slug)}">${escapeHtml(publishedDate)}</a></span>
+        <span><a href="${url}">${escapeHtml(data.author_name || "")}</a></span>
+        <span><a href="${url}">${escapeHtml(publishedDate)}</a></span>
       `;
       const postContent = card.querySelector(".post-content");
       if (postContent) postContent.appendChild(m);
@@ -988,6 +1001,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const excerpt = excerptWords.length > 28 ? excerptWords.slice(0, 28).join(" ") + "…" : data.description || "";
       const postContentP = card.querySelector(".post-content p");
       if (postContentP) postContentP.textContent = excerpt;
+
+      // OPTIONAL: if you want tags displayed as links that also go to the post-details,
+      // add a small tag element here and link to url (uncomment if needed)
+      // const tagEl = document.createElement('div'); tagEl.className='post-tags'; tagEl.innerHTML=`<a href="${url}">${escapeHtml(data.tags || '')}</a>`; postContent.appendChild(tagEl);
 
       smallContainer.appendChild(card);
     });
@@ -1023,14 +1040,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       el.style.display = "";
 
-      const slug = slugify(data.name || data.title || "");
+      const url = detailsUrlFor(data);
 
       // thumbnail
       const thumb = el.querySelector(".post-thumbnail");
       if (thumb) {
         thumb.innerHTML = `
-          <a href="/blog-details/${encodeURIComponent(slug)}">
-            <img src="${imageSrc(data.image)}" alt="${(data.name || data.title || "").replace(/"/g,'')}">
+          <a href="${url}">
+            <img src="${imageSrc(data.image)}" alt="${escapeHtml((data.name || data.title || "").replace(/"/g,''))}">
           </a>
         `;
       }
@@ -1038,7 +1055,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // title (full)
       const link = el.querySelector(".title a");
       if (link) {
-        link.href = `/blog-details/${encodeURIComponent(slug)}`;
+        link.href = url;
         link.textContent = data.name || data.title || "";
       }
 
@@ -1049,20 +1066,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         pc.textContent = words.length > 36 ? words.slice(0, 36).join(" ") + "…" : data.description || "";
       }
 
-      // meta spans: ensure they link correctly
+      // meta spans: ensure they link to blog-details (absolute)
       const spans = el.querySelectorAll(".post-meta span a");
       if (spans.length >= 2) {
-        // first span might represent tags/categories — link to a tag search or tag page
+        // first span: if you had tags/categories, we'll point it to the post details as requested
         const tagVal = data.tags || (Array.isArray(data.categories) ? (data.categories[0] || "") : data.categories || "");
         if (tagVal) {
-          spans[0].href = `/blog?tag=${encodeURIComponent(String(tagVal))}`;
+          spans[0].href = url;
           spans[0].textContent = String(tagVal);
         } else {
           spans[0].removeAttribute("href");
           spans[0].textContent = "";
         }
-        // second span = date -> go to blog-details
-        spans[1].href = `/blog-details/${encodeURIComponent(slug)}`;
+        // second span = date -> go to blog-details absolute url
+        spans[1].href = url;
         spans[1].textContent = formatDateIso(data.date);
       }
     });
@@ -1107,45 +1124,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // -----------------
-  // OPTIONAL: If you prefer tag clicks inside rendered markup to navigate automatically
-  // (for example, tags rendered by your templates), enable the following delegation:
-  // Document-level delegation will route:
-  //  - clicks on elements with [data-tag] -> /blog?tag=<tag>
-  //  - clicks on elements with [data-blog-slug] -> /blog-details/<slug>
-  // (You can remove this block if not needed.)
+  // Delegation: if there are other clickable tag/date elements in templates, route them too.
+  // This block ensures clicking an element with [data-blog-slug="..."] or [data-post-index="..."]
+  // navigates to the same absolute details URL.
   document.body.addEventListener("click", (e) => {
-    const tagEl = e.target.closest("[data-tag]");
-    if (tagEl) {
-      const tag = tagEl.getAttribute("data-tag") || tagEl.textContent || "";
-      if (tag) {
-        window.location.href = `/blog?tag=${encodeURIComponent(String(tag).trim())}`;
-        e.preventDefault();
-        return;
-      }
-    }
     const slugEl = e.target.closest("[data-blog-slug]");
     if (slugEl) {
       const slug = slugEl.getAttribute("data-blog-slug");
       if (slug) {
-        window.location.href = `/blog-details/${encodeURIComponent(slug)}`;
+        window.location.href = `${BASE_URL}/blog-details/${encodeURIComponent(slug)}`;
         e.preventDefault();
+        return;
+      }
+    }
+    const idxEl = e.target.closest("[data-post-index]");
+    if (idxEl) {
+      const idx = Number(idxEl.getAttribute("data-post-index"));
+      if (!isNaN(idx) && posts[idx]) {
+        window.location.href = detailsUrlFor(posts[idx]);
+        e.preventDefault();
+        return;
       }
     }
   });
-
-  // SMALL helper to escape text when injecting (used in a couple places above)
-  function escapeHtml(str) {
-    if (str == null) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
 });
 </script>
+
 
 
 
