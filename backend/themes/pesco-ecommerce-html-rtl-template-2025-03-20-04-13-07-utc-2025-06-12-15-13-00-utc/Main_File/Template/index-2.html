@@ -178,12 +178,11 @@
     }
   </style>
   <body>
-
     <div class="preloader">
-        <div class="loader">
-            <img src="assets/images/loader.gif" alt="Loader">
-        </div>
-</div>
+      <div class="loader">
+        <img src="assets/images/loader.gif" alt="Loader" />
+      </div>
+    </div>
     <div class="offcanvas__overlay"></div>
 
     <div class="sidemenu-wrapper-cart">
@@ -2825,11 +2824,18 @@
         }
 
         function toSlug(str = "") {
-          return str
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w-]+/g, "");
+          return (
+            (String(str || "").normalize &&
+              String(str || "")
+                .normalize("NFKD")
+                .replace(/\p{Diacritic}/gu, "")) ||
+            String(str || "")
+              .toString()
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "-")
+              .replace(/[^\w-]+/g, "")
+          );
         }
 
         function stripTags(str = "") {
@@ -2891,15 +2897,25 @@
               };
             });
 
-            const blogSchema = featuredBlogs.map((b) => ({
-              "@type": "BlogPosting",
-              headline: b.title || "",
-              image: withUploads(b.image || ""),
-              description: stripTags(b.excerpt || b.description || ""),
-              url: makeAbsolute(b.url || `/blog/${b.slug || b.id || ""}`),
-              datePublished: b.datePublished || b.published_at || undefined,
-              author: { "@type": "Person", name: b.author_name || "Admin" },
-            }));
+            const blogSchema = featuredBlogs.map((b) => {
+              const titleText = b.name || b.title || "";
+              const slugSource = b.slug || b.name || b.title || b.id || "";
+              const cleanSlug = toSlug(slugSource);
+              const detailsUrl =
+                "https://demo.webriefly.com/blog-details/" +
+                encodeURIComponent(cleanSlug);
+
+              return {
+                "@type": "BlogPosting",
+                headline: titleText,
+                image: withUploads(b.image || ""),
+                description: stripTags(b.excerpt || b.description || ""),
+                url: detailsUrl,
+                datePublished:
+                  b.datePublished || b.published_at || b.date || undefined,
+                author: { "@type": "Person", name: b.author_name || "Admin" },
+              };
+            });
 
             const schemaData = {
               "@context": "https://schema.org",
