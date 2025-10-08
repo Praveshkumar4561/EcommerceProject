@@ -3030,45 +3030,6 @@
       });
     </script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        function toSlug(str = "") {
-          if (!str) return "";
-          let s = String(str);
-          try {
-            if (s.normalize)
-              s = s.normalize("NFKD").replace(/\p{Diacritic}/gu, "");
-          } catch {}
-          s = s.replace(/&/g, "and");
-          s = s.toLowerCase().trim();
-          s = s.replace(/[^a-z0-9]+/g, "-");
-          s = s.replace(/-+/g, "-");
-          s = s.replace(/^-+|-+$/g, "");
-          return s;
-        }
-
-        const blogLinks = document.querySelectorAll('a[href^="/blog/"]');
-        blogLinks.forEach((a) => {
-          const match = a.getAttribute("href").match(/^\/blog\/(\d+)$/);
-          if (!match) return;
-          const blogId = match[1];
-
-          fetch(`https://demo.webriefly.com/api/blogpostdata`)
-            .then((r) => r.json())
-            .then((data) => {
-              const blogs = Array.isArray(data) ? data : data.items || [];
-              const blog = blogs.find((b) => String(b.id) === blogId);
-              if (!blog) return;
-              const slug = toSlug(
-                blog.slug || blog.name || blog.title || `post-${blog.id}`
-              );
-              a.href = "/blog-details/" + slug;
-            })
-            .catch(console.error);
-        });
-      });
-    </script>
-
     <div class="back-to-top"><i class="far fa-angle-up"></i></div>
     <script src="assets/vendor/jquery-3.7.1.min.js"></script>
     <script src="assets/vendor/popper/popper.min.js"></script>
