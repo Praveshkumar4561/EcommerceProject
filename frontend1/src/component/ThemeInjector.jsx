@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(true);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -106,7 +106,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           href.startsWith("tel:")
         )
           return;
-        // convert relative to SPA domain path
         href = normalizeSpaPath(href);
         a.setAttribute("href", href);
       });
@@ -115,12 +114,9 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     const rewriteInjectedAssets = (container, base) => {
       if (!container) return;
       container.querySelectorAll("img, source, [data-src]").forEach((el) => {
+        const tag = el.tagName.toLowerCase();
         const attr =
-          el.tagName.toLowerCase() === "img"
-            ? "src"
-            : el.getAttribute("src")
-            ? "src"
-            : "data-src";
+          tag === "img" ? "src" : el.getAttribute("src") ? "src" : "data-src";
         const val = el.getAttribute(attr);
         if (!val) return;
         if (isRelativeForRewrite(val) || val.startsWith("/")) {
@@ -130,9 +126,10 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       });
     };
 
-    const loadStylesheet = (href, timeoutMs = 5000) =>
+    const loadStylesheet = (href, timeoutMs = 7000) =>
       new Promise((resolve) => {
         try {
+          // if identical href already exists, resolve immediately
           if (
             document.head.querySelector(
               `link[rel="stylesheet"][href="${href}"]`
@@ -143,23 +140,29 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           link.rel = "stylesheet";
           link.href = href;
           link.dataset.themeInjected = "true";
-          link.onload = resolve;
-          link.onerror = resolve;
+          const done = () => resolve();
+          link.onload = done;
+          link.onerror = done;
           document.head.appendChild(link);
-          setTimeout(resolve, timeoutMs);
+          // safety fallback in case onload/onerror never fire
+          setTimeout(done, timeoutMs);
         } catch {
           resolve();
         }
       });
 
     const executeScriptsSerial = async (doc) => {
+      // run scripts from the fetched doc, but avoid duplicating scripts that we already injected
       const scripts = Array.from(doc.querySelectorAll("script"));
       for (const s of scripts) {
         if (aborted || !mountedRef.current) break;
         const src = s.getAttribute("src");
         const type = s.getAttribute("type") || "";
+
         if (src) {
           const abs = makeAbsoluteUrl(src, themeBaseUrl);
+          // skip if already present (prevent duplicates)
+          if (document.body.querySelector(`script[src="${abs}"]`)) continue;
           await new Promise((resolve) => {
             const el = document.createElement("script");
             if (type) el.type = type;
@@ -204,17 +207,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     };
 
     const loadTheme = async () => {
+      // Show loading state but DO NOT hide current content.
       setLoading(true);
-      document.head
-        .querySelectorAll('link[data-theme-injected="true"]')
-        .forEach((el) => el.remove());
-      document.head
-        .querySelectorAll('style[data-theme-injected="true"]')
-        .forEach((el) => el.remove());
-      document.body
-        .querySelectorAll('script[data-theme-injected="true"]')
-        .forEach((el) => el.remove());
-      if (containerRef.current) containerRef.current.innerHTML = "";
 
       try {
         const res = await tryFetchWithFallbacks(pageUrl);
@@ -222,13 +216,15 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
+        // Parse fetched HTML into a doc
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
+        // Update title if present
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
-        // ensure <base> uses domain, not IP
+        // Prepare base tag (unchanged)
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
@@ -240,10 +236,13 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           "demo.webriefly.com"
         );
 
+        // Collect styles to load (do this BEFORE we swap)
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const styleNodes = Array.from(doc.querySelectorAll("style"));
+
+        // Load external styles first (append links to head). Wait for them to load.
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
@@ -251,6 +250,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
           })
         );
+
+        // Inject inline <style> nodes (but keep old styles in place until swap)
         styleNodes.forEach((s) => {
           const newStyle = document.createElement("style");
           newStyle.innerHTML = s.innerHTML || "";
@@ -258,14 +259,44 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           document.head.appendChild(newStyle);
         });
 
-        if (containerRef.current) {
-          containerRef.current.innerHTML = doc.body.innerHTML;
-          rewriteInjectedAssets(containerRef.current, themeBaseUrl);
-          rewriteInjectedLinks(containerRef.current);
+        // Build a temporary container with the new body content and rewrite assets/links there
+        const temp = document.createElement("div");
+        temp.innerHTML = doc.body.innerHTML || "";
+        rewriteInjectedAssets(temp, themeBaseUrl);
+        rewriteInjectedLinks(temp);
+
+        // Only when everything above is ready, replace the visible content.
+        // This prevents the blank screen (we kept the old DOM visible until now).
+        if (mountedRef.current && !aborted && containerRef.current) {
+          // preserve scroll position? optional: you can capture and restore if needed.
+          containerRef.current.innerHTML = temp.innerHTML;
+
+          // Add submit handler for forms inside the new content
+          submitHandler = (e) => {
+            if (!containerRef.current) return;
+            let node = e.target;
+            while (
+              node &&
+              node !== containerRef.current &&
+              node.tagName !== "FORM"
+            )
+              node = node.parentElement;
+            if (!node || node.tagName !== "FORM") return;
+            const action = node.getAttribute("action") || "";
+            if (action && !isAbsoluteOrProtocol(action)) {
+              e.preventDefault();
+              const spa = normalizeSpaPath(action);
+              routeViaSPA(spa || "/");
+            }
+          };
+
+          containerRef.current.addEventListener("submit", submitHandler, true);
         }
 
+        // Execute scripts from the fetched doc serially
         await executeScriptsSerial(doc);
 
+        // Dispatch lifecycle events (small delay to let scripts run)
         setTimeout(() => {
           try {
             document.dispatchEvent(
@@ -274,30 +305,11 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             window.dispatchEvent(new Event("load", { bubbles: true }));
             window.dispatchEvent(new Event("pageshow", { bubbles: true }));
           } catch {}
-        }, 300);
-
-        submitHandler = (e) => {
-          if (!containerRef.current) return;
-          let node = e.target;
-          while (
-            node &&
-            node !== containerRef.current &&
-            node.tagName !== "FORM"
-          )
-            node = node.parentElement;
-          if (!node || node.tagName !== "FORM") return;
-          const action = node.getAttribute("action") || "";
-          if (action && !isAbsoluteOrProtocol(action)) {
-            e.preventDefault();
-            const spa = normalizeSpaPath(action);
-            routeViaSPA(spa || "/");
-          }
-        };
-        containerRef.current.addEventListener("submit", submitHandler, true);
+        }, 200);
       } catch (err) {
         console.error("[ThemeInjector] loadTheme failed:", err);
       } finally {
-        setLoading(false);
+        if (!aborted && mountedRef.current) setLoading(false);
       }
     };
 
@@ -316,8 +328,12 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     };
   }, [pageUrl, themeBaseUrl, onNavigate]);
 
+  // Keep the container visible while loading to avoid blank screens.
   return (
-    <div className="theme-wrapper" style={{ width: "100%", height: "100%" }}>
+    <div
+      className="theme-wrapper"
+      style={{ width: "100%", height: "100%", position: "relative" }}
+    >
       <div
         ref={containerRef}
         className="theme-container"
@@ -325,9 +341,26 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           width: "100%",
           height: "100%",
           overflow: "auto",
-          display: loading ? "none" : "block",
+          display: "block",
         }}
       />
+      {/* optional minimal loading overlay — visible only when loading */}
+      {loading && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.6)",
+            pointerEvents: "none",
+          }}
+          aria-hidden
+        >
+          <div>Loading…</div>
+        </div>
+      )}
     </div>
   );
 }
