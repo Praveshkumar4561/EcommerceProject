@@ -1891,7 +1891,7 @@
               const brandItem = template.cloneNode(true);
               const img = brandItem.querySelector("img");
 
-              img.src = `https://demo.webriefly.com/uploads/${brand.image}`;
+              img.src = `/shops`;
               img.alt = brand.name;
 
               const link = brandItem.querySelector("a");
@@ -2113,12 +2113,12 @@
               </div>
             <div class="post-content">
               <div class="post-meta">
-                <span><a href="#">${escapeHtml(
-                  post.categories || ""
-                )}</a></span>
-                <span><a href="#">${escapeHtml(
-                  formatDate(post.date)
-                )}</a></span>
+                <span><a href="/blog-details/${escapeHtml(slug)}">${escapeHtml(
+                post.categories || ""
+              )}</a></span>
+                <span><a href="/blog-details/${escapeHtml(slug)}">${escapeHtml(
+                formatDate(post.date)
+              )}</a></span>
               </div>
 
           <h3 class="title">
