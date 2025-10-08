@@ -106,19 +106,18 @@
             var style = document.createElement("style");
             style.id = id;
             style.textContent = `
-/* visually-hidden (screen-reader only) */
-.sr-only {
-  position: absolute !important;
-  width: 1px !important;
-  height: 1px !important;
-  padding: 0 !important;
-  margin: -1px !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  white-space: nowrap !important;
-  border: 0 !important;
-}
-`;
+            .sr-only {
+              position: absolute !important;
+              width: 1px !important;
+              height: 1px !important;
+              padding: 0 !important;
+              margin: -1px !important;
+              overflow: hidden !important;
+              clip: rect(0, 0, 0, 0) !important;
+              white-space: nowrap !important;
+              border: 0 !important;
+            }
+            `;
             document.head.appendChild(style);
           }
         })();
@@ -1311,7 +1310,6 @@
               wrapper.appendChild(slide);
             });
 
-            // --- Click handling ---
             wrapper.addEventListener("click", (e) => {
               const actionBtn = e.target.closest("[data-action]");
               if (actionBtn) {
@@ -1438,7 +1436,6 @@
               }
             });
 
-            // --- Currency conversion ---
             const currencyRates = {
               vdt: { symbol: "$", rate: 1 },
               can: { symbol: "₹", rate: 83 },
@@ -1496,7 +1493,6 @@
               });
             }
 
-            // --- Swiper carousel ---
             if (typeof Swiper !== "undefined") {
               new Swiper(".shop-carousel", {
                 slidesPerView: 4,
@@ -2373,7 +2369,6 @@
 
               const eyeIcon = container.querySelector("a.view-lightbox");
               if (eyeIcon) {
-                // Use real image URL for SEO
                 eyeIcon.href = `/shop-details/${toSeoUrl(
                   prd.product_name
                 )}#image-${idx}`;
@@ -2445,19 +2440,18 @@
           const s = document.createElement("style");
           s.id = "sr-only-generated-style";
           s.textContent = `
-          /* visually-hidden (screen-reader only) */
-          .sr-only {
-            position: absolute !important;
-            width: 1px !important;
-            height: 1px !important;
-            padding: 0 !important;
-            margin: -1px !important;
-            overflow: hidden !important;
-            clip: rect(0, 0, 0, 0) !important;
-            white-space: nowrap !important;
-            border: 0 !important;
-          }
-          `;
+      .sr-only {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border: 0 !important;
+      }
+    `;
           document.head.appendChild(s);
         }
 
@@ -2472,7 +2466,7 @@
               : postsRaw.items || [];
             const top = posts.slice(0, MAX_FEATURE);
             renderPosts(top);
-            addJsonLd(top);
+            // Removed: addJsonLd(top);
           })
           .catch((err) => {
             console.error("Failed to load blog posts:", err);
@@ -2489,7 +2483,6 @@
               const title = stripTags(rawTitle);
               const slug = p.slug ? p.slug : slugify(title);
               const postUrl = "/blog-details/" + encodeURIComponent(slug);
-
               const imgSrc = withUploads(p.image || "");
               const dateVal = p.date || p.datePublished || p.published_at || "";
               const formattedDate = dateVal
@@ -2500,10 +2493,7 @@
                 : p.categories || "";
               const excerptRaw = p.excerpt || p.description || "";
               const excerpt = stripTags(excerptRaw).slice(0, 160).trim();
-
-              // Visible CTA text (minimal): "Read More"
               const visibleCta = "Read More";
-              // Hidden descriptive text for accessibility/SEO: "Read: {title}"
               const srText = `Read: ${title}`;
 
               return `
@@ -2543,7 +2533,6 @@
       </div>
 
       <div class="post-bottom">
-        <!-- Visible text is "Read More" only. The hidden .sr-only contains the descriptive text for accessibility and SEO -->
         <a href="${postUrl}" class="read-more blog-link" data-id="${
                 p.id || ""
               }" title="${srText}" aria-label="${srText}">
@@ -2564,45 +2553,6 @@
             const postId = link.dataset.id;
             if (postId) sessionStorage.setItem("selectedPostId", postId);
           });
-        }
-
-        function addJsonLd(posts) {
-          if (!Array.isArray(posts) || posts.length === 0) return;
-
-          try {
-            const graph = posts.map((p) => {
-              const title = stripTags(p.title || p.name || "");
-              const slug = p.slug ? p.slug : slugify(title);
-              const postUrl = makeAbsolute(
-                "/blog-details/" + encodeURIComponent(slug)
-              );
-              const image = withUploads(p.image || "");
-              const description = stripTags(p.excerpt || p.description || "");
-              const datePublished =
-                p.datePublished || p.published_at || p.date || undefined;
-              return {
-                "@type": "BlogPosting",
-                headline: title,
-                image: image ? makeAbsolute(image) : undefined,
-                description: description || undefined,
-                url: postUrl,
-                datePublished: datePublished || undefined,
-                author: { "@type": "Person", name: p.author_name || "Admin" },
-              };
-            });
-
-            const schema = {
-              "@context": "https://schema.org",
-              "@graph": graph.filter(Boolean),
-            };
-
-            const s = document.createElement("script");
-            s.type = "application/ld+json";
-            s.text = JSON.stringify(schema);
-            document.head.appendChild(s);
-          } catch (err) {
-            console.error("Failed to add JSON-LD", err);
-          }
         }
       });
     </script>
