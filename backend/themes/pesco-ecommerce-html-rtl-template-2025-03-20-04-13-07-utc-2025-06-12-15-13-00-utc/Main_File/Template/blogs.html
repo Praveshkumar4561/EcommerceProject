@@ -721,14 +721,18 @@
                 >
                   <ul>
                     <li>
-                      <a href="javascript:void(0)"><i class="far fa-angle-left"></i></a>
+                      <a href="javascript:void(0)"
+                        ><i class="far fa-angle-left"></i
+                      ></a>
                     </li>
                     <li><a href="javascript:void(0)">01</a></li>
                     <li><a href="javascript:void(0)">02</a></li>
                     <li><a href="javascript:void(0)">....</a></li>
                     <li><a href="javascript:void(0)">20</a></li>
                     <li>
-                      <a href="javascript:void(0)"><i class="far fa-angle-right"></i></a>
+                      <a href="javascript:void(0)"
+                        ><i class="far fa-angle-right"></i
+                      ></a>
                     </li>
                   </ul>
                 </div>
@@ -854,318 +858,295 @@
       });
     </script>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const BASE_URL = "https://demo.webriefly.com";
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  // Base domain for generated absolute links (change to window.location.origin if you prefer)
-  const BASE_URL = "https://demo.webriefly.com";
-
-  // UTILS
-  function slugify(input) {
-    const s = String(input || "");
-    const normalized = s
-      .normalize("NFKD")
-      .replace(/\p{Diacritic}/gu, "")
-      .replace(/&/g, "and");
-    return normalized
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  }
-
-  function imageSrc(img) {
-    if (!img) return "";
-    const str = String(img).trim();
-    if (/^https?:\/\//i.test(str)) return str;
-    if (str.startsWith("/")) return str;
-    return BASE_URL + "/uploads/" + encodeURI(str);
-  }
-
-  // Escape helper
-  function escapeHtml(str) {
-    if (str == null) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
-  // FETCH POSTS
-  let posts = [];
-  try {
-    const res = await fetch(BASE_URL + "/api/blogpostdata");
-    if (!res.ok) throw new Error("Network error");
-    posts = await res.json();
-    if (!Array.isArray(posts)) posts = [];
-  } catch (err) {
-    console.error("Failed to load blog posts:", err);
-    return;
-  }
-
-  // Helper to produce absolute blog-details url for a post
-  function detailsUrlFor(post) {
-    const slug = slugify(post.name || post.title || "");
-    return `${BASE_URL}/blog-details/${slug}`;
-  }
-
-  // --- BIG FEATURED POST (first item) ---
-  if (posts[0]) {
-    const big = posts[0];
-    const bigEl = document.querySelector(".blog-post-item.style-one");
-
-    if (bigEl) {
-      const thumbContainer = bigEl.querySelector(".post-thumbnails");
-      const url = detailsUrlFor(big);
-      if (thumbContainer) {
-        thumbContainer.innerHTML = `
-          <a href="${url}" class="w-100 h-100">
-            <img src="${imageSrc(big.image)}" alt="${escapeHtml((big.name || big.title || "").replace(/"/g,''))}">
-          </a>
-        `;
-      }
-
-      const titleA = bigEl.querySelector(".title a");
-      if (titleA) {
-        titleA.href = url;
-        titleA.textContent = big.name || big.title || "";
-      }
-
-      const words = (big.description || "").split(/\s+/).filter(Boolean);
-      const preview = words.length > 48 ? words.slice(0, 48).join(" ") + "…" : big.description || "";
-      const postContentP = bigEl.querySelector(".post-content p");
-      if (postContentP) postContentP.textContent = preview;
-    }
-  }
-
-  // --- SMALL POSTS (2..5) ---
-  const smallContainer = document.querySelector(".col-lg-6 > .row");
-  const smallTemplate = smallContainer ? smallContainer.querySelector(".col-sm-6") : null;
-  if (smallTemplate && smallContainer) {
-    smallContainer.innerHTML = "";
-    posts.slice(1, 5).forEach((data) => {
-      const card = smallTemplate.cloneNode(true);
-
-      const url = detailsUrlFor(data);
-
-      // thumbnail
-      const thumbDiv = card.querySelector(".post-thumbnail");
-      if (thumbDiv) {
-        thumbDiv.innerHTML = `
-          <a href="${url}">
-            <img src="${imageSrc(data.image)}" alt="${escapeHtml((data.name || data.title || "").replace(/"/g,''))}">
-          </a>
-        `;
-      }
-
-      // title
-      const a = card.querySelector(".title a");
-      if (a) {
-        a.href = url;
-        a.textContent = data.name || data.title || "";
-      }
-
-      // meta: author and date both link to blog-details (absolute)
-      const oldMeta = card.querySelector(".post-meta");
-      if (oldMeta) oldMeta.remove();
-      const m = document.createElement("div");
-      m.className = "post-meta";
-      const publishedDate = data.date || data.published_at || "";
-      m.innerHTML = `
-        <span><a href="${url}">${escapeHtml(data.author_name || "")}</a></span>
-        <span><a href="${url}">${escapeHtml(publishedDate)}</a></span>
-      `;
-      const postContent = card.querySelector(".post-content");
-      if (postContent) postContent.appendChild(m);
-
-      // excerpt
-      const excerptWords = (data.description || "").split(/\s+/).filter(Boolean);
-      const excerpt = excerptWords.length > 28 ? excerptWords.slice(0, 28).join(" ") + "…" : data.description || "";
-      const postContentP = card.querySelector(".post-content p");
-      if (postContentP) postContentP.textContent = excerpt;
-
-      // OPTIONAL: if you want tags displayed as links that also go to the post-details,
-      // add a small tag element here and link to url (uncomment if needed)
-      // const tagEl = document.createElement('div'); tagEl.className='post-tags'; tagEl.innerHTML=`<a href="${url}">${escapeHtml(data.tags || '')}</a>`; postContent.appendChild(tagEl);
-
-      smallContainer.appendChild(card);
-    });
-  }
-
-  // initialize AOS if available
-  if (window.AOS && typeof AOS.init === "function") AOS.init({ once: false });
-
-  // --- PAGINATION for extras (from index 5 onwards) ---
-  const extras = posts.slice(5);
-  const perPage = 3;
-  const totalPages = Math.max(1, Math.ceil(extras.length / perPage));
-  let currentPage = 1;
-
-  const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-  const pagUl = document.querySelector(".pesco-pagination ul");
-
-  function formatDateIso(iso) {
-    try {
-      return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    } catch {
-      return iso || "";
-    }
-  }
-
-  function renderPage(page) {
-    const start = (page - 1) * perPage;
-    fourEls.forEach((el, idx) => {
-      const data = extras[start + idx];
-      if (!data) {
-        el.style.display = "none";
-        return;
-      }
-      el.style.display = "";
-
-      const url = detailsUrlFor(data);
-
-      // thumbnail
-      const thumb = el.querySelector(".post-thumbnail");
-      if (thumb) {
-        thumb.innerHTML = `
-          <a href="${url}">
-            <img src="${imageSrc(data.image)}" alt="${escapeHtml((data.name || data.title || "").replace(/"/g,''))}">
-          </a>
-        `;
-      }
-
-      // title (full)
-      const link = el.querySelector(".title a");
-      if (link) {
-        link.href = url;
-        link.textContent = data.name || data.title || "";
-      }
-
-      // excerpt
-      const words = (data.description || "").split(/\s+/).filter(Boolean);
-      const pc = el.querySelector(".post-content p");
-      if (pc) {
-        pc.textContent = words.length > 36 ? words.slice(0, 36).join(" ") + "…" : data.description || "";
-      }
-
-      // meta spans: ensure they link to blog-details (absolute)
-      const spans = el.querySelectorAll(".post-meta span a");
-      if (spans.length >= 2) {
-        // first span: if you had tags/categories, we'll point it to the post details as requested
-        const tagVal = data.tags || (Array.isArray(data.categories) ? (data.categories[0] || "") : data.categories || "");
-        if (tagVal) {
-          spans[0].href = url;
-          spans[0].textContent = String(tagVal);
-        } else {
-          spans[0].removeAttribute("href");
-          spans[0].textContent = "";
+        function slugify(input) {
+          const s = String(input || "");
+          const normalized = s
+            .normalize("NFKD")
+            .replace(/\p{Diacritic}/gu, "")
+            .replace(/&/g, "and");
+          return normalized
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-+|-+$/g, "");
         }
-        // second span = date -> go to blog-details absolute url
-        spans[1].href = url;
-        spans[1].textContent = formatDateIso(data.date);
-      }
-    });
-  }
 
-  function buildPager() {
-    if (!pagUl) return;
-    pagUl.innerHTML = "";
-    // prev
-    pagUl.insertAdjacentHTML(
-      "beforeend",
-      `<li><a href="javascript:void(0)" data-page="${Math.max(1, currentPage - 1)}"><i class="far fa-angle-left"></i></a></li>`
-    );
-    // pages
-    for (let i = 1; i <= totalPages; i++) {
-      pagUl.insertAdjacentHTML(
-        "beforeend",
-        `<li><a href="javascript:void(0)" data-page="${i}" ${i === currentPage ? 'class="active"' : ""}>${i}</a></li>`
-      );
-    }
-    // next
-    pagUl.insertAdjacentHTML(
-      "beforeend",
-      `<li><a href="javascript:void(0)" data-page="${Math.min(totalPages, currentPage + 1)}"><i class="far fa-angle-right"></i></a></li>`
-    );
-  }
+        function imageSrc(img) {
+          if (!img) return "";
+          const str = String(img).trim();
+          if (/^https?:\/\//i.test(str)) return str;
+          if (str.startsWith("/")) return str;
+          return BASE_URL + "/uploads/" + encodeURI(str);
+        }
 
-  renderPage(currentPage);
-  buildPager();
+        function escapeHtml(str) {
+          if (str == null) return "";
+          return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
 
-  if (pagUl && pagUl.parentElement) {
-    pagUl.parentElement.addEventListener("click", (e) => {
-      e.preventDefault();
-      const a = e.target.closest("a[data-page]");
-      if (!a) return;
-      const pg = Number(a.dataset.page) || 1;
-      if (pg < 1 || pg > totalPages || pg === currentPage) return;
-      currentPage = pg;
-      renderPage(pg);
-      buildPager();
-      if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-    });
-  }
+        let posts = [];
+        try {
+          const res = await fetch(BASE_URL + "/api/blogpostdata");
+          if (!res.ok) throw new Error("Network error");
+          posts = await res.json();
+          if (!Array.isArray(posts)) posts = [];
+        } catch (err) {
+          console.error("Failed to load blog posts:", err);
+          return;
+        }
 
-  // Delegation: if there are other clickable tag/date elements in templates, route them too.
-  // This block ensures clicking an element with [data-blog-slug="..."] or [data-post-index="..."]
-  // navigates to the same absolute details URL.
-  document.body.addEventListener("click", (e) => {
-    const slugEl = e.target.closest("[data-blog-slug]");
-    if (slugEl) {
-      const slug = slugEl.getAttribute("data-blog-slug");
-      if (slug) {
-        window.location.href = `${BASE_URL}/blog-details/${encodeURIComponent(slug)}`;
-        e.preventDefault();
-        return;
-      }
-    }
-    const idxEl = e.target.closest("[data-post-index]");
-    if (idxEl) {
-      const idx = Number(idxEl.getAttribute("data-post-index"));
-      if (!isNaN(idx) && posts[idx]) {
-        window.location.href = detailsUrlFor(posts[idx]);
-        e.preventDefault();
-        return;
-      }
-    }
-  });
-});
-</script>
+        function detailsUrlFor(post) {
+          const slug = slugify(post.name || post.title || "");
+          return `${BASE_URL}/blog-details/${slug}`;
+        }
 
+        if (posts[0]) {
+          const big = posts[0];
+          const bigEl = document.querySelector(".blog-post-item.style-one");
 
+          if (bigEl) {
+            const thumbContainer = bigEl.querySelector(".post-thumbnails");
+            const url = detailsUrlFor(big);
+            if (thumbContainer) {
+              thumbContainer.innerHTML = `
+                <a href="${url}" class="w-100 h-100">
+                  <img src="${imageSrc(big.image)}" alt="${escapeHtml(
+                (big.name || big.title || "").replace(/"/g, "")
+              )}">
+                </a>
+              `;
+            }
 
+            const titleA = bigEl.querySelector(".title a");
+            if (titleA) {
+              titleA.href = url;
+              titleA.textContent = big.name || big.title || "";
+            }
 
+            const words = (big.description || "").split(/\s+/).filter(Boolean);
+            const preview =
+              words.length > 48
+                ? words.slice(0, 48).join(" ") + "…"
+                : big.description || "";
+            const postContentP = bigEl.querySelector(".post-content p");
+            if (postContentP) postContentP.textContent = preview;
+          }
+        }
 
+        const smallContainer = document.querySelector(".col-lg-6 > .row");
+        const smallTemplate = smallContainer
+          ? smallContainer.querySelector(".col-sm-6")
+          : null;
+        if (smallTemplate && smallContainer) {
+          smallContainer.innerHTML = "";
+          posts.slice(1, 5).forEach((data) => {
+            const card = smallTemplate.cloneNode(true);
 
+            const url = detailsUrlFor(data);
 
+            const thumbDiv = card.querySelector(".post-thumbnail");
+            if (thumbDiv) {
+              thumbDiv.innerHTML = `
+                <a href="${url}">
+                  <img src="${imageSrc(data.image)}" alt="${escapeHtml(
+                (data.name || data.title || "").replace(/"/g, "")
+              )}">
+                </a>
+              `;
+            }
 
+            const a = card.querySelector(".title a");
+            if (a) {
+              a.href = url;
+              a.textContent = data.name || data.title || "";
+            }
 
+            const oldMeta = card.querySelector(".post-meta");
+            if (oldMeta) oldMeta.remove();
+            const m = document.createElement("div");
+            m.className = "post-meta";
+            const publishedDate = data.date || data.published_at || "";
+            m.innerHTML = `
+              <span><a href="${url}">${escapeHtml(
+              data.author_name || ""
+            )}</a></span>
+              <span><a href="${url}">${escapeHtml(publishedDate)}</a></span>
+            `;
+            const postContent = card.querySelector(".post-content");
+            if (postContent) postContent.appendChild(m);
 
+            const excerptWords = (data.description || "")
+              .split(/\s+/)
+              .filter(Boolean);
+            const excerpt =
+              excerptWords.length > 28
+                ? excerptWords.slice(0, 28).join(" ") + "…"
+                : data.description || "";
+            const postContentP = card.querySelector(".post-content p");
+            if (postContentP) postContentP.textContent = excerpt;
 
+            smallContainer.appendChild(card);
+          });
+        }
 
+        if (window.AOS && typeof AOS.init === "function")
+          AOS.init({ once: false });
 
+        const extras = posts.slice(5);
+        const perPage = 3;
+        const totalPages = Math.max(1, Math.ceil(extras.length / perPage));
+        let currentPage = 1;
 
+        const fourEls = document.querySelectorAll(".blog-post-item.style-four");
+        const pagUl = document.querySelector(".pesco-pagination ul");
 
+        function formatDateIso(iso) {
+          try {
+            return new Date(iso).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+          } catch {
+            return iso || "";
+          }
+        }
 
+        function renderPage(page) {
+          const start = (page - 1) * perPage;
+          fourEls.forEach((el, idx) => {
+            const data = extras[start + idx];
+            if (!data) {
+              el.style.display = "none";
+              return;
+            }
+            el.style.display = "";
 
+            const url = detailsUrlFor(data);
+
+            const thumb = el.querySelector(".post-thumbnail");
+            if (thumb) {
+              thumb.innerHTML = `
+                <a href="${url}">
+                  <img src="${imageSrc(data.image)}" alt="${escapeHtml(
+                (data.name || data.title || "").replace(/"/g, "")
+              )}">
+                </a>
+              `;
+            }
+
+            const link = el.querySelector(".title a");
+            if (link) {
+              link.href = url;
+              link.textContent = data.name || data.title || "";
+            }
+
+            const words = (data.description || "").split(/\s+/).filter(Boolean);
+            const pc = el.querySelector(".post-content p");
+            if (pc) {
+              pc.textContent =
+                words.length > 36
+                  ? words.slice(0, 36).join(" ") + "…"
+                  : data.description || "";
+            }
+
+            const spans = el.querySelectorAll(".post-meta span a");
+            if (spans.length >= 2) {
+              const tagVal =
+                data.tags ||
+                (Array.isArray(data.categories)
+                  ? data.categories[0] || ""
+                  : data.categories || "");
+              if (tagVal) {
+                spans[0].href = url;
+                spans[0].textContent = String(tagVal);
+              } else {
+                spans[0].removeAttribute("href");
+                spans[0].textContent = "";
+              }
+              spans[1].href = url;
+              spans[1].textContent = formatDateIso(data.date);
+            }
+          });
+        }
+
+        function buildPager() {
+          if (!pagUl) return;
+          pagUl.innerHTML = "";
+          pagUl.insertAdjacentHTML(
+            "beforeend",
+            `<li><a href="javascript:void(0)" data-page="${Math.max(
+              1,
+              currentPage - 1
+            )}"><i class="far fa-angle-left"></i></a></li>`
+          );
+          for (let i = 1; i <= totalPages; i++) {
+            pagUl.insertAdjacentHTML(
+              "beforeend",
+              `<li><a href="javascript:void(0)" data-page="${i}" ${
+                i === currentPage ? 'class="active"' : ""
+              }>${i}</a></li>`
+            );
+          }
+          pagUl.insertAdjacentHTML(
+            "beforeend",
+            `<li><a href="javascript:void(0)" data-page="${Math.min(
+              totalPages,
+              currentPage + 1
+            )}"><i class="far fa-angle-right"></i></a></li>`
+          );
+        }
+
+        renderPage(currentPage);
+        buildPager();
+
+        if (pagUl && pagUl.parentElement) {
+          pagUl.parentElement.addEventListener("click", (e) => {
+            e.preventDefault();
+            const a = e.target.closest("a[data-page]");
+            if (!a) return;
+            const pg = Number(a.dataset.page) || 1;
+            if (pg < 1 || pg > totalPages || pg === currentPage) return;
+            currentPage = pg;
+            renderPage(pg);
+            buildPager();
+            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+          });
+        }
+
+        document.body.addEventListener("click", (e) => {
+          const slugEl = e.target.closest("[data-blog-slug]");
+          if (slugEl) {
+            const slug = slugEl.getAttribute("data-blog-slug");
+            if (slug) {
+              window.location.href = `${BASE_URL}/blog-details/${encodeURIComponent(
+                slug
+              )}`;
+              e.preventDefault();
+              return;
+            }
+          }
+          const idxEl = e.target.closest("[data-post-index]");
+          if (idxEl) {
+            const idx = Number(idxEl.getAttribute("data-post-index"));
+            if (!isNaN(idx) && posts[idx]) {
+              window.location.href = detailsUrlFor(posts[idx]);
+              e.preventDefault();
+              return;
+            }
+          }
+        });
+      });
+    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
