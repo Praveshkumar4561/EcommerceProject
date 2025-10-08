@@ -1895,7 +1895,9 @@
               img.src = `https://demo.webriefly.com/uploads/${brand.image}`;
               img.alt = brand.name || "Brand";
 
-              link.href = brand.permalink?.trim() || "/shops";
+              link.href = "/shops";
+
+              link.removeAttribute("target");
 
               brandContainer.appendChild(brandItem);
             });
