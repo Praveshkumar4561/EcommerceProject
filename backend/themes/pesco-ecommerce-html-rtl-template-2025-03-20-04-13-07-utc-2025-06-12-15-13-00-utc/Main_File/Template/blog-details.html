@@ -62,9 +62,11 @@
               }
             });
           });
-        document.querySelectorAll('a[href="#"]').forEach((a) => {
-          a.addEventListener("click", (e) => e.preventDefault());
-        });
+        document
+          .querySelectorAll('a[href="javascript:void(0)"]')
+          .forEach((a) => {
+            a.addEventListener("click", (e) => e.preventDefault());
+          });
       });
     </script>
   </head>
@@ -248,7 +250,7 @@
                     <div class="categori-dropdown-item">
                       <ul>
                         <li>
-                          <a href="#"
+                          <a href="shops.html"
                             ><img
                               src="assets/images/icon/jacket.png"
                               alt="Jackets"
@@ -575,13 +577,15 @@
                       <h3 class="title"></h3>
                       <div class="post-meta">
                         <span
-                          ><a href="#"><i class="far fa-user"></i></a
+                          ><a href="javascript:void(0)"
+                            ><i class="far fa-user"></i></a
                         ></span>
                         <span
-                          ><a href="#"><i class="far fa-calendar-alt"></i></a
+                          ><a href="javascript:void(0)"
+                            ><i class="far fa-calendar-alt"></i></a
                         ></span>
                         <span
-                          ><a href="#"
+                          ><a href="javascript:void(0)"
                             ><i class="far fa-comment"></i>0 Comments</a
                           ></span
                         >
@@ -688,9 +692,9 @@
                     <div class="entry-footer">
                       <div class="tag-links">
                         <span>Tag:</span>
-                        <a href="#">fashion</a>
-                        <a href="#">man</a>
-                        <a href="#">woman</a>
+                        <a href="javascript:void(0)">fashion</a>
+                        <a href="javascript:void(0)">man</a>
+                        <a href="javascript:void(0)">woman</a>
                       </div>
                       <div class="social-share">
                         <span>share:</span>
@@ -724,7 +728,7 @@
                         />
                       </div>
                       <div class="content">
-                        <a href="#" class="post-link"
+                        <a href="javascript:void(0)" class="post-link"
                           ><i class="far fa-arrow-left"></i>Prev Post</a
                         >
                         <h6>
@@ -741,7 +745,7 @@
                         />
                       </div>
                       <div class="content">
-                        <a href="#" class="post-link"
+                        <a href="javascript:void(0)" class="post-link"
                           ><i class="far fa-arrow-right"></i>Next Post</a
                         >
                         <h6>
@@ -941,7 +945,9 @@
                               >
                             </h6>
                             <span class="posted-on"
-                              ><a href="#">May 10, 2024</a></span
+                              ><a href="javascript:void(0)"
+                                >May 10, 2024</a
+                              ></span
                             >
                           </div>
                         </li>
@@ -958,7 +964,9 @@
                               >
                             </h6>
                             <span class="posted-on"
-                              ><a href="#">June 15, 2024</a></span
+                              ><a href="javascript:void(0)"
+                                >June 15, 2024</a
+                              ></span
                             >
                           </div>
                         </li>
@@ -974,7 +982,9 @@
                               >
                             </h6>
                             <span class="posted-on"
-                              ><a href="#">July 24, 2024</a></span
+                              ><a href="javascript:void(0)"
+                                >July 24, 2024</a
+                              ></span
                             >
                           </div>
                         </li>
@@ -1400,7 +1410,7 @@
           const count = Array.isArray(comments) ? comments.length : 0;
 
           let commentLink = document.querySelector(
-            ".blog-details-content .post-meta a[href='#'] i.fa-comment"
+            ".blog-details-content .post-meta a[href='javascript:void(0)'] i.fa-comment"
           );
           if (commentLink) commentLink = commentLink.parentElement;
           if (!commentLink) {
@@ -1419,7 +1429,7 @@
             );
             if (metaArea) {
               const span = document.createElement("span");
-              span.innerHTML = ` <a href="#comments"><i class="far fa-comment"></i>${count} Comment${
+              span.innerHTML = ` <a href="javascript:void(0)"><i class="far fa-comment"></i>${count} Comment${
                 count !== 1 ? "s" : ""
               }</a>`;
               metaArea.appendChild(span);
@@ -1490,7 +1500,7 @@
                 data-price="${price}"
                 data-qty="${qty}">
               <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-              <a href="#"><img src="https://demo.webriefly.com/uploads/${
+              <a href="javascript:void(0)"><img src="https://demo.webriefly.com/uploads/${
                 item.image
               }" alt="${item.name}"/> ${item.name}</a>
               <span class="quantity">${qty} × $${price.toFixed(2)}</span>
@@ -1943,8 +1953,8 @@
           return String(str || "")
             .toLowerCase()
             .trim()
-            .replace(/\s+/g, "-") // spaces → hyphens
-            .replace(/[^\w-]+/g, ""); // remove everything except letters, numbers, hyphens
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]+/g, "");
         }
 
         function formatDate(dateStr) {
@@ -1982,7 +1992,9 @@
                 <h4>
                   <a href="${slugUrl}">${post.name}</a>
                 </h4>
-                <span><a href="#">${formatDate(post.date)}</a></span>
+                <span><a href="javascript:void(0)">${formatDate(
+                  post.date
+                )}</a></span>
               </div>
             </div>
           `;
@@ -2006,7 +2018,7 @@
                 <a href="${slugUrl}">${post.name}</a>
               </h6>
               <span class="posted-on">
-                <a href="#">${formatDate(post.date)}</a>
+                <a href="javascript:void(0)">${formatDate(post.date)}</a>
               </span>
             </div>
           `;
