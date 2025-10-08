@@ -6,6 +6,9 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const mountedRef = useRef(true);
   const [loading, setLoading] = useState(false);
 
+  // HTML cache for SPA navigation
+  const htmlCacheRef = useRef({});
+
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -126,7 +129,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       });
     };
 
-    const loadStylesheet = (href, timeoutMs = 7000) =>
+    const loadStylesheet = (href, timeoutMs = 100) =>
       new Promise((resolve) => {
         try {
           if (
@@ -149,29 +152,24 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
       });
 
-    const executeScriptsSerial = async (doc) => {
+    const executeScripts = (doc) => {
       const scripts = Array.from(doc.querySelectorAll("script"));
-      for (const s of scripts) {
-        if (aborted || !mountedRef.current) break;
+      scripts.forEach((s) => {
         const src = s.getAttribute("src");
         const type = s.getAttribute("type") || "";
-
         if (src) {
           const abs = makeAbsoluteUrl(src, themeBaseUrl);
-          if (document.body.querySelector(`script[src="${abs}"]`)) continue;
-          await new Promise((resolve) => {
+          if (!document.body.querySelector(`script[src="${abs}"]`)) {
             const el = document.createElement("script");
-            if (type) el.type = type;
             el.src = abs;
-            el.async = false;
+            el.async = true; // parallel load
+            if (type) el.type = type;
             el.dataset.themeInjected = "true";
-            el.onload = resolve;
-            el.onerror = resolve;
             document.body.appendChild(el);
-          });
+          }
         } else {
           const content = s.textContent || "";
-          if (/document\.write/.test(content)) continue;
+          if (/document\.write/.test(content)) return;
           try {
             const el = document.createElement("script");
             if (type) el.type = type;
@@ -180,23 +178,39 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             document.body.appendChild(el);
           } catch {}
         }
-      }
+      });
     };
 
     const tryFetchWithFallbacks = async (origUrl) => {
+      if (htmlCacheRef.current[origUrl]) {
+        return new Response(htmlCacheRef.current[origUrl]);
+      }
+
       let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
-      if (res && res.ok) return res;
+      if (res && res.ok) {
+        const html = await res.text();
+        htmlCacheRef.current[origUrl] = html;
+        return new Response(html);
+      }
 
       if (!origUrl.match(/\.html$/i)) {
         const alt = origUrl.replace(/\/+$/, "") + ".html";
         res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
+        if (res && res.ok) {
+          const html = await res.text();
+          htmlCacheRef.current[origUrl] = html;
+          return new Response(html);
+        }
       }
 
       try {
         const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
         res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
+        if (res && res.ok) {
+          const html = await res.text();
+          htmlCacheRef.current[origUrl] = html;
+          return new Response(html);
+        }
       } catch {}
 
       return res;
@@ -204,7 +218,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     const loadTheme = async () => {
       setLoading(true);
-
       try {
         const res = await tryFetchWithFallbacks(pageUrl);
         if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
@@ -223,16 +236,13 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           base.setAttribute("data-theme-base", "true");
           document.head.appendChild(base);
         }
-        base.href = themeBaseNormalized(themeBaseUrl).replace(
-          "https://demo.webriefly.com",
-          "demo.webriefly.com"
-        );
+        base.href = themeBaseNormalized(themeBaseUrl);
 
+        // Load CSS
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const styleNodes = Array.from(doc.querySelectorAll("style"));
-
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
@@ -240,7 +250,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
           })
         );
-
         styleNodes.forEach((s) => {
           const newStyle = document.createElement("style");
           newStyle.innerHTML = s.innerHTML || "";
@@ -248,14 +257,21 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           document.head.appendChild(newStyle);
         });
 
+        // Inject body content
         const temp = document.createElement("div");
         temp.innerHTML = doc.body.innerHTML || "";
         rewriteInjectedAssets(temp, themeBaseUrl);
         rewriteInjectedLinks(temp);
 
-        if (mountedRef.current && !aborted && containerRef.current) {
+        if (containerRef.current) {
+          containerRef.current.style.opacity = "0";
           containerRef.current.innerHTML = temp.innerHTML;
+          containerRef.current.style.transition = "opacity 0.3s";
+          setTimeout(() => (containerRef.current.style.opacity = "1"), 50);
+        }
 
+        // Form submit SPA handling
+        if (mountedRef.current && !aborted && containerRef.current) {
           submitHandler = (e) => {
             if (!containerRef.current) return;
             let node = e.target;
@@ -273,11 +289,11 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
               routeViaSPA(spa || "/");
             }
           };
-
           containerRef.current.addEventListener("submit", submitHandler, true);
         }
 
-        await executeScriptsSerial(doc);
+        // Execute scripts
+        executeScripts(doc);
 
         setTimeout(() => {
           try {
