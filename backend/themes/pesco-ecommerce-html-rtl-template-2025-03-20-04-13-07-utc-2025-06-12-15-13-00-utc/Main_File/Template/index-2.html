@@ -1890,12 +1890,12 @@
             published.forEach((brand) => {
               const brandItem = template.cloneNode(true);
               const img = brandItem.querySelector("img");
-
-              img.src = `/shops`;
-              img.alt = brand.name;
-
               const link = brandItem.querySelector("a");
-              link.href = brand.permalink?.trim() || "#";
+
+              img.src = `https://demo.webriefly.com/uploads/${brand.image}`;
+              img.alt = brand.name || "Brand";
+
+              link.href = brand.permalink?.trim() || "/shops";
 
               brandContainer.appendChild(brandItem);
             });
