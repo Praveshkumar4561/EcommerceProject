@@ -137,18 +137,18 @@
         }
 
         function toSlug(str = "") {
-          return (
-            (String(str || "").normalize &&
-              String(str || "")
-                .normalize("NFKD")
-                .replace(/\p{Diacritic}/gu, "")) ||
-            String(str || "")
-              .toString()
-              .toLowerCase()
-              .trim()
-              .replace(/\s+/g, "-")
-              .replace(/[^\w-]+/g, "")
-          );
+          if (!str) return "";
+          let s = String(str);
+          try {
+            if (s.normalize)
+              s = s.normalize("NFKD").replace(/\p{Diacritic}/gu, "");
+          } catch {}
+          s = s.replace(/&/g, "and");
+          s = s.toLowerCase().trim();
+          s = s.replace(/[^a-z0-9]+/g, "-");
+          s = s.replace(/-+/g, "-");
+          s = s.replace(/^-+|-+$/g, "");
+          return s;
         }
 
         function stripTags(str = "") {
@@ -212,8 +212,21 @@
 
             const blogSchema = featuredBlogs.map((b) => {
               const titleText = b.name || b.title || "";
-              const slugSource = b.slug || b.name || b.title || b.id || "";
-              const cleanSlug = toSlug(slugSource);
+
+              let candidate = b.slug || "";
+              let cleanSlug = toSlug(candidate);
+
+              if (!cleanSlug || /^\d+$/.test(cleanSlug)) {
+                cleanSlug = toSlug(b.name || b.title || "");
+              }
+
+              if (!cleanSlug) {
+                const idPart = b.id
+                  ? String(b.id)
+                  : String(Math.floor(Math.random() * 1000000));
+                cleanSlug = "post-" + idPart;
+              }
+
               const detailsUrl =
                 "https://demo.webriefly.com/blog-details/" +
                 encodeURIComponent(cleanSlug);
