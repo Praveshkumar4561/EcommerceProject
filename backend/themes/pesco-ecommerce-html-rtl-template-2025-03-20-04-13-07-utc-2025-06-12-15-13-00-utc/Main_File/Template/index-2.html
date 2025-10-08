@@ -2808,6 +2808,7 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // Helpers
         function makeAbsolute(u) {
           if (!u) return u;
           if (/^https?:\/\//i.test(u)) return u;
@@ -2816,52 +2817,57 @@
 
         function withUploads(u) {
           if (!u) return u;
-          if (u.startsWith("https://demo.webriefly.com/uploads/"))
+          if (/^https?:\/\/demo\.webriefly\.com\/uploads\//i.test(u))
             return makeAbsolute(u);
           return makeAbsolute(
-            "https://demo.webriefly.com/uploads/" + u.replace(/^\/+/, "")
+            "https://demo.webriefly.com/uploads/" +
+              String(u).replace(/^\/+/, "")
           );
         }
 
+        // robust slug maker: normalize, remove diacritics, replace & -> and, then keep only a-z0-9 groups
         function toSlug(str = "") {
           if (!str) return "";
           let s = String(str);
           try {
             if (s.normalize)
               s = s.normalize("NFKD").replace(/\p{Diacritic}/gu, "");
-          } catch {}
+          } catch (e) {}
           s = s.replace(/&/g, "and");
           s = s.toLowerCase().trim();
-          s = s.replace(/[^a-z0-9]+/g, "-"); 
+          s = s.replace(/[^a-z0-9]+/g, "-");
           s = s.replace(/-+/g, "-");
           s = s.replace(/^-+|-+$/g, "");
           return s;
         }
 
         function stripTags(str = "") {
-          return String(str).replace(/<[^>]*>/g, "");
+          return String(str || "").replace(/<[^>]*>/g, "");
         }
 
+        // Fetch both APIs
         Promise.all([
           fetch("https://demo.webriefly.com/api/productpagedata").then((r) =>
-            r.json()
+            r.ok ? r.json() : []
           ),
           fetch("https://demo.webriefly.com/api/blogpostdata").then((r) =>
-            r.json()
+            r.ok ? r.json() : []
           ),
         ])
           .then(([products, blogs]) => {
+            // normalize arrays (API might return { items: [...] })
             products = Array.isArray(products)
               ? products
-              : products.items || [];
-            blogs = Array.isArray(blogs) ? blogs : blogs.items || [];
+              : (products && products.items) || [];
+            blogs = Array.isArray(blogs) ? blogs : (blogs && blogs.items) || [];
 
             const featuredProducts = products.slice(0, 10);
             const featuredBlogs = blogs.slice(0, 5);
 
+            // Build Product schema entries
             const productSchema = featuredProducts.map((p) => {
               const slug = p.slug
-                ? p.slug
+                ? String(p.slug)
                 : toSlug(p.name || p.title || p.id || "");
               const productUrl = makeAbsolute(`/shop-details/${slug}`);
               return {
@@ -2897,9 +2903,12 @@
               };
             });
 
+            // Build BlogPosting schema entries (pretty /blog-details/<slug> URLs)
             const blogSchema = featuredBlogs.map((b) => {
-              const titleText = b.name || b.title || "";
+              // keep headline exactly as provided
+              const headline = b.name || b.title || "";
 
+              // decide slug: prefer meaningful b.slug, else name/title, else fallback to post-<id>
               let candidate = b.slug || "";
               let cleanSlug = toSlug(candidate);
 
@@ -2920,7 +2929,7 @@
 
               return {
                 "@type": "BlogPosting",
-                headline: titleText,
+                headline: headline,
                 image: withUploads(b.image || ""),
                 description: stripTags(b.excerpt || b.description || ""),
                 url: detailsUrl,
@@ -2930,6 +2939,7 @@
               };
             });
 
+            // Full schema graph
             const schemaData = {
               "@context": "https://schema.org",
               "@graph": [
@@ -2979,12 +2989,15 @@
               ].filter(Boolean),
             };
 
+            // Inject JSON-LD into head
             const script = document.createElement("script");
             script.type = "application/ld+json";
             script.text = JSON.stringify(schemaData);
             document.head.appendChild(script);
           })
-          .catch((err) => console.error("Schema error", err));
+          .catch((err) => {
+            console.error("Schema error", err);
+          });
       });
     </script>
 
