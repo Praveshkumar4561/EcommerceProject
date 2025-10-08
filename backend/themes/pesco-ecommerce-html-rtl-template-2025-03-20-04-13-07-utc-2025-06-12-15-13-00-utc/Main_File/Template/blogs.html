@@ -708,8 +708,8 @@
                     </h3>
                     <p></p>
                     <div class="post-meta">
-                      <span><a href="#"></a></span>
-                      <span><a href="#"></a></span>
+                      <span><a href="javascript:void(0)"></a></span>
+                      <span><a href="javascript:void(0)"></a></span>
                     </div>
                   </div>
                 </div>
@@ -721,14 +721,14 @@
                 >
                   <ul>
                     <li>
-                      <a href="#"><i class="far fa-angle-left"></i></a>
+                      <a href="javascript:void(0)"><i class="far fa-angle-left"></i></a>
                     </li>
-                    <li><a href="#">01</a></li>
-                    <li><a href="#">02</a></li>
-                    <li><a href="#">....</a></li>
-                    <li><a href="#">20</a></li>
+                    <li><a href="javascript:void(0)">01</a></li>
+                    <li><a href="javascript:void(0)">02</a></li>
+                    <li><a href="javascript:void(0)">....</a></li>
+                    <li><a href="javascript:void(0)">20</a></li>
                     <li>
-                      <a href="#"><i class="far fa-angle-right"></i></a>
+                      <a href="javascript:void(0)"><i class="far fa-angle-right"></i></a>
                     </li>
                   </ul>
                 </div>
@@ -854,251 +854,314 @@
       });
     </script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        function slugify(s) {
-          return String(s || "")
-            .toLowerCase()
-            .trim()
-            .replace(/&/g, "and")
-            .replace(/[^a-z0-9\s\-']/g, "")
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-+|-+$/g, "");
-        }
 
-        function imageSrc(img) {
-          if (!img) return "";
-          const str = String(img).trim();
-          if (/^https?:\/\//i.test(str)) return str;
-          if (str.startsWith("/")) return str;
-          return (
-            "https://demo.webriefly.com/uploads/" + encodeURIComponent(str)
-          );
-        }
 
-        let posts;
-        try {
-          const res = await fetch(
-            "https://demo.webriefly.com/api/blogpostdata"
-          );
-          if (!res.ok) throw new Error("Network error");
-          posts = await res.json();
-        } catch (err) {
-          console.error("Failed to load blog posts:", err);
-          return;
-        }
 
-        if (posts[0]) {
-          const big = posts[0];
-          const bigEl = document.querySelector(".blog-post-item.style-one");
-          const fmtDate = (iso) =>
-            new Date(iso).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
 
-          if (bigEl) {
-            const thumbContainer = bigEl.querySelector(".post-thumbnails");
-            if (thumbContainer) {
-              thumbContainer.innerHTML = `
-            <a href="/blog-details/${encodeURIComponent(
-              slugify(big.name)
-            )}" class="w-100 h-100">
-              <img src="${imageSrc(big.image)}" alt="${big.name || ""}">
-            </a>
-          `;
-            }
 
-            const titleA = bigEl.querySelector(".title a");
-            if (titleA) {
-              titleA.href = `/blog-details/${encodeURIComponent(
-                slugify(big.name)
-              )}`;
-              const wordsInTitle = (big.name || "").split(" ");
-              titleA.textContent =
-                wordsInTitle.slice(0, 8).join(" ") +
-                (wordsInTitle.length > 8 ? "…" : "");
-            }
 
-            const words = (big.description || "").split(/\s+/);
-            const preview =
-              words.length > 48
-                ? words.slice(0, 48).join(" ") + "…"
-                : big.description || "";
-            const postContentP = bigEl.querySelector(".post-content p");
-            if (postContentP) postContentP.textContent = preview;
-          }
-        }
 
-        const smallContainer = document.querySelector(".col-lg-6 > .row");
-        const smallTemplate = smallContainer
-          ? smallContainer.querySelector(".col-sm-6")
-          : null;
-        if (smallTemplate && smallContainer) {
-          smallContainer.innerHTML = "";
-          const fmtDate = (iso) =>
-            new Date(iso).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
 
-          posts.slice(1, 5).forEach((data) => {
-            const card = smallTemplate.cloneNode(true);
 
-            const thumbDiv = card.querySelector(".post-thumbnail");
-            if (thumbDiv) {
-              thumbDiv.innerHTML = `
-            <a href="/blog-details/${encodeURIComponent(slugify(data.name))}">
-              <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
-            </a>
-          `;
-            }
 
-            const a = card.querySelector(".title a");
-            if (a) {
-              a.href = `/blog-details/${encodeURIComponent(
-                slugify(data.name)
-              )}`;
-              const wordsInName = (data.name || "").split(" ");
-              a.textContent =
-                wordsInName.slice(0, 6).join(" ") +
-                (wordsInName.length > 6 ? "…" : "");
-            }
 
-            const oldMeta = card.querySelector(".post-meta");
-            if (oldMeta) oldMeta.remove();
-            const m = document.createElement("div");
-            m.className = "post-meta";
-            m.innerHTML = `
-          <span><a href="/blog-details/${encodeURIComponent(
-            slugify(data.name)
-          )}">
-            ${data.author_name || ""}
-          </a></span>
-          <span><a href="/blog-details/${encodeURIComponent(
-            slugify(data.name)
-          )}">
-            ${fmtDate(data.date)}
-          </a></span>
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  // UTILS
+  function slugify(input) {
+    const s = String(input || "");
+    // Normalize unicode and remove diacritics, convert & => and
+    const normalized = s
+      .normalize("NFKD")
+      .replace(/\p{Diacritic}/gu, "")
+      .replace(/&/g, "and");
+    // Replace anything that's not a-z0-9 with hyphen, collapse multipledashes, trim
+    return normalized
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-") // any non-alnum -> hyphen
+      .replace(/-+/g, "-") // collapse repeated hyphens
+      .replace(/^-+|-+$/g, ""); // trim leading/trailing hyphens
+  }
+
+  function imageSrc(img) {
+    if (!img) return "";
+    const str = String(img).trim();
+    if (/^https?:\/\//i.test(str)) return str;
+    if (str.startsWith("/")) return str;
+    // use encodeURI for path parts (keeps slashes if any)
+    return "https://demo.webriefly.com/uploads/" + encodeURI(str);
+  }
+
+  // FETCH POSTS
+  let posts = [];
+  try {
+    const res = await fetch("https://demo.webriefly.com/api/blogpostdata");
+    if (!res.ok) throw new Error("Network error");
+    posts = await res.json();
+    if (!Array.isArray(posts)) posts = [];
+  } catch (err) {
+    console.error("Failed to load blog posts:", err);
+    return;
+  }
+
+  // --- BIG FEATURED POST (first item) ---
+  if (posts[0]) {
+    const big = posts[0];
+    const bigEl = document.querySelector(".blog-post-item.style-one");
+
+    if (bigEl) {
+      // thumbnail
+      const thumbContainer = bigEl.querySelector(".post-thumbnails");
+      const slug = slugify(big.name || big.title || "");
+      if (thumbContainer) {
+        thumbContainer.innerHTML = `
+          <a href="/blog-details/${encodeURIComponent(slug)}" class="w-100 h-100">
+            <img src="${imageSrc(big.image)}" alt="${(big.name || big.title || "").replace(/"/g,'') }">
+          </a>
         `;
-            const postContent = card.querySelector(".post-content");
-            if (postContent) postContent.appendChild(m);
+      }
 
-            smallContainer.appendChild(card);
-          });
+      // title - show full title (no silent truncation)
+      const titleA = bigEl.querySelector(".title a");
+      if (titleA) {
+        titleA.href = `/blog-details/${encodeURIComponent(slug)}`;
+        titleA.textContent = big.name || big.title || "";
+      }
+
+      // preview text - keep a short excerpt but don't change the title
+      const words = (big.description || "").split(/\s+/).filter(Boolean);
+      const preview = words.length > 48 ? words.slice(0, 48).join(" ") + "…" : big.description || "";
+      const postContentP = bigEl.querySelector(".post-content p");
+      if (postContentP) postContentP.textContent = preview;
+    }
+  }
+
+  // --- SMALL POSTS (2..5) ---
+  const smallContainer = document.querySelector(".col-lg-6 > .row");
+  const smallTemplate = smallContainer ? smallContainer.querySelector(".col-sm-6") : null;
+  if (smallTemplate && smallContainer) {
+    smallContainer.innerHTML = "";
+    posts.slice(1, 5).forEach((data) => {
+      const card = smallTemplate.cloneNode(true);
+
+      const slug = slugify(data.name || data.title || "");
+
+      // thumbnail
+      const thumbDiv = card.querySelector(".post-thumbnail");
+      if (thumbDiv) {
+        thumbDiv.innerHTML = `
+          <a href="/blog-details/${encodeURIComponent(slug)}">
+            <img src="${imageSrc(data.image)}" alt="${(data.name || data.title || "").replace(/"/g,'')}">
+          </a>
+        `;
+      }
+
+      // title: full title kept
+      const a = card.querySelector(".title a");
+      if (a) {
+        a.href = `/blog-details/${encodeURIComponent(slug)}`;
+        a.textContent = data.name || data.title || "";
+      }
+
+      // keep post-meta but ensure date link goes to blog-details
+      const oldMeta = card.querySelector(".post-meta");
+      if (oldMeta) oldMeta.remove();
+      const m = document.createElement("div");
+      m.className = "post-meta";
+      // date link and author link both go to the blog-details page
+      const publishedDate = data.date || data.published_at || "";
+      m.innerHTML = `
+        <span><a href="/blog-details/${encodeURIComponent(slug)}">${escapeHtml(data.author_name || "")}</a></span>
+        <span><a href="/blog-details/${encodeURIComponent(slug)}">${escapeHtml(publishedDate)}</a></span>
+      `;
+      const postContent = card.querySelector(".post-content");
+      if (postContent) postContent.appendChild(m);
+
+      // excerpt
+      const excerptWords = (data.description || "").split(/\s+/).filter(Boolean);
+      const excerpt = excerptWords.length > 28 ? excerptWords.slice(0, 28).join(" ") + "…" : data.description || "";
+      const postContentP = card.querySelector(".post-content p");
+      if (postContentP) postContentP.textContent = excerpt;
+
+      smallContainer.appendChild(card);
+    });
+  }
+
+  // initialize AOS if available
+  if (window.AOS && typeof AOS.init === "function") AOS.init({ once: false });
+
+  // --- PAGINATION for extras (from index 5 onwards) ---
+  const extras = posts.slice(5);
+  const perPage = 3;
+  const totalPages = Math.max(1, Math.ceil(extras.length / perPage));
+  let currentPage = 1;
+
+  const fourEls = document.querySelectorAll(".blog-post-item.style-four");
+  const pagUl = document.querySelector(".pesco-pagination ul");
+
+  function formatDateIso(iso) {
+    try {
+      return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    } catch {
+      return iso || "";
+    }
+  }
+
+  function renderPage(page) {
+    const start = (page - 1) * perPage;
+    fourEls.forEach((el, idx) => {
+      const data = extras[start + idx];
+      if (!data) {
+        el.style.display = "none";
+        return;
+      }
+      el.style.display = "";
+
+      const slug = slugify(data.name || data.title || "");
+
+      // thumbnail
+      const thumb = el.querySelector(".post-thumbnail");
+      if (thumb) {
+        thumb.innerHTML = `
+          <a href="/blog-details/${encodeURIComponent(slug)}">
+            <img src="${imageSrc(data.image)}" alt="${(data.name || data.title || "").replace(/"/g,'')}">
+          </a>
+        `;
+      }
+
+      // title (full)
+      const link = el.querySelector(".title a");
+      if (link) {
+        link.href = `/blog-details/${encodeURIComponent(slug)}`;
+        link.textContent = data.name || data.title || "";
+      }
+
+      // excerpt
+      const words = (data.description || "").split(/\s+/).filter(Boolean);
+      const pc = el.querySelector(".post-content p");
+      if (pc) {
+        pc.textContent = words.length > 36 ? words.slice(0, 36).join(" ") + "…" : data.description || "";
+      }
+
+      // meta spans: ensure they link correctly
+      const spans = el.querySelectorAll(".post-meta span a");
+      if (spans.length >= 2) {
+        // first span might represent tags/categories — link to a tag search or tag page
+        const tagVal = data.tags || (Array.isArray(data.categories) ? (data.categories[0] || "") : data.categories || "");
+        if (tagVal) {
+          spans[0].href = `/blog?tag=${encodeURIComponent(String(tagVal))}`;
+          spans[0].textContent = String(tagVal);
+        } else {
+          spans[0].removeAttribute("href");
+          spans[0].textContent = "";
         }
+        // second span = date -> go to blog-details
+        spans[1].href = `/blog-details/${encodeURIComponent(slug)}`;
+        spans[1].textContent = formatDateIso(data.date);
+      }
+    });
+  }
 
-        if (window.AOS && typeof AOS.init === "function") {
-          AOS.init({ once: false });
-        }
+  function buildPager() {
+    if (!pagUl) return;
+    pagUl.innerHTML = "";
+    // prev
+    pagUl.insertAdjacentHTML(
+      "beforeend",
+      `<li><a href="javascript:void(0)" data-page="${Math.max(1, currentPage - 1)}"><i class="far fa-angle-left"></i></a></li>`
+    );
+    // pages
+    for (let i = 1; i <= totalPages; i++) {
+      pagUl.insertAdjacentHTML(
+        "beforeend",
+        `<li><a href="javascript:void(0)" data-page="${i}" ${i === currentPage ? 'class="active"' : ""}>${i}</a></li>`
+      );
+    }
+    // next
+    pagUl.insertAdjacentHTML(
+      "beforeend",
+      `<li><a href="javascript:void(0)" data-page="${Math.min(totalPages, currentPage + 1)}"><i class="far fa-angle-right"></i></a></li>`
+    );
+  }
 
-        const extras = posts.slice(5);
-        const perPage = 3;
-        const totalPages = Math.ceil(extras.length / perPage);
-        let currentPage = 1;
+  renderPage(currentPage);
+  buildPager();
 
-        const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-        const pagUl = document.querySelector(".pesco-pagination ul");
+  if (pagUl && pagUl.parentElement) {
+    pagUl.parentElement.addEventListener("click", (e) => {
+      e.preventDefault();
+      const a = e.target.closest("a[data-page]");
+      if (!a) return;
+      const pg = Number(a.dataset.page) || 1;
+      if (pg < 1 || pg > totalPages || pg === currentPage) return;
+      currentPage = pg;
+      renderPage(pg);
+      buildPager();
+      if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
+    });
+  }
 
-        const fmtDate2 = (iso) =>
-          new Date(iso).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
+  // -----------------
+  // OPTIONAL: If you prefer tag clicks inside rendered markup to navigate automatically
+  // (for example, tags rendered by your templates), enable the following delegation:
+  // Document-level delegation will route:
+  //  - clicks on elements with [data-tag] -> /blog?tag=<tag>
+  //  - clicks on elements with [data-blog-slug] -> /blog-details/<slug>
+  // (You can remove this block if not needed.)
+  document.body.addEventListener("click", (e) => {
+    const tagEl = e.target.closest("[data-tag]");
+    if (tagEl) {
+      const tag = tagEl.getAttribute("data-tag") || tagEl.textContent || "";
+      if (tag) {
+        window.location.href = `/blog?tag=${encodeURIComponent(String(tag).trim())}`;
+        e.preventDefault();
+        return;
+      }
+    }
+    const slugEl = e.target.closest("[data-blog-slug]");
+    if (slugEl) {
+      const slug = slugEl.getAttribute("data-blog-slug");
+      if (slug) {
+        window.location.href = `/blog-details/${encodeURIComponent(slug)}`;
+        e.preventDefault();
+      }
+    }
+  });
 
-        function renderPage(page) {
-          const start = (page - 1) * perPage;
-          fourEls.forEach((el, idx) => {
-            const data = extras[start + idx];
-            if (!data) {
-              el.style.display = "none";
-              return;
-            }
-            el.style.display = "";
+  // SMALL helper to escape text when injecting (used in a couple places above)
+  function escapeHtml(str) {
+    if (str == null) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+});
+</script>
 
-            const thumb = el.querySelector(".post-thumbnail");
-            if (thumb) {
-              thumb.innerHTML = `
-            <a href="/blog-details/${encodeURIComponent(slugify(data.name))}">
-              <img src="${imageSrc(data.image)}" alt="${data.name || ""}">
-            </a>
-          `;
-            }
 
-            const link = el.querySelector(".title a");
-            if (link) {
-              link.href = `/blog-details/${encodeURIComponent(
-                slugify(data.name)
-              )}`;
-              link.textContent = data.name || "";
-            }
 
-            const words = (data.description || "").split(/\s+/);
-            const pc = el.querySelector(".post-content p");
-            if (pc) {
-              pc.textContent =
-                words.length > 36
-                  ? words.slice(0, 36).join(" ") + "…"
-                  : data.description || "";
-            }
 
-            const spans = el.querySelectorAll(".post-meta span a");
-            if (spans.length >= 2) {
-              spans[0].textContent = data.tags || data.categories || "";
-              spans[1].textContent = fmtDate2(data.date);
-            }
-          });
-        }
 
-        function buildPager() {
-          if (!pagUl) return;
-          pagUl.innerHTML = "";
-          pagUl.insertAdjacentHTML(
-            "beforeend",
-            `<li><a href="#" data-page="${currentPage - 1}">
-          <i class="far fa-angle-left"></i>
-        </a></li>`
-          );
-          for (let i = 1; i <= totalPages; i++) {
-            pagUl.insertAdjacentHTML(
-              "beforeend",
-              `<li>
-            <a href="#" data-page="${i}"${
-                i === currentPage ? ' class="active"' : ""
-              }>${i}</a>
-          </li>`
-            );
-          }
-          pagUl.insertAdjacentHTML(
-            "beforeend",
-            `<li><a href="#" data-page="${currentPage + 1}">
-          <i class="far fa-angle-right"></i>
-        </a></li>`
-          );
-        }
 
-        renderPage(currentPage);
-        buildPager();
 
-        if (pagUl && pagUl.parentElement) {
-          pagUl.parentElement.addEventListener("click", (e) => {
-            e.preventDefault();
-            const a = e.target.closest("a[data-page]");
-            if (!a) return;
-            const pg = +a.dataset.page;
-            if (pg < 1 || pg > totalPages || pg === currentPage) return;
-            currentPage = pg;
-            renderPage(pg);
-            buildPager();
-            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-          });
-        }
-      });
-    </script>
+
+
+
+
+
+
+
+
+
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -1159,7 +1222,7 @@
                 data-price="${price}"
                 data-qty="${qty}">
               <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-              <a href="#"><img src="https://demo.webriefly.com/uploads/${
+              <a href="javascript:void(0)"><img src="https://demo.webriefly.com/uploads/${
                 item.image
               }" alt="${item.name}"/> ${item.name}</a>
               <span class="quantity">${qty} × $${price.toFixed(2)}</span>
