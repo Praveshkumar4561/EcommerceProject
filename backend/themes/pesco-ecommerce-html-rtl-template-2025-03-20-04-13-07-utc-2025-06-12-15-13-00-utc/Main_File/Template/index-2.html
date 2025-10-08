@@ -2808,7 +2808,6 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // Helpers
         function makeAbsolute(u) {
           if (!u) return u;
           if (/^https?:\/\//i.test(u)) return u;
@@ -2825,7 +2824,6 @@
           );
         }
 
-        // robust slug maker: normalize, remove diacritics, replace & -> and, then keep only a-z0-9 groups
         function toSlug(str = "") {
           if (!str) return "";
           let s = String(str);
@@ -2845,7 +2843,6 @@
           return String(str || "").replace(/<[^>]*>/g, "");
         }
 
-        // Fetch both APIs
         Promise.all([
           fetch("https://demo.webriefly.com/api/productpagedata").then((r) =>
             r.ok ? r.json() : []
@@ -2855,7 +2852,6 @@
           ),
         ])
           .then(([products, blogs]) => {
-            // normalize arrays (API might return { items: [...] })
             products = Array.isArray(products)
               ? products
               : (products && products.items) || [];
@@ -2864,7 +2860,6 @@
             const featuredProducts = products.slice(0, 10);
             const featuredBlogs = blogs.slice(0, 5);
 
-            // Build Product schema entries
             const productSchema = featuredProducts.map((p) => {
               const slug = p.slug
                 ? String(p.slug)
@@ -2903,12 +2898,9 @@
               };
             });
 
-            // Build BlogPosting schema entries (pretty /blog-details/<slug> URLs)
             const blogSchema = featuredBlogs.map((b) => {
-              // keep headline exactly as provided
               const headline = b.name || b.title || "";
 
-              // decide slug: prefer meaningful b.slug, else name/title, else fallback to post-<id>
               let candidate = b.slug || "";
               let cleanSlug = toSlug(candidate);
 
@@ -2939,7 +2931,6 @@
               };
             });
 
-            // Full schema graph
             const schemaData = {
               "@context": "https://schema.org",
               "@graph": [
@@ -2989,7 +2980,6 @@
               ].filter(Boolean),
             };
 
-            // Inject JSON-LD into head
             const script = document.createElement("script");
             script.type = "application/ld+json";
             script.text = JSON.stringify(schemaData);
@@ -3018,14 +3008,51 @@
           return s;
         }
 
-        // Replace /blog/<id> links with /blog-details/<slug>
         const blogLinks = document.querySelectorAll('a[href^="/blog/"]');
         blogLinks.forEach((a) => {
           const match = a.getAttribute("href").match(/^\/blog\/(\d+)$/);
           if (!match) return;
           const blogId = match[1];
 
-          // Optional: Map ID → title/slug dynamically if you have access to API
+          fetch(`https://demo.webriefly.com/api/blogpostdata`)
+            .then((r) => r.json())
+            .then((data) => {
+              const blogs = Array.isArray(data) ? data : data.items || [];
+              const blog = blogs.find((b) => String(b.id) === blogId);
+              if (!blog) return;
+              const slug = toSlug(
+                blog.slug || blog.name || blog.title || `post-${blog.id}`
+              );
+              a.href = "/blog-details/" + slug;
+            })
+            .catch(console.error);
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function toSlug(str = "") {
+          if (!str) return "";
+          let s = String(str);
+          try {
+            if (s.normalize)
+              s = s.normalize("NFKD").replace(/\p{Diacritic}/gu, "");
+          } catch {}
+          s = s.replace(/&/g, "and");
+          s = s.toLowerCase().trim();
+          s = s.replace(/[^a-z0-9]+/g, "-");
+          s = s.replace(/-+/g, "-");
+          s = s.replace(/^-+|-+$/g, "");
+          return s;
+        }
+
+        const blogLinks = document.querySelectorAll('a[href^="/blog/"]');
+        blogLinks.forEach((a) => {
+          const match = a.getAttribute("href").match(/^\/blog\/(\d+)$/);
+          if (!match) return;
+          const blogId = match[1];
+
           fetch(`https://demo.webriefly.com/api/blogpostdata`)
             .then((r) => r.json())
             .then((data) => {
