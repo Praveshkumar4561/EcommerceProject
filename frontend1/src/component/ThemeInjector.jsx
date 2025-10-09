@@ -6,9 +6,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const mountedRef = useRef(true);
   const [loading, setLoading] = useState(false);
 
-  const htmlCacheRef = useRef({});
-  const lastContentRef = useRef("");
-
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -49,15 +46,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     const themeBaseNormalized = (b = themeBaseUrl) =>
       b.endsWith("/") ? b : b + "/";
-
-    const makeFetchUrl = (p = "") => {
-      if (!p) p = "/";
-      if (isAbsoluteOrProtocol(p)) return p;
-      const clean = p.replace(/^\/*/, "");
-      if (clean === "" || clean === "/")
-        return themeBaseNormalized(themeBaseUrl) + "index.html";
-      return themeBaseNormalized(themeBaseUrl) + clean;
-    };
 
     const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
       if (!url) return url;
@@ -118,8 +106,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           href.startsWith("tel:")
         )
           return;
-        const newHref = normalizeSpaPath(href);
-        a.setAttribute("href", newHref);
+        href = normalizeSpaPath(href);
+        a.setAttribute("href", href);
       });
     };
 
@@ -134,16 +122,14 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         if (isRelativeForRewrite(val) || val.startsWith("/")) {
           const abs = makeAbsoluteUrl(val, base);
           el.setAttribute(attr, abs);
-          if (tag === "img" && !el.hasAttribute("loading")) {
-            el.setAttribute("loading", "lazy");
-          }
         }
       });
     };
 
-    const loadStylesheet = (href, timeoutMs = 8000) =>
+    const loadStylesheet = (href, timeoutMs = 7000) =>
       new Promise((resolve) => {
         try {
+          // if identical href already exists, resolve immediately
           if (
             document.head.querySelector(
               `link[rel="stylesheet"][href="${href}"]`
@@ -158,30 +144,38 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           link.onload = done;
           link.onerror = done;
           document.head.appendChild(link);
+          // safety fallback in case onload/onerror never fire
           setTimeout(done, timeoutMs);
         } catch {
           resolve();
         }
       });
 
-    const executeScripts = (doc) => {
+    const executeScriptsSerial = async (doc) => {
+      // run scripts from the fetched doc, but avoid duplicating scripts that we already injected
       const scripts = Array.from(doc.querySelectorAll("script"));
-      scripts.forEach((s) => {
+      for (const s of scripts) {
+        if (aborted || !mountedRef.current) break;
         const src = s.getAttribute("src");
         const type = s.getAttribute("type") || "";
+
         if (src) {
           const abs = makeAbsoluteUrl(src, themeBaseUrl);
-          if (!document.body.querySelector(`script[src="${abs}"]`)) {
+          // skip if already present (prevent duplicates)
+          if (document.body.querySelector(`script[src="${abs}"]`)) continue;
+          await new Promise((resolve) => {
             const el = document.createElement("script");
-            el.src = abs;
-            el.async = true;
             if (type) el.type = type;
+            el.src = abs;
+            el.async = false;
             el.dataset.themeInjected = "true";
+            el.onload = resolve;
+            el.onerror = resolve;
             document.body.appendChild(el);
-          }
+          });
         } else {
           const content = s.textContent || "";
-          if (/document\.write/.test(content)) return;
+          if (/document\.write/.test(content)) continue;
           try {
             const el = document.createElement("script");
             if (type) el.type = type;
@@ -190,120 +184,94 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             document.body.appendChild(el);
           } catch {}
         }
-      });
+      }
     };
 
-    const tryFetchWithFallbacks = async (absoluteUrl) => {
-      if (htmlCacheRef.current[absoluteUrl]) {
-        return new Response(htmlCacheRef.current[absoluteUrl], { status: 200 });
-      }
+    const tryFetchWithFallbacks = async (origUrl) => {
+      let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
+      if (res && res.ok) return res;
 
-      let res = await fetch(absoluteUrl, { cache: "no-cache" }).catch(
-        () => null
-      );
-      if (res && res.ok) {
-        const html = await res.text();
-        htmlCacheRef.current[absoluteUrl] = html;
-        return new Response(html);
-      }
-
-      if (!absoluteUrl.match(/\.html$/i)) {
-        const alt = absoluteUrl.replace(/\/+$/, "") + ".html";
+      if (!origUrl.match(/\.html$/i)) {
+        const alt = origUrl.replace(/\/+$/, "") + ".html";
         res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) {
-          const html = await res.text();
-          htmlCacheRef.current[absoluteUrl] = html;
-          return new Response(html);
-        }
+        if (res && res.ok) return res;
       }
 
       try {
         const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
         res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) {
-          const html = await res.text();
-          htmlCacheRef.current[absoluteUrl] = html;
-          return new Response(html);
-        }
+        if (res && res.ok) return res;
       } catch {}
 
       return res;
     };
 
-    const insertContentSafely = (htmlString, baseForRewrite) => {
-      if (!containerRef.current) return;
-      try {
-        const temp = document.createElement("div");
-        temp.innerHTML = htmlString || "";
-        rewriteInjectedAssets(temp, baseForRewrite);
-        rewriteInjectedLinks(temp);
-
-        const oldOverflow = containerRef.current.style.overflow;
-        containerRef.current.style.overflow = "hidden";
-        containerRef.current.innerHTML = temp.innerHTML;
-        lastContentRef.current = temp.innerHTML;
-        containerRef.current.style.transition = "opacity 0.25s";
-        containerRef.current.style.opacity = "1";
-        containerRef.current.style.overflow = oldOverflow;
-      } catch (err) {
-        console.error("[ThemeInjector] insertContentSafely failed:", err);
-      }
-    };
-
     const loadTheme = async () => {
+      // Show loading state but DO NOT hide current content.
       setLoading(true);
 
-      const fetchUrl = makeFetchUrl(pageUrl);
-
       try {
-        const res = await tryFetchWithFallbacks(fetchUrl);
-        if (!res || !res.ok) {
-          throw new Error(`Failed to fetch ${fetchUrl}`);
-        }
-
+        const res = await tryFetchWithFallbacks(pageUrl);
+        if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
+        // Parse fetched HTML into a doc
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
+        // Update title if present
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
+        // Prepare base tag (unchanged)
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
           base.setAttribute("data-theme-base", "true");
           document.head.appendChild(base);
         }
-        base.href = themeBaseNormalized(themeBaseUrl);
+        base.href = themeBaseNormalized(themeBaseUrl).replace(
+          "https://demo.webriefly.com",
+          "demo.webriefly.com"
+        );
 
+        // Collect styles to load (do this BEFORE we swap)
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const styleNodes = Array.from(doc.querySelectorAll("style"));
 
+        // Load external styles first (append links to head). Wait for them to load.
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
-            if (!rawHref) return Promise.resolve();
+            if (!rawHref) return;
             return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
           })
         );
 
+        // Inject inline <style> nodes (but keep old styles in place until swap)
         styleNodes.forEach((s) => {
-          try {
-            const newStyle = document.createElement("style");
-            newStyle.innerHTML = s.innerHTML || "";
-            newStyle.dataset.themeInjected = "true";
-            document.head.appendChild(newStyle);
-          } catch {}
+          const newStyle = document.createElement("style");
+          newStyle.innerHTML = s.innerHTML || "";
+          newStyle.dataset.themeInjected = "true";
+          document.head.appendChild(newStyle);
         });
 
-        const bodyHtml = doc.body.innerHTML || "";
-        insertContentSafely(bodyHtml, themeBaseUrl);
+        // Build a temporary container with the new body content and rewrite assets/links there
+        const temp = document.createElement("div");
+        temp.innerHTML = doc.body.innerHTML || "";
+        rewriteInjectedAssets(temp, themeBaseUrl);
+        rewriteInjectedLinks(temp);
 
+        // Only when everything above is ready, replace the visible content.
+        // This prevents the blank screen (we kept the old DOM visible until now).
         if (mountedRef.current && !aborted && containerRef.current) {
+          // preserve scroll position? optional: you can capture and restore if needed.
+          containerRef.current.innerHTML = temp.innerHTML;
+
+          // Add submit handler for forms inside the new content
           submitHandler = (e) => {
             if (!containerRef.current) return;
             let node = e.target;
@@ -321,18 +289,14 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
               routeViaSPA(spa || "/");
             }
           };
-          try {
-            containerRef.current.removeEventListener(
-              "submit",
-              submitHandler,
-              true
-            );
-          } catch {}
+
           containerRef.current.addEventListener("submit", submitHandler, true);
         }
 
-        executeScripts(doc);
+        // Execute scripts from the fetched doc serially
+        await executeScriptsSerial(doc);
 
+        // Dispatch lifecycle events (small delay to let scripts run)
         setTimeout(() => {
           try {
             document.dispatchEvent(
@@ -341,13 +305,9 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             window.dispatchEvent(new Event("load", { bubbles: true }));
             window.dispatchEvent(new Event("pageshow", { bubbles: true }));
           } catch {}
-        }, 150);
+        }, 200);
       } catch (err) {
         console.error("[ThemeInjector] loadTheme failed:", err);
-        if (!lastContentRef.current && containerRef.current) {
-          containerRef.current.innerHTML =
-            '<div style="padding:40px;text-align:center;color:#666">Sorry, the page failed to load. Try refreshing or come back later.</div>';
-        }
       } finally {
         if (!aborted && mountedRef.current) setLoading(false);
       }
@@ -355,47 +315,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     loadTheme();
 
-    const onPop = () => {
-      const cur = window.location.pathname + window.location.search;
-      if (cur !== pageUrl) {
-        if (typeof onNavigate === "function") {
-          try {
-            onNavigate(cur, { replace: true });
-          } catch {}
-        } else {
-          (async () => {
-            setLoading(true);
-            try {
-              const abs = makeFetchUrl(cur);
-              const res = await tryFetchWithFallbacks(abs);
-              if (res && res.ok) {
-                const html = await res.text();
-                if (!mountedRef.current || aborted) return;
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                const newTitle = doc
-                  .querySelector("title")
-                  ?.textContent?.trim();
-                if (newTitle) document.title = newTitle;
-                const bodyHtml = doc.body.innerHTML || "";
-                insertContentSafely(bodyHtml, themeBaseUrl);
-                executeScripts(doc);
-              }
-            } catch (e) {
-              console.error("[ThemeInjector] popstate load failed", e);
-            } finally {
-              if (!aborted && mountedRef.current) setLoading(false);
-            }
-          })();
-        }
-      }
-    };
-
-    window.addEventListener("popstate", onPop);
-
     return () => {
       aborted = true;
-      window.removeEventListener("popstate", onPop);
       try {
         if (containerRef.current && submitHandler)
           containerRef.current.removeEventListener(
@@ -420,7 +341,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           height: "100%",
           overflow: "auto",
           display: "block",
-          opacity: 1,
         }}
       />
       {loading && (
