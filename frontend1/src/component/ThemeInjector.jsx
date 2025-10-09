@@ -28,6 +28,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     let aborted = false;
     let submitHandler = null;
+    const abortController = new AbortController();
 
     const isAbsoluteOrProtocol = (u = "") =>
       /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
@@ -49,7 +50,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
       if (!url) return url;
-      if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
+      if (isAbsoluteOrProtocol(url)) return url;
+      if (isApiPath(url)) return url;
       if (url.startsWith("/"))
         return themeBaseNormalized(base) + url.replace(/^\/+/, "");
       try {
@@ -129,15 +131,16 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     const loadStylesheet = (href, timeoutMs = 7000) =>
       new Promise((resolve) => {
         try {
-          if (
-            document.head.querySelector(
-              `link[rel="stylesheet"][href="${href}"]`
-            )
+          const absHref = makeAbsoluteUrl(href, themeBaseUrl);
+          const found = Array.from(
+            document.head.querySelectorAll('link[rel="stylesheet"]')
           )
-            return resolve();
+            .map((l) => l.href)
+            .includes(absHref);
+          if (found) return resolve();
           const link = document.createElement("link");
           link.rel = "stylesheet";
-          link.href = href;
+          link.href = absHref;
           link.dataset.themeInjected = "true";
           const done = () => resolve();
           link.onload = done;
@@ -184,18 +187,31 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     };
 
     const tryFetchWithFallbacks = async (origUrl) => {
-      let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
+      const signal = abortController.signal;
+      const tryFetch = async (u) =>
+        fetch(u, { cache: "no-cache", signal }).catch(() => null);
+
+      let res = await tryFetch(origUrl);
       if (res && res.ok) return res;
 
       if (!origUrl.match(/\.html$/i)) {
         const alt = origUrl.replace(/\/+$/, "") + ".html";
-        res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
+        res = await tryFetch(alt);
         if (res && res.ok) return res;
       }
 
       try {
         const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
-        res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
+        res = await tryFetch(dynamicUrl);
+        if (res && res.ok) return res;
+      } catch {}
+
+      try {
+        const rootUrl = themeBaseNormalized(themeBaseUrl);
+        res = await tryFetch(rootUrl);
+        if (res && res.ok) return res;
+        const rootIndex = rootUrl.replace(/\/+$/, "") + "/index.html";
+        res = await tryFetch(rootIndex);
         if (res && res.ok) return res;
       } catch {}
 
@@ -203,11 +219,14 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     };
 
     const loadTheme = async () => {
+      if (!mountedRef.current) return;
       setLoading(true);
 
+      const fetchUrl = makeAbsoluteUrl(pageUrl, themeBaseUrl);
+
       try {
-        const res = await tryFetchWithFallbacks(pageUrl);
-        if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
+        const res = await tryFetchWithFallbacks(fetchUrl);
+        if (!res || !res.ok) throw new Error(`Failed to fetch ${fetchUrl}`);
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
@@ -223,33 +242,33 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           base.setAttribute("data-theme-base", "true");
           document.head.appendChild(base);
         }
-        base.href = themeBaseNormalized(themeBaseUrl).replace(
-          "https://demo.webriefly.com",
-          "demo.webriefly.com"
-        );
+        base.href = themeBaseNormalized(themeBaseUrl);
 
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
-        );
+        ).filter(Boolean);
         const styleNodes = Array.from(doc.querySelectorAll("style"));
 
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
-            if (!rawHref) return;
-            return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
+            if (!rawHref) return Promise.resolve();
+            return loadStylesheet(rawHref);
           })
         );
 
         styleNodes.forEach((s) => {
-          const newStyle = document.createElement("style");
-          newStyle.innerHTML = s.innerHTML || "";
-          newStyle.dataset.themeInjected = "true";
-          document.head.appendChild(newStyle);
+          try {
+            const newStyle = document.createElement("style");
+            newStyle.innerHTML = s.innerHTML || "";
+            newStyle.dataset.themeInjected = "true";
+            document.head.appendChild(newStyle);
+          } catch {}
         });
 
         const temp = document.createElement("div");
         temp.innerHTML = doc.body.innerHTML || "";
+
         rewriteInjectedAssets(temp, themeBaseUrl);
         rewriteInjectedLinks(temp);
 
@@ -290,6 +309,10 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }, 200);
       } catch (err) {
         console.error("[ThemeInjector] loadTheme failed:", err);
+        if (mountedRef.current && containerRef.current) {
+          containerRef.current.innerHTML =
+            '<div style="padding:20px;color:#333">Failed to load theme content.</div>';
+        }
       } finally {
         if (!aborted && mountedRef.current) setLoading(false);
       }
@@ -299,6 +322,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
     return () => {
       aborted = true;
+      abortController.abort();
       try {
         if (containerRef.current && submitHandler)
           containerRef.current.removeEventListener(
@@ -336,7 +360,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             pointerEvents: "none",
           }}
           aria-hidden
-        ></div>
+        />
       )}
     </div>
   );

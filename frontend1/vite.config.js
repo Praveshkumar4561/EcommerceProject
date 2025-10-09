@@ -52,6 +52,6 @@ export default defineConfig({
   build: {
     target: "es2020",
     polyfillDynamicImport: false,
-     sourcemap: true,
+    sourcemap: true,
   },
 });
