@@ -1,3 +1,4 @@
+// ThemeIntegration.js
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -6,14 +7,37 @@ const loadedAssets = {
   js: new Set(),
 };
 
+const DEFAULT_TIMEOUT = 8000;
+
+function isBrowser() {
+  return typeof window !== "undefined" && typeof document !== "undefined";
+}
+
+function fetchWithTimeout(url, opts = {}, timeout = DEFAULT_TIMEOUT) {
+  const controller = new AbortController();
+  const signal = controller.signal;
+  const t = setTimeout(() => controller.abort(), timeout);
+  return fetch(url, { ...opts, signal })
+    .finally(() => clearTimeout(t))
+    .catch((err) => {
+      // normalize fetch abort / network error to null result
+      return null;
+    });
+}
+
 export class ThemeIntegration {
   static clearThemeAssets() {
+    if (!isBrowser()) return;
     try {
       document
         .querySelectorAll(
           'link[data-theme-asset="true"], script[data-theme-asset="true"]'
         )
-        .forEach((el) => el.remove());
+        .forEach((el) => {
+          try {
+            el.remove();
+          } catch {}
+        });
     } catch (e) {
       console.warn(
         "[ThemeIntegration] clearThemeAssets failed to query/remove:",
@@ -24,16 +48,31 @@ export class ThemeIntegration {
     loadedAssets.js.clear();
   }
 
-  static async probeUrl(url) {
+  // Probe a URL with HEAD then GET fallback, with timeout and CORS-safe fallback
+  static async probeUrl(url, timeout = 3000) {
+    if (!isBrowser()) return { ok: false, status: 0 };
     try {
-      let res;
+      // try HEAD first (fast) but many servers/CORS block HEAD; fallback to GET
+      let res = null;
       try {
-        res = await fetch(url, { method: "HEAD", cache: "no-cache" });
-        if (!res || !res.ok) {
-          res = await fetch(url, { method: "GET", cache: "no-cache" });
-        }
+        res = await fetchWithTimeout(
+          url,
+          { method: "HEAD", cache: "no-cache" },
+          timeout
+        );
       } catch (e) {
-        res = await fetch(url, { method: "GET", cache: "no-cache" });
+        res = null;
+      }
+      if (!res || !res.ok) {
+        try {
+          res = await fetchWithTimeout(
+            url,
+            { method: "GET", cache: "no-cache" },
+            timeout
+          );
+        } catch (e) {
+          res = null;
+        }
       }
       return { ok: !!res && res.ok, status: res ? res.status : 0 };
     } catch (err) {
@@ -41,65 +80,172 @@ export class ThemeIntegration {
     }
   }
 
-  static loadAsset(url, type) {
+  // Make URL absolute relative to base (handles /-prefixed and relative urls)
+  static makeAbsoluteUrl(url = "", base = "") {
+    if (!isBrowser()) return url;
+    if (!url) return url;
+    try {
+      // if already absolute
+      const maybe = new URL(url, window.location.href);
+      // if url param included a scheme (protocol) or starts with //, URL will parse origin
+      if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:|^\/\//.test(url)) return maybe.href;
+    } catch {}
+    try {
+      return new URL(url, base || window.location.origin).href;
+    } catch {
+      // fallback: join with base ensuring slash
+      const b = (base || "").replace(/\/+$/, "") + "/";
+      return b + url.replace(/^\/+/, "");
+    }
+  }
+
+  // Load a single asset (css/js) with timeout, probe, uniqueness check, and resolves when loaded
+  static loadAsset(
+    url,
+    type,
+    { timeout = DEFAULT_TIMEOUT, skipProbe = false } = {}
+  ) {
     return new Promise(async (resolve) => {
-      if (loadedAssets[type].has(url))
-        return resolve({ ok: true, url, status: 200 });
+      if (!isBrowser()) return resolve({ ok: false, url, status: 0 });
 
-      const probe = await this.probeUrl(url);
+      try {
+        if (type !== "css" && type !== "js") {
+          console.warn("[ThemeIntegration] Unsupported asset type:", type, url);
+          return resolve({ ok: false, url, status: 0 });
+        }
 
-      let el;
-      if (type === "css") {
-        el = document.createElement("link");
-        el.rel = "stylesheet";
-        el.href = url;
-      } else if (type === "js") {
-        el = document.createElement("script");
-        el.src = url;
-        el.async = false;
-      } else {
-        console.warn("[ThemeIntegration] Unsupported asset type:", type, url);
-        return resolve({ ok: false, url, status: 0 });
+        // already loaded?
+        if (loadedAssets[type].has(url)) {
+          return resolve({ ok: true, url, status: 200 });
+        }
+
+        // Probe availability (optional)
+        let probe = { ok: true, status: 200 };
+        if (!skipProbe) {
+          try {
+            probe = await this.probeUrl(url, Math.min(timeout, 3000));
+          } catch {
+            probe = { ok: false, status: 0 };
+          }
+          // if probe fails, still attempt to load (some servers/CORS block HEAD)
+        }
+
+        const absUrl = this.makeAbsoluteUrl(url, window.location.origin);
+
+        // prevent duplicate elements appended
+        if (
+          (type === "css" &&
+            document.head.querySelector(`link[href="${absUrl}"]`)) ||
+          (type === "js" &&
+            document.body.querySelector(`script[src="${absUrl}"]`))
+        ) {
+          loadedAssets[type].add(url);
+          return resolve({ ok: true, url: absUrl, status: 200 });
+        }
+
+        if (type === "css") {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = absUrl;
+          link.setAttribute("data-theme-asset", "true");
+
+          let settled = false;
+          const done = (ok = true, status = probe.status || 200) => {
+            if (settled) return;
+            settled = true;
+            loadedAssets.css.add(url);
+            link.removeEventListener("load", onLoad);
+            link.removeEventListener("error", onError);
+            clearTimeout(timer);
+            resolve({ ok, url: absUrl, status });
+          };
+
+          const onLoad = () => done(true, 200);
+          const onError = (ev) => {
+            console.error(`[ThemeIntegration] css load error ${absUrl}`, ev);
+            done(false, probe.status || 0);
+            try {
+              toast.error?.(`Failed to load CSS: ${absUrl}`);
+            } catch {}
+          };
+
+          link.addEventListener("load", onLoad);
+          link.addEventListener("error", onError);
+
+          // safety timeout
+          const timer = setTimeout(() => {
+            // treat as success if probe said OK (to be forgiving) else fail
+            if (probe.ok) done(true, probe.status || 200);
+            else done(false, probe.status || 0);
+          }, timeout);
+
+          try {
+            document.head.appendChild(link);
+          } catch (e) {
+            clearTimeout(timer);
+            resolve({ ok: false, url: absUrl, status: 0 });
+          }
+        } else if (type === "js") {
+          const script = document.createElement("script");
+          script.src = absUrl;
+          // run scripts in order by default: set async false and await loaded promise
+          script.async = false;
+          script.setAttribute("data-theme-asset", "true");
+
+          let settled = false;
+          const done = (ok = true, status = probe.status || 200) => {
+            if (settled) return;
+            settled = true;
+            loadedAssets.js.add(url);
+            script.removeEventListener("load", onLoad);
+            script.removeEventListener("error", onError);
+            clearTimeout(timer);
+            resolve({ ok, url: absUrl, status });
+          };
+
+          const onLoad = () => done(true, 200);
+          const onError = (ev) => {
+            console.error(`[ThemeIntegration] js load error ${absUrl}`, ev);
+            done(false, probe.status || 0);
+            try {
+              toast.error?.(`Failed to load JS: ${absUrl}`);
+            } catch {}
+          };
+
+          script.addEventListener("load", onLoad);
+          script.addEventListener("error", onError);
+
+          const timer = setTimeout(() => {
+            if (probe.ok) done(true, probe.status || 200);
+            else done(false, probe.status || 0);
+          }, timeout);
+
+          try {
+            document.body.appendChild(script);
+          } catch (e) {
+            clearTimeout(timer);
+            resolve({ ok: false, url: absUrl, status: 0 });
+          }
+        }
+      } catch (err) {
+        console.error("[ThemeIntegration] loadAsset error:", err);
+        resolve({ ok: false, url, status: 0 });
       }
-
-      el.dataset.themeAsset = "true";
-
-      const onLoaded = () => {
-        loadedAssets[type].add(url);
-        el.removeEventListener("load", onLoaded);
-        el.removeEventListener("error", onError);
-        resolve({ ok: true, url, status: 200 });
-      };
-      const onError = (ev) => {
-        const msg = `Failed to load ${type}: ${url} (probe status: ${
-          probe.status || "unknown"
-        })`;
-        console.error(msg, ev);
-        try {
-          toast.error?.(msg);
-        } catch (e) {}
-        el.removeEventListener("load", onLoaded);
-        el.removeEventListener("error", onError);
-        resolve({ ok: false, url, status: probe.status || 0 });
-      };
-
-      el.addEventListener("load", onLoaded);
-      el.addEventListener("error", onError);
-
-      if (type === "css") document.head.appendChild(el);
-      else document.body.appendChild(el);
     });
   }
 
+  // Temporarily override location methods to intercept same-origin navigations and use history + popstate
   static overrideLocationMethodsTemporary() {
-    if (typeof window === "undefined") return () => {};
+    if (!isBrowser()) return () => {};
+    if (window.__themePatchedTemp) return () => {};
+
     const orig = {
       assign: window.location.assign?.bind(window.location),
       replace: window.location.replace?.bind(window.location),
       reload: window.location.reload?.bind(window.location),
       hrefDesc: null,
-      patched: !!window.__themePatchedTemp,
     };
+
     try {
       orig.hrefDesc = Object.getOwnPropertyDescriptor(
         Location.prototype,
@@ -109,16 +255,11 @@ export class ThemeIntegration {
       orig.hrefDesc = null;
     }
 
-    if (orig.patched) {
-      return () => {};
-    }
-
     window.__themePatchedTemp = true;
-
     const navGuard = { last: null, time: 0 };
     const guard = (u) => {
       const now = Date.now();
-      if (navGuard.last === u && now - navGuard.time < 1000) return false;
+      if (navGuard.last === u && now - navGuard.time < 800) return false;
       navGuard.last = u;
       navGuard.time = now;
       return true;
@@ -239,6 +380,7 @@ export class ThemeIntegration {
     return restore;
   }
 
+  // Attempt to detect theme base by probing likely paths
   static async detectThemeBase(folderName) {
     if (!folderName) return null;
     const backendHostDirect = "https://demo.webriefly.com/api";
@@ -269,10 +411,10 @@ export class ThemeIntegration {
 
     for (const base of allCandidates) {
       try {
-        const idx = `${base.replace(/\/$/, "")}/index.html`;
+        const maybe = base.replace(/\/+$/, "") + "/index.html";
         const pBase = await this.probeUrl(base);
         if (pBase.ok) return base.replace(/\/$/, "") + "/";
-        const pIdx = await this.probeUrl(idx);
+        const pIdx = await this.probeUrl(maybe);
         if (pIdx.ok) return base.replace(/\/$/, "") + "/";
       } catch (e) {
         console.warn(
@@ -285,8 +427,10 @@ export class ThemeIntegration {
     return null;
   }
 
+  // Apply theme by loading css/js lists, sequentially for predictable ordering
   static async applyThemeFromObject(themeData) {
     if (!themeData?.folder_name) return false;
+    if (!isBrowser()) return false;
 
     try {
       this.clearThemeAssets();
@@ -304,6 +448,7 @@ export class ThemeIntegration {
       let cssFiles = [`${themeBasePath}assets/css/main.css`];
       let jsFiles = [`${themeBasePath}assets/js/main.js`];
 
+      // roiser / pesco / radios handling (unchanged but ensure trailing slashes)
       if (folderName.toLowerCase().includes("roiser")) {
         cssFiles = [
           `${themeBasePath}assets/css/bootstrap.min.css`,
@@ -340,7 +485,7 @@ export class ThemeIntegration {
       if (folderName.toLowerCase().includes("pesco")) {
         const pescoThemePath =
           "pesco-ecommerce-html-rtl-template-2025-03-20-04-13-07-utc-2025-06-12-15-13-00-utc";
-        const pescoBase = `${pescoThemePath}/Main_File/Template`;
+        const pescoBase = `${pescoThemePath}/Main_File/Template/`;
         cssFiles = [
           `${pescoBase}assets/vendor/bootstrap/css/bootstrap.min.css`,
           `${pescoBase}assets/vendor/nice-select/css/nice-select.css`,
@@ -361,7 +506,7 @@ export class ThemeIntegration {
           `${pescoBase}assets/vendor/theme.js`,
         ];
       } else if (folderName.toLowerCase().includes("radios")) {
-        const radiosBase = `${folderName}/radios-html-package/Radios`;
+        const radiosBase = `${folderName}/radios-html-package/Radios/`;
         cssFiles = [
           `${radiosBase}assets/css/bootstrap.min.css`,
           `${radiosBase}assets/css/animate.css`,
@@ -383,6 +528,7 @@ export class ThemeIntegration {
         ];
       }
 
+      // override location methods while loading theme to avoid full navigations
       let restoreLocation = () => {};
       try {
         restoreLocation = this.overrideLocationMethodsTemporary();
@@ -393,31 +539,41 @@ export class ThemeIntegration {
         );
       }
 
+      // load CSS first (sequentially) to avoid flashes / layout jank
       for (const css of cssFiles) {
-        const res = await this.loadAsset(css, "css");
-        if (!res.ok) {
-          console.warn(
-            "[ThemeIntegration] css failed:",
-            res.url,
-            "status:",
-            res.status
-          );
-        } else {
-          console.debug("[ThemeIntegration] css loaded:", res.url);
+        try {
+          const res = await this.loadAsset(css, "css");
+          if (!res.ok) {
+            console.warn(
+              "[ThemeIntegration] css failed:",
+              res.url,
+              "status:",
+              res.status
+            );
+          } else {
+            console.debug("[ThemeIntegration] css loaded:", res.url);
+          }
+        } catch (e) {
+          console.warn("[ThemeIntegration] css load threw:", css, e);
         }
       }
 
+      // load JS sequentially (preserves dependencies like jQuery first)
       for (const js of jsFiles) {
-        const res = await this.loadAsset(js, "js");
-        if (!res.ok) {
-          console.warn(
-            "[ThemeIntegration] js failed:",
-            res.url,
-            "status:",
-            res.status
-          );
-        } else {
-          console.debug("[ThemeIntegration] js loaded:", res.url);
+        try {
+          const res = await this.loadAsset(js, "js");
+          if (!res.ok) {
+            console.warn(
+              "[ThemeIntegration] js failed:",
+              res.url,
+              "status:",
+              res.status
+            );
+          } else {
+            console.debug("[ThemeIntegration] js loaded:", res.url);
+          }
+        } catch (e) {
+          console.warn("[ThemeIntegration] js load threw:", js, e);
         }
       }
 
@@ -434,7 +590,9 @@ export class ThemeIntegration {
     }
   }
 
+  // Apply theme via backend-provided assets (css/js arrays), used by frontend UI
   static async applyThemeToFrontend(themeId) {
+    if (!isBrowser()) return { success: false };
     try {
       this.clearThemeAssets();
 
@@ -443,30 +601,25 @@ export class ThemeIntegration {
       );
       const { css = [], js = [], html = null } = response.data || {};
 
-      const cssPromises = Array.isArray(css)
-        ? css.map((url) =>
-            this.loadAsset(url, "css").catch((err) => {
-              console.warn("Failed to load CSS asset:", url, err);
-              return null;
-            })
-          )
-        : [];
+      // load them sequentially to preserve ordering
+      for (const url of Array.isArray(css) ? css : []) {
+        await this.loadAsset(url, "css").catch((err) => {
+          console.warn("Failed to load CSS asset:", url, err);
+        });
+      }
 
-      const jsPromises = Array.isArray(js)
-        ? js.map((url) =>
-            this.loadAsset(url, "js").catch((err) => {
-              console.warn("Failed to load JS asset:", url, err);
-              return null;
-            })
-          )
-        : [];
-
-      await Promise.all([...cssPromises, ...jsPromises]);
+      for (const url of Array.isArray(js) ? js : []) {
+        await this.loadAsset(url, "js").catch((err) => {
+          console.warn("Failed to load JS asset:", url, err);
+        });
+      }
 
       return { success: true, html };
     } catch (error) {
       console.error("Error applying theme:", error);
-      toast.error("Failed to apply theme. Please try again.");
+      try {
+        toast.error("Failed to apply theme. Please try again.");
+      } catch {}
       throw error;
     }
   }
@@ -479,7 +632,9 @@ export class ThemeIntegration {
       return response.data;
     } catch (error) {
       console.error("Error getting theme assets:", error);
-      toast.error("Failed to load theme assets");
+      try {
+        toast.error("Failed to load theme assets");
+      } catch {}
       throw error;
     }
   }
@@ -508,7 +663,9 @@ export class ThemeIntegration {
       console.error("Error validating theme:", error);
       const errorMessage =
         error.response?.data?.error || "Failed to validate theme";
-      toast.error(errorMessage);
+      try {
+        toast.error(errorMessage);
+      } catch {}
       throw new Error(errorMessage);
     }
   }
