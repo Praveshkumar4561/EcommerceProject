@@ -1,16 +1,37 @@
 // src/components/ThemeInjector.jsx
 import React, { useEffect, useRef, useState } from "react";
 
+/**
+ * ThemeInjector
+ * - keeps existing DOM until new theme HTML + CSS ready (prevents blank)
+ * - waits for stylesheets (with timeout) before swapping content
+ * - caches fetched HTML (in-memory + sessionStorage)
+ * - inserts external scripts async and inline scripts during idle
+ * - handles form submit SPA interception
+ */
 export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(true);
   const [loading, setLoading] = useState(false);
-  const htmlCacheRef = useRef({});
 
+  // small in-memory cache and session fallback
+  const htmlCacheRef = useRef({});
   useEffect(() => {
     mountedRef.current = true;
+    // restore session cache if exists
+    try {
+      const s = sessionStorage.getItem("themeInjectorHtmlCache");
+      if (s) htmlCacheRef.current = JSON.parse(s);
+    } catch {}
     return () => {
       mountedRef.current = false;
+      // persist cache lightly
+      try {
+        sessionStorage.setItem(
+          "themeInjectorHtmlCache",
+          JSON.stringify(htmlCacheRef.current || {})
+        );
+      } catch {}
     };
   }, []);
 
@@ -60,6 +81,17 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       }
     };
 
+    // build absolute fetch url for theme HTML (handles /path or absolute url)
+    const makeFetchUrl = (p = "") => {
+      if (!p) p = "/";
+      if (isAbsoluteOrProtocol(p)) return p;
+      const clean = p.replace(/^\/*/, "");
+      // prefer explicit index.html if just root
+      if (clean === "" || clean === "/")
+        return themeBaseNormalized(themeBaseUrl) + "index.html";
+      return themeBaseNormalized(themeBaseUrl) + clean;
+    };
+
     const normalizeSpaPath = (p = "/") => {
       if (!p) return "/";
       try {
@@ -107,8 +139,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           href.startsWith("tel:")
         )
           return;
-        href = normalizeSpaPath(href);
-        a.setAttribute("href", href);
+        const newHref = normalizeSpaPath(href);
+        a.setAttribute("href", newHref);
       });
     };
 
@@ -123,11 +155,16 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         if (isRelativeForRewrite(val) || val.startsWith("/")) {
           const abs = makeAbsoluteUrl(val, base);
           el.setAttribute(attr, abs);
+          // add lazy loading for non-critical images (helps perceived performance)
+          if (tag === "img" && !el.hasAttribute("loading")) {
+            el.setAttribute("loading", "lazy");
+          }
         }
       });
     };
 
-    const loadStylesheet = (href, timeoutMs = 8000) =>
+    // inject stylesheet and wait until loaded or timeout
+    const loadStylesheet = (href, timeoutMs = 7000) =>
       new Promise((resolve) => {
         try {
           if (
@@ -150,6 +187,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
       });
 
+    // load external scripts async and inline scripts during idle
     const executeScripts = (doc) => {
       const scripts = Array.from(doc.querySelectorAll("script"));
       scripts.forEach((s) => {
@@ -160,7 +198,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           if (!document.body.querySelector(`script[src="${abs}"]`)) {
             const el = document.createElement("script");
             el.src = abs;
-            el.async = true; // parallel load
+            el.async = true; // don't block paint
             if (type) el.type = type;
             el.dataset.themeInjected = "true";
             document.body.appendChild(el);
@@ -168,32 +206,65 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         } else {
           const content = s.textContent || "";
           if (/document\.write/.test(content)) return;
-          try {
-            const el = document.createElement("script");
-            if (type) el.type = type;
-            el.text = content;
-            el.dataset.themeInjected = "true";
-            document.body.appendChild(el);
-          } catch {}
+          // run inline scripts during idle so they don't block initial render
+          const runInline = () => {
+            try {
+              const el = document.createElement("script");
+              if (type) el.type = type;
+              el.text = content;
+              el.dataset.themeInjected = "true";
+              document.body.appendChild(el);
+            } catch {}
+          };
+          if ("requestIdleCallback" in window) {
+            try {
+              requestIdleCallback(runInline, { timeout: 200 });
+            } catch {
+              setTimeout(runInline, 50);
+            }
+          } else {
+            setTimeout(runInline, 50);
+          }
         }
       });
     };
 
+    // fetch wrapper with timeout
+    const fetchWithTimeout = async (url, ms = 10000) => {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), ms);
+      try {
+        const res = await fetch(url, {
+          signal: controller.signal,
+          cache: "no-cache",
+        });
+        clearTimeout(id);
+        return res;
+      } catch (e) {
+        clearTimeout(id);
+        return null;
+      }
+    };
+
+    // try fetch with fallbacks and small retry attempts
     const tryFetchWithFallbacks = async (origUrl) => {
+      // fast return from cache
       if (htmlCacheRef.current[origUrl]) {
-        return new Response(htmlCacheRef.current[origUrl]);
+        return new Response(htmlCacheRef.current[origUrl], { status: 200 });
       }
 
-      let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
+      // attempt 1: direct
+      let res = await fetchWithTimeout(origUrl, 10000);
       if (res && res.ok) {
         const html = await res.text();
         htmlCacheRef.current[origUrl] = html;
         return new Response(html);
       }
 
+      // attempt 2: try with .html appended
       if (!origUrl.match(/\.html$/i)) {
         const alt = origUrl.replace(/\/+$/, "") + ".html";
-        res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
+        res = await fetchWithTimeout(alt, 8000);
         if (res && res.ok) {
           const html = await res.text();
           htmlCacheRef.current[origUrl] = html;
@@ -201,9 +272,10 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
       }
 
+      // attempt 3: dynamic.html at theme base
       try {
         const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
-        res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
+        res = await fetchWithTimeout(dynamicUrl, 8000);
         if (res && res.ok) {
           const html = await res.text();
           htmlCacheRef.current[origUrl] = html;
@@ -211,23 +283,70 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
       } catch {}
 
+      // last: null
       return res;
     };
 
-    const loadTheme = async () => {
-      setLoading(true);
+    // swap content only when ready; if previous content exists -> fade; else show loader then set
+    const swapContentSafely = (htmlString, baseForRewrite, options = {}) => {
+      if (!containerRef.current) return;
       try {
-        const res = await tryFetchWithFallbacks(pageUrl);
-        if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
+        const temp = document.createElement("div");
+        temp.innerHTML = htmlString || "";
+        rewriteInjectedAssets(temp, baseForRewrite);
+        rewriteInjectedLinks(temp);
+
+        const hadContent = Boolean(
+          containerRef.current &&
+            containerRef.current.innerHTML &&
+            containerRef.current.innerHTML.trim().length
+        );
+        // if hadContent -> fade out old and replace to avoid blank flash
+        if (hadContent) {
+          // small fade out/in
+          containerRef.current.style.transition = "opacity 0.18s";
+          containerRef.current.style.opacity = "0";
+          setTimeout(() => {
+            if (!containerRef.current) return;
+            containerRef.current.innerHTML = temp.innerHTML;
+            containerRef.current.style.opacity = "1";
+          }, 180);
+        } else {
+          // no previous content -> set content once ready
+          containerRef.current.innerHTML = temp.innerHTML;
+        }
+      } catch (err) {
+        console.error("[ThemeInjector] swapContentSafely failed:", err);
+      }
+    };
+
+    // main loader
+    const loadTheme = async () => {
+      // keep spinner only if no existing content
+      const hadContent = Boolean(
+        containerRef.current &&
+          containerRef.current.innerHTML &&
+          containerRef.current.innerHTML.trim().length
+      );
+      if (!hadContent) setLoading(true);
+
+      const fetchUrl = makeFetchUrl(pageUrl);
+
+      try {
+        const res = await tryFetchWithFallbacks(fetchUrl);
+        if (!res || !res.ok) throw new Error(`Failed to fetch ${fetchUrl}`);
+
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
+        // set title if present
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
+        // ensure base tag for relative assets
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
@@ -236,39 +355,46 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
         base.href = themeBaseNormalized(themeBaseUrl);
 
+        // stylesheets: start loading and wait either for them to load or for timeout
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const styleNodes = Array.from(doc.querySelectorAll("style"));
-        await Promise.all(
-          linkNodes.map((l) => {
-            const rawHref = l.getAttribute("href");
-            if (!rawHref) return;
-            return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
-          })
-        );
-        styleNodes.forEach((s) => {
-          const newStyle = document.createElement("style");
-          newStyle.innerHTML = s.innerHTML || "";
-          newStyle.dataset.themeInjected = "true";
-          document.head.appendChild(newStyle);
+        const sheetPromises = linkNodes.map((l) => {
+          const rawHref = l.getAttribute("href");
+          if (!rawHref) return Promise.resolve();
+          return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl), 7000);
         });
 
-        // Inject body content
-        const temp = document.createElement("div");
-        temp.innerHTML = doc.body.innerHTML || "";
-        rewriteInjectedAssets(temp, themeBaseUrl);
-        rewriteInjectedLinks(temp);
+        // append inline style nodes now (they are usually small and needed for initial paint)
+        styleNodes.forEach((s) => {
+          try {
+            const newStyle = document.createElement("style");
+            newStyle.innerHTML = s.innerHTML || "";
+            newStyle.dataset.themeInjected = "true";
+            document.head.appendChild(newStyle);
+          } catch {}
+        });
 
+        // wait for stylesheets to settle (maximum of all promises)
+        await Promise.all(sheetPromises);
+
+        // prepare body HTML, but do not inject until CSS loaded above
+        const bodyHtml = doc.body.innerHTML || "";
+
+        // insert or swap content safely — this will avoid blank page
+        swapContentSafely(bodyHtml, themeBaseUrl);
+
+        // form submit SPA handling (remove previous then add)
         if (containerRef.current) {
-          containerRef.current.style.opacity = "0";
-          containerRef.current.innerHTML = temp.innerHTML;
-          containerRef.current.style.transition = "opacity 0.3s";
-          setTimeout(() => (containerRef.current.style.opacity = "1"), 50);
-        }
-
-        // Form submit SPA handling
-        if (mountedRef.current && !aborted && containerRef.current) {
+          try {
+            // remove any previously attached handler (best-effort)
+            containerRef.current.removeEventListener(
+              "submit",
+              submitHandler,
+              true
+            );
+          } catch {}
           submitHandler = (e) => {
             if (!containerRef.current) return;
             let node = e.target;
@@ -289,29 +415,66 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           containerRef.current.addEventListener("submit", submitHandler, true);
         }
 
-        // Execute scripts
+        // execute scripts (external async, inline during idle)
         executeScripts(doc);
-
-        setTimeout(() => {
-          try {
-            document.dispatchEvent(
-              new Event("DOMContentLoaded", { bubbles: true })
-            );
-            window.dispatchEvent(new Event("load", { bubbles: true }));
-            window.dispatchEvent(new Event("pageshow", { bubbles: true }));
-          } catch {}
-        }, 200);
       } catch (err) {
         console.error("[ThemeInjector] loadTheme failed:", err);
+        // on failure: if we have previous content, keep it (no blank)
+        const hadPrev = Boolean(
+          containerRef.current &&
+            containerRef.current.innerHTML &&
+            containerRef.current.innerHTML.trim().length
+        );
+        if (!hadPrev && containerRef.current) {
+          containerRef.current.innerHTML =
+            '<div style="padding:40px;text-align:center;color:#666">Sorry, this page failed to load. Please try refreshing.</div>';
+        }
       } finally {
         if (!aborted && mountedRef.current) setLoading(false);
       }
     };
 
+    // initial load
     loadTheme();
+
+    // handle popstate (back/forward)
+    const onPop = () => {
+      // derive SPA path from window location
+      const cur = window.location.pathname + window.location.search;
+      // if consumer provided onNavigate, call it so parent updates pageUrl prop
+      if (typeof onNavigate === "function") {
+        try {
+          onNavigate(cur, { replace: true });
+          return;
+        } catch {}
+      }
+      // fallback: directly attempt to fetch new path (without modifying history)
+      (async () => {
+        setLoading(true);
+        try {
+          const abs = makeFetchUrl(cur);
+          const res = await tryFetchWithFallbacks(abs);
+          if (res && res.ok) {
+            const html = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+            const bodyHtml = doc.body.innerHTML || "";
+            swapContentSafely(bodyHtml, themeBaseUrl);
+            executeScripts(doc);
+          }
+        } catch (e) {
+          console.error("[ThemeInjector] popstate load failed", e);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    };
+
+    window.addEventListener("popstate", onPop);
 
     return () => {
       aborted = true;
+      window.removeEventListener("popstate", onPop);
       try {
         if (containerRef.current && submitHandler)
           containerRef.current.removeEventListener(
@@ -336,6 +499,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           height: "100%",
           overflow: "auto",
           display: "block",
+          opacity: 1,
         }}
       />
       {loading && (
@@ -347,9 +511,28 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: "none",
+            background: "rgba(255,255,255,0.0)",
           }}
           aria-hidden
-        ></div>
+        >
+          {/* tiny spinner */}
+          <div
+            aria-hidden
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 18,
+              border: "3px solid rgba(0,0,0,0.08)",
+              borderTopColor: "#444",
+              animation: "ti-spin 1s linear infinite",
+            }}
+          />
+          <style
+            dangerouslySetInnerHTML={{
+              __html: "@keyframes ti-spin{to{transform:rotate(360deg)}}",
+            }}
+          />
+        </div>
       )}
     </div>
   );
