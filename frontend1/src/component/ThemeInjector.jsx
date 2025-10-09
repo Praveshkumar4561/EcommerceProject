@@ -5,6 +5,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(true);
   const [loading, setLoading] = useState(false);
+  const htmlCacheRef = useRef({});
 
   useEffect(() => {
     mountedRef.current = true;
@@ -126,10 +127,9 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       });
     };
 
-    const loadStylesheet = (href, timeoutMs = 7000) =>
+    const loadStylesheet = (href, timeoutMs = 8000) =>
       new Promise((resolve) => {
         try {
-          // if identical href already exists, resolve immediately
           if (
             document.head.querySelector(
               `link[rel="stylesheet"][href="${href}"]`
@@ -144,38 +144,30 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           link.onload = done;
           link.onerror = done;
           document.head.appendChild(link);
-          // safety fallback in case onload/onerror never fire
           setTimeout(done, timeoutMs);
         } catch {
           resolve();
         }
       });
 
-    const executeScriptsSerial = async (doc) => {
-      // run scripts from the fetched doc, but avoid duplicating scripts that we already injected
+    const executeScripts = (doc) => {
       const scripts = Array.from(doc.querySelectorAll("script"));
-      for (const s of scripts) {
-        if (aborted || !mountedRef.current) break;
+      scripts.forEach((s) => {
         const src = s.getAttribute("src");
         const type = s.getAttribute("type") || "";
-
         if (src) {
           const abs = makeAbsoluteUrl(src, themeBaseUrl);
-          // skip if already present (prevent duplicates)
-          if (document.body.querySelector(`script[src="${abs}"]`)) continue;
-          await new Promise((resolve) => {
+          if (!document.body.querySelector(`script[src="${abs}"]`)) {
             const el = document.createElement("script");
-            if (type) el.type = type;
             el.src = abs;
-            el.async = false;
+            el.async = true; // parallel load
+            if (type) el.type = type;
             el.dataset.themeInjected = "true";
-            el.onload = resolve;
-            el.onerror = resolve;
             document.body.appendChild(el);
-          });
+          }
         } else {
           const content = s.textContent || "";
-          if (/document\.write/.test(content)) continue;
+          if (/document\.write/.test(content)) return;
           try {
             const el = document.createElement("script");
             if (type) el.type = type;
@@ -184,65 +176,70 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             document.body.appendChild(el);
           } catch {}
         }
-      }
+      });
     };
 
     const tryFetchWithFallbacks = async (origUrl) => {
+      if (htmlCacheRef.current[origUrl]) {
+        return new Response(htmlCacheRef.current[origUrl]);
+      }
+
       let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
-      if (res && res.ok) return res;
+      if (res && res.ok) {
+        const html = await res.text();
+        htmlCacheRef.current[origUrl] = html;
+        return new Response(html);
+      }
 
       if (!origUrl.match(/\.html$/i)) {
         const alt = origUrl.replace(/\/+$/, "") + ".html";
         res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
+        if (res && res.ok) {
+          const html = await res.text();
+          htmlCacheRef.current[origUrl] = html;
+          return new Response(html);
+        }
       }
 
       try {
         const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
         res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
+        if (res && res.ok) {
+          const html = await res.text();
+          htmlCacheRef.current[origUrl] = html;
+          return new Response(html);
+        }
       } catch {}
 
       return res;
     };
 
     const loadTheme = async () => {
-      // Show loading state but DO NOT hide current content.
       setLoading(true);
-
       try {
         const res = await tryFetchWithFallbacks(pageUrl);
         if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
         const html = await res.text();
         if (!mountedRef.current || aborted) return;
 
-        // Parse fetched HTML into a doc
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
-        // Update title if present
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
-        // Prepare base tag (unchanged)
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
           base.setAttribute("data-theme-base", "true");
           document.head.appendChild(base);
         }
-        base.href = themeBaseNormalized(themeBaseUrl).replace(
-          "https://demo.webriefly.com",
-          "demo.webriefly.com"
-        );
+        base.href = themeBaseNormalized(themeBaseUrl);
 
-        // Collect styles to load (do this BEFORE we swap)
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
         const styleNodes = Array.from(doc.querySelectorAll("style"));
-
-        // Load external styles first (append links to head). Wait for them to load.
         await Promise.all(
           linkNodes.map((l) => {
             const rawHref = l.getAttribute("href");
@@ -250,8 +247,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
           })
         );
-
-        // Inject inline <style> nodes (but keep old styles in place until swap)
         styleNodes.forEach((s) => {
           const newStyle = document.createElement("style");
           newStyle.innerHTML = s.innerHTML || "";
@@ -259,19 +254,21 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           document.head.appendChild(newStyle);
         });
 
-        // Build a temporary container with the new body content and rewrite assets/links there
+        // Inject body content
         const temp = document.createElement("div");
         temp.innerHTML = doc.body.innerHTML || "";
         rewriteInjectedAssets(temp, themeBaseUrl);
         rewriteInjectedLinks(temp);
 
-        // Only when everything above is ready, replace the visible content.
-        // This prevents the blank screen (we kept the old DOM visible until now).
-        if (mountedRef.current && !aborted && containerRef.current) {
-          // preserve scroll position? optional: you can capture and restore if needed.
+        if (containerRef.current) {
+          containerRef.current.style.opacity = "0";
           containerRef.current.innerHTML = temp.innerHTML;
+          containerRef.current.style.transition = "opacity 0.3s";
+          setTimeout(() => (containerRef.current.style.opacity = "1"), 50);
+        }
 
-          // Add submit handler for forms inside the new content
+        // Form submit SPA handling
+        if (mountedRef.current && !aborted && containerRef.current) {
           submitHandler = (e) => {
             if (!containerRef.current) return;
             let node = e.target;
@@ -289,14 +286,12 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
               routeViaSPA(spa || "/");
             }
           };
-
           containerRef.current.addEventListener("submit", submitHandler, true);
         }
 
-        // Execute scripts from the fetched doc serially
-        await executeScriptsSerial(doc);
+        // Execute scripts
+        executeScripts(doc);
 
-        // Dispatch lifecycle events (small delay to let scripts run)
         setTimeout(() => {
           try {
             document.dispatchEvent(
