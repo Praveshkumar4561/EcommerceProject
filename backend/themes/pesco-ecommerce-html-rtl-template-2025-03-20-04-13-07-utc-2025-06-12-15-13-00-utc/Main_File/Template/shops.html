@@ -61,7 +61,7 @@
               }
             });
           });
-        document.querySelectorAll('a[href="#"]').forEach((a) => {
+        document.querySelectorAll('a[href="javascript:void(0)"]').forEach((a) => {
           a.addEventListener("click", (e) => e.preventDefault());
         });
       });
@@ -79,7 +79,7 @@
   </style>
 
   <body>
-        <div class="preloader">
+    <div class="preloader">
       <div class="loader">
         <img src="assets/images/loader.gif" alt="Loader" />
       </div>
@@ -1310,7 +1310,7 @@
           <div class="product-info">
             <ul class="ratings rating5">
               ${'<li><i class="fas fa-star"></i></li>'.repeat(5)}
-              <li><a href="#">(${Math.floor(Math.random() * 100)})</a></li>
+              <li><a href="javascript:void(0)">(${Math.floor(Math.random() * 100)})</a></li>
             </ul>
             <h4 class="title">
               <a href="/shop-details/${slug}">${p.name}</a>
@@ -1344,7 +1344,7 @@
             "beforeend",
             `
             <li class="${currentPage === 1 ? "disabled" : ""}">
-              <a href="#" data-page="${
+              <a href="javascript:void(0)" data-page="${
                 currentPage - 1
               }"><i class="far fa-angle-left"></i></a>
             </li>`
@@ -1354,7 +1354,7 @@
               "beforeend",
               `
               <li class="${i === currentPage ? "active" : ""}">
-                <a href="#" data-page="${i}">${String(i).padStart(2, "0")}</a>
+                <a href="javascript:void(0)" data-page="${i}">${String(i).padStart(2, "0")}</a>
               </li>`
             );
           }
@@ -1362,7 +1362,7 @@
             "beforeend",
             `
             <li class="${currentPage === totalPages ? "disabled" : ""}">
-              <a href="#" data-page="${
+              <a href="javascript:void(0)" data-page="${
                 currentPage + 1
               }"><i class="far fa-angle-right"></i></a>
             </li>`
@@ -1423,7 +1423,7 @@
                       data-price="${price}"
                       data-qty="${qty}">
                     <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-                    <a href="#"><img src="https://demo.webriefly.com/uploads/${
+                    <a href="javascript:void(0)"><img src="https://demo.webriefly.com/uploads/${
                       i.image
                     }" alt="${i.name}"/> ${i.name}</a>
                     <span class="quantity">${qty} × <span><span class="currency">$</span>${price.toFixed(
@@ -1807,7 +1807,7 @@
                   data-qty="${qty}"
                   data-image="${item.image}">
                 <a href="javascript:void(0)" class="remove-cart"><i class="far fa-trash-alt"></i></a>
-                <a href="#">
+                <a href="javascript:void(0)">
                   <img src="https://demo.webriefly.com/uploads/${
                     item.image
                   }" alt="${item.name}"/>
