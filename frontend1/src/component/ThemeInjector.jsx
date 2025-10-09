@@ -2,23 +2,28 @@
 import React, { useEffect, useRef, useState } from "react";
 
 /**
- * ThemeInjector
- * - keeps existing DOM until new theme HTML + CSS ready (prevents blank)
- * - waits for stylesheets (with timeout) before swapping content
- * - caches fetched HTML (in-memory + sessionStorage)
- * - inserts external scripts async and inline scripts during idle
- * - handles form submit SPA interception
+ * ThemeInjector — improved
+ * - fetches theme HTML from the theme host (handles SPA paths)
+ * - rewrites injected script/XHR/fetch API calls that use /api or /uploads to the theme origin
+ * - waits for stylesheets (with timeout) before swapping content (avoids blank/FOUC)
+ * - preserves previous DOM until new content is ready
+ * - caches fetched HTML (in-memory + sessionStorage) for robustness
  */
 export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(true);
   const [loading, setLoading] = useState(false);
 
-  // small in-memory cache and session fallback
   const htmlCacheRef = useRef({});
+  const networkPatchRef = useRef({
+    patched: false,
+    origFetch: null,
+    origXhrOpen: null,
+  });
+
   useEffect(() => {
     mountedRef.current = true;
-    // restore session cache if exists
+    // restore cache from sessionStorage if present
     try {
       const s = sessionStorage.getItem("themeInjectorHtmlCache");
       if (s) htmlCacheRef.current = JSON.parse(s);
@@ -36,7 +41,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   }, []);
 
   const slugify = (str = "") =>
-    str
+    String(str || "")
       .toString()
       .trim()
       .toLowerCase()
@@ -58,22 +63,31 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       /^(data:|blob:|mailto:|tel:|#)/.test(u);
 
     const isApiPath = (u = "") =>
-      typeof u === "string" && u.startsWith("https://demo.webriefly.com/api/");
-
-    const isRelativeForRewrite = (u = "") =>
-      !!u &&
-      !isAbsoluteOrProtocol(u) &&
-      !isDataOrBlobOrMail(u) &&
-      !isApiPath(u);
+      typeof u === "string" && /^\/?api\/?/i.test(u); // path starting with api or /api
 
     const themeBaseNormalized = (b = themeBaseUrl) =>
       b.endsWith("/") ? b : b + "/";
 
     const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
       if (!url) return url;
-      if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
-      if (url.startsWith("/"))
+      if (isAbsoluteOrProtocol(url)) return url;
+      if (url.startsWith("/")) {
+        // If it appears like an api/uploads call, map to theme origin root (not themeBase path)
+        if (/^\/?(api|uploads)\//i.test(url)) {
+          try {
+            const origin = new URL(base).origin;
+            return origin + (url.startsWith("/") ? url : "/" + url);
+          } catch {
+            // fallback to demo host origin
+            return (
+              "https://demo.webriefly.com" +
+              (url.startsWith("/") ? url : "/" + url)
+            );
+          }
+        }
+        // otherwise make relative to themeBase
         return themeBaseNormalized(base) + url.replace(/^\/+/, "");
+      }
       try {
         return new URL(url, themeBaseNormalized(base)).href;
       } catch {
@@ -81,12 +95,12 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       }
     };
 
-    // build absolute fetch url for theme HTML (handles /path or absolute url)
+    // Build absolute fetch URL for theme HTML.
+    // If pageUrl is '/blog-details/slug' — resolve to themeBase + 'blog-details/slug' (and fallback to .html)
     const makeFetchUrl = (p = "") => {
       if (!p) p = "/";
       if (isAbsoluteOrProtocol(p)) return p;
       const clean = p.replace(/^\/*/, "");
-      // prefer explicit index.html if just root
       if (clean === "" || clean === "/")
         return themeBaseNormalized(themeBaseUrl) + "index.html";
       return themeBaseNormalized(themeBaseUrl) + clean;
@@ -130,7 +144,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     const rewriteInjectedLinks = (container) => {
       if (!container) return;
       container.querySelectorAll("a[href]").forEach((a) => {
-        let href = a.getAttribute("href");
+        const href = a.getAttribute("href");
         if (!href) return;
         if (
           isAbsoluteOrProtocol(href) ||
@@ -139,8 +153,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           href.startsWith("tel:")
         )
           return;
-        const newHref = normalizeSpaPath(href);
-        a.setAttribute("href", newHref);
+        a.setAttribute("href", normalizeSpaPath(href));
       });
     };
 
@@ -152,18 +165,20 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           tag === "img" ? "src" : el.getAttribute("src") ? "src" : "data-src";
         const val = el.getAttribute(attr);
         if (!val) return;
-        if (isRelativeForRewrite(val) || val.startsWith("/")) {
-          const abs = makeAbsoluteUrl(val, base);
-          el.setAttribute(attr, abs);
-          // add lazy loading for non-critical images (helps perceived performance)
-          if (tag === "img" && !el.hasAttribute("loading")) {
-            el.setAttribute("loading", "lazy");
-          }
+        if (/^\/?(api|uploads)\//i.test(val)) {
+          // map leading /api or /uploads to theme origin
+          el.setAttribute(attr, makeAbsoluteUrl(val, base));
+        } else if (
+          !isAbsoluteOrProtocol(val) &&
+          (val.startsWith("/") || val.indexOf("..") === 0 || /^[^\/]/.test(val))
+        ) {
+          // other relative assets -> make absolute relative to theme base
+          el.setAttribute(attr, makeAbsoluteUrl(val, base));
         }
       });
     };
 
-    // inject stylesheet and wait until loaded or timeout
+    // load stylesheet and wait (with timeout)
     const loadStylesheet = (href, timeoutMs = 7000) =>
       new Promise((resolve) => {
         try {
@@ -187,7 +202,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
       });
 
-    // load external scripts async and inline scripts during idle
+    // execute external scripts async and inline scripts during idle
     const executeScripts = (doc) => {
       const scripts = Array.from(doc.querySelectorAll("script"));
       scripts.forEach((s) => {
@@ -198,7 +213,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           if (!document.body.querySelector(`script[src="${abs}"]`)) {
             const el = document.createElement("script");
             el.src = abs;
-            el.async = true; // don't block paint
+            el.async = true;
             if (type) el.type = type;
             el.dataset.themeInjected = "true";
             document.body.appendChild(el);
@@ -206,7 +221,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         } else {
           const content = s.textContent || "";
           if (/document\.write/.test(content)) return;
-          // run inline scripts during idle so they don't block initial render
           const runInline = () => {
             try {
               const el = document.createElement("script");
@@ -229,7 +243,100 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       });
     };
 
-    // fetch wrapper with timeout
+    // patch network calls (fetch + XHR) so theme scripts that call `/api/...` or `/uploads/...`
+    // are routed to the theme origin (e.g. https://demo.webriefly.com/api/...)
+    const patchNetworkForTheme = () => {
+      if (networkPatchRef.current.patched) return;
+      networkPatchRef.current.patched = true;
+
+      // derive theme origin
+      let themeOrigin = null;
+      try {
+        themeOrigin = new URL(themeBaseUrl).origin;
+      } catch {
+        themeOrigin = "https://demo.webriefly.com";
+      }
+
+      // save originals
+      networkPatchRef.current.origFetch = window.fetch;
+      networkPatchRef.current.origXhrOpen =
+        window.XMLHttpRequest && window.XMLHttpRequest.prototype.open;
+
+      // patch fetch
+      window.fetch = async function (input, init) {
+        try {
+          let url = input;
+          // Request object
+          if (typeof input === "object" && input && input.url) {
+            url = input.url;
+          }
+          if (typeof url === "string") {
+            // if url starts with /api or api/ or /uploads or uploads/ -> rewrite to theme origin
+            if (/^\/?(api|uploads)\//i.test(url)) {
+              const cleaned = url.replace(/^\/*/, "");
+              url = themeOrigin + "/" + cleaned;
+            }
+          }
+          if (typeof input === "object" && input && input.url) {
+            // recreate Request if necessary
+            const req = input instanceof Request ? input : new Request(input);
+            // use patched url
+            return networkPatchRef.current.origFetch.call(
+              this,
+              url,
+              init || {}
+            );
+          }
+          return networkPatchRef.current.origFetch.call(this, url, init);
+        } catch (e) {
+          // fall back to original fetch on errors
+          return networkPatchRef.current.origFetch.call(this, input, init);
+        }
+      };
+
+      // patch XHR.open
+      if (window.XMLHttpRequest && networkPatchRef.current.origXhrOpen) {
+        window.XMLHttpRequest.prototype.open = function (
+          method,
+          url,
+          async,
+          user,
+          password
+        ) {
+          try {
+            if (typeof url === "string" && /^\/?(api|uploads)\//i.test(url)) {
+              const cleaned = url.replace(/^\/*/, "");
+              url = themeOrigin + "/" + cleaned;
+            }
+          } catch {}
+          return networkPatchRef.current.origXhrOpen.call(
+            this,
+            method,
+            url,
+            async === undefined ? true : async,
+            user,
+            password
+          );
+        };
+      }
+    };
+
+    const unpatchNetworkForTheme = () => {
+      if (!networkPatchRef.current.patched) return;
+      try {
+        if (networkPatchRef.current.origFetch)
+          window.fetch = networkPatchRef.current.origFetch;
+        if (networkPatchRef.current.origXhrOpen && window.XMLHttpRequest) {
+          window.XMLHttpRequest.prototype.open =
+            networkPatchRef.current.origXhrOpen;
+        }
+      } catch {}
+      networkPatchRef.current.patched = false;
+      networkPatchRef.current.origFetch = null;
+      networkPatchRef.current.origXhrOpen = null;
+    };
+
+    // fetch helper with fallback (works with absolute fetch URLs)
     const fetchWithTimeout = async (url, ms = 10000) => {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), ms);
@@ -246,49 +353,48 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       }
     };
 
-    // try fetch with fallbacks and small retry attempts
-    const tryFetchWithFallbacks = async (origUrl) => {
-      // fast return from cache
-      if (htmlCacheRef.current[origUrl]) {
-        return new Response(htmlCacheRef.current[origUrl], { status: 200 });
+    // tryFetchWithFallbacks expects an absolute fetch URL
+    const tryFetchWithFallbacks = async (absoluteUrl) => {
+      // cached ?
+      if (htmlCacheRef.current[absoluteUrl]) {
+        return new Response(htmlCacheRef.current[absoluteUrl], { status: 200 });
       }
 
-      // attempt 1: direct
-      let res = await fetchWithTimeout(origUrl, 10000);
+      // attempt direct
+      let res = await fetchWithTimeout(absoluteUrl, 10000);
       if (res && res.ok) {
         const html = await res.text();
-        htmlCacheRef.current[origUrl] = html;
+        htmlCacheRef.current[absoluteUrl] = html;
         return new Response(html);
       }
 
-      // attempt 2: try with .html appended
-      if (!origUrl.match(/\.html$/i)) {
-        const alt = origUrl.replace(/\/+$/, "") + ".html";
+      // attempt .html
+      if (!absoluteUrl.match(/\.html$/i)) {
+        const alt = absoluteUrl.replace(/\/+$/, "") + ".html";
         res = await fetchWithTimeout(alt, 8000);
         if (res && res.ok) {
           const html = await res.text();
-          htmlCacheRef.current[origUrl] = html;
+          htmlCacheRef.current[absoluteUrl] = html;
           return new Response(html);
         }
       }
 
-      // attempt 3: dynamic.html at theme base
+      // attempt dynamic.html at theme base
       try {
         const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
         res = await fetchWithTimeout(dynamicUrl, 8000);
         if (res && res.ok) {
           const html = await res.text();
-          htmlCacheRef.current[origUrl] = html;
+          htmlCacheRef.current[absoluteUrl] = html;
           return new Response(html);
         }
       } catch {}
 
-      // last: null
       return res;
     };
 
-    // swap content only when ready; if previous content exists -> fade; else show loader then set
-    const swapContentSafely = (htmlString, baseForRewrite, options = {}) => {
+    // insert or swap content (keeps current DOM until new content is ready)
+    const swapContentSafely = (htmlString, baseForRewrite) => {
       if (!containerRef.current) return;
       try {
         const temp = document.createElement("div");
@@ -301,9 +407,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             containerRef.current.innerHTML &&
             containerRef.current.innerHTML.trim().length
         );
-        // if hadContent -> fade out old and replace to avoid blank flash
         if (hadContent) {
-          // small fade out/in
           containerRef.current.style.transition = "opacity 0.18s";
           containerRef.current.style.opacity = "0";
           setTimeout(() => {
@@ -312,7 +416,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             containerRef.current.style.opacity = "1";
           }, 180);
         } else {
-          // no previous content -> set content once ready
           containerRef.current.innerHTML = temp.innerHTML;
         }
       } catch (err) {
@@ -320,17 +423,15 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       }
     };
 
-    // main loader
+    // MAIN load flow
     const loadTheme = async () => {
-      // keep spinner only if no existing content
-      const hadContent = Boolean(
-        containerRef.current &&
-          containerRef.current.innerHTML &&
-          containerRef.current.innerHTML.trim().length
-      );
-      if (!hadContent) setLoading(true);
+      setLoading(true);
 
+      // build absolute fetch URL for the requested page
       const fetchUrl = makeFetchUrl(pageUrl);
+
+      // patch network so scripts inside theme can call /api and /uploads successfully
+      patchNetworkForTheme();
 
       try {
         const res = await tryFetchWithFallbacks(fetchUrl);
@@ -342,11 +443,11 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
 
-        // set title if present
+        // apply <title> if present
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
-        // ensure base tag for relative assets
+        // ensure base tag points at theme base (helps resolving relative URLs)
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
@@ -355,7 +456,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
         base.href = themeBaseNormalized(themeBaseUrl);
 
-        // stylesheets: start loading and wait either for them to load or for timeout
+        // load theme CSS links (wait for them to load or timeout)
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
         );
@@ -366,7 +467,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl), 7000);
         });
 
-        // append inline style nodes now (they are usually small and needed for initial paint)
+        // append inline <style> nodes immediately
         styleNodes.forEach((s) => {
           try {
             const newStyle = document.createElement("style");
@@ -376,19 +477,16 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           } catch {}
         });
 
-        // wait for stylesheets to settle (maximum of all promises)
+        // wait for all stylesheet starts/loads (bounded by timeout)
         await Promise.all(sheetPromises);
 
-        // prepare body HTML, but do not inject until CSS loaded above
+        // finally prepare and swap body HTML
         const bodyHtml = doc.body.innerHTML || "";
-
-        // insert or swap content safely — this will avoid blank page
         swapContentSafely(bodyHtml, themeBaseUrl);
 
-        // form submit SPA handling (remove previous then add)
+        // form capture inside injected content — remove old handler then attach
         if (containerRef.current) {
           try {
-            // remove any previously attached handler (best-effort)
             containerRef.current.removeEventListener(
               "submit",
               submitHandler,
@@ -419,7 +517,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         executeScripts(doc);
       } catch (err) {
         console.error("[ThemeInjector] loadTheme failed:", err);
-        // on failure: if we have previous content, keep it (no blank)
+        // don't wipe previous content — only show friendly message if nothing existed before
         const hadPrev = Boolean(
           containerRef.current &&
             containerRef.current.innerHTML &&
@@ -427,39 +525,36 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         );
         if (!hadPrev && containerRef.current) {
           containerRef.current.innerHTML =
-            '<div style="padding:40px;text-align:center;color:#666">Sorry, this page failed to load. Please try refreshing.</div>';
+            '<div style="padding:40px;text-align:center;color:#666">Sorry, page failed to load. Try refreshing.</div>';
         }
       } finally {
         if (!aborted && mountedRef.current) setLoading(false);
       }
     };
 
-    // initial load
+    // start loading
     loadTheme();
 
     // handle popstate (back/forward)
     const onPop = () => {
-      // derive SPA path from window location
       const cur = window.location.pathname + window.location.search;
-      // if consumer provided onNavigate, call it so parent updates pageUrl prop
       if (typeof onNavigate === "function") {
         try {
           onNavigate(cur, { replace: true });
           return;
         } catch {}
       }
-      // fallback: directly attempt to fetch new path (without modifying history)
+      // fallback: attempt direct load
       (async () => {
         setLoading(true);
         try {
           const abs = makeFetchUrl(cur);
-          const res = await tryFetchWithFallbacks(abs);
-          if (res && res.ok) {
-            const html = await res.text();
+          const r = await tryFetchWithFallbacks(abs);
+          if (r && r.ok) {
+            const html = await r.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, "text/html");
-            const bodyHtml = doc.body.innerHTML || "";
-            swapContentSafely(bodyHtml, themeBaseUrl);
+            swapContentSafely(doc.body.innerHTML || "", themeBaseUrl);
             executeScripts(doc);
           }
         } catch (e) {
@@ -475,6 +570,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     return () => {
       aborted = true;
       window.removeEventListener("popstate", onPop);
+      // unpatch network and cleanup handlers
       try {
         if (containerRef.current && submitHandler)
           containerRef.current.removeEventListener(
@@ -482,6 +578,20 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             submitHandler,
             true
           );
+      } catch {}
+      try {
+        // restore fetch / XHR if patched
+        if (networkPatchRef.current.patched) {
+          if (networkPatchRef.current.origFetch)
+            window.fetch = networkPatchRef.current.origFetch;
+          if (networkPatchRef.current.origXhrOpen && window.XMLHttpRequest) {
+            window.XMLHttpRequest.prototype.open =
+              networkPatchRef.current.origXhrOpen;
+          }
+          networkPatchRef.current.patched = false;
+          networkPatchRef.current.origFetch = null;
+          networkPatchRef.current.origXhrOpen = null;
+        }
       } catch {}
     };
   }, [pageUrl, themeBaseUrl, onNavigate]);
@@ -511,11 +621,10 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             alignItems: "center",
             justifyContent: "center",
             pointerEvents: "none",
-            background: "rgba(255,255,255,0.0)",
+            background: "transparent",
           }}
           aria-hidden
         >
-          {/* tiny spinner */}
           <div
             aria-hidden
             style={{
@@ -529,7 +638,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           />
           <style
             dangerouslySetInnerHTML={{
-              __html: "@keyframes ti-spin{to{transform:rotate(360deg)}}",
+              __html: "@keyframes ti-spin{to{transform:rotate(360deg)}} ",
             }}
           />
         </div>
