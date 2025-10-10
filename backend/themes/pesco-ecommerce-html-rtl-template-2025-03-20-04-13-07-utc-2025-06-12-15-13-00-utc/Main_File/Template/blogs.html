@@ -932,20 +932,6 @@
       });
     </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const API_URL = "https://demo.webriefly.com/api/blogpostdata";
@@ -1096,7 +1082,12 @@
           const metaSpans = node.querySelectorAll(".post-meta span");
           if (metaSpans.length >= 1) {
             const cat = metaSpans[0].querySelector("a") ?? metaSpans[0];
-            safeText(cat, item.categories ?? cat.textContent ?? "");
+            if (item.categories) {
+              const firstCategory = item.categories.split(",")[0].trim();
+              safeText(cat, firstCategory || cat.textContent);
+            } else {
+              safeText(cat, cat.textContent ?? "");
+            }
             if (cat.tagName.toLowerCase() === "a")
               safeAttr(cat, "href", blogDetailsUrlFor(item));
           }
@@ -1325,25 +1316,6 @@
           });
       });
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
