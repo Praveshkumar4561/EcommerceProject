@@ -937,6 +937,8 @@
         const API_URL = "https://demo.webriefly.com/api/blogpostdata";
         const UPLOADS_BASE = "/uploads/";
 
+        let selectedCategory = null;
+
         function slugify(str) {
           if (!str) return "";
           return String(str)
@@ -952,35 +954,35 @@
 
         (function injectResponsiveStyles() {
           const css = `
-                .injected-large .post-thumbnail img {
-                  width: 700px !important;
-                  height: 380px !important;
-                  object-fit: cover !important;
-                  display: block;
-                }
-                .injected-small .post-thumbnail img {
-                  width: 330px !important;
-                  height: 200px !important;
-                  object-fit: cover !important;
-                  display: block;
-                }
-                .injected-style-four .post-thumbnail img {
-                  width: 342px !important;
-                  height: 223px !important;
-                  object-fit: cover !important;
-                  display: block;
-                }
-                @media (max-width: 768px) {
-                  .injected-small .post-thumbnail img,
-                  .injected-style-four .post-thumbnail img {
-                    width: 100% !important;
-                    height: 223px !important;
-                  }
-                  .injected-large .post-thumbnail img {
-                    height: 380px !important;
-                  }
-                }
-              `;
+      .injected-large .post-thumbnail img {
+        width: 700px !important;
+        height: 380px !important;
+        object-fit: cover !important;
+        display: block;
+      }
+      .injected-small .post-thumbnail img {
+        width: 330px !important;
+        height: 200px !important;
+        object-fit: cover !important;
+        display: block;
+      }
+      .injected-style-four .post-thumbnail img {
+        width: 342px !important;
+        height: 223px !important;
+        object-fit: cover !important;
+        display: block;
+      }
+      @media (max-width: 768px) {
+        .injected-small .post-thumbnail img,
+        .injected-style-four .post-thumbnail img {
+          width: 100% !important;
+          height: 223px !important;
+        }
+        .injected-large .post-thumbnail img {
+          height: 380px !important;
+        }
+      }
+    `;
           const s = document.createElement("style");
           s.type = "text/css";
           s.appendChild(document.createTextNode(css));
@@ -1000,20 +1002,18 @@
         }
 
         function parseDateSafe(d) {
-          if (!d) return new Date(0);
           const dt = new Date(d);
           return isNaN(dt.getTime()) ? new Date(0) : dt;
         }
-
         function formatDateNice(d) {
-          if (!d) return "";
           const dt = d instanceof Date ? d : parseDateSafe(d);
-          if (isNaN(dt.getTime())) return "";
-          return new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }).format(dt);
+          return isNaN(dt.getTime())
+            ? ""
+            : new Intl.DateTimeFormat("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }).format(dt);
         }
 
         let sortedData = [];
@@ -1028,14 +1028,14 @@
 
         function blogDetailsUrlFor(item) {
           if (!item) return "#";
-          if (item.permalink) {
-            const slug = slugify(item.permalink);
-            if (slug) return `${window.location.origin}/blog-details/${slug}`;
-          }
-          if (item.name) {
-            const slug = slugify(item.name);
-            if (slug) return `${window.location.origin}/blog-details/${slug}`;
-          }
+          if (item.permalink)
+            return `${window.location.origin}/blog-details/${slugify(
+              item.permalink
+            )}`;
+          if (item.name)
+            return `${window.location.origin}/blog-details/${slugify(
+              item.name
+            )}`;
           if (item.id != null)
             return `${window.location.origin}/blog-details/${encodeURIComponent(
               item.id
@@ -1050,7 +1050,6 @@
             return;
           }
           node.style.display = "";
-
           const img = node.querySelector(".post-thumbnail img");
           if (img) {
             const src = item.image
@@ -1061,13 +1060,11 @@
             safeAttr(img, "src", src);
             safeAttr(img, "alt", item.name ?? img.getAttribute("alt") ?? "");
           }
-
           const titleAnchor = node.querySelector(".post-content .title a");
           if (titleAnchor) {
             safeText(titleAnchor, item.name ?? titleAnchor.textContent);
             safeAttr(titleAnchor, "href", blogDetailsUrlFor(item));
           }
-
           const p = node.querySelector(".post-content p");
           if (p) {
             const desc = item.description ?? item.content ?? p.textContent;
@@ -1078,7 +1075,6 @@
                 : desc
             );
           }
-
           const metaSpans = node.querySelectorAll(".post-meta span");
           if (metaSpans.length >= 1) {
             const cat = metaSpans[0].querySelector("a") ?? metaSpans[0];
@@ -1097,9 +1093,7 @@
         function renderStyleFourPage(page) {
           const start = (page - 1) * pageSize;
           for (let i = 0; i < styleFourNodes.length; i++) {
-            const node = styleFourNodes[i];
-            const item = sortedData[start + i];
-            populateStyleFourNode(node, item);
+            populateStyleFourNode(styleFourNodes[i], sortedData[start + i]);
           }
         }
 
@@ -1109,14 +1103,13 @@
             for (let i = 1; i <= totalPages; i++) pages.push(i);
           } else {
             pages.push(1);
-            let left = Math.max(2, current - 1);
-            let right = Math.min(totalPages - 1, current + 1);
+            let left = Math.max(2, current - 1),
+              right = Math.min(totalPages - 1, current + 1);
             if (left > 2) pages.push("...");
             for (let i = left; i <= right; i++) pages.push(i);
             if (right < totalPages - 1) pages.push("...");
             pages.push(totalPages);
           }
-
           let html = `<li><a href="#" data-action="prev"><i class="far fa-angle-left"></i></a></li>`;
           pages.forEach((p) => {
             if (p === "...") html += `<li class="dots"><a href="#">…</a></li>`;
@@ -1151,8 +1144,8 @@
             const a = e.target.closest("a");
             if (!a || !paginationContainer.contains(a)) return;
             e.preventDefault();
-            const action = a.getAttribute("data-action");
-            const pageAttr = a.getAttribute("data-page");
+            const action = a.getAttribute("data-action"),
+              pageAttr = a.getAttribute("data-page");
             let newPage = currentPage;
             if (action === "prev") newPage = Math.max(1, currentPage - 1);
             else if (action === "next")
@@ -1289,7 +1282,15 @@
           })
           .then((rawData) => {
             if (!Array.isArray(rawData) || rawData.length === 0) return;
-            sortedData = rawData
+
+            if (!selectedCategory && rawData.length > 0) {
+              selectedCategory = rawData[0].categories || null;
+            }
+            let filteredData = selectedCategory
+              ? rawData.filter((d) => d.categories === selectedCategory)
+              : rawData;
+
+            sortedData = filteredData
               .slice()
               .sort(
                 (a, b) =>
@@ -1311,296 +1312,6 @@
           });
       });
     </script>
-
-    <!-- <script>
-      document.addEventListener("DOMContentLoaded", async () => {
-        const BASE_URL = "https://demo.webriefly.com";
-
-        function slugify(input) {
-          const s = String(input || "");
-          const normalized = s
-            .normalize("NFKD")
-            .replace(/\p{Diacritic}/gu, "")
-            .replace(/&/g, "and");
-          return normalized
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-+|-+$/g, "");
-        }
-
-        function imageSrc(img) {
-          if (!img) return "";
-          const str = String(img).trim();
-          if (/^https?:\/\//i.test(str)) return str;
-          if (str.startsWith("/")) return str;
-          return BASE_URL + "/uploads/" + encodeURI(str);
-        }
-
-        function escapeHtml(str) {
-          if (str == null) return "";
-          return String(str)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#39;");
-        }
-
-        let posts = [];
-        try {
-          const res = await fetch(BASE_URL + "/api/blogpostdata");
-          if (!res.ok) throw new Error("Network error");
-          posts = await res.json();
-          if (!Array.isArray(posts)) posts = [];
-        } catch (err) {
-          console.error("Failed to load blog posts:", err);
-          return;
-        }
-
-        function detailsUrlFor(post) {
-          const slug = slugify(post.name || post.title || "");
-          return `${BASE_URL}/blog-details/${slug}`;
-        }
-
-        if (posts[0]) {
-          const big = posts[0];
-          const bigEl = document.querySelector(".blog-post-item.style-one");
-
-          if (bigEl) {
-            const thumbContainer = bigEl.querySelector(".post-thumbnails");
-            const url = detailsUrlFor(big);
-            if (thumbContainer) {
-              thumbContainer.innerHTML = `
-                <a href="${url}" class="w-100 h-100">
-                  <img src="${imageSrc(big.image)}" alt="${escapeHtml(
-                (big.name || big.title || "").replace(/"/g, "")
-              )}">
-                </a>
-              `;
-            }
-
-            const titleA = bigEl.querySelector(".title a");
-            if (titleA) {
-              titleA.href = url;
-              titleA.textContent = big.name || big.title || "";
-            }
-
-            const words = (big.description || "").split(/\s+/).filter(Boolean);
-            const preview =
-              words.length > 48
-                ? words.slice(0, 48).join(" ") + "…"
-                : big.description || "";
-            const postContentP = bigEl.querySelector(".post-content p");
-            if (postContentP) postContentP.textContent = preview;
-          }
-        }
-
-        const smallContainer = document.querySelector(".col-lg-6 > .row");
-        const smallTemplate = smallContainer
-          ? smallContainer.querySelector(".col-sm-6")
-          : null;
-        if (smallTemplate && smallContainer) {
-          smallContainer.innerHTML = "";
-          posts.slice(1, 5).forEach((data) => {
-            const card = smallTemplate.cloneNode(true);
-
-            const url = detailsUrlFor(data);
-
-            const thumbDiv = card.querySelector(".post-thumbnail");
-            if (thumbDiv) {
-              thumbDiv.innerHTML = `
-                <a href="${url}">
-                  <img src="${imageSrc(data.image)}" alt="${escapeHtml(
-                (data.name || data.title || "").replace(/"/g, "")
-              )}">
-                </a>
-              `;
-            }
-
-            const a = card.querySelector(".title a");
-            if (a) {
-              a.href = url;
-              a.textContent = data.name || data.title || "";
-            }
-
-            const oldMeta = card.querySelector(".post-meta");
-            if (oldMeta) oldMeta.remove();
-            const m = document.createElement("div");
-            m.className = "post-meta";
-            const publishedDate = data.date || data.published_at || "";
-            m.innerHTML = `
-              <span><a href="${url}">${escapeHtml(
-              data.author_name || ""
-            )}</a></span>
-              <span><a href="${url}">${escapeHtml(publishedDate)}</a></span>
-            `;
-            const postContent = card.querySelector(".post-content");
-            if (postContent) postContent.appendChild(m);
-
-            const excerptWords = (data.description || "")
-              .split(/\s+/)
-              .filter(Boolean);
-            const excerpt =
-              excerptWords.length > 28
-                ? excerptWords.slice(0, 28).join(" ") + "…"
-                : data.description || "";
-            const postContentP = card.querySelector(".post-content p");
-            if (postContentP) postContentP.textContent = excerpt;
-
-            smallContainer.appendChild(card);
-          });
-        }
-
-        if (window.AOS && typeof AOS.init === "function")
-          AOS.init({ once: false });
-
-        const extras = posts.slice(5);
-        const perPage = 3;
-        const totalPages = Math.max(1, Math.ceil(extras.length / perPage));
-        let currentPage = 1;
-
-        const fourEls = document.querySelectorAll(".blog-post-item.style-four");
-        const pagUl = document.querySelector(".pesco-pagination ul");
-
-        function formatDateIso(iso) {
-          try {
-            return new Date(iso).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
-          } catch {
-            return iso || "";
-          }
-        }
-
-        function renderPage(page) {
-          const start = (page - 1) * perPage;
-          fourEls.forEach((el, idx) => {
-            const data = extras[start + idx];
-            if (!data) {
-              el.style.display = "none";
-              return;
-            }
-            el.style.display = "";
-
-            const url = detailsUrlFor(data);
-
-            const thumb = el.querySelector(".post-thumbnail");
-            if (thumb) {
-              thumb.innerHTML = `
-                <a href="${url}">
-                  <img src="${imageSrc(data.image)}" alt="${escapeHtml(
-                (data.name || data.title || "").replace(/"/g, "")
-              )}">
-                </a>
-              `;
-            }
-
-            const link = el.querySelector(".title a");
-            if (link) {
-              link.href = url;
-              link.textContent = data.name || data.title || "";
-            }
-
-            const words = (data.description || "").split(/\s+/).filter(Boolean);
-            const pc = el.querySelector(".post-content p");
-            if (pc) {
-              pc.textContent =
-                words.length > 36
-                  ? words.slice(0, 36).join(" ") + "…"
-                  : data.description || "";
-            }
-
-            const spans = el.querySelectorAll(".post-meta span a");
-            if (spans.length >= 2) {
-              const tagVal =
-                data.tags ||
-                (Array.isArray(data.categories)
-                  ? data.categories[0] || ""
-                  : data.categories || "");
-              if (tagVal) {
-                spans[0].href = url;
-                spans[0].textContent = String(tagVal);
-              } else {
-                spans[0].removeAttribute("href");
-                spans[0].textContent = "";
-              }
-              spans[1].href = url;
-              spans[1].textContent = formatDateIso(data.date);
-            }
-          });
-        }
-
-        function buildPager() {
-          if (!pagUl) return;
-          pagUl.innerHTML = "";
-          pagUl.insertAdjacentHTML(
-            "beforeend",
-            `<li><a href="javascript:void(0)" data-page="${Math.max(
-              1,
-              currentPage - 1
-            )}"><i class="far fa-angle-left"></i></a></li>`
-          );
-          for (let i = 1; i <= totalPages; i++) {
-            pagUl.insertAdjacentHTML(
-              "beforeend",
-              `<li><a href="javascript:void(0)" data-page="${i}" ${
-                i === currentPage ? 'class="active"' : ""
-              }>${i}</a></li>`
-            );
-          }
-          pagUl.insertAdjacentHTML(
-            "beforeend",
-            `<li><a href="javascript:void(0)" data-page="${Math.min(
-              totalPages,
-              currentPage + 1
-            )}"><i class="far fa-angle-right"></i></a></li>`
-          );
-        }
-
-        renderPage(currentPage);
-        buildPager();
-
-        if (pagUl && pagUl.parentElement) {
-          pagUl.parentElement.addEventListener("click", (e) => {
-            e.preventDefault();
-            const a = e.target.closest("a[data-page]");
-            if (!a) return;
-            const pg = Number(a.dataset.page) || 1;
-            if (pg < 1 || pg > totalPages || pg === currentPage) return;
-            currentPage = pg;
-            renderPage(pg);
-            buildPager();
-            if (window.AOS && typeof AOS.refresh === "function") AOS.refresh();
-          });
-        }
-
-        document.body.addEventListener("click", (e) => {
-          const slugEl = e.target.closest("[data-blog-slug]");
-          if (slugEl) {
-            const slug = slugEl.getAttribute("data-blog-slug");
-            if (slug) {
-              window.location.href = `${BASE_URL}/blog-details/${encodeURIComponent(
-                slug
-              )}`;
-              e.preventDefault();
-              return;
-            }
-          }
-          const idxEl = e.target.closest("[data-post-index]");
-          if (idxEl) {
-            const idx = Number(idxEl.getAttribute("data-post-index"));
-            if (!isNaN(idx) && posts[idx]) {
-              window.location.href = detailsUrlFor(posts[idx]);
-              e.preventDefault();
-              return;
-            }
-          }
-        });
-      });
-    </script> -->
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
