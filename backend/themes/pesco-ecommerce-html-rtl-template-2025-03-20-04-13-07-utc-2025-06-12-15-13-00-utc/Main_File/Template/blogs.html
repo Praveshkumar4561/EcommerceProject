@@ -952,35 +952,35 @@
 
         (function injectResponsiveStyles() {
           const css = `
-                .injected-large .post-thumbnail img {
-                  width: 700px !important;
-                  height: 380px !important;
-                  object-fit: cover !important;
-                  display: block;
-                }
-                .injected-small .post-thumbnail img {
-                  width: 330px !important;
-                  height: 200px !important;
-                  object-fit: cover !important;
-                  display: block;
-                }
-                .injected-style-four .post-thumbnail img {
-                  width: 342px !important;
-                  height: 223px !important;
-                  object-fit: cover !important;
-                  display: block;
-                }
-                @media (max-width: 768px) {
-                  .injected-small .post-thumbnail img,
-                  .injected-style-four .post-thumbnail img {
-                    width: 100% !important;
-                    height: 223px !important;
-                  }
-                  .injected-large .post-thumbnail img {
-                    height: 380px !important;
-                  }
-                }
-              `;
+            .injected-large .post-thumbnail img {
+              width: 700px !important;
+              height: 380px !important;
+              object-fit: cover !important;
+              display: block;
+            }
+            .injected-small .post-thumbnail img {
+              width: 330px !important;
+              height: 200px !important;
+              object-fit: cover !important;
+              display: block;
+            }
+            .injected-style-four .post-thumbnail img {
+              width: 342px !important;
+              height: 223px !important;
+              object-fit: cover !important;
+              display: block;
+            }
+            @media (max-width: 768px) {
+              .injected-small .post-thumbnail img,
+              .injected-style-four .post-thumbnail img {
+                width: 100% !important;
+                height: 223px !important;
+              }
+              .injected-large .post-thumbnail img {
+                height: 380px !important;
+              }
+            }
+          `;
           const s = document.createElement("style");
           s.type = "text/css";
           s.appendChild(document.createTextNode(css));
@@ -991,10 +991,12 @@
           if (!node) return;
           node.textContent = text == null ? node.textContent : text;
         }
+
         function safeAttr(node, attr, value) {
           if (!node || value == null) return;
           node.setAttribute(attr, value);
         }
+
         function isFullUrl(s) {
           return typeof s === "string" && /^https?:\/\//i.test(s);
         }
@@ -1043,6 +1045,11 @@
           return "#";
         }
 
+        function getFirstCategory(categories) {
+          if (!categories) return "";
+          return categories.split(",")[0].trim();
+        }
+
         function populateStyleFourNode(node, item) {
           node.classList.add("injected-style-four");
           if (!item) {
@@ -1082,15 +1089,24 @@
           const metaSpans = node.querySelectorAll(".post-meta span");
           if (metaSpans.length >= 1) {
             const cat = metaSpans[0].querySelector("a") ?? metaSpans[0];
+            let firstCategory = "";
+
             if (item.categories) {
-              const firstCategory = item.categories.split(",")[0].trim();
-              safeText(cat, firstCategory || cat.textContent);
-            } else {
-              safeText(cat, cat.textContent ?? "");
+              if (Array.isArray(item.categories)) {
+                firstCategory = item.categories.slice(0, 1)[0] ?? "";
+              } else if (typeof item.categories === "string") {
+                firstCategory = item.categories
+                  .split(",")
+                  .slice(0, 1)[0]
+                  .trim();
+              }
             }
+
+            safeText(cat, firstCategory || cat.textContent);
             if (cat.tagName.toLowerCase() === "a")
               safeAttr(cat, "href", blogDetailsUrlFor(item));
           }
+
           if (metaSpans.length >= 2) {
             const dateNode = metaSpans[1].querySelector("a") ?? metaSpans[1];
             safeText(dateNode, formatDateNice(item.date) || (item.date ?? ""));
@@ -1222,7 +1238,10 @@
             const metaSpans = largeRoot.querySelectorAll(".post-meta span");
             if (metaSpans.length >= 1) {
               const cat = metaSpans[0].querySelector("a") ?? metaSpans[0];
-              safeText(cat, largeItem.categories ?? cat.textContent ?? "");
+              safeText(
+                cat,
+                getFirstCategory(largeItem.categories) || cat.textContent
+              );
               if (cat.tagName.toLowerCase() === "a")
                 safeAttr(cat, "href", blogDetailsUrlFor(largeItem));
             }
@@ -1270,7 +1289,10 @@
             const metaSpans = node.querySelectorAll(".post-meta span");
             if (metaSpans.length >= 1) {
               const cat = metaSpans[0].querySelector("a") ?? metaSpans[0];
-              safeText(cat, item.categories ?? cat.textContent ?? "");
+              safeText(
+                cat,
+                getFirstCategory(item.categories) || cat.textContent
+              );
               if (cat.tagName.toLowerCase() === "a")
                 safeAttr(cat, "href", blogDetailsUrlFor(item));
             }
