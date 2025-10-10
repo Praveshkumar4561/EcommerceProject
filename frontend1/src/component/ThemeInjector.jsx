@@ -1,21 +1,24 @@
 // src/components/ThemeInjector.jsx
 import React, { useEffect, useRef, useState } from "react";
 
-export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
+export default function ThemeInjector({
+  pageUrl,
+  themeBaseUrl,
+  onNavigate,
+  debug = false,
+}) {
   const containerRef = useRef(null);
   const mountedRef = useRef(false);
   const fetchControllerRef = useRef(null);
   const fetchIdRef = useRef(0);
   const handlersRef = useRef({ submitHandler: null, clickHandler: null });
-  const lastLoadedUrlRef = useRef(null);
   const [loading, setLoading] = useState(false);
 
   const MAX_RETRIES = 2;
-  const RETRY_BASE_MS = 250;
+  const RETRY_MS = 300;
 
-  const slugify = (str = "") =>
-    str
-      .toString()
+  const slugify = (s = "") =>
+    String(s)
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-")
@@ -35,38 +38,21 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
   useEffect(() => {
     if (!pageUrl || !themeBaseUrl) return;
-
     let aborted = false;
     const thisFetchId = ++fetchIdRef.current;
 
-    const isAbsoluteOrProtocol = (u = "") =>
+    const isAbsolute = (u = "") =>
       /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
-
-    const isDataOrBlobOrMail = (u = "") =>
-      /^(data:|blob:|mailto:|tel:|#)/.test(u);
-
     const themeBaseNormalized = (b = themeBaseUrl) =>
       b.endsWith("/") ? b : b + "/";
-
-    const isApiPath = (u = "") =>
-      typeof u === "string" && u.startsWith("https://demo.webriefly.com/api/");
-
-    const isRelativeForRewrite = (u = "") =>
-      !!u &&
-      !isAbsoluteOrProtocol(u) &&
-      !isDataOrBlobOrMail(u) &&
-      !isApiPath(u);
-
-    const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
+    const makeAbsolute = (url = "", base = themeBaseUrl) => {
       if (!url) return url;
-      // If already absolute or protocol-relative, return as-is
-      if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
-      // Use URL constructor to resolve both root-relative and relative paths
+      if (isAbsolute(url)) return url;
       try {
-        const baseUrl = themeBaseNormalized(base);
-        return new URL(url, baseUrl).href;
+        if (url.startsWith("/"))
+          return themeBaseNormalized(base).replace(/\/+$/g, "") + url;
+        return new URL(url, themeBaseNormalized(base)).href;
       } catch {
-        // fallback: naive concatenation
         return themeBaseNormalized(base) + url.replace(/^\.*\//, "");
       }
     };
@@ -98,7 +84,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           onNavigate(spa, opts);
           return;
         } catch (e) {
-          console.warn("[ThemeInjector] onNavigate threw:", e);
+          console.warn(e);
         }
       }
       if (opts.replace) history.replaceState({}, "", spa);
@@ -106,200 +92,193 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       window.dispatchEvent(new PopStateEvent("popstate"));
     };
 
-    const rewriteInjectedLinks = (container) => {
-      if (!container) return;
-      container.querySelectorAll("a[href]").forEach((a) => {
-        let href = a.getAttribute("href");
-        if (!href) return;
-        if (
-          isAbsoluteOrProtocol(href) ||
-          href.startsWith("#") ||
-          href.startsWith("mailto:") ||
-          href.startsWith("tel:")
-        )
-          return;
-        href = normalizeSpaPath(href);
-        a.setAttribute("href", href);
-      });
-    };
-
-    const rewriteInjectedAssets = (container, base) => {
+    const rewriteAssets = (container, base) => {
       if (!container) return;
       container
-        .querySelectorAll("img, source, [data-src], [data-srcset]")
+        .querySelectorAll("img, source, [data-src], [data-srcset], [srcset]")
         .forEach((el) => {
           if (el.getAttribute("src")) {
-            const val = el.getAttribute("src");
-            if (!val) return;
-            if (isRelativeForRewrite(val) || val.startsWith("/"))
-              el.setAttribute("src", makeAbsoluteUrl(val, base));
+            const v = el.getAttribute("src");
+            if (v && !isAbsolute(v))
+              el.setAttribute("src", makeAbsolute(v, base));
           }
           if (el.getAttribute("data-src")) {
-            const val = el.getAttribute("data-src");
-            if (!val) return;
-            if (isRelativeForRewrite(val) || val.startsWith("/"))
-              el.setAttribute("data-src", makeAbsoluteUrl(val, base));
+            const v = el.getAttribute("data-src");
+            if (v && !isAbsolute(v))
+              el.setAttribute("data-src", makeAbsolute(v, base));
           }
           if (el.getAttribute("srcset")) {
-            const srcset = el.getAttribute("srcset");
-            if (srcset) {
-              const parts = srcset.split(",").map((p) => p.trim());
-              const fixed = parts
+            const s = el.getAttribute("srcset");
+            if (s) {
+              const parts = s
+                .split(",")
+                .map((p) => p.trim())
                 .map((p) => {
-                  const [u, descriptor] = p.split(/\s+/);
-                  if (!u) return p;
-                  if (isRelativeForRewrite(u) || u.startsWith("/"))
-                    return `${makeAbsoluteUrl(u, base)}${
-                      descriptor ? ` ${descriptor}` : ""
-                    }`;
-                  return p;
-                })
-                .join(", ");
-              el.setAttribute("srcset", fixed);
-            }
-          }
-          if (el.getAttribute("data-srcset")) {
-            const srcset = el.getAttribute("data-srcset");
-            if (srcset) {
-              const parts = srcset.split(",").map((p) => p.trim());
-              const fixed = parts
-                .map((p) => {
-                  const [u, descriptor] = p.split(/\s+/);
-                  if (!u) return p;
-                  if (isRelativeForRewrite(u) || u.startsWith("/"))
-                    return `${makeAbsoluteUrl(u, base)}${
-                      descriptor ? ` ${descriptor}` : ""
-                    }`;
-                  return p;
-                })
-                .join(", ");
-              el.setAttribute("data-srcset", fixed);
+                  const [u, d] = p.split(/\s+/);
+                  return !isAbsolute(u)
+                    ? `${makeAbsolute(u, base)}${d ? ` ${d}` : ""}`
+                    : p;
+                });
+              el.setAttribute("srcset", parts.join(", "));
             }
           }
         });
     };
 
-    const loadStylesheet = (href, timeoutMs = 7000) =>
-      new Promise((resolve) => {
-        try {
-          // dedupe by absolute href (compare link.href and data-original-href)
-          const existing = Array.from(
-            document.head.querySelectorAll('link[rel="stylesheet"]')
-          ).find(
-            (l) =>
-              l.href === href || l.getAttribute("data-original-href") === href
-          );
-          if (existing) return resolve();
-
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = href;
-          link.dataset.themeInjected = "true";
-          link.setAttribute("data-original-href", href);
-          const done = () => resolve();
-          link.onload = done;
-          link.onerror = done;
-          document.head.appendChild(link);
-          setTimeout(done, timeoutMs);
-        } catch {
-          resolve();
-        }
+    const loadStyles = async (doc) => {
+      const links = Array.from(doc.querySelectorAll('link[rel="stylesheet"]'));
+      await Promise.all(
+        links.map((l) => {
+          const href = l.getAttribute("href");
+          if (!href) return Promise.resolve();
+          const abs = makeAbsolute(href, themeBaseUrl);
+          return new Promise((r) => {
+            try {
+              const found = Array.from(
+                document.head.querySelectorAll('link[rel="stylesheet"]')
+              ).find(
+                (x) =>
+                  x.href === abs || x.getAttribute("data-original-href") === abs
+              );
+              if (found) return r();
+              const link = document.createElement("link");
+              link.rel = "stylesheet";
+              link.href = abs;
+              link.setAttribute("data-original-href", abs);
+              link.onload = r;
+              link.onerror = r;
+              document.head.appendChild(link);
+              setTimeout(r, 7000);
+            } catch {
+              r();
+            }
+          });
+        })
+      );
+      Array.from(doc.querySelectorAll("style")).forEach((s) => {
+        const st = document.createElement("style");
+        st.innerHTML = s.innerHTML || "";
+        st.dataset.themeInjected = "true";
+        document.head.appendChild(st);
       });
+    };
 
-    const executeScriptsSerial = async (scriptNodes, baseForResolve) => {
-      // scriptNodes is a NodeList or array of <script> elements (from parsed doc or temp)
+    const executeScripts = async (scriptNodes, baseForResolve) => {
       for (const s of Array.from(scriptNodes || [])) {
         if (aborted || !mountedRef.current) break;
-
-        const src = s.getAttribute("src");
-        const type = s.getAttribute("type") || "";
-
+        const src = s.getAttribute("src"),
+          type = s.getAttribute("type") || "";
         if (src) {
-          const abs = makeAbsoluteUrl(src, baseForResolve);
-          // dedupe by checking if that src already exists in body
+          const abs = makeAbsolute(src, baseForResolve);
           if (
+            document.body.querySelector(`script[src="${abs}"]`) ||
             document.body.querySelector(
               `script[data-theme-injected][src="${abs}"]`
-            ) ||
-            document.body.querySelector(`script[src="${abs}"]`)
+            )
           )
             continue;
-          await new Promise((resolve) => {
+          await new Promise((r) => {
             const el = document.createElement("script");
             if (type) el.type = type;
             el.src = abs;
             el.async = false;
             el.dataset.themeInjected = "true";
-            el.onload = resolve;
-            el.onerror = resolve;
+            el.onload = r;
+            el.onerror = r;
             document.body.appendChild(el);
           });
         } else {
-          // inline script: execute by appending to body (safer global context)
-          const content = s.textContent || "";
-          if (/document\.write/.test(content)) continue;
+          const txt = s.textContent || "";
+          if (/document\.write/.test(txt)) continue;
           try {
             const el = document.createElement("script");
             if (type) el.type = type;
-            el.text = content;
+            el.text = txt;
             el.dataset.themeInjected = "true";
             document.body.appendChild(el);
           } catch (e) {
-            // swallow inline script errors to avoid breaking overall flow
-            console.warn("[ThemeInjector] inline script failed:", e);
+            console.warn(e);
           }
         }
       }
     };
 
-    const tryFetchWithFallbacks = async (origUrl, signal) => {
-      // Try orig -> orig + .html -> dynamic.html (under themeBase)
-      let res = null;
+    const tryFetch = async (url, signal) => {
       try {
-        res = await fetch(origUrl, { cache: "no-cache", signal }).catch(
+        const r = await fetch(url, { cache: "no-cache", signal }).catch(
           () => null
         );
-        if (res && res.ok) return res;
+        if (r && r.ok) return r;
       } catch (e) {
         if (e.name === "AbortError") return null;
       }
-
       try {
-        if (!origUrl.match(/\.html$/i)) {
-          const alt = origUrl.replace(/\/+$/, "") + ".html";
-          res = await fetch(alt, { cache: "no-cache", signal }).catch(
+        if (!url.match(/\.html$/i)) {
+          const alt = url.replace(/\/+$/, "") + ".html";
+          const r2 = await fetch(alt, { cache: "no-cache", signal }).catch(
             () => null
           );
-          if (res && res.ok) return res;
+          if (r2 && r2.ok) return r2;
         }
       } catch (e) {
         if (e.name === "AbortError") return null;
       }
-
       try {
-        const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
-        res = await fetch(dynamicUrl, { cache: "no-cache", signal }).catch(
+        const dyn = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
+        const r3 = await fetch(dyn, { cache: "no-cache", signal }).catch(
           () => null
         );
-        if (res && res.ok) return res;
+        if (r3 && r3.ok) return r3;
       } catch (e) {
         if (e.name === "AbortError") return null;
       }
-
-      return res;
+      return null;
     };
 
-    const loadTheme = async (attempt = 0) => {
-      setLoading(true);
-      // stop if identical to last loaded URL and container has content
-      if (
-        lastLoadedUrlRef.current === pageUrl &&
-        containerRef.current &&
-        containerRef.current.innerHTML.trim() !== ""
-      ) {
-        setLoading(false);
-        return;
+    const isHeaderOnly = (html) => {
+      try {
+        const t = document.createElement("div");
+        t.innerHTML = html || "";
+        // if only one child and it's header — header-only
+        if (
+          t.children.length === 1 &&
+          t.querySelector("header") &&
+          t.children[0].tagName.toLowerCase() === "header"
+        )
+          return true;
+        // also if no meaningful <main> / #content present and small nodeCount
+        if (
+          !t.querySelector("main") &&
+          !t.querySelector("#content") &&
+          t.children.length < 3
+        )
+          return true;
+      } catch {}
+      return false;
+    };
+
+    const pickMainFragment = (doc) => {
+      const selectors = [
+        "main",
+        "#content",
+        ".site-content",
+        "#primary",
+        ".content",
+        "[role='main']",
+      ];
+      for (const s of selectors) {
+        const el = doc.querySelector(s);
+        if (el && el.innerHTML && el.innerHTML.trim() !== "")
+          return el.innerHTML;
       }
+      // fallback to body
+      return doc.body && doc.body.innerHTML ? doc.body.innerHTML : "";
+    };
+
+    const loadTheme = async (targetUrl, attempt = 0) => {
+      setLoading(true);
+      if (debug)
+        console.log("[TI] loadTheme start:", targetUrl, "attempt", attempt);
 
       try {
         if (fetchControllerRef.current) {
@@ -309,74 +288,39 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }
         const controller = new AbortController();
         fetchControllerRef.current = controller;
-
-        const res = await tryFetchWithFallbacks(pageUrl, controller.signal);
-        // stale-check: ensure this response corresponds to the most recent fetch call
-        if (thisFetchId !== fetchIdRef.current) return;
-        if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
-        const html = await res.text();
-        if (!mountedRef.current) return;
+        const res = await tryFetch(targetUrl, controller.signal);
+        if (thisFetchId !== fetchIdRef.current) return; // stale
+        if (!res || !res.ok) throw new Error("fetch failed: " + targetUrl);
+        const text = await res.text();
+        if (debug) console.log("[TI] fetched len:", (text || "").length);
 
         const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
+        const doc = parser.parseFromString(text, "text/html");
 
-        // title
-        const newTitle = doc.querySelector("title")?.textContent?.trim();
-        if (newTitle) document.title = newTitle;
+        // load styles first
+        await loadStyles(doc);
 
-        // base tag (ensure absolute resolving of theme assets). Use exact themeBaseNormalized.
-        let baseTag = document.head.querySelector(
-          'base[data-theme-base="true"]'
-        );
-        const canonicalBase = themeBaseNormalized(themeBaseUrl);
-        if (!baseTag) {
-          baseTag = document.createElement("base");
-          baseTag.setAttribute("data-theme-base", "true");
-          document.head.appendChild(baseTag);
-        }
-        try {
-          baseTag.href = canonicalBase;
-        } catch {
-          baseTag.setAttribute("href", canonicalBase);
+        // choose fragment smartly
+        let fragmentHtml = pickMainFragment(doc);
+        // if fragment seems header-only, fallback to body
+        if (isHeaderOnly(fragmentHtml)) {
+          if (debug)
+            console.log(
+              "[TI] fragment looks header-only — using body fallback"
+            );
+          fragmentHtml = doc.body ? doc.body.innerHTML : fragmentHtml;
         }
 
-        // styles: link rel=stylesheet
-        const linkNodes = Array.from(
-          doc.querySelectorAll('link[rel="stylesheet"]')
-        );
-        const styleNodes = Array.from(doc.querySelectorAll("style"));
-
-        await Promise.all(
-          linkNodes.map((l) => {
-            const rawHref = l.getAttribute("href");
-            if (!rawHref) return Promise.resolve();
-            const abs = makeAbsoluteUrl(rawHref, themeBaseUrl);
-            return loadStylesheet(abs);
-          })
-        );
-
-        // inject inline styles
-        styleNodes.forEach((s) => {
-          // dedupe inline styles by hashing content? Keep simple: mark as injected
-          const newStyle = document.createElement("style");
-          newStyle.innerHTML = s.innerHTML || "";
-          newStyle.dataset.themeInjected = "true";
-          document.head.appendChild(newStyle);
-        });
-
-        // prepare content to inject
+        // rewrite assets
         const temp = document.createElement("div");
-        temp.innerHTML = doc.body.innerHTML || "";
+        temp.innerHTML = fragmentHtml || "";
+        rewriteAssets(temp, themeBaseUrl);
 
-        // rewrite assets and links in the temp fragment
-        rewriteInjectedAssets(temp, themeBaseUrl);
-        rewriteInjectedLinks(temp);
-
-        // set container content
-        if (mountedRef.current && !aborted && containerRef.current) {
-          // remove old handlers (safe noop if null)
+        // inject only after temp ready (keeps previous visible until new ready)
+        if (mountedRef.current && containerRef.current && !aborted) {
+          // remove old listeners
           try {
-            if (handlersRef.current.submitHandler && containerRef.current)
+            if (handlersRef.current.submitHandler)
               containerRef.current.removeEventListener(
                 "submit",
                 handlersRef.current.submitHandler,
@@ -384,7 +328,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
               );
           } catch {}
           try {
-            if (handlersRef.current.clickHandler && containerRef.current)
+            if (handlersRef.current.clickHandler)
               containerRef.current.removeEventListener(
                 "click",
                 handlersRef.current.clickHandler,
@@ -392,34 +336,30 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
               );
           } catch {}
 
-          // Insert the HTML
           containerRef.current.innerHTML = temp.innerHTML;
 
-          // Move scripts out of the container into an array to execute them serially
-          const scriptsInInjected = Array.from(
+          // collect scripts in injected
+          const scripts = Array.from(
             containerRef.current.querySelectorAll("script")
           );
-          // Remove script tags from injected HTML to avoid double-execution or re-parsing
-          scriptsInInjected.forEach(
+          scripts.forEach(
             (s) => s.parentElement && s.parentElement.removeChild(s)
           );
 
-          // intercept forms in injected container
+          // attach handlers
           handlersRef.current.submitHandler = (e) => {
             if (!containerRef.current) return;
-            let node = e.target;
-            while (
-              node &&
-              node !== containerRef.current &&
-              node.tagName !== "FORM"
-            )
-              node = node.parentElement;
-            if (!node || node.tagName !== "FORM") return;
-            const action = node.getAttribute("action") || "";
-            if (action && !isAbsoluteOrProtocol(action)) {
+            let n = e.target;
+            while (n && n !== containerRef.current && n.tagName !== "FORM")
+              n = n.parentElement;
+            if (!n || n.tagName !== "FORM") return;
+            const act = n.getAttribute("action") || "";
+            if (act && !isAbsolute(act)) {
               e.preventDefault();
-              const spa = normalizeSpaPath(action);
-              routeViaSPA(spa || "/");
+              const spa = normalizeSpaPath(act);
+              routeViaSPA(spa);
+              const t = makeAbsolute(spa.replace(/^\//, ""), themeBaseUrl);
+              loadTheme(t, 0, true);
             }
           };
           containerRef.current.addEventListener(
@@ -428,7 +368,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             true
           );
 
-          // intercept internal link clicks
           handlersRef.current.clickHandler = (e) => {
             if (!containerRef.current) return;
             let el = e.target;
@@ -437,16 +376,20 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             if (!el || el.tagName !== "A") return;
             const href = el.getAttribute("href");
             if (!href) return;
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            if (el.target && el.target.toLowerCase() === "_blank") return;
             if (
               href.startsWith("#") ||
-              isAbsoluteOrProtocol(href) ||
+              isAbsolute(href) ||
               href.startsWith("mailto:") ||
               href.startsWith("tel:")
             )
               return;
-            // prevent default full navigation — route via SPA
             e.preventDefault();
-            routeViaSPA(href);
+            const spa = normalizeSpaPath(href);
+            routeViaSPA(spa);
+            const t = makeAbsolute(spa.replace(/^\//, ""), themeBaseUrl);
+            loadTheme(t, 0, true);
           };
           containerRef.current.addEventListener(
             "click",
@@ -454,113 +397,56 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             true
           );
 
-          // remember last loaded URL
-          lastLoadedUrlRef.current = pageUrl;
-
-          // execute scripts serially (prefer scripts from the parsed doc if none found in container)
-          const scriptsToRun = scriptsInInjected.length
-            ? scriptsInInjected
+          // execute scripts serially (prefer scripts grabbed from doc if none in injected)
+          const scriptsToRun = scripts.length
+            ? scripts
             : Array.from(doc.querySelectorAll("script"));
-          // execute scripts from parsed doc / injected fragment, resolving relative src via themeBaseUrl
-          await executeScriptsSerial(scriptsToRun, themeBaseUrl);
+          await executeScripts(scriptsToRun, themeBaseUrl);
         }
 
-        // dispatch safe events for theme scripts that rely on them
-        setTimeout(() => {
-          try {
-            document.dispatchEvent(
-              new Event("DOMContentLoaded", { bubbles: true })
-            );
-            window.dispatchEvent(new Event("load", { bubbles: true }));
-            window.dispatchEvent(new Event("pageshow", { bubbles: true }));
-          } catch {}
-        }, 200);
-
-        // If after injection the container is empty, retry once or up to MAX_RETRIES with delay.
+        // small sanity: if container empty, retry once
         if (
           containerRef.current &&
           containerRef.current.innerHTML.trim() === "" &&
           attempt < MAX_RETRIES
         ) {
-          console.warn(
-            `[ThemeInjector] injected container empty — retrying attempt ${
+          if (debug)
+            console.warn(
+              "[TI] container empty after inject, retrying",
               attempt + 1
-            }...`
-          );
-          await new Promise((res) =>
-            setTimeout(res, RETRY_BASE_MS * Math.pow(2, attempt))
-          );
-          if (!aborted && mountedRef.current) {
-            await loadTheme(attempt + 1);
-          }
+            );
+          await new Promise((r) => setTimeout(r, RETRY_MS * (attempt + 1)));
+          if (!aborted && mountedRef.current)
+            await loadTheme(targetUrl, attempt + 1);
         }
       } catch (err) {
         if (err && err.name === "AbortError") {
-          // aborted intentionally — ignore
+          if (debug) console.log("[TI] fetch aborted");
         } else {
-          console.error("[ThemeInjector] loadTheme failed:", err);
+          console.error("[ThemeInjector] error:", err);
+          if (containerRef.current) {
+            containerRef.current.innerHTML = `<div style="padding:20px;font-family:Arial;color:#222"><strong>Sorry — content cannot be loaded.</strong><div style="margin-top:8px">Check console/network for details.</div></div>`;
+          }
         }
       } finally {
         if (!aborted && mountedRef.current) setLoading(false);
       }
     };
 
-    // on popstate: attempt to load the current location if it differs from pageUrl
-    const onPopState = () => {
-      const currentPath = window.location.pathname + window.location.search;
-      try {
-        const u = new URL(pageUrl, window.location.origin);
-        const pagePath = u.pathname + u.search;
-        if (pagePath !== currentPath) {
-          // build absolute target resolved against themeBaseUrl
-          const target = makeAbsoluteUrl(
-            currentPath.replace(/^\//, ""),
-            themeBaseUrl
-          );
-          // increment fetch id for this direct attempt
-          fetchIdRef.current++;
-          fetchControllerRef.current = new AbortController();
-          (async () => {
-            try {
-              const res = await tryFetchWithFallbacks(
-                target,
-                fetchControllerRef.current.signal
-              );
-              if (res && res.ok) {
-                const html = await res.text();
-                if (!mountedRef.current) return;
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, "text/html");
-                const temp = document.createElement("div");
-                temp.innerHTML = doc.body.innerHTML || "";
-                rewriteInjectedAssets(temp, themeBaseUrl);
-                rewriteInjectedLinks(temp);
-                if (mountedRef.current && containerRef.current) {
-                  // replace content and execute scripts
-                  containerRef.current.innerHTML = temp.innerHTML;
-                  const scripts = Array.from(doc.querySelectorAll("script"));
-                  // remove scripts from container (they won't execute by themselves)
-                  const inContainerScripts = Array.from(
-                    containerRef.current.querySelectorAll("script")
-                  );
-                  inContainerScripts.forEach(
-                    (s) => s.parentElement && s.parentElement.removeChild(s)
-                  );
-                  await executeScriptsSerial(scripts, themeBaseUrl);
-                }
-              }
-            } catch (e) {
-              /* swallow */
-            }
-          })();
-        }
-      } catch (e) {}
+    // popstate handler (keeps SPA back/forward working)
+    const onPop = () => {
+      const cur = window.location.pathname + window.location.search;
+      const target = makeAbsolute(cur.replace(/^\//, ""), themeBaseUrl);
+      fetchIdRef.current++;
+      loadTheme(target, 0);
     };
+    window.addEventListener("popstate", onPop);
 
-    window.addEventListener("popstate", onPopState);
-
-    // initial load
-    loadTheme();
+    // initial load (resolve pageUrl to absolute if needed)
+    const initial = isAbsolute(pageUrl)
+      ? pageUrl
+      : makeAbsolute(pageUrl.replace(/^\//, ""), themeBaseUrl);
+    loadTheme(initial);
 
     return () => {
       aborted = true;
@@ -584,39 +470,19 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           );
       } catch {}
       try {
-        window.removeEventListener("popstate", onPopState);
+        window.removeEventListener("popstate", onPop);
       } catch {}
     };
-  }, [pageUrl, themeBaseUrl, onNavigate]);
+  }, [pageUrl, themeBaseUrl, onNavigate, debug]);
 
   return (
-    <div
-      className="theme-wrapper"
-      style={{ width: "100%", height: "100%", position: "relative" }}
-    >
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <div
         ref={containerRef}
         className="theme-container"
-        style={{
-          width: "100%",
-          height: "100%",
-          overflow: "auto",
-          display: "block",
-        }}
+        style={{ width: "100%", height: "100%", overflow: "auto" }}
       />
-      {loading && (
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            pointerEvents: "none",
-          }}
-          aria-hidden
-        />
-      )}
+      <style>{`@keyframes ti-spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }
