@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AdminReset.css";
-import Tonic from "../assets/Tonic.svg";
+import Logo from "../assets/Tonic.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import Mountain from "../assets/mountain.webp";
@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Helmet } from "react-helmet-async";
+import axios from "axios";
 
 function AdminReset() {
   const [email, setEmail] = useState("");
@@ -66,6 +67,22 @@ function AdminReset() {
     }
   };
 
+  const [LogoData, setLogoData] = useState(null);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await axios.get(
+          "https://demo.webriefly.com/api/get-theme-logo"
+        );
+        setLogoData(response.data);
+      } catch (error) {
+        console.error("Error fetching logo:", error);
+      }
+    };
+    fetchLogo();
+  }, []);
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -114,7 +131,20 @@ function AdminReset() {
             <div className="col-12 col-sm-12 col-md-6 col-lg-6 d-flex flex-column justify-content-center admin-login-image min-vh-100 admin-min admin-min1">
               <div className="d-flex flex-column justify-content-center align-class">
                 <div className="d-flex flex-column justify-content-center align-items-lg-center">
-                  <img src={Tonic} alt="RxLYTE" className="img-fluid" />
+                  <img
+                    src={
+                      LogoData
+                        ? `https://demo.webriefly.com/uploads/${LogoData.logo_url}`
+                        : Logo
+                    }
+                    alt="RxLYTE"
+                    className="img-fluid"
+                    height={LogoData ? LogoData.logo_height : "50"}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = Logo;
+                    }}
+                  />
                   <h6 className="mt-3 ms-2 text-light">Forgot Password</h6>
                 </div>
 
