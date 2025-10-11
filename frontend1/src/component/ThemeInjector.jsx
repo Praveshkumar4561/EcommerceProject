@@ -1,11 +1,15 @@
+// src/components/ThemeInjector.jsx
 import React, { useEffect, useRef, useState } from "react";
 
-export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
+// ThemeInjector (non-SPA behavior)
+// - Keeps normal browser navigation for links/forms (full page reload)
+// - Converts relative asset and link URLs to absolute URLs so clicks cause real navigations
+// - Injects styles and scripts for fetched HTML when staying on same page
+// - Handles aborts and avoids duplicate injected resources
+
+export default function ThemeInjector({ pageUrl, themeBaseUrl }) {
   const containerRef = useRef(null);
   const mountedRef = useRef(false);
-  const loadingRef = useRef(false);
-  const submitHandlerRef = useRef(null);
-  const clickHandlerRef = useRef(null);
   const abortControllerRef = useRef(null);
   const injectedResourcesRef = useRef(new Set());
   const [loading, setLoading] = useState(false);
@@ -25,26 +29,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       .replace(/[^a-z0-9\-]/g, "")
       .replace(/\-+/g, "-")
       .replace(/^\-+|\-+$/g, "");
-
-  const normalizeSpaPath = (p = "/") => {
-    if (!p) return "/";
-    try {
-      const u = new URL(p, window.location.origin);
-      p = (u.pathname || "") + (u.search || "");
-    } catch {}
-    p = p.replace(/\.html$/i, "").replace(/\/+/g, "/");
-    if (p.length > 1) p = p.replace(/\/$/, "");
-    if (!p.startsWith("/")) p = "/" + p;
-    if (p === "/index") p = "/";
-    return (
-      "/" +
-      p
-        .split("/")
-        .map((part) => slugify(part))
-        .filter(Boolean)
-        .join("/")
-    );
-  };
 
   const isAbsoluteOrProtocol = (u = "") =>
     /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
@@ -86,20 +70,24 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     });
   };
 
-  const rewriteInjectedLinks = (container) => {
+  // IMPORTANT: For non-SPA behavior we convert relative links to absolute URLs
+  // so that when the user clicks them the browser performs a normal navigation
+  const rewriteInjectedLinks = (container, base) => {
     if (!container) return;
     container.querySelectorAll("a[href]").forEach((a) => {
       let href = a.getAttribute("href");
       if (!href) return;
+      // leave hash-only, mailto, tel, and absolute links untouched
       if (
-        isAbsoluteOrProtocol(href) ||
+        href.startsWith("#") ||
         href.startsWith("mailto:") ||
-        href.startsWith("tel:")
+        href.startsWith("tel:") ||
+        isAbsoluteOrProtocol(href)
       )
         return;
-      if (href.startsWith("#")) return;
-      const spa = normalizeSpaPath(href);
-      a.setAttribute("href", spa);
+      // convert relative to absolute so browser navigates away normally
+      const abs = makeAbsoluteUrl(href, base);
+      if (abs) a.setAttribute("href", abs);
     });
   };
 
@@ -176,98 +164,6 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
     }
   };
 
-  const routeViaSPA = (path, opts = {}) => {
-    const spa = normalizeSpaPath(path);
-    if (typeof onNavigate === "function") {
-      try {
-        onNavigate(spa, opts);
-        return;
-      } catch (e) {
-        console.warn("[ThemeInjector] onNavigate threw:", e);
-      }
-    }
-    if (opts.replace) history.replaceState({}, "", spa);
-    else history.pushState({}, "", spa);
-    window.dispatchEvent(new PopStateEvent("popstate"));
-  };
-
-  const attachInteractionHandlers = () => {
-    if (!containerRef.current) return;
-
-    if (submitHandlerRef.current) {
-      try {
-        containerRef.current.removeEventListener(
-          "submit",
-          submitHandlerRef.current,
-          true
-        );
-      } catch {}
-      submitHandlerRef.current = null;
-    }
-    if (clickHandlerRef.current) {
-      try {
-        containerRef.current.removeEventListener(
-          "click",
-          clickHandlerRef.current,
-          true
-        );
-      } catch {}
-      clickHandlerRef.current = null;
-    }
-
-    submitHandlerRef.current = (e) => {
-      if (!containerRef.current) return;
-      let node = e.target;
-      while (node && node !== containerRef.current && node.tagName !== "FORM")
-        node = node.parentElement;
-      if (!node || node.tagName !== "FORM") return;
-      const action = node.getAttribute("action") || "";
-      if (action && !isAbsoluteOrProtocol(action)) {
-        e.preventDefault();
-        const spa = normalizeSpaPath(action);
-        routeViaSPA(spa || "/");
-      }
-    };
-
-    clickHandlerRef.current = (e) => {
-      if (!containerRef.current) return;
-      if (e.defaultPrevented) return;
-      if (e.button !== 0) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-
-      let a = e.target;
-      while (a && a !== containerRef.current && a.tagName !== "A")
-        a = a.parentElement;
-      if (!a || a.tagName !== "A") return;
-
-      const href = a.getAttribute("href") || "";
-      const target = a.getAttribute("target");
-      if (!href || href.startsWith("#") || target === "_blank") return;
-
-      try {
-        const url = new URL(href, window.location.origin);
-        if (url.origin === window.location.origin) {
-          e.preventDefault();
-          routeViaSPA(url.pathname + url.search);
-        }
-      } catch {
-        e.preventDefault();
-        routeViaSPA(href);
-      }
-    };
-
-    containerRef.current.addEventListener(
-      "submit",
-      submitHandlerRef.current,
-      true
-    );
-    containerRef.current.addEventListener(
-      "click",
-      clickHandlerRef.current,
-      true
-    );
-  };
-
   const tryFetchWithFallbacks = async (origUrl, signal) => {
     let res = null;
     try {
@@ -275,7 +171,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         () => null
       );
       if (res && res.ok) return res;
-    } catch (err) {}
+    } catch {}
 
     try {
       if (!origUrl.match(/\.html$/i)) {
@@ -299,20 +195,17 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   useEffect(() => {
     if (!pageUrl || !themeBaseUrl) return;
 
-    let localAborted = false;
-
+    // abort any previous in-flight fetch
     try {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
+      if (abortControllerRef.current) abortControllerRef.current.abort();
     } catch {}
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
+    let localAborted = false;
 
     const loadTheme = async () => {
       if (!mountedRef.current) return;
-      loadingRef.current = true;
       setLoading(true);
 
       try {
@@ -327,6 +220,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         const newTitle = doc.querySelector("title")?.textContent?.trim();
         if (newTitle) document.title = newTitle;
 
+        // ensure base tag exists and points to theme base
         let base = document.head.querySelector('base[data-theme-base="true"]');
         if (!base) {
           base = document.createElement("base");
@@ -355,20 +249,23 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
 
         const temp = document.createElement("div");
         temp.innerHTML = doc.body.innerHTML || "";
-        rewriteInjectedAssets(temp, themeBaseUrl);
-        rewriteInjectedLinks(temp);
 
+        // convert relative assets and links to absolute so normal navigation works
+        rewriteInjectedAssets(temp, themeBaseUrl);
+        rewriteInjectedLinks(temp, themeBaseUrl);
+
+        // only replace container content once we have fully prepared HTML to avoid blank flicker
         if (mountedRef.current && containerRef.current) {
           try {
             containerRef.current.innerHTML = temp.innerHTML;
             containerRef.current.scrollTop = 0;
           } catch {}
-
-          attachInteractionHandlers();
         }
 
+        // run scripts after mounting
         await executeScriptsSerial(doc);
 
+        // lifecycle events (short delay)
         setTimeout(() => {
           try {
             document.dispatchEvent(
@@ -380,14 +277,12 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         }, 150);
       } catch (err) {
         if (err && err.name === "AbortError") {
+          // ignore
         } else {
           console.error("[ThemeInjector] loadTheme failed:", err);
         }
       } finally {
-        if (!localAborted && mountedRef.current) {
-          loadingRef.current = false;
-          setLoading(false);
-        }
+        if (!localAborted && mountedRef.current) setLoading(false);
       }
     };
 
@@ -398,26 +293,8 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       try {
         if (abortControllerRef.current) abortControllerRef.current.abort();
       } catch {}
-      try {
-        if (containerRef.current && submitHandlerRef.current)
-          containerRef.current.removeEventListener(
-            "submit",
-            submitHandlerRef.current,
-            true
-          );
-      } catch {}
-      try {
-        if (containerRef.current && clickHandlerRef.current)
-          containerRef.current.removeEventListener(
-            "click",
-            clickHandlerRef.current,
-            true
-          );
-      } catch {}
-      submitHandlerRef.current = null;
-      clickHandlerRef.current = null;
     };
-  }, [pageUrl, themeBaseUrl, onNavigate]);
+  }, [pageUrl, themeBaseUrl]);
 
   return (
     <div
