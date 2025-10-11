@@ -13,9 +13,7 @@ export default defineConfig({
           [
             "@babel/preset-env",
             {
-              targets: {
-                esmodules: true,
-              },
+              targets: { esmodules: true },
               useBuiltIns: "entry",
               corejs: 3,
             },
@@ -31,6 +29,7 @@ export default defineConfig({
     port: 5173,
     open: true,
     historyApiFallback: true,
+
     setupMiddlewares(middlewares, { app }) {
       app.use(
         history({
@@ -49,13 +48,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
-
       "/themes": {
         target: "https://demo.webriefly.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/themes/, "/themes"),
       },
-
       "/upload": {
         target: "https://demo.webriefly.com",
         changeOrigin: true,
@@ -74,7 +71,7 @@ export default defineConfig({
   build: {
     target: "es2020",
     polyfillDynamicImport: false,
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks(id) {
