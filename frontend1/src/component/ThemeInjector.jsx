@@ -1,9 +1,13 @@
-// src/components/ThemeInjector.jsx
 import React, { useEffect, useRef, useState } from "react";
 
 export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   const containerRef = useRef(null);
-  const mountedRef = useRef(true);
+  const mountedRef = useRef(false);
+  const loadingRef = useRef(false);
+  const submitHandlerRef = useRef(null);
+  const clickHandlerRef = useRef(null);
+  const abortControllerRef = useRef(null);
+  const injectedResourcesRef = useRef(new Set());
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -14,8 +18,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
   }, []);
 
   const slugify = (str = "") =>
-    str
-      .toString()
+    String(str)
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-")
@@ -23,193 +26,300 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
       .replace(/\-+/g, "-")
       .replace(/^\-+|\-+$/g, "");
 
-  useEffect(() => {
-    if (!pageUrl || !themeBaseUrl) return;
+  const normalizeSpaPath = (p = "/") => {
+    if (!p) return "/";
+    try {
+      const u = new URL(p, window.location.origin);
+      p = (u.pathname || "") + (u.search || "");
+    } catch {}
+    p = p.replace(/\.html$/i, "").replace(/\/+/g, "/");
+    if (p.length > 1) p = p.replace(/\/$/, "");
+    if (!p.startsWith("/")) p = "/" + p;
+    if (p === "/index") p = "/";
+    return (
+      "/" +
+      p
+        .split("/")
+        .map((part) => slugify(part))
+        .filter(Boolean)
+        .join("/")
+    );
+  };
 
-    let aborted = false;
-    let submitHandler = null;
+  const isAbsoluteOrProtocol = (u = "") =>
+    /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
+  const isDataOrBlobOrMail = (u = "") =>
+    /^(data:|blob:|mailto:|tel:|#)/.test(u);
+  const isApiPath = (u = "") =>
+    typeof u === "string" && u.startsWith("https://demo.webriefly.com/api/");
+  const isRelativeForRewrite = (u = "") =>
+    !!u && !isAbsoluteOrProtocol(u) && !isDataOrBlobOrMail(u) && !isApiPath(u);
 
-    const isAbsoluteOrProtocol = (u = "") =>
-      /^(?:[a-zA-Z][a-zA-Z0-9+\-.]*:|\/\/)/.test(u);
+  const themeBaseNormalized = (b = themeBaseUrl) =>
+    b ? (b.endsWith("/") ? b : b + "/") : "";
 
-    const isDataOrBlobOrMail = (u = "") =>
-      /^(data:|blob:|mailto:|tel:|#)/.test(u);
+  const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
+    if (!url) return url;
+    if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
+    if (!base) return url;
+    if (url.startsWith("/"))
+      return themeBaseNormalized(base) + url.replace(/^\/+/, "");
+    try {
+      return new URL(url, themeBaseNormalized(base)).href;
+    } catch {
+      return themeBaseNormalized(base) + url.replace(/^\.*\//, "");
+    }
+  };
 
-    const isApiPath = (u = "") =>
-      typeof u === "string" && u.startsWith("https://demo.webriefly.com/api/");
-
-    const isRelativeForRewrite = (u = "") =>
-      !!u &&
-      !isAbsoluteOrProtocol(u) &&
-      !isDataOrBlobOrMail(u) &&
-      !isApiPath(u);
-
-    const themeBaseNormalized = (b = themeBaseUrl) =>
-      b.endsWith("/") ? b : b + "/";
-
-    const makeAbsoluteUrl = (url = "", base = themeBaseUrl) => {
-      if (!url) return url;
-      if (isApiPath(url) || isAbsoluteOrProtocol(url)) return url;
-      if (url.startsWith("/"))
-        return themeBaseNormalized(base) + url.replace(/^\/+/, "");
-      try {
-        return new URL(url, themeBaseNormalized(base)).href;
-      } catch {
-        return themeBaseNormalized(base) + url.replace(/^\.*\//, "");
+  const rewriteInjectedAssets = (container, base) => {
+    if (!container) return;
+    container.querySelectorAll("img, source, [data-src]").forEach((el) => {
+      const tag = el.tagName.toLowerCase();
+      const attr =
+        tag === "img" ? "src" : el.getAttribute("src") ? "src" : "data-src";
+      const val = el.getAttribute(attr);
+      if (!val) return;
+      if (isRelativeForRewrite(val) || val.startsWith("/")) {
+        const abs = makeAbsoluteUrl(val, base);
+        el.setAttribute(attr, abs);
       }
-    };
+    });
+  };
 
-    const normalizeSpaPath = (p = "/") => {
-      if (!p) return "/";
+  const rewriteInjectedLinks = (container) => {
+    if (!container) return;
+    container.querySelectorAll("a[href]").forEach((a) => {
+      let href = a.getAttribute("href");
+      if (!href) return;
+      if (
+        isAbsoluteOrProtocol(href) ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:")
+      )
+        return;
+      if (href.startsWith("#")) return;
+      const spa = normalizeSpaPath(href);
+      a.setAttribute("href", spa);
+    });
+  };
+
+  const loadStylesheet = (href, timeoutMs = 7000) =>
+    new Promise((resolve) => {
       try {
-        const u = new URL(p, window.location.origin);
-        p = (u.pathname || "") + (u.search || "");
-      } catch {}
-      p = p.replace(/\.html$/i, "").replace(/\/+/g, "/");
-      if (p.length > 1) p = p.replace(/\/$/, "");
-      if (!p.startsWith("/")) p = "/" + p;
-      if (p === "/index") p = "/";
-      return (
-        "/" +
-        p
-          .split("/")
-          .map((part) => slugify(part))
-          .filter(Boolean)
-          .join("/")
-      );
-    };
-
-    const routeViaSPA = (path, opts = {}) => {
-      const spa = normalizeSpaPath(path);
-      if (typeof onNavigate === "function") {
-        try {
-          onNavigate(spa, opts);
-          return;
-        } catch (e) {
-          console.warn("[ThemeInjector] onNavigate threw:", e);
-        }
-      }
-      if (opts.replace) history.replaceState({}, "", spa);
-      else history.pushState({}, "", spa);
-      window.dispatchEvent(new PopStateEvent("popstate"));
-    };
-
-    const rewriteInjectedLinks = (container) => {
-      if (!container) return;
-      container.querySelectorAll("a[href]").forEach((a) => {
-        let href = a.getAttribute("href");
-        if (!href) return;
+        if (!href) return resolve();
+        const abs = makeAbsoluteUrl(href, themeBaseUrl);
+        if (injectedResourcesRef.current.has(abs)) return resolve();
         if (
-          isAbsoluteOrProtocol(href) ||
-          href.startsWith("#") ||
-          href.startsWith("mailto:") ||
-          href.startsWith("tel:")
-        )
-          return;
-        href = normalizeSpaPath(href);
-        a.setAttribute("href", href);
-      });
-    };
-
-    const rewriteInjectedAssets = (container, base) => {
-      if (!container) return;
-      container.querySelectorAll("img, source, [data-src]").forEach((el) => {
-        const tag = el.tagName.toLowerCase();
-        const attr =
-          tag === "img" ? "src" : el.getAttribute("src") ? "src" : "data-src";
-        const val = el.getAttribute(attr);
-        if (!val) return;
-        if (isRelativeForRewrite(val) || val.startsWith("/")) {
-          const abs = makeAbsoluteUrl(val, base);
-          el.setAttribute(attr, abs);
+          document.head.querySelector(`link[rel="stylesheet"][href="${abs}"]`)
+        ) {
+          injectedResourcesRef.current.add(abs);
+          return resolve();
         }
-      });
-    };
-
-    const loadStylesheet = (href, timeoutMs = 7000) =>
-      new Promise((resolve) => {
-        try {
-          if (
-            document.head.querySelector(
-              `link[rel="stylesheet"][href="${href}"]`
-            )
-          )
-            return resolve();
-          const link = document.createElement("link");
-          link.rel = "stylesheet";
-          link.href = href;
-          link.dataset.themeInjected = "true";
-          const done = () => resolve();
-          link.onload = done;
-          link.onerror = done;
-          document.head.appendChild(link);
-          setTimeout(done, timeoutMs);
-        } catch {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = abs;
+        link.dataset.themeInjected = "true";
+        const done = () => {
+          injectedResourcesRef.current.add(abs);
           resolve();
-        }
-      });
+        };
+        link.onload = done;
+        link.onerror = done;
+        document.head.appendChild(link);
+        setTimeout(done, timeoutMs);
+      } catch {
+        resolve();
+      }
+    });
 
-    const executeScriptsSerial = async (doc) => {
-      const scripts = Array.from(doc.querySelectorAll("script"));
-      for (const s of scripts) {
-        if (aborted || !mountedRef.current) break;
-        const src = s.getAttribute("src");
-        const type = s.getAttribute("type") || "";
+  const executeScriptsSerial = async (doc) => {
+    const scripts = Array.from(doc.querySelectorAll("script"));
+    for (const s of scripts) {
+      if (!mountedRef.current) break;
+      const src = s.getAttribute("src");
+      const type = s.getAttribute("type") || "";
 
-        if (src) {
-          const abs = makeAbsoluteUrl(src, themeBaseUrl);
-          if (document.body.querySelector(`script[src="${abs}"]`)) continue;
-          await new Promise((resolve) => {
+      if (src) {
+        const abs = makeAbsoluteUrl(src, themeBaseUrl);
+        if (injectedResourcesRef.current.has(abs)) continue;
+        await new Promise((resolve) => {
+          try {
             const el = document.createElement("script");
             if (type) el.type = type;
             el.src = abs;
             el.async = false;
             el.dataset.themeInjected = "true";
-            el.onload = resolve;
-            el.onerror = resolve;
+            el.onload = () => {
+              injectedResourcesRef.current.add(abs);
+              resolve();
+            };
+            el.onerror = () => {
+              injectedResourcesRef.current.add(abs);
+              resolve();
+            };
             document.body.appendChild(el);
-          });
-        } else {
-          const content = s.textContent || "";
-          if (/document\.write/.test(content)) continue;
-          try {
-            const el = document.createElement("script");
-            if (type) el.type = type;
-            el.text = content;
-            el.dataset.themeInjected = "true";
-            document.body.appendChild(el);
-          } catch {}
-        }
+          } catch {
+            resolve();
+          }
+        });
+      } else {
+        const content = s.textContent || "";
+        if (/document\.write/.test(content)) continue;
+        try {
+          const el = document.createElement("script");
+          if (type) el.type = type;
+          el.text = content;
+          el.dataset.themeInjected = "true";
+          document.body.appendChild(el);
+        } catch {}
+      }
+    }
+  };
+
+  const routeViaSPA = (path, opts = {}) => {
+    const spa = normalizeSpaPath(path);
+    if (typeof onNavigate === "function") {
+      try {
+        onNavigate(spa, opts);
+        return;
+      } catch (e) {
+        console.warn("[ThemeInjector] onNavigate threw:", e);
+      }
+    }
+    if (opts.replace) history.replaceState({}, "", spa);
+    else history.pushState({}, "", spa);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+
+  const attachInteractionHandlers = () => {
+    if (!containerRef.current) return;
+
+    if (submitHandlerRef.current) {
+      try {
+        containerRef.current.removeEventListener(
+          "submit",
+          submitHandlerRef.current,
+          true
+        );
+      } catch {}
+      submitHandlerRef.current = null;
+    }
+    if (clickHandlerRef.current) {
+      try {
+        containerRef.current.removeEventListener(
+          "click",
+          clickHandlerRef.current,
+          true
+        );
+      } catch {}
+      clickHandlerRef.current = null;
+    }
+
+    submitHandlerRef.current = (e) => {
+      if (!containerRef.current) return;
+      let node = e.target;
+      while (node && node !== containerRef.current && node.tagName !== "FORM")
+        node = node.parentElement;
+      if (!node || node.tagName !== "FORM") return;
+      const action = node.getAttribute("action") || "";
+      if (action && !isAbsoluteOrProtocol(action)) {
+        e.preventDefault();
+        const spa = normalizeSpaPath(action);
+        routeViaSPA(spa || "/");
       }
     };
 
-    const tryFetchWithFallbacks = async (origUrl) => {
-      let res = await fetch(origUrl, { cache: "no-cache" }).catch(() => null);
-      if (res && res.ok) return res;
+    clickHandlerRef.current = (e) => {
+      if (!containerRef.current) return;
+      if (e.defaultPrevented) return;
+      if (e.button !== 0) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-      if (!origUrl.match(/\.html$/i)) {
-        const alt = origUrl.replace(/\/+$/, "") + ".html";
-        res = await fetch(alt, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
-      }
+      let a = e.target;
+      while (a && a !== containerRef.current && a.tagName !== "A")
+        a = a.parentElement;
+      if (!a || a.tagName !== "A") return;
+
+      const href = a.getAttribute("href") || "";
+      const target = a.getAttribute("target");
+      if (!href || href.startsWith("#") || target === "_blank") return;
 
       try {
-        const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
-        res = await fetch(dynamicUrl, { cache: "no-cache" }).catch(() => null);
-        if (res && res.ok) return res;
-      } catch {}
-
-      return res;
+        const url = new URL(href, window.location.origin);
+        if (url.origin === window.location.origin) {
+          e.preventDefault();
+          routeViaSPA(url.pathname + url.search);
+        }
+      } catch {
+        e.preventDefault();
+        routeViaSPA(href);
+      }
     };
 
+    containerRef.current.addEventListener(
+      "submit",
+      submitHandlerRef.current,
+      true
+    );
+    containerRef.current.addEventListener(
+      "click",
+      clickHandlerRef.current,
+      true
+    );
+  };
+
+  const tryFetchWithFallbacks = async (origUrl, signal) => {
+    let res = null;
+    try {
+      res = await fetch(origUrl, { cache: "no-cache", signal }).catch(
+        () => null
+      );
+      if (res && res.ok) return res;
+    } catch (err) {}
+
+    try {
+      if (!origUrl.match(/\.html$/i)) {
+        const alt = origUrl.replace(/\/+$/, "") + ".html";
+        res = await fetch(alt, { cache: "no-cache", signal }).catch(() => null);
+        if (res && res.ok) return res;
+      }
+    } catch {}
+
+    try {
+      const dynamicUrl = themeBaseNormalized(themeBaseUrl) + "dynamic.html";
+      res = await fetch(dynamicUrl, { cache: "no-cache", signal }).catch(
+        () => null
+      );
+      if (res && res.ok) return res;
+    } catch {}
+
+    return res;
+  };
+
+  useEffect(() => {
+    if (!pageUrl || !themeBaseUrl) return;
+
+    let localAborted = false;
+
+    try {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    } catch {}
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     const loadTheme = async () => {
+      if (!mountedRef.current) return;
+      loadingRef.current = true;
       setLoading(true);
 
       try {
-        const res = await tryFetchWithFallbacks(pageUrl);
+        const res = await tryFetchWithFallbacks(pageUrl, controller.signal);
         if (!res || !res.ok) throw new Error(`Failed to fetch ${pageUrl}`);
         const html = await res.text();
-        if (!mountedRef.current || aborted) return;
+        if (!mountedRef.current || localAborted) return;
 
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
@@ -223,10 +333,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           base.setAttribute("data-theme-base", "true");
           document.head.appendChild(base);
         }
-        base.href = themeBaseNormalized(themeBaseUrl).replace(
-          "https://demo.webriefly.com",
-          "demo.webriefly.com"
-        );
+        base.href = themeBaseNormalized(themeBaseUrl);
 
         const linkNodes = Array.from(
           doc.querySelectorAll('link[rel="stylesheet"]')
@@ -234,18 +341,16 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         const styleNodes = Array.from(doc.querySelectorAll("style"));
 
         await Promise.all(
-          linkNodes.map((l) => {
-            const rawHref = l.getAttribute("href");
-            if (!rawHref) return;
-            return loadStylesheet(makeAbsoluteUrl(rawHref, themeBaseUrl));
-          })
+          linkNodes.map((l) => loadStylesheet(l.getAttribute("href")))
         );
 
         styleNodes.forEach((s) => {
-          const newStyle = document.createElement("style");
-          newStyle.innerHTML = s.innerHTML || "";
-          newStyle.dataset.themeInjected = "true";
-          document.head.appendChild(newStyle);
+          try {
+            const newStyle = document.createElement("style");
+            newStyle.innerHTML = s.innerHTML || "";
+            newStyle.dataset.themeInjected = "true";
+            document.head.appendChild(newStyle);
+          } catch {}
         });
 
         const temp = document.createElement("div");
@@ -253,28 +358,13 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
         rewriteInjectedAssets(temp, themeBaseUrl);
         rewriteInjectedLinks(temp);
 
-        if (mountedRef.current && !aborted && containerRef.current) {
-          containerRef.current.innerHTML = temp.innerHTML;
+        if (mountedRef.current && containerRef.current) {
+          try {
+            containerRef.current.innerHTML = temp.innerHTML;
+            containerRef.current.scrollTop = 0;
+          } catch {}
 
-          submitHandler = (e) => {
-            if (!containerRef.current) return;
-            let node = e.target;
-            while (
-              node &&
-              node !== containerRef.current &&
-              node.tagName !== "FORM"
-            )
-              node = node.parentElement;
-            if (!node || node.tagName !== "FORM") return;
-            const action = node.getAttribute("action") || "";
-            if (action && !isAbsoluteOrProtocol(action)) {
-              e.preventDefault();
-              const spa = normalizeSpaPath(action);
-              routeViaSPA(spa || "/");
-            }
-          };
-
-          containerRef.current.addEventListener("submit", submitHandler, true);
+          attachInteractionHandlers();
         }
 
         await executeScriptsSerial(doc);
@@ -287,26 +377,45 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             window.dispatchEvent(new Event("load", { bubbles: true }));
             window.dispatchEvent(new Event("pageshow", { bubbles: true }));
           } catch {}
-        }, 200);
+        }, 150);
       } catch (err) {
-        console.error("[ThemeInjector] loadTheme failed:", err);
+        if (err && err.name === "AbortError") {
+        } else {
+          console.error("[ThemeInjector] loadTheme failed:", err);
+        }
       } finally {
-        if (!aborted && mountedRef.current) setLoading(false);
+        if (!localAborted && mountedRef.current) {
+          loadingRef.current = false;
+          setLoading(false);
+        }
       }
     };
 
     loadTheme();
 
     return () => {
-      aborted = true;
+      localAborted = true;
       try {
-        if (containerRef.current && submitHandler)
+        if (abortControllerRef.current) abortControllerRef.current.abort();
+      } catch {}
+      try {
+        if (containerRef.current && submitHandlerRef.current)
           containerRef.current.removeEventListener(
             "submit",
-            submitHandler,
+            submitHandlerRef.current,
             true
           );
       } catch {}
+      try {
+        if (containerRef.current && clickHandlerRef.current)
+          containerRef.current.removeEventListener(
+            "click",
+            clickHandlerRef.current,
+            true
+          );
+      } catch {}
+      submitHandlerRef.current = null;
+      clickHandlerRef.current = null;
     };
   }, [pageUrl, themeBaseUrl, onNavigate]);
 
@@ -325,6 +434,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
           display: "block",
         }}
       />
+
       {loading && (
         <div
           style={{
@@ -336,7 +446,7 @@ export default function ThemeInjector({ pageUrl, themeBaseUrl, onNavigate }) {
             pointerEvents: "none",
           }}
           aria-hidden
-        ></div>
+        />
       )}
     </div>
   );
