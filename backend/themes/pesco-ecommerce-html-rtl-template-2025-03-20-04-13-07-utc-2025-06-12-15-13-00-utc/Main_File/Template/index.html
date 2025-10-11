@@ -440,7 +440,7 @@
   <body>
     <div class="preloader">
       <div class="loader">
-        <img src="assets/images/loader.gif" alt="Loader" />
+        <img src="assets/images/loader.gif" alt="Image" loading="lazy" />
       </div>
     </div>
     <div class="offcanvas__overlay"></div>
@@ -573,6 +573,7 @@
                           <img
                             src="assets/images/icon/shirt.png"
                             alt="Shirts"
+                            loading="lazy"
                           />Man Shirts</a
                         >
                       </li>
@@ -581,6 +582,7 @@
                           <img
                             src="assets/images/icon/denim.png"
                             alt="Jeans"
+                            loading="lazy"
                           />Denim Jeans</a
                         >
                       </li>
@@ -589,6 +591,7 @@
                           <img
                             src="assets/images/icon/suit.png"
                             alt="Suit"
+                            loading="lazy"
                           />Casual Suit</a
                         >
                       </li>
@@ -597,6 +600,7 @@
                           <img
                             src="assets/images/icon/dress.png"
                             alt="Dress"
+                            loading="lazy"
                           />Summer Dress</a
                         >
                       </li>
@@ -605,6 +609,7 @@
                           <img
                             src="assets/images/icon/sweaters.png"
                             alt="Sweaters"
+                            loading="lazy"
                           />Sweaters</a
                         >
                       </li>
@@ -618,6 +623,7 @@
                             ><img
                               src="assets/images/icon/jacket.png"
                               alt="Jackets"
+                              loading="lazy"
                             />Jackets</a
                           >
                         </li>
@@ -744,6 +750,7 @@
                                 <img
                                   src="assets/images/icon/shirt.png"
                                   alt="Shirts"
+                                  loading="lazy"
                                 />Man Shirts</a
                               >
                             </li>
@@ -752,6 +759,7 @@
                                 <img
                                   src="assets/images/icon/denim.png"
                                   alt="Jeans"
+                                  loading="lazy"
                                 />Denim Jeans</a
                               >
                             </li>
@@ -760,6 +768,7 @@
                                 <img
                                   src="assets/images/icon/suit.png"
                                   alt="Suit"
+                                  loading="lazy"
                                 />Casual Suit</a
                               >
                             </li>
@@ -768,6 +777,7 @@
                                 <img
                                   src="assets/images/icon/dress.png"
                                   alt="Dress"
+                                  loading="lazy"
                                 />Summer Dress</a
                               >
                             </li>
@@ -776,6 +786,7 @@
                                 <img
                                   src="assets/images/icon/sweaters.png"
                                   alt="Sweaters"
+                                  loading="lazy"
                                 />Sweaters</a
                               >
                             </li>
@@ -935,6 +946,7 @@
                           src="https://avatars.mds.yandex.net/i?id=07a62907c914895af835c42858d22addc8b9abd7-5611890-images-thumbs&n=13"
                           alt="Hero Image"
                           style="width: 460px; height: 550px"
+                          loading="lazy"
                         />
                         <div
                           class="hero-shape bg_cover"
@@ -1050,6 +1062,7 @@
                         <img
                           src="https://avatars.mds.yandex.net/i?id=62ab96b1b3e353cb70232e304a225d4feab48b5f-16455012-images-thumbs&n=13"
                           alt="Hero Image"
+                          loading="lazy"
                           style="width: 460px; height: 550px"
                         />
                         <div
@@ -1176,6 +1189,7 @@
                     src="assets/images/divider.png"
                     alt="Image"
                     role="presentation"
+                    loading="lazy"
                     aria-hidden="true"
                   />
                 </div>
@@ -1197,6 +1211,7 @@
                     src="assets/images/divider.png"
                     alt="Image"
                     role="presentation"
+                    loading="lazy"
                     aria-hidden="true"
                   />
                 </div>
@@ -1218,6 +1233,7 @@
                   <img
                     src="assets/images/divider.png"
                     alt="Image"
+                    loading="lazy"
                     role="presentation"
                     aria-hidden="true"
                   />
@@ -1366,16 +1382,22 @@
               >
                 <div class="shape shape-one">
                   <span
-                    ><img src="assets/images/banner/discount.png" alt="shape"
+                    ><img
+                      src="assets/images/banner/discount.png"
+                      alt="shape"
+                      loading="lazy"
                   /></span>
                 </div>
                 <div class="shape shape-two">
                   <span
-                    ><img src="assets/images/banner/line.png" alt="shape"
+                    ><img
+                      src="assets/images/banner/line.png"
+                      alt="shape"
+                      loading="lazy"
                   /></span>
                 </div>
                 <div class="banner-img banner-img1">
-                  <img src="" alt="Image" />
+                  <img src="" alt="Image" loading="lazy" />
                 </div>
                 <div class="banner-content">
                   <span>UP TO <span class="off"></span></span>
@@ -1748,7 +1770,7 @@
             }">
             <img src="https://demo.webriefly.com/uploads/${
               p.image || ""
-            }" alt="${p.name || ""}">
+            }" alt="${p.name || ""}" loading="lazy">
           </a>
 
           <div class="discount">${p.label || ""}</div>
@@ -1902,10 +1924,11 @@
             <a href="/shop-details/${slug}" aria-label="View details of ${
                     item.name
                   }">
-              <img src="https://demo.webriefly.com/uploads/${
+              <img loading="lazy" src="https://demo.webriefly.com/uploads/${
                 item.image
               }" alt="${item.name}"/>
               ${item.name}
+              
             </a>
             <span class="quantity">
               ${qty} × <span><span class="currency">$</span>${price.toFixed(
@@ -2103,6 +2126,7 @@
             <img
               id="lightbox-image"
               src=""
+              loading="lazy"
               alt="Product"
               style="
                 width: 336px;
@@ -2366,6 +2390,7 @@
                     <img
                       src="assets/images/banner/deal-1.png"
                       alt="Deal Image"
+                      loading="lazy"
                     />
                   </span>
                 </div>
@@ -2698,6 +2723,7 @@
                   <img
                     src="assets/images/blog/blog-big-1.png"
                     alt="Post Thumbnail"
+                    loading="lazy"
                   />
                 </div>
                 <div class="post-content">
@@ -2720,6 +2746,7 @@
                       <img
                         src="assets/images/blog/blog-sm-1.png"
                         alt="Post Thumbnail"
+                        loading="lazy"
                       />
                     </div>
                     <div class="post-content">
@@ -2751,6 +2778,7 @@
                 ><img
                   src="assets/images/newsletter/pattern-1.png"
                   alt="Pattern Shape"
+                  loading="lazy"
               /></span>
             </div>
             <div class="newsletter-shape pattern-two">
@@ -2758,11 +2786,15 @@
                 ><img
                   src="assets/images/newsletter/pattern-2.png"
                   alt="Pattern Shape"
+                  loading="lazy"
               /></span>
             </div>
             <div class="newsletter-shape shape-one">
               <span
-                ><img src="assets/images/newsletter/shape-1.png" alt="Shape"
+                ><img
+                  src="assets/images/newsletter/shape-1.png"
+                  alt="Shape"
+                  loading="lazy"
               /></span>
             </div>
 
@@ -2798,8 +2830,8 @@
                     alt="Image"
                     width="480"
                     height="320"
-                    style="max-width: 100%; height: auto; display: block"
                     loading="lazy"
+                    style="max-width: 100%; height: auto; display: block"
                   />
                 </div>
               </div>
@@ -2871,7 +2903,10 @@
       <div class="footer-bg-wrapper gray-light-bg pt-0">
         <div class="footer-shape shape-one">
           <span
-            ><img src="assets/images/footer/shape-1.png" alt="shape"
+            ><img
+              src="assets/images/footer/shape-1.png"
+              alt="shape"
+              loading="lazy"
           /></span>
         </div>
         <div class="footer-widget-area pb-80">
@@ -2889,6 +2924,7 @@
                       ><img
                         src="assets/images/logo/logo-main.png"
                         alt="Brand Logo"
+                        loading="lazy"
                     /></a>
 
                     <p>
@@ -2964,30 +3000,35 @@
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Collections & Delivery</a>
                       </li>
                       <li>
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Returns & Refunds</a>
                       </li>
                       <li>
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Terms & Conditions</a>
                       </li>
                       <li>
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Delivery Return</a>
                       </li>
                       <li>
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Store Locations</a>
                       </li>
                     </ul>
@@ -3008,12 +3049,14 @@
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Privacy Policy</a>
                       </li>
                       <li>
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="shops.html">Terms Of Use</a>
                       </li>
 
@@ -3021,6 +3064,7 @@
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="faq.html">FAQ</a>
                       </li>
 
@@ -3028,6 +3072,7 @@
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="contact.html">Contact</a>
                       </li>
 
@@ -3035,6 +3080,7 @@
                         <img
                           src="assets/images/icon/star-3.svg"
                           alt="star icon"
+                          loading="lazy"
                         /><a href="contact.html">Login / Register</a>
                       </li>
                     </ul>
@@ -3200,7 +3246,7 @@
                   <div class="post-thumbnail">
                     <img src="${imageSrc(mainPost.image)}" alt="${escapeHtml(
                 mainPost.name
-              )}">
+              )}" loading="lazy">
                   </div>
                   <div class="post-content">
                     <h3 class="title"><a href="/blog-details/${slugify(
@@ -3227,7 +3273,7 @@
                       <div class="post-thumbnail">
                         <img src="${imageSrc(post.image)}" alt="${escapeHtml(
                     post.name
-                  )}">
+                  )}" loading="lazy">
                       </div>
                       <div class="post-content">
                         <h3 class="title"><a href="/blog-details/${slugify(
@@ -3259,7 +3305,7 @@
                       <a href="/blog-details/${slugify(post.name)}">
                         <img src="${imageSrc(post.image)}" alt="${
                   post.name
-                }" style="width:64px; height:64px; object-fit:cover;">
+                }" loading="lazy" style="width:64px; height:64px; object-fit:cover;" loading="lazy">
                       </a>
                     </div>
                     <div class="content">
@@ -3349,9 +3395,11 @@
                   /"/g,
                   "&quot;"
                 )}" style="display:flex;align-items:center;padding:8px;cursor:pointer;border-bottom:1px solid #eee">
-                  <img src="https://demo.webriefly.com/uploads/${p.image}" 
+                  <img loading="lazy" src="https://demo.webriefly.com/uploads/${
+                    p.image
+                  }" 
                       alt="${(p.name || "").replace(/"/g, "&quot;")}" 
-                      style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+                      style="width:40px;height:40px;object-fit:cover;margin-right:10px;" loading="lazy">
                   <div>
                     <div style="font-weight:600;color:#333" class="text-dark fw-bold">${
                       p.name
