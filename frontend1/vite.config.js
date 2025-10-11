@@ -5,7 +5,28 @@ import { visualizer } from "rollup-plugin-visualizer";
 import history from "connect-history-api-fallback";
 
 export default defineConfig({
-  plugins: [react({ fastRefresh: true }), svgr(), visualizer({ open: false })],
+  plugins: [
+    react({
+      fastRefresh: true,
+      babel: {
+        presets: [
+          [
+            "@babel/preset-env",
+            {
+              targets: {
+                esmodules: true,
+              },
+              useBuiltIns: "entry",
+              corejs: 3,
+            },
+          ],
+        ],
+      },
+    }),
+    svgr(),
+    visualizer({ open: false }),
+  ],
+
   server: {
     port: 5173,
     open: true,
@@ -40,6 +61,7 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+
     fs: { strict: false },
   },
 
@@ -53,5 +75,14 @@ export default defineConfig({
     target: "es2020",
     polyfillDynamicImport: false,
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
+        },
+      },
+    },
   },
 });

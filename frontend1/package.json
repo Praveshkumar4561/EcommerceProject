@@ -75,6 +75,7 @@
     "sass": "^1.93.2",
     "vite": "^7.1.9",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-html": "^3.2.2",
     "vite-plugin-prerender": "^1.0.8",
     "vite-plugin-purgecss": "^0.2.13",
     "vite-plugin-svgr": "^4.5.0"
