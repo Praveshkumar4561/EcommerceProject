@@ -5,31 +5,11 @@ import { visualizer } from "rollup-plugin-visualizer";
 import history from "connect-history-api-fallback";
 
 export default defineConfig({
-  plugins: [
-    react({
-      fastRefresh: true,
-      babel: {
-        presets: [
-          [
-            "@babel/preset-env",
-            {
-              targets: { esmodules: true },
-              useBuiltIns: "entry",
-              corejs: 3,
-            },
-          ],
-        ],
-      },
-    }),
-    svgr(),
-    visualizer({ open: false }),
-  ],
-
+  plugins: [react({ fastRefresh: true }), svgr(), visualizer({ open: false })],
   server: {
     port: 5173,
     open: true,
     historyApiFallback: true,
-
     setupMiddlewares(middlewares, { app }) {
       app.use(
         history({
@@ -48,17 +28,18 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
+
       "/themes": {
         target: "https://demo.webriefly.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/themes/, "/themes"),
       },
+
       "/upload": {
         target: "https://demo.webriefly.com",
         changeOrigin: true,
       },
     },
-
     fs: { strict: false },
   },
 
@@ -71,15 +52,6 @@ export default defineConfig({
   build: {
     target: "es2020",
     polyfillDynamicImport: false,
-    sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            return "vendor";
-          }
-        },
-      },
-    },
+    sourcemap: true,
   },
 });
