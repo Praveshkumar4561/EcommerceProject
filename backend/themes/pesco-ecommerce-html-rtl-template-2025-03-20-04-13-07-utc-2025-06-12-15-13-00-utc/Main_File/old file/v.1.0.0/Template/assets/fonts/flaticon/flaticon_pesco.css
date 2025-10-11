@@ -11,6 +11,7 @@
 
 @font-face {
   font-family: "flaticon_pesco";
+  font-display: swap;
   src: url("./flaticon_pesco.woff2?5fad354381a701889fdd6856e9295311")
       format("woff2"),
     url("./flaticon_pesco.woff?5fad354381a701889fdd6856e9295311") format("woff"),
